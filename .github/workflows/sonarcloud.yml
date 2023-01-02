@@ -7,8 +7,6 @@ defaults:
 
 on:
   push:
-    paths:
-      - code/**
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
