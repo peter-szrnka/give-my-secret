@@ -1,4 +1,4 @@
-name: Code coverage for Backend
+name: Backend code quality check
 
 defaults:
   run:
@@ -24,3 +24,7 @@ jobs:
         run: mvn clean verify -Pcodecov
       - name: Upload to Codecov
         uses: codecov/codecov-action@v2.0.2
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@main
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
