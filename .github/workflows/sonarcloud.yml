@@ -28,6 +28,10 @@
 
 name: SonarCloud analysis
 
+defaults:
+  run:
+    working-directory: ./code/gms-backend
+
 on:
   push:
     branches: [ "main" ]
