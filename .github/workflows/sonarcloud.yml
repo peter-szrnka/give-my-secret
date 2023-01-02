@@ -7,8 +7,6 @@ defaults:
 
 on:
   push:
-    branches:
-      - main
     paths:
       - code/**
   pull_request:
