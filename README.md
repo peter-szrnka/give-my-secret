@@ -2,7 +2,9 @@
 
 Give My Secret is a credential storage application, that stores secrets, passwords and other text based credentials in a secure and reliable way by encrypting them with keystores that you provide. It's easy to configure, numerous ready-to-go configurations available for all supported databases.
 
-[![codecov](https://codecov.io/gh/szrnka-peter/give-my-secret/branch/main/graph/badge.svg)](https://codecov.io/gh/szrnka-peter/give-my-secret)
+| Code QL | Code coverage |
+| ------- | ------------- |
+| [![CodeQL](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml/badge.svg)](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml) | [![codecov](https://codecov.io/gh/szrnka-peter/give-my-secret/branch/main/graph/badge.svg)](https://codecov.io/gh/szrnka-peter/give-my-secret) | 
 
 # Tech stack
 
