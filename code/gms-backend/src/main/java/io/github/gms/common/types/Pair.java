@@ -1,7 +1,5 @@
 package io.github.gms.common.types;
 
-import java.io.Serializable;
-
 /**
  * @author Peter Szrnka
  * 
@@ -14,9 +12,7 @@ import java.io.Serializable;
  * @param <B> Type of the second object
  * @since 1.0
  */
-public class Pair<A, B> implements Serializable {
-
-	private static final long serialVersionUID = 9182370933090633028L;
+public class Pair<A, B> {
 
 	public static <A, B> Pair<A, B> of(final A first, final B second) {
 		return new Pair<>(first, second);

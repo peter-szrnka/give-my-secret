@@ -33,7 +33,6 @@ import com.google.gson.JsonSerializer;
 @Configuration
 @EnableScheduling
 @EnableAsync
-//@EnableWebMvc
 @EnableJpaRepositories(basePackages = "io.github.gms")
 public class ApplicationConfig implements WebMvcConfigurer {
 
@@ -80,7 +79,6 @@ public class ApplicationConfig implements WebMvcConfigurer {
                     protected Resource getResource(String resourcePath, Resource location) throws IOException {
                         Resource requestedResource = location.createRelative(resourcePath);
 
-                        //log.info("resource = {}, exists = {}, readable = {}", resourcePath, requestedResource.exists(), requestedResource.isReadable());
                         return requestedResource.exists() && requestedResource.isReadable() ? requestedResource
                                 : new ClassPathResource("/static/index.html");
                     }

@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class DemoDataProviderService {
 	
+	private static final String DESCRIPTION = "description";
 	public static final String SECRET_VALUE = "test";
 	public static final String SECRET_ID1 = "SECRET_ID";
 	public static final String SECRET_ID2 = "SECRET_ID2";
@@ -103,7 +104,7 @@ public class DemoDataProviderService {
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue(value);
 		entity.setCreationDate(LocalDateTime.now());
-		entity.setDescription("description");
+		entity.setDescription(DESCRIPTION);
 		entity.setName("test");
 		return entity;
 	}
@@ -124,7 +125,7 @@ public class DemoDataProviderService {
 
 	private static KeystoreEntity createKeystore(Long id) {
 		KeystoreEntity entity = new KeystoreEntity();
-		entity.setDescription("description");
+		entity.setDescription(DESCRIPTION);
 		entity.setName("test");
 		entity.setAlias("test");
 		entity.setAliasCredential(CREDENTIAL_TEST);
@@ -160,7 +161,7 @@ public class DemoDataProviderService {
 		AnnouncementEntity entity = new AnnouncementEntity();
 		entity.setId(announcementId);
 		entity.setTitle("title");
-		entity.setDescription("description");
+		entity.setDescription(DESCRIPTION);
 		entity.setAuthorId(USER_1_ID);
 		entity.setAnnouncementDate(LocalDateTime.now());
 		return entity;

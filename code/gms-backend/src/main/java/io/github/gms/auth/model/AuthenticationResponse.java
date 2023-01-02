@@ -18,5 +18,4 @@ public class AuthenticationResponse {
 	@Builder.Default
 	private HttpStatus responseStatus = HttpStatus.OK;
 	private String errorMessage;
-	//private boolean skip;
 }
