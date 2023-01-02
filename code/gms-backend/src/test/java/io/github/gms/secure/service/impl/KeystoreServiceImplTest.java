@@ -3,6 +3,7 @@ package io.github.gms.secure.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -19,6 +20,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,6 @@ import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -78,8 +79,9 @@ import lombok.SneakyThrows;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled
 class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
+
+	private static final String JKS_TEST_FILE_LOCATION = "./test-output/2/test.jks";
 
 	@InjectMocks
 	private KeystoreServiceImpl service = new KeystoreServiceImpl();
@@ -241,7 +243,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 			GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 	
 			// assert
-			assertEquals("java.io.FileNotFoundException: test-output\\6\\my-key2.jks (A rendszer nem találja a megadott elérési utat)", exception.getMessage());
+			assertTrue(exception.getMessage().startsWith("java.io.FileNotFoundException"));
 			verify(converter).toNewEntity(any(), eq(multiPart));
 			verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 			verify(repository).save(any());
@@ -290,7 +292,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		
 		new File("test-output/2/").mkdirs();
 
-		FileWriter fileWriter = new FileWriter("test-output/2/test.jks");
+		FileWriter fileWriter = new FileWriter(JKS_TEST_FILE_LOCATION);
 		PrintWriter printWriter = new PrintWriter(fileWriter);
 		printWriter.print("value");
 		printWriter.close();
@@ -305,7 +307,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(gson).fromJson(eq(model), any());
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 		
-		new File("test-output/2/test.jks").delete();
+		Files.deleteIfExists(Paths.get(JKS_TEST_FILE_LOCATION));
 	}
 
 	@Test
