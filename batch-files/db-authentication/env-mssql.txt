@@ -1,0 +1,36 @@
+SELECTED_DB=mssql
+SELECTED_AUTH=db
+SPRING_PROFILE=${SELECTED_DB},${SELECTED_AUTH},https
+
+# HTTPS configuration
+SSL_KEYSTORE_TYPE=PKCS12
+SSL_KEYSTORE_PATH=/usr/share/ssl/
+SSL_KEYSTORE=${SSL_KEYSTORE_PATH}test.p12
+SSL_KEYSTORE_PASSWORD=Test1234
+SSL_KEYSTORE_ALIAS=test
+HTTPS_PORT=8443
+
+# Secrets
+CONFIG_SECRET_JWT=MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2Nzg=
+CONFIG_SECRET_CRYPTO=MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2Nzg=
+
+# LDAP
+LDAP_BASE_DN=dc=givemysecret,dc=szrnkapeter,dc=hu
+LDAP_URL=ldap://host.docker.internal:11389
+LDAP_USERNAME=uid=admin,ou=system
+LDAP_CREDENTIAL=secret
+LDAP_PASSWORD_ENCODER=CRYPT
+
+# Common db configuration
+DB_SHOW_SQL=false
+
+# MS SQL configuration
+DB_JDBC_URL=jdbc:sqlserver://host.docker.internal;databaseName=master;currentSchema=gms
+DB_USERNAME=sa
+DB_CREDENTIAL=MsSql1985!
+
+# Keystore storage path
+KEYSTORE_PATH=/usr/share/keystore/
+
+# Windows specific settings
+COMPOSE_CONVERT_WINDOWS_PATHS=1

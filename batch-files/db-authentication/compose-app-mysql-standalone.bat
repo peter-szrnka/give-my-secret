@@ -1,0 +1,1 @@
+docker compose --env-file env-mysql.txt -p give-my-secret up -d

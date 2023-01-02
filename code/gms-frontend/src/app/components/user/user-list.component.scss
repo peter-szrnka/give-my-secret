@@ -1,0 +1,19 @@
+.error {
+  border: 1px solid #ff0000;
+}
+
+.active {
+  display: block;
+  width: 18px;
+  height: 18px;
+  background-color: green;
+  border-radius: 9px;
+}
+
+.inactive {
+  display: block;
+  width: 18px;
+  height: 18px;
+  background-color: red;
+  border-radius: 9px;
+}

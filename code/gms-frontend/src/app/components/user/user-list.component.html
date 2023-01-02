@@ -1,0 +1,58 @@
+<div style="margin: 0 auto;">
+  <h2>Users</h2>
+
+  <nav-back [buttonConfig]="[{url:'/user/new', label:'Create new user +', primary : true}]"></nav-back>
+
+  <mat-card style="margin-top: 10px;">
+    <mat-card-content>
+      <table mat-table [dataSource]="datasource" style="width:100%;margin-top: 10px;">
+        <tr mat-header-row *matHeaderRowDef="userColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: userColumns;"></tr>
+
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+              </ng-container>
+              <ng-container matColumnDef="username">
+                <th mat-header-cell *matHeaderCellDef>Username</th>
+                <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let element">
+                  <span [ngClass]="element.status == 'ACTIVE' ? 'active' : 'inactive'">&nbsp;</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef>Email</th>
+                <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+              </ng-container>
+              <ng-container matColumnDef="roles">
+                <th mat-header-cell *matHeaderCellDef>Roles</th>
+                <td mat-cell *matCellDef="let element">
+                  <ul>
+                    <li *ngFor="let role of element.roles">{{role}}</li>
+                  </ul>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="creationDate">
+                <th mat-header-cell *matHeaderCellDef>Creation date</th>
+                <td mat-cell *matCellDef="let element"> {{element.creationDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
+              </ng-container>
+              <ng-container matColumnDef="operations">
+                <th mat-header-cell *matHeaderCellDef>Operations</th>
+                <td mat-cell *matCellDef="let element">&nbsp;
+                    <button mat-icon-button color="primary" [routerLink]="'/user/' + element.id">
+                        <mat-icon aria-hidden="false">edit</mat-icon>
+                    </button>
+                    <button [disabled]="getCount() <= 1" mat-icon-button color="warn" (click)="promptDelete(element.id)">
+                        <mat-icon aria-hidden="false">delete</mat-icon>
+                    </button>
+                  </td>
+              </ng-container>
+      </table>
+
+      <mat-paginator [length]="getCount()" [pageSize]="3" [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,41 @@
+<h2>Settings</h2>
+
+<div style="margin: 0 auto;margin: 10px;">
+
+  <form #form="ngForm">
+    <mat-accordion>
+      <div class="information" *ngIf="passwordEnabled === false">
+        Your password is managed in LDAP
+      </div>
+      <mat-expansion-panel hideToggle [disabled]="passwordEnabled === false">
+        <mat-expansion-panel-header >
+          <mat-panel-title>
+            Password
+          </mat-panel-title>
+          <mat-panel-description>
+            Click here to update your credential
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Current password</mat-label>
+          <input type="password" matInput name="oldCredential" required minlength="8"
+            [(ngModel)]="credentialData.oldCredential">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>New password</mat-label>
+          <input type="password" matInput name="newCredential1" required minlength="8"
+            [(ngModel)]="credentialData.newCredential1">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Verify new password</mat-label>
+          <input type="password" matInput name="newCredential2" required minlength="8"
+            [(ngModel)]="credentialData.newCredential2">
+        </mat-form-field>
+
+        <button mat-button color="primary" [disabled]="form.status ==='INVALID'" (click)="save()">Save</button>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </form>
+</div>

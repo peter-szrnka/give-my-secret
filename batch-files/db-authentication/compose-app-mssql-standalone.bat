@@ -1,0 +1,1 @@
+docker compose --env-file env-mssql.txt -p give-my-secret up -d

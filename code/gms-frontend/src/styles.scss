@@ -1,0 +1,48 @@
+/* You can add global styles to this file, and also import other style files */
+@charset "utf-8";
+@use '@angular/material' as mat;
+
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// Colors
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import 'globals.scss';
+
+.full-width {
+    width: 100%;
+    min-width: 500px;
+}
+
+.warning {
+    padding: 15px;
+    margin: 10px 0 10px 0;
+    background-color: $warning;
+}
+
+.information {
+    padding: 15px;
+    margin: 10px 0 10px 0;
+    background-color: $information;
+    color: $informationText;
+}
+
+.success {
+    padding: 15px;
+    margin: 10px 0 10px 0;
+    background-color: $success;
+    color: $successText;
+}
+
+.datatable {
+    width: 100%;
+    margin: 0 auto;
+}

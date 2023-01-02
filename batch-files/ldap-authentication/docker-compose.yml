@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  gms-app:
+    #build: .
+    container_name: gms-app-${SELECTED_DB}-${SELECTED_AUTH}
+    image: gms-app:latest
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      - SPRING_PROFILE
+      - DB_JDBC_URL
+      - DB_USERNAME
+      - DB_CREDENTIAL
+      - DB_SHOW_SQL
+      - DB_MAX_LIFETIME
+      - SSL_KEYSTORE
+      - SSL_KEYSTORE_PATH
+      - SSL_KEYSTORE_ALIAS
+      - SSL_KEYSTORE_PASSWORD
+      - KEYSTORE_PATH
+      - LDAP_BASE_DN
+      - LDAP_CREDENTIAL
+      - LDAP_URL
+      - LDAP_USERNAME
+      - LDAP_PASSWORD_ENCODER
+      - SELECTED_DB
+      - SELECTED_AUTH
+      - HTTPS_PORT
+      - CONFIG_SECRET_JWT
+      - CONFIG_SECRET_CRYPTO
+
+    volumes:
+      - "D:/dev/projects/open-source/keystores/:/usr/share/ssl/"
+      - "${KEYSTORE_PATH}:/usr/share/keystore/"

@@ -1,0 +1,1 @@
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=MsSql1985!" -e "MSSQL_PID=Developer" -p 1433:1433 --name mssql --hostname localhost -d mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04

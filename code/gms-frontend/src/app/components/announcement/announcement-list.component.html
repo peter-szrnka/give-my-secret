@@ -1,0 +1,41 @@
+<div>
+  <h2>Announcements</h2>
+
+  <nav-back [buttonConfig]="[{url:'/announcement/new', label:'Create +', primary : true}]"></nav-back>
+  
+  <mat-card style="margin-top: 10px;">
+    <mat-card-content>
+      <table mat-table [dataSource]="datasource" style="width:100%;margin-top: 10px;">
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+    
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+        </ng-container>
+        <ng-container matColumnDef="announcementDate">
+          <th mat-header-cell *matHeaderCellDef>Announcement date</th>
+          <td mat-cell *matCellDef="let element"> {{element.announcementDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
+        </ng-container>
+        <ng-container matColumnDef="operations">
+          <th mat-header-cell *matHeaderCellDef>Operations</th>
+          <td mat-cell *matCellDef="let element">&nbsp;
+            <button mat-icon-button color="primary" [routerLink]="'/announcement/' + element.id">
+              <mat-icon aria-hidden="false">edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="promptDelete(element.id)">
+              <mat-icon aria-hidden="false">delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+      </table>
+    
+      <mat-paginator [length]="getCount()" [pageSize]="tableConfig.pageSize"
+                          [pageSizeOptions]="[5, 10, 20, 50]"></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

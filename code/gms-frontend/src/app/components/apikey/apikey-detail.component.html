@@ -1,0 +1,44 @@
+<div style="margin: 0 auto;margin-top: 10px;">
+    <nav-back [buttonConfig]="buttonConfig"></nav-back>
+
+    <form #form="ngForm">
+        <mat-card class="example-card" style="margin: 0 auto;margin-top: 10px;">
+            <mat-card-content>
+                <mat-form-field appearance="fill" class="full-width" *ngIf="data?.id !== undefined">
+                    <mat-label>ID</mat-label>
+                    <input disabled="true" name="id" matInput value="{{data.id}}">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Name</mat-label>
+                    <input matInput name="name" required [(ngModel)]="data.name">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Description</mat-label>
+                    <input matInput name="description" required [(ngModel)]="data.description">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Status</mat-label>
+                    <mat-select [(ngModel)]="data.status" name="status" required>
+                        <mat-option [value]="'ACTIVE'">ACTIVE</mat-option>
+                        <mat-option [value]="'DISABLED'">DISABLED</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Value</mat-label>
+                    <input matInput [(ngModel)]="data.value" name="value" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width" *ngIf="data?.id !== undefined">
+                    <mat-label>Creation date</mat-label>
+                    <input disabled="true" matInput value="{{data.creationDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}">
+                </mat-form-field>
+
+                <button [disabled]="form.status ==='INVALID'" mat-button color="primary" (click)="save()">Save</button>
+            </mat-card-content>
+        </mat-card>
+    </form>
+</div>

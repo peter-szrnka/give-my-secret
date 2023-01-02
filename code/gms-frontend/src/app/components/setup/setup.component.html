@@ -1,0 +1,47 @@
+<form #form="ngForm">
+    <mat-card class="example-card" style="width: 50%;margin: 0 auto;margin-top: 10px;">
+        <mat-card-title>
+            Setup application
+        </mat-card-title>
+        <mat-card-content>
+            <div *ngIf="errorMessage === ''">
+                Application has been configured successfully!
+            </div>
+
+            <div class="warning" *ngIf="errorMessage && errorMessage.length > 0">
+                Unexpected error occurred: {{errorMessage}}
+            </div>
+
+            <div *ngIf="errorMessage === undefined">
+                In order to make the application works, you must create an admin user. Please fill in the next form.
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Full name</mat-label>
+                    <input matInput name="name" [(ngModel)]="userData.name" required>
+                </mat-form-field>
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>User name</mat-label>
+                    <input matInput name="userName" [(ngModel)]="userData.username" required>
+                </mat-form-field>
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" name="email" [(ngModel)]="userData.email" [email]="true" required>
+                </mat-form-field>
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Credential</mat-label>
+                    <input matInput type="password" name="credential" [(ngModel)]="userData.credential" required
+                        minlength="8">
+                </mat-form-field>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary" *ngIf="errorMessage === undefined" (click)="saveAdminUser()"
+                [disabled]="form.status ==='INVALID'">Save admin user</button>
+
+            <button mat-raised-button color="primary" *ngIf="errorMessage && errorMessage.length > 0"
+                (click)="retrySetup()">Retry setup</button>
+
+            <button mat-raised-button color="primary" *ngIf="errorMessage === ''" (click)="navigateToHome()">Go to main
+                page</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

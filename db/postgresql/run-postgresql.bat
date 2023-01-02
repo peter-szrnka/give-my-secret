@@ -1,0 +1,1 @@
+docker run -p 5432:5432 --name postgresql -e POSTGRES_DB=gms -e POSTGRES_PASSWORD=Secret -d postgres

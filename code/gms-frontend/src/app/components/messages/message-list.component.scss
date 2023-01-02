@@ -1,0 +1,18 @@
+table {
+  width: 100%;
+  margin-top: 10px;
+}
+
+table td,
+th {
+  padding: 10px;
+}
+
+tr th {
+  text-align: left;
+}
+
+.bold-text {
+  font-style: bold;
+  font-weight: bold;
+}

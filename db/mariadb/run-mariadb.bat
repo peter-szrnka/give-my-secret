@@ -1,0 +1,1 @@
+docker run -p 3306:3306 --name mariadb --env MARIADB_DATABASE=gms --env MARIADB_ROOT_PASSWORD=Secret -d mariadb:10.3 --lower_case_table_names=1

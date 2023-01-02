@@ -1,0 +1,37 @@
+SELECTED_DB=mariadb
+SELECTED_AUTH=ldap
+SPRING_PROFILE=${SELECTED_DB},${SELECTED_AUTH},https
+
+# HTTPS configuration
+SSL_KEYSTORE_TYPE=PKCS12
+SSL_KEYSTORE_PATH=/usr/share/ssl/
+SSL_KEYSTORE=${SSL_KEYSTORE_PATH}test.p12
+SSL_KEYSTORE_PASSWORD=Test1234
+SSL_KEYSTORE_ALIAS=test
+HTTPS_PORT=8443
+
+# Secrets
+CONFIG_SECRET_JWT=MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2Nzg=
+CONFIG_SECRET_CRYPTO=MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2Nzg=
+
+# LDAP
+LDAP_BASE_DN=ou=users
+LDAP_URL=ldap://host.docker.internal:10389
+LDAP_USERNAME=uid=admin,ou=system
+LDAP_CREDENTIAL=secret
+LDAP_PASSWORD_ENCODER=CRYPT
+
+# Common db configuration
+DB_SHOW_SQL=false
+
+# DB config
+DB_JDBC_URL=jdbc:mariadb://host.docker.internal:3306/gms
+DB_USERNAME=root
+DB_CREDENTIAL=Secret
+DB_MAX_LIFETIME=5800
+
+# Keystore storage path
+KEYSTORE_PATH=D:/dev/projects/open-source/ks/
+
+# Windows specific settings
+COMPOSE_CONVERT_WINDOWS_PATHS=1
