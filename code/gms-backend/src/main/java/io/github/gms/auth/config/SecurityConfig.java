@@ -49,7 +49,7 @@ public class SecurityConfig {
 			DaoAuthenticationProvider authenticationProvider,
 			AuthenticationEntryPoint authenticationEntryPoint,
 			SecureHeaderInitializerFilter secureHeaderInitializerFilter) throws Exception {
-		http.cors().and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
+		http.cors().and().csrf().disable().and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers(FILTER_URL).permitAll()
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().anyRequest()
