@@ -80,7 +80,7 @@ import lombok.SneakyThrows;
  */
 class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
-	private static final String JKS_TEST_FILE_LOCATION = "/test-output/2/test.jks";
+	private static final String JKS_TEST_FILE_LOCATION = "./test-output/2/test.jks";
 
 	@InjectMocks
 	private KeystoreServiceImpl service = new KeystoreServiceImpl();
@@ -106,7 +106,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	@AfterAll
 	@SneakyThrows
 	public static void tearDown() {
-		TestUtils.deleteDirectoryWithContent("/test-output");
+		TestUtils.deleteDirectoryWithContent("./test-output");
 	}
 
 	@Override
