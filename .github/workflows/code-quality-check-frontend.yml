@@ -8,8 +8,8 @@ defaults:
 on:
   pull_request:
   push:
-#    paths:
-#      - code/gms-frontend/**
+    paths:
+      - code/gms-frontend/**
 jobs:
   build:
     runs-on: ubuntu-latest
