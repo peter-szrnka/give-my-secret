@@ -29,6 +29,7 @@ services:
       - HTTPS_PORT
       - CONFIG_SECRET_JWT
       - CONFIG_SECRET_CRYPTO
+      - CONFIG_ENCRYPTION_IV
 
     volumes:
       - "D:/dev/projects/open-source/keystores/:/usr/share/ssl/"
