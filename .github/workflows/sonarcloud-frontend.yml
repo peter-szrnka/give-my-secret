@@ -1,0 +1,36 @@
+name: SonarCloud Frontend
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./code/gms-frontend
+
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Build with NPM
+        run: npm install
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli@latest
+      - name: Run tests
+        run: ng test
+      - name: Analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        uses: SonarSource/sonarcloud-github-action@de2e56b42aa84d0b1c5b622644ac17e505c9a049

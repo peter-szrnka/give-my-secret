@@ -4,7 +4,7 @@ Give My Secret is a credential storage application, that stores secrets, passwor
 
 | Code QL | Code coverage | Sonarcloud |
 | ------- | ------------- | ---------- |
-| [![CodeQL](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml/badge.svg)](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml) | [![codecov](https://codecov.io/gh/szrnka-peter/give-my-secret/branch/main/graph/badge.svg)](https://codecov.io/gh/szrnka-peter/give-my-secret) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret) |
+| [![CodeQL](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml/badge.svg)](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml) | ![Code coverage](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret&metric=coverage) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret) |
 
 # Tech stack
 
