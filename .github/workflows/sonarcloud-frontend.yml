@@ -7,6 +7,8 @@ defaults:
 
 on:
   push:
+    branches:
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -19,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -41,8 +45,9 @@ jobs:
             # mandatory
             -Dsonar.projectKey=szrnka-peter_give-my-secret-frontend
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }}
-            -Dsonar.exclusions=**/*.java,**/*.class
+            -Dsonar.exclusions=**/*.java,**/*.class,**/*.scss,**/*.html,**/*.json
             -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+            -Dsonar.sources=./src
             # Comma-separated paths to directories containing main source files.
             #-Dsonar.sources= # optional, default is project base directory
             # When you need the analysis to take place in a directory other than the one from which it was launched
