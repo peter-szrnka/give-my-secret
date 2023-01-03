@@ -2,7 +2,6 @@ package io.github.gms.auth.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -45,27 +44,18 @@ public class SecurityConfig {
 	@Value("${spring.h2.console.enabled:false}")
 	private boolean h2ConsoleEnabled;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-	@Autowired
-	private UserDetailsService userDetailsService;
-
-	@Autowired
-	private AuthenticationEntryPoint authenticationEntryPoint;
-
-	@Autowired
-	private SecureHeaderInitializerFilter secureHeaderInitializerFilter;
-
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http,
+			DaoAuthenticationProvider authenticationProvider,
+			AuthenticationEntryPoint authenticationEntryPoint,
+			SecureHeaderInitializerFilter secureHeaderInitializerFilter) throws Exception {
 		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers(FILTER_URL).permitAll()
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().anyRequest()
 				.authenticated();
 
-		http.authenticationProvider(authenticationProvider());
+		http.authenticationProvider(authenticationProvider);
 
 		http.addFilterBefore(secureHeaderInitializerFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -76,7 +66,7 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public DaoAuthenticationProvider authenticationProvider() {
+	public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
 		authProvider.setUserDetailsService(userDetailsService);

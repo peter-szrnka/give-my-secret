@@ -1,6 +1,5 @@
 package io.github.gms.common.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +14,8 @@ import io.github.gms.common.filter.SetupFilter;
 @Configuration
 public class FilterConfig {
 
-	@Autowired
-	private ApiHeaderInitializerFilter apiHeaderInitializerFilter;
-	@Autowired
-	private SetupFilter systemFilter;
-	
 	@Bean
-	public FilterRegistrationBean<ApiHeaderInitializerFilter> apiHeaderInitializerFilterBean() {
+	public FilterRegistrationBean<ApiHeaderInitializerFilter> apiHeaderInitializerFilterBean(ApiHeaderInitializerFilter apiHeaderInitializerFilter) {
 	    FilterRegistrationBean<ApiHeaderInitializerFilter> registrationBean = new FilterRegistrationBean<>();
 	    registrationBean.setFilter(apiHeaderInitializerFilter);
 	    registrationBean.addUrlPatterns("/api/*");
@@ -29,7 +23,7 @@ public class FilterConfig {
 	}
 	
 	@Bean
-	public FilterRegistrationBean<SetupFilter> systemFilterBean() {
+	public FilterRegistrationBean<SetupFilter> systemFilterBean(SetupFilter systemFilter) {
 	    FilterRegistrationBean<SetupFilter> registrationBean = new FilterRegistrationBean<>();
 	    registrationBean.setFilter(systemFilter);
 	    registrationBean.addUrlPatterns("/setup/*");
