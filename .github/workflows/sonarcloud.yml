@@ -3,7 +3,7 @@ name: SonarCloud
 defaults:
   run:
     shell: bash
-    working-directory: ./code
+    working-directory: ./code/gms-backend
 
 on:
   push:
@@ -37,4 +37,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=szrnka-peter_give-my-secret
+        run: mvn -Pcodecov -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=szrnka-peter_give-my-secret
