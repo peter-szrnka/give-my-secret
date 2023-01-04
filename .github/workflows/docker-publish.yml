@@ -25,7 +25,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-          settings-path: ${{ github.workspace }}
+         # settings-path: ${{ github.workspace }}
       - name: Build and analyze
         run: mvn clean install -Pbuild-prod-docker-image
       - name: Temporarily save jar artifact
