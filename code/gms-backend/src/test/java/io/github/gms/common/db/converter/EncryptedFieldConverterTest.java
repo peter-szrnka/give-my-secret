@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import lombok.SneakyThrows;
@@ -18,20 +17,21 @@ import lombok.SneakyThrows;
  */
 class EncryptedFieldConverterTest extends AbstractUnitTest {
 	
-	private static final String ENCRYPTED_VALUE = "3G8TL6q/R1o6nE51e+0r/g==";
+	private static final String ENCRYPTION_IV = "R4nd0mIv1234567!";
+	private static final String ENCRYPTED_VALUE = "/jNuDkHGwUeQ/7pSuJ5T1Q==";
 	private static final String ORIGINAL_VALUE = "value";
 	private EncryptedFieldConverter converter;
 
 	@BeforeEach
 	@SneakyThrows
 	public void setup() {
-		converter = new EncryptedFieldConverter();
-		ReflectionTestUtils.setField(converter, "secret", "YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg=");
+		converter = new EncryptedFieldConverter("YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg=", ENCRYPTION_IV);
 	}
 	
 	@Test
+	@SneakyThrows
 	void shouldConvertToDatabaseColumnFail() {
-		ReflectionTestUtils.setField(converter, "secret", "YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg5");
+		converter = new EncryptedFieldConverter("YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg5", ENCRYPTION_IV);
 		
 		// act & assert
 		IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
@@ -49,9 +49,11 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 	}
 	
 	@Test
+	@SneakyThrows
 	void shouldConvertToEntityAttributeFail() {
-		ReflectionTestUtils.setField(converter, "secret", "YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg5");
-		
+		// arrange
+		converter = new EncryptedFieldConverter("YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg5", ENCRYPTION_IV);
+
 		// act & assert
 		IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
 			converter.convertToEntityAttribute(ENCRYPTED_VALUE));
