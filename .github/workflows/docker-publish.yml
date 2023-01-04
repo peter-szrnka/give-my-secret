@@ -35,8 +35,9 @@ jobs:
           path: ${{ github.workspace }}/code/target/*.jar
           retention-days: 1
   deploy:
-    name: ''
+    name: 'Deploy to GHCR'
     runs-on : ubuntu-latest
+    needs: build
     steps:
       - name: Log in to the Container registry
         uses: docker/login-action@master
