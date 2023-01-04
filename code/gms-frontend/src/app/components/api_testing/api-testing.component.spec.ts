@@ -9,18 +9,20 @@ import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
-import { FORM_GROUP_MOCK } from "../../common/form-helper.spec";
+//import { FORM_GROUP_MOCK } from "../../common/form-helper.spec";
 import { ApiTestingService } from "../../common/service/api-testing-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { ApiTestingComponent } from "./api-testing.component";
+import { SecureStorageService } from "../../common/service/secure-storage.service";
 
 describe('ApiTestingComponent', () => {
 
     let component : ApiTestingComponent;
     let service : any;
     let splashScreenService : any;
-    let formBuilder : any;
+    //let formBuilder : any;
     let dialog : any;
+    let secureStorageService : any;
 
     // Fixtures
     let fixture : ComponentFixture<ApiTestingComponent>;
@@ -30,11 +32,11 @@ describe('ApiTestingComponent', () => {
             imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule ],
             declarations : [ ApiTestingComponent ],
             providers : [
-
                 { provide : ApiTestingService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
                 { provide : SplashScreenStateService, useValue : splashScreenService },
-                { provide : FormBuilder, useValue : formBuilder }
+               // { provide : FormBuilder, useValue : formBuilder },
+                { provide : SecureStorageService, useValue : secureStorageService }
             ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
         });
@@ -57,27 +59,29 @@ describe('ApiTestingComponent', () => {
             start : jest.fn(),
             stop : jest.fn()
         };
-        formBuilder = FORM_GROUP_MOCK;
+        //formBuilder = FORM_GROUP_MOCK;
+        secureStorageService = {
+            getItem : jest.fn().mockImplementation((key) => "apiKey" === key ? "test" : "secret1"),
+            setItem : jest.fn()
+        };
     });
 
     it('should return secret value with saved credentials', () => {
         // arrange
-        localStorage.setItem('apiKey', 'key1');
-        localStorage.setItem('secretId', 'secret');
         configTestBed();
 
         // act
         component.callApi();
 
         // assert
-        expect(component.apiKey).toEqual('key1');
-        expect(component.secretId).toEqual('secret');
+        expect(component.apiKey).toEqual('test');
+        expect(component.secretId).toEqual('secret1');
         expect(component).toBeTruthy();
         expect(component.apiResponse).toEqual("my-secret-value");
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
-
-        localStorage.clear();
+        expect(secureStorageService.getItem).toHaveBeenCalled();
+        expect(secureStorageService.setItem).toHaveBeenCalled();
     });
 
     it('should return secret value', () => {
@@ -95,6 +99,7 @@ describe('ApiTestingComponent', () => {
         expect(component.apiResponse).toEqual("my-secret-value");
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
+        expect(secureStorageService.setItem).toHaveBeenCalled();
     });
 
     it('should throw error', () => {

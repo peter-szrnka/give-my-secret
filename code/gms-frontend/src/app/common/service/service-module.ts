@@ -12,6 +12,7 @@ import { SetupService } from "./setup-service";
 import { SharedDataService } from "./shared-data-service";
 import { SplashScreenStateService } from "./splash-screen-service";
 import { UserService } from "./user-service";
+import { SecureStorageService } from "./secure-storage.service";
 
 @NgModule({
     declarations: [ 
@@ -22,7 +23,7 @@ import { UserService } from "./user-service";
     ],
     providers: [ 
       SetupService, SharedDataService, AuthService, SecretService, EventService, UserService, AnnouncementService, ApiKeyService, MessageService, KeystoreService,
-      SplashScreenStateService, ApiTestingService
+      SplashScreenStateService, ApiTestingService, SecureStorageService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })
