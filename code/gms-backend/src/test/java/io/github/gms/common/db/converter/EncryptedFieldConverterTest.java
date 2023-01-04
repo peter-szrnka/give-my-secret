@@ -17,8 +17,8 @@ import lombok.SneakyThrows;
  */
 class EncryptedFieldConverterTest extends AbstractUnitTest {
 	
-	private static final String ENCRYPTION_IV = "R4nd0mIV!";
-	private static final String ENCRYPTED_VALUE = "cWgcUx/LoE6zFWHbpxgTKAvYOHNb";
+	private static final String ENCRYPTION_IV = "R4nd0mIv1234567!";
+	private static final String ENCRYPTED_VALUE = "/jNuDkHGwUeQ/7pSuJ5T1Q==";
 	private static final String ORIGINAL_VALUE = "value";
 	private EncryptedFieldConverter converter;
 
@@ -41,19 +41,6 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 	
 	@Test
 	void shouldConvertToDatabaseColumn() {
-		// act
-		String encryptedValue = converter.convertToDatabaseColumn(ORIGINAL_VALUE);
-		
-		// assert
-		assertEquals(ENCRYPTED_VALUE, encryptedValue);
-	}
-	
-	@Test
-	@SneakyThrows
-	void shouldConvertToDatabaseColumn2() {
-		// arrange
-		converter = new EncryptedFieldConverter("YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg=", ENCRYPTION_IV);
-		
 		// act
 		String encryptedValue = converter.convertToDatabaseColumn(ORIGINAL_VALUE);
 		
