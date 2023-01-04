@@ -1,5 +1,6 @@
 package io.github.gms.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
@@ -15,6 +16,7 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
@@ -45,6 +47,7 @@ import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.enums.KeystoreType;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.UserRole;
+import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
@@ -457,5 +460,17 @@ public class TestUtils {
 	
 	public static void assertLogContains(ListAppender<ILoggingEvent> appender, String expectedMessage) {
 		assertTrue(appender.list.stream().anyMatch(event -> event.getFormattedMessage().contains(expectedMessage)));
+	}
+	
+	public static <T extends Exception> void assertException(Class<T> cls, Executable executable, String expectedMessage) {
+		try {
+			executable.execute();
+		} catch(Throwable e) {
+			assertEquals(expectedMessage, e.getMessage());
+		}
+	}
+
+	public static void assertGmsException(Executable executable, String expectedMessage) {
+		assertException(GmsException.class, executable, expectedMessage);
 	}
 }

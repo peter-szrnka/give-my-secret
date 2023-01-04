@@ -9,7 +9,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -99,12 +98,8 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
-		// act
-		GmsException exception = assertThrows(GmsException.class,
-				() -> service.save(TestUtils.createSaveUserRequestDto(1L)));
-
-		// assert
-		assertEquals("User entity not found!", exception.getMessage());
+		// act & assert
+		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveUserRequestDto(1L)), "User entity not found!");
 	}
 
 	@Test
@@ -128,12 +123,8 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		when(repository.findByUsernameOrEmail(anyString(), anyString())).thenReturn(Optional.of(TestUtils.createAdminUser()));
 
-		// act
-		GmsException exception = assertThrows(GmsException.class,
-				() -> service.save(TestUtils.createSaveUserRequestDto(null)));
-
-		// assert
-		assertEquals("User already exists!", exception.getMessage());
+		// act & assert
+		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveUserRequestDto(null)), "User already exists!");
 		verify(repository).findByUsernameOrEmail(anyString(), anyString());
 	}
 	
@@ -141,7 +132,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldNotFindEditorUserById() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
-		when(repository.findById(eq(1L))).thenReturn(Optional.empty());
+		when(repository.findById(1L)).thenReturn(Optional.empty());
 
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
@@ -271,9 +262,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 		
 		// act & assert
-		GmsException exception = assertThrows(GmsException.class, () -> service.changePassword(new ChangePasswordRequestDto()));
-		
-		assertEquals("Old credential is not valid!", exception.getMessage());
+		TestUtils.assertGmsException(() -> service.changePassword(new ChangePasswordRequestDto()), "Old credential is not valid!");
 		verify(passwordEncoder).matches(isNull(), anyString());
 		MDC.clear();
 	}
@@ -286,10 +275,8 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 		
 		// act & assert
-		GmsException exception = assertThrows(GmsException.class, () -> service.changePassword(new ChangePasswordRequestDto("MyOldPassword", "MyNewPassword")));
-		
+		TestUtils.assertGmsException(() -> service.changePassword(new ChangePasswordRequestDto("MyOldPassword", "MyNewPassword")), "New credential is not valid! It must contain at least 1 lowercase, 1 uppercase and 1 numeric character.");
 		verify(passwordEncoder).matches(anyString(), anyString());
-		assertEquals("New credential is not valid! It must contain at least 1 lowercase, 1 uppercase and 1 numeric character.", exception.getMessage());
 		MDC.clear();
 	}
 	

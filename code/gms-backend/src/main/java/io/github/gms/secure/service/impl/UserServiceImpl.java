@@ -45,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 @CacheConfig(cacheNames = "userCache")
 public class UserServiceImpl implements UserService {
 	
-	private static final String CREDENTIAL_REGEX = "^[a-zA-Z0-9](?=[^a-z]*[a-z])(?=[^A-Z]*[A-Z])(?=\\D*[0-9])(?=[^-+_!@#$%^&*.,?]*[-+_!@#$%^&*.,?])[-+_!@#$%^&*.,?a-zA-Z0-9]{7,}$";
+	private static final String CREDENTIAL_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,255}$";
 
 	@Autowired
 	private UserRepository repository;

@@ -123,11 +123,8 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void shouldNotSupportSave() {
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-				() -> service.save(new SaveKeystoreRequestDto()));
-
-		// assert
-		assertEquals("Not supported!", exception.getMessage());
+		// act & assert
+		TestUtils.assertException(UnsupportedOperationException.class,() -> service.save(new SaveKeystoreRequestDto()), "Not supported!");
 	}
 
 	@Test

@@ -61,12 +61,9 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	    );
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		
-		// act
-	    GmsException exception = assertThrows(GmsException.class, () -> service.validateKeyStoreFile(dto, sampleFile.getBytes()));
-	    
-	    // assert
+		// act & assert
+	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "java.io.EOFException");
 	    assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().contains("Keystore cannot be loaded!")));
-	    assertEquals("java.io.EOFException", exception.getMessage());
 	}
 	
 	@Test
@@ -85,11 +82,8 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 	    dto.setAliasCredential("testfail");
 		
-		// act
-	    GmsException exception = assertThrows(GmsException.class, () -> service.validateKeyStoreFile(dto, sampleFile.getBytes()));
-		
-		// assert
-	    assertEquals("java.security.UnrecoverableKeyException: Cannot recover key", exception.getMessage());
+		// act & assert
+	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "java.security.UnrecoverableKeyException: Cannot recover key");
 	    TestUtils.assertLogContains(logAppender, "Keystore cannot be loaded!");
 	}
 	
@@ -121,11 +115,8 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenThrow(new IllegalArgumentException("Wrong!"));
 		
-		// act
-	    GmsException exception = assertThrows(GmsException.class, () -> service.decrypt(TestUtils.createSecretEntity()));
-	    
-	    // assert
-	    assertEquals("java.lang.IllegalArgumentException: Wrong!", exception.getMessage());
+		// act & assert
+		TestUtils.assertGmsException(() -> service.decrypt(TestUtils.createSecretEntity()), "java.lang.IllegalArgumentException: Wrong!");
 	}
 	
 	@Test

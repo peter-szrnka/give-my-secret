@@ -109,11 +109,8 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
-		// act
-		GmsException exception = assertThrows(GmsException.class, () -> service.save(TestUtils.createSaveSecretRequestDto(2L)));
-				
-		// assert
-		assertEquals(SecretServiceImpl.WRONG_ENTITY, exception.getMessage());
+		// act & assert
+		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveSecretRequestDto(2L)), SecretServiceImpl.WRONG_ENTITY);
 		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
 	}
 	
@@ -124,11 +121,8 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		mockKeystoreEntity.setStatus(EntityStatus.DISABLED);
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(mockKeystoreEntity));
 
-		// act
-		GmsException exception = assertThrows(GmsException.class, () -> service.save(TestUtils.createSaveSecretRequestDto(2L)));
-				
-		// assert
-		assertEquals(SecretServiceImpl.PLEASE_PROVIDE_ACTIVE_KEYSTORE, exception.getMessage());
+		// act & assert
+		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveSecretRequestDto(2L)), SecretServiceImpl.PLEASE_PROVIDE_ACTIVE_KEYSTORE);
 		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
 	}
 
@@ -181,12 +175,9 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
 				.thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
-		// act
-		GmsException exception = assertThrows(GmsException.class,
-				() -> service.save(TestUtils.createSaveSecretRequestDto(2L)));
+		// act & assert
+		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveSecretRequestDto(2L)), "Secret not found!");
 
-		// assert
-		assertEquals("Secret not found!", exception.getMessage());
 		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
 		verify(converter, never()).toEntity(any(SecretEntity.class), any(SaveSecretRequestDto.class));
 		verify(cryptoService, never()).encrypt(mockEntity);
