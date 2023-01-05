@@ -1,9 +1,9 @@
 package io.github.gms.secure.converter;
 
 import io.github.gms.common.abstraction.GmsConverter;
-import io.github.gms.common.entity.EventEntity;
 import io.github.gms.secure.dto.EventDto;
 import io.github.gms.secure.dto.EventListDto;
+import io.github.gms.secure.entity.EventEntity;
 
 /**
  * @author Peter Szrnka

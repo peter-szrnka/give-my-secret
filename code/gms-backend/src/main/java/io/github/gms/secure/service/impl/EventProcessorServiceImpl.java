@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.github.gms.common.event.EntityDisabledEvent;
 import io.github.gms.secure.dto.MessageDto;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.EventProcessorService;
 import io.github.gms.secure.service.MessageService;
@@ -22,6 +23,8 @@ public class EventProcessorServiceImpl implements EventProcessorService {
 	private MessageService messageService;
 	@Autowired
 	private SecretRepository secretRepository;
+	@Autowired
+	private KeystoreAliasRepository keystoreAliasRepository;
 
 	@Override
 	@Transactional
@@ -31,7 +34,9 @@ public class EventProcessorServiceImpl implements EventProcessorService {
 			return;
 		}
 		
-		secretRepository.disableAllByKeystoreId(event.getId());
+		keystoreAliasRepository.findAllByKeystoreId(event.getId())
+			.forEach(alias -> secretRepository.disableAllActiveByKeystoreAliasId(alias.getId()));
+
 		String reason = "You disabled the keystore earlier that you used for the given Secret.";
 
 		messageService.save(MessageDto.builder()

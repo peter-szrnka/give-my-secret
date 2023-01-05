@@ -16,9 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.util.TestUtils;

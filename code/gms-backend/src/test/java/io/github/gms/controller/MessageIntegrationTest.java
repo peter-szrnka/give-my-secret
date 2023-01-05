@@ -15,11 +15,11 @@ import org.springframework.http.ResponseEntity;
 import com.google.common.collect.Sets;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.common.entity.MessageEntity;
 import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.MarkAsReadRequestDto;
 import io.github.gms.secure.dto.MessageListDto;
 import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.entity.MessageEntity;
 import io.github.gms.secure.repository.MessageRepository;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;

@@ -2,7 +2,7 @@ package io.github.gms.common.model;
 
 import java.security.KeyStore;
 
-import io.github.gms.common.entity.KeystoreEntity;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class KeystorePair {
 
-	private KeystoreEntity entity;
+	private KeystoreAliasEntity entity;
 	private KeyStore keystore;
 }

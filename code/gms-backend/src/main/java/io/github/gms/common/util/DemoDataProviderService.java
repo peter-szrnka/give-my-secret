@@ -6,17 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import io.github.gms.common.entity.AnnouncementEntity;
-import io.github.gms.common.entity.ApiKeyEntity;
-import io.github.gms.common.entity.KeystoreEntity;
-import io.github.gms.common.entity.MessageEntity;
-import io.github.gms.common.entity.SecretEntity;
-import io.github.gms.common.entity.UserEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeystoreType;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.secure.entity.AnnouncementEntity;
+import io.github.gms.secure.entity.ApiKeyEntity;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.secure.entity.MessageEntity;
+import io.github.gms.secure.entity.SecretEntity;
+import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.AnnouncementRepository;
 import io.github.gms.secure.repository.ApiKeyRepository;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.MessageRepository;
 import io.github.gms.secure.repository.SecretRepository;
@@ -42,6 +44,8 @@ public class DemoDataProviderService {
 	public static final Long API_KEY_2_ID = 2L;
 	public static final Long KEYSTORE_ID = 1L;
 	public static final Long KEYSTORE2_ID = 2L;
+	public static final Long KEYSTORE_ALIAS_ID = 1L;
+	public static final Long KEYSTORE_ALIAS2_ID = 2L;
 	public static final Long SECRET_ENTITY_ID = 1L;
 	public static final Long SECRET_ENTITY2_ID = 2L;
 	public static final Long ANNOUNCEMENT_ID = 1L;
@@ -60,6 +64,8 @@ public class DemoDataProviderService {
 	private ApiKeyRepository apiKeyRepository;
 	@Autowired
 	private KeystoreRepository keystoreRepository;
+	@Autowired
+	private KeystoreAliasRepository keystoreAliasRepository;
 	@Autowired
 	private SecretRepository secretRepository;
 	@Autowired
@@ -82,9 +88,13 @@ public class DemoDataProviderService {
 		keystoreRepository.save(createKeystore(KEYSTORE_ID));
 		keystoreRepository.save(createKeystore(KEYSTORE2_ID));
 		
+		// Keystore alias
+		keystoreAliasRepository.save(createKeystoreAlias(KEYSTORE_ID, KEYSTORE_ALIAS_ID));
+		keystoreAliasRepository.save(createKeystoreAlias(KEYSTORE_ID, KEYSTORE_ALIAS2_ID));
+		
 		// Secret
-		secretRepository.save(createSecret(SECRET_ENTITY_ID, SECRET_ID1, false, KEYSTORE_ID));
-		secretRepository.save(createSecret(SECRET_ENTITY2_ID, SECRET_ID2, true, KEYSTORE2_ID));
+		secretRepository.save(createSecret(SECRET_ENTITY_ID, SECRET_ID1, false, KEYSTORE_ALIAS_ID));
+		secretRepository.save(createSecret(SECRET_ENTITY2_ID, SECRET_ID2, true, KEYSTORE_ALIAS2_ID));
 		
 		// Announcement
 		announcementRepository.save(createAnnouncement(ANNOUNCEMENT_ID));
@@ -127,8 +137,6 @@ public class DemoDataProviderService {
 		KeystoreEntity entity = new KeystoreEntity();
 		entity.setDescription(DESCRIPTION);
 		entity.setName("test");
-		entity.setAlias("test");
-		entity.setAliasCredential(CREDENTIAL_TEST);
 		entity.setCredential(CREDENTIAL_TEST);
 		entity.setId(id);
 		entity.setCreationDate(LocalDateTime.now());
@@ -139,11 +147,23 @@ public class DemoDataProviderService {
 		return entity;
 	}
 	
-	private static SecretEntity createSecret(Long id, String secretId, boolean returnDecrypted, Long keystoreId) {
+	private static KeystoreAliasEntity createKeystoreAlias(Long keystoreId, Long id) {
+		KeystoreAliasEntity entity = new KeystoreAliasEntity();
+
+		entity.setId(id);
+		entity.setKeystoreId(keystoreId);
+		entity.setAlias("test");
+		entity.setAliasCredential(CREDENTIAL_TEST);
+		entity.setDescription(DESCRIPTION);
+		
+		return entity;
+	}
+	
+	private static SecretEntity createSecret(Long id, String secretId, boolean returnDecrypted, Long keystoreAliasId) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(id);
 		entity.setCreationDate(LocalDateTime.now().minusDays(2));
-		entity.setKeystoreId(keystoreId);
+		entity.setKeystoreAliasId(keystoreAliasId);
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setUserId(USER_1_ID);
 		entity.setValue(ENCRYPTED_VALUE);

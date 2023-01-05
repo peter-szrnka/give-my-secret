@@ -11,10 +11,10 @@ import org.springframework.data.domain.PageImpl;
 import com.google.common.collect.Lists;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.entity.ApiKeyEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
+import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.util.TestUtils;
 
 /**

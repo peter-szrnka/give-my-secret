@@ -6,6 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -16,8 +19,10 @@ import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.event.EntityDisabledEvent;
 import io.github.gms.common.event.EntityDisabledEvent.EntityType;
 import io.github.gms.secure.dto.MessageDto;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.MessageService;
+import io.github.gms.util.TestUtils;
 
 /**
  * Unit test of {@link EventProcessorServiceImpl}
@@ -31,6 +36,8 @@ class EventProcessorServiceImplTest extends AbstractUnitTest {
 	private MessageService messageService;
 	@Mock
 	private SecretRepository secretRepository;
+	@Mock
+	private KeystoreAliasRepository keystoreAliasRepository;
 	@InjectMocks
 	private EventProcessorServiceImpl service;
 	
@@ -40,19 +47,23 @@ class EventProcessorServiceImplTest extends AbstractUnitTest {
 		service.disableEntity(new EntityDisabledEvent(new Object(), 1L, 1L, EntityType.API_KEY));
 		
 		// assert
-		verify(secretRepository, never()).disableAllByKeystoreId(anyLong());
+		verify(secretRepository, never()).disableAllActiveByKeystoreAliasId(anyLong());
 		verify(messageService, never()).save(any(MessageDto.class));
 	}
 	
 	@Test
 	void shouldDisableEntity() {
+		// arrange
+		when(keystoreAliasRepository.findAllByKeystoreId(anyLong())).thenReturn(List.of(TestUtils.createKeystoreAliasEntity()));
+		
 		// act
 		service.disableEntity(new EntityDisabledEvent(new Object(), 1L, 1L, EntityType.KEYSTORE));
 		
 		// assert
 		ArgumentCaptor<Long> keystoreIdCaptor = ArgumentCaptor.forClass(Long.class);
 		ArgumentCaptor<MessageDto> messageDtoCaptor = ArgumentCaptor.forClass(MessageDto.class);
-		verify(secretRepository).disableAllByKeystoreId(keystoreIdCaptor.capture());
+		verify(secretRepository).disableAllActiveByKeystoreAliasId(keystoreIdCaptor.capture());
+		verify(keystoreAliasRepository).findAllByKeystoreId(anyLong());
 		verify(messageService).save(messageDtoCaptor.capture());
 		
 		assertEquals(1L, keystoreIdCaptor.getValue());

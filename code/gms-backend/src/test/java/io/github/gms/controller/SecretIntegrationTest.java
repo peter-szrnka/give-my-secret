@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.GetSecureValueDto;
@@ -26,6 +25,7 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
 import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.SecretListDto;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 

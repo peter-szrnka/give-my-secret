@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import com.google.common.collect.Sets;
 
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.entity.UserEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.secure.converter.UserConverter;
@@ -21,6 +20,7 @@ import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.dto.UserListDto;
+import io.github.gms.secure.entity.UserEntity;
 
 /**
  * @author Peter Szrnka

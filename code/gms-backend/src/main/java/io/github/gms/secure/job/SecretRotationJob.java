@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.SecretRotationService;
 import lombok.extern.slf4j.Slf4j;

@@ -30,8 +30,6 @@ CREATE TABLE gms_event (
 CREATE TABLE gms_keystore (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
-	alias VARCHAR(512) NOT NULL,
-	alias_credential VARCHAR(512) NOT NULL,
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
 	credential VARCHAR(512) NOT NULL,
 	description VARCHAR(255) NULL DEFAULT NULL,
@@ -41,10 +39,18 @@ CREATE TABLE gms_keystore (
 	user_id BIGINT NULL DEFAULT NULL
 );
 
+CREATE TABLE gms_keystore_alias (
+	id SERIAL PRIMARY KEY,
+	keystore_id BIGINT NULL DEFAULT NULL,
+	alias VARCHAR(512) NOT NULL,
+	alias_credential VARCHAR(512) NOT NULL,
+	description VARCHAR(255) NULL DEFAULT NULL
+);
+
 CREATE TABLE gms_secret (
 	id SERIAL PRIMARY KEY,
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
-	keystore_id BIGINT NOT NULL,
+	keystore_alias_id BIGINT NOT NULL,
 	last_rotated TIMESTAMP NOT NULL DEFAULT current_timestamp,
 	last_updated TIMESTAMP NOT NULL DEFAULT current_timestamp,
 	return_decrypted INT NOT NULL DEFAULT 1,

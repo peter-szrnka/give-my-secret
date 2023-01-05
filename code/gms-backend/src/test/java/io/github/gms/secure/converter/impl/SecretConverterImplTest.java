@@ -11,11 +11,11 @@ import org.springframework.data.domain.PageImpl;
 import com.google.common.collect.Lists;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
 import io.github.gms.secure.dto.SecretListDto;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.util.TestUtils;
 
 /**

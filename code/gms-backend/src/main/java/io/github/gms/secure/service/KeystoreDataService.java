@@ -5,8 +5,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.model.KeystorePair;
+import io.github.gms.secure.entity.SecretEntity;
 
 /**
  * @author Peter Szrnka

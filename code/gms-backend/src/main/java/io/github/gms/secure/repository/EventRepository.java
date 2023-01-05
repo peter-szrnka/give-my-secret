@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import io.github.gms.common.entity.EventEntity;
+import io.github.gms.secure.entity.EventEntity;
 
 /**
  * @author Peter Szrnka

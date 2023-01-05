@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.github.gms.common.entity.UserEntity;
+import io.github.gms.secure.entity.UserEntity;
 
 /**
  * @author Peter Szrnka

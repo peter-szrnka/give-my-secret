@@ -10,9 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import io.github.gms.common.entity.ApiKeyEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.dto.IdNamePairDto;
+import io.github.gms.secure.entity.ApiKeyEntity;
 
 /**
  * @author Peter Szrnka

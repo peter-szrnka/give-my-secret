@@ -7,15 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.github.gms.api.service.ApiService;
-import io.github.gms.common.entity.ApiKeyEntity;
-import io.github.gms.common.entity.ApiKeyRestrictionEntity;
-import io.github.gms.common.entity.SecretEntity;
-import io.github.gms.common.entity.UserEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.dto.GetSecretRequestDto;
+import io.github.gms.secure.entity.ApiKeyEntity;
+import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.secure.entity.SecretEntity;
+import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.repository.UserRepository;
@@ -44,6 +46,9 @@ public class ApiServiceImpl implements ApiService {
 
 	@Autowired
 	private KeystoreRepository keystoreRepository;
+	
+	@Autowired
+	private KeystoreAliasRepository keystoreAliasRepository;
 
 	@Autowired
 	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
@@ -80,12 +85,17 @@ public class ApiServiceImpl implements ApiService {
 			log.warn("You are not allowed to use this API key for this secret!");
 			throw new GmsException("You are not allowed to use this API key for this secret!");
 		}
+		
+		KeystoreAliasEntity aliasEntity = keystoreAliasRepository.findById(secretEntity.getKeystoreAliasId()).orElseThrow(() -> {
+			log.warn("Keystore alias not found");
+			throw new GmsException("Keystore alias is not available!");
+		});
 
 		if (keystoreRepository
-				.findByIdAndUserIdAndStatus(secretEntity.getKeystoreId(), secretEntity.getUserId(), EntityStatus.ACTIVE)
+				.findByIdAndUserIdAndStatus(aliasEntity.getKeystoreId(), secretEntity.getUserId(), EntityStatus.ACTIVE)
 				.isEmpty()) {
 			log.warn("Keystore is not active");
-			throw new GmsException("Secret is not available!");
+			throw new GmsException("Invalid keystore!");
 		}
 
 		if (secretEntity.isReturnDecrypted()) {

@@ -14,8 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import io.github.gms.common.entity.ApiKeyRestrictionEntity;
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
@@ -26,7 +24,11 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
 import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.SecretListDto;
+import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.CryptoService;
@@ -41,13 +43,16 @@ public class SecretServiceImpl implements SecretService {
 
 	static final String WRONG_ENTITY = "Wrong entity!";
 	static final String PLEASE_PROVIDE_ACTIVE_KEYSTORE = "Please provide an active keystore";
-	static final String KEYSTORE_ID_NOT_FOUND = "Keystore not found!";
+	static final String WRONG_KEYSTORE_ALIAS = "Wrong keystore alias!";
 
 	@Autowired
 	private CryptoService cryptoService;
 
 	@Autowired
 	private KeystoreRepository keystoreRepository;
+	
+	@Autowired
+	private KeystoreAliasRepository keystoreAliasRepository;
 
 	@Autowired
 	private SecretRepository repository;
@@ -165,11 +170,13 @@ public class SecretServiceImpl implements SecretService {
 	}
 
 	private void validateKeystore(SaveSecretRequestDto dto, Long userId) {
-		if (dto.getKeystoreId() == null) {
-			throw new GmsException(KEYSTORE_ID_NOT_FOUND);
+		if (dto.getKeystoreAliasId() == null) {
+			throw new GmsException(WRONG_KEYSTORE_ALIAS);
 		}
+		
+		KeystoreAliasEntity keystoreAlias = keystoreAliasRepository.findById(dto.getKeystoreAliasId()).orElseThrow(() -> new GmsException(WRONG_KEYSTORE_ALIAS));
 
-		keystoreRepository.findByIdAndUserId(dto.getKeystoreId(), userId).ifPresentOrElse(entity -> {
+		keystoreRepository.findByIdAndUserId(keystoreAlias.getKeystoreId(), userId).ifPresentOrElse(entity -> {
 			if (EntityStatus.DISABLED == entity.getStatus()) {
 				throw new GmsException(PLEASE_PROVIDE_ACTIVE_KEYSTORE);
 			}

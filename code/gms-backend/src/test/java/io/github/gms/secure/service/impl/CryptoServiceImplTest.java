@@ -20,10 +20,10 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.model.KeystorePair;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.service.KeystoreDataService;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
@@ -80,7 +80,7 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	      jksFileStream.readAllBytes()
 	    );
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-	    dto.setAliasCredential("testfail");
+	    dto.getAliases().get(0).setAliasCredential("testfail");
 		
 		// act & assert
 	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "java.security.UnrecoverableKeyException: Cannot recover key");
@@ -123,7 +123,7 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	@SneakyThrows
 	void shouldDecrypt() {
 		// arrange
-		KeystorePair mockPair = new KeystorePair(TestUtils.createKeystoreEntity(), createKeyStore());
+		KeystorePair mockPair = new KeystorePair(TestUtils.createKeystoreAliasEntity(), createKeyStore());
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenReturn(mockPair);
 		
 		// act
@@ -153,7 +153,7 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	@SneakyThrows
 	void shouldEncrypt() {
 		// arrange
-		KeystorePair mockPair = new KeystorePair(TestUtils.createKeystoreEntity(), createKeyStore());
+		KeystorePair mockPair = new KeystorePair(TestUtils.createKeystoreAliasEntity(), createKeyStore());
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenReturn(mockPair);
 		
 		// act

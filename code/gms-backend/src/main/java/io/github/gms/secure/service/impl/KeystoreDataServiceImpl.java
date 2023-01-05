@@ -15,11 +15,13 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.io.Files;
 
-import io.github.gms.common.entity.KeystoreEntity;
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.model.KeystorePair;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.model.GetKeystore;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.service.KeystoreDataService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,29 +39,28 @@ public class KeystoreDataServiceImpl implements KeystoreDataService {
 	@Autowired
 	private KeystoreRepository keystoreRepository;
 
+	@Autowired
+	private KeystoreAliasRepository keystoreAliasRepository;
+
 	@Value("${config.location.keystore.path}")
 	private String keystorePath;
 
 	@Override
 	@Cacheable(
 			value = "keystoreCache",
-			key = "#secretEntity.keystoreId"
+			key = "#secretEntity.keystoreAliasId"
 	)
 	public KeystorePair getKeystoreData(SecretEntity secretEntity)
 			throws NoSuchAlgorithmException, CertificateException, KeyStoreException, IOException {
-		KeyStore keystore;
-		KeystoreEntity keystoreEntity;
+		KeystoreAliasEntity keystoreAliasEntity = keystoreAliasRepository.findById(secretEntity.getKeystoreAliasId())
+				.orElseThrow(() -> new GmsException("Invalid keystore alias!"));
 
-		if (secretEntity.getKeystoreId() == null) {
-			throw new GmsException("Keystore not found!");
-		}
-
-		keystoreEntity = getKeystoreEntity(secretEntity.getKeystoreId());
-		keystore = getKeyStore(GetKeystore.builder().keystoreEntity(keystoreEntity)
+		KeystoreEntity keystoreEntity = getKeystoreEntity(secretEntity.getKeystoreAliasId());
+		KeyStore keystore = getKeyStore(GetKeystore.builder().keystoreEntity(keystoreEntity)
 				.keystorePath(keystorePath + keystoreEntity.getUserId() + SLASH + keystoreEntity.getFileName())
 				.build());
 
-		return new KeystorePair(keystoreEntity, keystore);
+		return new KeystorePair(keystoreAliasEntity, keystore);
 	}
 
 	private KeyStore getKeyStore(GetKeystore request)

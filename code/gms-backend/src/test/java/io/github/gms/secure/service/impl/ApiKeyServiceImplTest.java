@@ -25,16 +25,17 @@ import org.springframework.data.domain.Pageable;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.entity.ApiKeyEntity;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.converter.ApiKeyConverter;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.IdNamePairDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.util.TestUtils;
 
@@ -162,6 +163,19 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 
 		// assert
 		verify(repository).deleteById(1L);
+	}
+	
+	@Test
+	void shouldCount() {
+		// arrange
+		when(repository.countByUserId(anyLong())).thenReturn(3L);
+
+		// act
+		LongValueDto response = service.count();
+		
+		// assert
+		assertNotNull(response);
+		assertEquals(3L, response.getValue());
 	}
 	
 	@ParameterizedTest

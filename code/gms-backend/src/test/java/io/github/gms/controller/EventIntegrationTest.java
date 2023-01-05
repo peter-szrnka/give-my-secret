@@ -15,11 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
-import io.github.gms.common.entity.EventEntity;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.secure.dto.EventListDto;
 import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.entity.EventEntity;
 import io.github.gms.secure.repository.EventRepository;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;

@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.entity.EventEntity;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.enums.MdcParameter;
@@ -22,6 +21,7 @@ import io.github.gms.secure.converter.EventConverter;
 import io.github.gms.secure.dto.EventDto;
 import io.github.gms.secure.dto.EventListDto;
 import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.entity.EventEntity;
 import io.github.gms.secure.model.UserEvent;
 import io.github.gms.secure.repository.EventRepository;
 

@@ -2,18 +2,22 @@ package io.github.gms.secure.converter.impl;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.github.gms.common.entity.KeystoreEntity;
 import io.github.gms.secure.converter.KeystoreConverter;
+import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.KeystoreDto;
 import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.secure.entity.KeystoreEntity;
 
 /**
  * @author Peter Szrnka
@@ -31,7 +35,6 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 
 		entity.setName(dto.getName());
 		entity.setUserId(dto.getUserId());
-		entity.setAlias(dto.getAlias());
 		entity.setDescription(dto.getDescription());
 		entity.setCreationDate(LocalDateTime.now(clock));
 		entity.setCredential(dto.getCredential());
@@ -40,7 +43,6 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 			entity.setFileName(file.getOriginalFilename());
 		}
 		entity.setStatus(dto.getStatus());
-		entity.setAliasCredential(dto.getAliasCredential());
 		entity.setType(dto.getType());
 
 		return entity;
@@ -52,7 +54,6 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		
 		entity.setName(dto.getName());
 		entity.setUserId(dto.getUserId());
-		entity.setAlias(dto.getAlias());
 		entity.setDescription(dto.getDescription());
 		entity.setCredential(dto.getCredential());
 		entity.setName(dto.getName());
@@ -60,14 +61,13 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 			entity.setFileName(file.getOriginalFilename());
 		}
 		entity.setStatus(dto.getStatus());
-		entity.setAliasCredential(dto.getAliasCredential());
 		entity.setType(dto.getType());
 
 		return entity;
 	}
 
 	@Override
-	public KeystoreDto toDto(KeystoreEntity entity) {
+	public KeystoreDto toDto(KeystoreEntity entity, List<KeystoreAliasEntity> aliasList) {
 		KeystoreDto dto = new KeystoreDto();
 		dto.setId(entity.getId());
 
@@ -79,14 +79,38 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		dto.setType(entity.getType());
 		dto.setCreationDate(entity.getCreationDate());
 		dto.setCredential(entity.getCredential());
-		dto.setAlias(entity.getAlias());
-		dto.setAliasCredential(entity.getAliasCredential());
+		
+		if (!CollectionUtils.isEmpty(aliasList)) {
+			dto.setAliasList(aliasList.stream().map(this::convertToAliasDto).collect(Collectors.toList()));
+		}
 
 		return dto;
 	}
 
 	@Override
 	public KeystoreListDto toDtoList(Page<KeystoreEntity> resultList) {
-		return new KeystoreListDto(resultList.toList().stream().map(this::toDto).collect(Collectors.toList()));
+		return new KeystoreListDto(resultList.toList().stream().map(entity -> toDto(entity, null)).collect(Collectors.toList()));
+	}
+
+	@Override
+	public KeystoreAliasEntity toAliasEntity(Long keystoreId, KeystoreAliasDto dto) {
+		KeystoreAliasEntity entity = new KeystoreAliasEntity();
+		
+		entity.setId(dto.getId());
+		entity.setKeystoreId(keystoreId);
+		entity.setAlias(dto.getAlias());
+		entity.setAliasCredential(dto.getAliasCredential());
+
+		return entity;
+	}
+
+	private KeystoreAliasDto convertToAliasDto(KeystoreAliasEntity entity) {
+		KeystoreAliasDto dto = new KeystoreAliasDto();
+		
+		dto.setId(entity.getId());
+		dto.setAlias(entity.getAlias());
+		dto.setAliasCredential(entity.getAliasCredential());
+		
+		return dto;
 	}
 }

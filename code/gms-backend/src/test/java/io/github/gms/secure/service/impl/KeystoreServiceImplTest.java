@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -49,7 +50,7 @@ import com.google.gson.Gson;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.entity.KeystoreEntity;
+import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.enums.MdcParameter;
@@ -57,15 +58,19 @@ import io.github.gms.common.event.EntityDisabledEvent;
 import io.github.gms.common.event.EntityDisabledEvent.EntityType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.converter.KeystoreConverter;
 import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.KeystoreDto;
 import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.CryptoService;
@@ -81,7 +86,7 @@ import lombok.SneakyThrows;
  */
 class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
-	private static final String JKS_TEST_FILE_LOCATION = "./test-output/2/test.jks";
+	private static final String JKS_TEST_FILE_LOCATION = "./test-output/" + DemoDataProviderService.USER_1_ID + "/test.jks";
 
 	@InjectMocks
 	private KeystoreServiceImpl service = new KeystoreServiceImpl();
@@ -91,6 +96,9 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Mock
 	private KeystoreRepository repository;
+	
+	@Mock
+	private KeystoreAliasRepository aliasRepository;
 
 	@Mock
 	private KeystoreConverter converter;
@@ -118,7 +126,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		((Logger) LoggerFactory.getLogger(KeystoreServiceImpl.class)).addAppender(logAppender);
 		ReflectionTestUtils.setField(service, "keystorePath", "test-output/");
 
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 2L);
+		MDC.put(MdcParameter.USER_ID.getDisplayName(), DemoDataProviderService.USER_1_ID);
 	}
 
 	@Test
@@ -180,6 +188,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldNotSaveNewEntityBecauseOfMissingFile() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		dto.setId(null);
 		String model = TestUtils.getGson().toJson(dto);
 		when(gson.fromJson(eq(model), any(Class.class))).thenReturn(dto);
 
@@ -199,6 +208,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldNotSaveNewEntity() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		dto.setId(null);
 		String model = TestUtils.getGson().toJson(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
@@ -212,6 +222,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("Keystore name must be unique!", exception.getMessage());
 		verify(converter, never()).toNewEntity(any(), eq(multiPart));
 		verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
+		verify(repository).getAllKeystoreNames(anyLong(), anyString());
 		verify(repository, never()).save(any());
 		verify(gson).fromJson(eq(model), any(Class.class));
 	}
@@ -225,6 +236,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		try(MockedStatic<Files> staticFiles = Mockito.mockStatic(Files.class)) {
 			staticFiles.when(() -> Files.createDirectories(Path.of("test-output/6/my-key.jks"))).thenThrow(new RuntimeException("Invalid"));
 			SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+			dto.setId(null);
 			dto.setUserId(6L);
 			String model = TestUtils.getGson().toJson(dto);
 			
@@ -235,7 +247,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 			when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
 			when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
 			when(gson.fromJson(eq(model), any(Class.class))).thenReturn(dto);
-	
+
 			// act
 			GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 	
@@ -254,6 +266,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldSaveNewEntity() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		dto.setId(null);
 		String model = TestUtils.getGson().toJson(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
@@ -279,7 +292,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldSaveEntityWithoutFile() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-		dto.setId(1L);
 		String model = TestUtils.getGson().toJson(dto);
 
 		when(converter.toEntity(any(), any(), isNull())).thenReturn(TestUtils.createKeystoreEntity());
@@ -287,7 +299,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		when(gson.fromJson(eq(model), any())).thenReturn(dto);
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		
-		new File("test-output/2/").mkdirs();
+		new File("test-output/" + DemoDataProviderService.USER_1_ID + "/").mkdirs();
 
 		FileWriter fileWriter = new FileWriter(JKS_TEST_FILE_LOCATION);
 		PrintWriter printWriter = new PrintWriter(fileWriter);
@@ -312,6 +324,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldSaveEntity() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", "test", AliasOperation.DELETE));
 		dto.setStatus(EntityStatus.DISABLED);
 		dto.setId(1L);
 		String model = TestUtils.getGson().toJson(dto);
@@ -342,7 +355,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(applicationEventPublisher).publishEvent(entityDisabledEventCaptor.capture());
 		
 		EntityDisabledEvent capturedEvent = entityDisabledEventCaptor.getValue();
-		assertEquals(2L, capturedEvent.getUserId());
+		assertEquals(1L, capturedEvent.getUserId());
 		assertEquals(1L, capturedEvent.getId());
 		assertEquals(EntityType.KEYSTORE, capturedEvent.getType());
 	}
@@ -384,7 +397,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		when(repository.findByIdAndUserId(anyLong(), anyLong()))
 				.thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
-		when(converter.toDto(any())).thenReturn(new KeystoreDto());
+		when(converter.toDto(any(), anyList())).thenReturn(new KeystoreDto());
 
 		// act
 		KeystoreDto response = service.getById(1L);
@@ -392,7 +405,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
-		verify(converter).toDto(any());
+		verify(converter).toDto(any(), anyList());
 	}
 
 	@Test
@@ -484,13 +497,41 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		when(repository.findByIdAndUserId(anyLong(), anyLong()))
 				.thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		
+		if (input.getAliasId() != null) {
+			when(aliasRepository.findByIdAndKeystoreId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
+		}
 
 		// act
-		String response = service.getValue(new GetSecureValueDto(1L, input.getValueType()));
+		String response = service.getValue(new GetSecureValueDto(1L, 1L, input.getValueType()));
 
 		// assert
 		assertEquals(input.getExpectedValue(), response);
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
+		
+		if (input.getAliasId() != null) {
+			verify(aliasRepository).findByIdAndKeystoreId(anyLong(), anyLong());
+		}
+	}
+	
+	@Test
+	void shouldNotGetValue() {
+		// arrange
+		when(repository.findByIdAndUserId(anyLong(), anyLong()))
+				.thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		when(aliasRepository.findByIdAndKeystoreId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+		// act
+		GmsException exception = assertThrows(GmsException.class, () -> getValue());
+
+		// assert
+		assertEquals(Constants.ENTITY_NOT_FOUND, exception.getMessage());
+		verify(repository).findByIdAndUserId(anyLong(), anyLong());
+		verify(aliasRepository).findByIdAndKeystoreId(anyLong(), anyLong());
+	}
+	
+	private void getValue() {
+		service.getValue(new GetSecureValueDto(1L, 1L, KeyStoreValueType.KEYSTORE_ALIAS));
 	}
 	
 	@Test
@@ -508,6 +549,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void shouldGetAllKeystoreNames() {
+		// arrange
 		when(repository.getAllKeystoreNames(anyLong())).thenReturn(Lists.newArrayList(
 				new IdNamePairDto(1L, "keystore1"),
 				new IdNamePairDto(1L, "keystore2")
@@ -523,11 +565,31 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).getAllKeystoreNames(anyLong());
 	}
 	
+	@Test
+	void shouldGetAllKeystoreAliasNames() {
+		// arrange
+		when(aliasRepository.getAllAliasNames(anyLong())).thenReturn(Lists.newArrayList(
+				new IdNamePairDto(1L, "alias1"),
+				new IdNamePairDto(1L, "alias2")
+		));
+		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+
+		// act
+		IdNamePairListDto response = service.getAllKeystoreAliasNames(1L);
+		
+		// assert
+		assertNotNull(response);
+		assertEquals(2, response.getResultList().size());
+		assertEquals("alias1", response.getResultList().get(0).getName());
+		verify(aliasRepository).getAllAliasNames(anyLong());
+		verify(repository).findByIdAndUserId(anyLong(), anyLong());
+	}
+	
 	public static List<ValueHolder> valueData() {
 		return Lists.newArrayList(
-				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, "test"),
-				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, "test"),
-				new ValueHolder(KeyStoreValueType.KEYSTORE_CREDENTIAL, "test")
+				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, 1L, "test"),
+				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, 1L, "test"),
+				new ValueHolder(KeyStoreValueType.KEYSTORE_CREDENTIAL, null, "test")
 		);
 	}
 }

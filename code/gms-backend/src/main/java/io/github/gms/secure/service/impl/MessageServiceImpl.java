@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import io.github.gms.common.entity.MessageEntity;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.secure.converter.MessageConverter;
 import io.github.gms.secure.dto.MarkAsReadRequestDto;
@@ -20,6 +19,7 @@ import io.github.gms.secure.dto.MessageDto;
 import io.github.gms.secure.dto.MessageListDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.entity.MessageEntity;
 import io.github.gms.secure.repository.MessageRepository;
 import io.github.gms.secure.service.MessageService;
 

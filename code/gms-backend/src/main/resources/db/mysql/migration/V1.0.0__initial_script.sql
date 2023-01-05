@@ -34,25 +34,34 @@ CREATE TABLE gms_event (
 COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 CREATE TABLE gms_keystore (
-	id BIGINT NOT NULL AUTO_INCREMENT,
-	name VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
-	alias VARCHAR(512) NOT NULL COLLATE 'utf8mb4_general_ci',
-	alias_credential VARCHAR(512) NOT NULL COLLATE 'utf8mb4_general_ci',
+	id BIGINT(20) NOT NULL AUTO_INCREMENT,
+	name VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci',
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp(),
-	credential VARCHAR(512) NOT NULL COLLATE 'utf8mb4_general_ci',
-	description VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-	file_name VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-	status VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
-	type VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
-	user_id BIGINT NULL DEFAULT NULL,
+	credential VARCHAR(512) NOT NULL COLLATE 'utf8mb3_general_ci',
+	description VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
+	file_name VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
+	status VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci',
+	type VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci',
+	user_id BIGINT(20) NULL DEFAULT NULL,
 	PRIMARY KEY (id) USING BTREE
 )
-COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
+COLLATE='utf8mb3_general_ci' ENGINE=InnoDB;
+
+CREATE TABLE gms_keystore_alias (
+	id BIGINT(20) NOT NULL AUTO_INCREMENT,
+	keystore_id BIGINT(20) NULL DEFAULT NULL,
+	alias VARCHAR(512) NOT NULL COLLATE 'utf8mb3_general_ci',
+	alias_credential VARCHAR(512) NOT NULL COLLATE 'utf8mb3_general_ci',
+	description VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
+	
+	PRIMARY KEY (id) USING BTREE
+)
+COLLATE='utf8mb3_general_ci' ENGINE=InnoDB;
 
 CREATE TABLE gms_secret (
 	id BIGINT NOT NULL AUTO_INCREMENT,
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp(),
-	keystore_id BIGINT NOT NULL,
+	keystore_alias_id BIGINT NOT NULL,
 	last_rotated TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	last_updated TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	return_decrypted INT NOT NULL DEFAULT 1,

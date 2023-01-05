@@ -21,14 +21,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.entity.ApiKeyEntity;
-import io.github.gms.common.entity.SecretEntity;
-import io.github.gms.common.entity.UserEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.dto.GetSecretRequestDto;
+import io.github.gms.secure.entity.ApiKeyEntity;
+import io.github.gms.secure.entity.SecretEntity;
+import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.repository.UserRepository;
@@ -59,6 +60,9 @@ class ApiServiceImplTest extends AbstractUnitTest {
 	
 	@Mock
 	private KeystoreRepository keystoreRepository;
+	
+	@Mock
+	private KeystoreAliasRepository keystoreAliasRepository;
 	
 	@Mock
 	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
@@ -109,20 +113,40 @@ class ApiServiceImplTest extends AbstractUnitTest {
 	}
 	
 	@Test
+	void shouldKeystoreAliasMissing() {
+		// arrange
+		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(false));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+		// assert
+		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
+		assertEquals("Keystore alias is not available!", exception.getMessage());
+		
+		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
+		verify(userRepository).findById(anyLong());
+		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
+		verify(keystoreAliasRepository).findById(anyLong());
+	}
+	
+	@Test
 	void shouldKeystoreMissing() {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
 		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(false));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.empty());
 
 		// assert
 		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
-		assertEquals("Secret is not available!", exception.getMessage());
+		assertEquals("Invalid keystore!", exception.getMessage());
 		
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository).findById(anyLong());
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
+		verify(keystoreAliasRepository).findById(anyLong());
 		verify(keystoreRepository).findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE));
 	}
 	
@@ -155,6 +179,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
 		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(returnDecrypted));
 		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
 				TestUtils.createApiKeyRestrictionEntity(1L),
 				TestUtils.createApiKeyRestrictionEntity(2L),
@@ -175,6 +200,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(userRepository).findById(anyLong());
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
 		verify(cryptoService, returnDecrypted ? times(1) : never()).decrypt(any(SecretEntity.class));
+		verify(keystoreAliasRepository).findById(anyLong());
 		verify(keystoreRepository).findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE));
 	}
 	
@@ -183,8 +209,9 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		entity.setId(1L);
 		entity.setValue("encrypted");
 		entity.setReturnDecrypted(returnDecrypted);
-		entity.setKeystoreId(1L);
+		entity.setKeystoreAliasId(1L);
 		entity.setUserId(1L);
+		entity.setKeystoreAliasId(1L);
 		return entity;
 	}
 

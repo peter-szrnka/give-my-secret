@@ -1,4 +1,4 @@
-package io.github.gms.common.entity;
+package io.github.gms.secure.entity;
 
 import java.time.LocalDateTime;
 

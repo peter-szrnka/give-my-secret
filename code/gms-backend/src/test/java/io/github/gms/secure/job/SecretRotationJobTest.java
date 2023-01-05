@@ -20,8 +20,8 @@ import com.google.common.collect.Lists;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.SecretRotationService;
 import io.github.gms.util.TestUtils;

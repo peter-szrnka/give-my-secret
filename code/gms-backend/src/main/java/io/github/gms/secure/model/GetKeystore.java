@@ -1,6 +1,6 @@
 package io.github.gms.secure.model;
 
-import io.github.gms.common.entity.KeystoreEntity;
+import io.github.gms.secure.entity.KeystoreEntity;
 import lombok.Builder;
 import lombok.Data;
 

@@ -19,7 +19,7 @@ public class SaveSecretRequestDto implements Serializable {
 	private Long id;
 	private Long userId;
 	private String secretId;
-	private Long keystoreId;
+	private Long keystoreAliasId;
 	private String value;
 	private EntityStatus status;
 	private RotationPeriod rotationPeriod;

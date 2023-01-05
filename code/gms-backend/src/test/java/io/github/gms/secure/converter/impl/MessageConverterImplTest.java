@@ -10,9 +10,9 @@ import org.springframework.data.domain.PageImpl;
 import com.google.common.collect.Lists;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.entity.MessageEntity;
 import io.github.gms.secure.converter.MessageConverter;
 import io.github.gms.secure.dto.MessageListDto;
+import io.github.gms.secure.entity.MessageEntity;
 import io.github.gms.util.TestUtils;
 
 /**
