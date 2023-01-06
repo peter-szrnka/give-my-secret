@@ -55,7 +55,7 @@ public class KeystoreDataServiceImpl implements KeystoreDataService {
 		KeystoreAliasEntity keystoreAliasEntity = keystoreAliasRepository.findById(secretEntity.getKeystoreAliasId())
 				.orElseThrow(() -> new GmsException("Invalid keystore alias!"));
 
-		KeystoreEntity keystoreEntity = getKeystoreEntity(secretEntity.getKeystoreAliasId());
+		KeystoreEntity keystoreEntity = getKeystoreEntity(keystoreAliasEntity.getKeystoreId());
 		KeyStore keystore = getKeyStore(GetKeystore.builder().keystoreEntity(keystoreEntity)
 				.keystorePath(keystorePath + keystoreEntity.getUserId() + SLASH + keystoreEntity.getFileName())
 				.build());

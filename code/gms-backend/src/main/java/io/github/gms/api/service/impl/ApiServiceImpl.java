@@ -1,7 +1,6 @@
 package io.github.gms.api.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.SecretEntity;
-import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
@@ -63,12 +61,10 @@ public class ApiServiceImpl implements ApiService {
 			throw new GmsException("Wrong API key!");
 		}
 
-		Optional<UserEntity> userEntity = userRepository.findById(apiKeyEntity.getUserId());
-
-		if (userEntity.isEmpty()) {
+		userRepository.findById(apiKeyEntity.getUserId()).ifPresentOrElse(entity -> {}, () -> {
 			log.warn("User not found");
 			throw new GmsException("User not found!");
-		}
+		});
 
 		SecretEntity secretEntity = secretRepository.findByUserIdAndSecretIdAndStatus(apiKeyEntity.getUserId(),
 				dto.getSecretId(), EntityStatus.ACTIVE);

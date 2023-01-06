@@ -33,8 +33,8 @@ public class SecretRotationServiceImpl implements SecretRotationService {
 	@Autowired
 	private CryptoService cryptoService;
 
-	@Async("secretRotationExecutor")
 	@Override
+	@Async("secretRotationExecutor")
 	public void rotateSecret(SecretEntity secretEntity) {
 		rotateSecretEntity(secretEntity);
 	}

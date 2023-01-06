@@ -492,7 +492,7 @@ public class TestUtils {
 		dto.setId(1L);
 		dto.setAlias("test");
 		dto.setAliasCredential("test");
-		dto.setOperation(AliasOperation.SAVE);;
+		dto.setOperation(AliasOperation.SAVE);
 
 		return Lists.newArrayList(dto);
 	}

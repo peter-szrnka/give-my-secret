@@ -96,15 +96,17 @@ public class SecretServiceImpl implements SecretService {
 	@Override
 	public SecretDto getById(Long id) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		Optional<SecretEntity> entityOptionalResult = repository.findById(id);
+		SecretEntity entity = repository.findById(id).orElseThrow(() -> new GmsException(WRONG_ENTITY));
 		
-		if (entityOptionalResult.isEmpty()) {
-			throw new GmsException(WRONG_ENTITY);
-		}
+		List<ApiKeyRestrictionEntity> result = apiKeyRestrictionRepository.findAllByUserIdAndSecretId(userId, entity.getId());
 		
-		List<ApiKeyRestrictionEntity> result = apiKeyRestrictionRepository.findAllByUserIdAndSecretId(userId, entityOptionalResult.get().getId());
+		SecretDto response = converter.toDto(entity, result);
+		
+		// Let's add the keystore ID
+		keystoreAliasRepository.findById(entity.getKeystoreAliasId())
+			.ifPresent(keystoreAlias -> response.setKeystoreId(keystoreAlias.getKeystoreId()));
 
-		return converter.toDto(entityOptionalResult.get(), result);
+		return response;
 	}
 
 	@Override

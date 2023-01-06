@@ -68,6 +68,26 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	@SneakyThrows
+	void shouldNotFindAlias() {
+		// arrange
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		InputStream jksFileStream = classloader.getResourceAsStream("test.jks");
+		
+	    MockMultipartFile sampleFile = new MockMultipartFile(
+	      "file",
+	      "test.jks", 
+	      MediaType.APPLICATION_OCTET_STREAM_VALUE,
+	      jksFileStream.readAllBytes()
+	    );
+	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+	    dto.getAliases().get(0).setAlias("aliasfail");
+		
+		// act & assert
+	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "The given alias(aliasfail) is not valid!");
+	}
+	
+	@Test
+	@SneakyThrows
 	void shouldNot2ValidateKeyStoreFile() {
 		// arrange
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();

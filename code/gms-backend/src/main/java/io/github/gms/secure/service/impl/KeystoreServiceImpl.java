@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
@@ -30,8 +33,8 @@ import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.event.EntityDisabledEvent;
-import io.github.gms.common.event.EntityDisabledEvent.EntityType;
+import io.github.gms.common.event.EntityChangeEvent;
+import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.converter.KeystoreConverter;
@@ -126,16 +129,31 @@ public class KeystoreServiceImpl implements KeystoreService {
 		final KeystoreEntity newEntity = repository.save(entity);
 		
 		// Persist aliases
-		dto.getAliases().forEach(alias -> {
-			if (AliasOperation.SAVE == alias.getOperation()) {
-				aliasRepository.save(converter.toAliasEntity(newEntity.getId(), alias));
-			} else {
-				aliasRepository.deleteById(alias.getId());
-			}
-		});
+		if (CollectionUtils.isEmpty(dto.getAliases())) {
+			aliasRepository.findAllByKeystoreId(dto.getId()).forEach(alias -> {
+				Map<String, Object> metadata = initMetaData(userId, newEntity.getId());
+				metadata.put("aliasId", alias.getId());
+
+				applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED));
+			});
+			
+			aliasRepository.deleteByKeystoreId(dto.getId());
+		} else {
+			dto.getAliases().forEach(alias -> {
+				if (AliasOperation.SAVE == alias.getOperation()) {
+					aliasRepository.save(converter.toAliasEntity(newEntity.getId(), alias));
+				} else {
+					aliasRepository.deleteById(alias.getId());
+					Map<String, Object> metadata = initMetaData(userId, newEntity.getId());
+					metadata.put("aliasId", alias.getId());
+					applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED));
+				}
+			});
+		}
 		
 		if (EntityStatus.DISABLED == newEntity.getStatus()) {
-			applicationEventPublisher.publishEvent(new EntityDisabledEvent(this, userId, newEntity.getId(), EntityType.KEYSTORE));
+			Map<String, Object> metadata = initMetaData(userId, newEntity.getId());
+			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
 		}
 
 		// Persist file
@@ -157,9 +175,15 @@ public class KeystoreServiceImpl implements KeystoreService {
 		
 		return new SaveEntityResponseDto(newEntity.getId());
 	}
+	
+	private Map<String, Object> initMetaData(Long userId, Long keystoreId) {
+		Map<String, Object> metadata = new HashMap<>();
+		metadata.put("userId", userId);
+		metadata.put("keystoreId", keystoreId);
+		return metadata;
+	}
 
 	@Override
-	@CacheEvict(cacheNames = "keystoreCache", cacheManager = "keystoreCacheManager")
 	public SaveEntityResponseDto save(SaveKeystoreRequestDto dto) {
 		throw new UnsupportedOperationException("Not supported!");
 	}
@@ -215,6 +239,13 @@ public class KeystoreServiceImpl implements KeystoreService {
 		KeystoreEntity entity = getKeystore(id, userId);
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
 		repository.save(entity);
+		
+		if (EntityStatus.DISABLED != entity.getStatus()) {
+			return;
+		}
+
+		Map<String, Object> metadata = initMetaData(userId, entity.getId());
+		applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
 	}
 
 	@Override

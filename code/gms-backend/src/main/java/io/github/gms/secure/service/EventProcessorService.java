@@ -1,6 +1,6 @@
 package io.github.gms.secure.service;
 
-import io.github.gms.common.event.EntityDisabledEvent;
+import io.github.gms.common.event.EntityChangeEvent;
 
 /**
  * @author Peter Szrnka
@@ -8,5 +8,5 @@ import io.github.gms.common.event.EntityDisabledEvent;
  */
 public interface EventProcessorService {
 
-	void disableEntity(EntityDisabledEvent event);
+	void disableEntity(EntityChangeEvent event);
 }

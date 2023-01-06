@@ -13,6 +13,7 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,8 +55,8 @@ import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.event.EntityDisabledEvent;
-import io.github.gms.common.event.EntityDisabledEvent.EntityType;
+import io.github.gms.common.event.EntityChangeEvent;
+import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.DemoDataProviderService;
@@ -318,6 +319,50 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		
 		Files.deleteIfExists(Paths.get(JKS_TEST_FILE_LOCATION));
 	}
+	
+	@Test
+	@SneakyThrows
+	void shouldSaveEntityAndDeleteAllAlias() {
+		// arrange
+		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		dto.setAliases(null);
+		dto.setStatus(EntityStatus.DISABLED);
+		dto.setId(1L);
+		String model = TestUtils.getGson().toJson(dto);
+		
+		MultipartFile multiPart = mock(MultipartFile.class);
+		when(multiPart.getOriginalFilename()).thenReturn("my-key.jks");
+		when(multiPart.getBytes()).thenReturn("test".getBytes());
+
+		when(converter.toEntity(any(), any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
+		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
+		when(gson.fromJson(eq(model), any())).thenReturn(dto);
+		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		
+		KeystoreEntity savedEntity = TestUtils.createKeystoreEntity();
+		savedEntity.setStatus(EntityStatus.DISABLED);
+		when(repository.save(any(KeystoreEntity.class))).thenReturn(savedEntity);
+		
+		when(aliasRepository.findAllByKeystoreId(anyLong())).thenReturn(List.of(TestUtils.createKeystoreAliasEntity()));
+
+		// act
+		service.save(model, multiPart);
+
+		// assert
+		verify(converter).toEntity(any(), any(), eq(multiPart));
+		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
+		verify(repository).save(any());
+		verify(gson).fromJson(eq(model), any());
+		verify(aliasRepository).deleteByKeystoreId(anyLong());
+		
+		ArgumentCaptor<EntityChangeEvent> entityDisabledEventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
+		verify(applicationEventPublisher, times(2)).publishEvent(entityDisabledEventCaptor.capture());
+		
+		EntityChangeEvent capturedEvent = entityDisabledEventCaptor.getValue();
+		assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("userId")));
+		assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("keystoreId")));
+		assertEquals(EntityChangeType.KEYSTORE_DISABLED, capturedEvent.getType());
+	}
 
 	@Test
 	@SneakyThrows
@@ -351,13 +396,13 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).save(any());
 		verify(gson).fromJson(eq(model), any());
 		
-		ArgumentCaptor<EntityDisabledEvent> entityDisabledEventCaptor = ArgumentCaptor.forClass(EntityDisabledEvent.class);
-		verify(applicationEventPublisher).publishEvent(entityDisabledEventCaptor.capture());
+		ArgumentCaptor<EntityChangeEvent> entityDisabledEventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
+		verify(applicationEventPublisher, times(2)).publishEvent(entityDisabledEventCaptor.capture());
 		
-		EntityDisabledEvent capturedEvent = entityDisabledEventCaptor.getValue();
-		assertEquals(1L, capturedEvent.getUserId());
-		assertEquals(1L, capturedEvent.getId());
-		assertEquals(EntityType.KEYSTORE, capturedEvent.getType());
+		EntityChangeEvent capturedEvent = entityDisabledEventCaptor.getValue();
+		assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("userId")));
+		assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("keystoreId")));
+		assertEquals(EntityChangeType.KEYSTORE_DISABLED, capturedEvent.getType());
 	}
 	
 	@Test

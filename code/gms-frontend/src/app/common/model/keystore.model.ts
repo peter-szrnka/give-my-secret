@@ -1,4 +1,5 @@
 import { PageConfig } from "./common.model";
+import { KeystoreAlias } from "./keystore-alias.model";
 
 export interface Keystore {
     id? : number,
@@ -9,15 +10,15 @@ export interface Keystore {
     description : string,
     status? : string,
     credential? : string,
-    alias? : string,
-    aliasCredential? : string,
-    creationDate? : Date
+    creationDate? : Date,
+    aliases : KeystoreAlias[]
 }
 
 export const EMPTY_KEYSTORE : Keystore = {
     description: "",
-    type : "JKS",
-    status : "ACTIVE"
+    type: "JKS",
+    status: "ACTIVE",
+    aliases: []
 };
 
 export const PAGE_CONFIG_KEYSTORE : PageConfig = {

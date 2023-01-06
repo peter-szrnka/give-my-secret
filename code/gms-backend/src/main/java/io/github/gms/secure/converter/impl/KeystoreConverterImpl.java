@@ -81,7 +81,7 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		dto.setCredential(entity.getCredential());
 		
 		if (!CollectionUtils.isEmpty(aliasList)) {
-			dto.setAliasList(aliasList.stream().map(this::convertToAliasDto).collect(Collectors.toList()));
+			dto.setAliases(aliasList.stream().map(this::convertToAliasDto).collect(Collectors.toList()));
 		}
 
 		return dto;

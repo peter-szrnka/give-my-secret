@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
 import java.util.Base64;
 
 import javax.crypto.BadPaddingException;
@@ -48,6 +49,8 @@ public class CryptoServiceImpl implements CryptoService {
 			for (KeystoreAliasDto aliasDto : dto.getAliases()) {
 				validateAliasDto(keystore, aliasDto);
 			}
+		} catch (GmsException e) {
+			throw e;
 		} catch (Exception e) {
 			log.error("Keystore cannot be loaded!", e);
 			throw new GmsException(e);
@@ -94,8 +97,14 @@ public class CryptoServiceImpl implements CryptoService {
 
 	private void validateAliasDto(KeyStore keystore, KeystoreAliasDto dto) 
 			throws KeyStoreException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnrecoverableKeyException {
+		
+		Certificate cert = keystore.getCertificate(dto.getAlias());
+		if (cert == null) {
+			throw new GmsException("The given alias("+ dto.getAlias() + ") is not valid!");
+		}
+		
 		// Encrypt
-		PublicKey publicKey = keystore.getCertificate(dto.getAlias()).getPublicKey();
+		PublicKey publicKey = cert.getPublicKey();
 		Cipher encrypt = Cipher.getInstance(publicKey.getAlgorithm());
 		encrypt.init(Cipher.ENCRYPT_MODE, publicKey);
 
@@ -108,3 +117,4 @@ public class CryptoServiceImpl implements CryptoService {
 		decrypt.doFinal(encryptedMessage);
 	}
 }
+ 

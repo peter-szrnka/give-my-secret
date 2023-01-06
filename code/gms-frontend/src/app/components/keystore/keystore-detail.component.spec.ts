@@ -15,6 +15,7 @@ import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.
 import { KeystoreService } from "../../common/service/keystore-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { KeystoreDetailComponent } from "./keystore-detail.component";
+import { KeystoreAlias } from "../../common/model/keystore-alias.model";
 
 
 describe('KeystoreDetailComponent', () => {
@@ -27,6 +28,7 @@ describe('KeystoreDetailComponent', () => {
     // Fixtures
     let fixture : ComponentFixture<KeystoreDetailComponent>;
     let mockElementRef : any;
+    let mockAliases : KeystoreAlias[] = [];
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -67,7 +69,8 @@ describe('KeystoreDetailComponent', () => {
                     value : "test",
                     description : "string",
                     status : "ACTIVE",
-                    creationDate : new Date()
+                    creationDate : new Date(),
+                    aliases : mockAliases
                 }
             })
         };
@@ -81,7 +84,14 @@ describe('KeystoreDetailComponent', () => {
         dialog = {
             open : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
         };
+        
+        mockAliases = [
+            { id: 1, alias: '...', aliasCredential: '...', operation : 'SAVE' }
+        ];
         configureTestBed();
+        component.addNewAlias();
+        component.changeState({ alias: '...', aliasCredential: '...', operation : 'SAVE' }, 1, 'DELETE');
+        component.changeState({ id: 1, alias: '...', aliasCredential: '...', operation : 'SAVE' }, 0, 'DELETE');
 
         // act
         component.save();

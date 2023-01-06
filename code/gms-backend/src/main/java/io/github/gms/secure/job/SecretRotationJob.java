@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +36,7 @@ public class SecretRotationJob {
 	private SecretRotationService service;
 
 	@Scheduled(cron = "0/30 * * * * ?")
+	@CacheEvict(value = "keystoreCache", allEntries = true)
 	public void execute() {
 		List<SecretEntity> resultList = secretRepository.findAllOldRotated(LocalDateTime.now(clock).minusMinutes(1));
 		

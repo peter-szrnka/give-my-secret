@@ -19,6 +19,7 @@ public class SecretDto implements Serializable {
 
 	private Long id;
 	private Long userId;
+	private Long keystoreId;
 	private Long keystoreAliasId;
 	private String secretId;
 	private EntityStatus status;

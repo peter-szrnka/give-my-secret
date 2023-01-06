@@ -76,7 +76,7 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(response.getBody());
 		
 		MessageListDto responseList = response.getBody();
-		assertEquals(2, responseList.getResultList().size());
+		assertEquals(3, responseList.getResultList().size());
 	}
 	
 	@Test
@@ -91,6 +91,6 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(response.getBody());
 
 		LongValueDto responseBody = response.getBody();
-		assertEquals(2, responseBody.getValue());
+		assertEquals(3, responseBody.getValue());
 	}
 }

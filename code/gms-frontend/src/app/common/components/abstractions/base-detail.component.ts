@@ -26,10 +26,7 @@ export abstract class BaseDetailComponent<T, S extends ServiceBase<T, BaseList<T
 
   abstract getPageConfig(): PageConfig;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  dataLoadingCallback(data: T): void {
-    // Empty implementation
-  }
+  protected abstract dataLoadingCallback(data: T) : void;
 
   private fetchData() {
     this.loading = true;
