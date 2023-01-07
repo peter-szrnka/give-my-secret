@@ -8,6 +8,7 @@ public final class Constants {
 	
 	private Constants() {}
 	
+	public static final String SLASH = "/";
 	public static final String OK = "OK";
 
 	public static final String ENTITY_NOT_FOUND = "Entity not found!";
