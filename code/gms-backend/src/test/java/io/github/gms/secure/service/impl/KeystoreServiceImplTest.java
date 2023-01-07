@@ -322,46 +322,22 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldSaveEntityAndDeleteAllAlias() {
+	void shouldNotSaveEntityCausedByMissingAlias() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		dto.setAliases(null);
-		dto.setStatus(EntityStatus.DISABLED);
 		dto.setId(1L);
 		String model = TestUtils.getGson().toJson(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
-		when(multiPart.getOriginalFilename()).thenReturn("my-key.jks");
-		when(multiPart.getBytes()).thenReturn("test".getBytes());
-
-		when(converter.toEntity(any(), any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
-		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
 		when(gson.fromJson(eq(model), any())).thenReturn(dto);
-		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
-		
-		KeystoreEntity savedEntity = TestUtils.createKeystoreEntity();
-		savedEntity.setStatus(EntityStatus.DISABLED);
-		when(repository.save(any(KeystoreEntity.class))).thenReturn(savedEntity);
-		
-		when(aliasRepository.findAllByKeystoreId(anyLong())).thenReturn(List.of(TestUtils.createKeystoreAliasEntity()));
 
 		// act
-		service.save(model, multiPart);
+		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
 		// assert
-		verify(converter).toEntity(any(), any(), eq(multiPart));
-		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
-		verify(repository).save(any());
+		assertEquals("You must define at least one keystore alias!", exception.getMessage());
 		verify(gson).fromJson(eq(model), any());
-		verify(aliasRepository).deleteByKeystoreId(anyLong());
-		
-		ArgumentCaptor<EntityChangeEvent> entityDisabledEventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
-		verify(applicationEventPublisher, times(2)).publishEvent(entityDisabledEventCaptor.capture());
-		
-		EntityChangeEvent capturedEvent = entityDisabledEventCaptor.getValue();
-		assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("userId")));
-		assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("keystoreId")));
-		assertEquals(EntityChangeType.KEYSTORE_DISABLED, capturedEvent.getType());
 	}
 
 	@Test

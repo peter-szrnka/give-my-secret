@@ -93,6 +93,10 @@ public class KeystoreServiceImpl implements KeystoreService {
 		} catch (Exception e) {
 			throw new GmsException(e);
 		}
+		
+		if (CollectionUtils.isEmpty(dto.getAliases())) {
+			throw new GmsException("You must define at least one keystore alias!");
+		}
 
 		dto.setUserId(userId);
 
@@ -129,27 +133,16 @@ public class KeystoreServiceImpl implements KeystoreService {
 		final KeystoreEntity newEntity = repository.save(entity);
 		
 		// Persist aliases
-		if (CollectionUtils.isEmpty(dto.getAliases())) {
-			aliasRepository.findAllByKeystoreId(dto.getId()).forEach(alias -> {
+		dto.getAliases().forEach(alias -> {
+			if (AliasOperation.SAVE == alias.getOperation()) {
+				aliasRepository.save(converter.toAliasEntity(newEntity.getId(), alias));
+			} else {
+				aliasRepository.deleteById(alias.getId());
 				Map<String, Object> metadata = initMetaData(userId, newEntity.getId());
 				metadata.put("aliasId", alias.getId());
-
 				applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED));
-			});
-			
-			aliasRepository.deleteByKeystoreId(dto.getId());
-		} else {
-			dto.getAliases().forEach(alias -> {
-				if (AliasOperation.SAVE == alias.getOperation()) {
-					aliasRepository.save(converter.toAliasEntity(newEntity.getId(), alias));
-				} else {
-					aliasRepository.deleteById(alias.getId());
-					Map<String, Object> metadata = initMetaData(userId, newEntity.getId());
-					metadata.put("aliasId", alias.getId());
-					applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED));
-				}
-			});
-		}
+			}
+		});
 		
 		if (EntityStatus.DISABLED == newEntity.getStatus()) {
 			Map<String, Object> metadata = initMetaData(userId, newEntity.getId());

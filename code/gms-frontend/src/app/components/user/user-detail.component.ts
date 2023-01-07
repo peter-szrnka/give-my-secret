@@ -86,10 +86,8 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
   }
 
   remove(role: string): void {
-    const index = this.data.roles.indexOf(role) || 0;
-
-    if (index >= 0) {
-      this.data.roles.splice(index, 1);
+    if (this.data.roles.includes(role)) {
+      this.data.roles.splice(this.data.roles.indexOf(role), 1);
     }
 
     this.refreshSelectableRoles();
