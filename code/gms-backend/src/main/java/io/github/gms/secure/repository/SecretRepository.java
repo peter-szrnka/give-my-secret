@@ -24,7 +24,7 @@ public interface SecretRepository extends JpaRepository<SecretEntity, Long> {
 
 	SecretEntity findByUserIdAndSecretIdAndStatus(Long userId, String secretId, EntityStatus status);
 
-	@Query("select s from SecretEntity s where (s.lastRotated is null or s.lastRotated < ?1) and s.rotationEnabled = true and s.status='ACTIVE'") // 
+	@Query("select s from SecretEntity s where (s.lastRotated is null or s.lastRotated <= ?1) and s.rotationEnabled = true and s.status='ACTIVE'") // 
 	List<SecretEntity> findAllOldRotated(LocalDateTime input);
 	
 	Optional<SecretEntity> findByIdAndUserId(Long id, Long userId);

@@ -8,7 +8,6 @@ import java.time.temporal.ChronoUnit;
  */
 public enum RotationPeriod {
 
-	THIRTY_SECONDS(ChronoUnit.SECONDS, 30l),
 	MINUTES(ChronoUnit.MINUTES, 1l),
 	HOURLY(ChronoUnit.HOURS, 1l),
 	DAILY(ChronoUnit.DAYS, 1l),

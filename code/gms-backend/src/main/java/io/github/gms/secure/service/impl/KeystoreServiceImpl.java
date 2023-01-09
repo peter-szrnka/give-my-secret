@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
@@ -95,7 +94,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		
 		dto.setUserId(userId);
 		
-		if (CollectionUtils.isEmpty(dto.getAliases())) {
+		if (dto.getAliases().stream().filter(alias -> AliasOperation.DELETE != alias.getOperation()).count() == 0) {
 			throw new GmsException("You must define at least one keystore alias!");
 		}
 
@@ -176,7 +175,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	@Override
-	@CacheEvict
+	@CacheEvict(allEntries = true)
 	@Transactional
 	public void delete(Long id) {
 		KeystoreEntity entity = getKeystore(id);
@@ -272,7 +271,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 
 		List<String> keystoreNames = repository.getAllKeystoreNames(getUserId(), dto.getName());
-		
+
 		if (!keystoreNames.isEmpty()) {
 			throw new GmsException("Keystore name must be unique!");
 		}

@@ -27,6 +27,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
 
   public datasource : ArrayDataSource<KeystoreAlias>;
   aliasList : KeystoreAlias[] = [];
+  allAliasesAreValid : boolean;
 
   constructor(
     protected override router: Router,
@@ -77,25 +78,30 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
   }
 
   addNewAlias() {
-    this.aliasList.push({ alias: '...', aliasCredential: '...', operation : 'SAVE' });
+    this.aliasList.push({ alias: '', aliasCredential: '', operation : 'SAVE' });
     this.refreshTable();
   }
 
   refreshTable() {
     this.datasource = new ArrayDataSource<KeystoreAlias>(this.aliasList);
+    this.validateAliases();
   }
 
   changeState(element : KeystoreAlias, index : number, newState : string) {
     if (element.id === undefined) {
       this.aliasList.splice(index, 1);
-      this.refreshTable();
-      return;
+    } else {
+      element.operation = newState;
     }
 
-    element.operation = newState;
+    this.refreshTable();
   }
 
   addAliasDataToRequest() : void {
     this.data.aliases = this.aliasList;
+  }
+
+  private validateAliases() : void {
+    this.allAliasesAreValid = this.data.aliases && this.data.aliases.filter(alias=>alias.operation!=='DELETE').length > 0;
   }
 }

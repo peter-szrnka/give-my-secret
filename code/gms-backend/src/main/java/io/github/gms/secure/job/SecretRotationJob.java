@@ -36,7 +36,7 @@ public class SecretRotationJob {
 
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void execute() {
-		List<SecretEntity> resultList = secretRepository.findAllOldRotated(LocalDateTime.now(clock).minusMinutes(1));
+		List<SecretEntity> resultList = secretRepository.findAllOldRotated(LocalDateTime.now(clock).minusSeconds(55l));
 		
 		AtomicLong counter = new AtomicLong(0L);
 		resultList.forEach(secretEntity -> {
