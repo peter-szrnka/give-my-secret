@@ -3,11 +3,11 @@ package io.github.gms.secure.converter;
 import java.util.List;
 
 import io.github.gms.common.abstraction.GmsConverter;
-import io.github.gms.common.entity.ApiKeyRestrictionEntity;
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
 import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.SecretListDto;
+import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
+import io.github.gms.secure.entity.SecretEntity;
 
 /**
  * @author Peter Szrnka

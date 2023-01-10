@@ -1,4 +1,4 @@
-package io.github.gms.common.entity;
+package io.github.gms.secure.entity;
 
 import java.time.LocalDateTime;
 
@@ -39,8 +39,8 @@ public class SecretEntity extends AbstractGmsEntity {
 	@Column(name = "user_id")
 	private Long userId;
 	
-	@Column(name = "keystore_id")
-	private Long keystoreId;
+	@Column(name = "keystore_alias_id")
+	private Long keystoreAliasId;
 	
 	@Column(name = "secret_id")
 	private String secretId;

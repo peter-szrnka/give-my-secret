@@ -72,6 +72,7 @@ describe('SecretDetailComponent', () => {
                     id : 1,
                     secretId : "my-secret",
                     keystoreId : 1,
+                    keystoreAliasId : 1,
                     status : "ACTIVE",
                     value : "my-value",
                     creationDate : new Date(),
@@ -104,13 +105,13 @@ describe('SecretDetailComponent', () => {
 
     it('Should fail at form validation', () => {
         configureTestBed();
-        component.data.keystoreId = undefined;
+        component.data.keystoreAliasId = undefined;
 
         // act
         try {
             component.save();
         } catch(err : any) {
-            expect(err.message).toEqual("Please select a keystore!");
+            expect(err.message).toEqual("Please select a keystore alias!");
         }
 
         // assert
@@ -163,6 +164,7 @@ describe('SecretDetailComponent', () => {
                 viewValue : 'no-name-3'
             }
         } as any);
+        component.onKeystoreNameChanged(undefined);
         component.save();
 
         // assert

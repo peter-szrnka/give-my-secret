@@ -31,6 +31,7 @@
 		<sonar.organization>szrnka-peter</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.exclusions>**/enums/**, 
+			**/abstraction/**,
 			**/dto/**, 
 			**/model/**, 
 			**/config/**,
@@ -451,7 +452,7 @@
 							<skipTests>true</skipTests>
 						</configuration>
 					</plugin>
-					<!--<plugin>
+					<plugin>
 						<groupId>com.spotify</groupId>
 						<artifactId>dockerfile-maven-plugin</artifactId>
 						<configuration>
@@ -471,7 +472,7 @@
 								</goals>
 							</execution>
 						</executions>
-					</plugin>-->
+					</plugin>
 				</plugins>
 			</build>
 		</profile>

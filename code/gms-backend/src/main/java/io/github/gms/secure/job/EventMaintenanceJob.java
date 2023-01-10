@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import io.github.gms.common.entity.EventEntity;
 import io.github.gms.common.enums.TimeUnit;
+import io.github.gms.secure.entity.EventEntity;
 import io.github.gms.secure.repository.EventRepository;
 import lombok.extern.slf4j.Slf4j;
 

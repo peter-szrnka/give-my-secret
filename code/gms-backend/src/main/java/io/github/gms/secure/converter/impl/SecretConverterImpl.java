@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import io.github.gms.common.entity.ApiKeyRestrictionEntity;
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.converter.SecretConverter;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
 import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.SecretListDto;
+import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
+import io.github.gms.secure.entity.SecretEntity;
 
 /**
  * @author Peter Szrnka
@@ -29,7 +29,7 @@ public class SecretConverterImpl implements SecretConverter {
 
 	@Override
 	public SecretEntity toEntity(SecretEntity entity, SaveSecretRequestDto dto) {
-		entity.setKeystoreId(dto.getKeystoreId());
+		entity.setKeystoreAliasId(dto.getKeystoreAliasId());
 		entity.setSecretId(dto.getSecretId());
 		entity.setUserId(dto.getUserId());
 		entity.setReturnDecrypted(dto.isReturnDecrypted());
@@ -56,7 +56,7 @@ public class SecretConverterImpl implements SecretConverter {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(dto.getId());
 		entity.setSecretId(dto.getSecretId());
-		entity.setKeystoreId(dto.getKeystoreId());
+		entity.setKeystoreAliasId(dto.getKeystoreAliasId());
 		entity.setUserId(dto.getUserId());
 		entity.setValue(dto.getValue());
 		entity.setCreationDate(LocalDateTime.now(clock));
@@ -74,7 +74,7 @@ public class SecretConverterImpl implements SecretConverter {
 		SecretDto dto = new SecretDto();
 		dto.setId(entity.getId());
 		dto.setSecretId(entity.getSecretId());
-		dto.setKeystoreId(entity.getKeystoreId());
+		dto.setKeystoreAliasId(entity.getKeystoreAliasId());
 		dto.setUserId(entity.getUserId());
 		dto.setCreationDate(entity.getCreationDate());
 		dto.setLastUpdated(entity.getLastUpdated());

@@ -33,4 +33,8 @@ export class KeystoreService extends ServiceBase<Keystore, KeystoreList> {
     public getAllKeystoreNames() : Observable<IdNamePair[]> {
         return this.http.get<IdNamePairList>(environment.baseUrl + "secure/" + this.scope + '/list_names', { withCredentials: true, headers : getHeaders() }).pipe(map(value => value.resultList));
     }
+
+    public getAllKeystoreAliases(keystoreId : number) : Observable<IdNamePair[]> {
+        return this.http.get<IdNamePairList>(environment.baseUrl + "secure/" + this.scope + '/list_aliases/' + keystoreId, { withCredentials: true, headers : getHeaders() }).pipe(map(value => value.resultList));
+    }
 }

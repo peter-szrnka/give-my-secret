@@ -10,9 +10,9 @@ import org.springframework.data.domain.PageImpl;
 import com.google.common.collect.Lists;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.entity.EventEntity;
 import io.github.gms.secure.converter.EventConverter;
 import io.github.gms.secure.dto.EventListDto;
+import io.github.gms.secure.entity.EventEntity;
 import io.github.gms.util.TestUtils;
 
 /**

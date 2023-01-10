@@ -13,11 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.google.common.collect.Lists;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.entity.UserEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserListDto;
+import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.util.TestUtils;
 
 /**

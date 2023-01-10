@@ -12,11 +12,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
-import io.github.gms.common.entity.EventEntity;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.secure.converter.EventConverter;
 import io.github.gms.secure.dto.EventListDto;
 import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.entity.EventEntity;
 import io.github.gms.secure.model.UserEvent;
 import io.github.gms.secure.repository.EventRepository;
 import io.github.gms.secure.service.EventService;

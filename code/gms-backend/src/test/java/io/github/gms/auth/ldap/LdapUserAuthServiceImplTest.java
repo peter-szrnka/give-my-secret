@@ -24,7 +24,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.entity.UserEntity;
+import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.util.TestUtils;
 

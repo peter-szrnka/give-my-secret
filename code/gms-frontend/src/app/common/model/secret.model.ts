@@ -4,6 +4,7 @@ export interface Secret {
     id? : number,
     secretId? : string,
     keystoreId? : number,
+    keystoreAliasId? : number,
     status : string,
     value : string,
     creationDate? : Date,

@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import io.github.gms.common.entity.ApiKeyRestrictionEntity;
+import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 
 /**
  * @author Peter Szrnka

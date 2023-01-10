@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import io.github.gms.common.entity.ApiKeyEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.converter.ApiKeyConverter;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
+import io.github.gms.secure.entity.ApiKeyEntity;
 
 /**
  * @author Peter Szrnka

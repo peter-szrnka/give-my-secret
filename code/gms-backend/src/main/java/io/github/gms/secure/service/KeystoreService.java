@@ -21,4 +21,6 @@ public interface KeystoreService extends AbstractCrudService<SaveKeystoreRequest
 	String getValue(GetSecureValueDto dto);
 
 	IdNamePairListDto getAllKeystoreNames();
+	
+	IdNamePairListDto getAllKeystoreAliasNames(Long keystoreId);
 }

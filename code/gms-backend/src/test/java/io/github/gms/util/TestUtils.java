@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -32,14 +33,7 @@ import com.google.gson.JsonSerializer;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.entity.AnnouncementEntity;
-import io.github.gms.common.entity.ApiKeyEntity;
-import io.github.gms.common.entity.ApiKeyRestrictionEntity;
-import io.github.gms.common.entity.EventEntity;
-import io.github.gms.common.entity.KeystoreEntity;
-import io.github.gms.common.entity.MessageEntity;
-import io.github.gms.common.entity.SecretEntity;
-import io.github.gms.common.entity.UserEntity;
+import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
@@ -48,9 +42,10 @@ import io.github.gms.common.enums.KeystoreType;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
+import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.SaveAnnouncementDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
@@ -58,6 +53,15 @@ import io.github.gms.secure.dto.SaveSecretRequestDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.entity.AnnouncementEntity;
+import io.github.gms.secure.entity.ApiKeyEntity;
+import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
+import io.github.gms.secure.entity.EventEntity;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.secure.entity.MessageEntity;
+import io.github.gms.secure.entity.SecretEntity;
+import io.github.gms.secure.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -236,17 +240,17 @@ public class TestUtils {
 	}
 
 	public static SecretEntity createSecretEntity() {
-		return createSecretEntityWithUniqueKeystoreId(DemoDataProviderService.KEYSTORE_ID);
+		return createSecretEntityWithUniqueKeystoreAliasId(DemoDataProviderService.KEYSTORE_ALIAS_ID);
 	}
 	
-	public static SecretEntity createSecretEntityWithUniqueKeystoreId(Long keystoreId) {
+	public static SecretEntity createSecretEntityWithUniqueKeystoreAliasId(Long keystoreAliasId) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(1L);
 		entity.setCreationDate(LocalDateTime.now());
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue("test");
-		entity.setKeystoreId(keystoreId);
+		entity.setKeystoreAliasId(keystoreAliasId);
 		entity.setLastRotated(LocalDateTime.now());
 		entity.setUserId(1L);
 		return entity;
@@ -259,7 +263,7 @@ public class TestUtils {
 		entity.setRotationPeriod(rotationPeriod);
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue("test");
-		entity.setKeystoreId(DemoDataProviderService.KEYSTORE_ID);
+		entity.setKeystoreAliasId(DemoDataProviderService.KEYSTORE_ALIAS_ID);
 		entity.setLastRotated(lastRotated);
 		return entity;
 	}
@@ -275,14 +279,14 @@ public class TestUtils {
 
 	public static SaveKeystoreRequestDto createSaveKeystoreRequestDto() {
 		SaveKeystoreRequestDto dto = new SaveKeystoreRequestDto();
+		dto.setId(DemoDataProviderService.KEYSTORE_ID);
 		dto.setName("keystore");
 		dto.setUserId(1L);
-		dto.setAlias("test");
-		dto.setAliasCredential("test");
 		dto.setCredential("test");
 		dto.setStatus(EntityStatus.ACTIVE);
 		dto.setType(KeystoreType.JKS);
 		dto.setDescription("description");
+		dto.setAliases(createKeystoreAliasList());
 		return dto;
 	}
 
@@ -292,8 +296,6 @@ public class TestUtils {
 		entity.setId(DemoDataProviderService.KEYSTORE_ID);
 		entity.setFileName("test.jks");
 		entity.setUserId(DemoDataProviderService.USER_1_ID);
-		entity.setAlias("test");
-		entity.setAliasCredential("test");
 		entity.setCredential("test");
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
@@ -305,8 +307,6 @@ public class TestUtils {
 		entity.setId(DemoDataProviderService.KEYSTORE_ID);
 		entity.setFileName("test.jks");
 		entity.setUserId(DemoDataProviderService.USER_1_ID);
-		entity.setAlias("test");
-		entity.setAliasCredential("test");
 		entity.setCredential("test");
 		entity.setType(KeystoreType.JKS);
 		return entity;
@@ -317,10 +317,22 @@ public class TestUtils {
 		entity.setId(id);
 		entity.setFileName("test.jks");
 		entity.setUserId(DemoDataProviderService.USER_1_ID);
-		entity.setAlias("test");
-		entity.setAliasCredential("test");
 		entity.setCredential("test");
 		entity.setType(KeystoreType.JKS);
+		entity.setDescription("description");
+		return entity;
+	}
+	
+
+	public static KeystoreAliasEntity createKeystoreAliasEntity() {
+		KeystoreAliasEntity entity = new KeystoreAliasEntity();
+		
+		entity.setId(DemoDataProviderService.KEYSTORE_ALIAS_ID);
+		entity.setKeystoreId(DemoDataProviderService.KEYSTORE_ID);
+		entity.setAlias("test");
+		entity.setAliasCredential("test");
+		entity.setDescription("description");
+		
 		return entity;
 	}
 	
@@ -328,6 +340,7 @@ public class TestUtils {
 	@AllArgsConstructor
 	public static class ValueHolder {
 		KeyStoreValueType valueType;
+		Long aliasId;
 		String expectedValue;
 	}
 	
@@ -377,7 +390,7 @@ public class TestUtils {
 		dto.setId(secretId);
 		dto.setRotationPeriod(RotationPeriod.YEARLY);
 		dto.setStatus(EntityStatus.ACTIVE);
-		dto.setKeystoreId(DemoDataProviderService.KEYSTORE_ID);
+		dto.setKeystoreAliasId(DemoDataProviderService.KEYSTORE_ALIAS_ID);
 		dto.setSecretId(DemoDataProviderService.SECRET_ID1);
 		dto.setUserId(DemoDataProviderService.USER_1_ID);
 		dto.setValue(DemoDataProviderService.SECRET_VALUE);
@@ -472,5 +485,15 @@ public class TestUtils {
 
 	public static void assertGmsException(Executable executable, String expectedMessage) {
 		assertException(GmsException.class, executable, expectedMessage);
+	}
+	
+	private static List<KeystoreAliasDto> createKeystoreAliasList() {
+		KeystoreAliasDto dto = new KeystoreAliasDto();
+		dto.setId(1L);
+		dto.setAlias("test");
+		dto.setAliasCredential("test");
+		dto.setOperation(AliasOperation.SAVE);
+
+		return Lists.newArrayList(dto);
 	}
 }

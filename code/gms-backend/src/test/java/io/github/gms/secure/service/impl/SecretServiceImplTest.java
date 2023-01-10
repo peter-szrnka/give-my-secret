@@ -32,9 +32,6 @@ import com.google.common.collect.Sets;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.entity.ApiKeyRestrictionEntity;
-import io.github.gms.common.entity.KeystoreEntity;
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
@@ -45,7 +42,11 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
 import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.SecretListDto;
+import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
+import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.repository.UserRepository;
@@ -65,6 +66,9 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Mock
 	private KeystoreRepository keystoreRepository;
+	
+	@Mock
+	private KeystoreAliasRepository keystoreAliasRepository;
 
 	@Mock
 	private SecretRepository repository;
@@ -94,24 +98,36 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldNotSaveNewEntityWhenKeystoreNotSent() {
 		// arrange
 		SaveSecretRequestDto dto = TestUtils.createSaveSecretRequestDto(2L);
-		dto.setKeystoreId(null);
+		dto.setKeystoreAliasId(null);
 
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.save(dto));
 				
 		// assert
-		assertEquals(SecretServiceImpl.KEYSTORE_ID_NOT_FOUND, exception.getMessage());
+		assertEquals(SecretServiceImpl.WRONG_KEYSTORE_ALIAS, exception.getMessage());
 		verify(keystoreRepository, never()).findByIdAndUserId(anyLong(), anyLong());
+	}
+	
+	@Test
+	void shouldNotSaveNewEntityWhenKeystoreAliasDoesNotExists() {
+		// arrange
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+		// act & assert
+		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveSecretRequestDto(2L)), SecretServiceImpl.WRONG_KEYSTORE_ALIAS);
+		verify(keystoreAliasRepository).findById(anyLong());
 	}
 
 	@Test
 	void shouldNotSaveNewEntityWhenKeystoreDoesNotExists() {
 		// arrange
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
 		// act & assert
 		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveSecretRequestDto(2L)), SecretServiceImpl.WRONG_ENTITY);
 		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
+		verify(keystoreAliasRepository).findById(anyLong());
 	}
 	
 	@Test
@@ -120,10 +136,12 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		KeystoreEntity mockKeystoreEntity = TestUtils.createKeystoreEntity();
 		mockKeystoreEntity.setStatus(EntityStatus.DISABLED);
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(mockKeystoreEntity));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
 		// act & assert
 		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveSecretRequestDto(2L)), SecretServiceImpl.PLEASE_PROVIDE_ACTIVE_KEYSTORE);
 		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
+		verify(keystoreAliasRepository).findById(anyLong());
 	}
 
 	@Test
@@ -134,6 +152,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 				.thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		when(converter.toNewEntity(any(SaveSecretRequestDto.class))).thenReturn(mockEntity);
 		when(repository.save(any(SecretEntity.class))).thenReturn(mockEntity);
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
 		// act
 		SaveEntityResponseDto response = service.save(TestUtils.createNewSaveSecretRequestDto());
@@ -144,6 +163,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
 		verify(converter).toNewEntity(any(SaveSecretRequestDto.class));
 		verify(cryptoService).encrypt(mockEntity);
+		verify(keystoreAliasRepository).findById(anyLong());
 	}
 	
 	@Test
@@ -154,6 +174,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 				.thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		when(converter.toNewEntity(any(SaveSecretRequestDto.class))).thenReturn(mockEntity);
 		when(repository.save(any(SecretEntity.class))).thenReturn(mockEntity);
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
 		// act
 		Set<Long> apiKeys = Sets.newHashSet(3L,4L,5L);
@@ -166,6 +187,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		verify(converter).toNewEntity(any(SaveSecretRequestDto.class));
 		verify(cryptoService).encrypt(mockEntity);
 		verify(apiKeyRestrictionRepository, times(3)).save(any(ApiKeyRestrictionEntity.class));
+		verify(keystoreAliasRepository).findById(anyLong());
 	}
 
 	@Test
@@ -174,6 +196,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		SecretEntity mockEntity = TestUtils.createSecretEntity();
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
 				.thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
 		// act & assert
 		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveSecretRequestDto(2L)), "Secret not found!");
@@ -181,6 +204,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
 		verify(converter, never()).toEntity(any(SecretEntity.class), any(SaveSecretRequestDto.class));
 		verify(cryptoService, never()).encrypt(mockEntity);
+		verify(keystoreAliasRepository).findById(anyLong());
 		
 		MDC.clear();
 	}
@@ -194,6 +218,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		when(repository.findById(1L)).thenReturn(Optional.of(mockEntity));
 		when(converter.toEntity(any(SecretEntity.class), any(SaveSecretRequestDto.class))).thenReturn(mockEntity);
 		when(repository.save(any(SecretEntity.class))).thenReturn(mockEntity);
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
 		// act
 		SaveEntityResponseDto response = service.save(TestUtils.createSaveSecretRequestDto(1L));
@@ -205,6 +230,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).findById(1L);
 		verify(converter).toEntity(any(SecretEntity.class), any(SaveSecretRequestDto.class));
 		verify(cryptoService).encrypt(mockEntity);
+		verify(keystoreAliasRepository).findById(anyLong());
 	}
 	
 	@Test
@@ -220,6 +246,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 				TestUtils.createApiKeyRestrictionEntity(1L),
 				TestUtils.createApiKeyRestrictionEntity(2L)
 		));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
 		// act
 		SaveEntityResponseDto response = service.save(TestUtils.createSaveSecretRequestDto(1L, Set.of(1L)));
@@ -231,6 +258,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).findById(1L);
 		verify(converter).toEntity(any(SecretEntity.class), any(SaveSecretRequestDto.class));
 		verify(cryptoService).encrypt(mockEntity);
+		verify(keystoreAliasRepository).findById(anyLong());
 	}
 	
 	@Test
@@ -246,6 +274,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 				TestUtils.createApiKeyRestrictionEntity(1L),
 				TestUtils.createApiKeyRestrictionEntity(2L)
 		));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
 		// act
 		SaveEntityResponseDto response = service.save(TestUtils.createSaveSecretRequestDto(1L, Sets.newHashSet(2L, 3L)));
@@ -258,6 +287,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		verify(converter).toEntity(any(SecretEntity.class), any(SaveSecretRequestDto.class));
 		verify(cryptoService).encrypt(mockEntity);
 		verify(apiKeyRestrictionRepository, never()).delete(any(ApiKeyRestrictionEntity.class));
+		verify(keystoreAliasRepository).findById(anyLong());
 	}
 
 	@Test
@@ -269,6 +299,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		when(repository.findById(1L)).thenReturn(Optional.of(mockEntity));
 		when(converter.toEntity(any(SecretEntity.class), any(SaveSecretRequestDto.class))).thenReturn(mockEntity);
 		when(repository.save(any(SecretEntity.class))).thenReturn(mockEntity);
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
 		// act
 		SaveSecretRequestDto dto = TestUtils.createSaveSecretRequestDto(1L);
@@ -282,6 +313,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).findById(1L);
 		verify(converter).toEntity(any(SecretEntity.class), any(SaveSecretRequestDto.class));
 		verify(cryptoService, never()).encrypt(mockEntity);
+		verify(keystoreAliasRepository).findById(anyLong());
 	}
 
 	@Test

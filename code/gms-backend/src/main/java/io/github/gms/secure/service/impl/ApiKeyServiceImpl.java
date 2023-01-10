@@ -11,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import io.github.gms.common.entity.ApiKeyEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
@@ -23,6 +22,7 @@ import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.secure.service.ApiKeyService;
 

@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.gms.common.entity.UserEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
@@ -32,6 +31,7 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserListDto;
+import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.UserService;
 import lombok.extern.slf4j.Slf4j;

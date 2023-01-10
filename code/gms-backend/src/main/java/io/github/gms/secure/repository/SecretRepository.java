@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.secure.entity.SecretEntity;
 
 /**
  * @author Peter Szrnka
@@ -24,7 +24,7 @@ public interface SecretRepository extends JpaRepository<SecretEntity, Long> {
 
 	SecretEntity findByUserIdAndSecretIdAndStatus(Long userId, String secretId, EntityStatus status);
 
-	@Query("select s from SecretEntity s where (s.lastRotated is null or s.lastRotated < ?1) and s.rotationEnabled = true and s.status='ACTIVE'") // 
+	@Query("select s from SecretEntity s where (s.lastRotated is null or s.lastRotated <= ?1) and s.rotationEnabled = true and s.status='ACTIVE'") // 
 	List<SecretEntity> findAllOldRotated(LocalDateTime input);
 	
 	Optional<SecretEntity> findByIdAndUserId(Long id, Long userId);
@@ -34,6 +34,6 @@ public interface SecretRepository extends JpaRepository<SecretEntity, Long> {
 	long countByUserId(Long userId);
 
 	@Modifying
-	@Query("update SecretEntity s set s.status='DISABLED' where s.keystoreId = :keystoreId")
-	void disableAllByKeystoreId(@Param("keystoreId") Long keystoreId);
+	@Query("update SecretEntity s set s.status='DISABLED' where s.status != 'DISABLED' and s.keystoreAliasId = :keystoreAliasId")
+	void disableAllActiveByKeystoreAliasId(@Param("keystoreAliasId") Long keystoreAliasId);
 }

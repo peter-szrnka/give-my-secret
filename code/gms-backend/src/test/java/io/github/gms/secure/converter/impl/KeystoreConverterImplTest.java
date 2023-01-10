@@ -16,11 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.common.collect.Lists;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.entity.KeystoreEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.converter.KeystoreConverter;
 import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.util.TestUtils;
 
 /**

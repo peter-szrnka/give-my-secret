@@ -83,4 +83,10 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	public @ResponseBody IdNamePairListDto getAllKeystoreNames() {
 		return service.getAllKeystoreNames();
 	}
+	
+	@GetMapping("/list_aliases/{keystoreId}")
+	@PreAuthorize(Constants.ROLE_USER_OR_VIEWER)
+	public @ResponseBody IdNamePairListDto getAllKeystoreAliases(@PathVariable("keystoreId") Long keystoreId) {
+		return service.getAllKeystoreAliasNames(keystoreId);
+	}
 }

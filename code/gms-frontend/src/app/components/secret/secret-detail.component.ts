@@ -23,18 +23,17 @@ import { getErrorMessage } from "../../common/utils/error-utils";
 export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretService> {
 
     rotationPeriods: string[] = [
-        'THIRTY_SECONDS', 'MINUTES', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'
+        'MINUTES', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'
     ];
 
     filteredKeystoreOptions$: Observable<IdNamePair[]>;
+    filteredKeystoreAliasOptions$: Observable<IdNamePair[]>;
     filteredApiKeyOptions$: Observable<IdNamePair[]>;
     selectableApiKeys: IdNamePair[] = [];
     selectedApiKeys: IdNamePair[] = [];
     allApiKeys: IdNamePair[] = [];
 
     formData = {
-        keystoreName: undefined,
-        keystoreList: [],
         unmaskedValue: undefined,
         allApiKeysAllowed: true
     };
@@ -111,13 +110,17 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         });
     }
 
-    onKeystoreNameChanged(selectedId?: number) {
-        this.data.keystoreId = selectedId;
+    onKeystoreNameChanged(selectedId: number | undefined) {
+        if (!selectedId) {
+            return;
+        }
+
+        this.filteredKeystoreAliasOptions$ = this.keystoreService.getAllKeystoreAliases(selectedId);
     }
 
     private validateForm() {
-        if ((this.data.keystoreId === undefined)) {
-            throw Error("Please select a keystore!");
+        if ((this.data.keystoreAliasId === undefined)) {
+            throw Error("Please select a keystore alias!");
         }
     }
 

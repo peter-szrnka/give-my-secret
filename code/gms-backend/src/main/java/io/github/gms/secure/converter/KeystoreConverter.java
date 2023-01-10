@@ -1,12 +1,16 @@
 package io.github.gms.secure.converter;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import io.github.gms.common.abstraction.GmsConverter;
-import io.github.gms.common.entity.KeystoreEntity;
+import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.KeystoreDto;
 import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.secure.entity.KeystoreEntity;
 
 /**
  * @author Peter Szrnka
@@ -18,5 +22,7 @@ public interface KeystoreConverter extends GmsConverter<KeystoreListDto, Keystor
 
 	KeystoreEntity toEntity(KeystoreEntity entity, SaveKeystoreRequestDto dto, MultipartFile file);
 	
-	KeystoreDto toDto(KeystoreEntity entity);
+	KeystoreDto toDto(KeystoreEntity entity, List<KeystoreAliasEntity> aliases);
+
+	KeystoreAliasEntity toAliasEntity(Long keystoreId, KeystoreAliasDto alias);
 }

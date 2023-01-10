@@ -1,4 +1,4 @@
-package io.github.gms.common.entity;
+package io.github.gms.secure.entity;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +15,6 @@ import javax.persistence.Table;
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.db.converter.EncryptedFieldConverter;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.KeystoreType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -25,11 +24,11 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @Entity
-@Table(name = "gms_keystore")
+@Table(name = "gms_api_key")
 @EqualsAndHashCode(callSuper = false)
-public class KeystoreEntity extends AbstractGmsEntity {
+public class ApiKeyEntity extends AbstractGmsEntity {
 
-	private static final long serialVersionUID = 7355366159631069375L;
+	private static final long serialVersionUID = -890551760657637824L;
 	
 	@Id
 	@Column(name = "id")
@@ -39,34 +38,19 @@ public class KeystoreEntity extends AbstractGmsEntity {
 	@Column(name = "user_id")
 	private Long userId;
 	
-	@Column(name = "status")
-	@Enumerated(EnumType.STRING)
-	private EntityStatus status;
-	
 	@Column(name = "name")
 	private String name;
-	
-	@Column(name = "file_name")
-	private String fileName;
-	
-	@Column(name = "type")
-	@Enumerated(EnumType.STRING)
-	private KeystoreType type;
+
+	@Column(name = "value", length = 512)
+	@Convert(converter = EncryptedFieldConverter.class)
+	private String value;
 	
 	@Column(name = "description")
 	private String description;
 	
-	@Column(name = "credential", length = 512)
-	@Convert(converter = EncryptedFieldConverter.class)
-	private String credential;
-	
-	@Column(name = "alias", length = 512)
-	@Convert(converter = EncryptedFieldConverter.class)
-	private String alias;
-	
-	@Column(name = "alias_credential", length = 512)
-	@Convert(converter = EncryptedFieldConverter.class)
-	private String aliasCredential;
+	@Column(name = "status")
+	@Enumerated(EnumType.STRING)
+	private EntityStatus status;
 	
 	@Column(name = "creation_date")
 	private LocalDateTime creationDate;

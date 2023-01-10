@@ -17,5 +17,6 @@ public class GetSecureValueDto implements Serializable {
 
 	private static final long serialVersionUID = -6290707659972986763L;
 	private Long entityId;
+	private Long aliasId;
 	private KeyStoreValueType valueType;
 }

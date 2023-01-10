@@ -34,7 +34,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.entity.UserEntity;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.converter.UserConverter;
@@ -44,6 +43,7 @@ import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserListDto;
+import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.util.TestUtils;
 

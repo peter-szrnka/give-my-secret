@@ -8,6 +8,9 @@ import { Keystore, PAGE_CONFIG_KEYSTORE } from "../../common/model/keystore.mode
 import { KeystoreService } from "../../common/service/keystore-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
+import { KeystoreAlias } from "../../common/model/keystore-alias.model";
+import { Observable } from "rxjs";
+import { ArrayDataSource } from "@angular/cdk/collections";
 
 @Component({
   selector: 'keystore-detail',
@@ -19,6 +22,12 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
   @ViewChild('fileInput') fileInput: ElementRef;
   fileAttr = 'Choose File';
   file: File;
+
+  displayedColumns: string[] = ['alias','aliasCredential', 'operations'];
+
+  public datasource : ArrayDataSource<KeystoreAlias>;
+  aliasList : KeystoreAlias[] = [];
+  allAliasesAreValid : boolean;
 
   constructor(
     protected override router: Router,
@@ -33,19 +42,20 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
     return PAGE_CONFIG_KEYSTORE;
   }
 
+  override dataLoadingCallback(data: Keystore): void {
+    this.aliasList = data.aliases;
+    this.datasource = new ArrayDataSource<KeystoreAlias>(this.aliasList.map(alias => {alias.operation = 'SAVE'; return alias;}));
+  }
+
   save() {
-    this.loading = true;
+    this.addAliasDataToRequest();
     this.service.save(this.data, this.file)
       .subscribe({
         next: () => {
           this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
         },
         error: (err) => {
-          this.loading = false;
           this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
-        },
-        complete: () => {
-          this.loading = false;
         }
       });
   }
@@ -59,12 +69,39 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
       });
       // HTML5 FileReader API
       const reader = new FileReader();
-      //?reader.onload = (e: any) => {};
       reader.readAsDataURL(imgFile.target.files[0]);
       // Reset if duplicate image uploaded again
       this.fileInput.nativeElement.value = '';
     } else {
       this.fileAttr = 'Choose File';
     }
+  }
+
+  addNewAlias() {
+    this.aliasList.push({ alias: '', aliasCredential: '', operation : 'SAVE' });
+    this.refreshTable();
+  }
+
+  refreshTable() {
+    this.datasource = new ArrayDataSource<KeystoreAlias>(this.aliasList);
+    this.validateAliases();
+  }
+
+  changeState(element : KeystoreAlias, index : number, newState : string) {
+    if (element.id === undefined) {
+      this.aliasList.splice(index, 1);
+    } else {
+      element.operation = newState;
+    }
+
+    this.refreshTable();
+  }
+
+  addAliasDataToRequest() : void {
+    this.data.aliases = this.aliasList;
+  }
+
+  private validateAliases() : void {
+    this.allAliasesAreValid = this.data.aliases && this.data.aliases.filter(alias=>alias.operation!=='DELETE').length > 0;
   }
 }

@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.gms.common.entity.MessageEntity;
+import io.github.gms.secure.entity.MessageEntity;
 
 /**
  * @author Peter Szrnka

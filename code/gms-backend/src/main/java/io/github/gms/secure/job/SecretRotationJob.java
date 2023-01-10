@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import io.github.gms.common.entity.SecretEntity;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.SecretRotationService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @ConditionalOnProperty(value = "config.job.secretrotation.enabled", havingValue = "true", matchIfMissing = true)
 public class SecretRotationJob {
 	
+	private static final long DELAY_SECONDS = 55l;
+	
 	@Autowired
 	private Clock clock;
 	
@@ -36,7 +38,7 @@ public class SecretRotationJob {
 
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void execute() {
-		List<SecretEntity> resultList = secretRepository.findAllOldRotated(LocalDateTime.now(clock).minusMinutes(1));
+		List<SecretEntity> resultList = secretRepository.findAllOldRotated(LocalDateTime.now(clock).minusSeconds(DELAY_SECONDS));
 		
 		AtomicLong counter = new AtomicLong(0L);
 		resultList.forEach(secretEntity -> {

@@ -6,14 +6,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+
+import javax.transaction.Transactional;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,23 +26,27 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 
-import io.github.gms.common.entity.KeystoreEntity;
+import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.event.EntityDisabledEvent;
-import io.github.gms.common.event.EntityDisabledEvent.EntityType;
+import io.github.gms.common.event.EntityChangeEvent;
+import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.converter.KeystoreConverter;
 import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.KeystoreDto;
 import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.secure.service.KeystoreService;
@@ -49,16 +54,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@CacheConfig(cacheNames = "keystoreCache")
 public class KeystoreServiceImpl implements KeystoreService {
-
-	private static final String SLASH = "/";
 
 	@Autowired
 	private CryptoService cryptoService;
 
 	@Autowired
 	private KeystoreRepository repository;
+	
+	@Autowired
+	private KeystoreAliasRepository aliasRepository;
 	
 	@Autowired
 	private KeystoreConverter converter;
@@ -73,7 +78,6 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private String keystorePath;
 
 	@Override
-	@CacheEvict
 	public SaveEntityResponseDto save(String model, MultipartFile file) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		
@@ -83,29 +87,20 @@ public class KeystoreServiceImpl implements KeystoreService {
 		} catch (Exception e) {
 			throw new GmsException(e);
 		}
-
+		
 		dto.setUserId(userId);
+		
+		// Validation
+		validateInput(dto, file);
 
 		// Persist data
-		KeystoreEntity entity;
-		
-		if (dto.getId() == null) {
-			validateNewKeystore(dto, file);
-			entity = converter.toNewEntity(dto, file);
-		} else {
-			Optional<KeystoreEntity> foundEntity = repository.findByIdAndUserId(dto.getId(), userId);
-			
-			if (foundEntity.isEmpty()) {
-				throw new GmsException("Entity not found!");
-			}
-			
-			entity = converter.toEntity(foundEntity.get(), dto, file);
-		}
+		KeystoreEntity entity = convertKeystore(dto, file);
 
+		// Process and validate file content
 		try {
 			byte[] fileContent;
 			if (file == null) {
-				File keystoreFile = new File(keystorePath + userId + SLASH + entity.getFileName());
+				File keystoreFile = new File(keystorePath + userId + Constants.SLASH + entity.getFileName());
 				fileContent = Files.readAllBytes(keystoreFile.toPath());
 			} else {
 				fileContent = file.getBytes();
@@ -119,53 +114,64 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 
 		// Persist the keystore
-		entity = repository.save(entity);
+		final KeystoreEntity newEntity = repository.save(entity);
 		
-		if (EntityStatus.DISABLED == entity.getStatus()) {
-			applicationEventPublisher.publishEvent(new EntityDisabledEvent(this, userId, entity.getId(), EntityType.KEYSTORE));
+		// Process aliases
+		dto.getAliases().forEach(alias -> processAlias(newEntity, alias));
+		
+		if (EntityStatus.DISABLED == newEntity.getStatus()) {
+			Map<String, Object> metadata = initMetaData(userId, newEntity.getId());
+			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
 		}
 
 		// Persist file
 		if (file == null) {
-			return new SaveEntityResponseDto(entity.getId());
+			return new SaveEntityResponseDto(newEntity.getId());
 		}
 
 		try {
-			Files.createDirectories(Paths.get(keystorePath + userId + SLASH));
-			File keystoreFile = new File(keystorePath + userId + SLASH + file.getOriginalFilename());
-		
-			try (FileOutputStream outputStream = new FileOutputStream(keystoreFile)) {
-			    outputStream.write(file.getBytes());
+			String newFileName = keystorePath + userId + Constants.SLASH + file.getOriginalFilename();
+			
+			if (Files.exists(Paths.get(newFileName))) {
+				throw new GmsException("File name must be unique!");
 			}
+			
+			Files.createDirectories(Paths.get(keystorePath + userId + Constants.SLASH));
+			File keystoreFile = new File(newFileName);
+		
+			FileOutputStream outputStream = new FileOutputStream(keystoreFile);
+			outputStream.write(file.getBytes());
+			outputStream.close();
+		} catch (GmsException e) {
+			throw e;
 		} catch (Exception e) {
 			log.error("File cannot be copied", e);
 			throw new GmsException(e);
 		}
 		
-		return new SaveEntityResponseDto(entity.getId());
+		return new SaveEntityResponseDto(newEntity.getId());
 	}
 
 	@Override
-	@CacheEvict(cacheNames = "keystoreCache", cacheManager = "keystoreCacheManager")
 	public SaveEntityResponseDto save(SaveKeystoreRequestDto dto) {
 		throw new UnsupportedOperationException("Not supported!");
 	}
 
 	@Override
 	public KeystoreDto getById(Long id) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		return converter.toDto(getKeystore(id, userId));
+		KeystoreEntity entity = getKeystore(id);
+		List<KeystoreAliasEntity> aliases = aliasRepository.findAllByKeystoreId(id);
+
+		return converter.toDto(entity, aliases);
 	}
 
 	@Override
 	public KeystoreListDto list(PagingDto dto) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-
 		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
 		Pageable pagingRequest = PageRequest.of(dto.getPage(), dto.getSize(), sort);
 
 		try {
-			Page<KeystoreEntity> resultList = repository.findAllByUserId(userId, pagingRequest);
+			Page<KeystoreEntity> resultList = repository.findAllByUserId(getUserId(), pagingRequest);
 			return converter.toDtoList(resultList);
 		} catch (Exception e) {
 			return new KeystoreListDto(Collections.emptyList());
@@ -173,12 +179,12 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	@Override
-	@CacheEvict
+	@Transactional
 	public void delete(Long id) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		KeystoreEntity entity = getKeystore(id, userId);
-		File keystoreFile = new File(keystorePath + entity.getUserId() + SLASH + entity.getFileName());
-		
+		KeystoreEntity entity = getKeystore(id);
+		File keystoreFile = new File(keystorePath + entity.getUserId() + Constants.SLASH + entity.getFileName());
+
+		aliasRepository.deleteByKeystoreId(id);
 		repository.deleteById(id);
 
 		try {
@@ -190,19 +196,28 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	@Override
-	@CacheEvict
 	public void toggleStatus(Long id, boolean enabled) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		KeystoreEntity entity = getKeystore(id, userId);
+		KeystoreEntity entity = getKeystore(id);
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
 		repository.save(entity);
+		
+		if (EntityStatus.DISABLED != entity.getStatus()) {
+			return;
+		}
+
+		Map<String, Object> metadata = initMetaData(getUserId(), entity.getId());
+		applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
 	}
 
 	@Override
 	public String getValue(GetSecureValueDto dto) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		KeystoreEntity entity = getKeystore(dto.getEntityId(), userId);
-		return getValue(entity, dto.getValueType());
+		KeystoreEntity entity = getKeystore(dto.getEntityId());
+
+		if (KeyStoreValueType.KEYSTORE_CREDENTIAL == dto.getValueType()) {
+			return entity.getCredential();
+		}
+		
+		return getAliasValue(dto);
 	}
 	
 	@Override
@@ -216,38 +231,88 @@ public class KeystoreServiceImpl implements KeystoreService {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		return new IdNamePairListDto(repository.getAllKeystoreNames(userId));
 	}
+	
+	@Override
+	public IdNamePairListDto getAllKeystoreAliasNames(Long keystoreId) {
+		// We query the keystore entity just for validation purposes
+		getKeystore(keystoreId);
+		
+		return new IdNamePairListDto(aliasRepository.getAllAliasNames(keystoreId));
+	}
+	
+	private Long getUserId() {
+		return Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
+	}
+	
+	private KeystoreEntity convertKeystore(SaveKeystoreRequestDto dto, MultipartFile file) {
+		if (dto.getId() == null) {
+			return converter.toNewEntity(dto, file);
+		}
+			
+		KeystoreEntity foundEntity = repository.findByIdAndUserId(dto.getId(), getUserId())
+				.orElseThrow(() -> new GmsException("Entity not found!"));
+
+		return converter.toEntity(foundEntity, dto, file);
+	}
+
+	private void processAlias(KeystoreEntity newEntity, KeystoreAliasDto alias) {
+		if (AliasOperation.SAVE == alias.getOperation()) {
+			aliasRepository.save(converter.toAliasEntity(newEntity.getId(), alias));
+		} else {
+			aliasRepository.deleteById(alias.getId());
+			Map<String, Object> metadata = initMetaData(getUserId(), newEntity.getId());
+			metadata.put("aliasId", alias.getId());
+			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED));
+		}
+	}	
+
+	private void validateInput(SaveKeystoreRequestDto dto, MultipartFile file) {
+		if (dto.getAliases().stream().filter(alias -> AliasOperation.DELETE != alias.getOperation()).count() == 0) {
+			throw new GmsException("You must define at least one keystore alias!");
+		}
+		
+		if (dto.getId() == null) {
+			validateNewKeystore(dto, file);
+		}
+	}
 
 	private void validateNewKeystore(SaveKeystoreRequestDto dto, MultipartFile file) {
 		if (file == null) {
 			throw new GmsException("Keystore file must be provided!");
 		}
-		
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		List<String> keystoreNames = repository.getAllKeystoreNames(userId, dto.getName());
-		
+
+		List<String> keystoreNames = repository.getAllKeystoreNames(getUserId(), dto.getName());
+
 		if (!keystoreNames.isEmpty()) {
 			throw new GmsException("Keystore name must be unique!");
 		}
 	}
 	
-	private KeystoreEntity getKeystore(Long id, Long userId) {
-		Optional<KeystoreEntity> entityOptional = repository.findByIdAndUserId(id, userId);
-		
-		if (entityOptional.isEmpty()) {
+	private KeystoreEntity getKeystore(Long id) {
+		return repository.findByIdAndUserId(id, getUserId()).orElseThrow(() -> {
 			log.warn(Constants.ENTITY_NOT_FOUND);
 			throw new GmsException(Constants.ENTITY_NOT_FOUND);
-		}
-		
-		return entityOptional.get();
+		});
 	}
 
-	private String getValue(KeystoreEntity entity, KeyStoreValueType valueType) {
-		if (KeyStoreValueType.KEYSTORE_ALIAS == valueType) {
+	private String getAliasValue(GetSecureValueDto dto) {
+		KeystoreAliasEntity entity = aliasRepository.findByIdAndKeystoreId(dto.getAliasId(), dto.getEntityId())
+			.orElseThrow(() -> {
+				log.warn(Constants.ENTITY_NOT_FOUND);
+				throw new GmsException(Constants.ENTITY_NOT_FOUND);
+		});
+
+		if (KeyStoreValueType.KEYSTORE_ALIAS == dto.getValueType()) {
 			return entity.getAlias();
-		} else if (KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL == valueType) {
-			return entity.getAliasCredential();
 		}
 
-		return entity.getCredential();
+		return entity.getAliasCredential();
+	}
+	
+	private static Map<String, Object> initMetaData(Long userId, Long keystoreId) {
+		Map<String, Object> metadata = new HashMap<>();
+		metadata.put("userId", userId);
+		metadata.put("keystoreId", keystoreId);
+		return metadata;
 	}
 }

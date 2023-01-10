@@ -1,6 +1,6 @@
 package io.github.gms.secure.service;
 
-import io.github.gms.common.entity.SecretEntity;
+import io.github.gms.secure.entity.SecretEntity;
 
 /**
  * @author Peter Szrnka

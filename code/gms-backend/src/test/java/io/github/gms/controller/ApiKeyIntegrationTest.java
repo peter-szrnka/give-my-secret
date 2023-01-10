@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.common.entity.ApiKeyEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.ApiKeyDto;
@@ -27,6 +26,7 @@ import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 
