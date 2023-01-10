@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
@@ -115,7 +116,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
 	@AfterAll
 	@SneakyThrows
-	public static void tearDown() {
+	public static void tearDownAll() {
 		TestUtils.deleteDirectoryWithContent("./test-output");
 	}
 
@@ -264,7 +265,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
-	void shouldSaveNewEntity() {
+	void shouldNotSaveNewEntityWithNonUniqueFileName() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		dto.setId(null);
@@ -273,6 +274,34 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		MultipartFile multiPart = mock(MultipartFile.class);
 
 		when(multiPart.getOriginalFilename()).thenReturn("my-key.jks");
+		when(multiPart.getBytes()).thenReturn("test".getBytes());
+		when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
+		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
+		when(gson.fromJson(eq(model), any(Class.class))).thenReturn(dto);
+
+		// act
+		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
+
+		// assert
+		assertEquals("File name must be unique!", exception.getMessage());
+		verify(converter).toNewEntity(any(), eq(multiPart));
+		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
+		verify(repository).save(any());
+		verify(gson).fromJson(eq(model), any(Class.class));
+	}
+	
+	@Test
+	@SneakyThrows
+	@SuppressWarnings("unchecked")
+	void shouldSaveNewEntity() {
+		// arrange
+		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		dto.setId(null);
+		String model = TestUtils.getGson().toJson(dto);
+		
+		MultipartFile multiPart = mock(MultipartFile.class);
+
+		when(multiPart.getOriginalFilename()).thenReturn("my-key-" + UUID.randomUUID().toString() + ".jks");
 		when(multiPart.getBytes()).thenReturn("test".getBytes());
 		when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
 		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
@@ -325,7 +354,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldNotSaveEntityCausedByMissingAlias() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-		dto.setAliases(null);
+		dto.setAliases(List.of());
 		dto.setId(1L);
 		String model = TestUtils.getGson().toJson(dto);
 		

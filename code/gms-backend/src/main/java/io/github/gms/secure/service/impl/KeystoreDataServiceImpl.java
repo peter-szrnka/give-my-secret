@@ -10,7 +10,6 @@ import java.security.cert.CertificateException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.google.common.io.Files;
@@ -24,13 +23,11 @@ import io.github.gms.secure.model.GetKeystore;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.service.KeystoreDataService;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-@Slf4j
 @Service
 public class KeystoreDataServiceImpl implements KeystoreDataService {
 
@@ -46,10 +43,6 @@ public class KeystoreDataServiceImpl implements KeystoreDataService {
 	private String keystorePath;
 
 	@Override
-	@Cacheable(
-			value = "keystoreCache",
-			key = "#secretEntity.keystoreAliasId"
-	)
 	public KeystorePair getKeystoreData(SecretEntity secretEntity)
 			throws NoSuchAlgorithmException, CertificateException, KeyStoreException, IOException {
 		KeystoreAliasEntity keystoreAliasEntity = keystoreAliasRepository.findById(secretEntity.getKeystoreAliasId())
@@ -65,7 +58,6 @@ public class KeystoreDataServiceImpl implements KeystoreDataService {
 
 	private KeyStore getKeyStore(GetKeystore request)
 			throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException {
-		log.info("Reading keystore from {}", request.getKeystorePath());
 		KeystoreEntity keystoreEntity = request.getKeystoreEntity();
 
 		File keystoreFile = new File(request.getKeystorePath());

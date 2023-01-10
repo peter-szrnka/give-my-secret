@@ -30,24 +30,22 @@ public class EncryptedFieldConverter implements AttributeConverter<String, Strin
 
 	private final String secret;
 	private final String encryptionIv;
-	private final Cipher cipher;
 
 	public EncryptedFieldConverter(
 			@Value("${config.crypto.secret}") String secret, 
-			@Value("${config.encryption.iv}") String encryptionIv) 
-					throws NoSuchAlgorithmException, NoSuchPaddingException {
+			@Value("${config.encryption.iv}") String encryptionIv) {
         this.secret = secret;
         this.encryptionIv = encryptionIv;
-        cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
     }
 
 	@Override
 	public String convertToDatabaseColumn(String attribute) {
 		try {
 			Key key = new SecretKeySpec(Base64.getDecoder().decode(secret.getBytes()), AES);
+			Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
 			cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(encryptionIv.getBytes(StandardCharsets.UTF_8)));
 			return Base64.getEncoder().encodeToString(cipher.doFinal(attribute.getBytes()));
-		} catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+		} catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new IllegalStateException(e);
 		}
 	}
@@ -56,9 +54,10 @@ public class EncryptedFieldConverter implements AttributeConverter<String, Strin
 	public String convertToEntityAttribute(String dbData) {
 		try {
 			Key key = new SecretKeySpec(Base64.getDecoder().decode(secret.getBytes()), AES);
+			Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
 			cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(encryptionIv.getBytes(StandardCharsets.UTF_8)));
 			return new String(cipher.doFinal(Base64.getDecoder().decode(dbData)));
-		} catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
+		} catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new IllegalStateException(e);
 		}
 	}

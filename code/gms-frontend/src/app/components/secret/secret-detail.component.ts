@@ -23,7 +23,7 @@ import { getErrorMessage } from "../../common/utils/error-utils";
 export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretService> {
 
     rotationPeriods: string[] = [
-        'THIRTY_SECONDS', 'MINUTES', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'
+        'MINUTES', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'
     ];
 
     filteredKeystoreOptions$: Observable<IdNamePair[]>;

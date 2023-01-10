@@ -14,7 +14,7 @@ public class CacheConfig implements CachingConfigurer {
 	@Override
 	@Bean
     public CacheManager cacheManager() {
-		ConcurrentMapCacheManager manager = new ConcurrentMapCacheManager("keystoreCache", "systemStatusCache", "userCache");
+		ConcurrentMapCacheManager manager = new ConcurrentMapCacheManager("systemStatusCache", "userCache");
 		manager.setAllowNullValues(false);
 		return manager;
     }

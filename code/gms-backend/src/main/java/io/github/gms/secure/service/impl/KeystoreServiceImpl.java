@@ -15,8 +15,6 @@ import javax.transaction.Transactional;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,7 +54,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@CacheConfig(cacheNames = "keystoreCache")
 public class KeystoreServiceImpl implements KeystoreService {
 
 	@Autowired
@@ -81,7 +78,6 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private String keystorePath;
 
 	@Override
-	@CacheEvict(allEntries = true)
 	public SaveEntityResponseDto save(String model, MultipartFile file) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		
@@ -94,13 +90,13 @@ public class KeystoreServiceImpl implements KeystoreService {
 		
 		dto.setUserId(userId);
 		
-		if (dto.getAliases().stream().filter(alias -> AliasOperation.DELETE != alias.getOperation()).count() == 0) {
-			throw new GmsException("You must define at least one keystore alias!");
-		}
+		// Validation
+		validateInput(dto, file);
 
 		// Persist data
-		KeystoreEntity entity = getAndValidateKeystore(dto, file);
+		KeystoreEntity entity = convertKeystore(dto, file);
 
+		// Process and validate file content
 		try {
 			byte[] fileContent;
 			if (file == null) {
@@ -134,12 +130,20 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 
 		try {
+			String newFileName = keystorePath + userId + Constants.SLASH + file.getOriginalFilename();
+			
+			if (Files.exists(Paths.get(newFileName))) {
+				throw new GmsException("File name must be unique!");
+			}
+			
 			Files.createDirectories(Paths.get(keystorePath + userId + Constants.SLASH));
-			File keystoreFile = new File(keystorePath + userId + Constants.SLASH + file.getOriginalFilename());
+			File keystoreFile = new File(newFileName);
 		
 			FileOutputStream outputStream = new FileOutputStream(keystoreFile);
 			outputStream.write(file.getBytes());
 			outputStream.close();
+		} catch (GmsException e) {
+			throw e;
 		} catch (Exception e) {
 			log.error("File cannot be copied", e);
 			throw new GmsException(e);
@@ -175,7 +179,6 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	@Override
-	@CacheEvict(allEntries = true)
 	@Transactional
 	public void delete(Long id) {
 		KeystoreEntity entity = getKeystore(id);
@@ -193,7 +196,6 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	@Override
-	@CacheEvict
 	public void toggleStatus(Long id, boolean enabled) {
 		KeystoreEntity entity = getKeystore(id);
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
@@ -242,9 +244,8 @@ public class KeystoreServiceImpl implements KeystoreService {
 		return Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 	}
 	
-	private KeystoreEntity getAndValidateKeystore(SaveKeystoreRequestDto dto, MultipartFile file) {
+	private KeystoreEntity convertKeystore(SaveKeystoreRequestDto dto, MultipartFile file) {
 		if (dto.getId() == null) {
-			validateNewKeystore(dto, file);
 			return converter.toNewEntity(dto, file);
 		}
 			
@@ -264,6 +265,16 @@ public class KeystoreServiceImpl implements KeystoreService {
 			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED));
 		}
 	}	
+
+	private void validateInput(SaveKeystoreRequestDto dto, MultipartFile file) {
+		if (dto.getAliases().stream().filter(alias -> AliasOperation.DELETE != alias.getOperation()).count() == 0) {
+			throw new GmsException("You must define at least one keystore alias!");
+		}
+		
+		if (dto.getId() == null) {
+			validateNewKeystore(dto, file);
+		}
+	}
 
 	private void validateNewKeystore(SaveKeystoreRequestDto dto, MultipartFile file) {
 		if (file == null) {
