@@ -25,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @ConditionalOnProperty(value = "config.job.secretrotation.enabled", havingValue = "true", matchIfMissing = true)
 public class SecretRotationJob {
 	
+	private static final long DELAY_SECONDS = 55l;
+	
 	@Autowired
 	private Clock clock;
 	
@@ -36,7 +38,7 @@ public class SecretRotationJob {
 
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void execute() {
-		List<SecretEntity> resultList = secretRepository.findAllOldRotated(LocalDateTime.now(clock).minusSeconds(55l));
+		List<SecretEntity> resultList = secretRepository.findAllOldRotated(LocalDateTime.now(clock).minusSeconds(DELAY_SECONDS));
 		
 		AtomicLong counter = new AtomicLong(0L);
 		resultList.forEach(secretEntity -> {

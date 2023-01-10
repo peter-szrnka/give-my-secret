@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Tag;
@@ -78,7 +79,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		
 	    MockMultipartFile sampleFile = new MockMultipartFile(
 	      KeystoreController.MULTIPART_FILE,
-	      "test.jks", 
+	      "test-" + UUID.randomUUID().toString() + ".jks", 
 	      MediaType.APPLICATION_OCTET_STREAM_VALUE,
 	      jksFileStream.readAllBytes()
 	    );
