@@ -92,13 +92,23 @@ CREATE TABLE gms_message (
 	message VARCHAR(255) NULL DEFAULT NULL,
 	opened TINYINT NOT NULL DEFAULT 0,
 	PRIMARY KEY (id) USING BTREE
-);
+)
+COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 CREATE TABLE gms_api_key_restriction (
 	id BIGINT NOT NULL AUTO_INCREMENT,
 	secret_id BIGINT NULL DEFAULT NULL,
 	api_key_id BIGINT NOT NULL,
 	user_id BIGINT NOT NULL,
+	PRIMARY KEY (id) USING BTREE
+)
+COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
+
+CREATE TABLE gms_system_property (
+	id BIGINT NOT NULL AUTO_INCREMENT,
+	key VARCHAR(255) NULL DEFAULT NULL,
+	value VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
+	last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	PRIMARY KEY (id) USING BTREE
 )
 COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;

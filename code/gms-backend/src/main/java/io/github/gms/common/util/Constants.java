@@ -17,6 +17,7 @@ public final class Constants {
 	// Roles
 	public static final String ALL_ROLE = "hasAnyRole('ROLE_ADMIN','ROLE_USER','ROLE_VIEWER')";
 	public static final String ROLE_USER_OR_VIEWER = "hasAnyRole('ROLE_USER','ROLE_VIEWER')";
+	public static final String ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
 	
 	// Properties
 	public static final String CONFIG_AUTH_TYPE_DB = "db";

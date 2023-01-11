@@ -40,6 +40,7 @@ import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.enums.KeystoreType;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
@@ -61,6 +62,7 @@ import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.secure.entity.MessageEntity;
 import io.github.gms.secure.entity.SecretEntity;
+import io.github.gms.secure.entity.SystemPropertyEntity;
 import io.github.gms.secure.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -495,5 +497,13 @@ public class TestUtils {
 		dto.setOperation(AliasOperation.SAVE);
 
 		return Lists.newArrayList(dto);
+	}
+
+	public static SystemPropertyEntity createSystemPropertyEntity(SystemProperty key,
+			String value) {
+		SystemPropertyEntity entity = new SystemPropertyEntity();
+		entity.setKey(key);
+		entity.setValue(value);
+		return entity;
 	}
 }
