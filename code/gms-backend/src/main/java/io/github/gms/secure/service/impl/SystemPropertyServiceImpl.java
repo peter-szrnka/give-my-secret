@@ -34,7 +34,7 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
 
 	@Override
 	public void save(SystemPropertyDto dto) {
-		SystemPropertyEntity entity = repository.findByKey(dto.getKey());
+		SystemPropertyEntity entity = repository.findByKey(getSystemPropertyByName(dto.getKey()));
 		repository.save(converter.toEntity(entity, dto));
 	}
 

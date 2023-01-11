@@ -19,6 +19,6 @@ public interface SystemPropertyRepository extends JpaRepository<SystemPropertyEn
 
 	Optional<String> getValueByKey(SystemProperty key);
 
-	SystemPropertyEntity findByKey(String key);
+	SystemPropertyEntity findByKey(SystemProperty key);
 
 }

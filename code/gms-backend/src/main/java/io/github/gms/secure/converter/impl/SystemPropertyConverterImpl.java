@@ -3,7 +3,9 @@ package io.github.gms.secure.converter.impl;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
@@ -29,17 +31,15 @@ public class SystemPropertyConverterImpl implements SystemPropertyConverter {
 
 	@Override
 	public SystemPropertyListDto toDtoList(List<SystemPropertyEntity> resultList) {
-		return new SystemPropertyListDto(resultList.stream()
-				.map(this::toDto)
+		Map<SystemProperty, String> propertyMap = resultList.stream()
+			      .collect(Collectors.toMap(SystemPropertyEntity::getKey, SystemPropertyEntity::getValue));
+
+		return new SystemPropertyListDto(Stream.of(SystemProperty.values())
+				.map(systemProperty -> SystemPropertyDto.builder()
+						.key(systemProperty.name())
+						.value(propertyMap.getOrDefault(systemProperty, systemProperty.getDefaultValue()))
+						.build())
 				.collect(Collectors.toList()));
-	}
-	
-	private SystemPropertyDto toDto(SystemPropertyEntity entity) {
-		return SystemPropertyDto.builder()
-				.key(entity.getKey().name())
-				.value(entity.getValue())
-				.lastModified(entity.getLastModified())
-				.build();
 	}
 
 	@Override

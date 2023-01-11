@@ -50,14 +50,14 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldSaveNewSystemProperty() {
 		// arrange
-		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()))
+		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS))
 			.thenReturn(TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900"));
 		
 		//act
 		assertDoesNotThrow(() -> service.save(SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("900").build()));
 		
 		// assert
-		verify(repository).findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name());
+		verify(repository).findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 	}
 	
 	@Test
