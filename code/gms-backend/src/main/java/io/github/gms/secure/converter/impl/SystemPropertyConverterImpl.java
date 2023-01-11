@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,15 +32,31 @@ public class SystemPropertyConverterImpl implements SystemPropertyConverter {
 
 	@Override
 	public SystemPropertyListDto toDtoList(List<SystemPropertyEntity> resultList) {
-		Map<SystemProperty, String> propertyMap = resultList.stream()
-			      .collect(Collectors.toMap(SystemPropertyEntity::getKey, SystemPropertyEntity::getValue));
+		Map<SystemProperty, SystemPropertyEntity> propertyMap = resultList.stream()
+			      .collect(Collectors.toMap(SystemPropertyEntity::getKey, Function.identity()));
 
 		return new SystemPropertyListDto(Stream.of(SystemProperty.values())
-				.map(systemProperty -> SystemPropertyDto.builder()
-						.key(systemProperty.name())
-						.value(propertyMap.getOrDefault(systemProperty, systemProperty.getDefaultValue()))
-						.build())
+				.map(property -> toDto(propertyMap, property))
 				.collect(Collectors.toList()));
+	}
+	
+	private SystemPropertyDto toDto(Map<SystemProperty, SystemPropertyEntity> propertyMap, SystemProperty property) {
+		SystemPropertyEntity entity = propertyMap.get(property);
+		LocalDateTime lastModified = null;
+		String value = property.getDefaultValue();
+		boolean factoryValue = entity == null;
+		
+		if (entity != null) {
+			lastModified = entity.getLastModified();
+			value = entity.getValue();
+		}
+
+		return SystemPropertyDto.builder()
+				.key(property.name())
+				.value(value)
+				.lastModified(lastModified)
+				.factoryValue(factoryValue)
+				.build();
 	}
 
 	@Override

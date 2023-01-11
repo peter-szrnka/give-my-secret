@@ -16,9 +16,10 @@ describe('KeystoreDetailResolver', () => {
     let sharedData : any;
 
     const mockResponse : Keystore = {
-        id : 1,
-        name : "apiKey",
-        description: "Description"
+        id: 1,
+        name: "apiKey",
+        description: "Description",
+        aliases: []
     };
 
     beforeEach(async() => {

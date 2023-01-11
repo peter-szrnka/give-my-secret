@@ -1,0 +1,56 @@
+<h2>System properties</h2>
+<div class="datatable">
+
+  <nav-back></nav-back>
+
+  <mat-card style="margin-top: 10px;">
+    <mat-card-content>
+      <table mat-table [dataSource]="datasource" (load)="true">
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        <ng-container matColumnDef="key">
+          <th mat-header-cell *matHeaderCellDef>Key</th>
+          <td mat-cell *matCellDef="let element"> {{getTextDescription(element.key)}} </td>
+        </ng-container>
+        <ng-container matColumnDef="value">
+          <th mat-header-cell *matHeaderCellDef>Value</th>
+          <td mat-cell *matCellDef="let element">
+            <span *ngIf="element.mode === undefined">{{element.value}}</span>
+            <input name="value" *ngIf="element.mode === 'EDIT' && element.valueSet === undefined" [value]="element.value" />
+            <mat-select name="value" *ngIf="element.mode === 'EDIT' && element.valueSet !== undefined" [value]="element.value">
+              <mat-option *ngFor="let item of element.valueSet" [value]="item">{{item}}</mat-option>
+            </mat-select>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="lastModified">
+          <th mat-header-cell *matHeaderCellDef>Last modified</th>
+          <td mat-cell *matCellDef="let element"> {{element.lastModified | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
+        </ng-container>
+        <ng-container matColumnDef="operations">
+          <th mat-header-cell *matHeaderCellDef>Operations</th>
+          <td mat-cell *matCellDef="let element">&nbsp;
+            <button mat-icon-button color="warn" *ngIf="!element.mode"
+              (click)="element.valueSet=getValueSet(element.key);element.mode = 'EDIT'">
+              <mat-icon aria-hidden="false">edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" *ngIf="element.mode === 'EDIT'"
+              (click)="save(element)">
+              <mat-icon aria-hidden="false">save</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" *ngIf="!element.mode && element.factoryValue === false"
+              (click)="promptDelete(element.key)">
+              <mat-icon aria-hidden="false">delete</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" *ngIf="element.mode === 'EDIT'"
+              (click)="element.mode=undefined">
+              <mat-icon aria-hidden="false">undo</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+      </table>
+
+      <mat-paginator [length]="getCount()" [pageSize]="10"
+                        [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

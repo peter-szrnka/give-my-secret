@@ -19,7 +19,8 @@ describe('KeystoreListResolver', () => {
     const mockResponse : Keystore[] = [{
         id : 1,
         name: "keystore",
-        description : "description"
+        description : "description",
+        aliases : []
     }];
 
     beforeEach(async() => {

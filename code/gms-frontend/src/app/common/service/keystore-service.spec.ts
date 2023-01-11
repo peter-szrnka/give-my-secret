@@ -9,8 +9,9 @@ import { Keystore } from "../model/keystore.model";
 import { KeystoreService } from "./keystore-service";
 
 const TEST_KEYSTORE : Keystore = {
-  id : 1,
-  description : "Description"
+  id: 1,
+  description: "Description",
+  aliases: []
 };
 
 describe("KeystoreService", () => {

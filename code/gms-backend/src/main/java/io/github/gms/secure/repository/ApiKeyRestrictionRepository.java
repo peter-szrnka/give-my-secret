@@ -18,7 +18,6 @@ public interface ApiKeyRestrictionRepository extends JpaRepository<ApiKeyRestric
 	
 	List<ApiKeyRestrictionEntity> findAllByUserIdAndSecretId(Long userId, Long secretId);
 
-	//@Query("delete from ApiKeyRestrictionEntity a where a.userId = :userId and a.secretId = :secretId and a.apiKeyId = :apiKeyId")
 	@Transactional
-	void deleteByUserIdAndSecretIdAndApiKeyId(/*@Param("userId") */Long userId,/* @Param("secretId")*/ Long secretId,/* @Param("apiKeyId")*/ Long apiKeyId);
+	void deleteByUserIdAndSecretIdAndApiKeyId(Long userId, Long secretId, Long apiKeyId);
 }
