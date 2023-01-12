@@ -9,6 +9,7 @@ import { Paging } from "../model/paging.model";
 const TEST_SYSTEM_PROPERTY : SystemProperty = {
     key : '',
     value : '',
+    type : '',
     factoryValue : true
 };
 

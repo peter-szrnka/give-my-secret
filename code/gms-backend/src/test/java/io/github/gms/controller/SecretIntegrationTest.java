@@ -6,6 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+import java.io.InputStream;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +19,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.FileSystemUtils;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.enums.EntityStatus;
@@ -28,6 +35,7 @@ import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
+import lombok.SneakyThrows;
 
 /**
  * @author Peter Szrnka
@@ -38,6 +46,24 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	SecretIntegrationTest() {
 		super("/secure/secret");
+	}
+	
+	@BeforeAll
+	@SneakyThrows
+	public static void setupAll() {
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		InputStream jksFileStream = classloader.getResourceAsStream("1/test.jks");
+		
+		byte[] buffer = new byte[jksFileStream.available()];
+		jksFileStream.read(buffer);
+
+		new File("./keystores/1/").mkdirs();
+		FileCopyUtils.copy(buffer, new File("./keystores/1/test.jks"));
+	}
+	
+	@AfterAll
+	public static void teardownAll() {
+		FileSystemUtils.deleteRecursively(new File("./keystores"));
 	}
 
 	@Test
