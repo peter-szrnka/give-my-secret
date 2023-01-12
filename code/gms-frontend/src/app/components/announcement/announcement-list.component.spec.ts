@@ -38,7 +38,6 @@ describe('AnnouncementListComponent', () => {
             data : Data = of({
                 itemList : [
                     {
-                        // TODO updte
                         id : 1,
                         userId : 1,
                         name : "my-api-key",

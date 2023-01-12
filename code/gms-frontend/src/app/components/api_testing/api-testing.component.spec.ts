@@ -2,14 +2,13 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { NO_ERRORS_SCHEMA } from "@angular/compiler";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormBuilder, FormsModule } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
-//import { FORM_GROUP_MOCK } from "../../common/form-helper.spec";
 import { ApiTestingService } from "../../common/service/api-testing-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { ApiTestingComponent } from "./api-testing.component";
@@ -20,7 +19,6 @@ describe('ApiTestingComponent', () => {
     let component : ApiTestingComponent;
     let service : any;
     let splashScreenService : any;
-    //let formBuilder : any;
     let dialog : any;
     let secureStorageService : any;
 
@@ -35,7 +33,6 @@ describe('ApiTestingComponent', () => {
                 { provide : ApiTestingService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
                 { provide : SplashScreenStateService, useValue : splashScreenService },
-               // { provide : FormBuilder, useValue : formBuilder },
                 { provide : SecureStorageService, useValue : secureStorageService }
             ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

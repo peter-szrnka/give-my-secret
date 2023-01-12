@@ -4,19 +4,19 @@ import { checkRights } from "./permission-utils";
 describe("Permission utils", () => {
 
     it('User is undefined', () => {
-        expect(checkRights(undefined, undefined)).toBeTruthy();
+        expect(checkRights(undefined)).toBeTruthy();
     });
 
     it('User role is undefined', () => {
         const user : User = {
             roles: []
         };
-        expect(checkRights(user, undefined)).toBeFalsy();
+        expect(checkRights(user)).toBeFalsy();
     });
 
     it('Admin rights are undefined', () => {
         const user : User = { roles : ["ROLE_USER"] };
-        expect(checkRights(user, undefined)).toBeFalsy();
+        expect(checkRights(user)).toBeFalsy();
     });
 
     it('User rights', () => {

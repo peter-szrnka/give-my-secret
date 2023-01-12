@@ -74,11 +74,11 @@ export class HomeResolver implements Resolve<HomeData> {
     }
 
     private getUserData(isAdmin: boolean): Observable<HomeData> {
-        return combineLatest(
+        return combineLatest([
             this.annoucementService.list(ANNOUNCEMENT_LIST_FILTER),
             this.apiKeyService.count(),
             this.keystoreService.count()
-        ).pipe(
+        ]).pipe(
             catchError(() => this.handleError([ [] as Announcement[], 0, 0 ])),
             map(([announcements, apiKeyCount, keystoreCount]) => {
                 return {

@@ -101,16 +101,4 @@ describe('LoginComponent', () => {
         expect(splashScreenStateService.stop).toHaveBeenCalled();
         expect(sharedDataService.setCurrentUser).toBeCalledTimes(0);
     });
-
-    /*it('Should navigate to main page', () => {
-        configTestBed();
-        mockSubject.next({
-            userId: 1,
-            roles: []
-        });
-
-        // assert
-        expect(component).toBeTruthy();
-        expect(router.navigate).toBeCalledWith(['']);
-    });*/
 });

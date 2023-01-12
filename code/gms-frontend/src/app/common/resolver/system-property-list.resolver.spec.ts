@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { of, throwError } from "rxjs";
-import { UserData } from "../model/user-data.model";
 import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { SystemPropertyListResolver } from "./system-property-list.resolver";

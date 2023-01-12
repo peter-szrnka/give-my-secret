@@ -73,7 +73,7 @@ describe('AuthInterceptor', () => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
 
         handler = {
-            handle: () => throwError(new HttpErrorResponse({
+            handle: () => throwError(() => new HttpErrorResponse({
                 error: new Error("Internal server error"),
                 status: 500
             }))

@@ -58,7 +58,7 @@ export class SystemPropertyListComponent {
   protected fetchData() {
     const user: User | undefined = this.sharedData.getUserInfo();
 
-    if (checkRights(user, undefined)) {
+    if (checkRights(user)) {
       this.initDefaultDataTable();
       return;
     }

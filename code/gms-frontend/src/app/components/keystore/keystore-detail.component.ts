@@ -9,7 +9,6 @@ import { KeystoreService } from "../../common/service/keystore-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { KeystoreAlias } from "../../common/model/keystore-alias.model";
-import { Observable } from "rxjs";
 import { ArrayDataSource } from "@angular/cdk/collections";
 
 @Component({

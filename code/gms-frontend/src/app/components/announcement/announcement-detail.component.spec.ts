@@ -42,7 +42,6 @@ describe('AnnouncementDetailComponent', () => {
 
         service = {
             save : function() : Observable<IEntitySaveResponseDto> {
-                //throw Error("No!");
                 return of({success:true, entityId:1 });
             }
         };

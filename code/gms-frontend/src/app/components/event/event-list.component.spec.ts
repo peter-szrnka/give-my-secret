@@ -39,7 +39,6 @@ describe('EventListComponent', () => {
             data : Data = of({
                 itemList : [
                     {
-                        // TODO Fix sample
                         id : 1,
                         userId : 1,
                         name : "my-api-key",

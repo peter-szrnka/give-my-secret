@@ -31,7 +31,6 @@ import { KeystoreListResolver } from './common/resolver/keystore-list.resolver';
 import { KeystoreDetailResolver } from './common/resolver/keystore-detail.resolver';
 import { HomeResolver } from './common/resolver/home.resolver';
 import { SystemPropertyListComponent } from './components/system_property/system-property-list.component';
-import { SystemPropertyService } from './common/service/system-property.service';
 import { SystemPropertyListResolver } from './common/resolver/system-property-list.resolver';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
