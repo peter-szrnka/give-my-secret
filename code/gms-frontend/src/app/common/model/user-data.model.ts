@@ -5,9 +5,9 @@ export interface UserData {
     name? : string,
     email? : string,
     credential? : string,
-    id? : number | undefined,
-    status? : string | undefined,
-    creationDate? : Date | undefined,
+    id? : number,
+    status? : string,
+    creationDate? : Date,
     roles : string[]
 }
 

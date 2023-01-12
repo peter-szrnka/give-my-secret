@@ -18,7 +18,7 @@ export class KeystoreService extends ServiceBase<Keystore, KeystoreList> {
     }
 
     public save(keystore : Keystore, file : any) {
-        const requestString = JSON.stringify(keystore) as string;
+        const requestString = JSON.stringify(keystore);
 
         const formData : FormData = new FormData();
         formData.append("model", requestString);
