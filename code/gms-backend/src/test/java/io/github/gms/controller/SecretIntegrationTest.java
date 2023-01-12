@@ -11,7 +11,6 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,7 +41,6 @@ import lombok.SneakyThrows;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled("TODO Fix this test")
 @Tag(TestConstants.TAG_INTEGRATION_TEST)
 class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 

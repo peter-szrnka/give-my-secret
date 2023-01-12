@@ -55,8 +55,12 @@ class SystemPropertyConverterImplTest extends AbstractUnitTest {
 	
 	@Test
 	void shouldNotConvertToExistingEntity() {
+		// arrange
+		SystemPropertyEntity entity = new SystemPropertyEntity();
+		SystemPropertyDto dto = SystemPropertyDto.builder().key("invalid").value("1").build();
+		
 		// act
-		GmsException exception = assertThrows(GmsException.class, () -> converter.toEntity(new SystemPropertyEntity(), SystemPropertyDto.builder().key("invalid").value("1").build()));
+		GmsException exception = assertThrows(GmsException.class, () -> converter.toEntity(entity, dto));
 		
 		// assert
 		assertEquals("Unknown system property!", exception.getMessage());

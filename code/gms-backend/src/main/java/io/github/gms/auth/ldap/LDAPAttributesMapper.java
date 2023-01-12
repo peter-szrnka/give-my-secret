@@ -28,7 +28,6 @@ public class LDAPAttributesMapper implements AttributesMapper<GmsUserDetails> {
 				.credential(getAttribute(attributes, Constants.LDAP_PROPERTY_CREDENTIAL))
 				.email(getAttribute(attributes, Constants.LDAP_PROPERTY_EMAIL))
 				.authorities(getAttributeCollection(attributes, Constants.LDAP_PROPERTY_ROLE))
-				// TODO enabled?
 				.build();
 	}
 	
