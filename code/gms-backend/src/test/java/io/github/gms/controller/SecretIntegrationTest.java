@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.InputStream;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.util.FileSystemUtils;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.enums.EntityStatus;
@@ -59,11 +57,6 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 		new File("./keystores/1/").mkdirs();
 		FileCopyUtils.copy(buffer, new File("./keystores/1/test.jks"));
-	}
-	
-	@AfterAll
-	public static void teardownAll() {
-		FileSystemUtils.deleteRecursively(new File("./keystores"));
 	}
 
 	@Test
