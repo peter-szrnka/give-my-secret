@@ -4,7 +4,7 @@ Give My Secret is a credential storage application, that stores secrets, passwor
 
 | Code QL | Code coverage | Sonarcloud |
 | ------- | ------------- | ---------- |
-| [![CodeQL](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml/badge.svg)](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml) | ![Code coverage](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret&metric=coverage) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret) |
+| [![CodeQL](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml/badge.svg)](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml) | Backend:&nbsp; ![Code coverage](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret&metric=coverage) <br /> Frontend: [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret-frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret-frontend) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret) <br/> [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret-frontend) |
 
 # Tech stack
 
