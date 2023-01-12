@@ -11,7 +11,6 @@ describe('RoleGuard', () => {
         exp : 1,
         roles : ["ROLE_USER"]
     };
-    //const mockJwt : string = sign(userData, 'secret.key');
 
     beforeEach(() => {
         router = {

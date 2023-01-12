@@ -11,7 +11,6 @@ describe('NavBackComponent', () => {
     let fixture : ComponentFixture<NavBackComponent>;
 
     beforeEach(() => {
-        //router = {};
         TestBed.configureTestingModule({
             imports : [RouterTestingModule, AngularMaterialModule ],
             declarations : [NavBackComponent],

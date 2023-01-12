@@ -41,7 +41,6 @@ export class AppComponent implements OnInit {
 
     if (this.sharedDataService.getUserInfo() === undefined) {
         this.router.navigate(['/login']);
-        return;
     }
   }
 

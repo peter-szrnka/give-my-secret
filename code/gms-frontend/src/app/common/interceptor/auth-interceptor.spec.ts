@@ -6,6 +6,7 @@ describe('AuthInterceptor', () => {
     let interceptor: AuthInterceptor;
     let sharedData : any;
     let handler : any;
+    const sampleUrl = 'https://www.sample.com/';
 
     beforeEach(() => {
         sharedData = {
@@ -25,7 +26,7 @@ describe('AuthInterceptor', () => {
   afterEach(() => { localStorage.clear(); });
 
     it('should proceed', () => {
-        const req : HttpRequest<any> = new HttpRequest('GET', 'http://www.sample.com/authenticate', {});
+        const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'authenticate', {});
 
         // act
         interceptor.intercept(req, handler).subscribe();
@@ -35,7 +36,7 @@ describe('AuthInterceptor', () => {
     });
 
     it('should not proceed because of 401', () => {
-        const req : HttpRequest<any> = new HttpRequest('GET', 'http://www.sample.com/get_data', {});
+        const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
 
         handler = {
             handle: () => throwError(() => new HttpErrorResponse({
@@ -52,7 +53,7 @@ describe('AuthInterceptor', () => {
     });
 
     it('should not proceed because of 403', () => {
-        const req : HttpRequest<any> = new HttpRequest('GET', 'http://www.sample.com/get_data', {});
+        const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
 
         handler = {
             handle: () => throwError(() => new HttpErrorResponse({
@@ -69,7 +70,7 @@ describe('AuthInterceptor', () => {
     });
 
     it('should not proceed because of 500', () => {
-        const req : HttpRequest<any> = new HttpRequest('GET', 'http://www.sample.com/get_data', {});
+        const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
 
         handler = {
             handle: () => throwError(new HttpErrorResponse({

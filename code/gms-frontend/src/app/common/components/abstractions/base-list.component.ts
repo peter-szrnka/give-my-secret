@@ -41,7 +41,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     protected fetchData() {
       const user : User | undefined = this.sharedData.getUserInfo();
 
-      if(checkRights(user, undefined)) {
+      if(checkRights(user)) {
         this.initDefaultDataTable();
         return;
       }
