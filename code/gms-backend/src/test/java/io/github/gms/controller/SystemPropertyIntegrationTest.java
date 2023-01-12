@@ -30,7 +30,7 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest {
 	@BeforeEach
 	public void setup() {
 		gmsUser = TestUtils.createGmsAdminUser();
-		jwt = jwtService.generateJwt(gmsUser);
+		jwt = jwtService.generateJwt(TestUtils.createJwtAdminRequest(gmsUser));
 	}
 	
 	@Test

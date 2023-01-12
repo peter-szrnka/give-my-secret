@@ -3,6 +3,9 @@ package io.github.gms.secure.service.impl;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,6 +27,7 @@ import io.github.gms.secure.service.SystemPropertyService;
  * @since 1.0
  */
 @Service
+@CacheConfig(cacheNames = "systemPropertyCache")
 public class SystemPropertyServiceImpl implements SystemPropertyService {
 	
 	@Autowired
@@ -33,12 +37,14 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
 	private SystemPropertyRepository repository;
 
 	@Override
+	@CacheEvict(allEntries = true)
 	public void save(SystemPropertyDto dto) {
 		SystemPropertyEntity entity = repository.findByKey(getSystemPropertyByName(dto.getKey()));
 		repository.save(converter.toEntity(entity, dto));
 	}
 
 	@Override
+	@CacheEvict(allEntries = true)
 	public void delete(String key) {
 		repository.deleteByKey(getSystemPropertyByName(key));
 	}
@@ -56,14 +62,15 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
 	}
 
 	@Override
-	public String get(String key) {
-		SystemProperty property = getSystemPropertyByName(key);
+	@Cacheable
+	public String get(SystemProperty property) {
 		return repository.getValueByKey(property).orElse(property.getDefaultValue());
 	}
 
 	@Override
-	public Long getLong(String key) {
-		return Long.parseLong(get(key));
+	@Cacheable
+	public Long getLong(SystemProperty property) {
+		return Long.parseLong(get(property));
 	}
 	
 	private SystemProperty getSystemPropertyByName(String key) {

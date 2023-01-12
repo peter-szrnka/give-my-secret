@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.github.gms.common.enums.SystemProperty;
@@ -20,7 +22,8 @@ public interface SystemPropertyRepository extends JpaRepository<SystemPropertyEn
 	@Transactional
 	void deleteByKey(SystemProperty key);
 
-	Optional<String> getValueByKey(SystemProperty key);
+	@Query("select s.value from SystemPropertyEntity s where s.key = :key")
+	Optional<String> getValueByKey(@Param("key") SystemProperty key);
 
 	SystemPropertyEntity findByKey(SystemProperty key);
 

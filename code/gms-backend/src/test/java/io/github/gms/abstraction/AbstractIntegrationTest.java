@@ -59,7 +59,7 @@ public abstract class AbstractIntegrationTest {
 	@BeforeEach
 	public void setup() {
 		gmsUser = TestUtils.createGmsUser();
-		jwt = jwtService.generateJwt(gmsUser);
+		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest());
 	}
 
 	protected <I, O> ResponseEntity<O> executeHttpGet(String url, HttpEntity<I> requestEntity, Class<O> responseType) {

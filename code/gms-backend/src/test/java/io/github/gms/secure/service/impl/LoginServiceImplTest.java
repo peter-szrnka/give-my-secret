@@ -18,9 +18,11 @@ import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.dto.AuthenticateRequestDto;
 import io.github.gms.auth.dto.AuthenticateResponseDto;
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.service.JwtService;
+import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 
 /**
@@ -39,6 +41,9 @@ class LoginServiceImplTest extends AbstractUnitTest {
 	
 	@Mock
 	private UserConverter converter;
+	
+	@Mock
+	private SystemPropertyService systemPropertyService;
 	
 	@InjectMocks
 	private LoginServiceImpl service;
@@ -61,7 +66,7 @@ class LoginServiceImplTest extends AbstractUnitTest {
 		Authentication mockAuthentication = mock(Authentication.class);
 		when(mockAuthentication.getPrincipal()).thenReturn(TestUtils.createGmsUser());
 		when(authenticationManager.authenticate(any(Authentication.class))).thenReturn(mockAuthentication);
-		when(jwtService.generateJwt(any(GmsUserDetails.class))).thenReturn("mockJWT");
+		when(jwtService.generateJwt(any(GenerateJwtRequest.class))).thenReturn("mockJWT");
 		when(converter.toUserInfoDto(any(GmsUserDetails.class))).thenReturn(new UserInfoDto());
 
 		// act
@@ -70,7 +75,7 @@ class LoginServiceImplTest extends AbstractUnitTest {
 		// assert
 		assertEquals("mockJWT", response.getToken());
 		verify(authenticationManager).authenticate(any(Authentication.class));
-		verify(jwtService).generateJwt(any(GmsUserDetails.class));
+		verify(jwtService).generateJwt(any(GenerateJwtRequest.class));
 		verify(converter).toUserInfoDto(any(GmsUserDetails.class));
 	}
 }

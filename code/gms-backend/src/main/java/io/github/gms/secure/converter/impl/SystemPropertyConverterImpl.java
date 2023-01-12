@@ -54,6 +54,7 @@ public class SystemPropertyConverterImpl implements SystemPropertyConverter {
 		return SystemPropertyDto.builder()
 				.key(property.name())
 				.value(value)
+				.type(property.getType())
 				.lastModified(lastModified)
 				.factoryValue(factoryValue)
 				.build();

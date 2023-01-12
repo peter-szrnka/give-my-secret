@@ -17,9 +17,11 @@ import org.springframework.web.util.WebUtils;
 
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.types.Pair;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.service.JwtService;
+import io.github.gms.secure.service.SystemPropertyService;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +38,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	@Autowired
 	private UserAuthService userAuthService;
+	
+	@Autowired
+	private SystemPropertyService systemPropertyService;
 
 	@Override
 	public AuthenticationResponse authenticate(HttpServletRequest request) {
@@ -48,7 +53,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		String jwtToken = jwtTokenCookie.getValue();
 		// JWT processing & authentication
 		try {
-			Claims jwsResult = jwtService.parseJwt(jwtToken);
+			String algorithm = systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM);
+			
+			Claims jwsResult = jwtService.parseJwt(jwtToken, algorithm);
 			Pair<HttpStatus, String> validationResult = validateJwt(jwsResult);
 			
 			if (validationResult.first != HttpStatus.OK) {

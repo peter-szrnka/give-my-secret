@@ -116,7 +116,7 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 		when(repository.getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(Optional.empty());
 		
 		//act
-		Long response = service.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name());
+		Long response = service.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		
 		// assert
 		assertEquals(900L, response);
@@ -129,7 +129,7 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 		when(repository.getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(Optional.of("3600"));
 		
 		//act
-		Long response = service.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name());
+		Long response = service.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		
 		// assert
 		assertEquals(3600L, response);

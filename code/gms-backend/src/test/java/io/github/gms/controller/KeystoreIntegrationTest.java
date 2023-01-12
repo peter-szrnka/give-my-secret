@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,6 +29,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.google.common.io.Files;
@@ -69,6 +71,11 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	KeystoreIntegrationTest() {
 		super("/secure/keystore");
+	}
+	
+	@AfterAll
+	public static void teardownAll() {
+		FileSystemUtils.deleteRecursively(new File("./keystores"));
 	}
 
 	@Test

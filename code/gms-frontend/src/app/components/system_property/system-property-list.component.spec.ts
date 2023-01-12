@@ -13,7 +13,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { PROPERTY_TEXT_MAP, SystemPropertyListComponent } from "./system-property-list.component";
 import { SystemPropertyService } from "../../common/service/system-property.service";
 import { SystemProperty } from "../../common/model/system-property.model";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 
 describe('SystemPropertyListComponent', () => {
@@ -32,7 +32,7 @@ describe('SystemPropertyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            imports : [RouterTestingModule, ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
             declarations : [SystemPropertyListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -87,9 +87,17 @@ describe('SystemPropertyListComponent', () => {
         };
     });
 
-    it('Should create component', () => {
+    it.each([
+        ['LONG', 'number'],
+        ['STRING', 'text'],
+      ])('Should return input type for %i', (input, expected) => {
         configureTestBed();
 
+        // act
+        const response = component.getInputType(input);
+
+        // assert
+        expect(response).toEqual(expected);
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });

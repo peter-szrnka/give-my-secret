@@ -12,7 +12,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
 
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
 
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -39,10 +42,12 @@ import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.enums.KeystoreType;
+import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
@@ -505,5 +510,39 @@ public class TestUtils {
 		entity.setKey(key);
 		entity.setValue(value);
 		return entity;
+	}
+	
+	public static GenerateJwtRequest createJwtAdminRequest() {
+		return createJwtAdminRequest(GmsUserDetails.builder()
+				.userId(DemoDataProviderService.USER_1_ID)
+				.username(DemoDataProviderService.USERNAME1)
+				.authorities(Set.of(UserRole.ROLE_ADMIN))
+				.build());
+	}
+
+	public static GenerateJwtRequest createJwtAdminRequest(GmsUserDetails user) {
+		Map<String, Object> claims = Map.of(
+				MdcParameter.USER_ID.getDisplayName(), user.getUserId(),
+				MdcParameter.USER_NAME.getDisplayName(), user.getUsername(),
+				"roles", user.getAuthorities().stream() .map(GrantedAuthority::getAuthority).collect(Collectors.toSet())
+		);
+
+		return GenerateJwtRequest.builder().subject(user.getUsername()).algorithm("HS512")
+				.expirationDateInSeconds(30L)
+				.claims(claims)
+				.build();
+	}
+	
+	public static GenerateJwtRequest createJwtUserRequest() {
+		Map<String, Object> claims = Map.of(
+				MdcParameter.USER_ID.getDisplayName(), DemoDataProviderService.USER_1_ID,
+				MdcParameter.USER_NAME.getDisplayName(), DemoDataProviderService.USERNAME1,
+				"roles", List.of("ROLE_USER")
+		);
+
+		return GenerateJwtRequest.builder().subject(DemoDataProviderService.USERNAME1).algorithm("HS512")
+				.expirationDateInSeconds(30L)
+				.claims(claims)
+				.build();
 	}
 }

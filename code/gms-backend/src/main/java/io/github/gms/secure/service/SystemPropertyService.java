@@ -1,5 +1,6 @@
 package io.github.gms.secure.service;
 
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SystemPropertyDto;
 import io.github.gms.secure.dto.SystemPropertyListDto;
@@ -16,7 +17,7 @@ public interface SystemPropertyService {
 	
 	SystemPropertyListDto list(PagingDto dto);
 
-	String get(String key);
+	String get(SystemProperty key);
 	
-	Long getLong(String key);
+	Long getLong(SystemProperty key);
 }

@@ -16,6 +16,11 @@ const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
 ];
 
+const TYPE_MAP : any = {
+  'LONG' : 'number',
+  'STRING' : 'text'
+}
+
 export const PROPERTY_TEXT_MAP: any = {
   'ACCESS_JWT_EXPIRATION_TIME_SECONDS': { text: 'Access JWT expiration time in seconds' },
   'ACCESS_JWT_ALGORITHM': { text: 'Access JWT Algorithom', valueSet: ALGORITHM_SET },
@@ -30,7 +35,7 @@ export const PROPERTY_TEXT_MAP: any = {
   styleUrls: ['./system-property-list.component.scss']
 })
 export class SystemPropertyListComponent {
-  columns: string[] = ['key', 'value', 'lastModified', 'operations'];
+  columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];
 
   public datasource: ArrayDataSource<SystemProperty>;
   protected count = 0;
@@ -72,6 +77,10 @@ export class SystemPropertyListComponent {
 
   public getTextDescription(key: string): string {
     return PROPERTY_TEXT_MAP[key].text;
+  }
+
+  public getInputType(type : string) : string {
+    return TYPE_MAP[type];
   }
 
   public getValueSet(key: string): string[] {

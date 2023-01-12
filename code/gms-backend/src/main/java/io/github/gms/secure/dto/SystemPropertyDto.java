@@ -3,6 +3,7 @@ package io.github.gms.secure.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import io.github.gms.common.enums.PropertyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class SystemPropertyDto implements Serializable {
 	
 	private String key;
 	private String value;
+	private PropertyType type;
 	private LocalDateTime lastModified;
 	private boolean factoryValue;
 }
