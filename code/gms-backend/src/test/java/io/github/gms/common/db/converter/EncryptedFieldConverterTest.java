@@ -18,7 +18,7 @@ import lombok.SneakyThrows;
 class EncryptedFieldConverterTest extends AbstractUnitTest {
 	
 	private static final String ENCRYPTION_IV = "R4nd0mIv1234567!";
-	private static final String ENCRYPTED_VALUE = "/jNuDkHGwUeQ/7pSuJ5T1Q==";
+	private static final String ENCRYPTED_VALUE = "kEEgTrpbKdiJegJFrAcwBnTujN2s";
 	private static final String ORIGINAL_VALUE = "value";
 	private EncryptedFieldConverter converter;
 
