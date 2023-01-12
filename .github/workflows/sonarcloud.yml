@@ -14,6 +14,7 @@ jobs:
       working-directory: ./code/gms-backend
     steps:
       - uses: actions/checkout@v2
+        working-directory: ${{ env.working-directory }}
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up JDK 11
@@ -33,6 +34,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build and analyze
+        working-directory: ${{ env.working-directory }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -42,9 +44,10 @@ jobs:
     name: Build and analize frontend
     runs-on: ubuntu-latest
     env:
-      working-directory: ./code/gms-backend
+      working-directory: ./code/gms-frontend
     steps:
       - uses: actions/checkout@v3
+        working-directory: ${{ env.working-directory }}
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Use Node.js
@@ -52,12 +55,16 @@ jobs:
         with:
           node-version: 16
       - name: Build with NPM
+        working-directory: ${{ env.working-directory }}
         run: npm install
       - name: Install Angular CLI
+        working-directory: ${{ env.working-directory }}
         run: npm install -g @angular/cli@latest
       - name: Run tests
+        working-directory: ${{ env.working-directory }}
         run: ng test
       - name: Sonarcloud scan
+        working-directory: ${{ env.working-directory }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
