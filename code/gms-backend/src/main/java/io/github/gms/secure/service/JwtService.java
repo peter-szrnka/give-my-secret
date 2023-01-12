@@ -1,6 +1,6 @@
 package io.github.gms.secure.service;
 
-import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.model.GenerateJwtRequest;
 import io.jsonwebtoken.Claims;
 
 /**
@@ -9,7 +9,7 @@ import io.jsonwebtoken.Claims;
  */
 public interface JwtService {
 	
-	String generateJwt(GmsUserDetails user);
+	String generateJwt(GenerateJwtRequest request);
 
-	Claims parseJwt(String jwtToken);
+	Claims parseJwt(String jwtToken, String algorithm);
 }

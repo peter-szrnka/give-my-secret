@@ -7,3 +7,4 @@ DROP TABLE gms_secret;
 DROP TABLE gms_announcement;
 DROP TABLE gms_message;
 DROP TABLE gms_api_restriction;
+DROP TABLE gms_system_property;

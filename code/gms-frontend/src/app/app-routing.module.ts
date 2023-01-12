@@ -30,6 +30,9 @@ import { EventListResolver } from './common/resolver/event-list.resolver';
 import { KeystoreListResolver } from './common/resolver/keystore-list.resolver';
 import { KeystoreDetailResolver } from './common/resolver/keystore-detail.resolver';
 import { HomeResolver } from './common/resolver/home.resolver';
+import { SystemPropertyListComponent } from './components/system_property/system-property-list.component';
+import { SystemPropertyService } from './common/service/system-property.service';
+import { SystemPropertyListResolver } from './common/resolver/system-property-list.resolver';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];
@@ -64,6 +67,7 @@ const routes: Routes = [
   listRouteBuilder('event', EventListComponent, EventListResolver, ROLES_ADMIN),
   listRouteBuilder('announcement', AnnouncementListComponent, AnnouncementListResolver, ROLES_ADMIN),
   detailRouteBuilder('announcement', AnnouncementDetailComponent, AnnouncementDetailResolver, ROLES_ADMIN),
+  listRouteBuilder('system_property', SystemPropertyListComponent, SystemPropertyListResolver, ROLES_ADMIN),
 
   // Common functions
   { path: 'messages', component: MessageListComponent, runGuardsAndResolvers: 'always' },

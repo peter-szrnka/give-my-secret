@@ -42,7 +42,7 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@BeforeEach
 	public void setup() {
 		gmsUser = TestUtils.createGmsUser();
-		jwt = jwtService.generateJwt(gmsUser);
+		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest());
 	}
 	
 	@Test

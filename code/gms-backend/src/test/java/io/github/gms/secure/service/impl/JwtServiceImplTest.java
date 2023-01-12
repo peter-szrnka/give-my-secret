@@ -35,7 +35,7 @@ class JwtServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldGenerateJwt() {
 		// act
-		String response = service.generateJwt(TestUtils.createGmsAdminUser());
+		String response = service.generateJwt(TestUtils.createJwtAdminRequest());
 
 		// assert
 		assertNotNull(response);
@@ -44,15 +44,15 @@ class JwtServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldParseJwt() {
 		// arrange
-		String generatedToken = service.generateJwt(TestUtils.createGmsAdminUser());
+		String generatedToken = service.generateJwt(TestUtils.createJwtAdminRequest());
 
 		// act
-		Claims response = service.parseJwt(generatedToken);
+		Claims response = service.parseJwt(generatedToken, "HS512");
 	
 		// assert
 		assertNotNull(response);
-		assertEquals(DemoDataProviderService.USER_2_ID, response.get(MdcParameter.USER_ID.getDisplayName(), Long.class));
-		assertEquals(DemoDataProviderService.USERNAME2, response.get(MdcParameter.USER_NAME.getDisplayName()));
+		assertEquals(DemoDataProviderService.USER_1_ID, response.get(MdcParameter.USER_ID.getDisplayName(), Long.class));
+		assertEquals(DemoDataProviderService.USERNAME1, response.get(MdcParameter.USER_NAME.getDisplayName()));
 		assertTrue(response.get("roles", List.class).contains("ROLE_ADMIN"));
 	}
 }

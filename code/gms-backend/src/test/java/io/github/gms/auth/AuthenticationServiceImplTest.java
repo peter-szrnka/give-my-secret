@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -26,8 +27,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.service.JwtService;
+import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
 
@@ -44,6 +47,9 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Mock
 	private JwtService jwtService;
+	
+	@Mock
+	private SystemPropertyService systemPropertyService;
 
 	@Mock
 	private UserAuthService userAuthService;
@@ -54,19 +60,6 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		super.setup();
 		((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
 	}
-	
-	/*@Test
-	void shouldSkipByUrl() {
-		// arrange
-		HttpServletRequest req = mock(HttpServletRequest.class);
-		when(req.getRequestURI()).thenReturn("/healthcheck");
-
-		// act
-		AuthenticationResponse response = service.authenticate(req);
-		
-		// assert
-		assertTrue(response.isSkip());
-	}*/
 	
 	@Test
 	void jwtTokenIsMissing() {
@@ -88,7 +81,8 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.JWT_TOKEN, "invalid_token")});
-		when(jwtService.parseJwt(anyString())).thenThrow(new RuntimeException("Wrong JWT token!"));
+		when(jwtService.parseJwt(anyString(), anyString())).thenThrow(new RuntimeException("Wrong JWT token!"));
+		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
 		// act
 		AuthenticationResponse response = service.authenticate(req);
@@ -98,6 +92,8 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		//assertFalse(response.isSkip());
 		assertEquals("Authentication failed!", response.getErrorMessage());
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
+		verify(jwtService).parseJwt(anyString(), anyString());
+		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);
 	}
 	
 	@Test
@@ -107,19 +103,22 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		Claims claims = mock(Claims.class);
 		
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.JWT_TOKEN, "expired_token")});
-		when(jwtService.parseJwt(anyString())).thenReturn(claims);
+		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(
 				LocalDateTime.now().minusDays(1l).atZone(ZoneId.systemDefault())
 			      .toInstant()));
+		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
 		// act
 		AuthenticationResponse response = service.authenticate(req);
 		
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("Authentication failed: JWT token has expired!")));
-		//assertFalse(response.isSkip());
 		assertEquals("JWT token has expired!", response.getErrorMessage());
 		assertEquals(HttpStatus.BAD_REQUEST, response.getResponseStatus());
+		
+		verify(jwtService).parseJwt(anyString(), anyString());
+		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);
 	}
 	
 	@Test
@@ -130,12 +129,13 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		UserDetails userDetails = TestUtils.createBlockedGmsUser();
 
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.JWT_TOKEN, "valid_token")});
-		when(jwtService.parseJwt(anyString())).thenReturn(claims);
+		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(
 				LocalDateTime.now().plusDays(1l).atZone(ZoneId.systemDefault())
 			      .toInstant()));
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 		when(claims.get(anyString(), any())).thenReturn(userDetails.getUsername());
+		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
 		// act
 		AuthenticationResponse response = service.authenticate(req);
@@ -143,6 +143,9 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("User is blocked")));
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
+
+		verify(jwtService).parseJwt(anyString(), anyString());
+		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);
 	}
 	
 	@Test
@@ -153,19 +156,21 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		UserDetails userDetails = TestUtils.createGmsUser();
 
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.JWT_TOKEN, "valid_token")});
-		when(jwtService.parseJwt(anyString())).thenReturn(claims);
+		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(
 				LocalDateTime.now().plusDays(1l).atZone(ZoneId.systemDefault())
 			      .toInstant()));
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 		when(claims.get(anyString(), any())).thenReturn(userDetails.getUsername());
+		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
 		// act
 		AuthenticationResponse response = service.authenticate(req);
 		
 		// assert
 		assertFalse(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("Authentication failed: JWT token has expired!")));
-		//assertFalse(response.isSkip());
 		assertEquals(HttpStatus.OK, response.getResponseStatus());
+		verify(jwtService).parseJwt(anyString(), anyString());
+		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);
 	}
 }

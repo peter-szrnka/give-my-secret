@@ -30,6 +30,7 @@ import { LoginModule } from './components/login/login-module';
 import { HomeModule } from './components/home/home-module';
 import { HeaderModule } from './components/header/header-module';
 import { PipesModule } from './common/components/pipes/pipes.module';
+import { SystemPropertyModule } from './components/system_property/system-property-module';
 
 export const WINDOW_TOKEN = new InjectionToken<Window>('Window');
 
@@ -69,6 +70,7 @@ export const WINDOW_TOKEN = new InjectionToken<Window>('Window');
     SettingsModule,
     MessageModule,
     ApiTestingModule,
+    SystemPropertyModule,
     PipesModule
   ],
   providers: [ 

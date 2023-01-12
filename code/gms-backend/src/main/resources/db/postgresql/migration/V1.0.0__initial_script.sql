@@ -84,3 +84,10 @@ CREATE TABLE gms_api_key_restriction (
 	api_key_id BIGINT NOT NULL,
 	user_id BIGINT NOT NULL
 );
+
+CREATE TABLE gms_system_property (
+	id SERIAL PRIMARY KEY,
+	key VARCHAR(255) NULL DEFAULT NULL,
+	value VARCHAR(255) NULL DEFAULT NULL,
+	last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp
+);

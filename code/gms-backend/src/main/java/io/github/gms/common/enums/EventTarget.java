@@ -12,5 +12,6 @@ public enum EventTarget {
 	KEYSTORE,
 	ADMIN_USER,
 	USER,
-	VALUES;
+	VALUES,
+	SYSTEM_PROPERTY;
 }

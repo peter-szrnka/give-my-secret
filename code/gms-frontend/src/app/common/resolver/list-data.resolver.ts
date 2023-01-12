@@ -10,7 +10,7 @@ export abstract class ListResolver<T, L extends BaseList<T>, S extends ServiceBa
 
     public tableConfig = {
         pageSize : 20
-      };
+    };
 
     constructor(protected sharedData : SharedDataService, protected splashScreenStateService: SplashScreenStateService, protected service : S) {
     }

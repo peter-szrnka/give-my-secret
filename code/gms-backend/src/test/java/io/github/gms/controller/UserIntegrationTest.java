@@ -45,7 +45,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@BeforeEach
 	public void setup() {
 		gmsUser = TestUtils.createGmsAdminUser();
-		jwt = jwtService.generateJwt(gmsUser);
+		jwt = jwtService.generateJwt(TestUtils.createJwtAdminRequest(gmsUser));
 	}
 
 	@Transactional
