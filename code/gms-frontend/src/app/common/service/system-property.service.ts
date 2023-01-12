@@ -12,8 +12,8 @@ export class SystemPropertyService {
 
     constructor(protected http : HttpClient) {}
 
-    save(item : SystemProperty) : Observable<void> {
-        return this.http.post<void>(environment.baseUrl + 'secure/system_property', item, { withCredentials: true, headers : getHeaders() });
+    save(item : SystemProperty) : Observable<string> {
+        return this.http.post<string>(environment.baseUrl + 'secure/system_property', item, { withCredentials: true, headers : getHeaders() });
     }
 
     delete(key: string): Observable<string> {

@@ -10,8 +10,10 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { User } from "../../common/model/user.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { SystemPropertyListComponent } from "./system-property-list.component";
+import { PROPERTY_TEXT_MAP, SystemPropertyListComponent } from "./system-property-list.component";
 import { SystemPropertyService } from "../../common/service/system-property.service";
+import { SystemProperty } from "../../common/model/system-property.model";
+import { FormsModule } from "@angular/forms";
 
 
 describe('SystemPropertyListComponent', () => {
@@ -30,7 +32,7 @@ describe('SystemPropertyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            imports : [RouterTestingModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
             declarations : [SystemPropertyListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -80,6 +82,7 @@ describe('SystemPropertyListComponent', () => {
         };
 
         service = {
+            save : jest.fn().mockReturnValue(of("")),
             delete : jest.fn().mockReturnValue(of("OK"))
         };
     });
@@ -103,14 +106,20 @@ describe('SystemPropertyListComponent', () => {
     });
 
     it('Should return empty table | Invalid user', () => {
-        spyOn(component.sharedData, 'getUserInfo').and.returnValue(undefined);
+        // arrange
+        sharedDataService = {
+            getUserInfo : jest.fn().mockReturnValue(undefined)
+        };
         configureTestBed();
 
+        // act &assert
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
-    it('Should delete an item', () => {
+    it('Should save fail', () => {
+        // arrange
+        service.save = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
         configureTestBed();
 
         expect(component).toBeTruthy();
@@ -118,13 +127,54 @@ describe('SystemPropertyListComponent', () => {
 
         spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(true))});
 
-        component.promptDelete('REFRESH_JWT_ALGORITHM');
+        // act
+        component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
+        // assert
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
-    it('Should cancel dialog', () => {
+    it('Should save succeed', () => {
+        // arrange
+        configureTestBed();
+
+        expect(component).toBeTruthy();
+        expect(component.datasource).toBeTruthy();
+
+        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(true))});
+
+        // act
+        const valueSet : string[] = component.getValueSet('REFRESH_JWT_ALGORITHM');
+        component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
+
+        // assert
+        expect(valueSet).toEqual(PROPERTY_TEXT_MAP['REFRESH_JWT_ALGORITHM'].valueSet);
+        expect(component.dialog.open).toHaveBeenCalled();
+        expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+        expect(router.navigate).toBeCalledWith(['/system_property/list']);
+    });
+
+    it('Should delete an item', () => {
+        // arrange
+        configureTestBed();
+
+        expect(component).toBeTruthy();
+        expect(component.datasource).toBeTruthy();
+
+        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(true))});
+
+        // act
+        component.promptDelete('REFRESH_JWT_ALGORITHM');
+
+        expect(service.delete).toHaveBeenCalled();
+        expect(component.dialog.open).toHaveBeenCalled();
+        expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+        expect(router.navigate).toBeCalledWith(['/system_property/list']);
+    });
+
+    it('Should cancel dialog after delete', () => {
+        // arrange
         configureTestBed();
 
         expect(component).toBeTruthy();
@@ -132,8 +182,11 @@ describe('SystemPropertyListComponent', () => {
 
         spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(false))});
 
+        // act
         component.promptDelete('REFRESH_JWT_ALGORITHM');
 
+        // assert
+        expect(service.delete).toHaveBeenCalledTimes(0);
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
