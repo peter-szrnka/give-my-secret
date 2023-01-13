@@ -1,5 +1,6 @@
 package io.github.gms.common.controller;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,19 +11,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.WebUtils;
 
 import io.github.gms.auth.dto.AuthenticateRequestDto;
 import io.github.gms.auth.dto.AuthenticateResponseDto;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.service.LoginService;
+import io.github.gms.secure.service.SystemPropertyService;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @RestController
-public class OpenController {
+public class LoginController {
 	
 	public static final String LOGIN_PATH = "/authenticate";
 	public static final String LOGOUT_PATH = "/logoutUser";
@@ -33,6 +37,9 @@ public class OpenController {
 
 	@Autowired
 	private LoginService service;
+	
+	@Autowired
+	private SystemPropertyService systemPropertyService;
 
 	@PostMapping(LOGIN_PATH)
 	public ResponseEntity<UserInfoDto> loginAuthentication(@RequestBody AuthenticateRequestDto dto, HttpServletRequest request) {
@@ -44,7 +51,10 @@ public class OpenController {
 		
 		HttpHeaders headers = new HttpHeaders();
 		
-		addCookie(headers, authenticateResult.getToken(), Constants.VALIDITY_SECONDS);
+		addCookie(headers, Constants.ACCESS_JWT_TOKEN, authenticateResult.getToken(), 
+				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS));
+		addCookie(headers, Constants.REFRESH_JWT_TOKEN, authenticateResult.getRefreshToken(), 
+				systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS));
 
 		return ResponseEntity.ok().headers(headers).body(authenticateResult.getCurrentUser());
 	}
@@ -52,11 +62,23 @@ public class OpenController {
 	@PostMapping(LOGOUT_PATH)
 	public ResponseEntity<Void> logout(HttpServletRequest request) {
 		HttpHeaders headers = new HttpHeaders();
-		addCookie(headers, "", 0);
+		addCookie(headers, Constants.ACCESS_JWT_TOKEN, "", 0);
+		addCookie(headers, Constants.REFRESH_JWT_TOKEN, "", 0);
 		return ResponseEntity.ok().headers(headers).build();
 	}
 	
-	private void addCookie(HttpHeaders headers, String value, long maxAge) {
-	    headers.add(Constants.SET_COOKIE, String.format(COOKIE_FORMAT, Constants.JWT_TOKEN, value, maxAge, secure ? "None" : "Lax", secure ? ";Secure" : ""));
+	@PostMapping("/refresh")
+	public ResponseEntity<Void> refresh(HttpServletRequest request) {
+		Cookie jwtTokenCookie = WebUtils.getCookie(request, Constants.REFRESH_JWT_TOKEN);
+
+		HttpHeaders headers = new HttpHeaders();
+		addCookie(headers, Constants.ACCESS_JWT_TOKEN, service.refreshToken(jwtTokenCookie.getValue()), 
+				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS));
+
+		return ResponseEntity.ok().headers(headers).build();
+	}
+	
+	private void addCookie(HttpHeaders headers, String name, String value, long maxAge) {
+	    headers.add(Constants.SET_COOKIE, String.format(COOKIE_FORMAT, name, value, maxAge, secure ? "None" : "Lax", secure ? ";Secure" : ""));
 	}
 }

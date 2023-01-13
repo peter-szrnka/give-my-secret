@@ -35,7 +35,7 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoDataProviderService.USERNAME1, "testFail");
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
 		HttpClientErrorException.Unauthorized exception = 
-				assertThrows(HttpClientErrorException.Unauthorized.class, () -> executeHttpPost(OpenController.LOGIN_PATH, requestEntity, String.class));
+				assertThrows(HttpClientErrorException.Unauthorized.class, () -> executeHttpPost(LoginController.LOGIN_PATH, requestEntity, String.class));
 		
 		// assert
 		assertEquals("401 : [no body]", exception.getMessage());
@@ -47,7 +47,7 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 		// act
 		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoDataProviderService.USERNAME1, "test");
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
-		ResponseEntity<String> response = executeHttpPost(OpenController.LOGIN_PATH, requestEntity, String.class);
+		ResponseEntity<String> response = executeHttpPost(LoginController.LOGIN_PATH, requestEntity, String.class);
 		
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -59,7 +59,7 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 		
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpPost(OpenController.LOGOUT_PATH, requestEntity, String.class);
+		ResponseEntity<String> response = executeHttpPost(LoginController.LOGOUT_PATH, requestEntity, String.class);
 		
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

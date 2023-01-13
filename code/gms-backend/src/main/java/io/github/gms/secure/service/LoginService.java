@@ -10,4 +10,6 @@ import io.github.gms.auth.dto.AuthenticateResponseDto;
 public interface LoginService {
 
 	AuthenticateResponseDto login(AuthenticateRequestDto dto);
+	
+	String refreshToken(String refreshJwtToken);
 }

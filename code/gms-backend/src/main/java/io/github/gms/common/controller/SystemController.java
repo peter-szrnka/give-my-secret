@@ -1,5 +1,7 @@
 package io.github.gms.common.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +24,7 @@ public class SystemController {
 
 	@ResponseBody
 	@GetMapping("/status")
-	public SystemStatusDto status() {
+	public SystemStatusDto status(HttpServletRequest request) {
 		return systemService.getSystemStatus();
 	}
 }

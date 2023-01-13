@@ -80,7 +80,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	void jwtIsInvalid() {
 		// arrange
 		HttpServletRequest req = mock(HttpServletRequest.class);
-		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.JWT_TOKEN, "invalid_token")});
+		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "invalid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenThrow(new RuntimeException("Wrong JWT token!"));
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
@@ -102,7 +102,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		Claims claims = mock(Claims.class);
 		
-		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.JWT_TOKEN, "expired_token")});
+		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "expired_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(
 				LocalDateTime.now().minusDays(1l).atZone(ZoneId.systemDefault())
@@ -128,7 +128,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		Claims claims = mock(Claims.class);
 		UserDetails userDetails = TestUtils.createBlockedGmsUser();
 
-		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.JWT_TOKEN, "valid_token")});
+		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "valid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(
 				LocalDateTime.now().plusDays(1l).atZone(ZoneId.systemDefault())
@@ -155,7 +155,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		Claims claims = mock(Claims.class);
 		UserDetails userDetails = TestUtils.createGmsUser();
 
-		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.JWT_TOKEN, "valid_token")});
+		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "valid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(
 				LocalDateTime.now().plusDays(1l).atZone(ZoneId.systemDefault())

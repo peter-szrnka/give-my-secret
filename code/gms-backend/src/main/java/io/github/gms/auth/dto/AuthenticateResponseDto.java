@@ -20,4 +20,5 @@ public class AuthenticateResponseDto implements Serializable {
 
 	private UserInfoDto currentUser;
 	private String token;
+	private String refreshToken;
 }

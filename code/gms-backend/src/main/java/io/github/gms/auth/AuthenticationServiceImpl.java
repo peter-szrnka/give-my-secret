@@ -44,9 +44,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	public AuthenticationResponse authenticate(HttpServletRequest request) {
-		Cookie jwtTokenCookie = WebUtils.getCookie(request, Constants.JWT_TOKEN);
+		Cookie jwtTokenCookie = WebUtils.getCookie(request, Constants.ACCESS_JWT_TOKEN);
 		
 		if (jwtTokenCookie == null) {
+			log.info("ACCESS JWT MISSING!");
 			return AuthenticationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();
 		}
 		
@@ -98,7 +99,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private Pair<HttpStatus, String> validateJwt(Claims jwsResult) {
 		if (jwsResult.getExpiration().before(new Date())) {
-			return Pair.of(HttpStatus.BAD_REQUEST, "JWT token has expired!");
+			return Pair.of(HttpStatus.NOT_ACCEPTABLE, "JWT token has expired!");
 		}
 		
 		return Pair.of(HttpStatus.OK, null);

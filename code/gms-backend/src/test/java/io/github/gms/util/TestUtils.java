@@ -102,7 +102,7 @@ public class TestUtils {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("X-API-KEY", apiKey);
-		headers.add("Cookie", Constants.JWT_TOKEN + "=" + jwt + ";Max-Age=3600");
+		headers.add("Cookie", Constants.ACCESS_JWT_TOKEN + "=" + jwt + ";Max-Age=3600");
 		
 		return headers;
 	}
@@ -113,14 +113,14 @@ public class TestUtils {
 		headers.setContentType(MediaType.APPLICATION_JSON);	
 
 		if (jwt != null) {
-			headers.add("Cookie", Constants.JWT_TOKEN + "=" + jwt + ";Max-Age=3600;HttpOnly");
+			headers.add("Cookie", Constants.ACCESS_JWT_TOKEN + "=" + jwt + ";Max-Age=3600;HttpOnly");
 		}
 
 		return headers;
 	}
 	
 	public static Cookie getCookie(String jwt) {
-		Cookie cookie = new Cookie(Constants.JWT_TOKEN, jwt);
+		Cookie cookie = new Cookie(Constants.ACCESS_JWT_TOKEN, jwt);
 		cookie.setHttpOnly(true);
 		cookie.setMaxAge(3600);
 		return cookie;
