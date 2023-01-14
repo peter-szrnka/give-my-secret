@@ -1,6 +1,9 @@
 package io.github.gms.auth;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.Cookie;
@@ -9,17 +12,25 @@ import javax.servlet.http.HttpServletRequest;
 import org.jboss.logging.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
+import io.github.gms.auth.model.AuthenticationDetails;
 import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.enums.UserRole;
+import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.common.types.Pair;
 import io.github.gms.common.util.Constants;
+import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
 import io.jsonwebtoken.Claims;
@@ -32,6 +43,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
 	@Autowired
 	private JwtService jwtService;
@@ -41,6 +55,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	@Autowired
 	private SystemPropertyService systemPropertyService;
+	
+	@Autowired
+	private GenerateJwtRequestConverter generateJwtRequestConverter;
 
 	@Override
 	public AuthenticationResponse authenticate(HttpServletRequest request) {
@@ -77,6 +94,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 						.build();
 			}
 			
+			// Let's refresh the existing tokens
+			AuthenticationDetails authenticationDetails = generateJwtWithAuthenticationDetails(userDetails.getUsername(), userDetails.getPassword());
+			
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -87,6 +107,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 			return AuthenticationResponse.builder()
 					.authentication(authentication)
+					.jwtPair(authenticationDetails.getJwtPair())
 					.build();
 		} catch (Exception e) {
 			log.warn("Authentication failed: {}", e.getMessage());
@@ -96,6 +117,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 					.build();
 		}
 	}
+	
+	@Override
+	public AuthenticationDetails generateJwtWithAuthenticationDetails(String username, String credential) {
+		Authentication authenticate = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
+		GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
+
+		Map<JwtConfigType, GenerateJwtRequest> input = Map.of(
+				JwtConfigType.ACCESS_JWT, buildAccessJwtRequest(user.getUserId(), user.getUsername(), 
+						user.getAuthorities().stream().map(authority -> UserRole.getByName(authority.getAuthority())).collect(Collectors.toSet())),
+				JwtConfigType.REFRESH_JWT, buildRefreshTokenRequest(user.getUsername())
+		);
+		
+		return new AuthenticationDetails(jwtService.generateJwts(input), user);
+	}
 
 	private Pair<HttpStatus, String> validateJwt(Claims jwsResult) {
 		if (jwsResult.getExpiration().before(new Date())) {
@@ -103,5 +139,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		}
 		
 		return Pair.of(HttpStatus.OK, null);
+	}
+	
+	private GenerateJwtRequest buildRefreshTokenRequest(String userName) {
+		return generateJwtRequestConverter.toRequest(JwtConfigType.REFRESH_JWT, userName, null);
+	}
+
+	private GenerateJwtRequest buildAccessJwtRequest(Long userId, String userName, Set<UserRole> roles) {
+		Map<String, Object> claims = Map.of(
+				MdcParameter.USER_ID.getDisplayName(), userId,
+				MdcParameter.USER_NAME.getDisplayName(), userName,
+				"roles", roles
+		);
+
+		return generateJwtRequestConverter.toRequest(JwtConfigType.ACCESS_JWT, userName, claims);
 	}
 }

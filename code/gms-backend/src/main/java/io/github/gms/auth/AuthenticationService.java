@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.core.Authentication;
 
+import io.github.gms.auth.model.AuthenticationDetails;
 import io.github.gms.auth.model.AuthenticationResponse;
 
 /**
@@ -21,4 +22,6 @@ public interface AuthenticationService {
 	 * @return A new {@link AuthenticationResponse} instance.
 	 */
 	AuthenticationResponse authenticate(HttpServletRequest request);
+	
+	AuthenticationDetails generateJwtWithAuthenticationDetails(String username, String credential);
 }

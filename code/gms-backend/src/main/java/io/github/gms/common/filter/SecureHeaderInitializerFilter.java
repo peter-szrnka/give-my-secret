@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.logging.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,8 @@ import com.google.common.collect.Sets;
 import io.github.gms.auth.AuthenticationService;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.CookieUtils;
 
 /**
  * A custom Spring filter used to authorize user by parsing JWT token.
@@ -38,6 +41,9 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private AuthenticationService authenticationService;
+	
+	@Value("${config.cookie.secure}")
+	private boolean secure;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -57,6 +63,9 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 			response.sendError(authenticationResponse.getResponseStatus().value(), authenticationResponse.getErrorMessage());
 			return;
 		}
+		
+		response.addCookie(CookieUtils.addCookie(Constants.ACCESS_JWT_TOKEN, ALREADY_FILTERED_SUFFIX, 0, secure));
+		response.addCookie(CookieUtils.addCookie(Constants.REFRESH_JWT_TOKEN, ALREADY_FILTERED_SUFFIX, 0, secure));
 
 		Authentication authentication = authenticationResponse.getAuthentication();
 		boolean admin = authentication.getAuthorities().stream().anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
