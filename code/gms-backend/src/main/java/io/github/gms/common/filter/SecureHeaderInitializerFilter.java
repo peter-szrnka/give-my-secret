@@ -24,9 +24,12 @@ import com.google.common.collect.Sets;
 
 import io.github.gms.auth.AuthenticationService;
 import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
+import io.github.gms.secure.service.SystemPropertyService;
 
 /**
  * A custom Spring filter used to authorize user by parsing JWT token.
@@ -41,6 +44,9 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private AuthenticationService authenticationService;
+	
+	@Autowired
+	private SystemPropertyService systemPropertyService;
 	
 	@Value("${config.cookie.secure}")
 	private boolean secure;
@@ -57,15 +63,20 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		AuthenticationResponse authenticationResponse = authenticationService.authenticate(request);
+		AuthenticationResponse authenticationResponse = authenticationService.authorize(request);
 		
 		if (authenticationResponse.getResponseStatus() != HttpStatus.OK) {
 			response.sendError(authenticationResponse.getResponseStatus().value(), authenticationResponse.getErrorMessage());
 			return;
 		}
 		
-		response.addCookie(CookieUtils.addCookie(Constants.ACCESS_JWT_TOKEN, ALREADY_FILTERED_SUFFIX, 0, secure));
-		response.addCookie(CookieUtils.addCookie(Constants.REFRESH_JWT_TOKEN, ALREADY_FILTERED_SUFFIX, 0, secure));
+		String accessCookie = CookieUtils.createCookie(Constants.ACCESS_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.ACCESS_JWT), 
+				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS), secure).toString();
+		String refreshCookie = CookieUtils.createCookie(Constants.REFRESH_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.REFRESH_JWT), 
+				systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS), secure).toString();
+
+		response.addHeader(Constants.SET_COOKIE, accessCookie);
+		response.addHeader(Constants.SET_COOKIE, refreshCookie);
 
 		Authentication authentication = authenticationResponse.getAuthentication();
 		boolean admin = authentication.getAuthorities().stream().anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));

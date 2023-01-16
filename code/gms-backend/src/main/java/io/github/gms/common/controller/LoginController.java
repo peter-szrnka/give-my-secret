@@ -49,10 +49,10 @@ public class LoginController {
 		
 		HttpHeaders headers = new HttpHeaders();
 		
-		CookieUtils.addCookie(headers, Constants.ACCESS_JWT_TOKEN, authenticateResult.getToken(), 
-				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS), secure);
-		CookieUtils.addCookie(headers, Constants.REFRESH_JWT_TOKEN, authenticateResult.getRefreshToken(), 
-				systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS), secure);
+		headers.add(Constants.SET_COOKIE, CookieUtils.createCookie(Constants.ACCESS_JWT_TOKEN, authenticateResult.getToken(), 
+				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS), secure).toString());
+		headers.add(Constants.SET_COOKIE, CookieUtils.createCookie(Constants.REFRESH_JWT_TOKEN, authenticateResult.getRefreshToken(), 
+				systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS), secure).toString());
 
 		return ResponseEntity.ok().headers(headers).body(authenticateResult.getCurrentUser());
 	}
@@ -60,19 +60,10 @@ public class LoginController {
 	@PostMapping(LOGOUT_PATH)
 	public ResponseEntity<Void> logout(HttpServletRequest request) {
 		HttpHeaders headers = new HttpHeaders();
-		CookieUtils.addCookie(headers, Constants.ACCESS_JWT_TOKEN, "", 0, secure);
-		CookieUtils.addCookie(headers, Constants.REFRESH_JWT_TOKEN, "", 0, secure);
+		
+		headers.add(Constants.SET_COOKIE, CookieUtils.createCookie(Constants.ACCESS_JWT_TOKEN, null, 0, secure).toString());
+		headers.add(Constants.SET_COOKIE, CookieUtils.createCookie(Constants.REFRESH_JWT_TOKEN, null, 0, secure).toString());
+
 		return ResponseEntity.ok().headers(headers).build();
 	}
-	
-	/*@PostMapping("/refresh")
-	public ResponseEntity<Void> refresh(HttpServletRequest request) {
-		Cookie jwtTokenCookie = WebUtils.getCookie(request, Constants.REFRESH_JWT_TOKEN);
-
-		HttpHeaders headers = new HttpHeaders();
-		addCookie(headers, Constants.ACCESS_JWT_TOKEN, service.refreshToken(jwtTokenCookie.getValue()), 
-				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS));
-
-		return ResponseEntity.ok().headers(headers).build();
-	}*/
 }

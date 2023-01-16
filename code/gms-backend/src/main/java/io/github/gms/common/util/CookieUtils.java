@@ -1,24 +1,24 @@
 package io.github.gms.common.util;
 
-import javax.servlet.http.Cookie;
+import java.time.Duration;
 
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 public class CookieUtils {
-	
-	private static final String COOKIE_FORMAT = "%s=%s;Max-Age=%d;HttpOnly;SameSite=%s%s";
-	
+
 	private CookieUtils() {}
 	
-	public static void addCookie(HttpHeaders headers, String name, String value, long maxAge, boolean secure) {
-		headers.add(Constants.SET_COOKIE, getValue(name, value, maxAge, secure));
-	}
-
-	public static Cookie addCookie(String name, String value, long maxAge, boolean secure) {
-		return new Cookie(Constants.SET_COOKIE, getValue(name, value, maxAge, secure));
-	}
-	
-	private static String getValue(String name, String value, long maxAge, boolean secure) {
-		return String.format(COOKIE_FORMAT, name, value, maxAge, secure ? "None" : "Lax", secure ? ";Secure" : "");
+	public static ResponseCookie createCookie(String name, String value, long maxAge, boolean secure) {
+		return ResponseCookie.from(name, value)
+				.maxAge(Duration.ofSeconds(maxAge))
+				.secure(secure)
+				.httpOnly(true)
+				.sameSite(secure ? "None" : "Lax")
+				.path("/")
+				.build();
 	}
 }

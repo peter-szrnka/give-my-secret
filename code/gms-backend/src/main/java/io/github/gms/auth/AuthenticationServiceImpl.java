@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
@@ -60,11 +59,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private GenerateJwtRequestConverter generateJwtRequestConverter;
 
 	@Override
-	public AuthenticationResponse authenticate(HttpServletRequest request) {
+	public AuthenticationDetails authenticate(String username, String credential) {
+		Authentication authenticate = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
+		GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
+
+		return getAuthenticationDetails(user);
+	}
+
+	@Override
+	public AuthenticationResponse authorize(HttpServletRequest request) {
 		Cookie jwtTokenCookie = WebUtils.getCookie(request, Constants.ACCESS_JWT_TOKEN);
 		
 		if (jwtTokenCookie == null) {
-			log.info("ACCESS JWT MISSING!");
 			return AuthenticationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();
 		}
 		
@@ -84,8 +91,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 						.build();
 			}
 
-			UserDetails userDetails = userAuthService.loadUserByUsername(jwsResult.get(MdcParameter.USER_NAME.getDisplayName(), String.class));
-			
+			GmsUserDetails userDetails = (GmsUserDetails) userAuthService.loadUserByUsername(jwsResult.get(MdcParameter.USER_NAME.getDisplayName(), String.class));
+
 			if (!userDetails.isEnabled()) {
 				log.warn("User is blocked");
 				return AuthenticationResponse.builder()
@@ -95,7 +102,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			}
 			
 			// Let's refresh the existing tokens
-			AuthenticationDetails authenticationDetails = generateJwtWithAuthenticationDetails(userDetails.getUsername(), userDetails.getPassword());
+			AuthenticationDetails authenticationDetails = getAuthenticationDetails(userDetails);
 			
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -118,12 +125,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		}
 	}
 	
-	@Override
-	public AuthenticationDetails generateJwtWithAuthenticationDetails(String username, String credential) {
-		Authentication authenticate = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
-		GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
-
+	
+	private AuthenticationDetails getAuthenticationDetails(GmsUserDetails user) {
 		Map<JwtConfigType, GenerateJwtRequest> input = Map.of(
 				JwtConfigType.ACCESS_JWT, buildAccessJwtRequest(user.getUserId(), user.getUsername(), 
 						user.getAuthorities().stream().map(authority -> UserRole.getByName(authority.getAuthority())).collect(Collectors.toSet())),
@@ -132,17 +135,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		
 		return new AuthenticationDetails(jwtService.generateJwts(input), user);
 	}
-
-	private Pair<HttpStatus, String> validateJwt(Claims jwsResult) {
-		if (jwsResult.getExpiration().before(new Date())) {
-			return Pair.of(HttpStatus.NOT_ACCEPTABLE, "JWT token has expired!");
-		}
-		
-		return Pair.of(HttpStatus.OK, null);
-	}
 	
 	private GenerateJwtRequest buildRefreshTokenRequest(String userName) {
-		return generateJwtRequestConverter.toRequest(JwtConfigType.REFRESH_JWT, userName, null);
+		Map<String, Object> claims = Map.of(
+				MdcParameter.USER_NAME.getDisplayName(), userName
+		);
+		return generateJwtRequestConverter.toRequest(JwtConfigType.REFRESH_JWT, userName, claims);
 	}
 
 	private GenerateJwtRequest buildAccessJwtRequest(Long userId, String userName, Set<UserRole> roles) {
@@ -153,5 +151,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		);
 
 		return generateJwtRequestConverter.toRequest(JwtConfigType.ACCESS_JWT, userName, claims);
+	}
+
+	private static Pair<HttpStatus, String> validateJwt(Claims jwsResult) {
+		if (jwsResult.getExpiration().before(new Date())) {
+			return Pair.of(HttpStatus.BAD_REQUEST, "JWT token has expired!");
+		}
+		
+		return Pair.of(HttpStatus.OK, null);
 	}
 }

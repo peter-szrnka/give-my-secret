@@ -13,15 +13,15 @@ import io.github.gms.auth.model.AuthenticationResponse;
  */
 public interface AuthenticationService {
 
+	AuthenticationDetails authenticate(String username, String credential);
+	
 	/**
-	 * - Authenticates the incoming request with JWT
+	 * - Authorizes the incoming request with JWT
 	 * - Configures MDC parameters
 	 * - Returns with a {@link Authentication} instance.
 	 * 
 	 * @param request {@link HttpServletRequest}
 	 * @return A new {@link AuthenticationResponse} instance.
 	 */
-	AuthenticationResponse authenticate(HttpServletRequest request);
-	
-	AuthenticationDetails generateJwtWithAuthenticationDetails(String username, String credential);
+	AuthenticationResponse authorize(HttpServletRequest request);
 }

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EncryptedFieldConverter implements AttributeConverter<String, String> {
 
+	private static final int AUTHENTICATION_TAG_LENGTH = 128;
 	private static final String ENCRYPTION_ALGORITHM = "AES/GCM/NoPadding";
 	private static final String AES = "AES";
 
@@ -43,7 +44,7 @@ public class EncryptedFieldConverter implements AttributeConverter<String, Strin
 		try {
 			Key key = new SecretKeySpec(Base64.getDecoder().decode(secret.getBytes()), AES);
 			Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
-			cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(128, encryptionIv.getBytes(StandardCharsets.UTF_8)));
+			cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(AUTHENTICATION_TAG_LENGTH, encryptionIv.getBytes(StandardCharsets.UTF_8)));
 			return Base64.getEncoder().encodeToString(cipher.doFinal(attribute.getBytes()));
 		} catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new IllegalStateException(e);
@@ -55,7 +56,7 @@ public class EncryptedFieldConverter implements AttributeConverter<String, Strin
 		try {
 			Key key = new SecretKeySpec(Base64.getDecoder().decode(secret.getBytes()), AES);
 			Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
-			cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(128, encryptionIv.getBytes(StandardCharsets.UTF_8)));
+			cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(AUTHENTICATION_TAG_LENGTH, encryptionIv.getBytes(StandardCharsets.UTF_8)));
 			return new String(cipher.doFinal(Base64.getDecoder().decode(dbData)));
 		} catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new IllegalStateException(e);

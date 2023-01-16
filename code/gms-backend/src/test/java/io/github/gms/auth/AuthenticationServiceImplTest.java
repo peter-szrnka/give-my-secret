@@ -2,9 +2,12 @@ package io.github.gms.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,6 +15,8 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -22,13 +27,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.auth.model.AuthenticationDetails;
 import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.common.util.Constants;
+import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.util.TestUtils;
@@ -50,9 +63,15 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Mock
 	private SystemPropertyService systemPropertyService;
+	
+	@Mock
+	private AuthenticationManager authenticationManager;
 
 	@Mock
 	private UserAuthService userAuthService;
+	
+	@Mock
+	private GenerateJwtRequestConverter generateJwtRequestConverter;
 	
 	@Override
 	@BeforeEach
@@ -62,13 +81,38 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
+	void shouldAuthenticate() {
+		// arrange
+		when(authenticationManager.authenticate(any(Authentication.class)))
+			.thenReturn(new TestingAuthenticationToken(TestUtils.createGmsUser(), "cred", List.of(new SimpleGrantedAuthority("ROLE_USER"))));
+		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap()))
+			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
+		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap()))
+			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
+		when(jwtService.generateJwts(anyMap())).thenReturn(Map.of(
+				JwtConfigType.ACCESS_JWT, "ACCESS_JWT",
+				JwtConfigType.REFRESH_JWT, "REFRESH_JWT"
+				));
+		
+		//act
+		AuthenticationDetails response = service.authenticate("user", "credential");
+		
+		// assert
+		assertNotNull(response);
+		verify(authenticationManager).authenticate(any(Authentication.class));
+		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
+		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
+		verify(jwtService).generateJwts(anyMap());
+	}
+	
+	@Test
 	void jwtTokenIsMissing() {
 		// arrange
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		when(req.getCookies()).thenReturn(new Cookie[] {});
 
 		// act
-		AuthenticationResponse response = service.authenticate(req);
+		AuthenticationResponse response = service.authorize(req);
 		
 		// assert
 		//assertFalse(response.isSkip());
@@ -85,7 +129,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
 		// act
-		AuthenticationResponse response = service.authenticate(req);
+		AuthenticationResponse response = service.authorize(req);
 		
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().contains("Authentication failed: ")));
@@ -110,7 +154,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
 		// act
-		AuthenticationResponse response = service.authenticate(req);
+		AuthenticationResponse response = service.authorize(req);
 		
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("Authentication failed: JWT token has expired!")));
@@ -138,7 +182,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
 		// act
-		AuthenticationResponse response = service.authenticate(req);
+		AuthenticationResponse response = service.authorize(req);
 		
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("User is blocked")));
@@ -163,14 +207,28 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 		when(claims.get(anyString(), any())).thenReturn(userDetails.getUsername());
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
+		
+		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap()))
+			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
+		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap()))
+			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
+		
+		when(jwtService.generateJwts(anyMap())).thenReturn(Map.of(
+				JwtConfigType.ACCESS_JWT, "ACCESS_JWT",
+				JwtConfigType.REFRESH_JWT, "REFRESH_JWT"
+				));
 
 		// act
-		AuthenticationResponse response = service.authenticate(req);
+		AuthenticationResponse response = service.authorize(req);
 		
 		// assert
 		assertFalse(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("Authentication failed: JWT token has expired!")));
 		assertEquals(HttpStatus.OK, response.getResponseStatus());
 		verify(jwtService).parseJwt(anyString(), anyString());
 		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);
+		
+		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
+		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
+		verify(jwtService).generateJwts(anyMap());
 	}
 }

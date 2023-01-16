@@ -1,6 +1,7 @@
 package io.github.gms.common.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,8 +16,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.auth.dto.AuthenticateRequestDto;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 
@@ -51,6 +52,7 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 		
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertFalse(response.getHeaders().get("Cookie").isEmpty());
 		assertNotNull(response.getBody());
 	}
 

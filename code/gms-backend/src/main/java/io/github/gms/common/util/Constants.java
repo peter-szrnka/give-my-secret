@@ -40,6 +40,6 @@ public final class Constants {
 	
 	// Headers
 	public static final String ACCESS_JWT_TOKEN = "jwt";
-	public static final String REFRESH_JWT_TOKEN = "refresh-jwt";
+	public static final String REFRESH_JWT_TOKEN = "refreshJwt";
 	public static final String SET_COOKIE = "Set-Cookie";
 }

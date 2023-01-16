@@ -29,7 +29,7 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public AuthenticateResponseDto login(AuthenticateRequestDto dto) {
 		try {
-			AuthenticationDetails authenticationDetails = authenticationService.generateJwtWithAuthenticationDetails(dto.getUsername(), dto.getCredential());
+			AuthenticationDetails authenticationDetails = authenticationService.authenticate(dto.getUsername(), dto.getCredential());
 
 			return new AuthenticateResponseDto(converter.toUserInfoDto(authenticationDetails.getUser()), 
 					authenticationDetails.getJwtPair().get(JwtConfigType.ACCESS_JWT), 

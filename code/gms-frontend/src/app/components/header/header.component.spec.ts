@@ -14,6 +14,7 @@ class MockServices {
     public events = new Observable((observer) => {
         observer.next(new NavigationStart(0, 'dummy/url', 'imperative'));
         observer.next(new NavigationEnd(0, 'dummy/url', 'imperative'));
+        observer.next(new NavigationEnd(0, '/', 'imperative'));
         return observer;
     });
 
@@ -44,7 +45,8 @@ describe('HeaderComponent', () => {
         sharedDataService = {
             logout: jest.fn(),
             messageCountUpdateEvent: eventEmitter,
-            userSubject$: mockSubject
+            userSubject$: mockSubject,
+            getAllUnread : jest.fn()
         };
 
         messageService = {
@@ -52,7 +54,7 @@ describe('HeaderComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports: [/*RouterTestingModule, */BrowserAnimationsModule, AngularMaterialModule],
+            imports: [BrowserAnimationsModule, AngularMaterialModule],
             declarations: [HeaderComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -69,7 +71,14 @@ describe('HeaderComponent', () => {
         };
     });
 
-    it('Should log out', () => {
+    it('should query unread messages', () => {
+        fixture = TestBed.createComponent(HeaderComponent);
+        component = fixture.componentInstance;
+        mockSubject.next(currentUser);
+        fixture.detectChanges();
+    });
+
+    it('should log out', () => {
         fixture = TestBed.createComponent(HeaderComponent);
         component = fixture.componentInstance;
 
