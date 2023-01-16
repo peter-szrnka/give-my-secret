@@ -10,8 +10,6 @@ import org.springframework.http.ResponseCookie;
  */
 public class CookieUtils {
 
-	private CookieUtils() {}
-	
 	public static ResponseCookie createCookie(String name, String value, long maxAge, boolean secure) {
 		return ResponseCookie.from(name, value)
 				.maxAge(Duration.ofSeconds(maxAge))
