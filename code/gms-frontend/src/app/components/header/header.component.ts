@@ -26,7 +26,13 @@ export class HeaderComponent implements OnInit {
     ngOnInit(): void {
         this.sharedDataService.messageCountUpdateEvent.subscribe(() => this.getAllUnread());
         this.sharedDataService.userSubject$.subscribe(user => this.currentUser = user);
-        this.router.events.pipe(filter(event => (event instanceof NavigationEnd))).subscribe(() => this.getAllUnread());
+        this.router.events.pipe(filter(event => (event instanceof NavigationEnd))).subscribe((event) => {
+            if (this.currentUser === undefined || (event as NavigationEnd).url !== "/") {
+                return;
+            }
+
+            this.getAllUnread();
+        });
     }
     
     logout() : void {

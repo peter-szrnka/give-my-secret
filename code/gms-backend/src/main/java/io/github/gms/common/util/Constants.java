@@ -39,9 +39,7 @@ public final class Constants {
 	public static final String SELECTED_AUTH_LDAP = "ldap";
 	
 	// Headers
-	public static final String JWT_TOKEN = "jwt";
+	public static final String ACCESS_JWT_TOKEN = "jwt";
+	public static final String REFRESH_JWT_TOKEN = "refreshJwt";
 	public static final String SET_COOKIE = "Set-Cookie";
-	
-	// JWT
-	public static final long VALIDITY_SECONDS = 900l;
 }

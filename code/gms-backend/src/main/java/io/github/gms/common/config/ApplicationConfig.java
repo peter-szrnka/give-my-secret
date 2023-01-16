@@ -5,7 +5,10 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -83,5 +86,17 @@ public class ApplicationConfig implements WebMvcConfigurer {
                                 : new ClassPathResource("/static/index.html");
                     }
                 });
+    }
+
+	@Bean
+    public TomcatServletWebServerFactory containerFactory() {
+        return new TomcatServletWebServerFactory() {
+            @Override
+            protected void customizeConnector(Connector connector) {
+                super.customizeConnector(connector);
+                
+                addContextCustomizers(context -> context.setCookieProcessor(new LegacyCookieProcessor()));
+            }
+        };
     }
 }

@@ -17,4 +17,8 @@ export class AuthService {
     logout() : Observable<Response> {
         return this.http.post<Response>(environment.baseUrl + 'logoutUser', {}, { withCredentials : true, headers : getHeaders() });
     }
+
+    refreshToken() : Observable<Response> {
+        return this.http.post<Response>(environment.baseUrl + 'refresh', {}, { withCredentials : true, headers : getHeaders() });
+    }
 }

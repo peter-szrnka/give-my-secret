@@ -52,4 +52,18 @@ describe('AuthService', () => {
       req.flush({});
       httpMock.verify();
     });
+
+    it('should refresh token', () => {
+      const expectedUrl = environment.baseUrl + "refresh";
+
+      // act
+      service.refreshToken().subscribe(res => {
+        expect(res).toBeDefined();
+      });
+
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('POST');
+      req.flush({});
+      httpMock.verify();
+    });
 });
