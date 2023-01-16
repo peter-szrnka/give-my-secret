@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
@@ -52,7 +54,12 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 		
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertFalse(response.getHeaders().get("Cookie").isEmpty());
+		
+		List<String> cookies = response.getHeaders().get("Set-Cookie");
+		assertFalse(cookies.isEmpty());
+		assertEquals(2, cookies.size());
+		assertTrue(cookies.stream().anyMatch(cookie -> cookie.startsWith(Constants.ACCESS_JWT_TOKEN)));
+		assertTrue(cookies.stream().anyMatch(cookie -> cookie.startsWith(Constants.REFRESH_JWT_TOKEN)));
 		assertNotNull(response.getBody());
 	}
 
