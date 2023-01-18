@@ -3,11 +3,13 @@ name: Build and push Docker image
 defaults:
   run:
     shell: bash
-    working-directory: ./code
 
 on:
-  push:
-    branches:
+  workflow_run:
+    workflows: ["Code build and analysis"]
+    branches: [main]
+    types: 
+      - completed
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -16,6 +18,8 @@ jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./code
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -27,24 +31,48 @@ jobs:
          # settings-path: ${{ github.workspace }}
       - name: Build and analyze
         run: mvn clean install -Pbuild-prod --file pom.xml
+        working-directory: ${{env.working-directory}}
       - name: Temporarily save jar artifact
         uses: actions/upload-artifact@v2
         with:
-          name: jar-artifact
-          path: ${{ github.workspace }}/code/target/*.jar
+          name: gms-app
+          path: ${{ github.workspace }}/code/gms-backend/target/gms-app.jar
+          retention-days: 1
+      - name: Temporarily save Dockerfile
+        uses: actions/upload-artifact@v2
+        with:
+          name: Dockerfile
+          path: ${{ github.workspace }}/code/Dockerfile
           retention-days: 1
   deploy:
     name: 'Deploy to GHCR'
     runs-on : ubuntu-latest
     needs: build
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Log in to the Container registry
         uses: docker/login-action@master
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@master
+        with:
+          images: ${{ env.REGISTRY }}/szrnka-peter/give-my-secret
       - uses: actions/download-artifact@v1
         with:
-          name: jar-artifact
-          path: target/
+          name: gms-app
+          path: ./
+      - uses: actions/download-artifact@v1
+        with:
+          name: Dockerfile
+          path: ./
+      - name: Build Docker by Dockerfile
+        run: docker build --build-arg JAR_FILE=./gms-app.jar -t szrnka-peter/give-my-secret -f ./Dockerfile .
+      - name: Tag the image
+        run: docker image tag szrnka-peter/give-my-secret:latest ${{ env.REGISTRY }}/szrnka-peter/give-my-secret:latest
+      - name: Docker push
+        run: docker push ${{ env.REGISTRY }}/szrnka-peter/give-my-secret:latest

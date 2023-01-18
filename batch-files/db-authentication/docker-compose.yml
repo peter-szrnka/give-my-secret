@@ -3,7 +3,7 @@ services:
   gms-app:
     #build: .
     container_name: gms-app-${SELECTED_DB}-${SELECTED_AUTH}
-    image: gms-app:latest
+    image: ghcr.io/szrnka-peter/give-my-secret:latest
     ports:
       - "8080:8080"
       - "8443:8443"
