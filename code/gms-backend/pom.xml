@@ -15,7 +15,7 @@
 		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<backend.buildname>gms-backend</backend.buildname>
+		<backend.buildname>gms-app</backend.buildname>
 
 		<spring-boot.version>2.7.3</spring-boot.version>
 		<guava.version>31.1-jre</guava.version>
