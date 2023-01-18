@@ -17,9 +17,10 @@ Give My Secret is a credential storage application, that stores secrets, passwor
 
 # Usage
 
-Due to the pricing limitations of DockerHub and GitHub Container Registry, the only way to use GMS is to checkout the source code and build the application.
+Give My Secret is available as a Docker image, you can easily pill it from GitHub Container Registry by running the following command:
+> docker pull ghcr.io/szrnka-peter/give-my-secret:latest
 
-To start a new container, you have to set up a bunch of environment properties. I recommend to not start the configuration from scratch, if you open the "**batch-files**" sub folder, you can find many ready-to-go configurations for all available database providers written in Docker Compose format.
+To start a new container, you have to set up a bunch of environment properties. I recommend to not start the configuration from scratch, if you open the "**[batch-files](batch-files)**" sub folder, you can find many ready-to-go configurations for all available database providers written in Docker Compose format.
 
 # Supported databases & authentication
 
