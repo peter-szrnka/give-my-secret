@@ -1,3 +1,4 @@
+# Deprecated file
 FROM adoptopenjdk/openjdk11:latest
 LABEL maintainer="Peter Szrnka"
 
