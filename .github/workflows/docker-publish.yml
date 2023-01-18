@@ -5,8 +5,12 @@ defaults:
     shell: bash
 
 on:
-  push:
-    branches:
+  workflow_run:
+    workflows: ["Code build and analysis"]
+    branches: [main]
+    types: 
+      - completed
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
