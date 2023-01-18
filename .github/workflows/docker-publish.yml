@@ -50,12 +50,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@master
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/szrnka-peter/give-my-secret
       - uses: actions/download-artifact@v1
         with:
           name: jar-artifact
           path: target/
       - name: Build Docker by Dockerfile
-        run: docker build -f ./code/gms-backend/Dockerfile
+        run: docker build -t szrnka-peter/give-my-secret -f ./code/gms-backend/Dockerfile .
       - name: Docker push
-        run: docker push szrnka-peter/give-my-secret:latest:latest
+        run: docker push szrnka-peter/give-my-secret:latest
