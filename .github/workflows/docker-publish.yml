@@ -26,7 +26,7 @@ jobs:
           distribution: 'adopt'
          # settings-path: ${{ github.workspace }}
       - name: Build and analyze
-        run: mvn clean install -Pcodecov,build-prod --file pom.xml
+        run: mvn clean install -Pbuild-prod --file pom.xml
       - name: Temporarily save jar artifact
         uses: actions/upload-artifact@v2
         with:
@@ -54,8 +54,8 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: gms-app
-          path: .
+          path: ./target/
       - name: Build Docker by Dockerfile
-        run: docker build -t szrnka-peter/give-my-secret -f ./Dockerfile . --build-arg JAR_FILE=gms-app.jar
+        run: docker build --build-arg JAR_FILE=./target/gms-app.jar -t szrnka-peter/give-my-secret -f ./Dockerfile .
       - name: Docker push
         run: docker push szrnka-peter/give-my-secret:latest
