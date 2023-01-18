@@ -26,12 +26,12 @@ jobs:
           distribution: 'adopt'
          # settings-path: ${{ github.workspace }}
       - name: Build and analyze
-        run: mvn clean install -Pbuild-prod --file pom.xml
+        run: mvn clean install -Pcodecov,build-prod --file pom.xml
       - name: Temporarily save jar artifact
         uses: actions/upload-artifact@v2
         with:
           name: jar-artifact
-          path: ${{ github.workspace }}/code/target/*.jar
+          path: ${{ github.workspace }}/code/gms-backend/target/gms-app.jar
           retention-days: 1
   deploy:
     name: 'Deploy to GHCR'
