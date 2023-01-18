@@ -27,7 +27,7 @@ jobs:
           distribution: 'adopt'
          # settings-path: ${{ github.workspace }}
       - name: Build and analyze
-        run: mvn clean install -Pbuild-prod-docker-image --file pom.xml
+        run: mvn clean install -Pbuild-prod --file pom.xml
       - name: Temporarily save jar artifact
         uses: actions/upload-artifact@v2
         with:

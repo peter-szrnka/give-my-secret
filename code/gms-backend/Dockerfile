@@ -1,4 +1,5 @@
 FROM adoptopenjdk/openjdk11:latest
+LABEL maintainer="Peter Szrnka"
 
 ARG JAR_FILE=target/gms-backend.jar
 COPY ${JAR_FILE} gms-backend.jar
