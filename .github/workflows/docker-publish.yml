@@ -54,8 +54,8 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: gms-app
-          path: ./target/
+          path: ${{ github.workspace }}
       - name: Build Docker by Dockerfile
-        run: docker build --build-arg JAR_FILE=${{ github.workspace }}/target/gms-app.jar -t szrnka-peter/give-my-secret -f ./Dockerfile .
+        run: docker build --build-arg JAR_FILE=${{ github.workspace }}/gms-app.jar -t szrnka-peter/give-my-secret -f ./Dockerfile .
       - name: Docker push
         run: docker push szrnka-peter/give-my-secret:latest
