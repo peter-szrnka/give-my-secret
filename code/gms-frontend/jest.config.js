@@ -17,7 +17,7 @@ module.exports = {
     "polyfills.ts",
     "<rootDir>/src/environments/",
     "<rootDir>/src/mocks",
-    "window.provider.ts"
+    "<rootDir>/src/app/window.provider.ts"
   ],
   coverageThreshold : {
       global : {

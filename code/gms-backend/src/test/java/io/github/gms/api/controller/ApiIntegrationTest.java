@@ -33,7 +33,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	void testGetSecret() {
 		// arrange
-		apiKeyRepository.save(TestUtils.createApiKey(DemoDataProviderService.API_KEY_3_ID, DemoDataProviderService.API_KEY_CREDENTIAL1));
+		apiKeyRepository.save(TestUtils.createApiKey(DemoDataProviderService.API_KEY_3_ID, DemoDataProviderService.API_KEY_CREDENTIAL3));
 		
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoDataProviderService.API_KEY_CREDENTIAL3));
@@ -42,5 +42,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(DemoDataProviderService.ENCRYPTED_VALUE, response.getBody().getValue());
+		
+		apiKeyRepository.deleteById(DemoDataProviderService.API_KEY_3_ID);
 	}
 }

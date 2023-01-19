@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - code/gms-backend/**
-      - code/gms-frontend/**
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
