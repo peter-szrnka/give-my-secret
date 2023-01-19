@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -13,6 +13,7 @@ import { User } from "../../common/model/user.model";
 import { AnnouncementService } from "../../common/service/announcement-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
+import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 
 describe('AnnouncementDetailComponent', () => {
     let component : AnnouncementDetailComponent;
@@ -89,7 +90,7 @@ describe('AnnouncementDetailComponent', () => {
 
         expect(component).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(true))});
+        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
 
         component.save();
         expect(component.dialog.open).toHaveBeenCalled();

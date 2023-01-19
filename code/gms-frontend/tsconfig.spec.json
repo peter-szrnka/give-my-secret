@@ -1,17 +1,17 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "ES2018",
     "module": "CommonJS",
     "outDir": "./out-tsc/spec",
+    "sourceMap": true,
     "allowJs": true,
-    "types": [ "jest", "node" ],
+    "types": [ "jest" ],
     "emitDecoratorMetadata" : true,
     "typeRoots": ["node_modules/@types"]
   },
   "files": [
+    "src/polyfills.ts",
     "src/main.ts",
-    "src/polyfills.ts"
   ],
   "include": [
     "src/**/*.d.ts",

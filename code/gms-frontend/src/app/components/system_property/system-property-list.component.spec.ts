@@ -133,7 +133,8 @@ describe('SystemPropertyListComponent', () => {
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(true))});
+        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
+        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
 
         // act
         component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
@@ -150,7 +151,8 @@ describe('SystemPropertyListComponent', () => {
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(true))});
+        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
+        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
 
         // act
         const valueSet : string[] = component.getValueSet('REFRESH_JWT_ALGORITHM');
@@ -170,7 +172,8 @@ describe('SystemPropertyListComponent', () => {
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(true))});
+        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
+        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
 
         // act
         component.promptDelete('REFRESH_JWT_ALGORITHM');
@@ -188,7 +191,8 @@ describe('SystemPropertyListComponent', () => {
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(false))});
+        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
+        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
 
         // act
         component.promptDelete('REFRESH_JWT_ALGORITHM');

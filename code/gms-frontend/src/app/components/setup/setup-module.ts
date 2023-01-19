@@ -1,11 +1,10 @@
-import { HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { AppRoutingModule } from "../../app-routing.module";
 import { SetupComponent } from "./setup.component";
+import { FormsModule } from "@angular/forms";
+import { WINDOW_TOKEN } from "../../window.provider";
 
 @NgModule({
     declarations: [ 
@@ -15,11 +14,10 @@ import { SetupComponent } from "./setup.component";
         AngularMaterialModule,
         BrowserModule,
         FormsModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        AppRoutingModule
+        BrowserAnimationsModule
     ],
-    providers: [],
-    exports : [ SetupComponent ]
+    providers: [{ provide: WINDOW_TOKEN, useValue: window }],
+    //exports : [ SetupComponent ],
+    schemas : [ CUSTOM_ELEMENTS_SCHEMA ]
   })
   export class SetupModule { }

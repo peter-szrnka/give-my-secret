@@ -1,17 +1,18 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { MatDialog } from "@angular/material/dialog";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { SetupService } from "../../common/service/setup-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { SetupComponent } from "./setup.component";
-import { WINDOW_TOKEN } from "../../app.module";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { FormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { WINDOW_TOKEN } from "../../window.provider";
 
 describe('SetupComponent', () => {
     let component : SetupComponent;
@@ -22,26 +23,21 @@ describe('SetupComponent', () => {
     let splashScreenStateService : any;
     let dialog : any;
     let setupService : any;
-    let window : any;
+    let mockWindow : any;
 
     const configTestBed = () => {
-        window = {
-            location : {
-                reload: jest.fn()
-            }
-        };
-
         TestBed.configureTestingModule({
-            imports : [ RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule ],
+            imports : [ AngularMaterialModule, FormsModule, BrowserModule, BrowserAnimationsModule ],
             declarations : [SetupComponent],
+            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
-                { provide : WINDOW_TOKEN, useValue : window },
+                { provide : WINDOW_TOKEN, useValue : mockWindow },
                 { provide : Router, useValue: router },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
                 { provide : MatDialog, useValue : dialog },
                 { provide : SetupService, useValue : setupService }
             ]
-        });
+        }).compileComponents();
 
         fixture = TestBed.createComponent(SetupComponent);
         component = fixture.componentInstance;
@@ -49,6 +45,12 @@ describe('SetupComponent', () => {
     };
 
     beforeEach(() => {
+        mockWindow = {
+            location : {
+                reload: jest.fn()
+            }
+        };
+
         router = {
             navigate : jest.fn()
         };
@@ -152,6 +154,6 @@ describe('SetupComponent', () => {
         component.navigateToHome();
         // arrange
         expect(component).toBeTruthy();
-        expect(window.location.reload).toHaveBeenCalled();
+        expect(mockWindow.location.reload).toHaveBeenCalled();
     });
 });

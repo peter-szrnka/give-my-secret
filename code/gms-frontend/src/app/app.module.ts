@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, InjectionToken  } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule  } from '@angular/forms';
 
@@ -31,8 +31,6 @@ import { HomeModule } from './components/home/home-module';
 import { HeaderModule } from './components/header/header-module';
 import { PipesModule } from './common/components/pipes/pipes.module';
 import { SystemPropertyModule } from './components/system_property/system-property-module';
-
-export const WINDOW_TOKEN = new InjectionToken<Window>('Window');
 
 @NgModule({
   declarations: [ 
@@ -75,8 +73,7 @@ export const WINDOW_TOKEN = new InjectionToken<Window>('Window');
   ],
   providers: [ 
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500 }},
-    { provide: WINDOW_TOKEN, useValue: window }
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500 }}
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

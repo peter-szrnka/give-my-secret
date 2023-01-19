@@ -4,7 +4,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatTableModule } from "@angular/material/table";
 import { ActivatedRoute, Data } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { User } from "../../common/model/user.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -24,6 +24,20 @@ describe('UserListComponent', () => {
     let activatedRoute : any = {};
     // Fixtures
     let fixture : ComponentFixture<UserListComponent>;
+
+    const configureTestBed = () => {
+        TestBed.configureTestingModule({
+            imports : [RouterTestingModule, MatTableModule, PipesModule ],
+            declarations : [UserListComponent],
+            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+            providers: [
+                { provide : SharedDataService, useValue : sharedDataService },
+                { provide : UserService, useValue : service },
+                { provide : MatDialog, useValue : dialog },
+                { provide : ActivatedRoute, useClass : activatedRoute }
+            ]
+        }).compileComponents();
+    };
 
     beforeEach(() => {
         sharedDataService = {
@@ -53,21 +67,10 @@ describe('UserListComponent', () => {
         service = {
             delete : jest.fn().mockReturnValue(of("OK"))
         };
-
-        TestBed.configureTestingModule({
-            imports : [RouterTestingModule, MatTableModule, PipesModule ],
-            declarations : [UserListComponent],
-            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-            providers: [
-                { provide : SharedDataService, useValue : sharedDataService },
-                { provide : UserService, useValue : service },
-                { provide : MatDialog, useValue : dialog },
-                { provide : ActivatedRoute, useClass : activatedRoute }
-            ]
-        }).compileComponents();
     });
 
     it('Should create component', () => {
+        configureTestBed();
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -77,9 +80,10 @@ describe('UserListComponent', () => {
     });
 
     it('Should handle resolver error', () => {
+        activatedRoute.data = throwError(() => new Error("Unexpected error!"));
+        configureTestBed();
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
-        spyOn(component.activatedRoute, 'data').and.throwError("Unexpected error!");
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
@@ -88,9 +92,10 @@ describe('UserListComponent', () => {
     });
 
     it('Should return empty table | Invalid user', () => {
+        configureTestBed();
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
-        spyOn(component.sharedData, 'getUserInfo').and.returnValue(undefined);
+        jest.spyOn(component.sharedData, 'getUserInfo').mockReturnValue(undefined);
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
@@ -98,6 +103,7 @@ describe('UserListComponent', () => {
     });
 
     it('Should delete an item', () => {
+        configureTestBed();
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -105,7 +111,7 @@ describe('UserListComponent', () => {
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(true))});
+        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
 
         component.promptDelete(1);
 
@@ -114,6 +120,7 @@ describe('UserListComponent', () => {
     });
 
     it('Should cancel dialog', () => {
+        configureTestBed();
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -121,7 +128,7 @@ describe('UserListComponent', () => {
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(false))});
+        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
 

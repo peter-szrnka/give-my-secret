@@ -1,32 +1,33 @@
-// eslint-disable-next-line no-undef
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-var-requires */
 module.exports = {
-    name : "give-my-secret",
-    preset : "jest-preset-angular",
-    globals : {
-        'ts-jest' : {
-            tsconfig : "tsconfig.spec.json"
-        }
-    },
-    roots : ["src/"],
-    testMatch :["**/+(*.)+(spec).+(ts|js)"],
-    collectCoverage : false,
-    collectCoverageFrom : [ "**/*.ts" ],
-    coveragePathIgnorePatterns : [
-        ".module.ts",
-        "main.ts",
-        "polyfills.ts",
-        "<rootDir>/src/environments/",
-        "<rootDir>/src/mocks"
-    ],
-    coverageThreshold : {
-        global : {
-            branches : 25,
-            functions : 25,
-            lines : 25,
-            statements : 25
-        }
-    },
-    reporters : [
-        "default"
-    ]
+  preset: 'jest-preset-angular',
+  globalSetup: 'jest-preset-angular/global-setup',
+  setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
+  globals : {
+    tsconfig: 'tsconfig.spec.json'
+  },
+  testEnvironment: "jsdom",
+
+  collectCoverage : true,
+  collectCoverageFrom : [ "**/*.ts" ],
+  coveragePathIgnorePatterns : [
+    ".module.ts",
+    "main.ts",
+    "polyfills.ts",
+    "<rootDir>/src/environments/",
+    "<rootDir>/src/mocks",
+    "window.provider.ts"
+  ],
+  coverageThreshold : {
+      global : {
+          branches : 95,
+          functions : 95,
+          lines : 95,
+          statements : 95
+      }
+  },
+  reporters : [
+      "default"
+  ]
 };

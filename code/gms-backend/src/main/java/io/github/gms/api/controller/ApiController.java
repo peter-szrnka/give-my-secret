@@ -19,11 +19,13 @@ import io.github.gms.secure.dto.GetSecretRequestDto;
 @RestController
 public class ApiController {
 	
+	public static final String API_KEY_HEADER = "x-api-key";
+	
 	@Autowired
 	private ApiService service;
 
 	@GetMapping(path = "/api/secret/{secretId}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-	public @ResponseBody ApiResponseDto getSecret(@RequestHeader(name = "X-API-KEY") String apiKey, @PathVariable(name = "secretId") String secretId) {
+	public @ResponseBody ApiResponseDto getSecret(@RequestHeader(name = API_KEY_HEADER) String apiKey, @PathVariable(name = "secretId") String secretId) {
 		return new ApiResponseDto(service.getSecret(new GetSecretRequestDto(apiKey, secretId)));
 	}
 }

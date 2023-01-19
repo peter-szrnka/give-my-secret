@@ -1,11 +1,10 @@
 import { Component, Inject } from "@angular/core";
-import { FormControl, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { UserData, EMPTY_USER_DATA } from "../../common/model/user-data.model";
 import { SetupService } from "../../common/service/setup-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
-import { WINDOW_TOKEN } from "../../app.module";
+import { WINDOW_TOKEN } from "../../window.provider";
 
 @Component({
     selector: 'setup-component',
@@ -14,9 +13,8 @@ import { WINDOW_TOKEN } from "../../app.module";
 })
 export class SetupComponent {
 
-    emailFormControl = new FormControl('', [Validators.required, Validators.email]);
     userData : UserData = EMPTY_USER_DATA;
-    errorMessage : string | undefined = undefined;
+    public errorMessage : string | undefined = undefined;
 
     constructor(
         @Inject(WINDOW_TOKEN) private window: Window,

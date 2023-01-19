@@ -106,25 +106,11 @@
           "options": {
             "browserTarget": "gms-frontend:build"
           }
-        },
-        "test": {
-          "builder": "@angular-builders/jest:run",
-          "options": {
-            "jestConfig" : "jest.config.js",
-            "tsConfig" : "tsconfig.spec.json",
-            "scripts": [],
-            "silent" : true,
-            "coverage" : true
-          },
-          "configurations": {
-            "watch" : {
-              "watchAll" : true,
-              "jestConfig" : "jest.config.watch.js"
-            }
-          }
         }
       }
     }
   },
-  "defaultProject": "gms-frontend"
+  "cli": {
+    "analytics": false
+  }
 }

@@ -15,7 +15,7 @@ describe('MessageListComponent', () => {
     // Injected services
     let service : any;
 
-    const configTestBed = () => {
+    const configureTestBed = () => {
         TestBed.configureTestingModule({
             imports : [ RouterTestingModule, AngularMaterialModule, NoopAnimationsModule, PipesModule ],
             declarations : [MessageListComponent],
@@ -24,7 +24,12 @@ describe('MessageListComponent', () => {
                 { provide : MessageService, useValue : service }
             ]
         });
+
+        fixture = TestBed.createComponent(MessageListComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
     };
+
 
     beforeEach(() => {
         service = {
@@ -39,12 +44,7 @@ describe('MessageListComponent', () => {
     });
 
     it('should return count', () => {
-        configTestBed();
-
-        fixture = TestBed.createComponent(MessageListComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-
+        configureTestBed();
         const response : number = component.getCount();
 
         component.markAsRead(1);

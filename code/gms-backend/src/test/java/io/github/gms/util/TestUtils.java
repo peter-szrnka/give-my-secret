@@ -35,6 +35,7 @@ import com.google.gson.JsonSerializer;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.github.gms.api.controller.ApiController;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
@@ -97,13 +98,12 @@ public class TestUtils {
 				.create();
 	}
 
-	public static HttpHeaders getApiHttpHeaders(String apiKey, String jwt) {
+	public static HttpHeaders getApiHttpHeaders(String apiKey) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("X-API-KEY", apiKey);
-		headers.add("Cookie", Constants.ACCESS_JWT_TOKEN + "=" + jwt + ";Max-Age=3600");
-		
+		headers.set(ApiController.API_KEY_HEADER, apiKey);
+
 		return headers;
 	}
 	
