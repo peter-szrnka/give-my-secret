@@ -1,5 +1,8 @@
 package io.github.gms.abstraction;
 
+import java.io.File;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +64,15 @@ public abstract class AbstractIntegrationTest {
 		gmsUser = TestUtils.createGmsUser();
 		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest());
 	}
+
+	/*@AfterAll
+	public static void cleanup() {
+		File keystoreDirectory = new File("keystores");
+		
+		if (keystoreDirectory.exists() && keystoreDirectory.isDirectory()) {
+			keystoreDirectory.delete();
+		}
+	}*/
 
 	protected <I, O> ResponseEntity<O> executeHttpGet(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
 		return rest.exchange(basePath + port + url, HttpMethod.GET, requestEntity, responseType);

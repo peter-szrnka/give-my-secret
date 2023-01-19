@@ -226,6 +226,15 @@ public class TestUtils {
 		user.setStatus(status);
 		return user;
 	}
+	
+	public static ApiKeyEntity createApiKey(Long id, String value) {
+		ApiKeyEntity user = new ApiKeyEntity();
+		user.setId(id);
+		user.setUserId(1L);
+		user.setStatus(EntityStatus.ACTIVE);
+		user.setValue(value);
+		return user;
+	}
 
 	public static ApiKeyEntity createApiKey() {
 		ApiKeyEntity user = new ApiKeyEntity();

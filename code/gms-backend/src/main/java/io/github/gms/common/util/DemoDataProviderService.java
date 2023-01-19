@@ -42,6 +42,7 @@ public class DemoDataProviderService {
 	public static final Long USER_2_ID = 2L;
 	public static final Long API_KEY_1_ID = 1L;
 	public static final Long API_KEY_2_ID = 2L;
+	public static final Long API_KEY_3_ID = 3L;
 	public static final Long KEYSTORE_ID = 1L;
 	public static final Long KEYSTORE2_ID = 2L;
 	public static final Long KEYSTORE_ALIAS_ID = 1L;
@@ -52,6 +53,7 @@ public class DemoDataProviderService {
 	
 	public static final String API_KEY_CREDENTIAL1 = "12345678";
 	public static final String API_KEY_CREDENTIAL2 = "23456789";
+	public static final String API_KEY_CREDENTIAL3 = "34567890";
 	public static final String USERNAME1 = "username1";
 	public static final String USERNAME2 = "username2";
 	
