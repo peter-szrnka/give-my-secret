@@ -1,20 +1,32 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-var-requires */
 module.exports = {
-    preset : "jest-preset-angular",
-    globalSetup: "jest-preset-angular/global-setup",
-    setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
+  preset: 'jest-preset-angular',
+  globalSetup: 'jest-preset-angular/global-setup',
+  setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
+  globals : {
+    tsconfig: 'tsconfig.spec.json'
+  },
+  testEnvironment: "jsdom",
 
-    moduleDirectories: ["node_modules", '<rootDir>' ],
-
-    //moduleFileExtensions: ["js", "json", "ts", "mjs"],
-    //testPathIgnorePatterns: ['<rootDir>/node_modules/'],
-    transformIgnorePatterns: ['node_modules/(?!@angular|rxjs)'],
-    
-    
-    
-    //testEnvironment: "jsdom",
-    /*transform: {
-        '^.+\\.(ts|js|html)$': 'jest-preset-angular'
-    }*/
+  collectCoverage : true,
+  collectCoverageFrom : [ "**/*.ts" ],
+  coveragePathIgnorePatterns : [
+    ".module.ts",
+    "main.ts",
+    "polyfills.ts",
+    "<rootDir>/src/environments/",
+    "<rootDir>/src/mocks"
+  ],
+  coverageThreshold : {
+      global : {
+          branches : 95,
+          functions : 95,
+          lines : 95,
+          statements : 95
+      }
+  },
+  reporters : [
+      "default"
+  ]
 };

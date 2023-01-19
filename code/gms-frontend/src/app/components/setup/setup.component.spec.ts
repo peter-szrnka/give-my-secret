@@ -14,8 +14,10 @@ import { WINDOW_TOKEN } from "../../app.module";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { AppRoutingModule } from "../../app-routing.module";
+import { FormsModule } from "@angular/forms";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
-xdescribe('SetupComponent', () => {
+describe('SetupComponent', () => {
     let component : SetupComponent;
     let fixture : ComponentFixture<SetupComponent>;
 
@@ -28,7 +30,7 @@ xdescribe('SetupComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ RouterTestingModule, BrowserModule, AngularMaterialModule, NoopAnimationsModule, AppRoutingModule ],
+            imports : [ RouterTestingModule, FormsModule, BrowserModule, AngularMaterialModule, NoopAnimationsModule, AppRoutingModule, GmsComponentsModule ],
             declarations : [SetupComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -39,6 +41,10 @@ xdescribe('SetupComponent', () => {
                 { provide : SetupService, useValue : setupService }
             ]
         });
+
+        fixture = TestBed.createComponent(SetupComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
     };
 
     beforeEach(() => {
@@ -70,9 +76,6 @@ xdescribe('SetupComponent', () => {
             saveAdminUser : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 404, statusText: "Not exists"})))
         }
         configTestBed();
-        fixture = TestBed.createComponent(SetupComponent);
-        component = fixture.componentInstance;
-        //fixture.detectChanges();
 
         component.userData = {
             username : "admin",

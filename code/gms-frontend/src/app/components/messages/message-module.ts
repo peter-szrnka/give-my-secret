@@ -1,11 +1,12 @@
 import { HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { MessageListComponent } from "./message-list.component";
+import { SharedDataService } from "../../common/service/shared-data-service";
 
 @NgModule({
     declarations: [ 
@@ -14,11 +15,12 @@ import { MessageListComponent } from "./message-list.component";
     imports: [
         AngularMaterialModule,
         BrowserModule,
-        //HttpClientModule,
+        HttpClientModule,
         AppRoutingModule,
         GmsComponentsModule,
         PipesModule
     ],
-    providers: []
+    providers: [SharedDataService],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })
   export class MessageModule { }

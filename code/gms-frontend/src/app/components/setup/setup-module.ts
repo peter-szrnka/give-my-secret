@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { SetupComponent } from "./setup.component";
 import { HttpClientModule } from "@angular/common/http";
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
     declarations: [ 
@@ -12,6 +13,7 @@ import { HttpClientModule } from "@angular/common/http";
     imports: [
         AngularMaterialModule,
         BrowserModule,
+        FormsModule,
         BrowserAnimationsModule,
         HttpClientModule
     ],

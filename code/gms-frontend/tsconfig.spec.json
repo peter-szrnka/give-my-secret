@@ -1,12 +1,11 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "es2015",
     "module": "CommonJS",
     "outDir": "./out-tsc/spec",
     "sourceMap": true,
     "allowJs": true,
-    "types": [ "jest", "node" ],
+    "types": [ "jest" ],
     "emitDecoratorMetadata" : true,
     "typeRoots": ["node_modules/@types"]
   },
