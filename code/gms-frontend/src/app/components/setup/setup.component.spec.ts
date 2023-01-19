@@ -8,12 +8,13 @@ import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.
 import { SetupService } from "../../common/service/setup-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { SetupComponent } from "./setup.component";
-import { WINDOW_TOKEN } from "../../app.module";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
-import { AppRoutingModule } from "../../app-routing.module";
-import { GmsComponentsModule } from "../../common/components/gms-components-module";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { FormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { WINDOW_TOKEN } from "../../window.provider";
 
-xdescribe('SetupComponent', () => {
+describe('SetupComponent', () => {
     let component : SetupComponent;
     let fixture : ComponentFixture<SetupComponent>;
 
@@ -26,7 +27,7 @@ xdescribe('SetupComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, AppRoutingModule, GmsComponentsModule ],
+            imports : [ AngularMaterialModule, FormsModule, BrowserModule, BrowserAnimationsModule ],
             declarations : [SetupComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -36,7 +37,7 @@ xdescribe('SetupComponent', () => {
                 { provide : MatDialog, useValue : dialog },
                 { provide : SetupService, useValue : setupService }
             ]
-        });
+        }).compileComponents();
 
         fixture = TestBed.createComponent(SetupComponent);
         component = fixture.componentInstance;

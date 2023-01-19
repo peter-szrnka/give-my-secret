@@ -9,6 +9,7 @@
     "watch": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --watch --configuration development",
     "watchHttps": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --watch --configuration localHttps",
     "test": "jest --config=jest.config.js --silent=false",
+    "clearTestCache" : "jest --clearCache",
     "coverage": "test --coverage --detectOpenHandles",
     "lint": "eslint --ext .ts . --fix"
   },
