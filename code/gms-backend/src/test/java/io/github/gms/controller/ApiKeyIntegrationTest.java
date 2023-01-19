@@ -115,7 +115,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Transactional
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
+	@ValueSource(booleans = { false, true })
 	void testToggleStatus(boolean enabled) {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));

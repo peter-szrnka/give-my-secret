@@ -28,7 +28,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	void testGetSecret() {
 		// act
-		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoDataProviderService.API_KEY_CREDENTIAL1, jwt));
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoDataProviderService.API_KEY_CREDENTIAL1));
 		ResponseEntity<ApiResponseDto> response = executeHttpGet("/api/secret/" + DemoDataProviderService.SECRET_ID1, requestEntity, ApiResponseDto.class);
 
 		// Assert

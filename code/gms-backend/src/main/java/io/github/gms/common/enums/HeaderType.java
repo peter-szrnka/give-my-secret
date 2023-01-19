@@ -5,7 +5,7 @@ package io.github.gms.common.enums;
  * @since 1.0
  */
 public enum HeaderType {
-	API_KEY("X-API-KEY", "apiKey"),
+	API_KEY("x-api-key", "apiKey"),
 	AUTHORIZATION_TOKEN("AUTHORIZATION", "accessToken");
 	
 	private String headerName;
