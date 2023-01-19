@@ -6,7 +6,7 @@ defaults:
 
 on:
   workflow_run:
-    workflows: ["Backend code build and analysis"]
+    workflows: ["Code build and analysis"]
     branches: [main]
     types: 
       - completed
