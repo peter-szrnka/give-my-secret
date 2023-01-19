@@ -4,7 +4,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { User } from "../../common/model/user.model";
@@ -25,6 +25,20 @@ describe('EventListComponent', () => {
     let activatedRoute : any = {};
     // Fixtures
     let fixture : ComponentFixture<EventListComponent>;
+
+    const configureTestBed = () => {
+        TestBed.configureTestingModule({
+            imports : [RouterTestingModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            declarations : [EventListComponent],
+            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+            providers: [
+                { provide : SharedDataService, useValue : sharedDataService },
+                { provide : EventService, useValue : service },
+                { provide : MatDialog, useValue : dialog },
+                { provide : ActivatedRoute, useClass : activatedRoute }
+            ]
+        }).compileComponents();
+    };
 
     beforeEach(() => {
         sharedDataService = {
@@ -54,21 +68,10 @@ describe('EventListComponent', () => {
         service = {
             delete : jest.fn().mockReturnValue(of("OK"))
         };
-
-        TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
-            declarations : [EventListComponent],
-            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-            providers: [
-                { provide : SharedDataService, useValue : sharedDataService },
-                { provide : EventService, useValue : service },
-                { provide : MatDialog, useValue : dialog },
-                { provide : ActivatedRoute, useClass : activatedRoute }
-            ]
-        }).compileComponents();
     });
 
     it('Should create component', () => {
+        configureTestBed();
         fixture = TestBed.createComponent(EventListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -78,9 +81,11 @@ describe('EventListComponent', () => {
     });
 
     it('Should handle resolver error', () => {
+        activatedRoute.data = throwError(() => new Error("Unexpected error!"));
+        configureTestBed();
         fixture = TestBed.createComponent(EventListComponent);
         component = fixture.componentInstance;
-        spyOn(component.activatedRoute, 'data').and.throwError("Unexpected error!");
+
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
@@ -89,9 +94,10 @@ describe('EventListComponent', () => {
     });
 
     it('Should return empty table | Invalid user', () => {
+        configureTestBed();
         fixture = TestBed.createComponent(EventListComponent);
         component = fixture.componentInstance;
-        spyOn(component.sharedData, 'getUserInfo').and.returnValue(undefined);
+        jest.spyOn(component.sharedData, 'getUserInfo').mockReturnValue(undefined);
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
@@ -99,6 +105,7 @@ describe('EventListComponent', () => {
     });
 
     it('Should delete an item', () => {
+        configureTestBed();
         fixture = TestBed.createComponent(EventListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -106,7 +113,7 @@ describe('EventListComponent', () => {
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(true))});
+        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
 
         component.promptDelete(1);
 
@@ -115,6 +122,7 @@ describe('EventListComponent', () => {
     });
 
     it('Should cancel dialog', () => {
+        configureTestBed();
         fixture = TestBed.createComponent(EventListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -122,7 +130,7 @@ describe('EventListComponent', () => {
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(false))});
+        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
 

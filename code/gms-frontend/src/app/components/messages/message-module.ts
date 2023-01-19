@@ -14,7 +14,7 @@ import { MessageListComponent } from "./message-list.component";
     imports: [
         AngularMaterialModule,
         BrowserModule,
-        HttpClientModule,
+        //HttpClientModule,
         AppRoutingModule,
         GmsComponentsModule,
         PipesModule

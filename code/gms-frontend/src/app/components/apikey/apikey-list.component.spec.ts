@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -100,7 +100,7 @@ describe('ApiKeyListComponent', () => {
     });
 
     it('Should return empty table | Invalid user', () => {
-        spyOn(component.sharedData, 'getUserInfo').and.returnValue(undefined);
+        jest.spyOn(component.sharedData, 'getUserInfo').mockReturnValue(undefined);
         configureTestBed();
 
         expect(component).toBeTruthy();
@@ -113,7 +113,8 @@ describe('ApiKeyListComponent', () => {
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(true))});
+        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
+        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
 
         component.promptDelete(1);
 
@@ -127,7 +128,8 @@ describe('ApiKeyListComponent', () => {
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
-        spyOn(component.dialog, 'open').and.returnValue({afterClosed : jest.fn().mockReturnValue(of(false))});
+        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
+        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
 
         component.promptDelete(1);
 

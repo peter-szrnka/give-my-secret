@@ -8,24 +8,13 @@ import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { Message } from "../../common/model/message.model";
 import { MessageService } from "../../common/service/message-service";
 import { MessageListComponent } from "./message-list.component";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 describe('MessageListComponent', () => {
     let component : MessageListComponent;
     let fixture : ComponentFixture<MessageListComponent>;
     // Injected services
-    let service : any;
-
-    const configTestBed = () => {
-        TestBed.configureTestingModule({
-            imports : [ RouterTestingModule, AngularMaterialModule, NoopAnimationsModule, PipesModule ],
-            declarations : [MessageListComponent],
-            schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
-            providers: [
-                { provide : MessageService, useValue : service }
-            ]
-        });
-    };
-
+    let service : any
     beforeEach(() => {
         service = {
             list : jest.fn().mockImplementation(() => {
@@ -36,11 +25,18 @@ describe('MessageListComponent', () => {
             }),
             markAsRead : jest.fn().mockReturnValue(of("OK"))
         }
+
+        TestBed.configureTestingModule({
+            imports : [ RouterTestingModule, AngularMaterialModule, NoopAnimationsModule, PipesModule, GmsComponentsModule ],
+            declarations : [MessageListComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
+            providers: [
+                { provide : MessageService, useValue : service }
+            ]
+        }).compileComponents();
     });
 
     it('should return count', () => {
-        configTestBed();
-
         fixture = TestBed.createComponent(MessageListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

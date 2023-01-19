@@ -1,11 +1,9 @@
-import { HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { AppRoutingModule } from "../../app-routing.module";
 import { SetupComponent } from "./setup.component";
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
     declarations: [ 
@@ -14,12 +12,11 @@ import { SetupComponent } from "./setup.component";
     imports: [
         AngularMaterialModule,
         BrowserModule,
-        FormsModule,
         BrowserAnimationsModule,
-        HttpClientModule,
-        AppRoutingModule
+        HttpClientModule
     ],
     providers: [],
-    exports : [ SetupComponent ]
+    exports : [ SetupComponent ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })
   export class SetupModule { }
