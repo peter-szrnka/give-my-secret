@@ -3,6 +3,7 @@ name: Frontend code build and analysis
 on:
   push:
     branches:
+      - main
     paths:
       - code/gms-frontend/**
   pull_request:

@@ -3,6 +3,7 @@ name: Backend code build and analysis
 on:
   push:
     branches:
+      - main
     paths:
       - code/gms-backend/**
   pull_request:
