@@ -22,12 +22,9 @@ jobs:
       - name: Build with NPM
         working-directory: ./code/gms-frontend
         run: npm install
-      - name: Install Angular CLI
-        working-directory: ./code/gms-frontend
-        run: npm install -g @angular/cli@latest
       - name: Run tests
         working-directory: ./code/gms-frontend
-        run: ng test
+        run: npm run test
       - name: Sonarcloud scan
         
         env:
