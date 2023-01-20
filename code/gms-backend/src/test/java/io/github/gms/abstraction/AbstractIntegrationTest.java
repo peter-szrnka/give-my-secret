@@ -62,15 +62,6 @@ public abstract class AbstractIntegrationTest {
 		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest());
 	}
 
-	/*@AfterAll
-	public static void cleanup() {
-		File keystoreDirectory = new File("keystores");
-		
-		if (keystoreDirectory.exists() && keystoreDirectory.isDirectory()) {
-			keystoreDirectory.delete();
-		}
-	}*/
-
 	protected <I, O> ResponseEntity<O> executeHttpGet(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
 		return rest.exchange(basePath + port + url, HttpMethod.GET, requestEntity, responseType);
 	}

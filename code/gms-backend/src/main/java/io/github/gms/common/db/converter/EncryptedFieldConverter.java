@@ -18,10 +18,13 @@ import javax.persistence.AttributeConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 @Component
 public class EncryptedFieldConverter implements AttributeConverter<String, String> {
 
@@ -54,6 +57,7 @@ public class EncryptedFieldConverter implements AttributeConverter<String, Strin
 	@Override
 	public String convertToEntityAttribute(String dbData) {
 		try {
+			log.info("TEMP DEBUG: test secret={}, and iv={}, dbData={}", secret, encryptionIv, dbData);
 			Key key = new SecretKeySpec(Base64.getDecoder().decode(secret.getBytes()), AES);
 			Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
 			cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(AUTHENTICATION_TAG_LENGTH, encryptionIv.getBytes(StandardCharsets.UTF_8)));

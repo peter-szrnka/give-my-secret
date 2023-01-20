@@ -321,13 +321,13 @@ public class TestUtils {
 		return dto;
 	}
 	
-	public static KeystoreEntity createKeystoreEntity(Long id) {
+	public static KeystoreEntity createKeystoreEntity(Long id, String credential) {
 		KeystoreEntity entity = new KeystoreEntity();
 		entity.setName("keystore");
 		entity.setId(id);
 		entity.setFileName("test.jks");
 		entity.setUserId(DemoDataProviderService.USER_1_ID);
-		entity.setCredential("test");
+		entity.setCredential(credential);
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
 		return entity;

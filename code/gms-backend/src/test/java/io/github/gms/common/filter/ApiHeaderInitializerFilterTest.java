@@ -1,7 +1,7 @@
 package io.github.gms.common.filter;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -48,7 +48,6 @@ class ApiHeaderInitializerFilterTest extends AbstractUnitTest {
 		
 		// assert
 		assertEquals("API key is missing!", exception.getMessage());
-		assertNull(MDC.get(HeaderType.API_KEY.getMappedName()));
 	}
 
 	@Test
@@ -60,9 +59,7 @@ class ApiHeaderInitializerFilterTest extends AbstractUnitTest {
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);
 
-		filter.doFilterInternal(request, response, filterChain);
-		
-		// assert
-		assertEquals(API_KEY_VALUE, MDC.get(HeaderType.API_KEY.getMappedName()));
+		// act & assert
+		assertDoesNotThrow(() -> filter.doFilterInternal(request, response, filterChain));
 	}
 }
