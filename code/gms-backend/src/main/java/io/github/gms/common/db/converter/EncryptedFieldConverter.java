@@ -29,18 +29,25 @@ public class EncryptedFieldConverter implements AttributeConverter<String, Strin
 	private static final String ENCRYPTION_ALGORITHM = "AES/GCM/NoPadding";
 	private static final String AES = "AES";
 
+	private final boolean enableFieldEncryption;
 	private final String secret;
 	private final String encryptionIv;
 
 	public EncryptedFieldConverter(
+			@Value("${config.encryption.enable}") boolean enableFieldEncryption, 
 			@Value("${config.crypto.secret}") String secret, 
 			@Value("${config.encryption.iv}") String encryptionIv) {
+		this.enableFieldEncryption = enableFieldEncryption;
         this.secret = secret;
         this.encryptionIv = encryptionIv;
     }
 
 	@Override
 	public String convertToDatabaseColumn(String attribute) {
+		if (!enableFieldEncryption) {
+			return attribute;
+		}
+
 		try {
 			Key key = new SecretKeySpec(Base64.getDecoder().decode(secret.getBytes()), AES);
 			Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
@@ -53,6 +60,10 @@ public class EncryptedFieldConverter implements AttributeConverter<String, Strin
 
 	@Override
 	public String convertToEntityAttribute(String dbData) {
+		if (!enableFieldEncryption) {
+			return dbData;
+		}
+
 		try {
 			Key key = new SecretKeySpec(Base64.getDecoder().decode(secret.getBytes()), AES);
 			Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);

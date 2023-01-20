@@ -3,8 +3,9 @@ package io.github.gms.common.db.converter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import lombok.SneakyThrows;
@@ -17,21 +18,18 @@ import lombok.SneakyThrows;
  */
 class EncryptedFieldConverterTest extends AbstractUnitTest {
 	
+	private static final String VALID_SECRET = "YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg=";
+	private static final String INVALID_SECRET = "YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg5";
 	private static final String ENCRYPTION_IV = "R4nd0mIv1234567!";
 	private static final String ENCRYPTED_VALUE = "kEEgTrpbKdiJegJFrAcwBnTujN2s";
 	private static final String ORIGINAL_VALUE = "value";
 	private EncryptedFieldConverter converter;
-
-	@BeforeEach
-	@SneakyThrows
-	public void setup() {
-		converter = new EncryptedFieldConverter("YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg=", ENCRYPTION_IV);
-	}
 	
 	@Test
 	@SneakyThrows
 	void shouldConvertToDatabaseColumnFail() {
-		converter = new EncryptedFieldConverter("YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg5", ENCRYPTION_IV);
+		// arrange
+		converter = new EncryptedFieldConverter(true, INVALID_SECRET, ENCRYPTION_IV);
 		
 		// act & assert
 		IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
@@ -39,20 +37,24 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 		assertEquals("java.security.InvalidKeyException: Invalid AES key length: 33 bytes", exception.getMessage());
 	}
 	
-	@Test
-	void shouldConvertToDatabaseColumn() {
+	@ParameterizedTest
+	@MethodSource("inputData")
+	void shouldConvertToDatabaseColumn(boolean enableEncryption, String expectedValue) {
+		// arrange
+		converter = new EncryptedFieldConverter(enableEncryption, VALID_SECRET, ENCRYPTION_IV);
+
 		// act
 		String encryptedValue = converter.convertToDatabaseColumn(ORIGINAL_VALUE);
 		
 		// assert
-		assertEquals(ENCRYPTED_VALUE, encryptedValue);
+		assertEquals(expectedValue, encryptedValue);
 	}
 	
 	@Test
 	@SneakyThrows
 	void shouldConvertToEntityAttributeFail() {
 		// arrange
-		converter = new EncryptedFieldConverter("YXNkZmdoamsxMjM0NTY3OGFzZGZnaGprMTIzNDU2Nzg5", ENCRYPTION_IV);
+		converter = new EncryptedFieldConverter(true, INVALID_SECRET, ENCRYPTION_IV);
 
 		// act & assert
 		IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
@@ -60,12 +62,23 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 		assertEquals("java.security.InvalidKeyException: Invalid AES key length: 33 bytes", exception.getMessage());
 	}
 	
-	@Test
-	void shouldConvertToEntityAttribute() {
+	@ParameterizedTest
+	@MethodSource("inputData")
+	void shouldConvertToEntityAttribute(boolean enableEncryption, String expectedValue) {
+		// arrange
+		converter = new EncryptedFieldConverter(enableEncryption, VALID_SECRET, ENCRYPTION_IV);
+
 		// act
-		String decryptedValue = converter.convertToEntityAttribute(ENCRYPTED_VALUE);
+		String decryptedValue = converter.convertToEntityAttribute(expectedValue);
 		
 		// assert
 		assertEquals(ORIGINAL_VALUE, decryptedValue);
+	}
+	
+	public static Object[][] inputData() {
+		return new Object[][] {
+			{false, ORIGINAL_VALUE},
+			{true, ENCRYPTED_VALUE},
+		};
 	}
 }
