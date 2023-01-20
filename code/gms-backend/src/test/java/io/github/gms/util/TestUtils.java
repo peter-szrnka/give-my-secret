@@ -255,6 +255,21 @@ public class TestUtils {
 		return entity;
 	}
 
+	public static SecretEntity createSecretEntity(Long id, Long keystoreAliasId, String secretId) {
+		SecretEntity entity = new SecretEntity();
+		entity.setId(id);
+		entity.setCreationDate(LocalDateTime.now());
+		entity.setRotationPeriod(RotationPeriod.YEARLY);
+		entity.setStatus(EntityStatus.ACTIVE);
+		entity.setValue(DemoDataProviderService.ENCRYPTED_VALUE);
+		entity.setSecretId(secretId);;
+		entity.setKeystoreAliasId(keystoreAliasId);
+		entity.setLastRotated(LocalDateTime.now());
+		entity.setReturnDecrypted(false);
+		entity.setUserId(1L);
+		return entity;
+	}
+	
 	public static SecretEntity createSecretEntity() {
 		return createSecretEntityWithUniqueKeystoreAliasId(DemoDataProviderService.KEYSTORE_ALIAS_ID);
 	}
@@ -305,6 +320,18 @@ public class TestUtils {
 		dto.setAliases(createKeystoreAliasList());
 		return dto;
 	}
+	
+	public static KeystoreEntity createKeystoreEntity(Long id) {
+		KeystoreEntity entity = new KeystoreEntity();
+		entity.setName("keystore");
+		entity.setId(id);
+		entity.setFileName("test.jks");
+		entity.setUserId(DemoDataProviderService.USER_1_ID);
+		entity.setCredential("test");
+		entity.setType(KeystoreType.JKS);
+		entity.setDescription("description");
+		return entity;
+	}
 
 	public static KeystoreEntity createKeystoreEntity() {
 		KeystoreEntity entity = new KeystoreEntity();
@@ -339,17 +366,20 @@ public class TestUtils {
 		return entity;
 	}
 	
-
-	public static KeystoreAliasEntity createKeystoreAliasEntity() {
+	public static KeystoreAliasEntity createKeystoreAliasEntity(Long id) {
 		KeystoreAliasEntity entity = new KeystoreAliasEntity();
 		
-		entity.setId(DemoDataProviderService.KEYSTORE_ALIAS_ID);
+		entity.setId(id);
 		entity.setKeystoreId(DemoDataProviderService.KEYSTORE_ID);
 		entity.setAlias("test");
 		entity.setAliasCredential("test");
 		entity.setDescription("description");
 		
 		return entity;
+	}
+
+	public static KeystoreAliasEntity createKeystoreAliasEntity() {
+		return createKeystoreAliasEntity(DemoDataProviderService.KEYSTORE_ALIAS_ID);
 	}
 	
 	@Data

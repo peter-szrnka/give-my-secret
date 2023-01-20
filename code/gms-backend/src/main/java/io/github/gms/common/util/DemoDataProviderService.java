@@ -37,6 +37,7 @@ public class DemoDataProviderService {
 	public static final String SECRET_VALUE = "test";
 	public static final String SECRET_ID1 = "SECRET_ID";
 	public static final String SECRET_ID2 = "SECRET_ID2";
+	public static final String SECRET_ID3 = "SECRET_ID3";
 	public static final String CREDENTIAL_TEST = "test";
 	public static final Long USER_1_ID = 1L;
 	public static final Long USER_2_ID = 2L;
@@ -45,10 +46,13 @@ public class DemoDataProviderService {
 	public static final Long API_KEY_3_ID = 3L;
 	public static final Long KEYSTORE_ID = 1L;
 	public static final Long KEYSTORE2_ID = 2L;
+	public static final Long KEYSTORE3_ID = 3L;
 	public static final Long KEYSTORE_ALIAS_ID = 1L;
 	public static final Long KEYSTORE_ALIAS2_ID = 2L;
+	public static final Long KEYSTORE_ALIAS3_ID = 3L;
 	public static final Long SECRET_ENTITY_ID = 1L;
 	public static final Long SECRET_ENTITY2_ID = 2L;
+	public static final Long SECRET_ENTITY3_ID = 3L;
 	public static final Long ANNOUNCEMENT_ID = 1L;
 	
 	public static final String API_KEY_CREDENTIAL1 = "12345678";
