@@ -330,6 +330,8 @@ public class TestUtils {
 		entity.setCredential(credential);
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
+		entity.setStatus(EntityStatus.ACTIVE);
+		entity.setCreationDate(LocalDateTime.now());
 		return entity;
 	}
 
@@ -342,6 +344,7 @@ public class TestUtils {
 		entity.setCredential("test");
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
+		entity.setStatus(EntityStatus.ACTIVE);
 		return entity;
 	}
 	
@@ -352,6 +355,7 @@ public class TestUtils {
 		entity.setUserId(DemoDataProviderService.USER_1_ID);
 		entity.setCredential("test");
 		entity.setType(KeystoreType.JKS);
+		entity.setStatus(EntityStatus.ACTIVE);
 		return entity;
 	}
 	
@@ -363,6 +367,7 @@ public class TestUtils {
 		entity.setCredential("test");
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
+		entity.setStatus(EntityStatus.ACTIVE);
 		return entity;
 	}
 	
