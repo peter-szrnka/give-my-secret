@@ -21,11 +21,13 @@ import com.google.common.base.Throwables;
 import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 @ControllerAdvice
 public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -35,6 +37,7 @@ public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(GmsException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public @ResponseBody ErrorResponseDto handleOtherException(HttpServletRequest request, HandlerMethod handlerMethod, GmsException ex) {
+		log.error("GmsException handled", ex);
 		return new ErrorResponseDto(Throwables.getRootCause(ex).getMessage(), MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()), LocalDateTime.now(clock));
 	}
 	
@@ -47,6 +50,7 @@ public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
 	public @ResponseBody ErrorResponseDto handleOtherException(HttpServletRequest request, HandlerMethod handlerMethod, Exception ex) {
+		log.error("Exception handled", ex);
 		return new ErrorResponseDto(Throwables.getRootCause(ex).getMessage(), MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()), LocalDateTime.now(clock));
 	}
 }

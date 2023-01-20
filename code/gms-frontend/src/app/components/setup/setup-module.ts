@@ -17,7 +17,6 @@ import { WINDOW_TOKEN } from "../../window.provider";
         BrowserAnimationsModule
     ],
     providers: [{ provide: WINDOW_TOKEN, useValue: window }],
-    //exports : [ SetupComponent ],
     schemas : [ CUSTOM_ELEMENTS_SCHEMA ]
   })
   export class SetupModule { }

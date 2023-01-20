@@ -2,7 +2,6 @@ package io.github.gms.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -23,12 +22,6 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
 	
 	@Autowired
 	private ApiKeyRepository apiKeyRepository;
-
-	@Override
-	@BeforeEach
-	public void setup() {
-		super.setup();
-	}
 
 	@Test
 	void testGetSecret() {
