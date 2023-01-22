@@ -7,7 +7,7 @@ import { ApiKey, PAGE_CONFIG_API_KEY } from "../../common/model/apikey.model";
 import { PageConfig } from "../../common/model/common.model";
 import { ApiKeyService } from "../../common/service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import randomstring from 'randomstring';
+import randomstring from "randomstring";
 
 @Component({
     selector: 'api-key-detail',
