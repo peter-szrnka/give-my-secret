@@ -31,4 +31,10 @@ public interface ApiKeyRepository extends JpaRepository<ApiKeyEntity, Long> {
 	
 	@Query("select new io.github.gms.secure.dto.IdNamePairDto(a.id,a.name) from ApiKeyEntity a where a.status='ACTIVE' and a.userId = :userId")
 	List<IdNamePairDto> getAllApiKeyNames(@Param("userId") Long userId);
+	
+	@Query("select count(a) from ApiKeyEntity a where a.userId = :userId and a.name = :name")
+	long countAllApiKeysByName(@Param("userId") Long userId, @Param("name") String name);
+	
+	@Query("select count(a) from ApiKeyEntity a where a.userId = :userId and a.value = :value")
+	long countAllApiKeysByValue(@Param("userId") Long userId, @Param("value") String value);
 }

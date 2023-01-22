@@ -215,7 +215,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
 		when(gson.fromJson(eq(model), any(Class.class))).thenReturn(dto);
-		when(repository.getAllKeystoreNames(anyLong(), anyString())).thenReturn(Lists.newArrayList("keystore"));
+		when(repository.countAllKeystoresByName(anyLong(), anyString())).thenReturn(1l);
 
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
@@ -224,7 +224,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("Keystore name must be unique!", exception.getMessage());
 		verify(converter, never()).toNewEntity(any(), eq(multiPart));
 		verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
-		verify(repository).getAllKeystoreNames(anyLong(), anyString());
+		verify(repository).countAllKeystoresByName(anyLong(), anyString());
 		verify(repository, never()).save(any());
 		verify(gson).fromJson(eq(model), any(Class.class));
 	}

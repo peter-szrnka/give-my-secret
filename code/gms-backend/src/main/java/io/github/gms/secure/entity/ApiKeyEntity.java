@@ -1,6 +1,7 @@
 package io.github.gms.secure.entity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -43,7 +44,7 @@ public class ApiKeyEntity extends AbstractGmsEntity {
 
 	@Column(name = "value", length = 512)
 	@Convert(converter = EncryptedFieldConverter.class)
-	private String value;
+	private String value = UUID.randomUUID().toString();
 	
 	@Column(name = "description")
 	private String description;

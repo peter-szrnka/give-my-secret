@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.ApiKeyConverter;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
@@ -47,6 +48,8 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 		ApiKeyEntity entity;
 
 		dto.setUserId(userId);
+		validateNewApiKey(dto, dto.getId() == null ? 0 : 1);
+
 		if (dto.getId() == null) {
 			entity = converter.toNewEntity(dto);
 		} else {
@@ -112,5 +115,15 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
 	private ApiKeyEntity getApiKeyEntity(Long id, Long userId) {
 		return repository.findByIdAndUserId(id, userId).orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND));
+	}
+	
+	private void validateNewApiKey(SaveApiKeyRequestDto dto, int expectedCount) {
+		if (repository.countAllApiKeysByName(MdcUtils.getUserId(), dto.getName()) > expectedCount) {
+			throw new GmsException("API key name must be unique!");
+		}
+
+		if (repository.countAllApiKeysByValue(MdcUtils.getUserId(), dto.getValue()) > expectedCount) {
+			throw new GmsException("API key value must be unique!");
+		}
 	}
 }

@@ -190,6 +190,7 @@ public class TestUtils {
 	
 	public static SaveApiKeyRequestDto createNewSaveApiKeyRequestDto() {
 		SaveApiKeyRequestDto request = new SaveApiKeyRequestDto();
+		request.setName("api key 1");
 		request.setUserId(1L);
 		request.setValue("12345678");
 		request.setStatus(EntityStatus.ACTIVE);
@@ -307,10 +308,10 @@ public class TestUtils {
 		dto.setStatus(EntityStatus.ACTIVE);
 		return dto;
 	}
-
-	public static SaveKeystoreRequestDto createSaveKeystoreRequestDto() {
+	
+	public static SaveKeystoreRequestDto createSaveKeystoreRequestDto(Long id) {
 		SaveKeystoreRequestDto dto = new SaveKeystoreRequestDto();
-		dto.setId(DemoDataProviderService.KEYSTORE_ID);
+		dto.setId(id);
 		dto.setName("keystore");
 		dto.setUserId(1L);
 		dto.setCredential("test");
@@ -319,6 +320,10 @@ public class TestUtils {
 		dto.setDescription("description");
 		dto.setAliases(createKeystoreAliasList());
 		return dto;
+	}
+
+	public static SaveKeystoreRequestDto createSaveKeystoreRequestDto() {
+		return createSaveKeystoreRequestDto(DemoDataProviderService.KEYSTORE_ID);
 	}
 	
 	public static KeystoreEntity createKeystoreEntity(Long id, String credential) {

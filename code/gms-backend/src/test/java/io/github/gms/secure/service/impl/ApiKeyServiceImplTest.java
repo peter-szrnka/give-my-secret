@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -93,6 +94,40 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		verify(converter).toEntity(any(ApiKeyEntity.class), any(SaveApiKeyRequestDto.class));
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 		verify(repository).save(any(ApiKeyEntity.class));
+	}
+	
+	@Test
+	void shouldNotSaveNewEntityWhenApiKeyNameIsNotUnique() {
+		// arrange
+		ApiKeyEntity mockEntity = new ApiKeyEntity();
+		mockEntity.setId(1L);
+		when(repository.countAllApiKeysByName(anyLong(), anyString())).thenReturn(1l);
+
+		// act
+		SaveApiKeyRequestDto input = TestUtils.createNewSaveApiKeyRequestDto();
+		GmsException exception = assertThrows(GmsException.class, () -> service.save(input));
+
+		// assert
+		assertEquals("API key name must be unique!", exception.getMessage());
+		verify(converter, never()).toNewEntity(any(SaveApiKeyRequestDto.class));
+		verify(repository, never()).save(any(ApiKeyEntity.class));
+	}
+	
+	@Test
+	void shouldNotSaveNewEntityWhenApiKeyValueIsNotUnique() {
+		// arrange
+		ApiKeyEntity mockEntity = new ApiKeyEntity();
+		mockEntity.setId(1L);
+		when(repository.countAllApiKeysByValue(anyLong(), anyString())).thenReturn(1l);
+
+		// act
+		SaveApiKeyRequestDto input = TestUtils.createNewSaveApiKeyRequestDto();
+		GmsException exception = assertThrows(GmsException.class, () -> service.save(input));
+
+		// assert
+		assertEquals("API key value must be unique!", exception.getMessage());
+		verify(converter, never()).toNewEntity(any(SaveApiKeyRequestDto.class));
+		verify(repository, never()).save(any(ApiKeyEntity.class));
 	}
 
 	@Test

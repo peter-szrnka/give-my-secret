@@ -36,4 +36,6 @@ public interface SecretRepository extends JpaRepository<SecretEntity, Long> {
 	@Modifying
 	@Query("update SecretEntity s set s.status='DISABLED' where s.status != 'DISABLED' and s.keystoreAliasId = :keystoreAliasId")
 	void disableAllActiveByKeystoreAliasId(@Param("keystoreAliasId") Long keystoreAliasId);
+
+	long countAllSecretsByUserIdAndSecretId(Long userId, String secretId);
 }

@@ -32,6 +32,6 @@ public interface KeystoreRepository extends JpaRepository<KeystoreEntity, Long> 
 	@Query("select new io.github.gms.secure.dto.IdNamePairDto(k.id,k.name) from KeystoreEntity k where k.status='ACTIVE' and k.userId = :userId")
 	List<IdNamePairDto> getAllKeystoreNames(@Param("userId") Long userId);
 	
-	@Query("select k.name from KeystoreEntity k where k.userId = :userId and name = :name")
-	List<String> getAllKeystoreNames(@Param("userId") Long userId, @Param("name") String name);
+	@Query("select count(k) from KeystoreEntity k where k.userId = :userId and k.name = :name")
+	long countAllKeystoresByName(@Param("userId") Long userId, @Param("name") String name);
 }
