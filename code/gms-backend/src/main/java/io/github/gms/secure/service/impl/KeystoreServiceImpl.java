@@ -270,20 +270,18 @@ public class KeystoreServiceImpl implements KeystoreService {
 		if (dto.getAliases().stream().filter(alias -> AliasOperation.DELETE != alias.getOperation()).count() == 0) {
 			throw new GmsException("You must define at least one keystore alias!");
 		}
-		
-		if (dto.getId() == null) {
-			validateNewKeystore(dto, file);
-		}
+
+		validateKeystore(dto, file, dto.getId() == null ? 0 : 1);
 	}
 
-	private void validateNewKeystore(SaveKeystoreRequestDto dto, MultipartFile file) {
-		if (file == null) {
+	private void validateKeystore(SaveKeystoreRequestDto dto, MultipartFile file, int expectedCount) {
+		if (dto.getId() == null && file == null) {
 			throw new GmsException("Keystore file must be provided!");
 		}
 
-		List<String> keystoreNames = repository.getAllKeystoreNames(getUserId(), dto.getName());
+		long keystoreCount = repository.countAllKeystoresByName(getUserId(), dto.getName());
 
-		if (!keystoreNames.isEmpty()) {
+		if (keystoreCount > expectedCount) {
 			throw new GmsException("Keystore name must be unique!");
 		}
 	}

@@ -9,6 +9,8 @@ import org.springframework.http.ResponseCookie;
  * @since 1.0
  */
 public class CookieUtils {
+	
+	private CookieUtils() {}
 
 	public static ResponseCookie createCookie(String name, String value, long maxAge, boolean secure) {
 		return ResponseCookie.from(name, value)

@@ -114,6 +114,7 @@ describe('ApiKeyDetailComponent', () => {
         configureTestBed();
 
         // act
+        component.generateRandomValue();
         component.save();
 
         // assert

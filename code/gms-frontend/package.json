@@ -9,7 +9,7 @@
     "watch": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --watch --configuration development",
     "watchHttps": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --watch --configuration localHttps",
     "test": "jest --config=jest.config.js --silent=false",
-    "clearTestCache" : "jest --clearCache",
+    "clearTestCache": "jest --clearCache",
     "coverage": "test --coverage --detectOpenHandles",
     "lint": "eslint --ext .ts . --fix"
   },
@@ -31,10 +31,10 @@
     "jsonwebtoken": "^9.0.0",
     "jwt-decode": "3.1.2",
     "moment": "^2.29.4",
+    "randomstring": "^1.2.3",
     "rxjs": "7.5.7",
     "ts-jest": "^28.0.8",
     "tslib": "^2.4.1",
-    "uuid": "8.3.2",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
@@ -45,6 +45,7 @@
     "@types/jest": "^29.2.5",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^16.18.11",
+    "@types/randomstring": "^1.1.8",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.2",
     "cross-env": "7.0.3",

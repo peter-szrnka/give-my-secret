@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.SecretConverter;
 import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
@@ -69,7 +70,8 @@ public class SecretServiceImpl implements SecretService {
 		SecretEntity entity;
 		dto.setUserId(userId);
 
-		validateKeystore(dto, userId);
+		validateKeystore(dto);
+		validateSecret(dto, dto.getId() == null ? 0 : 1);
 
 		if (dto.getId() == null) {
 			entity = converter.toNewEntity(dto);
@@ -171,19 +173,27 @@ public class SecretServiceImpl implements SecretService {
 			.forEach(existingEntityId -> apiKeyRestrictionRepository.deleteByUserIdAndSecretIdAndApiKeyId(entity.getUserId(), entity.getId(), existingEntityId));
 	}
 
-	private void validateKeystore(SaveSecretRequestDto dto, Long userId) {
+	private void validateKeystore(SaveSecretRequestDto dto) {
 		if (dto.getKeystoreAliasId() == null) {
 			throw new GmsException(WRONG_KEYSTORE_ALIAS);
 		}
 		
 		KeystoreAliasEntity keystoreAlias = keystoreAliasRepository.findById(dto.getKeystoreAliasId()).orElseThrow(() -> new GmsException(WRONG_KEYSTORE_ALIAS));
 
-		keystoreRepository.findByIdAndUserId(keystoreAlias.getKeystoreId(), userId).ifPresentOrElse(entity -> {
+		keystoreRepository.findByIdAndUserId(keystoreAlias.getKeystoreId(), dto.getUserId()).ifPresentOrElse(entity -> {
 			if (EntityStatus.DISABLED == entity.getStatus()) {
 				throw new GmsException(PLEASE_PROVIDE_ACTIVE_KEYSTORE);
 			}
 		}, () -> {
 			throw new GmsException(WRONG_ENTITY);
 		});
+	}
+	
+	private void validateSecret(SaveSecretRequestDto dto, int expectedCount) {
+		long secretIdCount = repository.countAllSecretsByUserIdAndSecretId(MdcUtils.getUserId(), dto.getSecretId());
+
+		if (secretIdCount > expectedCount) {
+			throw new GmsException("Secret ID name must be unique!");
+		}
 	}
 }
