@@ -2,9 +2,9 @@
 
 Give My Secret is a credential storage application, that stores secrets, passwords and other text based credentials in a secure and reliable way by encrypting them with keystores that you provide. It's easy to configure, numerous ready-to-go configurations available for all supported databases.
 
-| Code QL | Code coverage | Sonarcloud |
-| ------- | ------------- | ---------- |
-| [![CodeQL](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml/badge.svg)](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml) | Backend:&nbsp; ![Code coverage](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret&metric=coverage) <br /> Frontend: [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret-frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret-frontend) | Backend:&nbsp; [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret) <br/>Frontend: [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=szrnka-peter_give-my-secret-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret-frontend) |
+| Code QL                                                      | Code coverage                                                | Sonarcloud                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| [![CodeQL](https://github.com/peter-szrnka/give-my-secret/actions/workflows/codeql.yml/badge.svg)](https://github.com/szrnka-peter/give-my-secret/actions/workflows/codeql.yml) | Backend:&nbsp; ![Code coverage](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret&metric=coverage) <br /> Frontend: [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret-frontend) | Backend:&nbsp; [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret) <br/>Frontend: [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret-frontend) |
 
 # Tech stack
 
@@ -18,7 +18,7 @@ Give My Secret is a credential storage application, that stores secrets, passwor
 # Usage
 
 Give My Secret is available as a Docker image, you can easily pill it from GitHub Container Registry by running the following command:
-> docker pull ghcr.io/szrnka-peter/give-my-secret:latest
+> docker pull ghcr.io/peter-szrnka/give-my-secret:latest
 
 To start a new container, you have to set up a bunch of environment properties. I recommend to not start the configuration from scratch, if you open the "**[batch-files](batch-files)**" sub folder, you can find many ready-to-go configurations for all available database providers written in Docker Compose format.
 
