@@ -5,6 +5,9 @@ import { IEntitySaveResponseDto } from "../model/entity-save-response.model";
 import { UserData } from "../model/user-data.model";
 import { environment } from "../../../environments/environment";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('SetupService', () => {
     let service: SetupService;
     let httpMock : HttpTestingController;

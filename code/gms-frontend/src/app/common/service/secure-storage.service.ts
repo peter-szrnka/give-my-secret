@@ -4,6 +4,9 @@ import * as CryptoJS from 'crypto-js';
 const secret_key = CryptoJS.enc.Utf8.parse('12345678876543211234567887654321');
 const options = { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 };  
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class SecureStorageService {
 

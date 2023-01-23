@@ -17,7 +17,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { KeystoreDetailComponent } from "./keystore-detail.component";
 import { KeystoreAlias } from "../../common/model/keystore-alias.model";
 
-
+/**
+ * @author Peter Szrnka
+ */
 describe('KeystoreDetailComponent', () => {
     let component : KeystoreDetailComponent;
     // Injected services

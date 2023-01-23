@@ -7,6 +7,9 @@ import { PageConfig } from "../../common/model/common.model";
 import { AnnouncementService } from "../../common/service/announcement-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'announcement-list-component',
     templateUrl: './announcement-list.component.html',

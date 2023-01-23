@@ -1,6 +1,9 @@
 import { PageConfig } from "./common.model";
 import { KeystoreAlias } from "./keystore-alias.model";
 
+/**
+ * @author Peter Szrnka
+ */
 export interface Keystore {
     id? : number,
     userId? : number,

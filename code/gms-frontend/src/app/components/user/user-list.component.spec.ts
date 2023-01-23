@@ -11,7 +11,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { UserService } from "../../common/service/user-service";
 import { UserListComponent } from "./user-list.component";
 
-
+/**
+ * @author Peter Szrnka
+ */
 describe('UserListComponent', () => {
     let component : UserListComponent;
     const currentUser : User | any = {

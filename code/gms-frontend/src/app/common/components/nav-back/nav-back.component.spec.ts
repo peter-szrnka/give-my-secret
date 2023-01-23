@@ -4,6 +4,9 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { AngularMaterialModule } from "../../../angular-material-module";
 import { NavBackComponent } from "./nav-back.component";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('NavBackComponent', () => {
     let component : NavBackComponent;
 

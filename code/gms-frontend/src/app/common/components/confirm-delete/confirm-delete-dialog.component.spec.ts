@@ -4,6 +4,9 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from "@angular/materia
 import { RouterTestingModule } from "@angular/router/testing";
 import { ConfirmDeleteDialog } from "./confirm-delete-dialog.component";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('ConfirmDeleteDialog', () => {
     let component : ConfirmDeleteDialog;
 

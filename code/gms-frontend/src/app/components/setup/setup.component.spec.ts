@@ -14,6 +14,9 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { WINDOW_TOKEN } from "../../window.provider";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('SetupComponent', () => {
     let component : SetupComponent;
     let fixture : ComponentFixture<SetupComponent>;

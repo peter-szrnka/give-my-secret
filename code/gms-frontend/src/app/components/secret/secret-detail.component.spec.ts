@@ -19,6 +19,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SecretDetailComponent } from "./secret-detail.component";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('SecretDetailComponent', () => {
     let component : SecretDetailComponent;
     let fixture : ComponentFixture<SecretDetailComponent>;

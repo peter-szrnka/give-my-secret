@@ -10,6 +10,9 @@ import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'login',
     templateUrl: './login.component.html',

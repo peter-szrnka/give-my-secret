@@ -9,6 +9,9 @@ import { SystemPropertyService } from "../service/system-property.service";
 import { SystemProperty } from "../model/system-property.model";
 import { HttpErrorResponse } from "@angular/common/http";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('SystemPropertyListResolver', () => {
     let resolver : SystemPropertyListResolver;
     let activatedRouteSnapshot : any;

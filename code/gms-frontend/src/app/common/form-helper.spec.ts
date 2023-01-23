@@ -1,6 +1,8 @@
 
 /**
  * Complex object to mock a {@link FormGroup}
+ * 
+ * @author Peter Szrnka
  */
 export const FORM_GROUP_MOCK = {
     group : jest.fn().mockReturnValue({

@@ -12,7 +12,9 @@ import { SecretService } from "../../common/service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SecretListComponent } from "./secret-list.component";
 
-
+/**
+ * @author Peter Szrnka
+ */
 describe('SecretListComponent', () => {
     let component : SecretListComponent;
     const currentUser : User | any = {
@@ -85,7 +87,6 @@ describe('SecretListComponent', () => {
         configureTestBed();
         fixture = TestBed.createComponent(SecretListComponent);
         component = fixture.componentInstance;
-        //spyOn(component.activatedRoute, 'data').and.throwError("Unexpected error!");
         fixture.detectChanges();
 
         expect(component).toBeTruthy();

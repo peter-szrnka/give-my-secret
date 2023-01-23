@@ -9,6 +9,9 @@ import { Message } from "../../common/model/message.model";
 import { MessageService } from "../../common/service/message-service";
 import { MessageListComponent } from "./message-list.component";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('MessageListComponent', () => {
     let component : MessageListComponent;
     let fixture : ComponentFixture<MessageListComponent>;

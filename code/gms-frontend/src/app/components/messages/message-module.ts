@@ -8,6 +8,9 @@ import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { MessageListComponent } from "./message-list.component";
 import { SharedDataService } from "../../common/service/shared-data-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       MessageListComponent

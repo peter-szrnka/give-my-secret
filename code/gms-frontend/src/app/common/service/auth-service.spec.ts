@@ -6,6 +6,9 @@ import { AuthService } from "./auth-service";
 
 const TEST_LOGIN : Login = {};
 
+/**
+ * @author Peter Szrnka
+ */
 describe('AuthService', () => {
     let service : AuthService;
     let httpMock : HttpTestingController;

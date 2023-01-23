@@ -15,6 +15,9 @@ import { UserService } from "./user-service";
 import { SecureStorageService } from "./secure-storage.service";
 import { SystemPropertyService } from "./system-property.service";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       

@@ -8,6 +8,10 @@ import { SecretService } from "../service/secret-service";
 import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { SecretDetailResolver } from "./secret-detail.resolver";
+
+/**
+ * @author Peter Szrnka
+ */
 describe('SecretDetailResolver', () => {
     let resolver : SecretDetailResolver;
     let activatedRouteSnapshot : any;

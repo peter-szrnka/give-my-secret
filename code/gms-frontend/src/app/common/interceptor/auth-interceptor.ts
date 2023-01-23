@@ -4,14 +4,15 @@ import { Injectable } from "@angular/core";
 import { catchError, Observable, of, throwError } from "rxjs";
 import { SharedDataService } from "../service/shared-data-service";
 
-type NewType = Observable<any>;
-
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
     
     constructor(private sharedData : SharedDataService) { }
 
-    private handleAuthError(err: HttpErrorResponse): NewType {
+    private handleAuthError(err: HttpErrorResponse): Observable<any> {
         if (err.status >= 300 && err.status < 500) {
             this.sharedData.logout();
             return of(err.message);

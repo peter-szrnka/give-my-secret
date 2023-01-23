@@ -17,6 +17,9 @@ import { ApiKeyService } from "../../common/service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { ApiKeyDetailComponent } from "./apikey-detail.component";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('ApiKeyDetailComponent', () => {
     let component : ApiKeyDetailComponent;
     let fixture : ComponentFixture<ApiKeyDetailComponent>;

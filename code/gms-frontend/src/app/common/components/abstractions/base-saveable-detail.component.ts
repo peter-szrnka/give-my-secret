@@ -8,6 +8,9 @@ import { SharedDataService } from "../../service/shared-data-service";
 import { getErrorMessage } from "../../utils/error-utils";
 import { InfoDialog } from "../info-dialog/info-dialog.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @Directive()
 export abstract class BaseSaveableDetailComponent<T, S extends SaveServiceBase<T, BaseList<T>>> implements OnInit {
 

@@ -1,5 +1,8 @@
 import { PageConfig } from "./common.model"
 
+/**
+ * @author Peter Szrnka
+ */
 export interface Secret {
     id? : number,
     secretId? : string,

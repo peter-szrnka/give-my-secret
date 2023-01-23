@@ -5,6 +5,9 @@ import { User } from './common/model/user.model';
 import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

@@ -15,7 +15,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { UserService } from "../../common/service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
 
-
+/**
+ * @author Peter Szrnka
+ */
 describe('UserDetailComponent', () => {
     let component : UserDetailComponent;
     let fixture : ComponentFixture<UserDetailComponent>;

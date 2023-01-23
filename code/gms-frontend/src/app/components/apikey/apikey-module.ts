@@ -11,6 +11,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { ApiKeyDetailComponent } from "./apikey-detail.component";
 import { ApiKeyListComponent } from "./apikey-list.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       ApiKeyListComponent, ApiKeyDetailComponent

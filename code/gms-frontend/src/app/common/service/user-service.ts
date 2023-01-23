@@ -7,6 +7,9 @@ import { UserDataList } from "../model/user-list.model";
 import { getHeaders } from "../utils/header-utils";
 import { SaveServiceBase } from "./save-service-base";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class UserService extends SaveServiceBase<UserData, UserDataList> {
 

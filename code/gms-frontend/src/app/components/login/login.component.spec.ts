@@ -13,6 +13,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { LoginComponent } from "./login.component";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('LoginComponent', () => {
     let component : LoginComponent;
     let fixture : ComponentFixture<LoginComponent>;

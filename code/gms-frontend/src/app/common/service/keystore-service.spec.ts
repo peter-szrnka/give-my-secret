@@ -14,6 +14,9 @@ const TEST_KEYSTORE : Keystore = {
   aliases: []
 };
 
+/**
+ * @author Peter Szrnka
+ */
 describe("KeystoreService", () => {
     let service : KeystoreService;
     let httpMock : HttpTestingController;

@@ -10,6 +10,9 @@ import { KeystoreList } from "../model/keystore-list";
 import { ServiceBase } from "./service-base";
 import { getHeaders } from "../utils/header-utils";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class KeystoreService extends ServiceBase<Keystore, KeystoreList> {
 

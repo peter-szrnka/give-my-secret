@@ -7,6 +7,9 @@ import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { ApiTestingComponent } from "./api-testing.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
         ApiTestingComponent

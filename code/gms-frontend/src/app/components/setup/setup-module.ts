@@ -6,6 +6,9 @@ import { SetupComponent } from "./setup.component";
 import { FormsModule } from "@angular/forms";
 import { WINDOW_TOKEN } from "../../window.provider";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       SetupComponent

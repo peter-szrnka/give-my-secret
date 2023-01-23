@@ -6,6 +6,9 @@ import { SharedDataService } from "../service/shared-data-service";
 
 const checker = (arr : string[], target : string[]) => target.every(v => arr.includes(v));
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable({
     providedIn: "root"
 })

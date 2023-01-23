@@ -7,6 +7,9 @@ import { AppRoutingModule } from "../../app-routing.module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { HomeComponent } from "./home.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       HomeComponent

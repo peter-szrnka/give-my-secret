@@ -72,7 +72,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
 
     if (!index || index < 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      event.chipInput!.clear();
+      event.chipInput.clear();
       return;
     }
 
@@ -82,7 +82,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
 
     this.refreshSelectableRoles();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    event.chipInput!.clear();
+    event.chipInput.clear();
   }
 
   remove(role: string): void {

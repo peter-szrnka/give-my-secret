@@ -1,4 +1,6 @@
-
+/**
+ * @author Peter Szrnka
+ */
 export interface Message {
     id? : number,
     message : string,

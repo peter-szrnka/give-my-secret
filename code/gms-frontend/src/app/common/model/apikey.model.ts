@@ -1,5 +1,8 @@
 import { PageConfig } from "./common.model"
 
+/**
+ * @author Peter Szrnka
+ */
 export interface ApiKey {
     id? : number,
     userId? : number,

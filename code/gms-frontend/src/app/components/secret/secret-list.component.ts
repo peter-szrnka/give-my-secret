@@ -7,6 +7,9 @@ import { PAGE_CONFIG_SECRET, Secret } from "../../common/model/secret.model";
 import { SecretService } from "../../common/service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'secret-list',
     templateUrl: './secret-list.component.html',

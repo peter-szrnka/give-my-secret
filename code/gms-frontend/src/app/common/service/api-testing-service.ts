@@ -4,6 +4,9 @@ import { Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { ApiResponseDto } from "../model/api-response.model";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable({providedIn : "root"})
 export class ApiTestingService {
 

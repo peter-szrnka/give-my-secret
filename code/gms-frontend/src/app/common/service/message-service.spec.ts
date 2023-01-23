@@ -12,6 +12,9 @@ const TEST_MESSAGE : Message = {
   creationDate: new Date()
 };
 
+/**
+ * @author Peter Szrnka
+ */
 describe("MessageService", () => {
     let service : MessageService;
     let httpMock : HttpTestingController;

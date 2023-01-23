@@ -9,6 +9,9 @@ import { IdNamePairList } from "../model/id-name-pair-list.model";
 import { environment } from "../../../environments/environment";
 import { getHeaders } from "../utils/header-utils";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable({providedIn : "root"})
 export class ApiKeyService extends SaveServiceBase<ApiKey, ApiKeyList> {
 

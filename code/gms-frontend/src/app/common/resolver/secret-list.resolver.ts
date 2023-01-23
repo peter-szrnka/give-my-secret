@@ -6,6 +6,9 @@ import { SplashScreenStateService } from "../service/splash-screen-service";
 import { ListResolver } from "./list-data.resolver";
 import { SharedDataService } from "../service/shared-data-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class SecretListResolver extends ListResolver<Secret, SecretList, SecretService> {
 

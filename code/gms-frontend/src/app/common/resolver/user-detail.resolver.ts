@@ -5,6 +5,9 @@ import { SplashScreenStateService } from "../service/splash-screen-service";
 import { UserService } from "../service/user-service";
 import { DetailDataResolver } from "./save-detail-data.resolver";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class UserDetailResolver extends DetailDataResolver<UserData, UserService> {
 

@@ -1,6 +1,6 @@
-
-export type ClickFunction = () => void;
-
+/**
+ * @author Peter Szrnka
+ */
 export interface ButtonConfig {
     label : string,
     url? : string

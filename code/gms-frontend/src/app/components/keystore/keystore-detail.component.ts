@@ -11,6 +11,9 @@ import { getErrorMessage } from "../../common/utils/error-utils";
 import { KeystoreAlias } from "../../common/model/keystore-alias.model";
 import { ArrayDataSource } from "@angular/cdk/collections";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
   selector: 'keystore-detail',
   templateUrl: './keystore-detail.component.html',

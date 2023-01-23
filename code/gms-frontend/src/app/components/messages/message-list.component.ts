@@ -11,6 +11,9 @@ const FILTER : Paging = {
     size: 10
 };
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'message-list',
     templateUrl: './message-list.component.html',

@@ -7,6 +7,9 @@ import { getHeaders } from "../utils/header-utils";
 import { Paging } from "../model/paging.model";
 import { SystemPropertyList } from "../model/system-property-list.model";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class SystemPropertyService {
 

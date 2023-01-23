@@ -7,6 +7,9 @@ import { User } from "../model/user.model";
 import { AuthService } from "./auth-service";
 import { SetupService } from "./setup-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable({ providedIn: 'any' })
 export class SharedDataService {
 

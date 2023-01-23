@@ -7,6 +7,10 @@ import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { UserService } from "../service/user-service";
 import { UserDetailResolver } from "./user-detail.resolver";
+
+/**
+ * @author Peter Szrnka
+ */
 describe('UserDetailResolver', () => {
     let resolver : UserDetailResolver;
     let activatedRouteSnapshot : any;

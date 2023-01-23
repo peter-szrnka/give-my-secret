@@ -4,6 +4,9 @@ import { environment } from "../../../environments/environment";
 import { ApiResponseDto } from "../model/api-response.model";
 import { ApiTestingService } from "./api-testing-service";
 
+/**
+ * @author Peter Szrnka
+ */
 describe("ApiTestingService", () => {
     let service : ApiTestingService;
     let httpMock : HttpTestingController;

@@ -12,6 +12,9 @@ export interface PasswordSettings {
   newCredential2: string | undefined
 }
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
   selector: 'settings-summary-component',
   templateUrl: './settings-summary.component.html',

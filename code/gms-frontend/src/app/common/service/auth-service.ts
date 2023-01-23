@@ -5,6 +5,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { getHeaders } from '../utils/header-utils';
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class AuthService {
 

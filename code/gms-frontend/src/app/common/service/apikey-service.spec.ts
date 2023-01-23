@@ -16,6 +16,9 @@ const TEST_API_KEY : ApiKey = {
   status : "ACTIVE"
 };
 
+/**
+ * @author Peter Szrnka
+ */
 describe("ApiKeyService", () => {
     let service : ApiKeyService;
     let httpMock : HttpTestingController;

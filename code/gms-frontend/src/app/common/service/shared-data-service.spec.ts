@@ -11,6 +11,9 @@ import { AuthService } from "./auth-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SystemReadyData } from "../model/system-ready.model";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('SharedDataService', () => {
   let router: any;
   let currentUser: User | any;

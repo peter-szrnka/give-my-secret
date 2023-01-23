@@ -11,6 +11,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { KeystoreDetailComponent } from "./keystore-detail.component";
 import { KeystoreListComponent } from "./keystore-list.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       KeystoreListComponent, KeystoreDetailComponent

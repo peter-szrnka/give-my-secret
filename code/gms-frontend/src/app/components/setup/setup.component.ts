@@ -6,6 +6,9 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { WINDOW_TOKEN } from "../../window.provider";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'setup-component',
     templateUrl: './setup.component.html',

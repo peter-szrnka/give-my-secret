@@ -10,7 +10,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SystemPropertyService } from "../../common/service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
 
-
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       SystemPropertyListComponent
