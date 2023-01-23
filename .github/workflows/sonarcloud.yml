@@ -36,7 +36,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -Pcodecov -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=szrnka-peter_give-my-secret
+        run: mvn -Pcodecov -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=peter-szrnka_give-my-secret
   analize_frontend:
     name: Build and analize frontend
     runs-on: ubuntu-latest
@@ -65,7 +65,7 @@ jobs:
           args:
             # Unique keys of your project and organization. You can find them in SonarCloud > Information (bottom-left menu)
             # mandatory
-            -Dsonar.projectKey=szrnka-peter_give-my-secret-frontend
+            -Dsonar.projectKey=peter-szrnka_give-my-secret-frontend
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }}
             -Dsonar.test.inclusions=**/*.spec.ts
             -Dsonar.exclusions=**/*.java,**/*.class,**/*.scss,**/*.html,**/*.json,**/*.xml,**/*.js,**/environments/*.*,**/polyfills.ts,**/*module.ts,**/main.ts,**/mock-config.ts,**/*.provider.ts
