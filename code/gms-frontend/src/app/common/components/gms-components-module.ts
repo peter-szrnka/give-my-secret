@@ -9,6 +9,9 @@ import { InfoDialog } from "./info-dialog/info-dialog.component";
 import { NavBackComponent } from "./nav-back/nav-back.component";
 import { SplashComponent } from "./splash/splash.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       ConfirmDeleteDialog, InfoDialog, SplashComponent, NavBackComponent

@@ -8,6 +8,9 @@ import { SplashScreenStateService } from "../service/splash-screen-service";
 import { UserService } from "../service/user-service";
 import { UserListResolver } from "./user-list.resolver";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('UserListResolver', () => {
     let resolver : UserListResolver;
     let activatedRouteSnapshot : any;

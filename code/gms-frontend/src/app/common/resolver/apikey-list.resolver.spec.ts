@@ -9,6 +9,9 @@ import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { ApiKeyListResolver } from "./apikey-list.resolver";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('ApiKeyListResolver', () => {
     let resolver : ApiKeyListResolver;
     let activatedRouteSnapshot : any;

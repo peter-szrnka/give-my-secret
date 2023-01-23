@@ -13,6 +13,9 @@ const TEST_ANNOUNCEMENT : Announcement = {
   description : "Description"
 };
 
+/**
+ * @author Peter Szrnka
+ */
 describe("AnnouncementService", () => {
     let service : AnnouncementService;
     let httpMock : HttpTestingController;

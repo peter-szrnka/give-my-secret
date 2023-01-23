@@ -1,5 +1,8 @@
 import { RoleGuard } from "./role-guard";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('RoleGuard', () => {
     let roleGuard : RoleGuard;
     let router : any;

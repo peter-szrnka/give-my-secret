@@ -8,6 +8,9 @@ import { MessageList } from "../model/message-list.model";
 import { getHeaders } from "../utils/header-utils";
 import { ServiceBase } from "./service-base";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable({providedIn : "root"})
 export class MessageService extends ServiceBase<Message, MessageList> {
 

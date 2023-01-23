@@ -6,6 +6,9 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'api-testing-component',
     templateUrl: './api-testing.component.html',

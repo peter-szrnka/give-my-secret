@@ -7,6 +7,9 @@ import { Keystore, PAGE_CONFIG_KEYSTORE } from "../../common/model/keystore.mode
 import { KeystoreService } from "../../common/service/keystore-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'keystore-list',
     templateUrl: './keystore-list.component.html',

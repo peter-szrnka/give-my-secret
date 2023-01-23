@@ -6,6 +6,9 @@ import { SplashScreenStateService } from "../service/splash-screen-service";
 import { SystemPropertyService } from "../service/system-property.service";
 import { SystemProperty } from "../model/system-property.model";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class SystemPropertyListResolver implements Resolve<any> {
 

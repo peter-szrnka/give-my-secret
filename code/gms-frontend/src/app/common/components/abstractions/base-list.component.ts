@@ -11,6 +11,9 @@ import { SharedDataService } from "../../service/shared-data-service";
 import { checkRights } from "../../utils/permission-utils";
 import { ConfirmDeleteDialog } from "../confirm-delete/confirm-delete-dialog.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @Directive()
 export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>> implements OnInit {
 

@@ -1,3 +1,6 @@
+/**
+ * @author Peter Szrnka
+ */
 export interface Environment {
   production : boolean,
   baseUrl : string

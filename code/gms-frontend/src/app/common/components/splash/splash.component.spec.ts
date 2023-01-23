@@ -5,6 +5,9 @@ import { Subject } from "rxjs";
 import { SplashScreenStateService } from "../../service/splash-screen-service";
 import { SplashComponent } from "./splash.component";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('SplashComponent', () => {
     let component : SplashComponent;
     let splashScreenStateService : any;

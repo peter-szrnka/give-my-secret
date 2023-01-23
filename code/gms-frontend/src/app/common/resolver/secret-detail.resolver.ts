@@ -5,6 +5,9 @@ import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { DetailDataResolver } from "./save-detail-data.resolver";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class SecretDetailResolver extends DetailDataResolver<Secret, SecretService> {
 

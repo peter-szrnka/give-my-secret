@@ -7,6 +7,10 @@ import { KeystoreService } from "../service/keystore-service";
 import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { KeystoreDetailResolver } from "./keystore-detail.resolver";
+
+/**
+ * @author Peter Szrnka
+ */
 describe('KeystoreDetailResolver', () => {
     let resolver : KeystoreDetailResolver;
     let activatedRouteSnapshot : any;

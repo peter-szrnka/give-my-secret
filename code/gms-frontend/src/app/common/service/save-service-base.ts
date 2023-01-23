@@ -5,6 +5,9 @@ import { IEntitySaveResponseDto } from "../model/entity-save-response.model";
 import { getHeaders } from "../utils/header-utils";
 import { ServiceBase } from "./service-base";
 
+/**
+ * @author Peter Szrnka
+ */
 export abstract class SaveServiceBase<T, L extends BaseList<T>> extends ServiceBase<T, L> {
 
     save(item : T) : Observable<IEntitySaveResponseDto> {

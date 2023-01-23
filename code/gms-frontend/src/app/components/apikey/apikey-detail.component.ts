@@ -9,6 +9,9 @@ import { ApiKeyService } from "../../common/service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import randomstring from "randomstring";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'api-key-detail',
     templateUrl: './apikey-detail.component.html',

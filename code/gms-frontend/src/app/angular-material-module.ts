@@ -36,7 +36,6 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 
-
 const materialModules = [
   CdkTreeModule,
   MatAutocompleteModule,
@@ -75,6 +74,9 @@ const materialModules = [
   ReactiveFormsModule
 ];
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
   imports: [
     CommonModule,

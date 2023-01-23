@@ -17,6 +17,9 @@ import { UserDetailResolver } from "./user-detail.resolver";
 import { UserListResolver } from "./user-list.resolver";
 import { SystemPropertyListResolver } from "./system-property-list.resolver";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     imports: [
         AngularMaterialModule,

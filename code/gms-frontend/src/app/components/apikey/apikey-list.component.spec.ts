@@ -13,7 +13,9 @@ import { ApiKeyService } from "../../common/service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { ApiKeyListComponent } from "./apikey-list.component";
 
-
+/**
+ * @author Peter Szrnka
+ */
 describe('ApiKeyListComponent', () => {
     let component : ApiKeyListComponent;
     const currentUser : User | any = {

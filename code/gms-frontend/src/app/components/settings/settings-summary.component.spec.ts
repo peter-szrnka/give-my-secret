@@ -12,6 +12,9 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { UserService } from "../../common/service/user-service";
 import { SettingsSummaryComponent } from "./settings-summary.component";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('SettingsSummaryComponent', () => {
     let component : SettingsSummaryComponent;
     let fixture : ComponentFixture<SettingsSummaryComponent>;

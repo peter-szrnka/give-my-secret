@@ -8,6 +8,10 @@ import { ApiKeyService } from "../service/apikey-service";
 import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { ApiKeyDetailResolver } from "./apikey-detail.resolver";
+
+/**
+ * @author Peter Szrnka
+ */
 describe('ApiKeyDetailResolver', () => {
     let resolver : ApiKeyDetailResolver;
     let activatedRouteSnapshot : any;

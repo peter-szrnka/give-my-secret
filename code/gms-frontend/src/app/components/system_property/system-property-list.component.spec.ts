@@ -15,7 +15,9 @@ import { SystemPropertyService } from "../../common/service/system-property.serv
 import { SystemProperty } from "../../common/model/system-property.model";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-
+/**
+ * @author Peter Szrnka
+ */
 describe('SystemPropertyListComponent', () => {
     let component : SystemPropertyListComponent;
     const currentUser : User | any = {

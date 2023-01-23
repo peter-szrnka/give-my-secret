@@ -13,6 +13,9 @@ const TEST_EVENT : Event = {
   operation : "SAVE"
 };
 
+/**
+ * @author Peter Szrnka
+ */
 describe("EventService", () => {
     let service : EventService;
     let httpMock : HttpTestingController;

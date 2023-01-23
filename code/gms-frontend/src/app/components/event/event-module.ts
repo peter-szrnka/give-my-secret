@@ -8,6 +8,9 @@ import { GmsComponentsModule } from "../../common/components/gms-components-modu
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { EventListComponent } from "./event-list.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       EventListComponent

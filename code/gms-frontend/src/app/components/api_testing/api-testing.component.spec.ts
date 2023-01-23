@@ -14,6 +14,9 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { ApiTestingComponent } from "./api-testing.component";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('ApiTestingComponent', () => {
 
     let component : ApiTestingComponent;

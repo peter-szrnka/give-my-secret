@@ -6,6 +6,9 @@ import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { ListResolver } from "./list-data.resolver";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class AnnouncementListResolver extends ListResolver<Announcement, AnnouncementList, AnnouncementService> {
 

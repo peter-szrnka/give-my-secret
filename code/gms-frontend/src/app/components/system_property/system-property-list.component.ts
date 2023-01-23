@@ -29,6 +29,9 @@ export const PROPERTY_TEXT_MAP: any = {
   'OLD_EVENT_TIME_LIMIT_DAYS': { text: 'Limit of old events deletion in days' }
 };
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
   selector: 'system-property',
   templateUrl: './system-property-list.component.html',

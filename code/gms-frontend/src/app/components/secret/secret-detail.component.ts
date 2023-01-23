@@ -15,6 +15,9 @@ import { SecretService } from "../../common/service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'secret-detail',
     templateUrl: './secret-detail.component.html',
@@ -147,7 +150,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
 
         if (!index || index < 0) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            event.chipInput!.clear();
+            event.chipInput.clear();
             return;
         }
 
@@ -157,7 +160,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
 
         this.refreshSelectableRoles();
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        event.chipInput!.clear();
+        event.chipInput.clear();
     }
 
     remove(apiKey: IdNamePair): void {

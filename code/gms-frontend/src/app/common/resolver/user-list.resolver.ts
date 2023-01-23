@@ -6,6 +6,9 @@ import { SplashScreenStateService } from "../service/splash-screen-service";
 import { UserService } from "../service/user-service";
 import { ListResolver } from "./list-data.resolver";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class UserListResolver extends ListResolver<UserData, UserDataList, UserService> {
 

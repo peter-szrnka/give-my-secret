@@ -9,7 +9,9 @@ import { User } from "./common/model/user.model";
 import { SharedDataService } from "./common/service/shared-data-service";
 import { SplashScreenStateService } from "./common/service/splash-screen-service";
 
-
+/**
+ * @author Peter Szrnka
+ */
 describe('AppComponent', () => {
     let component : AppComponent;
     let currentUser : User | any;

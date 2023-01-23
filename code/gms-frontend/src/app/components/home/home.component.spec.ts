@@ -7,6 +7,9 @@ import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { HomeComponent } from "./home.component";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('HomeComponent', () => {
     let component : HomeComponent;
     let fixture : ComponentFixture<HomeComponent>;

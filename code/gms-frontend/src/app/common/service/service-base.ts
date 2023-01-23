@@ -7,6 +7,9 @@ import { LongValue } from "../model/long-value.model";
 import { environment } from "../../../environments/environment";
 import { getHeaders } from "../utils/header-utils";
 
+/**
+ * @author Peter Szrnka
+ */
 export abstract class ServiceBase<T, L extends BaseList<T>> implements Service<T> {
 
     constructor(protected http : HttpClient, protected scope : string) {}

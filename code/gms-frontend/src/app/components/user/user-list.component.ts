@@ -7,7 +7,9 @@ import { UserData, PAGE_CONFIG_USER } from "../../common/model/user-data.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { UserService } from "../../common/service/user-service";
 
-
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'user-list-component',
     templateUrl: './user-list.component.html',

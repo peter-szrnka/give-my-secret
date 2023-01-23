@@ -8,6 +8,9 @@ import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { AnnouncementListResolver } from "./announcement-list.resolver";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('AnnouncementListResolver', () => {
     let resolver : AnnouncementListResolver;
     let activatedRouteSnapshot : any;

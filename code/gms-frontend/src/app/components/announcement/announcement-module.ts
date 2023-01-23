@@ -10,6 +10,9 @@ import { AnnouncementService } from "../../common/service/announcement-service";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 import { AnnouncementListComponent } from "./announcement-list.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
         AnnouncementListComponent, AnnouncementDetailComponent

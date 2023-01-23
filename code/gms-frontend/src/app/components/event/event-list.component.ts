@@ -9,6 +9,9 @@ import { Event, PAGE_CONFIG_EVENT } from "../../common/model/event.model";
 import { EventService } from "../../common/service/event-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'event-list-component',
     templateUrl: './event-list.component.html',

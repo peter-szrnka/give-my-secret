@@ -1,3 +1,6 @@
+/**
+ * @author Peter Szrnka
+ */
 export interface SystemProperty {
     key : string;
     value : string;

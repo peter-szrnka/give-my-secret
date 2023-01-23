@@ -7,6 +7,9 @@ import { UserData } from "../model/user-data.model";
 import { SystemStatusDto } from "../model/system-status.model";
 import { getHeaders } from "../utils/header-utils";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable({
     providedIn : "root"
 })

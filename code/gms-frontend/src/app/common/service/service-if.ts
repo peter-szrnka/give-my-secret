@@ -2,6 +2,9 @@ import { Observable } from "rxjs";
 import { IEntitySaveResponseDto } from "../model/entity-save-response.model";
 import { Paging } from "../model/paging.model";
 
+/**
+ * @author Peter Szrnka
+ */
 export interface Service<T> {
 
     save?(item : T) : Observable<IEntitySaveResponseDto>;

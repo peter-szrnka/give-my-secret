@@ -7,6 +7,9 @@ import { ServiceBase } from "../../service/service-base";
 import { SharedDataService } from "../../service/shared-data-service";
 import { InfoDialog } from "../info-dialog/info-dialog.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @Directive()
 export abstract class BaseDetailComponent<T, S extends ServiceBase<T, BaseList<T>>> implements OnInit {
 

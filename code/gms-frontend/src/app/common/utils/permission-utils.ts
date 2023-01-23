@@ -1,5 +1,8 @@
 import { User } from "../model/user.model";
 
+/**
+ * @author Peter Szrnka
+ */
 export function checkRights(user? : User, requireAdminRights? : boolean) : boolean {
     if (user === undefined || user.roles === undefined) {
         return true;

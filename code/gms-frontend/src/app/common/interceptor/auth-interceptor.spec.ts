@@ -2,6 +2,9 @@ import { HttpErrorResponse, HttpRequest, HttpResponse } from "@angular/common/ht
 import { of, throwError } from "rxjs";
 import { AuthInterceptor } from "./auth-interceptor";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('AuthInterceptor', () => {
     let interceptor: AuthInterceptor;
     let sharedData : any;

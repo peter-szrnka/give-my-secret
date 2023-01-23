@@ -6,6 +6,9 @@ import { MessageService } from '../../common/service/message-service';
 import { environment } from '../../../environments/environment';
 import { filter } from 'rxjs';
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector : 'header',
     templateUrl : './header.component.html',

@@ -1,3 +1,6 @@
+/**
+ * @author Peter Szrnka
+ */
 export interface KeystoreAlias {
     id? : number;
     alias : string;

@@ -12,7 +12,9 @@ import { EventService } from "../../common/service/event-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { EventListComponent } from "./event-list.component";
 
-
+/**
+ * @author Peter Szrnka
+ */
 describe('EventListComponent', () => {
     let component : EventListComponent;
     const currentUser : User | any = {

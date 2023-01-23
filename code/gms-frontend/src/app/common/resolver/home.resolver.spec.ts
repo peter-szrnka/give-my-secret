@@ -16,6 +16,9 @@ import { SplashScreenStateService } from "../service/splash-screen-service";
 import { UserService } from "../service/user-service";
 import { HomeResolver } from "./home.resolver";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('HomeResolver', () => {
     let resolver: HomeResolver;
     let activatedRouteSnapshot: any;

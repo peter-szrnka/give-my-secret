@@ -12,7 +12,9 @@ import { KeystoreService } from "../../common/service/keystore-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { KeystoreListComponent } from "./keystore-list.component";
 
-
+/**
+ * @author Peter Szrnka
+ */
 describe('KeystoreListComponent', () => {
     let component : KeystoreListComponent;
     const currentUser : User | any = {

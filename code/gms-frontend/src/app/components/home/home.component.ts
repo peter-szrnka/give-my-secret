@@ -5,6 +5,9 @@ import { HomeData } from "../../common/model/home-data.model";
 import { Event } from "../../common/model/event.model";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'home',
     templateUrl: './home.component.html',

@@ -14,6 +14,9 @@ import { AnnouncementService } from "../../common/service/announcement-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('AnnouncementDetailComponent', () => {
     let component : AnnouncementDetailComponent;
     const currentUser : User | any = {

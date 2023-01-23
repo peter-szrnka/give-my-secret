@@ -7,6 +7,9 @@ import { PageConfig } from "../../common/model/common.model";
 import { ApiKeyService } from "../../common/service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'apikey-list',
     templateUrl: './apikey-list.component.html',

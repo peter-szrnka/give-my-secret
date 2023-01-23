@@ -1,6 +1,9 @@
 import { TestBed } from "@angular/core/testing";
 import { SecureStorageService } from "./secure-storage.service";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('SecureStorageService', () => {
     let service: SecureStorageService;
 

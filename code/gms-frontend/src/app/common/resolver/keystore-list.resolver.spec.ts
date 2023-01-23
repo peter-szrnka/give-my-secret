@@ -8,6 +8,9 @@ import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { KeystoreListResolver } from "./keystore-list.resolver";
 
+/**
+ * @author Peter Szrnka
+ */
 describe('KeystoreListResolver', () => {
     let resolver : KeystoreListResolver;
     let activatedRouteSnapshot : any;

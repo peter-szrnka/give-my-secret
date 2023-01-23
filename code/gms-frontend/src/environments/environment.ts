@@ -4,6 +4,9 @@
 
 import { defaultEnvironment, Environment } from "./environment.default";
 
+/**
+ * @author Peter Szrnka
+ */
 export const environment : Environment = defaultEnvironment;
 
 /*

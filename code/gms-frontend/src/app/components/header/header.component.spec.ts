@@ -9,6 +9,9 @@ import { MessageService } from "../../common/service/message-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { HeaderComponent } from "./header.component";
 
+/**
+ * @author Peter Szrnka
+ */
 class MockServices {
     public url : any;
     public events = new Observable((observer) => {
@@ -27,6 +30,9 @@ class MockServices {
     }
 }
 
+/**
+ * @author Peter Szrnka
+ */
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
     let sharedDataService: any;

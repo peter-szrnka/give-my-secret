@@ -13,6 +13,9 @@ const TEST_SYSTEM_PROPERTY : SystemProperty = {
     factoryValue : true
 };
 
+/**
+ * @author Peter Szrnka
+ */
 describe("SytemPropertyService", () => {
     let service : SystemPropertyService;
     let httpMock : HttpTestingController;

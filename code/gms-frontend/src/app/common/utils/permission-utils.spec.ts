@@ -1,6 +1,9 @@
 import { User } from "../model/user.model";
 import { checkRights } from "./permission-utils";
 
+/**
+ * @author Peter Szrnka
+ */
 describe("Permission utils", () => {
 
     it('User is undefined', () => {

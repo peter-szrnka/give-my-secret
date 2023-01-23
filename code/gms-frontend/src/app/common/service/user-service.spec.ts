@@ -11,6 +11,9 @@ const TEST_USER : User = {
   roles: []
 };
 
+/**
+ * @author Peter Szrnka
+ */
 describe("SecretService", () => {
     let service : UserService;
     let httpMock : HttpTestingController;

@@ -6,6 +6,9 @@ import { ServiceBase } from "../service/service-base";
 import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 
+/**
+ * @author Peter Szrnka
+ */
 export abstract class DetailDataResolver<T, S extends ServiceBase<T, BaseList<T>>> implements Resolve<any> {
 
     constructor(protected sharedData : SharedDataService, protected splashScreenStateService: SplashScreenStateService, protected service : S) {

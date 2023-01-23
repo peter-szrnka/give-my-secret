@@ -7,6 +7,9 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { LoginComponent } from "./login.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       LoginComponent

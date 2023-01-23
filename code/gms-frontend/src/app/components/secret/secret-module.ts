@@ -11,6 +11,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SecretDetailComponent } from "./secret-detail.component";
 import { SecretListComponent } from "./secret-list.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       SecretListComponent, SecretDetailComponent

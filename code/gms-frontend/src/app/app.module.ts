@@ -32,6 +32,9 @@ import { HeaderModule } from './components/header/header-module';
 import { PipesModule } from './common/components/pipes/pipes.module';
 import { SystemPropertyModule } from './components/system_property/system-property-module';
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
   declarations: [ 
     AppComponent

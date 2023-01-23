@@ -16,6 +16,9 @@ const TEST_SECRET : Secret = {
   apiKeyRestrictions : []
 };
 
+/**
+ * @author Peter Szrnka
+ */
 describe("SecretService", () => {
     let service : SecretService;
     let httpMock : HttpTestingController;

@@ -1,5 +1,8 @@
 import { PageConfig } from "./common.model";
 
+/**
+ * @author Peter Szrnka
+ */
 export interface Event {
     id : number,
     userId : string,

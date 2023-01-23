@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class SplashScreenStateService {
 

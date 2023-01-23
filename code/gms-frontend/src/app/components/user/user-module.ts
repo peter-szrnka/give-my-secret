@@ -11,6 +11,9 @@ import { UserService } from "../../common/service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
 import { UserListComponent } from "./user-list.component";
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
     declarations: [ 
       UserListComponent, UserDetailComponent

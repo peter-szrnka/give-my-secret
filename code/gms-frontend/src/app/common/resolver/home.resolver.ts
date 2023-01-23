@@ -27,6 +27,9 @@ const ANNOUNCEMENT_LIST_FILTER = {
     size: 10
 };
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable({ providedIn : 'root' })
 export class HomeResolver implements Resolve<HomeData> {
 

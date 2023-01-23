@@ -7,6 +7,9 @@ import { SecretList } from "../model/secret-list.model";
 import { SaveServiceBase } from "./save-service-base";
 import { getHeaders } from "../utils/header-utils";
 
+/**
+ * @author Peter Szrnka
+ */
 @Injectable()
 export class SecretService extends SaveServiceBase<Secret, SecretList> {
 

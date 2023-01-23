@@ -72,6 +72,9 @@ const routes: Routes = [
   { path: 'messages', component: MessageListComponent, runGuardsAndResolvers: 'always' },
 ];
 
+/**
+ * @author Peter Szrnka
+ */
 @NgModule({
   imports: [RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'})],
   exports: [RouterModule]

@@ -1,6 +1,9 @@
 import { Component } from "@angular/core";
 import { SplashScreenStateService } from "../../service/splash-screen-service";
 
+/**
+ * @author Peter Szrnka
+ */
 @Component({
     selector: 'splash-screen',
     templateUrl: './splash.component.html',
