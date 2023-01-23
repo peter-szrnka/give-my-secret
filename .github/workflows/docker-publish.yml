@@ -61,7 +61,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@master
         with:
-          images: ${{ env.REGISTRY }}/szrnka-peter/give-my-secret
+          images: ${{ env.REGISTRY }}/peter-szrnka/give-my-secret
       - uses: actions/download-artifact@v1
         with:
           name: gms-app
@@ -71,8 +71,8 @@ jobs:
           name: Dockerfile
           path: ./
       - name: Build Docker by Dockerfile
-        run: docker build --build-arg JAR_FILE=./gms-app.jar -t szrnka-peter/give-my-secret -f ./Dockerfile .
+        run: docker build --build-arg JAR_FILE=./gms-app.jar -t peter-szrnka/give-my-secret -f ./Dockerfile .
       - name: Tag the image
-        run: docker image tag szrnka-peter/give-my-secret:latest ${{ env.REGISTRY }}/szrnka-peter/give-my-secret:latest
+        run: docker image tag peter-szrnka/give-my-secret:latest ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:latest
       - name: Docker push
-        run: docker push ${{ env.REGISTRY }}/szrnka-peter/give-my-secret:latest
+        run: docker push ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:latest
