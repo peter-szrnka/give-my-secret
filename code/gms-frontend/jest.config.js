@@ -13,8 +13,8 @@ module.exports = {
   collectCoverageFrom : [ "**/*.ts" ],
   coveragePathIgnorePatterns : [
     ".module.ts",
-    "main.ts",
-    "polyfills.ts",
+    "<rootDir>/main.ts",
+    "<rootDir>/polyfills.ts",
     "<rootDir>/src/environments/",
     "<rootDir>/src/mocks",
     "<rootDir>/src/app/window.provider.ts"
