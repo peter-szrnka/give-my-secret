@@ -1,6 +1,7 @@
 name: Java client library build and analysis
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
