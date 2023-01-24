@@ -13,8 +13,10 @@ jobs:
   analize_backend:
     name: Java client library
     runs-on: ubuntu-latest
-    if: github.event.head_commit.message != 'Version update'
     steps:
+      - name: Fail if version updated
+        if: github.event.head_commit.message == 'Version update'
+        run: exit 1
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
