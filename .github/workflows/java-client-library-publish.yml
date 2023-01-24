@@ -5,13 +5,13 @@ defaults:
     shell: bash
 
 on:
-  release:
-    types: [created]
-  #workflow_run:
-  #  workflows: ["Java client library build and analysis"]
-  #  branches: [main]
-  #  types: 
-  #    - completed
+  #release:
+  #  types: [created]
+  workflow_run:
+    workflows: ["Java client library build and analysis"]
+    branches: [main]
+    types: 
+      - completed
 jobs:
   publish:
     env:
