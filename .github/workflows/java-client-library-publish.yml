@@ -27,13 +27,13 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Prepare release
-        run: mvn -Pprepare-next-version -DskipTests=true
+        run: mvn clean package -Pprepare-next-version -DskipTests=true
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Update version to next snapshot
-        run: mvn -Pprepare-next-snapshot -DskipTests=true
+        run: mvn clean package -Pprepare-next-snapshot -DskipTests=true
       - name: Commit report
         run: |
           git config --global user.name '${GH_USERNAME}'
