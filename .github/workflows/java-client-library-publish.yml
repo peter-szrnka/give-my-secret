@@ -5,6 +5,7 @@ defaults:
     shell: bash
 
 on:
+  workflow_dispatch:
   #release:
   #  types: [created]
   workflow_run:
