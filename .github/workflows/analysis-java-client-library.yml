@@ -3,10 +3,8 @@ name: Java client library build and analysis
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
     paths:
-      - client-libraries/java
+      - "client-libraries/java/**"
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
