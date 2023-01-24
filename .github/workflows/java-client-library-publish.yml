@@ -35,14 +35,10 @@ jobs:
       - name: Update version to next snapshot
         run: mvn clean package -Pprepare-next-snapshot -DskipTests=true
       - name: Commit report
-        uses: EndBug/add-and-commit@v9
-        with:
-          default_author: github_actions
-      #- name: Commit report
-      #  with:
-      #    token: ${{ secrets.GITHUB_TOKEN }}
-      #  run: |
-      #    git config --local user.email "action@github.com"
-      #    git config --local user.name "GitHub Action"
-      #    git commit -am "Version update"
-      #    git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --local user.email "${{ github.actor }}@github.com"
+          git config --local user.name "${{ github.actor }}"
+          git commit -am "Version update"
+          git push
