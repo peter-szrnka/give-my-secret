@@ -8,7 +8,8 @@ on:
       - ./code
   pull_request:
     types: [opened, synchronize, reopened]
-
+    paths:
+      - ./code
 jobs:
   analize_backend:
     name: Backend
