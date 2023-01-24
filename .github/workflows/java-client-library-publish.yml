@@ -31,7 +31,7 @@ jobs:
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Update version to next snapshot
         run: mvn clean package -Pprepare-next-snapshot -DskipTests=true
       - name: Commit report
