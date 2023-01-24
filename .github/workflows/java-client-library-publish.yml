@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
       - uses: actions/setup-java@v3
         with:
           java-version: '11'
@@ -31,12 +31,12 @@ jobs:
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Update version to next snapshot
-        run: mvn clean package -Pprepare-next-snapshot -DskipTests=true
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+      #- name: Update version to next snapshot
+      #  run: mvn clean package -Pprepare-next-snapshot -DskipTests=true
       - name: Commit report
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           git config --local user.email "${{ github.actor }}@github.com"
           git config --local user.name "${{ github.actor }}"
