@@ -3,6 +3,7 @@ name: Publish Java client library
 defaults:
   run:
     shell: bash
+    working-directory: client-libraries/java
 
 on:
   workflow_dispatch:
@@ -15,8 +16,6 @@ on:
       - completed
 jobs:
   publish:
-    env:
-      working-directory: ./client-libraries/java
     runs-on: ubuntu-latest
     permissions:
       contents: read
