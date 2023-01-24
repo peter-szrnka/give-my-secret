@@ -90,3 +90,4 @@ client-samples/gms-client-sample-java-client-lib/.project
 client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.jdt.core.prefs
 client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.core.resources.prefs
 client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.m2e.core.prefs
+*.versionsBackup

@@ -27,8 +27,10 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Prepare release
-        run: mvn release:clean release:prepare
+        run: mvn package -Pprepare-next-version
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update version to next snapshot
+        run: mvn package -Pprepare-next-snapshot
