@@ -4,11 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - ./code
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - ./code
 jobs:
   analize_backend:
-    name: Build and analize backend
+    name: Backend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,14 +35,14 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
+      - name: Sonarcloud scan
         working-directory: ./code/gms-backend
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -Pcodecov -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=peter-szrnka_give-my-secret-backend
   analize_frontend:
-    name: Build and analize frontend
+    name: Frontend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

@@ -76,3 +76,17 @@ Thumbs.db
 /client-samples/gms-client-sample-python/.project
 /client-samples/gms-client-sample-python/.pydevproject
 /client-samples/gms-client-sample-node/package-lock.json
+/client-libraries/java/.settings
+/client-libraries/java/target
+/client-libraries/java/.classpath
+/client-libraries/java/.project
+client-samples/gms-client-sample-java/.classpath
+client-samples/gms-client-sample-java/.project
+client-samples/gms-client-sample-java/.settings/org.eclipse.core.resources.prefs
+client-samples/gms-client-sample-java/.settings/org.eclipse.jdt.core.prefs
+client-samples/gms-client-sample-java/.settings/org.eclipse.m2e.core.prefs
+client-samples/gms-client-sample-java-client-lib/.classpath
+client-samples/gms-client-sample-java-client-lib/.project
+client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.jdt.core.prefs
+client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.core.resources.prefs
+client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.m2e.core.prefs
