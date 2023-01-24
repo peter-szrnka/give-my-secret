@@ -42,5 +42,5 @@ jobs:
       #  run: |
       #    git config --local user.email "action@github.com"
       #    git config --local user.name "GitHub Action"
-          git commit -am "Version update"
-          git push
+      #    git commit -am "Version update"
+      #    git push
