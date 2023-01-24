@@ -10,7 +10,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   analize_backend:
-    name: Build and analize backend
+    name: Java client library
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -33,7 +33,7 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
+      - name: Sonarcloud scan
         working-directory: ./client-libraries/java
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
