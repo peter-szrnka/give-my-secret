@@ -28,12 +28,12 @@ jobs:
           distribution: 'adopt'
       - name: Prepare release
         run: mvn clean package -Pprepare-next-version -DskipTests=true
-      #- name: Publish package
-      #  run: mvn --batch-mode deploy
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.PAT }}
-      #- name: Update version to next snapshot
-      #  run: mvn clean package -Pprepare-next-snapshot -DskipTests=true
+      - name: Publish package
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+      - name: Update version to next snapshot
+        run: mvn clean package -Pprepare-next-snapshot -DskipTests=true
       - name: Commit report
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
