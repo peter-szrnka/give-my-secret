@@ -21,6 +21,7 @@ import io.github.gms.client.model.GetSecretRequest;
 import io.github.gms.client.model.GetSecretResponse;
 import io.github.gms.client.model.GiveMySecretClientConfig;
 import io.github.gms.client.util.ConnectionUtils;
+import lombok.SneakyThrows;
 
 /**
  * Unit test of {@link GiveMySecretClientImpl}
@@ -30,13 +31,16 @@ import io.github.gms.client.util.ConnectionUtils;
 class GiveMySecretClientImplTest {
 	
 	private static final String TEST_DECRYPTED_VALUE = "my-value";
+	private static final String TEST_P12_VALUE = "cWp12SWr4rnBbScCBDrmgM+MwzpN9SDtYjJqouMJ7MQba3zElnfS8xm052upF8mcjM06h2Afm+M2FUEA3Un9sspGSMzhhSXTLSwhOe1amdzuLuIcxvFEA+b4fI2FUESlpcEnmcNghlinFQwwGIy7eEKhw0q7HxIjW5y733lUL/0wMd1FFv40NojDzmqoDMl5byjn0VV3aE1pKddSAzxs1xn4O2spRL2QyK+ILt83vFesSlPiRjZtMta4/ERGUPlyZPBKJlxJMNPwGEdca/mj0f4IhfdR+CI2Mu4CPqV6ev/IGsoBXMBurBsuSpWDKN/zuldpwlYONqz0jcXWgINYNA";
 	private static final String TEST_ENCRYPTED_VALUE = "fTFllqRl39VoaYwCdpDNP1CAHWdhFCLUSJf+OOJyRzc05x1PslQihY4NM67LTAocOga1iePFNps0F4VL//kuXQV+rpLPowu7rvoVZl90Gau3fnF2ck7C2CY1ScBW0nIFuuEe+eya1eAFbMYQrYFx2NyaWug6ARfJxOxgcNYAW3av3rMkKw2CsjgAg7OHrg2f6d4TzxYoUVrcmMu+dziKf+vWAkKRuS+rg4NKmCkFg8hj1haa7Or8SNr+iBgx2TBAOEpPhidS6W/Mu5kmS9q5tI8+TPF2MjnHsGGRvKzQZilFSwk3C34BmiDiqtvYeDTfYaQsavGXd9ggarR2sQhkMA";
 	
-	private InputStream keystoreStream;
+	private InputStream jksKeystoreStream;
+	private InputStream p12KeystoreStream;
 	
 	@BeforeEach
 	private void setup() {
-		keystoreStream = getClass().getClassLoader().getResourceAsStream("test.jks");
+		jksKeystoreStream = getClass().getClassLoader().getResourceAsStream("test.jks");
+		p12KeystoreStream = getClass().getClassLoader().getResourceAsStream("test.p12");
 	}
 
 	@Test
@@ -50,7 +54,7 @@ class GiveMySecretClientImplTest {
 
 	@ParameterizedTest
 	@MethodSource("inputData")
-	void shouldRunSync(InputData input) {
+	void shouldTestWithJks(InputData input) {
 		// arrange
 		GiveMySecretClientConfig config = GiveMySecretClientConfig.builder()
 				.withUrl("http://localhost:8080")
@@ -59,7 +63,7 @@ class GiveMySecretClientImplTest {
 		GetSecretRequest request = GetSecretRequest.builder()
 				.withApiKey(input.getApiKey())
 				.withKeystoreType(input.getType())
-				.withKeystore(input.isKeystoreRequired() ? keystoreStream : null)
+				.withKeystore(input.isKeystoreRequired() ? jksKeystoreStream : null)
 				.withSecretId(input.getSecretId())
 				.withKeystoreAliasCredential(input.getKeystoreAliasCredential())
 				.withKeystoreCredential(input.getKeystoreCredential())
@@ -90,6 +94,37 @@ class GiveMySecretClientImplTest {
 				mockedConnectionUtils.close();
 			}
 		}
+	}
+	
+	@Test
+	@SneakyThrows
+	void shouldTestWithP12() {
+		// arrange
+		GiveMySecretClientConfig config = GiveMySecretClientConfig.builder()
+				.withUrl("http://localhost:8080")
+				.build();
+		
+		GetSecretRequest request = GetSecretRequest.builder()
+				.withApiKey("apiKey")
+				.withKeystoreType(KeystoreType.PKCS12)
+				.withKeystore(p12KeystoreStream)
+				.withSecretId("secret1")
+				.withKeystoreAliasCredential("Test1234")
+				.withKeystoreCredential("Test1234")
+				.withKeystoreAlias("test")
+				.build();
+		
+		MockedStatic<ConnectionUtils> mockedConnectionUtils = mockStatic(ConnectionUtils.class);
+		mockedConnectionUtils.when(() -> ConnectionUtils.getResponse(config, request)).thenReturn(GetSecretResponse.builder().withValue(TEST_P12_VALUE).build());
+		
+		// act
+		GiveMySecretClient client = GiveMySecretClient.create(config);
+
+		GetSecretResponse response = client.getSecret(request);
+		assertNotNull(response);
+		assertEquals("my-value", response.getValue());
+
+		mockedConnectionUtils.close();
 	}
 	
 	public static InputData[] inputData() {

@@ -6,7 +6,7 @@ package io.github.gms.client.enums;
  */
 public enum KeystoreType {
 	JKS("JKS"),
-	PKCS12("P12");
+	PKCS12("PKCS12");
 	
 	private KeystoreType(String type) {
 		this.type = type;
