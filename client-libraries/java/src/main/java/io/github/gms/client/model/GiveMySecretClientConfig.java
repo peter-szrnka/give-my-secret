@@ -24,24 +24,12 @@ public class GiveMySecretClientConfig {
 		return url;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
 	public int getDefaultConnectionTimeout() {
 		return defaultConnectionTimeout;
 	}
 
-	public void setDefaultConnectionTimeout(int defaultConnectionTimeout) {
-		this.defaultConnectionTimeout = defaultConnectionTimeout;
-	}
-
 	public int getDefaultReadTimeout() {
 		return defaultReadTimeout;
-	}
-
-	public void setDefaultReadTimeout(int defaultReadTimeout) {
-		this.defaultReadTimeout = defaultReadTimeout;
 	}
 
 	public static Builder builder() {

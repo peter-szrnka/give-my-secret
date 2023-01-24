@@ -3,6 +3,8 @@ package io.github.gms.client.model;
 public class GetSecretResponse {
 
 	private String value;
+	
+	public GetSecretResponse() {}
 
 	private GetSecretResponse(Builder builder) {
 		this.value = builder.value;
@@ -10,15 +12,6 @@ public class GetSecretResponse {
 
 	public String getValue() {
 		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	@Override
-	public String toString() {
-		return "GetSecretResponse [value=" + value + "]";
 	}
 
 	public static Builder builder() {

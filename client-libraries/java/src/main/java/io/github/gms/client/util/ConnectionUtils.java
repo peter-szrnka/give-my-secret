@@ -4,15 +4,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Scanner;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -57,40 +56,34 @@ public class ConnectionUtils {
 	}
 
 	private static void initHttpsConnection() throws NoSuchAlgorithmException, KeyManagementException {
-		/* Start of Fix */
 		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
 			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-				return null;
+				return new java.security.cert.X509Certificate[0];
 			}
 
 			public void checkClientTrusted(X509Certificate[] certs, String authType) {
+				// Nothing to do here
 			}
 
 			public void checkServerTrusted(X509Certificate[] certs, String authType) {
+				// Nothing to do here
 			}
 
 		} };
 
-		SSLContext sc = SSLContext.getInstance("SSL");
+		SSLContext sc = SSLContext.getInstance("TLSv1.2"); 
 		sc.init(null, trustAllCerts, new java.security.SecureRandom());
 		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
-		// Create all-trusting host name verifier
-		HostnameVerifier allHostsValid = new HostnameVerifier() {
-			public boolean verify(String hostname, SSLSession session) {
-				return true;
-			}
-		};
-		// Install the all-trusting host verifier
-		HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-		/* End of the fix */
+		// Create && install the all-trusting host verifier
+		HttpsURLConnection.setDefaultHostnameVerifier((hostName, session) -> true);
 	}
 
 	private static URLConnection initURLConnection(GiveMySecretClientConfig configuration, GetSecretRequest request) throws IOException {
 		URLConnection connection = new URL(configuration.getUrl() + "/api/secret/" + request.getSecretId())
 				.openConnection();
 
-		connection.setRequestProperty("Accept-Charset", "UTF-8");
+		connection.setRequestProperty("Accept-Charset", StandardCharsets.UTF_8.displayName());
 		connection.setRequestProperty("x-api-key", request.getApiKey());
 		connection.setRequestProperty("Content-Type", "application/json");
 		connection.setConnectTimeout(configuration.getDefaultConnectionTimeout());

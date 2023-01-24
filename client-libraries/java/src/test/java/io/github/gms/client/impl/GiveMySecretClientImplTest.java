@@ -1,16 +1,13 @@
 package io.github.gms.client.impl;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,6 +16,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.github.gms.client.GiveMySecretClient;
+import io.github.gms.client.enums.KeystoreType;
 import io.github.gms.client.model.GetSecretRequest;
 import io.github.gms.client.model.GetSecretResponse;
 import io.github.gms.client.model.GiveMySecretClientConfig;
@@ -31,7 +29,15 @@ import io.github.gms.client.util.ConnectionUtils;
 @ExtendWith(MockitoExtension.class)
 class GiveMySecretClientImplTest {
 	
-	private InputStream mockKeystorestream = mock(InputStream.class);
+	private static final String TEST_DECRYPTED_VALUE = "my-value";
+	private static final String TEST_ENCRYPTED_VALUE = "fTFllqRl39VoaYwCdpDNP1CAHWdhFCLUSJf+OOJyRzc05x1PslQihY4NM67LTAocOga1iePFNps0F4VL//kuXQV+rpLPowu7rvoVZl90Gau3fnF2ck7C2CY1ScBW0nIFuuEe+eya1eAFbMYQrYFx2NyaWug6ARfJxOxgcNYAW3av3rMkKw2CsjgAg7OHrg2f6d4TzxYoUVrcmMu+dziKf+vWAkKRuS+rg4NKmCkFg8hj1haa7Or8SNr+iBgx2TBAOEpPhidS6W/Mu5kmS9q5tI8+TPF2MjnHsGGRvKzQZilFSwk3C34BmiDiqtvYeDTfYaQsavGXd9ggarR2sQhkMA";
+	
+	private InputStream keystoreStream;
+	
+	@BeforeEach
+	private void setup() {
+		keystoreStream = getClass().getClassLoader().getResourceAsStream("test.jks");
+	}
 
 	@Test
 	void shouldFailWhenNoConfigProvided() {
@@ -44,41 +50,41 @@ class GiveMySecretClientImplTest {
 
 	@ParameterizedTest
 	@MethodSource("inputData")
-	void shouldRunSync(String apiKey, String secretId, boolean keystoreRequired, String keystoreCredential, String keystoreAlias, String keystoreAliasCredential, String expectedMessage,
-			boolean mockConnection) {
+	void shouldRunSync(InputData input) {
 		// arrange
 		GiveMySecretClientConfig config = GiveMySecretClientConfig.builder()
 				.withUrl("http://localhost:8080")
 				.build();
 		
 		GetSecretRequest request = GetSecretRequest.builder()
-				.withApiKey(apiKey)
-				.withKeystore(keystoreRequired ? mockKeystorestream : null)
-				.withSecretId(secretId)
-				.withKeystoreAliasCredential(keystoreAliasCredential)
-				.withKeystoreCredential(keystoreCredential)
-				.withKeystoreAlias(keystoreAlias)
+				.withApiKey(input.getApiKey())
+				.withKeystoreType(input.getType())
+				.withKeystore(input.isKeystoreRequired() ? keystoreStream : null)
+				.withSecretId(input.getSecretId())
+				.withKeystoreAliasCredential(input.getKeystoreAliasCredential())
+				.withKeystoreCredential(input.getKeystoreCredential())
+				.withKeystoreAlias(input.getKeystoreAlias())
 				.build();
 		
 		MockedStatic<ConnectionUtils> mockedConnectionUtils = mockStatic(ConnectionUtils.class);
-		mockedConnectionUtils.when(() -> ConnectionUtils.getResponse(config, request)).thenReturn(GetSecretResponse.builder().withValue("test-value").build());
+		mockedConnectionUtils.when(() -> ConnectionUtils.getResponse(config, request)).thenReturn(GetSecretResponse.builder().withValue(input.getValue()).build());
 		
 		// act
 		GiveMySecretClient client = GiveMySecretClient.create(config);
 		
-		if (expectedMessage != null) {
-			IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> client.getSecret(request));
+		if (input.getExpectedMessage() != null) {
+			Exception exception = assertThrows(Exception.class, () -> client.getSecret(request));
 			
 			// arrange
-			assertEquals(expectedMessage, exception.getMessage());
+			assertEquals(input.getExpectedMessage(), exception.getMessage());
 			
 			mockedConnectionUtils.close();
 		} else {
 			try {
 				GetSecretResponse response = client.getSecret(request);
 				assertNotNull(response);
-				assertEquals("test-value", response.getValue());
-			} catch (KeyManagementException | NoSuchAlgorithmException | IOException e) {
+				assertEquals("my-value", response.getValue());
+			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
 				mockedConnectionUtils.close();
@@ -86,15 +92,33 @@ class GiveMySecretClientImplTest {
 		}
 	}
 	
-	public static Object[][] inputData() {
-		return new Object[][] {
-			{ null, null, false, null, null, null, "API key is mandatory!", false },
-			{ "apiKey", null, false, null, null, null, "Secret Id is mandatory!", false },
-			{ "apiKey", "secretID", false, null, null, null, null, true },
-			{ "apiKey", "secretID", true, null, null, null, "Invalid configuration: All keystore parameter must be set if keystore stream defined!", true },
-			{ "apiKey", "secretID", true, "test", null, null, "Invalid configuration: All keystore parameter must be set if keystore stream defined!", true },
-			{ "apiKey", "secretID", true, "test", "test", null, "Invalid configuration: All keystore parameter must be set if keystore stream defined!", true },
-			{ "apiKey", "secretID", true, "test", "test", "test", null, true }
+	public static InputData[] inputData() {
+		return new InputData[] {
+			// API key is missing
+			InputData.builder().withExpectedMessage("API key is mandatory!").build(),
+			// SecretId is missing
+			InputData.builder().withApiKey("apiKey").withExpectedMessage("Secret Id is mandatory!").build(),
+			// Successful execution with decrypted data
+			InputData.builder().withApiKey("apiKey").withSecretId("secretId").withValue(TEST_DECRYPTED_VALUE).build(),
+			// Keystore credential missing
+			InputData.builder().withApiKey("apiKey").withSecretId("secretId").withKeystoreRequired(true)
+				.withExpectedMessage("Invalid configuration: All keystore parameter must be set if keystore stream defined!").build(),
+			// Keystore credential missing
+			InputData.builder().withApiKey("apiKey").withSecretId("secretId").withKeystoreRequired(true).withType(KeystoreType.JKS)
+				.withExpectedMessage("Invalid configuration: All keystore parameter must be set if keystore stream defined!").build(),
+			// Keystore alias missing
+			InputData.builder().withApiKey("apiKey").withSecretId("secretId").withKeystoreRequired(true).withType(KeystoreType.JKS).withKeystoreCredential("test")
+				.withExpectedMessage("Invalid configuration: All keystore parameter must be set if keystore stream defined!").build(),
+			// Keystore alias credential missing
+			InputData.builder().withApiKey("apiKey").withSecretId("secretId").withKeystoreRequired(true).withType(KeystoreType.JKS)
+				.withKeystoreCredential("test").withKeystoreAlias("test")
+				.withExpectedMessage("Invalid configuration: All keystore parameter must be set if keystore stream defined!").build(),
+			// Failed execution with encrypted data
+			InputData.builder().withApiKey("apiKey").withSecretId("secretId").withKeystoreRequired(true).withType(KeystoreType.JKS)
+				.withKeystoreAlias("test").withKeystoreCredential("test").withKeystoreAliasCredential("test").withValue("invalid").withExpectedMessage("Message cannot be decrypted!").build(),
+			// Successful execution with encrypted data
+			InputData.builder().withApiKey("apiKey").withSecretId("secretId").withKeystoreRequired(true).withType(KeystoreType.JKS)
+				.withKeystoreAlias("test").withKeystoreCredential("test").withKeystoreAliasCredential("test").withValue(TEST_ENCRYPTED_VALUE).build(),
 		};
 	}
 }

@@ -2,6 +2,8 @@ package io.github.gms.client.model;
 
 import java.io.InputStream;
 
+import io.github.gms.client.enums.KeystoreType;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -11,6 +13,7 @@ public class GetSecretRequest {
 	private String apiKey;
 	private String secretId;
 	private InputStream keystore;
+	private KeystoreType keystoreType;
 	private String keystoreCredential;
 	private String keystoreAlias;
 	private String keystoreAliasCredential;
@@ -19,6 +22,7 @@ public class GetSecretRequest {
 		this.apiKey = builder.apiKey;
 		this.secretId = builder.secretId;
 		this.keystore = builder.keystore;
+		this.keystoreType = builder.keystoreType;
 		this.keystoreCredential = builder.keystoreCredential;
 		this.keystoreAlias = builder.keystoreAlias;
 		this.keystoreAliasCredential = builder.keystoreAliasCredential;
@@ -32,6 +36,7 @@ public class GetSecretRequest {
 		private String apiKey;
 		private String secretId;
 		private InputStream keystore;
+		private KeystoreType keystoreType;
 		private String keystoreCredential;
 		private String keystoreAlias;
 		private String keystoreAliasCredential;
@@ -51,6 +56,11 @@ public class GetSecretRequest {
 
 		public Builder withKeystore(InputStream keystore) {
 			this.keystore = keystore;
+			return this;
+		}
+
+		public Builder withKeystoreType(KeystoreType keystoreType) {
+			this.keystoreType = keystoreType;
 			return this;
 		}
 
@@ -78,54 +88,27 @@ public class GetSecretRequest {
 		return apiKey;
 	}
 
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
-	}
-
 	public String getSecretId() {
 		return secretId;
-	}
-
-	public void setSecretId(String secretId) {
-		this.secretId = secretId;
 	}
 
 	public InputStream getKeystore() {
 		return keystore;
 	}
 
-	public void setKeystore(InputStream keystore) {
-		this.keystore = keystore;
+	public KeystoreType getKeystoreType() {
+		return keystoreType;
 	}
 
 	public String getKeystoreCredential() {
 		return keystoreCredential;
 	}
 
-	public void setKeystoreCredential(String keystoreCredential) {
-		this.keystoreCredential = keystoreCredential;
-	}
-
 	public String getKeystoreAlias() {
 		return keystoreAlias;
 	}
 
-	public void setKeystoreAlias(String keystoreAlias) {
-		this.keystoreAlias = keystoreAlias;
-	}
-
 	public String getKeystoreAliasCredential() {
 		return keystoreAliasCredential;
-	}
-
-	public void setKeystoreAliasCredential(String keystoreAliasCredential) {
-		this.keystoreAliasCredential = keystoreAliasCredential;
-	}
-
-	@Override
-	public String toString() {
-		return "GetSecretRequest [apiKey=" + apiKey + ", secretId=" + secretId + ", keystore=" + keystore
-				+ ", keystoreCredential=" + keystoreCredential + ", keystoreAlias=" + keystoreAlias
-				+ ", keystoreAliasCredential=" + keystoreAliasCredential + "]";
 	}
 }
