@@ -5,7 +5,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>Give My Secret Java client</name>
 
-	<url>https://github.com/peter-szrnka/give-my-secret/client-libraries/java</url>
+	<url>https://github.com/peter-szrnka/give-my-secret/client-libraries/java</url> 
 
 	<properties>
 		<java.version>11</java.version>
