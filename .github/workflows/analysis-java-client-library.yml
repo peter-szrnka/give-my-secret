@@ -6,11 +6,11 @@ on:
     branches:
       - main
     paths:
-      - ./client-libraries/java
+      - client-libraries/java
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - ./client-libraries/java
+      - client-libraries/java
 jobs:
   analize_backend:
     name: Java client library
