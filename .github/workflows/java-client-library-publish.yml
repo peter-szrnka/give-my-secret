@@ -26,6 +26,8 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+      - name: Prepare release
+        run: mvn release:clean release:prepare
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
