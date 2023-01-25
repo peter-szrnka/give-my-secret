@@ -1,4 +1,4 @@
-name: Java client library build and analysis
+name: Java client library CI/CD
 
 on:
   workflow_dispatch:
@@ -14,32 +14,54 @@ jobs:
     name: Java client library
     runs-on: ubuntu-latest
     steps:
-      - name: Fail if version updated
-        if: github.event.head_commit.message == 'Version update'
-        run: exit 1
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        if: github.event.head_commit.message != 'Version update'
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up JDK 11
+        if: github.event.head_commit.message != 'Version update'
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'adopt'
       - name: Cache SonarCloud packages
+        if: github.event.head_commit.message != 'Version update'
         uses: actions/cache@v1
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Cache Maven packages
+        if: github.event.head_commit.message != 'Version update'
         uses: actions/cache@v1
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Sonarcloud scan
+        if: github.event.head_commit.message != 'Version update'
         working-directory: ./client-libraries/java
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -Pcodecov -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} -Dsonar.projectKey=peter-szrnka_give-my-secret-client-lib-java
+      - name: Prepare release
+        if: github.event.head_commit.message != 'Version update'
+        run: mvn -Pprepare-next-version -DskipTests=true
+      - name: Publish package to GitHub Packages
+        if: github.event.head_commit.message != 'Version update'
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update version to next snapshot
+        if: github.event.head_commit.message != 'Version update'
+        run: mvn -Pprepare-next-snapshot -DskipTests=true
+      - name: Commit report
+        if: github.event.head_commit.message != 'Version update'
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git config --local user.email "${{ github.actor }}@github.com"
+          git config --local user.name "${{ github.actor }}"
+          git commit -am "Version update"
+          git push
