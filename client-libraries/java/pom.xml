@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.szrnkapeter.gms</groupId>
 	<artifactId>gms-client-java</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>Give My Secret Java client</name>
 
 	<url>https://github.com/peter-szrnka/give-my-secret/client-libraries/java</url>
