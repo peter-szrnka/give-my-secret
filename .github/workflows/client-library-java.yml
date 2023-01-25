@@ -68,4 +68,4 @@ jobs:
           git config --local user.email "${{ github.actor }}@github.com"
           git config --local user.name "${{ github.actor }}"
           git commit -am "Version update"
-          git push
+          git push --force
