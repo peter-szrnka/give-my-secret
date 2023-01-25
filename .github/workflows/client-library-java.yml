@@ -46,18 +46,22 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -Pcodecov -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} -Dsonar.projectKey=peter-szrnka_give-my-secret-client-lib-java
       - name: Prepare release
+        working-directory: ./client-libraries/java
         if: github.event.head_commit.message != 'Version update'
         run: mvn verify -Pprepare-next-version -DskipTests=true
       - name: Publish package to GitHub Packages
         if: github.event.head_commit.message != 'Version update'
+        working-directory: ./client-libraries/java
         run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Update version to next snapshot
         if: github.event.head_commit.message != 'Version update'
+        working-directory: ./client-libraries/java
         run: mvn verify -Pprepare-next-snapshot -DskipTests=true
       - name: Commit report
         if: github.event.head_commit.message != 'Version update'
+        working-directory: ./client-libraries/java
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
