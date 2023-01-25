@@ -1,4 +1,4 @@
-# Give My Secret [UNDER DEVELOPMENT!]
+# Give My Secret
 
 Give My Secret is a credential storage application, that stores secrets, passwords and other text based credentials in a secure and reliable way by encrypting them with keystores that you provide. It's easy to configure, numerous ready-to-go configurations available for all supported databases.
 
