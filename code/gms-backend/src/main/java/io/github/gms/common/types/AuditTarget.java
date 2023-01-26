@@ -7,6 +7,10 @@ import java.lang.annotation.Target;
 
 import io.github.gms.common.enums.EventTarget;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface AuditTarget {

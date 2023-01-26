@@ -34,7 +34,7 @@ import io.github.gms.secure.service.ApiKeyService;
 public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 
 	@PostMapping
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize(Constants.ROLE_USER)
 	@Audited(operation = EventOperation.SAVE)
 	public @ResponseBody SaveEntityResponseDto save(@RequestBody SaveApiKeyRequestDto dto) {
 		return service.save(dto);

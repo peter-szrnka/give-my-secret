@@ -52,6 +52,10 @@ import io.github.gms.secure.service.CryptoService;
 import io.github.gms.secure.service.KeystoreService;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Slf4j
 @Service
 public class KeystoreServiceImpl implements KeystoreService {

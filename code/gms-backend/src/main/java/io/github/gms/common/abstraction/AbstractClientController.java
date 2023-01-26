@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.types.Audited;
+import io.github.gms.common.util.Constants;
 
 /**
  * @author Peter Szrnka
@@ -20,7 +21,7 @@ import io.github.gms.common.types.Audited;
 public abstract class AbstractClientController<T extends GmsClientService> extends AbstractController<T> {
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize(Constants.ROLE_USER)
 	@Audited(operation = EventOperation.DELETE)
 	public ResponseEntity<String> delete(@PathVariable("id") Long id) {
 		service.delete(id);
@@ -28,7 +29,7 @@ public abstract class AbstractClientController<T extends GmsClientService> exten
 	}
 
 	@PostMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize(Constants.ROLE_USER)
 	@Audited(operation = EventOperation.TOGGLE_STATUS)
 	public ResponseEntity<String> toggle(@PathVariable("id") Long id, @RequestParam boolean enabled) {
 		service.toggleStatus(id, enabled);

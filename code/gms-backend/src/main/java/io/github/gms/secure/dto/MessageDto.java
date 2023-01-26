@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Data
 @Builder
 @NoArgsConstructor

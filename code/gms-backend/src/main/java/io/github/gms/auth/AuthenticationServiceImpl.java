@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.logging.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,7 +28,6 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.model.GenerateJwtRequest;
-import io.github.gms.common.types.Pair;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.service.JwtService;
@@ -83,11 +83,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			Claims jwsResult = jwtService.parseJwt(jwtToken, algorithm);
 			Pair<HttpStatus, String> validationResult = validateJwt(jwsResult);
 			
-			if (validationResult.first != HttpStatus.OK) {
-				log.warn("Authentication failed: {}", validationResult.second);
+			if (validationResult.getFirst() != HttpStatus.OK) {
+				log.warn("Authentication failed: {}", validationResult.getSecond());
 				return AuthenticationResponse.builder()
-						.responseStatus(validationResult.first)
-						.errorMessage(validationResult.second)
+						.responseStatus(validationResult.getFirst())
+						.errorMessage(validationResult.getSecond())
 						.build();
 			}
 

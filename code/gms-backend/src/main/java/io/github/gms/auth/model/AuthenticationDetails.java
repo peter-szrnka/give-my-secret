@@ -6,6 +6,10 @@ import io.github.gms.common.enums.JwtConfigType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Data
 @AllArgsConstructor
 public class AuthenticationDetails {
