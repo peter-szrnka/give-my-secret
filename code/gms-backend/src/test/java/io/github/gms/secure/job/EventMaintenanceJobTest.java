@@ -8,7 +8,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,21 +51,21 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldNotProcess() {
 		// arrange
-		when(eventRepository.findAllEventDateOlderThan(any(LocalDateTime.class))).thenReturn(Lists.newArrayList());
+		when(eventRepository.findAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(Lists.newArrayList());
 		
 		// act
 		job.execute();
 		
 		// assert
 		assertTrue(logAppender.list.isEmpty());
-		verify(eventRepository).findAllEventDateOlderThan(any(LocalDateTime.class));
+		verify(eventRepository).findAllEventDateOlderThan(any(ZonedDateTime.class));
 		verify(eventRepository).deleteAll(anyList());
 	}
 	
 	@Test
 	void shouldProcess() {
 		// arrange
-		when(eventRepository.findAllEventDateOlderThan(any(LocalDateTime.class))).thenReturn(Lists.newArrayList(TestUtils.createEventEntity()));
+		when(eventRepository.findAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(Lists.newArrayList(TestUtils.createEventEntity()));
 		
 		// act
 		job.execute();
@@ -73,7 +73,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		// assert
 		assertFalse(logAppender.list.isEmpty());
 		assertEquals("1 event(s) deleted", logAppender.list.get(0).getFormattedMessage());
-		verify(eventRepository).findAllEventDateOlderThan(any(LocalDateTime.class));
+		verify(eventRepository).findAllEventDateOlderThan(any(ZonedDateTime.class));
 		verify(eventRepository).deleteAll(anyList());
 	}
 }

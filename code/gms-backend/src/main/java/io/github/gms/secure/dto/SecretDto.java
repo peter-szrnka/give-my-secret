@@ -1,7 +1,7 @@
 package io.github.gms.secure.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 import io.github.gms.common.enums.EntityStatus;
@@ -23,9 +23,9 @@ public class SecretDto implements Serializable {
 	private Long keystoreAliasId;
 	private String secretId;
 	private EntityStatus status;
-	private LocalDateTime creationDate;
-	private LocalDateTime lastUpdated;
-	private LocalDateTime lastRotated;
+	private ZonedDateTime creationDate;
+	private ZonedDateTime lastUpdated;
+	private ZonedDateTime lastRotated;
 	private RotationPeriod rotationPeriod;
 	private boolean returnDecrypted;
 	private boolean rotationEnabled;

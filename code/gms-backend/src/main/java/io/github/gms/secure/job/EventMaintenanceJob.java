@@ -1,7 +1,7 @@
 package io.github.gms.secure.job;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +43,9 @@ public class EventMaintenanceJob {
 		}
 	}
 
-	private LocalDateTime processConfig(String oldEventLimitValue) {
+	private ZonedDateTime processConfig(String oldEventLimitValue) {
 		String[] values = oldEventLimitValue.split(";");
 		TimeUnit timeUnit = TimeUnit.getByCode(values[1]);
-		return LocalDateTime.now(clock).minus(Long.parseLong(values[0]), timeUnit.getUnit());
+		return ZonedDateTime.now(clock).minus(Long.parseLong(values[0]), timeUnit.getUnit());
 	}
 }

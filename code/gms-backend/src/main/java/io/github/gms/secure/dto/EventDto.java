@@ -1,7 +1,7 @@
 package io.github.gms.secure.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
@@ -18,7 +18,7 @@ public class EventDto implements Serializable {
 
 	private Long id;
 	private String userId;
-	private LocalDateTime eventDate;
+	private ZonedDateTime eventDate;
 	private EventOperation operation;
 	private EventTarget target;
 }

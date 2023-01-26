@@ -1,6 +1,6 @@
 package io.github.gms.secure.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -54,5 +54,5 @@ public class ApiKeyEntity extends AbstractGmsEntity {
 	private EntityStatus status;
 	
 	@Column(name = "creation_date")
-	private LocalDateTime creationDate;
+	private ZonedDateTime creationDate;
 }

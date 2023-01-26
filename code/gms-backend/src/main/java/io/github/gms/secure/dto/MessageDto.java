@@ -1,6 +1,6 @@
 package io.github.gms.secure.dto;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,5 +21,5 @@ public class MessageDto {
 	private Long userId;
 	private boolean opened;
 	private String message;
-	private LocalDateTime creationDate;
+	private ZonedDateTime creationDate;
 }

@@ -1,7 +1,7 @@
 package io.github.gms.auth.ldap;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,7 +73,7 @@ public class LdapUserAuthServiceImpl implements UserAuthService {
 		userEntity.setName(foundUser.getName());
 		userEntity.setUsername(foundUser.getUsername());
 		userEntity.setCredential(getCredential(foundUser));
-		userEntity.setCreationDate(LocalDateTime.now(clock));
+		userEntity.setCreationDate(ZonedDateTime.now(clock));
 		userEntity.setEmail(foundUser.getEmail());
 		userEntity.setRoles(foundUser.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(",")));

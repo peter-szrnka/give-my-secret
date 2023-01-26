@@ -1,7 +1,7 @@
 package io.github.gms.secure.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import io.github.gms.common.enums.EntityStatus;
 import lombok.Data;
@@ -20,5 +20,5 @@ public class ApiKeyDto implements Serializable {
 	private String value;
 	private String description;
 	private EntityStatus status;
-	private LocalDateTime creationDate;
+	private ZonedDateTime creationDate;
 }

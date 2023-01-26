@@ -1,6 +1,6 @@
 package io.github.gms.common.util;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -116,10 +116,10 @@ public class DemoDataProviderService {
 		ApiKeyEntity entity = new ApiKeyEntity();
 		entity.setId(apiKeyId);
 		entity.setUserId(userId);
-		entity.setCreationDate(LocalDateTime.now());
+		entity.setCreationDate(ZonedDateTime.now());
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue(value);
-		entity.setCreationDate(LocalDateTime.now());
+		entity.setCreationDate(ZonedDateTime.now());
 		entity.setDescription(DESCRIPTION);
 		entity.setName("test");
 		return entity;
@@ -128,7 +128,7 @@ public class DemoDataProviderService {
 	private UserEntity createUser(Long id, String userId, String role) {
 		UserEntity entity = new UserEntity();
 		entity.setId(id);
-		entity.setCreationDate(LocalDateTime.now());
+		entity.setCreationDate(ZonedDateTime.now());
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setUsername(userId);
 		entity.setCredential(passwordEncoder.encode(CREDENTIAL_TEST));
@@ -145,7 +145,7 @@ public class DemoDataProviderService {
 		entity.setName("test");
 		entity.setCredential(CREDENTIAL_TEST);
 		entity.setId(id);
-		entity.setCreationDate(LocalDateTime.now());
+		entity.setCreationDate(ZonedDateTime.now());
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setType(KeystoreType.JKS);
 		entity.setUserId(USER_1_ID);
@@ -168,7 +168,7 @@ public class DemoDataProviderService {
 	private static SecretEntity createSecret(Long id, String secretId, boolean returnDecrypted, Long keystoreAliasId) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(id);
-		entity.setCreationDate(LocalDateTime.now().minusDays(2));
+		entity.setCreationDate(ZonedDateTime.now().minusDays(2));
 		entity.setKeystoreAliasId(keystoreAliasId);
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setUserId(USER_1_ID);
@@ -176,8 +176,8 @@ public class DemoDataProviderService {
 		entity.setSecretId(secretId);
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setReturnDecrypted(returnDecrypted);
-		entity.setLastRotated(LocalDateTime.now().minusDays(1));
-		entity.setLastUpdated(LocalDateTime.now().minusDays(1));
+		entity.setLastRotated(ZonedDateTime.now().minusDays(1));
+		entity.setLastUpdated(ZonedDateTime.now().minusDays(1));
 		entity.setRotationEnabled(true);
 		return entity;
 	}
@@ -189,7 +189,7 @@ public class DemoDataProviderService {
 		entity.setTitle("title");
 		entity.setDescription(DESCRIPTION);
 		entity.setAuthorId(USER_1_ID);
-		entity.setAnnouncementDate(LocalDateTime.now());
+		entity.setAnnouncementDate(ZonedDateTime.now());
 		return entity;
 	}
 	

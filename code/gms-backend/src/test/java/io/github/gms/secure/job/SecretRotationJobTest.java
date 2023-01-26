@@ -8,7 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldNotProcess() {
 		// arrange
-		when(secretRepository.findAllOldRotated(any(LocalDateTime.class)))
+		when(secretRepository.findAllOldRotated(any(ZonedDateTime.class)))
 			.thenReturn(Lists.newArrayList());
 
 		// act
@@ -62,18 +62,18 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
 		// assert
 		verify(service, never()).rotateSecret(any(SecretEntity.class));
-		verify(secretRepository).findAllOldRotated(any(LocalDateTime.class));
+		verify(secretRepository).findAllOldRotated(any(ZonedDateTime.class));
 		assertTrue(logAppender.list.isEmpty());
 	}
 	
 	@Test
 	void shouldProcess() {
 		// arrange
-		when(secretRepository.findAllOldRotated(any(LocalDateTime.class)))
+		when(secretRepository.findAllOldRotated(any(ZonedDateTime.class)))
 			.thenReturn(Lists.newArrayList(
 					TestUtils.createSecretEntity(), 
-					TestUtils.createSecretEntity(RotationPeriod.HOURLY, LocalDateTime.now().minusDays(1l)),
-					TestUtils.createSecretEntity(RotationPeriod.MONTHLY, LocalDateTime.now().minusDays(1l))
+					TestUtils.createSecretEntity(RotationPeriod.HOURLY, ZonedDateTime.now().minusDays(1l)),
+					TestUtils.createSecretEntity(RotationPeriod.MONTHLY, ZonedDateTime.now().minusDays(1l))
 			));
 
 		// act
@@ -81,7 +81,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
 		// assert
 		verify(service).rotateSecret(any(SecretEntity.class));
-		verify(secretRepository).findAllOldRotated(any(LocalDateTime.class));
+		verify(secretRepository).findAllOldRotated(any(ZonedDateTime.class));
 		assertFalse(logAppender.list.isEmpty());
 		assertEquals("1 entities updated", logAppender.list.get(0).getFormattedMessage());
 	}

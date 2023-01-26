@@ -1,7 +1,7 @@
 package io.github.gms.secure.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +27,6 @@ public class SaveUserRequestDto implements Serializable {
 	private String email;
 	private EntityStatus status;
 	private String credential;
-	private LocalDateTime creationDate;
+	private ZonedDateTime creationDate;
 	private Set<UserRole> roles = new HashSet<>();
 }

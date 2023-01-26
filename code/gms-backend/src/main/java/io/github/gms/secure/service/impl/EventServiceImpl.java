@@ -1,7 +1,7 @@
 package io.github.gms.secure.service.impl;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class EventServiceImpl implements EventService {
 		String username = MDC.get(MdcParameter.USER_NAME.getDisplayName());
 		
 		EventEntity entity = new EventEntity();
-		entity.setEventDate(LocalDateTime.now(clock));
+		entity.setEventDate(ZonedDateTime.now(clock));
 		entity.setUserId(username);
 		entity.setOperation(event.getOperation());
 		entity.setTarget(event.getTarget());

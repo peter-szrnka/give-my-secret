@@ -1,7 +1,7 @@
 package io.github.gms.secure.service.impl;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 
 import org.slf4j.MDC;
@@ -49,7 +49,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 		if (dto.getId() != null) {
 			entity.setId(dto.getId());
 		} else {
-			entity.setAnnouncementDate(LocalDateTime.now(clock));
+			entity.setAnnouncementDate(ZonedDateTime.now(clock));
 		}
 
 		entity.setAuthorId(userId);

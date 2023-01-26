@@ -1,7 +1,7 @@
 package io.github.gms.secure.service.impl;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class MessageServiceImpl implements MessageService {
 				.userId(dto.getUserId())
 				.opened(false)
 				.message(dto.getMessage())
-				.creationDate(LocalDateTime.now(clock))
+				.creationDate(ZonedDateTime.now(clock))
 				.build());
 		
 		return new SaveEntityResponseDto(entity.getId());

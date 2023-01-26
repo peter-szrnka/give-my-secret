@@ -1,7 +1,7 @@
 package io.github.gms.secure.converter.impl;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +34,7 @@ public class SecretConverterImpl implements SecretConverter {
 		entity.setUserId(dto.getUserId());
 		entity.setReturnDecrypted(dto.isReturnDecrypted());
 		entity.setRotationEnabled(dto.isRotationEnabled());
-		entity.setLastUpdated(LocalDateTime.now(clock));
+		entity.setLastUpdated(ZonedDateTime.now(clock));
 		
 		if (dto.getValue() != null) {
 			entity.setValue(dto.getValue());
@@ -59,9 +59,9 @@ public class SecretConverterImpl implements SecretConverter {
 		entity.setKeystoreAliasId(dto.getKeystoreAliasId());
 		entity.setUserId(dto.getUserId());
 		entity.setValue(dto.getValue());
-		entity.setCreationDate(LocalDateTime.now(clock));
-		entity.setLastUpdated(LocalDateTime.now(clock));
-		entity.setLastRotated(LocalDateTime.now(clock));
+		entity.setCreationDate(ZonedDateTime.now(clock));
+		entity.setLastUpdated(ZonedDateTime.now(clock));
+		entity.setLastRotated(ZonedDateTime.now(clock));
 		entity.setRotationPeriod(dto.getRotationPeriod());
 		entity.setReturnDecrypted(dto.isReturnDecrypted());
 		entity.setRotationEnabled(dto.isRotationEnabled());

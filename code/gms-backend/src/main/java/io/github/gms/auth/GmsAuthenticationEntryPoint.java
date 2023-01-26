@@ -2,7 +2,7 @@ package io.github.gms.auth;
 
 import java.io.IOException;
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +40,7 @@ public class GmsAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse httpServletResponse,
                          AuthenticationException e) throws IOException, ServletException {
 
-        ErrorResponseDto dto = new ErrorResponseDto("GmsAuthenticationEntryPoint: " + e.getMessage(), MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()), LocalDateTime.now(clock));
+        ErrorResponseDto dto = new ErrorResponseDto("GmsAuthenticationEntryPoint: " + e.getMessage(), MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()), ZonedDateTime.now(clock));
     	
         httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
     	httpServletResponse.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);

@@ -1,7 +1,7 @@
 package io.github.gms.secure.job;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -38,7 +38,7 @@ public class SecretRotationJob {
 
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void execute() {
-		List<SecretEntity> resultList = secretRepository.findAllOldRotated(LocalDateTime.now(clock).minusSeconds(DELAY_SECONDS));
+		List<SecretEntity> resultList = secretRepository.findAllOldRotated(ZonedDateTime.now(clock).minusSeconds(DELAY_SECONDS));
 		
 		AtomicLong counter = new AtomicLong(0L);
 		resultList.forEach(secretEntity -> {
@@ -57,7 +57,7 @@ public class SecretRotationJob {
 
 	private boolean shouldNotRotate(SecretEntity secretEntity) {
 		RotationPeriod rotationPeriod = secretEntity.getRotationPeriod();
-		LocalDateTime comparisonDate = LocalDateTime.now(clock).minus(
+		ZonedDateTime comparisonDate = ZonedDateTime.now(clock).minus(
 				rotationPeriod.getUnitValue(), 
 				rotationPeriod.getUnit());
 

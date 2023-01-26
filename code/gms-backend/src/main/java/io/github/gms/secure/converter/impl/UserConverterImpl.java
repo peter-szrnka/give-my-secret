@@ -1,7 +1,7 @@
 package io.github.gms.secure.converter.impl;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,7 +43,7 @@ public class UserConverterImpl implements UserConverter {
 		entity.setName(dto.getName());
 		entity.setEmail(dto.getEmail());
 		entity.setCredential(passwordEncoder.encode(dto.getCredential()));
-		entity.setCreationDate(LocalDateTime.now(clock));
+		entity.setCreationDate(ZonedDateTime.now(clock));
 		entity.setStatus(EntityStatus.ACTIVE);
 		
 		if (roleChangeEnabled) {

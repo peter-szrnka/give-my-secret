@@ -1,6 +1,6 @@
 package io.github.gms.secure.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,5 +41,5 @@ public class SystemPropertyEntity extends AbstractGmsEntity {
 	private String value;
 
 	@Column(name = "last_modified")
-	private LocalDateTime lastModified;
+	private ZonedDateTime lastModified;
 }

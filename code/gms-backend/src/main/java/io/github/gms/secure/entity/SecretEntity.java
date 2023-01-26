@@ -1,6 +1,6 @@
 package io.github.gms.secure.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,13 +53,13 @@ public class SecretEntity extends AbstractGmsEntity {
 	private EntityStatus status;
 	
 	@Column(name = "creation_date")
-	private LocalDateTime creationDate;
+	private ZonedDateTime creationDate;
 
 	@Column(name = "last_updated")
-	private LocalDateTime lastUpdated;
+	private ZonedDateTime lastUpdated;
 
 	@Column(name = "last_rotated")
-	private LocalDateTime lastRotated;
+	private ZonedDateTime lastRotated;
 	
 	@Column(name = "rotation_period", nullable = true)
 	@Enumerated(EnumType.STRING)

@@ -1,7 +1,7 @@
 package io.github.gms.secure.converter.impl;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +36,7 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		entity.setName(dto.getName());
 		entity.setUserId(dto.getUserId());
 		entity.setDescription(dto.getDescription());
-		entity.setCreationDate(LocalDateTime.now(clock));
+		entity.setCreationDate(ZonedDateTime.now(clock));
 		entity.setCredential(dto.getCredential());
 		entity.setName(dto.getName());
 		if (file != null) {
