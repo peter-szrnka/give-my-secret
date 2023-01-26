@@ -42,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Dockerfile
-          path: ${{ github.workspace }}/code/Dockerfile
+          path: ${{ github.workspace }}/code/gms-backend/Dockerfile
           retention-days: 1
   deploy:
     name: 'Deploy to GHCR'
