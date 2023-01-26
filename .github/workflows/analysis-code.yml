@@ -3,13 +3,13 @@ name: Code build and analysis
 on:
   push:
     branches:
-      - main
+      - 'main'
     paths:
-      - ./code/**
+      - './code/**'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - ./code/**
+      - './code/**'
 jobs:
   analize_backend:
     name: Backend
