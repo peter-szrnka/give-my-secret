@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

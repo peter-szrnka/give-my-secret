@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -52,7 +52,7 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 		eventEntity.setId(1L);
 		eventEntity.setOperation(EventOperation.GET_BY_ID);
 		eventEntity.setTarget(EventTarget.API_KEY);
-		eventEntity.setEventDate(LocalDateTime.now().minusDays(1l));
+		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1l));
 		eventRepository.save(eventEntity);
 
 		// act

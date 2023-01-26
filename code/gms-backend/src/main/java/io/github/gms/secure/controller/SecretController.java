@@ -40,7 +40,7 @@ public class SecretController extends AbstractClientController<SecretService> {
 	private SecretRotationService secretRotationService;
 
 	@PostMapping
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize(Constants.ROLE_USER)
 	@Audited(operation = EventOperation.SAVE)
 	public @ResponseBody SaveEntityResponseDto save(@RequestBody SaveSecretRequestDto dto) {
 		return service.save(dto);

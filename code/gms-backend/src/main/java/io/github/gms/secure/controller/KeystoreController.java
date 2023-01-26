@@ -46,7 +46,7 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	}, produces = {
 			MediaType.APPLICATION_JSON_VALUE
 	})
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize(Constants.ROLE_USER)
 	@Audited(operation = EventOperation.SAVE)
 	public @ResponseBody SaveEntityResponseDto save(@ModelAttribute(name = MULTIPART_MODEL) String model, @RequestPart(name = MULTIPART_FILE, required = false) MultipartFile file) {
 		return service.save(model, file);

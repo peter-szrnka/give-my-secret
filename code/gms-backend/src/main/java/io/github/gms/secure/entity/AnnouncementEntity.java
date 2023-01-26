@@ -1,6 +1,6 @@
 package io.github.gms.secure.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +37,7 @@ public class AnnouncementEntity extends AbstractGmsEntity {
 	private Long authorId;
 	
 	@Column(name = "announcement_date")
-	private LocalDateTime announcementDate;
+	private ZonedDateTime announcementDate;
 	
 	@Column(name = "title")
 	private String title;

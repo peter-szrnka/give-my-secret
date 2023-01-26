@@ -5,7 +5,12 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,7 +37,13 @@ public class SystemServiceImpl implements SystemService {
 	private UserRepository userRepository;
 	
 	@Autowired
+	private Clock clock;
+	
+	@Autowired
 	private Environment env;
+	
+	@Autowired(required = false)
+	private BuildProperties buildProperties;
 
 	@Override
 	@Cacheable
@@ -44,6 +55,9 @@ public class SystemServiceImpl implements SystemService {
 		if (SELECTED_AUTH_LDAP.equals(auth)) {
 			return builder.status(OK).build();
 		}
+		
+		builder.version(getVersion());
+		builder.built(getBuildTime());
 
 		long result = userRepository.countExistingAdmins();
 		return  builder.status(result > 0 ? OK : "NEED_SETUP").build();
@@ -54,5 +68,13 @@ public class SystemServiceImpl implements SystemService {
 	@CacheEvict(allEntries = true)
 	public void refreshSystemStatus(RefreshCacheEvent userChangedEvent) {
 		log.info("System status cache refreshed");
+	}
+	
+	private String getVersion() {
+		return buildProperties != null ? buildProperties.getVersion() : "DevRuntime";
+	}
+	
+	private ZonedDateTime getBuildTime() {
+		return buildProperties != null ? buildProperties.getTime().atZone(ZoneId.systemDefault()) : ZonedDateTime.now(clock);
 	}
 }

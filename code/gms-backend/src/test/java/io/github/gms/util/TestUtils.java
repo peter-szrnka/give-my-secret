@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -91,10 +91,10 @@ public class TestUtils {
 				.serializeNulls()
 				.enableComplexMapKeySerialization()
 				.setLenient()
-				.registerTypeAdapter(LocalDateTime.class,
-						(JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-				.registerTypeAdapter(LocalDateTime.class,
-						(JsonSerializer<LocalDateTime>) (localDateTime, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(localDateTime)))
+				.registerTypeAdapter(ZonedDateTime.class,
+						(JsonDeserializer<ZonedDateTime>) (json, typeOfT, context) -> ZonedDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+				.registerTypeAdapter(ZonedDateTime.class,
+						(JsonSerializer<ZonedDateTime>) (ZonedDateTime, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(ZonedDateTime)))
 				.create();
 	}
 
@@ -249,7 +249,7 @@ public class TestUtils {
 	public static EventEntity createEventEntity() {
 		EventEntity entity = new EventEntity();
 		entity.setId(1L);
-		entity.setEventDate(LocalDateTime.now().minusHours(2));
+		entity.setEventDate(ZonedDateTime.now().minusHours(2));
 		entity.setOperation(EventOperation.GET_BY_ID);
 		entity.setTarget(EventTarget.KEYSTORE);
 		entity.setUserId("user");
@@ -259,13 +259,13 @@ public class TestUtils {
 	public static SecretEntity createSecretEntity(Long id, Long keystoreAliasId, String secretId) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(id);
-		entity.setCreationDate(LocalDateTime.now());
+		entity.setCreationDate(ZonedDateTime.now());
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue(DemoDataProviderService.ENCRYPTED_VALUE);
 		entity.setSecretId(secretId);;
 		entity.setKeystoreAliasId(keystoreAliasId);
-		entity.setLastRotated(LocalDateTime.now());
+		entity.setLastRotated(ZonedDateTime.now());
 		entity.setReturnDecrypted(false);
 		entity.setUserId(1L);
 		return entity;
@@ -278,20 +278,20 @@ public class TestUtils {
 	public static SecretEntity createSecretEntityWithUniqueKeystoreAliasId(Long keystoreAliasId) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(1L);
-		entity.setCreationDate(LocalDateTime.now());
+		entity.setCreationDate(ZonedDateTime.now());
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue("test");
 		entity.setKeystoreAliasId(keystoreAliasId);
-		entity.setLastRotated(LocalDateTime.now());
+		entity.setLastRotated(ZonedDateTime.now());
 		entity.setUserId(1L);
 		return entity;
 	}
 	
-	public static SecretEntity createSecretEntity(RotationPeriod rotationPeriod, LocalDateTime lastRotated) {
+	public static SecretEntity createSecretEntity(RotationPeriod rotationPeriod, ZonedDateTime lastRotated) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(1L);
-		entity.setCreationDate(LocalDateTime.now());
+		entity.setCreationDate(ZonedDateTime.now());
 		entity.setRotationPeriod(rotationPeriod);
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue("test");
@@ -303,7 +303,7 @@ public class TestUtils {
 	public static SecretDto createSecretDto() {
 		SecretDto dto = new SecretDto();
 		dto.setId(1L);
-		dto.setCreationDate(LocalDateTime.now());
+		dto.setCreationDate(ZonedDateTime.now());
 		dto.setRotationPeriod(RotationPeriod.YEARLY);
 		dto.setStatus(EntityStatus.ACTIVE);
 		return dto;
@@ -336,7 +336,7 @@ public class TestUtils {
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
 		entity.setStatus(EntityStatus.ACTIVE);
-		entity.setCreationDate(LocalDateTime.now());
+		entity.setCreationDate(ZonedDateTime.now());
 		return entity;
 	}
 
@@ -484,7 +484,7 @@ public class TestUtils {
 		entity1.setAuthorId(1L);
 		entity1.setTitle("Maintenance at 2022-01-01");
 		entity1.setDescription("Test");
-		entity1.setAnnouncementDate(LocalDateTime.now().minusDays(1));
+		entity1.setAnnouncementDate(ZonedDateTime.now().minusDays(1));
 		return new PageImpl<AnnouncementEntity>(Lists.newArrayList(entity1));
 	}
 
@@ -494,7 +494,7 @@ public class TestUtils {
 		entity.setAuthorId(1L);
 		entity.setTitle("Maintenance at 2022-01-01");
 		entity.setDescription("Test");
-		entity.setAnnouncementDate(LocalDateTime.now().minusDays(1));
+		entity.setAnnouncementDate(ZonedDateTime.now().minusDays(1));
 		return entity;
 	}
 

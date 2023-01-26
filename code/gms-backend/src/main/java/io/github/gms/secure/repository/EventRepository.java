@@ -1,6 +1,6 @@
 package io.github.gms.secure.repository;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,5 +18,5 @@ import io.github.gms.secure.entity.EventEntity;
 public interface EventRepository extends JpaRepository<EventEntity, Long> {
 
 	@Query("select e from EventEntity e where e.eventDate < :eventDate")
-	List<EventEntity> findAllEventDateOlderThan(@Param("eventDate") LocalDateTime eventDate);
+	List<EventEntity> findAllEventDateOlderThan(@Param("eventDate") ZonedDateTime eventDate);
 }

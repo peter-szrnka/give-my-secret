@@ -1,6 +1,6 @@
 package io.github.gms.secure.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,7 +38,7 @@ public class EventEntity extends AbstractGmsEntity {
 	private String userId;
 	
 	@Column(name = "event_date")
-	private LocalDateTime eventDate;
+	private ZonedDateTime eventDate;
 	
 	@Column(name = "operation")
 	@Enumerated(EnumType.STRING)

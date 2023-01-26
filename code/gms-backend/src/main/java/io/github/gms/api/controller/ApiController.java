@@ -25,7 +25,7 @@ public class ApiController {
 	private ApiService service;
 
 	@GetMapping(path = "/api/secret/{secretId}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-	public @ResponseBody ApiResponseDto getSecret(@RequestHeader(name = API_KEY_HEADER) String apiKey, @PathVariable(name = "secretId") String secretId) {
+	public @ResponseBody ApiResponseDto getSecret(@RequestHeader(name = API_KEY_HEADER, required = true) String apiKey, @PathVariable(name = "secretId") String secretId) {
 		return new ApiResponseDto(service.getSecret(new GetSecretRequestDto(apiKey, secretId)));
 	}
 }

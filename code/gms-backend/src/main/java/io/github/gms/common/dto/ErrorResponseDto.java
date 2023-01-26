@@ -1,7 +1,7 @@
 package io.github.gms.common.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -19,9 +19,9 @@ public class ErrorResponseDto implements Serializable {
 	
 	private String correlationId;
 	private String message;
-	private LocalDateTime timestamp;
+	private ZonedDateTime timestamp;
 
-	public ErrorResponseDto(String message, String correlationId, LocalDateTime timestamp) {
+	public ErrorResponseDto(String message, String correlationId, ZonedDateTime timestamp) {
 		this.message = message;
 		this.correlationId = correlationId;
 		this.timestamp = timestamp;

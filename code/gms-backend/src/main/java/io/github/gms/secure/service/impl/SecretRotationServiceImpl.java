@@ -1,7 +1,7 @@
 package io.github.gms.secure.service.impl;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -52,7 +52,7 @@ public class SecretRotationServiceImpl implements SecretRotationService {
 			String decrypted = cryptoService.decrypt(entity);
 			entity.setValue(decrypted);
 			cryptoService.encrypt(entity);
-			entity.setLastRotated(LocalDateTime.now(clock));
+			entity.setLastRotated(ZonedDateTime.now(clock));
 		} catch (Exception e) {
 			entity.setStatus(EntityStatus.DISABLED);
 			entity.setValue(originalValue);

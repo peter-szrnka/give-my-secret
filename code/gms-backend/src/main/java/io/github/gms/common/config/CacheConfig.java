@@ -7,6 +7,10 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Configuration
 @EnableCaching
 public class CacheConfig implements CachingConfigurer {

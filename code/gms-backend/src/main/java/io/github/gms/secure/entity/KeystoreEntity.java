@@ -1,6 +1,6 @@
 package io.github.gms.secure.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -61,5 +61,5 @@ public class KeystoreEntity extends AbstractGmsEntity {
 	private String credential;
 	
 	@Column(name = "creation_date")
-	private LocalDateTime creationDate;
+	private ZonedDateTime creationDate;
 }

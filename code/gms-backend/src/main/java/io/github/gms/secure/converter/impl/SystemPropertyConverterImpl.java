@@ -1,7 +1,7 @@
 package io.github.gms.secure.converter.impl;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -42,7 +42,7 @@ public class SystemPropertyConverterImpl implements SystemPropertyConverter {
 	
 	private SystemPropertyDto toDto(Map<SystemProperty, SystemPropertyEntity> propertyMap, SystemProperty property) {
 		SystemPropertyEntity entity = propertyMap.get(property);
-		LocalDateTime lastModified = null;
+		ZonedDateTime lastModified = null;
 		String value = property.getDefaultValue();
 		boolean factoryValue = entity == null;
 		
@@ -68,7 +68,7 @@ public class SystemPropertyConverterImpl implements SystemPropertyConverter {
 
 		entity.setKey(SystemProperty.getByKey(dto.getKey()).orElseThrow(() -> new GmsException("Unknown system property!")));
 		entity.setValue(dto.getValue());
-		entity.setLastModified(LocalDateTime.now(clock));
+		entity.setLastModified(ZonedDateTime.now(clock));
 		return entity;
 	}
 }

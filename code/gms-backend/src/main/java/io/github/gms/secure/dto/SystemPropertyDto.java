@@ -1,7 +1,7 @@
 package io.github.gms.secure.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import io.github.gms.common.enums.PropertyType;
 import lombok.AllArgsConstructor;
@@ -24,6 +24,6 @@ public class SystemPropertyDto implements Serializable {
 	private String key;
 	private String value;
 	private PropertyType type;
-	private LocalDateTime lastModified;
+	private ZonedDateTime lastModified;
 	private boolean factoryValue;
 }

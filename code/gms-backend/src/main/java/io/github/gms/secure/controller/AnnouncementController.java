@@ -17,6 +17,7 @@ import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
+import io.github.gms.common.util.Constants;
 import io.github.gms.secure.dto.AnnouncementDto;
 import io.github.gms.secure.dto.AnnouncementListDto;
 import io.github.gms.secure.dto.PagingDto;
@@ -34,26 +35,26 @@ import io.github.gms.secure.service.AnnouncementService;
 public class AnnouncementController extends AbstractController<AnnouncementService> {
 
 	@PostMapping
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize(Constants.ROLE_ADMIN)
 	@Audited(operation = EventOperation.SAVE)
 	public @ResponseBody SaveEntityResponseDto save(@RequestBody SaveAnnouncementDto dto) {
 		return service.save(dto);
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER','ROLE_VIEWER')")
+	@PreAuthorize(Constants.ALL_ROLE)
 	public @ResponseBody AnnouncementDto getById(@PathVariable("id") Long id) {
 		return service.getById(id);
 	}
 	
 	@PostMapping("/list")
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER','ROLE_VIEWER')")
+	@PreAuthorize(Constants.ALL_ROLE)
 	public @ResponseBody AnnouncementListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
 	}
 	
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize(Constants.ROLE_ADMIN)
 	@Audited(operation = EventOperation.DELETE)
 	public @ResponseBody ResponseEntity<String> delete(@PathVariable("id") Long id) {
 		service.delete(id);

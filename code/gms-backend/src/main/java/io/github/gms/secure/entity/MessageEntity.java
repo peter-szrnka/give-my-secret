@@ -1,6 +1,6 @@
 package io.github.gms.secure.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -49,5 +49,5 @@ public class MessageEntity extends AbstractGmsEntity {
 	private boolean opened;
 	
 	@Column(name = "CREATION_DATE")
-	private LocalDateTime creationDate;
+	private ZonedDateTime creationDate;
 }

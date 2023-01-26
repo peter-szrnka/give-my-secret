@@ -12,8 +12,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -149,7 +148,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "expired_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(
-				LocalDateTime.now().minusDays(1l).atZone(ZoneId.systemDefault())
+				ZonedDateTime.now().minusDays(1l)
 			      .toInstant()));
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
@@ -174,9 +173,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "valid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
-		when(claims.getExpiration()).thenReturn(Date.from(
-				LocalDateTime.now().plusDays(1l).atZone(ZoneId.systemDefault())
-			      .toInstant()));
+		when(claims.getExpiration()).thenReturn(Date.from(ZonedDateTime.now().plusDays(1l).toInstant()));
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 		when(claims.get(anyString(), any())).thenReturn(userDetails.getUsername());
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
@@ -201,9 +198,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "valid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
-		when(claims.getExpiration()).thenReturn(Date.from(
-				LocalDateTime.now().plusDays(1l).atZone(ZoneId.systemDefault())
-			      .toInstant()));
+		when(claims.getExpiration()).thenReturn(Date.from(ZonedDateTime.now().plusDays(1l).toInstant()));
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 		when(claims.get(anyString(), any())).thenReturn(userDetails.getUsername());
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");

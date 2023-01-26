@@ -18,6 +18,7 @@ import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
+import io.github.gms.common.util.Constants;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
 import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
@@ -37,20 +38,20 @@ import io.github.gms.secure.service.UserService;
 public class UserController extends AbstractController<UserService> {
 	
 	@PostMapping
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize(Constants.ROLE_ADMIN_OR_USER)
 	@Audited(operation = EventOperation.SAVE)
 	public @ResponseBody SaveEntityResponseDto save(@RequestBody SaveUserRequestDto dto) {
 		return service.save(dto);
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize(Constants.ROLE_ADMIN_OR_USER)
 	public @ResponseBody UserDto getById(@PathVariable("id") Long id) {
 		return service.getById(id);
 	}
 	
 	@PostMapping("/list")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize(Constants.ROLE_ADMIN)
 	public @ResponseBody UserListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
 	}

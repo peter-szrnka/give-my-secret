@@ -1,7 +1,7 @@
 package io.github.gms.secure.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +22,7 @@ public class AnnouncementDto implements Serializable {
 
 	private Long id;
 	private String author;
-	private LocalDateTime announcementDate;
+	private ZonedDateTime announcementDate;
 	private String title;
 	private String description;
 }

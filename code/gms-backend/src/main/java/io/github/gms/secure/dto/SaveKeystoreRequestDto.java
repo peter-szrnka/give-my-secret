@@ -1,7 +1,7 @@
 package io.github.gms.secure.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class SaveKeystoreRequestDto implements Serializable {
 	private String description;
 	private String credential;
 	@JsonIgnore
-	private LocalDateTime creationDate;
+	private ZonedDateTime creationDate;
 	private KeystoreType type;
 	private List<KeystoreAliasDto> aliases = new ArrayList<>();
 }

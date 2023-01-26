@@ -3,6 +3,7 @@ package io.github.gms.common.config;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.apache.catalina.connector.Connector;
@@ -58,10 +59,15 @@ public class ApplicationConfig implements WebMvcConfigurer {
 				.registerTypeAdapter(LocalDateTime.class,
 						(JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
 				.registerTypeAdapter(LocalDateTime.class,
-						(JsonSerializer<LocalDateTime>) (localDateTime, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(localDateTime)))
+						(JsonSerializer<LocalDateTime>) (json, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(json)))
+				
+				.registerTypeAdapter(ZonedDateTime.class,
+						(JsonDeserializer<ZonedDateTime>) (json, typeOfT, context) -> ZonedDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+				.registerTypeAdapter(ZonedDateTime.class,
+						(JsonSerializer<ZonedDateTime>) (json, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(json)))
 				.create();
 	}
-	
+
 	@Bean
 	RestTemplate restTemplate() {
 		return new RestTemplateBuilder().build();

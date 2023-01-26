@@ -1,6 +1,6 @@
 package io.github.gms.secure.repository;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +25,7 @@ public interface SecretRepository extends JpaRepository<SecretEntity, Long> {
 	SecretEntity findByUserIdAndSecretIdAndStatus(Long userId, String secretId, EntityStatus status);
 
 	@Query("select s from SecretEntity s where (s.lastRotated is null or s.lastRotated <= ?1) and s.rotationEnabled = true and s.status='ACTIVE'") // 
-	List<SecretEntity> findAllOldRotated(LocalDateTime input);
+	List<SecretEntity> findAllOldRotated(ZonedDateTime input);
 	
 	Optional<SecretEntity> findByIdAndUserId(Long id, Long userId);
 	

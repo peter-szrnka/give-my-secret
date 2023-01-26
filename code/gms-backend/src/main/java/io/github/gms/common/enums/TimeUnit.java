@@ -3,6 +3,10 @@ package io.github.gms.common.enums;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 public enum TimeUnit {
 
 	HOUR("h", ChronoUnit.HOURS),

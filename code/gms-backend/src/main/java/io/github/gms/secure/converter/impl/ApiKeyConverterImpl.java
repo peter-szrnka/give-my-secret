@@ -1,7 +1,7 @@
 package io.github.gms.secure.converter.impl;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class ApiKeyConverterImpl implements ApiKeyConverter {
 		entity.setUserId(dto.getUserId());
 		entity.setName(dto.getName());
 		entity.setValue(dto.getValue());
-		entity.setCreationDate(LocalDateTime.now(clock));
+		entity.setCreationDate(ZonedDateTime.now(clock));
 		entity.setDescription(dto.getDescription());
 		entity.setStatus(EntityStatus.ACTIVE);
 		return entity;

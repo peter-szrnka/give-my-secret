@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.gms.auth.dto.AuthenticateRequestDto;
@@ -25,10 +26,11 @@ import io.github.gms.secure.service.SystemPropertyService;
  * @since 1.0
  */
 @RestController
+@RequestMapping("/")
 public class LoginController {
 	
-	public static final String LOGIN_PATH = "/authenticate";
-	public static final String LOGOUT_PATH = "/logoutUser";
+	public static final String LOGIN_PATH = "authenticate";
+	public static final String LOGOUT_PATH = "logoutUser";
 	
 	@Value("${config.cookie.secure}")
 	private boolean secure;
