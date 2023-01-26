@@ -6,7 +6,7 @@ import io.github.gms.client.enums.KeystoreType;
 
 /**
  * @author Peter Szrnka
- * @since 1.0
+ * @since 1.0.0
  */
 public class GetSecretRequest {
 

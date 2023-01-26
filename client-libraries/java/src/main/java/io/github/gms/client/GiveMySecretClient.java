@@ -13,14 +13,15 @@ import io.github.gms.client.model.GiveMySecretClientConfig;
  * Client object for Give My Secret.
  * 
  * @author Peter Szrnka
- * @since 1.0
+ * @since 1.0.0
  */
 public interface GiveMySecretClient {
 
 	/**
 	 * Returns with a secret by the provided input
 	 * @param request
-	 * @return GetSecretResponse Response
+	 * @return GetSecretResponse Response object
+	 * 
 	 * @throws IOException
 	 * @throws KeyManagementException
 	 * @throws NoSuchAlgorithmException

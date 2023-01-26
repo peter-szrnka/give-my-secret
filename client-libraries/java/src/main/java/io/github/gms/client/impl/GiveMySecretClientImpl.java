@@ -22,7 +22,7 @@ import io.github.gms.client.util.ConnectionUtils;
  * Default implementation for client.
  * 
  * @author Peter Szrnka
- * @since 1.0
+ * @since 1.0.0
  */
 public class GiveMySecretClientImpl implements GiveMySecretClient {
 

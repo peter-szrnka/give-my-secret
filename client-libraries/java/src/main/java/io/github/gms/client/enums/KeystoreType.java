@@ -2,7 +2,7 @@ package io.github.gms.client.enums;
 
 /**
  * @author Peter Szrnka
- * @since 1.0
+ * @since 1.0.0
  */
 public enum KeystoreType {
 	JKS("JKS"),
