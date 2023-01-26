@@ -13,9 +13,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.github.szrnkapeter.gms</groupId>
-			<artifactId>gms-client-java</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			  <groupId>io.github.gms</groupId>
+			  <artifactId>gms-client-java</artifactId>
+			  <version>1.0.0</version>
 		</dependency>
 	</dependencies>
 </project>
