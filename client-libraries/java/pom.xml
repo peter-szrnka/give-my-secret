@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>io.github.szrnkapeter.gms</groupId>
+	<groupId>io.github.gms</groupId>
 	<artifactId>gms-client-java</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>Give My Secret Java client</name>
 
 	<url>https://github.com/peter-szrnka/give-my-secret/client-libraries/java</url>
@@ -34,17 +34,19 @@
 			<name>Peter Szrnka</name>
 			<url>https://github.com/peter-szrnka</url>
 			<roles>
-				<role>developer</role>
+				<role>Architect</role>
+				<role>Technical lead</role>
+				<role>Developer</role>
 			</roles>
 		</developer>
 	</developers>
 
-	<distributionManagement> 
-	   <repository>
-		 <id>github</id>
-		 <name>GitHub peter-szrnka Apache Maven Packages</name>
-		 <url>https://maven.pkg.github.com/peter-szrnka/give-my-secret</url>
-	   </repository>
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub peter-szrnka Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/peter-szrnka/give-my-secret</url>
+		</repository>
 	</distributionManagement>
 
 	<licenses>
@@ -144,6 +146,31 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<configLocation>src/main/resources/checkstyle.xml</configLocation>
+					<consoleOutput>true</consoleOutput>
+					<failsOnError>true</failsOnError>
+					<failOnViolation>true</failOnViolation>
+
+					<enableFilesSummary>true</enableFilesSummary>
+					<enableRulesSummary>true</enableRulesSummary>
+					<enableSeveritySummary>true</enableSeveritySummary>
+				</configuration>
+				<executions>
+					<execution>
+						<id>validate</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

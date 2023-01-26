@@ -1,5 +1,9 @@
 package io.github.gms.client.model;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0.0
+ */
 public class GetSecretResponse {
 
 	private String value;
