@@ -158,6 +158,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			return Pair.of(HttpStatus.BAD_REQUEST, "JWT token has expired!");
 		}
 		
-		return Pair.of(HttpStatus.OK, null);
+		return Pair.of(HttpStatus.OK, "");
 	}
 }
