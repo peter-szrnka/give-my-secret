@@ -1,14 +1,12 @@
-name: Java client library CI/CD
+name: Java client library release
 
 on:
   workflow_dispatch:
   push:
+    branches:
+      - "main"
     paths:
       - "client-libraries/java/**"
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - client-libraries/java
 jobs:
   analize_backend:
     name: Java client library
