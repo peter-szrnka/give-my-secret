@@ -1,7 +1,12 @@
-name: Java client library check on Pull Request
+name: Code quality check of Java client library
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - '!main'
+    paths:
+      - code/**
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
