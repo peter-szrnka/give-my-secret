@@ -1,4 +1,4 @@
-name: Java client library release
+name: Release of Java client library
 
 on:
   workflow_dispatch:

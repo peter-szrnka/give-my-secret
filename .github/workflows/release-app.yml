@@ -1,0 +1,165 @@
+name: Release of application
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    paths:
+      - code/**
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  analize_backend:
+    name: Backend code analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Sonarcloud scan
+        working-directory: ./code/gms-backend
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -Pcodecov -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=peter-szrnka_give-my-secret-backend
+  analize_frontend:
+    name: Frontend code analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Build with NPM
+        working-directory: ./code/gms-frontend
+        run: npm install
+      - name: Run tests
+        working-directory: ./code/gms-frontend
+        run: npm run test
+      - name: Sonarcloud scan
+        
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args:
+            -Dsonar.projectKey=peter-szrnka_give-my-secret-frontend
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }}
+            -Dsonar.test.inclusions=**/*.spec.ts
+            -Dsonar.exclusions=**/*.java,**/*.class,**/*.scss,**/*.html,**/*.json,**/*.xml,**/*.js,**/environments/*.*,**/polyfills.ts,**/*module.ts,**/main.ts,**/mock-config.ts,**/*.provider.ts
+            -Dsonar.typescript.lcov.reportPaths=./code/gms-frontend/coverage/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=./code/gms-frontend/coverage/lcov.info
+            -Dsonar.sources=./code/gms-frontend/src
+
+  build:
+    name: Build production artifact
+    runs-on: ubuntu-latest
+    needs: [analize_backend, analize_frontend]
+    env:
+      working-directory: ./code
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Prepare release
+        working-directory: ./client-libraries/java
+        if: github.event.head_commit.message != 'Version update'
+        run: mvn verify -Pprepare-next-version -DskipTests=true
+      - name: Build and analyze
+        run: mvn clean install -Pbuild-prod --file pom.xml -DskipTests=true
+        working-directory: ${{env.working-directory}}
+      - name: Temporarily save jar artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: gms-app
+          path: ${{ github.workspace }}/code/gms-backend/target/gms-app.jar
+          retention-days: 1
+      - name: Temporarily save Dockerfile
+        uses: actions/upload-artifact@v2
+        with:
+          name: Dockerfile
+          path: ${{ github.workspace }}/code/gms-backend/Dockerfile
+          retention-days: 1
+      - name: Update version to next snapshot
+        if: github.event.head_commit.message != 'Version update'
+        working-directory: ./client-libraries/java
+        run: mvn verify -Pprepare-next-snapshot -DskipTests=true
+      - name: Commit report
+        if: github.event.head_commit.message != 'Version update'
+        working-directory: ./client-libraries/java
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git config --local user.email "${{ github.actor }}@github.com"
+          git config --local user.name "${{ github.actor }}"
+          git commit -am "Version update"
+          git push --force
+
+  deploy:
+    name: 'Deploy to GHCR'
+    runs-on : ubuntu-latest
+    needs: build
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@master
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@master
+        with:
+          images: ${{ env.REGISTRY }}/peter-szrnka/give-my-secret
+      - uses: actions/download-artifact@v1
+        with:
+          name: gms-app
+          path: ./
+      - uses: actions/download-artifact@v1
+        with:
+          name: Dockerfile
+          path: ./
+      - name: Build Docker by Dockerfile
+        run: docker build --build-arg JAR_FILE=./gms-app.jar -t peter-szrnka/give-my-secret -f ./Dockerfile .
+      - name: Tag the image
+        run: docker image tag peter-szrnka/give-my-secret:latest ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:latest
+      - name: Docker push
+        run: docker push ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:latest
