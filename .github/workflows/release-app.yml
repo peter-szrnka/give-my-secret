@@ -120,11 +120,11 @@ jobs:
           retention-days: 1
       - name: Update version to next snapshot
         if: github.event.head_commit.message != 'Version update'
-        working-directory: ./client-libraries/java
+        working-directory: ./code
         run: mvn verify -Pprepare-next-snapshot -DskipTests=true
       - name: Commit report
         if: github.event.head_commit.message != 'Version update'
-        working-directory: ./client-libraries/java
+        working-directory: ./code
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
