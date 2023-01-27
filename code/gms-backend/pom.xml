@@ -43,6 +43,8 @@
 			**/*Entity.java,
 			**/*Application.java
 		</sonar.exclusions>
+		
+		<skip.parent.version.change>true</skip.parent.version.change>
 	</properties>
 
 	<developers>
@@ -554,80 +556,6 @@
 								<goals>
 									<goal>build</goal>
 								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>prepare-next-version</id>
-
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.2.0</version>
-						<executions>
-							<execution>
-								<id>parse-version</id>
-								<goals>
-									<goal>parse-version</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>versions-maven-plugin</artifactId>
-
-						<executions>
-							<execution>
-								<goals>
-									<goal>update-parent</goal>
-								</goals>
-								<phase>validate</phase>
-								<configuration>
-									<newVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</newVersion>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>prepare-next-snapshot</id>
-
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.2.0</version>
-						<executions>
-							<execution>
-								<id>parse-version</id>
-								<goals>
-									<goal>parse-version</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>versions-maven-plugin</artifactId>
-
-						<executions>
-							<execution>
-								<goals>
-									<goal>update-parent</goal>
-								</goals>
-								<phase>validate</phase>
-								<configuration>
-									<newVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}-SNAPSHOT</newVersion>
-								</configuration>
 							</execution>
 						</executions>
 					</plugin>
