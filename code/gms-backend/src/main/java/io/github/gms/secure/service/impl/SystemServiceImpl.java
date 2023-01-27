@@ -8,6 +8,7 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
@@ -32,18 +33,19 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @CacheConfig(cacheNames = "systemStatusCache")
 public class SystemServiceImpl implements SystemService {
-	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private Clock clock;
-	
-	@Autowired
-	private Environment env;
-	
-	@Autowired(required = false)
+
+	private final UserRepository userRepository;
+	private final Clock clock;
+	private final Environment env;
+	// It will be set with setter injection
 	private BuildProperties buildProperties;
+	
+	@Autowired
+	public SystemServiceImpl(UserRepository userRepository, Clock clock, Environment env) {
+		this.userRepository = userRepository;
+		this.clock = clock;
+		this.env = env;
+	}
 
 	@Override
 	@Cacheable
@@ -51,13 +53,12 @@ public class SystemServiceImpl implements SystemService {
 		SystemStatusDto.SystemStatusDtoBuilder builder = SystemStatusDto.builder();
 		String auth = env.getProperty(SELECTED_AUTH, SELECTED_AUTH_DB);
 		builder.authMode(auth);
+		builder.version(getVersion());
+		builder.built(getBuildTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		
 		if (SELECTED_AUTH_LDAP.equals(auth)) {
 			return builder.status(OK).build();
 		}
-		
-		builder.version(getVersion());
-		builder.built(getBuildTime());
 
 		long result = userRepository.countExistingAdmins();
 		return  builder.status(result > 0 ? OK : "NEED_SETUP").build();
@@ -68,6 +69,11 @@ public class SystemServiceImpl implements SystemService {
 	@CacheEvict(allEntries = true)
 	public void refreshSystemStatus(RefreshCacheEvent userChangedEvent) {
 		log.info("System status cache refreshed");
+	}
+	
+	@Autowired(required = false)
+	public void setBuildProperties(BuildProperties buildProperties) {
+		this.buildProperties = buildProperties;
 	}
 	
 	private String getVersion() {

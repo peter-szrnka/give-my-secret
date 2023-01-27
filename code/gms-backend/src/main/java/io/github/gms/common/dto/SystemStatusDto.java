@@ -1,9 +1,5 @@
 package io.github.gms.common.dto;
 
-import java.time.ZonedDateTime;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +18,5 @@ public class SystemStatusDto {
 	private String authMode;
 	private String status;
 	private String version;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-	private ZonedDateTime built;
+	private String built;
 }
