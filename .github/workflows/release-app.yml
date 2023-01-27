@@ -99,8 +99,16 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Prepare release
+      - name: Prepare release of parent pom
         working-directory: ./client-libraries/java
+        if: github.event.head_commit.message != 'Version update'
+        run: mvn verify -Pprepare-next-version -DskipTests=true
+      - name: Prepare release of backend pom
+        working-directory: ./code/gms-backend
+        if: github.event.head_commit.message != 'Version update'
+        run: mvn verify -Pprepare-next-version -DskipTests=true
+      - name: Prepare release of frontend pom
+        working-directory: ./code/gms-frontend
         if: github.event.head_commit.message != 'Version update'
         run: mvn verify -Pprepare-next-version -DskipTests=true
       - name: Build and analyze
@@ -118,9 +126,17 @@ jobs:
           name: Dockerfile
           path: ${{ github.workspace }}/code/gms-backend/Dockerfile
           retention-days: 1
-      - name: Update version to next snapshot
+      - name: Update version of parent pom to next snapshot
         if: github.event.head_commit.message != 'Version update'
         working-directory: ./code
+        run: mvn verify -Pprepare-next-snapshot -DskipTests=true
+      - name: Update version of backend to next snapshot
+        if: github.event.head_commit.message != 'Version update'
+        working-directory: ./code/gms-backend
+        run: mvn verify -Pprepare-next-snapshot -DskipTests=true
+      - name: Update version of frontend to next snapshot
+        if: github.event.head_commit.message != 'Version update'
+        working-directory: ./code/gms-frontend
         run: mvn verify -Pprepare-next-snapshot -DskipTests=true
       - name: Commit report
         if: github.event.head_commit.message != 'Version update'
