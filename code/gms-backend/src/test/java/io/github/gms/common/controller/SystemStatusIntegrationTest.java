@@ -30,6 +30,7 @@ class SystemStatusIntegrationTest extends AbstractIntegrationTest {
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(Constants.OK, response.getBody().getStatus());
+		assertEquals("DevRuntime", response.getBody().getVersion());
 		assertEquals(Constants.SELECTED_AUTH_DB, response.getBody().getAuthMode());
 	}
 }

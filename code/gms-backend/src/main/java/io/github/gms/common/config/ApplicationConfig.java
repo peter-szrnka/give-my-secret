@@ -75,7 +75,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
 	
 	@Bean
 	Clock clock() {
-		return Clock.systemDefaultZone();
+		return Clock.systemUTC();
 	}
 	
 	@Override
