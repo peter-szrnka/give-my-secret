@@ -48,6 +48,6 @@ public class MessageEntity extends AbstractGmsEntity {
 	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean opened;
 	
-	@Column(name = "CREATION_DATE")
+	@Column(name = "creation_date")
 	private ZonedDateTime creationDate;
 }

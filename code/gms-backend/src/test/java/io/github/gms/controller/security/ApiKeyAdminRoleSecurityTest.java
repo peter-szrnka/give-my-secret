@@ -9,12 +9,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.util.DemoData;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 
@@ -44,7 +44,7 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
 		// assert
 		HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-		executeHttpGet("/secure/apikey/" + DemoDataProviderService.API_KEY_1_ID, requestEntity, ApiKeyDto.class));
+		executeHttpGet("/secure/apikey/" + DemoData.API_KEY_1_ID, requestEntity, ApiKeyDto.class));
 		
 		assertTrue(exception.getMessage().contains("403 : [no body]"));
 	}
@@ -67,7 +67,7 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
 		// assert
 		HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-		executeHttpGet("/secure/apikey/value/" + DemoDataProviderService.API_KEY_1_ID, requestEntity, String.class));
+		executeHttpGet("/secure/apikey/value/" + DemoData.API_KEY_1_ID, requestEntity, String.class));
 		
 		assertTrue(exception.getMessage().contains("403 : [no body]"));
 	}
@@ -78,7 +78,7 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
 		// assert
 		HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-			executeHttpDelete("/secure/apikey/" + DemoDataProviderService.API_KEY_2_ID, requestEntity,
+			executeHttpDelete("/secure/apikey/" + DemoData.API_KEY_2_ID, requestEntity,
 				String.class));
 		
 		assertTrue(exception.getMessage().contains("403 : [no body]"));
@@ -90,7 +90,7 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
 		// assert
 		HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-		executeHttpPost("/secure/apikey/" + DemoDataProviderService.API_KEY_1_ID + "?enabled=true", requestEntity,
+		executeHttpPost("/secure/apikey/" + DemoData.API_KEY_1_ID + "?enabled=true", requestEntity,
 				String.class));
 		
 		assertTrue(exception.getMessage().contains("403 : [no body]"));

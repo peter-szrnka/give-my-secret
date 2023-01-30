@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.GetSecureValueDto;
@@ -27,6 +26,7 @@ import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
+import io.github.gms.util.DemoData;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 
@@ -59,16 +59,16 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<ApiKeyDto> response = executeHttpGet("/" + DemoDataProviderService.API_KEY_1_ID, requestEntity, ApiKeyDto.class);
+		ResponseEntity<ApiKeyDto> response = executeHttpGet("/" + DemoData.API_KEY_1_ID, requestEntity, ApiKeyDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
 		ApiKeyDto responseBody = response.getBody();
-		assertEquals(DemoDataProviderService.API_KEY_1_ID, responseBody.getId());
+		assertEquals(DemoData.API_KEY_1_ID, responseBody.getId());
 		assertEquals(EntityStatus.ACTIVE, responseBody.getStatus());
-		assertEquals(DemoDataProviderService.API_KEY_CREDENTIAL1, responseBody.getValue());
+		assertEquals(DemoData.API_KEY_CREDENTIAL1, responseBody.getValue());
 	}
 	
 	@Test
@@ -91,21 +91,21 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testGetValue() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpGet("/value/" + DemoDataProviderService.API_KEY_1_ID, requestEntity, String.class);
+		ResponseEntity<String> response = executeHttpGet("/value/" + DemoData.API_KEY_1_ID, requestEntity, String.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
 		String responseBody = response.getBody();
-		assertEquals(DemoDataProviderService.API_KEY_CREDENTIAL1, responseBody);
+		assertEquals(DemoData.API_KEY_CREDENTIAL1, responseBody);
 	}
 	
 	@Test
 	void testDelete() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpDelete("/" + DemoDataProviderService.API_KEY_2_ID, requestEntity,
+		ResponseEntity<String> response = executeHttpDelete("/" + DemoData.API_KEY_2_ID, requestEntity,
 				String.class);
 
 		// Assert
@@ -119,18 +119,18 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testToggleStatus(boolean enabled) {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpPost("/" + DemoDataProviderService.API_KEY_1_ID + "?enabled="+ enabled, requestEntity,
+		ResponseEntity<String> response = executeHttpPost("/" + DemoData.API_KEY_1_ID + "?enabled="+ enabled, requestEntity,
 				String.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 		
-		ApiKeyEntity entity = apiKeyRepository.getReferenceById(DemoDataProviderService.API_KEY_1_ID);
+		ApiKeyEntity entity = apiKeyRepository.getReferenceById(DemoData.API_KEY_1_ID);
 		assertNotNull(entity);
 		assertEquals(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED, entity.getStatus());
 
-		executeHttpPost("/" + DemoDataProviderService.API_KEY_1_ID + "?enabled="+ !enabled, requestEntity,String.class);
+		executeHttpPost("/" + DemoData.API_KEY_1_ID + "?enabled="+ !enabled, requestEntity,String.class);
 	}
 
 	@Test

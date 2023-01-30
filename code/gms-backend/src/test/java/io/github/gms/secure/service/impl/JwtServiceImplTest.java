@@ -12,8 +12,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.service.JwtService;
+import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
 
@@ -51,8 +51,8 @@ class JwtServiceImplTest extends AbstractUnitTest {
 	
 		// assert
 		assertNotNull(response);
-		assertEquals(DemoDataProviderService.USER_1_ID, response.get(MdcParameter.USER_ID.getDisplayName(), Long.class));
-		assertEquals(DemoDataProviderService.USERNAME1, response.get(MdcParameter.USER_NAME.getDisplayName()));
+		assertEquals(DemoData.USER_1_ID, response.get(MdcParameter.USER_ID.getDisplayName(), Long.class));
+		assertEquals(DemoData.USERNAME1, response.get(MdcParameter.USER_NAME.getDisplayName()));
 		assertTrue(response.get("roles", List.class).contains("ROLE_ADMIN"));
 	}
 }

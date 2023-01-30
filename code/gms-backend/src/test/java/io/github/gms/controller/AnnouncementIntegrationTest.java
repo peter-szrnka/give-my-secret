@@ -13,12 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.AnnouncementDto;
 import io.github.gms.secure.dto.AnnouncementListDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveAnnouncementDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.util.DemoData;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 
@@ -58,14 +58,14 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<AnnouncementDto> response = executeHttpGet("/" + DemoDataProviderService.ANNOUNCEMENT_ID, requestEntity, AnnouncementDto.class);
+		ResponseEntity<AnnouncementDto> response = executeHttpGet("/" + DemoData.ANNOUNCEMENT_ID, requestEntity, AnnouncementDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
 		AnnouncementDto responseBody = response.getBody();
-		assertEquals(DemoDataProviderService.ANNOUNCEMENT_ID, responseBody.getId());
+		assertEquals(DemoData.ANNOUNCEMENT_ID, responseBody.getId());
 		assertEquals("title", responseBody.getTitle());
 	}
 	

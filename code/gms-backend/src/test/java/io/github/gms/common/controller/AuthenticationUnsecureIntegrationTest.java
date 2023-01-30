@@ -14,8 +14,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.auth.dto.AuthenticateRequestDto;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.common.util.Constants;
+import io.github.gms.util.DemoData;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 
@@ -30,7 +30,7 @@ class AuthenticationUnsecureIntegrationTest extends AbstractIntegrationTest {
 	void shouldNotAutenticate() {
 		
 		// act
-		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoDataProviderService.USERNAME1, "testFail");
+		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, "testFail");
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
 		HttpClientErrorException.Unauthorized exception = 
 				assertThrows(HttpClientErrorException.Unauthorized.class, () -> executeHttpPost(Constants.SLASH + LoginController.LOGIN_PATH, requestEntity, String.class));
@@ -43,7 +43,7 @@ class AuthenticationUnsecureIntegrationTest extends AbstractIntegrationTest {
 	void shouldAutenticate() {
 		
 		// act
-		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoDataProviderService.USERNAME1, "test");
+		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, "test");
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
 		ResponseEntity<String> response = executeHttpPost(Constants.SLASH + LoginController.LOGIN_PATH, requestEntity, String.class);
 		
