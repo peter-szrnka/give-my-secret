@@ -50,7 +50,6 @@ import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.common.util.Constants;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
 import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.SaveAnnouncementDto;
@@ -129,7 +128,7 @@ public class TestUtils {
 	public static GmsUserDetails createGmsUser(Long userId, String username, String role) {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
-				.credential(DemoDataProviderService.CREDENTIAL_TEST)
+				.credential(DemoData.CREDENTIAL_TEST)
 				.userId(userId)
 				.username(username)
 				.authorities(Sets.newHashSet(UserRole.valueOf(role)))
@@ -140,9 +139,9 @@ public class TestUtils {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
 				.enabled(true)
-				.credential(DemoDataProviderService.CREDENTIAL_TEST)
-				.userId(DemoDataProviderService.USER_1_ID)
-				.username(DemoDataProviderService.USERNAME1)
+				.credential(DemoData.CREDENTIAL_TEST)
+				.userId(DemoData.USER_1_ID)
+				.username(DemoData.USERNAME1)
 				.authorities(Sets.newHashSet(UserRole.ROLE_USER))
 				.build();
 	}
@@ -151,9 +150,9 @@ public class TestUtils {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
 				.enabled(false)
-				.credential(DemoDataProviderService.CREDENTIAL_TEST)
-				.userId(DemoDataProviderService.USER_1_ID)
-				.username(DemoDataProviderService.USERNAME1)
+				.credential(DemoData.CREDENTIAL_TEST)
+				.userId(DemoData.USER_1_ID)
+				.username(DemoData.USERNAME1)
 				.authorities(Sets.newHashSet(UserRole.ROLE_USER))
 				.build();
 	}
@@ -162,9 +161,9 @@ public class TestUtils {
 		return GmsUserDetails.builder()
 				.accountNonLocked(false)
 				.enabled(true)
-				.credential(DemoDataProviderService.CREDENTIAL_TEST)
-				.userId(DemoDataProviderService.USER_1_ID)
-				.username(DemoDataProviderService.USERNAME1)
+				.credential(DemoData.CREDENTIAL_TEST)
+				.userId(DemoData.USER_1_ID)
+				.username(DemoData.USERNAME1)
 				.authorities(Sets.newHashSet(UserRole.ROLE_USER))
 				.build();
 	}
@@ -172,9 +171,9 @@ public class TestUtils {
 	public static GmsUserDetails createGmsAdminUser() {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
-				.credential(DemoDataProviderService.CREDENTIAL_TEST)
-				.userId(DemoDataProviderService.USER_2_ID)
-				.username(DemoDataProviderService.USERNAME2)
+				.credential(DemoData.CREDENTIAL_TEST)
+				.userId(DemoData.USER_2_ID)
+				.username(DemoData.USERNAME2)
 				.authorities(Sets.newHashSet(UserRole.ROLE_ADMIN))
 				.build();
 	}
@@ -262,7 +261,7 @@ public class TestUtils {
 		entity.setCreationDate(ZonedDateTime.now());
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setStatus(EntityStatus.ACTIVE);
-		entity.setValue(DemoDataProviderService.ENCRYPTED_VALUE);
+		entity.setValue(DemoData.ENCRYPTED_VALUE);
 		entity.setSecretId(secretId);;
 		entity.setKeystoreAliasId(keystoreAliasId);
 		entity.setLastRotated(ZonedDateTime.now());
@@ -272,7 +271,7 @@ public class TestUtils {
 	}
 	
 	public static SecretEntity createSecretEntity() {
-		return createSecretEntityWithUniqueKeystoreAliasId(DemoDataProviderService.KEYSTORE_ALIAS_ID);
+		return createSecretEntityWithUniqueKeystoreAliasId(DemoData.KEYSTORE_ALIAS_ID);
 	}
 	
 	public static SecretEntity createSecretEntityWithUniqueKeystoreAliasId(Long keystoreAliasId) {
@@ -295,7 +294,7 @@ public class TestUtils {
 		entity.setRotationPeriod(rotationPeriod);
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue("test");
-		entity.setKeystoreAliasId(DemoDataProviderService.KEYSTORE_ALIAS_ID);
+		entity.setKeystoreAliasId(DemoData.KEYSTORE_ALIAS_ID);
 		entity.setLastRotated(lastRotated);
 		return entity;
 	}
@@ -323,7 +322,7 @@ public class TestUtils {
 	}
 
 	public static SaveKeystoreRequestDto createSaveKeystoreRequestDto() {
-		return createSaveKeystoreRequestDto(DemoDataProviderService.KEYSTORE_ID);
+		return createSaveKeystoreRequestDto(DemoData.KEYSTORE_ID);
 	}
 	
 	public static KeystoreEntity createKeystoreEntity(Long id, String credential) {
@@ -331,7 +330,7 @@ public class TestUtils {
 		entity.setName("keystore");
 		entity.setId(id);
 		entity.setFileName("test.jks");
-		entity.setUserId(DemoDataProviderService.USER_1_ID);
+		entity.setUserId(DemoData.USER_1_ID);
 		entity.setCredential(credential);
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
@@ -343,9 +342,9 @@ public class TestUtils {
 	public static KeystoreEntity createKeystoreEntity() {
 		KeystoreEntity entity = new KeystoreEntity();
 		entity.setName("keystore");
-		entity.setId(DemoDataProviderService.KEYSTORE_ID);
+		entity.setId(DemoData.KEYSTORE_ID);
 		entity.setFileName("test.jks");
-		entity.setUserId(DemoDataProviderService.USER_1_ID);
+		entity.setUserId(DemoData.USER_1_ID);
 		entity.setCredential("test");
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
@@ -355,9 +354,9 @@ public class TestUtils {
 	
 	public static KeystoreEntity createJKSKeystoreEntity() {
 		KeystoreEntity entity = new KeystoreEntity();
-		entity.setId(DemoDataProviderService.KEYSTORE_ID);
+		entity.setId(DemoData.KEYSTORE_ID);
 		entity.setFileName("test.jks");
-		entity.setUserId(DemoDataProviderService.USER_1_ID);
+		entity.setUserId(DemoData.USER_1_ID);
 		entity.setCredential("test");
 		entity.setType(KeystoreType.JKS);
 		entity.setStatus(EntityStatus.ACTIVE);
@@ -368,7 +367,7 @@ public class TestUtils {
 		KeystoreEntity entity = new KeystoreEntity();
 		entity.setId(id);
 		entity.setFileName("test.jks");
-		entity.setUserId(DemoDataProviderService.USER_1_ID);
+		entity.setUserId(DemoData.USER_1_ID);
 		entity.setCredential("test");
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
@@ -380,7 +379,7 @@ public class TestUtils {
 		KeystoreAliasEntity entity = new KeystoreAliasEntity();
 		
 		entity.setId(id);
-		entity.setKeystoreId(DemoDataProviderService.KEYSTORE_ID);
+		entity.setKeystoreId(DemoData.KEYSTORE_ID);
 		entity.setAlias("test");
 		entity.setAliasCredential("test");
 		entity.setDescription("description");
@@ -389,7 +388,7 @@ public class TestUtils {
 	}
 
 	public static KeystoreAliasEntity createKeystoreAliasEntity() {
-		return createKeystoreAliasEntity(DemoDataProviderService.KEYSTORE_ALIAS_ID);
+		return createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS_ID);
 	}
 	
 	@Data
@@ -407,7 +406,7 @@ public class TestUtils {
 		dto.setName("name");
 		dto.setEmail(email);
 		dto.setRoles(Sets.newHashSet(UserRole.ROLE_USER));
-		dto.setCredential(DemoDataProviderService.CREDENTIAL_TEST);
+		dto.setCredential(DemoData.CREDENTIAL_TEST);
 		dto.setStatus(EntityStatus.ACTIVE);
 		return dto;
 	}
@@ -418,7 +417,7 @@ public class TestUtils {
 		dto.setUsername(username);
 		dto.setName("name");
 		dto.setEmail(email);
-		dto.setCredential(DemoDataProviderService.CREDENTIAL_TEST);
+		dto.setCredential(DemoData.CREDENTIAL_TEST);
 		dto.setStatus(EntityStatus.ACTIVE);
 		return dto;
 	}
@@ -446,10 +445,10 @@ public class TestUtils {
 		dto.setId(secretId);
 		dto.setRotationPeriod(RotationPeriod.YEARLY);
 		dto.setStatus(EntityStatus.ACTIVE);
-		dto.setKeystoreAliasId(DemoDataProviderService.KEYSTORE_ALIAS_ID);
-		dto.setSecretId(DemoDataProviderService.SECRET_ID1);
-		dto.setUserId(DemoDataProviderService.USER_1_ID);
-		dto.setValue(DemoDataProviderService.SECRET_VALUE);
+		dto.setKeystoreAliasId(DemoData.KEYSTORE_ALIAS_ID);
+		dto.setSecretId(DemoData.SECRET_ID1);
+		dto.setUserId(DemoData.USER_1_ID);
+		dto.setValue(DemoData.SECRET_VALUE);
 		dto.setRotationEnabled(true);
 		dto.setReturnDecrypted(false);
 		dto.setApiKeyRestrictions(apiKeyRestrictionList);
@@ -500,7 +499,7 @@ public class TestUtils {
 
 	public static SaveAnnouncementDto createSaveAnnouncementDto() {
 		return SaveAnnouncementDto.builder()
-				.author(DemoDataProviderService.USERNAME1)
+				.author(DemoData.USERNAME1)
 				.title("title")
 				.description("description")
 				.build();
@@ -563,8 +562,8 @@ public class TestUtils {
 	
 	public static GenerateJwtRequest createJwtAdminRequest() {
 		return createJwtAdminRequest(GmsUserDetails.builder()
-				.userId(DemoDataProviderService.USER_1_ID)
-				.username(DemoDataProviderService.USERNAME1)
+				.userId(DemoData.USER_1_ID)
+				.username(DemoData.USERNAME1)
 				.authorities(Set.of(UserRole.ROLE_ADMIN))
 				.build());
 	}
@@ -584,12 +583,12 @@ public class TestUtils {
 	
 	public static GenerateJwtRequest createJwtUserRequest() {
 		Map<String, Object> claims = Map.of(
-				MdcParameter.USER_ID.getDisplayName(), DemoDataProviderService.USER_1_ID,
-				MdcParameter.USER_NAME.getDisplayName(), DemoDataProviderService.USERNAME1,
+				MdcParameter.USER_ID.getDisplayName(), DemoData.USER_1_ID,
+				MdcParameter.USER_NAME.getDisplayName(), DemoData.USERNAME1,
 				"roles", List.of("ROLE_USER")
 		);
 
-		return GenerateJwtRequest.builder().subject(DemoDataProviderService.USERNAME1).algorithm("HS512")
+		return GenerateJwtRequest.builder().subject(DemoData.USERNAME1).algorithm("HS512")
 				.expirationDateInSeconds(30L)
 				.claims(claims)
 				.build();

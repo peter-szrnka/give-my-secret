@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
 import io.github.gms.secure.dto.LongValueDto;
@@ -27,6 +26,7 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.util.DemoData;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 
@@ -72,14 +72,14 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<ApiKeyDto> response = executeHttpGet("/" + DemoDataProviderService.USER_1_ID, requestEntity, ApiKeyDto.class);
+		ResponseEntity<ApiKeyDto> response = executeHttpGet("/" + DemoData.USER_1_ID, requestEntity, ApiKeyDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
 		ApiKeyDto responseBody = response.getBody();
-		assertEquals(DemoDataProviderService.USER_1_ID, responseBody.getId());
+		assertEquals(DemoData.USER_1_ID, responseBody.getId());
 		assertEquals(EntityStatus.ACTIVE, responseBody.getStatus());
 		assertNull(responseBody.getValue());
 	}
@@ -127,18 +127,18 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testToggleStatus(boolean enabled) {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpPost("/" + DemoDataProviderService.USER_1_ID + "?enabled="+ enabled, requestEntity,
+		ResponseEntity<String> response = executeHttpPost("/" + DemoData.USER_1_ID + "?enabled="+ enabled, requestEntity,
 				String.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 		
-		UserEntity entity = userRepository.getReferenceById(DemoDataProviderService.USER_1_ID);
+		UserEntity entity = userRepository.getReferenceById(DemoData.USER_1_ID);
 		assertNotNull(entity);
 		assertEquals(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED, entity.getStatus());
 
-		executeHttpPost("/" + DemoDataProviderService.USER_1_ID + "?enabled="+ !enabled, requestEntity,String.class);
+		executeHttpPost("/" + DemoData.USER_1_ID + "?enabled="+ !enabled, requestEntity,String.class);
 	}
 	
 	@Transactional
@@ -154,7 +154,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 		
-		UserEntity entity = userRepository.getReferenceById(DemoDataProviderService.USER_1_ID);
+		UserEntity entity = userRepository.getReferenceById(DemoData.USER_1_ID);
 		assertNotNull(entity);
 	}
 	

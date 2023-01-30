@@ -22,7 +22,6 @@ import org.springframework.util.FileCopyUtils;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
@@ -31,6 +30,7 @@ import io.github.gms.secure.dto.SaveSecretRequestDto;
 import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.entity.SecretEntity;
+import io.github.gms.util.DemoData;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
@@ -63,7 +63,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testSave() {
 		// act
 		HttpEntity<SaveSecretRequestDto> requestEntity = new HttpEntity<>(
-				TestUtils.createSaveSecretRequestDto(DemoDataProviderService.SECRET_ENTITY_ID),
+				TestUtils.createSaveSecretRequestDto(DemoData.SECRET_ENTITY_ID),
 				TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SaveEntityResponseDto> response = executeHttpPost("", requestEntity,
 				SaveEntityResponseDto.class);
@@ -80,7 +80,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<SecretDto> response = executeHttpGet("/" + DemoDataProviderService.SECRET_ENTITY_ID,
+		ResponseEntity<SecretDto> response = executeHttpGet("/" + DemoData.SECRET_ENTITY_ID,
 				requestEntity, SecretDto.class);
 
 		// Assert
@@ -88,7 +88,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(response.getBody());
 
 		SecretDto responseBody = response.getBody();
-		assertEquals(DemoDataProviderService.SECRET_ENTITY_ID, responseBody.getId());
+		assertEquals(DemoData.SECRET_ENTITY_ID, responseBody.getId());
 		assertEquals(EntityStatus.ACTIVE, responseBody.getStatus());
 	}
 
@@ -112,7 +112,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testGetValue() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpGet("/value/" + DemoDataProviderService.SECRET_ENTITY2_ID,
+		ResponseEntity<String> response = executeHttpGet("/value/" + DemoData.SECRET_ENTITY2_ID,
 				requestEntity, String.class);
 
 		// Assert
@@ -127,7 +127,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testDelete() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpDelete("/" + DemoDataProviderService.SECRET_ENTITY2_ID,
+		ResponseEntity<String> response = executeHttpDelete("/" + DemoData.SECRET_ENTITY2_ID,
 				requestEntity, String.class);
 
 		// Assert
@@ -142,17 +142,17 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost(
-				"/" + DemoDataProviderService.SECRET_ENTITY_ID + "?enabled=" + enabled, requestEntity, String.class);
+				"/" + DemoData.SECRET_ENTITY_ID + "?enabled=" + enabled, requestEntity, String.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 
-		SecretEntity entity = secretRepository.getReferenceById(DemoDataProviderService.SECRET_ENTITY_ID);
+		SecretEntity entity = secretRepository.getReferenceById(DemoData.SECRET_ENTITY_ID);
 		assertNotNull(entity);
 		assertEquals(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED, entity.getStatus());
 
-		executeHttpPost("/" + DemoDataProviderService.SECRET_ENTITY_ID + "?enabled=" + true, requestEntity,
+		executeHttpPost("/" + DemoData.SECRET_ENTITY_ID + "?enabled=" + true, requestEntity,
 				String.class);
 	}
 
@@ -170,14 +170,14 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Test
 	void testRotateSecret() {
-		String oldValue = secretRepository.findById(DemoDataProviderService.SECRET_ENTITY_ID).get().getValue();
+		String oldValue = secretRepository.findById(DemoData.SECRET_ENTITY_ID).get().getValue();
 		
 		// act
 		HttpEntity<SaveSecretRequestDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpPost("/rotate/" + DemoDataProviderService.SECRET_ENTITY_ID, requestEntity, String.class);
+		ResponseEntity<String> response = executeHttpPost("/rotate/" + DemoData.SECRET_ENTITY_ID, requestEntity, String.class);
 
 		// Assert
-		String newValue = secretRepository.findById(DemoDataProviderService.SECRET_ENTITY_ID).get().getValue();
+		String newValue = secretRepository.findById(DemoData.SECRET_ENTITY_ID).get().getValue();
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotEquals(oldValue, newValue);

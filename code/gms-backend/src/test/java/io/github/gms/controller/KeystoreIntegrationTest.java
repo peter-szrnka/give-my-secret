@@ -37,7 +37,6 @@ import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.filter.SecureHeaderInitializerFilter;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.controller.KeystoreController;
 import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
@@ -46,6 +45,7 @@ import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.util.DemoData;
 import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 import io.github.gms.util.TestUtils.ValueHolder;
@@ -107,14 +107,14 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<KeystoreDto> response = executeHttpGet("/" + DemoDataProviderService.KEYSTORE_ID, requestEntity, KeystoreDto.class);
+		ResponseEntity<KeystoreDto> response = executeHttpGet("/" + DemoData.KEYSTORE_ID, requestEntity, KeystoreDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
 		KeystoreDto responseBody = response.getBody();
-		assertEquals(DemoDataProviderService.KEYSTORE_ID, responseBody.getId());
+		assertEquals(DemoData.KEYSTORE_ID, responseBody.getId());
 		assertEquals(EntityStatus.ACTIVE, responseBody.getStatus());
 	}
 	
@@ -138,7 +138,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@MethodSource("valueData")
 	void testGetSecretValue(ValueHolder input) {
 		// act
-		GetSecureValueDto dto = new GetSecureValueDto(DemoDataProviderService.KEYSTORE_ID, input.getAliasId(), input.getValueType());
+		GetSecureValueDto dto = new GetSecureValueDto(DemoData.KEYSTORE_ID, input.getAliasId(), input.getValueType());
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost("/value", requestEntity, String.class);
 
@@ -174,18 +174,18 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testToggleStatus(boolean enabled) {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpPost("/" + DemoDataProviderService.KEYSTORE_ID + "?enabled="+ enabled, requestEntity,
+		ResponseEntity<String> response = executeHttpPost("/" + DemoData.KEYSTORE_ID + "?enabled="+ enabled, requestEntity,
 				String.class);
 
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 		
-		KeystoreEntity entity = keystoreRepository.getReferenceById(DemoDataProviderService.KEYSTORE_ID);
+		KeystoreEntity entity = keystoreRepository.getReferenceById(DemoData.KEYSTORE_ID);
 		assertNotNull(entity);
 		assertEquals(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED, entity.getStatus());
 		
-		executeHttpPost("/" + DemoDataProviderService.KEYSTORE_ID + "?enabled="+ true, requestEntity,String.class);
+		executeHttpPost("/" + DemoData.KEYSTORE_ID + "?enabled="+ true, requestEntity,String.class);
 	}
 	
 	@Test
@@ -219,7 +219,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		
 		// act
-		ResponseEntity<IdNamePairListDto> response = executeHttpGet("/list_aliases/" + DemoDataProviderService.KEYSTORE_ID, requestEntity, IdNamePairListDto.class);
+		ResponseEntity<IdNamePairListDto> response = executeHttpGet("/list_aliases/" + DemoData.KEYSTORE_ID, requestEntity, IdNamePairListDto.class);
 		
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -230,8 +230,8 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	public static List<ValueHolder> valueData() {
 		return Lists.newArrayList(
-				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, DemoDataProviderService.KEYSTORE_ALIAS_ID, "test"),
-				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, DemoDataProviderService.KEYSTORE_ALIAS_ID, "test"),
+				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, DemoData.KEYSTORE_ALIAS_ID, "test"),
+				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, DemoData.KEYSTORE_ALIAS_ID, "test"),
 				new ValueHolder(KeyStoreValueType.KEYSTORE_CREDENTIAL, null, "test")
 		);
 	}

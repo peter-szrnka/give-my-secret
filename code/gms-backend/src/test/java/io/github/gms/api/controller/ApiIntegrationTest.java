@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.dto.ApiResponseDto;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
+import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 
 /**
@@ -26,23 +26,23 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	void testGetSecret() {
 		// arrange
-		apiKeyRepository.save(TestUtils.createApiKey(DemoDataProviderService.API_KEY_3_ID, DemoDataProviderService.API_KEY_CREDENTIAL3));
-		keystoreAliasRepository.save(TestUtils.createKeystoreAliasEntity(DemoDataProviderService.KEYSTORE_ALIAS3_ID));
-		keystoreRepository.save(TestUtils.createKeystoreEntity(DemoDataProviderService.KEYSTORE3_ID, "test"));
+		apiKeyRepository.save(TestUtils.createApiKey(DemoData.API_KEY_3_ID, DemoData.API_KEY_CREDENTIAL3));
+		keystoreAliasRepository.save(TestUtils.createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS3_ID));
+		keystoreRepository.save(TestUtils.createKeystoreEntity(DemoData.KEYSTORE3_ID, "test"));
 		secretRepository.save(
-				TestUtils.createSecretEntity(DemoDataProviderService.SECRET_ENTITY3_ID, DemoDataProviderService.KEYSTORE_ALIAS3_ID, DemoDataProviderService.SECRET_ID3));
+				TestUtils.createSecretEntity(DemoData.SECRET_ENTITY3_ID, DemoData.KEYSTORE_ALIAS3_ID, DemoData.SECRET_ID3));
 		
 		// act
-		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoDataProviderService.API_KEY_CREDENTIAL3));
-		ResponseEntity<ApiResponseDto> response = executeHttpGet("/api/secret/" + DemoDataProviderService.SECRET_ID3, requestEntity, ApiResponseDto.class);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoData.API_KEY_CREDENTIAL3));
+		ResponseEntity<ApiResponseDto> response = executeHttpGet("/api/secret/" + DemoData.SECRET_ID3, requestEntity, ApiResponseDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(DemoDataProviderService.ENCRYPTED_VALUE, response.getBody().getValue());
+		assertEquals(DemoData.ENCRYPTED_VALUE, response.getBody().getValue());
 		
-		secretRepository.deleteById(DemoDataProviderService.SECRET_ENTITY3_ID);
-		apiKeyRepository.deleteById(DemoDataProviderService.API_KEY_3_ID);
-		keystoreAliasRepository.deleteById(DemoDataProviderService.KEYSTORE_ALIAS3_ID);
-		keystoreRepository.deleteById(DemoDataProviderService.KEYSTORE3_ID);
+		secretRepository.deleteById(DemoData.SECRET_ENTITY3_ID);
+		apiKeyRepository.deleteById(DemoData.API_KEY_3_ID);
+		keystoreAliasRepository.deleteById(DemoData.KEYSTORE_ALIAS3_ID);
+		keystoreRepository.deleteById(DemoData.KEYSTORE3_ID);
 	}
 }

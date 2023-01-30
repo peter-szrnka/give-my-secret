@@ -60,7 +60,6 @@ import io.github.gms.common.event.EntityChangeEvent;
 import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
-import io.github.gms.common.util.DemoDataProviderService;
 import io.github.gms.secure.converter.KeystoreConverter;
 import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairDto;
@@ -76,6 +75,7 @@ import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.CryptoService;
+import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import io.github.gms.util.TestUtils.ValueHolder;
 import lombok.SneakyThrows;
@@ -88,7 +88,7 @@ import lombok.SneakyThrows;
  */
 class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
-	private static final String JKS_TEST_FILE_LOCATION = "./test-output/" + DemoDataProviderService.USER_1_ID + "/test.jks";
+	private static final String JKS_TEST_FILE_LOCATION = "./test-output/" + DemoData.USER_1_ID + "/test.jks";
 
 	@InjectMocks
 	private KeystoreServiceImpl service = new KeystoreServiceImpl();
@@ -128,7 +128,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		((Logger) LoggerFactory.getLogger(KeystoreServiceImpl.class)).addAppender(logAppender);
 		ReflectionTestUtils.setField(service, "keystorePath", "test-output/");
 
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), DemoDataProviderService.USER_1_ID);
+		MDC.put(MdcParameter.USER_ID.getDisplayName(), DemoData.USER_1_ID);
 	}
 
 	@Test
@@ -329,7 +329,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		when(gson.fromJson(eq(model), any())).thenReturn(dto);
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		
-		new File("test-output/" + DemoDataProviderService.USER_1_ID + "/").mkdirs();
+		new File("test-output/" + DemoData.USER_1_ID + "/").mkdirs();
 
 		FileWriter fileWriter = new FileWriter(JKS_TEST_FILE_LOCATION);
 		PrintWriter printWriter = new PrintWriter(fileWriter);
