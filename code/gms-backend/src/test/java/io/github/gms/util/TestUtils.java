@@ -45,6 +45,7 @@ import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.enums.KeystoreType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.exception.GmsException;
@@ -445,6 +446,7 @@ public class TestUtils {
 		dto.setId(secretId);
 		dto.setRotationPeriod(RotationPeriod.YEARLY);
 		dto.setStatus(EntityStatus.ACTIVE);
+		dto.setType(SecretType.CREDENTIAL);;
 		dto.setKeystoreAliasId(DemoData.KEYSTORE_ALIAS_ID);
 		dto.setSecretId(DemoData.SECRET_ID1);
 		dto.setUserId(DemoData.USER_1_ID);

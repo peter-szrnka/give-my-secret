@@ -35,6 +35,7 @@ public class SecretConverterImpl implements SecretConverter {
 		entity.setReturnDecrypted(dto.isReturnDecrypted());
 		entity.setRotationEnabled(dto.isRotationEnabled());
 		entity.setLastUpdated(ZonedDateTime.now(clock));
+		entity.setType(dto.getType());
 		
 		if (dto.getValue() != null) {
 			entity.setValue(dto.getValue());
@@ -66,6 +67,7 @@ public class SecretConverterImpl implements SecretConverter {
 		entity.setReturnDecrypted(dto.isReturnDecrypted());
 		entity.setRotationEnabled(dto.isRotationEnabled());
 		entity.setStatus(EntityStatus.ACTIVE);
+		entity.setType(dto.getType());
 		return entity;
 	}
 
@@ -83,6 +85,7 @@ public class SecretConverterImpl implements SecretConverter {
 		dto.setReturnDecrypted(entity.isReturnDecrypted());
 		dto.setRotationEnabled(entity.isRotationEnabled());
 		dto.setStatus(entity.getStatus());
+		dto.setType(entity.getType());
 		
 		if (apiKeyRestrictions != null) {
 			dto.setApiKeyRestrictions(apiKeyRestrictions.stream().map(ApiKeyRestrictionEntity::getApiKeyId).collect(Collectors.toSet()));

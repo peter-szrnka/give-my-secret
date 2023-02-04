@@ -6,6 +6,7 @@ import java.util.Set;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.common.enums.SecretType;
 import lombok.Data;
 
 /**
@@ -23,6 +24,7 @@ public class SecretDto implements Serializable {
 	private Long keystoreAliasId;
 	private String secretId;
 	private EntityStatus status;
+	private SecretType type;
 	private ZonedDateTime creationDate;
 	private ZonedDateTime lastUpdated;
 	private ZonedDateTime lastRotated;
