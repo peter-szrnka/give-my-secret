@@ -9,6 +9,7 @@ export interface Secret {
     keystoreId? : number,
     keystoreAliasId? : number,
     status : string,
+    type : string,
     value : string,
     creationDate? : Date,
     lastUpdated?: Date,
@@ -21,6 +22,7 @@ export interface Secret {
 
 export const EMPTY_SECRET : Secret = {
     status: "ACTIVE",
+    type : "CREDENTIAL",
     value: "",
     rotationPeriod: "HOURLY",
     apiKeyRestrictions : [],
