@@ -69,7 +69,7 @@ CREATE TABLE gms_secret (
 	rotation_period VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	secret_id VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	status VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-	type VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	secret_type VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	user_id BIGINT NOT NULL,
 	value VARCHAR(512) NOT NULL COLLATE 'utf8mb4_general_ci',
 	PRIMARY KEY (id) USING BTREE

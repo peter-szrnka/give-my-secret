@@ -53,7 +53,7 @@ public class SecretEntity extends AbstractGmsEntity {
 	@Enumerated(EnumType.STRING)
 	private EntityStatus status;
 	
-	@Column(name = "type")
+	@Column(name = "secret_type")
 	@Enumerated(EnumType.STRING)
 	private SecretType type;
 	

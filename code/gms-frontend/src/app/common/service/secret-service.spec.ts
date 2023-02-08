@@ -13,7 +13,8 @@ const TEST_SECRET : Secret = {
   returnDecrypted: false,
   rotationPeriod : "HOURLY",
   status : "ACTIVE",
-  apiKeyRestrictions : []
+  apiKeyRestrictions : [],
+  type : 'CREDENTIAL'
 };
 
 /**

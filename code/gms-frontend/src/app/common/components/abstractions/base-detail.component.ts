@@ -29,7 +29,7 @@ export abstract class BaseDetailComponent<T, S extends ServiceBase<T, BaseList<T
 
   abstract getPageConfig(): PageConfig;
 
-  protected abstract dataLoadingCallback(data: T) : void;
+  abstract dataLoadingCallback(data: T) : void;
 
   private fetchData() {
     this.loading = true;
