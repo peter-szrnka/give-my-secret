@@ -24,7 +24,8 @@ describe('SecretListResolver', () => {
         status : "ACTIVE",
         rotationPeriod : "HOURLY",
         value: "value-1",
-        apiKeyRestrictions : []
+        apiKeyRestrictions : [],
+        type : 'CREDENTIAL'
     }];
 
     beforeEach(async() => {

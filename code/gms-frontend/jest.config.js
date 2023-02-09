@@ -10,11 +10,11 @@ module.exports = {
   testEnvironment: "jsdom",
 
   collectCoverage : true,
-  collectCoverageFrom : [ "**/*.ts" ],
+  collectCoverageFrom : [ "src/**/*.ts" ],
   coveragePathIgnorePatterns : [
     ".module.ts",
-    "<rootDir>/main.ts",
-    "<rootDir>/polyfills.ts",
+    "<rootDir>/src/main.ts",
+    "<rootDir>/src/polyfills.ts",
     "<rootDir>/src/environments/",
     "<rootDir>/src/mocks",
     "<rootDir>/src/app/window.provider.ts"

@@ -84,7 +84,8 @@ describe('SecretDetailComponent', () => {
                     rotationPeriod: "MONTHLY",
                     rotationEnabled : true,
                     returnDecrypted : false,
-                    apiKeyRestrictions : [1,2,3]
+                    apiKeyRestrictions : [1,2,3],
+                    type : 'CREDENTIAL'
                 }
             })
         };
@@ -98,7 +99,8 @@ describe('SecretDetailComponent', () => {
         const mockNames : IdNamePair[] = [ idPair1, idPair2 ];
 
         keystoreService = {
-            getAllKeystoreNames : jest.fn().mockReturnValue(of(mockNames))
+            getAllKeystoreNames : jest.fn().mockReturnValue(of(mockNames)),
+            getAllKeystoreAliases : jest.fn().mockReturnValue(of(['test','test2']))
         };
 
         apiKeyService = {
@@ -175,6 +177,52 @@ describe('SecretDetailComponent', () => {
         expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Secret has been saved!", type: "information" } as DialogData });
     });
 
+    it('Should save secret with username password pair', () => {
+        activatedRoute = class {
+            data : Data = of({
+                entity : {
+                    id : 1,
+                    secretId : "my-secret",
+                    keystoreId : 1,
+                    keystoreAliasId : 1,
+                    status : "ACTIVE",
+                    value : "{\"username\":\"user\",\"password\":\"pw12345678\"}",
+                    type : 'CREDENTIAL_PAIR',
+                    creationDate : new Date(),
+                    lastUpdated: new Date(),
+                    lastRotated: new Date(),
+                    rotationPeriod: "MONTHLY",
+                    rotationEnabled : true,
+                    returnDecrypted : false,
+                    apiKeyRestrictions : [1,2,3]
+                }
+            })
+        };
+        configureTestBed();
+
+        // act
+        component.add({ value : idPair2.id, chipInput : { clear : jest.fn() } } as any);
+        component.add({ value : '3', chipInput : { clear : jest.fn() } } as any);
+        component.selected({
+            option : {
+                value : 1,
+                viewValue : 'name-1'
+            }
+        } as any);
+        component.selected({
+            option : {
+                value : 3,
+                viewValue : 'no-name-3'
+            }
+        } as any);
+        component.onKeystoreNameChanged(undefined);
+        component.save();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Secret has been saved!", type: "information" } as DialogData });
+    });
+
     it('Should save secret when all api keys allowed', () => {
         configureTestBed();
 
@@ -188,6 +236,40 @@ describe('SecretDetailComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Secret has been saved!", type: "information" } as DialogData });
+    });
+
+    it('Should show secret value for username and password', () => {
+        activatedRoute = class {
+            data : Data = of({
+                entity : {
+                    id : 1,
+                    secretId : "my-secret",
+                    keystoreId : 1,
+                    keystoreAliasId : 1,
+                    status : "ACTIVE",
+                    value : "{\"username\":\"user\",\"password\":\"pw12345678\"}",
+                    type : 'CREDENTIAL_PAIR',
+                    creationDate : new Date(),
+                    lastUpdated: new Date(),
+                    lastRotated: new Date(),
+                    rotationPeriod: "MONTHLY",
+                    rotationEnabled : true,
+                    returnDecrypted : false,
+                    apiKeyRestrictions : [1,2,3]
+                }
+            })
+        };
+        configureTestBed();
+
+        // act
+        component.showValue();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.usernamePasswordPair.username).toEqual('user');
+        expect(component.usernamePasswordPair.password).toEqual('pw12345678');
+        expect(component.data.type).toEqual('CREDENTIAL_PAIR');
+        expect(component.data.value).toEqual("value");
     });
 
     it('Should show secret value', () => {

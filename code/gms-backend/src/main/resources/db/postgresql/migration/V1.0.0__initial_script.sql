@@ -58,6 +58,7 @@ CREATE TABLE gms_secret (
 	rotation_period VARCHAR(255) NOT NULL,
 	secret_id VARCHAR(255) NOT NULL,
 	status VARCHAR(255) NULL DEFAULT NULL,
+	secret_type VARCHAR(255) NOT NULL,
 	user_id BIGINT NOT NULL,
 	value VARCHAR(512) NOT NULL
 );

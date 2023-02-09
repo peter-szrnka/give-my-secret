@@ -1,5 +1,6 @@
 package io.github.gms.api.service;
 
+import io.github.gms.secure.dto.ApiResponseDto;
 import io.github.gms.secure.dto.GetSecretRequestDto;
 
 /**
@@ -8,5 +9,5 @@ import io.github.gms.secure.dto.GetSecretRequestDto;
  */
 public interface ApiService {
 
-	String getSecret(GetSecretRequestDto dto);
+	ApiResponseDto getSecret(GetSecretRequestDto dto);
 }

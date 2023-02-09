@@ -29,6 +29,10 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         'MINUTES', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'
     ];
 
+    usernamePasswordPair : any = {
+        username : "",
+        password : ""
+    };
     filteredKeystoreOptions$: Observable<IdNamePair[]>;
     filteredKeystoreAliasOptions$: Observable<IdNamePair[]>;
     filteredApiKeyOptions$: Observable<IdNamePair[]>;
@@ -77,10 +81,17 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
 
     override dataLoadingCallback(data: Secret): void {
         this.onKeystoreNameChanged(data.keystoreId);
+
+        if (data.type !== 'CREDENTIAL_PAIR') {
+            return;
+        }
+
+        this.usernamePasswordPair = JSON.parse(data.value);
     }
 
     save() {
         this.data.apiKeyRestrictions = this.formData.allApiKeysAllowed ? [] : this.selectedApiKeys.map(apiKey => apiKey.id);
+        this.transformUsernamePasswordPair();
         this.validateForm();
 
         this.loading = true;
@@ -99,7 +110,13 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     }
 
     showValue() {
-        this.service.getValue(this.data.id).subscribe(value => this.data.value = value);
+        this.service.getValue(this.data.id).subscribe(value => {
+            this.data.value = value;
+
+            if (this.data.type === 'CREDENTIAL_PAIR') {
+                this.usernamePasswordPair = JSON.parse(this.data.value);
+            }
+        });
     }
 
     rotateSecret(): void {
@@ -119,6 +136,14 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         }
 
         this.filteredKeystoreAliasOptions$ = this.keystoreService.getAllKeystoreAliases(selectedId);
+    }
+
+    private transformUsernamePasswordPair() {
+        if (this.data.type !== 'CREDENTIAL_PAIR') {
+            return;
+        }
+
+        this.data.value = JSON.stringify(this.usernamePasswordPair);
     }
 
     private validateForm() {

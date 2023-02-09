@@ -14,8 +14,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.SecretConverter;
@@ -28,6 +31,7 @@ import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.SecretEntity;
+import io.github.gms.secure.model.CredentialPair;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
@@ -45,6 +49,9 @@ public class SecretServiceImpl implements SecretService {
 	static final String WRONG_ENTITY = "Wrong entity!";
 	static final String PLEASE_PROVIDE_ACTIVE_KEYSTORE = "Please provide an active keystore";
 	static final String WRONG_KEYSTORE_ALIAS = "Wrong keystore alias!";
+	
+	@Autowired
+	private Gson gson;
 
 	@Autowired
 	private CryptoService cryptoService;
@@ -194,6 +201,14 @@ public class SecretServiceImpl implements SecretService {
 
 		if (secretIdCount > expectedCount) {
 			throw new GmsException("Secret ID name must be unique!");
+		}
+		
+		if (SecretType.CREDENTIAL_PAIR != dto.getType()) {
+			return;
+		}
+		
+		if(gson.fromJson(dto.getValue(), CredentialPair.class) == null) {
+			throw new GmsException("Username password pair is invalid!");
 		}
 	}
 }

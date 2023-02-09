@@ -25,7 +25,8 @@ describe('SecretDetailResolver', () => {
         status: "ACTIVE",
         value: "test",
         rotationPeriod: "",
-        apiKeyRestrictions: []
+        apiKeyRestrictions: [],
+        type : 'CREDENTIAL'
     };
 
     beforeEach(async() => {

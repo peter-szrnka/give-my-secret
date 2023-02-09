@@ -16,6 +16,7 @@ import org.hibernate.annotations.Type;
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.common.enums.SecretType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -51,6 +52,10 @@ public class SecretEntity extends AbstractGmsEntity {
 	@Column(name = "status")
 	@Enumerated(EnumType.STRING)
 	private EntityStatus status;
+	
+	@Column(name = "secret_type")
+	@Enumerated(EnumType.STRING)
+	private SecretType type;
 	
 	@Column(name = "creation_date")
 	private ZonedDateTime creationDate;

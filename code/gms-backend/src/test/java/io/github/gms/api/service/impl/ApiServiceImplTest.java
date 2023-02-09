@@ -16,14 +16,20 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import com.google.gson.Gson;
+
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.secure.dto.ApiResponseDto;
+import io.github.gms.secure.dto.CredentialPairApiResponseDto;
 import io.github.gms.secure.dto.GetSecretRequestDto;
+import io.github.gms.secure.dto.SimpleApiResponseDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.entity.UserEntity;
@@ -45,6 +51,9 @@ import io.github.gms.util.TestUtils;
 class ApiServiceImplTest extends AbstractUnitTest {
 	
 	private static GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
+	
+	@Mock
+	private Gson gson;
 
 	@Mock
 	private CryptoService cryptoService;
@@ -117,7 +126,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(false));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.CREDENTIAL));
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
 
 		// assert
@@ -135,7 +144,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(false));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.CREDENTIAL));
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.empty());
 
@@ -155,7 +164,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(false));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.CREDENTIAL));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
 				TestUtils.createApiKeyRestrictionEntity(2L),
 				TestUtils.createApiKeyRestrictionEntity(3L)
@@ -172,12 +181,18 @@ class ApiServiceImplTest extends AbstractUnitTest {
 	}
 	
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
-	void shouldReturnEncrypted(boolean returnDecrypted) {
+	@MethodSource("inputData")
+	@SuppressWarnings("unchecked")
+	<T extends ApiResponseDto> void shouldReturnEncrypted(boolean returnDecrypted, Class<T> expectedResponseType, SecretType type) {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(returnDecrypted));
+		
+		String mockValue = "encrypted";
+		if (expectedResponseType == CredentialPairApiResponseDto.class) {
+			mockValue = "{\"username\":\"u\",\"password\":\"p\"}";
+		}
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(mockValue, returnDecrypted, type));
 		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
@@ -187,15 +202,27 @@ class ApiServiceImplTest extends AbstractUnitTest {
 				));
 		
 		if (returnDecrypted) {
-			when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn("decrypted");
+			if (expectedResponseType == CredentialPairApiResponseDto.class) {
+				when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn("{\"username\":\"u\",\"password\":\"p\"}");
+			} else {
+				when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn("decrypted");
+			}
+		}
+		
+		if (expectedResponseType == CredentialPairApiResponseDto.class) {
+			when(gson.fromJson(anyString(), eq(CredentialPairApiResponseDto.class))).thenReturn(new CredentialPairApiResponseDto("u", "p"));
 		}
 
 		// act
-		String response = service.getSecret(dto);
+		T response = (T) service.getSecret(dto);
 		
 		// assert
 		Assertions.assertNotNull(response);
-		Assertions.assertEquals(returnDecrypted ? "decrypted" : "encrypted", response);
+		if (expectedResponseType == SimpleApiResponseDto.class) {
+			Assertions.assertEquals(returnDecrypted ? "decrypted" : "encrypted", ((SimpleApiResponseDto) response).getValue());
+		} else {
+			Assertions.assertEquals("u", ((CredentialPairApiResponseDto) response).getUsername());
+		}
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository).findById(anyLong());
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
@@ -204,14 +231,24 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(keystoreRepository).findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE));
 	}
 	
-	private static SecretEntity createMockSecret(boolean returnDecrypted) {
+	public static Object[][] inputData() {
+		return new Object[][] {
+			{ true, SimpleApiResponseDto.class, SecretType.CREDENTIAL },
+			{ false, SimpleApiResponseDto.class, SecretType.CREDENTIAL },
+			{ true, CredentialPairApiResponseDto.class, SecretType.CREDENTIAL_PAIR },
+			{ false, SimpleApiResponseDto.class, SecretType.CREDENTIAL_PAIR }
+		};
+	}
+	
+	private static SecretEntity createMockSecret(String value, boolean returnDecrypted, SecretType type) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(1L);
-		entity.setValue("encrypted");
+		entity.setValue(value);
 		entity.setReturnDecrypted(returnDecrypted);
 		entity.setKeystoreAliasId(1L);
 		entity.setUserId(1L);
 		entity.setKeystoreAliasId(1L);
+		entity.setType(type);
 		return entity;
 	}
 
