@@ -3,13 +3,13 @@ name: Code quality check of application
 on:
   workflow_dispatch:
   push:
-    branches: 
-      - '*'
-      - '!main'
+    branches: ['*', '!main']
     paths:
       - './code/**'
   pull_request:
     types: [opened, synchronize, reopened]
+    # The branches below must be a subset of the branches above
+    branches: ['*', '!main']
     paths:
       - '/code/**'
 jobs:
