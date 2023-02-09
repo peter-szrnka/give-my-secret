@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { ApiKey } from "../model/apikey.model";
+import { ListResolver } from "../../../common/resolver/list-data.resolver";
+import { SharedDataService } from "../../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { ApiKeyList } from "../model/apikey-list.model";
+import { ApiKey } from "../model/apikey.model";
 import { ApiKeyService } from "../service/apikey-service";
-import { SplashScreenStateService } from "../service/splash-screen-service";
-import { ListResolver } from "./list-data.resolver";
-import { SharedDataService } from "../service/shared-data-service";
 
 /**
  * @author Peter Szrnka

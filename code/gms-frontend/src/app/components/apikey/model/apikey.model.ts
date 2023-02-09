@@ -1,4 +1,4 @@
-import { PageConfig } from "./common.model"
+import { PageConfig } from "../../../common/model/common.model";
 
 /**
  * @author Peter Szrnka

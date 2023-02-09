@@ -6,10 +6,12 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { ApiKeyService } from "../../common/service/apikey-service";
+import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { ApiKeyDetailComponent } from "./apikey-detail.component";
 import { ApiKeyListComponent } from "./apikey-list.component";
+import { ApiKeyDetailResolver } from "./resolver/apikey-detail.resolver";
+import { ApiKeyListResolver } from "./resolver/apikey-list.resolver";
 
 /**
  * @author Peter Szrnka
@@ -28,7 +30,7 @@ import { ApiKeyListComponent } from "./apikey-list.component";
         PipesModule
     ],
     providers: [ 
-      SharedDataService, ApiKeyService
+      SharedDataService, ApiKeyService, ApiKeyListResolver, ApiKeyDetailResolver
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })

@@ -3,10 +3,10 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { of, throwError } from "rxjs";
+import { SharedDataService } from "../../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { ApiKey } from "../model/apikey.model";
 import { ApiKeyService } from "../service/apikey-service";
-import { SharedDataService } from "../service/shared-data-service";
-import { SplashScreenStateService } from "../service/splash-screen-service";
 import { ApiKeyListResolver } from "./apikey-list.resolver";
 
 /**

@@ -1,4 +1,4 @@
-import { BaseList } from "./base-list";
+import { BaseList } from "../../../common/model/base-list";
 import { Event } from "./event.model";
 
 /**

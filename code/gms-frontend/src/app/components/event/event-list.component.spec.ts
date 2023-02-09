@@ -8,7 +8,7 @@ import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { User } from "../../common/model/user.model";
-import { EventService } from "../../common/service/event-service";
+import { EventService } from "./service/event-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { EventListComponent } from "./event-list.component";
 

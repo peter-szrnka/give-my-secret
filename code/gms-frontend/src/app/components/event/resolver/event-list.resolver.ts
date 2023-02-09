@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import { Event } from "../model/event.model";
 import { EventList } from "../model/event-list.model";
 import { EventService } from "../service/event-service";
-import { SplashScreenStateService } from "../service/splash-screen-service";
-import { ListResolver } from "./list-data.resolver";
-import { SharedDataService } from "../service/shared-data-service";
+import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
+import { ListResolver } from "../../../common/resolver/list-data.resolver";
+import { SharedDataService } from "../../../common/service/shared-data-service";
 
 /**
  * @author Peter Szrnka

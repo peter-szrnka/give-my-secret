@@ -11,9 +11,9 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { ApiKey } from "../../common/model/apikey.model";
+import { ApiKey } from "./model/apikey.model";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { ApiKeyService } from "../../common/service/apikey-service";
+import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { ApiKeyDetailComponent } from "./apikey-detail.component";
 

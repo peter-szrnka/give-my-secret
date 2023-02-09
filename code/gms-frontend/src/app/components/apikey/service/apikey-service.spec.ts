@@ -1,11 +1,11 @@
 import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { environment } from "../../../environments/environment";
+import { environment } from "../../../../environments/environment";
 import { ApiKey } from "../model/apikey.model";
-import { IdNamePair } from "../model/id-name-pair.model";
-import { IdNamePairList } from "../model/id-name-pair-list.model";
-import { IEntitySaveResponseDto } from "../model/entity-save-response.model";
-import { Paging } from "../model/paging.model";
+import { IdNamePair } from "../../../common/model/id-name-pair.model";
+import { IdNamePairList } from "../../../common/model/id-name-pair-list.model";
+import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
+import { Paging } from "../../../common/model/paging.model";
 import { ApiKeyService } from "./apikey-service";
 
 const TEST_API_KEY : ApiKey = {

@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { AnnouncementList } from "../model/annoucement-list.model";
-import { Announcement } from "../model/announcement.model";
 import { AnnouncementService } from "../service/announcement-service";
 import { SharedDataService } from "../service/shared-data-service";
 import { SplashScreenStateService } from "../service/splash-screen-service";
 import { ListResolver } from "./list-data.resolver";
+import { Announcement } from "../model/announcement.model";
+import { AnnouncementList } from "../model/annoucement-list.model";
 
 /**
  * @author Peter Szrnka

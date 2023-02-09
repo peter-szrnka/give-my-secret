@@ -5,8 +5,8 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { ApiKey, EMPTY_API_KEY } from "../model/apikey.model";
 import { ApiKeyService } from "../service/apikey-service";
-import { SharedDataService } from "../service/shared-data-service";
-import { SplashScreenStateService } from "../service/splash-screen-service";
+import { SharedDataService } from "../../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { ApiKeyDetailResolver } from "./apikey-detail.resolver";
 
 /**

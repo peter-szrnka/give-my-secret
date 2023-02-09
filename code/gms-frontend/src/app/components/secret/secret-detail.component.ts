@@ -9,7 +9,7 @@ import { BaseDetailComponent } from "../../common/components/abstractions/base-d
 import { PageConfig } from "../../common/model/common.model";
 import { IdNamePair } from "../../common/model/id-name-pair.model";
 import { PAGE_CONFIG_SECRET, Secret } from "../../common/model/secret.model";
-import { ApiKeyService } from "../../common/service/apikey-service";
+import { ApiKeyService } from "../apikey/service/apikey-service";
 import { KeystoreService } from "../../common/service/keystore-service";
 import { SecretService } from "../../common/service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";

@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
+import { DetailDataResolver } from "../../../common/resolver/save-detail-data.resolver";
+import { SharedDataService } from "../../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { ApiKey, EMPTY_API_KEY } from "../model/apikey.model";
 import { ApiKeyService } from "../service/apikey-service";
-import { SharedDataService } from "../service/shared-data-service";
-import { SplashScreenStateService } from "../service/splash-screen-service";
-import { DetailDataResolver } from "./save-detail-data.resolver";
 
 /**
  * @author Peter Szrnka

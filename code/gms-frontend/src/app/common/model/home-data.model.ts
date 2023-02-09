@@ -1,5 +1,5 @@
 import { Announcement } from "./announcement.model";
-import { Event } from "./event.model";
+import { Event } from "../../components/event/model/event.model";
 
 /**
  * @author Peter Szrnka

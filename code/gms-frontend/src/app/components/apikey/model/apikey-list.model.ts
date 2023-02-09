@@ -1,5 +1,5 @@
+import { BaseList } from "../../../common/model/base-list";
 import { ApiKey } from "./apikey.model";
-import { BaseList } from "./base-list";
 
 /**
  * @author Peter Szrnka

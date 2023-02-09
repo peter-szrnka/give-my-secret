@@ -1,8 +1,8 @@
 import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { environment } from "../../../environments/environment";
+import { environment } from "../../../../environments/environment";
 import { Event } from "../model/event.model";
-import { Paging } from "../model/paging.model";
+import { Paging } from "../../../common/model/paging.model";
 import { EventService } from "./event-service";
 
 const TEST_EVENT : Event = {

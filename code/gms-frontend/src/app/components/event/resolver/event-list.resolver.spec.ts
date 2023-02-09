@@ -2,10 +2,10 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { of } from "rxjs";
+import { SharedDataService } from "../../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { Event } from "../model/event.model";
 import { EventService } from "../service/event-service";
-import { SharedDataService } from "../service/shared-data-service";
-import { SplashScreenStateService } from "../service/splash-screen-service";
 import { EventListResolver } from "./event-list.resolver";
 
 /**

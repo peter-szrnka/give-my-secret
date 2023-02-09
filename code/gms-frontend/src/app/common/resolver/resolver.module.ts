@@ -5,9 +5,6 @@ import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../components/gms-components-module";
 import { AnnouncementDetailResolver } from "./announcement-detail.resolver";
 import { AnnouncementListResolver } from "./announcement-list.resolver";
-import { ApiKeyDetailResolver } from "./apikey-detail.resolver";
-import { ApiKeyListResolver } from "./apikey-list.resolver";
-import { EventListResolver } from "./event-list.resolver";
 import { HomeResolver } from "./home.resolver";
 import { KeystoreDetailResolver } from "./keystore-detail.resolver";
 import { KeystoreListResolver } from "./keystore-list.resolver";
@@ -31,9 +28,6 @@ import { SystemPropertyListResolver } from "./system-property-list.resolver";
       HomeResolver,
       AnnouncementListResolver,
       AnnouncementDetailResolver,
-      ApiKeyListResolver,
-      ApiKeyDetailResolver,
-      EventListResolver,
       KeystoreListResolver,
       KeystoreDetailResolver,
       SecretListResolver,
