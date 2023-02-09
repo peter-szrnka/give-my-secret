@@ -52,7 +52,7 @@ import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.secure.entity.SecretEntity;
-import io.github.gms.secure.model.UsernamePasswordPair;
+import io.github.gms.secure.model.CredentialPair;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
@@ -195,7 +195,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 		// act & assert
 		SaveSecretRequestDto input = TestUtils.createNewSaveSecretRequestDto();
-		input.setType(SecretType.USERNAME_PASSWORD_PAIR);
+		input.setType(SecretType.CREDENTIAL_PAIR);
 		input.setValue("..........invalid");
 		TestUtils.assertGmsException(() -> service.save(input), "Username password pair is invalid!");
 
@@ -219,14 +219,14 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(converter.toNewEntity(any(SaveSecretRequestDto.class))).thenReturn(mockEntity);
 		when(repository.countAllSecretsByUserIdAndSecretId(anyLong(), anyString())).thenReturn(0l);
-		when(gson.fromJson(anyString(), eq(UsernamePasswordPair.class))).thenReturn(new UsernamePasswordPair("x", "y"));
+		when(gson.fromJson(anyString(), eq(CredentialPair.class))).thenReturn(new CredentialPair("x", "y"));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of());
 		when(repository.save(any(SecretEntity.class))).thenReturn(mockEntity);
 
 		// act
 		SaveSecretRequestDto input = TestUtils.createNewSaveSecretRequestDto();
-		input.setType(SecretType.USERNAME_PASSWORD_PAIR);
-		input.setValue("{\"username\":\"test\",\"credential\":\"y\"}");
+		input.setType(SecretType.CREDENTIAL_PAIR);
+		input.setValue("{\"username\":\"test\",\"password\":\"y\"}");
 
 		SaveEntityResponseDto response = service.save(input);
 

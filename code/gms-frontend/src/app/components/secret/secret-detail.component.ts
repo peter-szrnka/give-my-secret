@@ -82,7 +82,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     override dataLoadingCallback(data: Secret): void {
         this.onKeystoreNameChanged(data.keystoreId);
 
-        if (data.type !== 'USERNAME_PASSWORD_PAIR') {
+        if (data.type !== 'CREDENTIAL_PAIR') {
             return;
         }
 
@@ -113,7 +113,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         this.service.getValue(this.data.id).subscribe(value => {
             this.data.value = value;
 
-            if (this.data.type === 'USERNAME_PASSWORD_PAIR') {
+            if (this.data.type === 'CREDENTIAL_PAIR') {
                 this.usernamePasswordPair = JSON.parse(this.data.value);
             }
         });
@@ -139,7 +139,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     }
 
     private transformUsernamePasswordPair() {
-        if (this.data.type !== 'USERNAME_PASSWORD_PAIR') {
+        if (this.data.type !== 'CREDENTIAL_PAIR') {
             return;
         }
 

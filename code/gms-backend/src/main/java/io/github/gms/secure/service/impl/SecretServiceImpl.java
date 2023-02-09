@@ -31,7 +31,7 @@ import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.SecretEntity;
-import io.github.gms.secure.model.UsernamePasswordPair;
+import io.github.gms.secure.model.CredentialPair;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
@@ -203,11 +203,11 @@ public class SecretServiceImpl implements SecretService {
 			throw new GmsException("Secret ID name must be unique!");
 		}
 		
-		if (SecretType.USERNAME_PASSWORD_PAIR != dto.getType()) {
+		if (SecretType.CREDENTIAL_PAIR != dto.getType()) {
 			return;
 		}
 		
-		if(gson.fromJson(dto.getValue(), UsernamePasswordPair.class) == null) {
+		if(gson.fromJson(dto.getValue(), CredentialPair.class) == null) {
 			throw new GmsException("Username password pair is invalid!");
 		}
 	}

@@ -187,7 +187,7 @@ describe('SecretDetailComponent', () => {
                     keystoreAliasId : 1,
                     status : "ACTIVE",
                     value : "{\"username\":\"user\",\"password\":\"pw12345678\"}",
-                    type : 'USERNAME_PASSWORD_PAIR',
+                    type : 'CREDENTIAL_PAIR',
                     creationDate : new Date(),
                     lastUpdated: new Date(),
                     lastRotated: new Date(),
@@ -248,7 +248,7 @@ describe('SecretDetailComponent', () => {
                     keystoreAliasId : 1,
                     status : "ACTIVE",
                     value : "{\"username\":\"user\",\"password\":\"pw12345678\"}",
-                    type : 'USERNAME_PASSWORD_PAIR',
+                    type : 'CREDENTIAL_PAIR',
                     creationDate : new Date(),
                     lastUpdated: new Date(),
                     lastRotated: new Date(),
@@ -268,7 +268,7 @@ describe('SecretDetailComponent', () => {
         expect(component).toBeTruthy();
         expect(component.usernamePasswordPair.username).toEqual('user');
         expect(component.usernamePasswordPair.password).toEqual('pw12345678');
-        expect(component.data.type).toEqual('USERNAME_PASSWORD_PAIR');
+        expect(component.data.type).toEqual('CREDENTIAL_PAIR');
         expect(component.data.value).toEqual("value");
     });
 

@@ -77,7 +77,7 @@ describe('ApiTestingComponent', () => {
         expect(component.apiKey).toEqual('test');
         expect(component.secretId).toEqual('secret1');
         expect(component).toBeTruthy();
-        expect(component.apiResponse).toEqual("my-secret-value");
+        expect(component.apiResponse).toEqual("{\"value\":\"my-secret-value\"}");
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
         expect(secureStorageService.getItem).toHaveBeenCalled();
@@ -96,7 +96,7 @@ describe('ApiTestingComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(component.apiResponse).toEqual("my-secret-value");
+        expect(component.apiResponse).toEqual("{\"value\":\"my-secret-value\"}");
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
         expect(secureStorageService.setItem).toHaveBeenCalled();

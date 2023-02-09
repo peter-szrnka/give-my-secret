@@ -1,8 +1,8 @@
 import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../environments/environment";
-import { ApiResponseDto } from "../model/api-response.model";
 import { ApiTestingService } from "./api-testing-service";
+import { CredentialApiResponse } from "../model/credential-api-response.model";
 
 /**
  * @author Peter Szrnka
@@ -27,7 +27,7 @@ describe("ApiTestingService", () => {
     it('Should return secret value', () => {
         // arrange
         const expectedUrl = environment.baseUrl + "api/secret/secret-id";
-        const mockResponse : ApiResponseDto = { value: "test-value" };
+        const mockResponse : CredentialApiResponse = { value: "test-value" };
 
         //act
         service.getSecretValue("secret-id", "api-key").subscribe((res) => {

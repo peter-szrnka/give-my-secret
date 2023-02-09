@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsernamePasswordPair implements Serializable {
+public class CredentialPair implements Serializable {
 
 	private static final long serialVersionUID = -315870023488483248L;
 	private String username;
-	private String credential;
+	private String password;
 }

@@ -1,7 +1,6 @@
 /**
  * @author Peter Szrnka
  */
-export interface ApiResponseDto {
-
+export interface CredentialApiResponse {
     value : string | undefined;
 }
