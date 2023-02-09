@@ -11,7 +11,7 @@ import { SharedDataService } from "./shared-data-service";
 import { SplashScreenStateService } from "./splash-screen-service";
 import { UserService } from "./user-service";
 import { SecureStorageService } from "./secure-storage.service";
-import { SystemPropertyService } from "./system-property.service";
+import { SystemPropertyService } from "../../components/system_property/service/system-property.service";
 
 /**
  * @author Peter Szrnka

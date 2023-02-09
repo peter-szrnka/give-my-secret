@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { Observable, catchError } from "rxjs";
-import { SharedDataService } from "../service/shared-data-service";
-import { SplashScreenStateService } from "../service/splash-screen-service";
-import { SystemPropertyService } from "../service/system-property.service";
 import { SystemProperty } from "../model/system-property.model";
+import { SharedDataService } from "../../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
+import { SystemPropertyService } from "../service/system-property.service";
 
 /**
  * @author Peter Szrnka

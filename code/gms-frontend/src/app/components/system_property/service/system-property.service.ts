@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environment } from "../../../environments/environment";
+import { environment } from "../../../../environments/environment";
 import { Observable, map, tap } from "rxjs";
 import { SystemProperty } from "../model/system-property.model";
-import { getHeaders } from "../utils/header-utils";
-import { Paging } from "../model/paging.model";
+import { getHeaders } from "../../../common/utils/header-utils";
+import { Paging } from "../../../common/model/paging.model";
 import { SystemPropertyList } from "../model/system-property-list.model";
 
 /**

@@ -12,7 +12,6 @@ import { SecretDetailResolver } from "./secret-detail.resolver";
 import { SecretListResolver } from "./secret-list.resolver";
 import { UserDetailResolver } from "./user-detail.resolver";
 import { UserListResolver } from "./user-list.resolver";
-import { SystemPropertyListResolver } from "./system-property-list.resolver";
 
 /**
  * @author Peter Szrnka
@@ -33,8 +32,7 @@ import { SystemPropertyListResolver } from "./system-property-list.resolver";
       SecretListResolver,
       SecretDetailResolver,
       UserListResolver,
-      UserDetailResolver,
-      SystemPropertyListResolver
+      UserDetailResolver
     ]
   })
 export class ResolverModule {}

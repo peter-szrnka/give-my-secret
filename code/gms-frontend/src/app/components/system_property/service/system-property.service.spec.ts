@@ -1,10 +1,10 @@
 import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { SystemPropertyService } from "./system-property.service";
+import { environment } from "../../../../environments/environment";
+import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
+import { Paging } from "../../../common/model/paging.model";
 import { SystemProperty } from "../model/system-property.model";
-import { environment } from "../../../environments/environment";
-import { IEntitySaveResponseDto } from "../model/entity-save-response.model";
-import { Paging } from "../model/paging.model";
 
 const TEST_SYSTEM_PROPERTY : SystemProperty = {
     key : '',

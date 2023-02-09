@@ -31,7 +31,7 @@ import { KeystoreListResolver } from './common/resolver/keystore-list.resolver';
 import { KeystoreDetailResolver } from './common/resolver/keystore-detail.resolver';
 import { HomeResolver } from './common/resolver/home.resolver';
 import { SystemPropertyListComponent } from './components/system_property/system-property-list.component';
-import { SystemPropertyListResolver } from './common/resolver/system-property-list.resolver';
+import { SystemPropertyListResolver } from './components/system_property/resolver/system-property-list.resolver';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];
