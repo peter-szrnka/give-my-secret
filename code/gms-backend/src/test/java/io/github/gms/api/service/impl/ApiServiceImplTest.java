@@ -27,13 +27,12 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.dto.ApiResponseDto;
-import io.github.gms.secure.dto.SimpleApiResponseDto;
-import io.github.gms.secure.dto.GetSecretRequestDto;
 import io.github.gms.secure.dto.CredentialPairApiResponseDto;
+import io.github.gms.secure.dto.GetSecretRequestDto;
+import io.github.gms.secure.dto.SimpleApiResponseDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.model.CredentialPair;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
@@ -211,7 +210,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		}
 		
 		if (expectedResponseType == CredentialPairApiResponseDto.class) {
-			when(gson.fromJson(anyString(), eq(CredentialPair.class))).thenReturn(new CredentialPair("u", "p"));
+			when(gson.fromJson(anyString(), eq(CredentialPairApiResponseDto.class))).thenReturn(new CredentialPairApiResponseDto("u", "p"));
 		}
 
 		// act
@@ -237,7 +236,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 			{ true, SimpleApiResponseDto.class, SecretType.CREDENTIAL },
 			{ false, SimpleApiResponseDto.class, SecretType.CREDENTIAL },
 			{ true, CredentialPairApiResponseDto.class, SecretType.CREDENTIAL_PAIR },
-			{ false, CredentialPairApiResponseDto.class, SecretType.CREDENTIAL_PAIR }
+			{ false, SimpleApiResponseDto.class, SecretType.CREDENTIAL_PAIR }
 		};
 	}
 	
