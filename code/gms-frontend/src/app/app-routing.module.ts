@@ -22,16 +22,16 @@ import { ApiKeyDetailResolver } from './components/apikey/resolver/apikey-detail
 import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.resolver';
 import { AnnouncementDetailResolver } from './components/announcement/resolver/announcement-detail.resolver';
 import { NgModule, Type } from '@angular/core';
-import { SecretListResolver } from './common/resolver/secret-list.resolver';
-import { SecretDetailResolver } from './common/resolver/secret-detail.resolver';
-import { UserDetailResolver } from './common/resolver/user-detail.resolver';
-import { UserListResolver } from './common/resolver/user-list.resolver';
-import { EventListResolver } from './components/event/resolver/event-list.resolver';
-import { KeystoreListResolver } from './common/resolver/keystore-list.resolver';
-import { KeystoreDetailResolver } from './common/resolver/keystore-detail.resolver';
 import { HomeResolver } from './components/home/resolver/home.resolver';
 import { SystemPropertyListComponent } from './components/system_property/system-property-list.component';
 import { SystemPropertyListResolver } from './components/system_property/resolver/system-property-list.resolver';
+import { EventListResolver } from './components/event/resolver/event-list.resolver';
+import { KeystoreDetailResolver } from './components/keystore/resolver/keystore-detail.resolver';
+import { KeystoreListResolver } from './components/keystore/resolver/keystore-list.resolver';
+import { SecretDetailResolver } from './components/secret/resolver/secret-detail.resolver';
+import { SecretListResolver } from './components/secret/resolver/secret-list.resolver';
+import { UserDetailResolver } from './components/user/resolver/user-detail.resolver';
+import { UserListResolver } from './components/user/resolver/user-list.resolver';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];
