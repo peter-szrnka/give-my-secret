@@ -9,7 +9,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { FORM_GROUP_MOCK } from "../../common/form-helper.spec";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { UserService } from "../../common/service/user-service";
+import { UserService } from "../user/service/user-service";
 import { SettingsSummaryComponent } from "./settings-summary.component";
 
 /**

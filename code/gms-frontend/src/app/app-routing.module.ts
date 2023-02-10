@@ -17,10 +17,10 @@ import { AnnouncementDetailComponent } from './components/announcement/announcem
 import { SettingsSummaryComponent } from './components/settings/settings-summary.component';
 import { MessageListComponent } from './components/messages/message-list.component';
 import { ApiTestingComponent } from './components/api_testing/api-testing.component';
-import { AnnouncementListResolver } from './common/resolver/announcement-list.resolver';
+import { AnnouncementListResolver } from './components/announcement/resolver/announcement-list.resolver';
 import { ApiKeyDetailResolver } from './components/apikey/resolver/apikey-detail.resolver';
 import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.resolver';
-import { AnnouncementDetailResolver } from './common/resolver/announcement-detail.resolver';
+import { AnnouncementDetailResolver } from './components/announcement/resolver/announcement-detail.resolver';
 import { NgModule, Type } from '@angular/core';
 import { SecretListResolver } from './common/resolver/secret-list.resolver';
 import { SecretDetailResolver } from './common/resolver/secret-detail.resolver';
@@ -29,7 +29,7 @@ import { UserListResolver } from './common/resolver/user-list.resolver';
 import { EventListResolver } from './components/event/resolver/event-list.resolver';
 import { KeystoreListResolver } from './common/resolver/keystore-list.resolver';
 import { KeystoreDetailResolver } from './common/resolver/keystore-detail.resolver';
-import { HomeResolver } from './common/resolver/home.resolver';
+import { HomeResolver } from './components/home/resolver/home.resolver';
 import { SystemPropertyListComponent } from './components/system_property/system-property-list.component';
 import { SystemPropertyListResolver } from './components/system_property/resolver/system-property-list.resolver';
 

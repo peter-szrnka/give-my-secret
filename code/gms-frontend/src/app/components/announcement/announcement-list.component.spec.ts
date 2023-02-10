@@ -6,8 +6,8 @@ import { ActivatedRoute, Data } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "../../common/model/user.model";
-import { AnnouncementService } from "../../common/service/announcement-service";
+import { User } from "../user/model/user.model";
+import { AnnouncementService } from "./service/announcement-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { AnnouncementListComponent } from "./announcement-list.component";
 

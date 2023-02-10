@@ -6,10 +6,11 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { SharedDataService } from "../../common/service/shared-data-service";
-import { UserService } from "../../common/service/user-service";
+import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
 import { UserListComponent } from "./user-list.component";
+import { UserListResolver } from "./resolver/user-list.resolver";
+import { UserDetailResolver } from "./resolver/user-detail.resolver";
 
 /**
  * @author Peter Szrnka
@@ -28,7 +29,7 @@ import { UserListComponent } from "./user-list.component";
         PipesModule
     ],
     providers: [ 
-      SharedDataService, UserService
+      UserService, UserListResolver, UserDetailResolver
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })

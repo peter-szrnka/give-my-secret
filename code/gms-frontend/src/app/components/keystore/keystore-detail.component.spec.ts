@@ -12,10 +12,10 @@ import { DialogData } from "../../common/components/info-dialog/dialog-data.mode
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { KeystoreService } from "../../common/service/keystore-service";
+import { KeystoreService } from "./service/keystore-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { KeystoreDetailComponent } from "./keystore-detail.component";
-import { KeystoreAlias } from "../../common/model/keystore-alias.model";
+import { KeystoreAlias } from "./model/keystore-alias.model";
 
 /**
  * @author Peter Szrnka

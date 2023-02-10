@@ -3,8 +3,8 @@ import { Event } from "../model/event.model";
 import { EventList } from "../model/event-list.model";
 import { EventService } from "../service/event-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
-import { ListResolver } from "../../../common/resolver/list-data.resolver";
 import { SharedDataService } from "../../../common/service/shared-data-service";
+import { ListResolver } from "../../../common/components/abstractions/resolver/list-data.resolver";
 
 /**
  * @author Peter Szrnka

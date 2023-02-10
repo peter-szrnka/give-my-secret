@@ -2,12 +2,12 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ApiKey } from "../model/apikey.model";
 import { ApiKeyList } from "../model/apikey-list.model";
-import { SaveServiceBase } from "../../../common/service/save-service-base";
 import { Observable, map } from "rxjs";
 import { IdNamePair } from "../../../common/model/id-name-pair.model";
 import { IdNamePairList } from "../../../common/model/id-name-pair-list.model";
 import { environment } from "../../../../environments/environment";
 import { getHeaders } from "../../../common/utils/header-utils";
+import { SaveServiceBase } from "../../../common/components/abstractions/service/save-service-base";
 
 /**
  * @author Peter Szrnka

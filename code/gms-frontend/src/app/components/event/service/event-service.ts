@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Event } from "../model/event.model";
 import { EventList } from "../model/event-list.model";
-import { ServiceBase } from "../../../common/service/service-base";
+import { ServiceBase } from "../../../common/components/abstractions/service/service-base";
 
 /**
  * @author Peter Szrnka

@@ -10,9 +10,9 @@ import { Observable, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { FORM_GROUP_MOCK } from "../../common/form-helper.spec";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { UserData } from "../../common/model/user-data.model";
+import { UserData } from "./model/user-data.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { UserService } from "../../common/service/user-service";
+import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
 
 /**

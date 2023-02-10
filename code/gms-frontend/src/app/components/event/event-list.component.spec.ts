@@ -7,7 +7,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "../../common/model/user.model";
+import { User } from "../user/model/user.model";
 import { EventService } from "./service/event-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { EventListComponent } from "./event-list.component";

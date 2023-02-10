@@ -9,8 +9,8 @@ import { Observable, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { User } from "../../common/model/user.model";
-import { AnnouncementService } from "../../common/service/announcement-service";
+import { User } from "../user/model/user.model";
+import { AnnouncementService } from "./service/announcement-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 

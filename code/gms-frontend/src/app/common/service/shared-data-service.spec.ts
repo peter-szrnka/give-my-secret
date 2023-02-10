@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { EMPTY, Observable, of, Subject, throwError } from "rxjs";
-import { User } from "../model/user.model";
-import { SetupService } from "./setup-service";
+import { User } from "../../components/user/model/user.model";
+import { SetupService } from "../../components/setup/service/setup-service";
 import { SharedDataService } from "./shared-data-service";
 import { Router } from "@angular/router";
 import { HttpClientTestingModule } from "@angular/common/http/testing";

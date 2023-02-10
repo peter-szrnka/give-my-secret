@@ -3,12 +3,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from "@angular/material/dialog";
-import { UserData, PAGE_CONFIG_USER } from "../../common/model/user-data.model";
-import { UserService } from "../../common/service/user-service";
-import { BaseSaveableDetailComponent } from "../../common/components/abstractions/base-saveable-detail.component";
+import { UserData, PAGE_CONFIG_USER } from "./model/user-data.model";
+import { UserService } from "./service/user-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { PageConfig } from "../../common/model/common.model";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
+import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
 
 const ALL_ROLES: string[] = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 

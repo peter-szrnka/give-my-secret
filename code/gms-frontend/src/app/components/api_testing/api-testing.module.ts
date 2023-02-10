@@ -6,6 +6,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { ApiTestingComponent } from "./api-testing.component";
+import { ApiTestingService } from "./service/api-testing-service";
 
 /**
  * @author Peter Szrnka
@@ -22,6 +23,7 @@ import { ApiTestingComponent } from "./api-testing.component";
         AppRoutingModule,
         GmsComponentsModule
     ],
+    providers: [ApiTestingService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })
   export class ApiTestingModule { }

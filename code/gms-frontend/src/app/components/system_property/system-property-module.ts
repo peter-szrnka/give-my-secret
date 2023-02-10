@@ -6,7 +6,6 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { SharedDataService } from "../../common/service/shared-data-service";
 import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
 import { SystemPropertyListResolver } from "./resolver/system-property-list.resolver";
@@ -29,7 +28,7 @@ import { SystemPropertyListResolver } from "./resolver/system-property-list.reso
         PipesModule
     ],
     providers: [ 
-      SharedDataService, SystemPropertyService, SystemPropertyListResolver
+      SystemPropertyService, SystemPropertyListResolver
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })

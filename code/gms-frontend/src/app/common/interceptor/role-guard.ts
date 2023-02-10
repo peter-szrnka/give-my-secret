@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from "rxjs";
-import { User } from "../model/user.model";
+import { User } from "../../components/user/model/user.model";
 import { SharedDataService } from "../service/shared-data-service";
 
 const checker = (arr : string[], target : string[]) => target.every(v => arr.includes(v));

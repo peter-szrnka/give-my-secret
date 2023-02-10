@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BaseListComponent } from "../../common/components/abstractions/base-list.component";
 import { PageConfig } from "../../common/model/common.model";
-import { UserData, PAGE_CONFIG_USER } from "../../common/model/user-data.model";
+import { UserData, PAGE_CONFIG_USER } from "./model/user-data.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { UserService } from "../../common/service/user-service";
+import { UserService } from "./service/user-service";
+import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
 
 /**
  * @author Peter Szrnka

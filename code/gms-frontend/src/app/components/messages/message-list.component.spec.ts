@@ -5,8 +5,8 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { Message } from "../../common/model/message.model";
-import { MessageService } from "../../common/service/message-service";
+import { Message } from "./model/message.model";
+import { MessageService } from "./service/message-service";
 import { MessageListComponent } from "./message-list.component";
 
 /**

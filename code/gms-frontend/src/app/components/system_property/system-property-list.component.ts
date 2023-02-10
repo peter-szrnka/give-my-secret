@@ -7,7 +7,7 @@ import { SystemPropertyService } from "./service/system-property.service";
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { catchError } from "rxjs";
 import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
-import { User } from "../../common/model/user.model";
+import { User } from "../user/model/user.model";
 import { checkRights } from "../../common/utils/permission-utils";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { getErrorMessage } from "../../common/utils/error-utils";

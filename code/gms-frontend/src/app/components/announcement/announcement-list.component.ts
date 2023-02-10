@@ -1,11 +1,11 @@
 import {  Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BaseListComponent } from "../../common/components/abstractions/base-list.component";
-import { Announcement, PAGE_CONFIG_ANNOUNCEMENT } from "../../common/model/announcement.model";
+import { Announcement, PAGE_CONFIG_ANNOUNCEMENT } from "./model/announcement.model";
 import { PageConfig } from "../../common/model/common.model";
-import { AnnouncementService } from "../../common/service/announcement-service";
+import { AnnouncementService } from "./service/announcement-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
 
 /**
  * @author Peter Szrnka

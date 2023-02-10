@@ -1,13 +1,13 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BaseSaveableDetailComponent } from "../../common/components/abstractions/base-saveable-detail.component";
 import { ButtonConfig } from "../../common/components/nav-back/button-config";
 import { ApiKey, PAGE_CONFIG_API_KEY } from "./model/apikey.model";
 import { PageConfig } from "../../common/model/common.model";
 import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import randomstring from "randomstring";
+import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
 
 /**
  * @author Peter Szrnka

@@ -5,7 +5,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { EMPTY, of, ReplaySubject } from "rxjs";
 import { AppComponent } from "./app.component";
 import { SystemReadyData } from "./common/model/system-ready.model";
-import { User } from "./common/model/user.model";
+import { User } from "./components/user/model/user.model";
 import { SharedDataService } from "./common/service/shared-data-service";
 import { SplashScreenStateService } from "./common/service/splash-screen-service";
 

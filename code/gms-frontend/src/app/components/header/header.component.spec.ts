@@ -4,8 +4,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NavigationEnd, NavigationStart, Router } from "@angular/router";
 import { Observable, of, ReplaySubject } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { User } from "../../common/model/user.model";
-import { MessageService } from "../../common/service/message-service";
+import { User } from "../user/model/user.model";
+import { MessageService } from "../messages/service/message-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { HeaderComponent } from "./header.component";
 

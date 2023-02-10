@@ -7,8 +7,8 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "../../common/model/user.model";
-import { SecretService } from "../../common/service/secret-service";
+import { User } from "../user/model/user.model";
+import { SecretService } from "./service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SecretListComponent } from "./secret-list.component";
 

@@ -1,10 +1,10 @@
 import { Component, Inject } from "@angular/core";
 import { Router } from "@angular/router";
-import { UserData, EMPTY_USER_DATA } from "../../common/model/user-data.model";
-import { SetupService } from "../../common/service/setup-service";
+import { SetupService } from "./service/setup-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { WINDOW_TOKEN } from "../../window.provider";
+import { UserData, EMPTY_USER_DATA } from "../user/model/user-data.model";
 
 /**
  * @author Peter Szrnka

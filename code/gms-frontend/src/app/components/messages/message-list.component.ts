@@ -1,8 +1,8 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
 import { Paging } from "../../common/model/paging.model";
-import { Message } from "../../common/model/message.model";
-import { MessageService } from "../../common/service/message-service";
+import { Message } from "./model/message.model";
+import { MessageService } from "./service/message-service";
 
 const FILTER : Paging = {
     direction: "DESC",

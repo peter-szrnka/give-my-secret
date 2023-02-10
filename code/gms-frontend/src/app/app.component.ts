@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SystemReadyData } from './common/model/system-ready.model';
-import { User } from './common/model/user.model';
+import { User } from './components/user/model/user.model';
 import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
 
