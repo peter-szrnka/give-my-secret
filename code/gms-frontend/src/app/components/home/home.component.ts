@@ -1,8 +1,8 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { HomeData } from "../../common/model/home-data.model";
-import { Event } from "../../common/model/event.model";
+import { HomeData } from "./model/home-data.model";
+import { Event } from "../event/model/event.model";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**

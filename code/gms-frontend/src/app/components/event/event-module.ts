@@ -7,6 +7,8 @@ import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { EventListComponent } from "./event-list.component";
+import { EventService } from "./service/event-service";
+import { EventListResolver } from "./resolver/event-list.resolver";
 
 /**
  * @author Peter Szrnka
@@ -24,7 +26,7 @@ import { EventListComponent } from "./event-list.component";
         GmsComponentsModule,
         PipesModule
     ],
-    providers: [ 
+    providers: [ EventService, EventListResolver
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })

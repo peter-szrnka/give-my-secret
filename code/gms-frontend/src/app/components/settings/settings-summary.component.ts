@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { UserService } from "../../common/service/user-service";
+import { UserService } from "../user/service/user-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 
 export interface PasswordSettings {

@@ -6,7 +6,7 @@ import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { MessageListComponent } from "./message-list.component";
-import { SharedDataService } from "../../common/service/shared-data-service";
+import { MessageService } from "./service/message-service";
 
 /**
  * @author Peter Szrnka
@@ -23,7 +23,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
         GmsComponentsModule,
         PipesModule
     ],
-    providers: [SharedDataService],
+    providers: [MessageService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })
   export class MessageModule { }

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { User } from '../../common/model/user.model';
+import { User } from '../user/model/user.model';
 import { SharedDataService } from '../../common/service/shared-data-service';
-import { MessageService } from '../../common/service/message-service';
+import { MessageService } from '../messages/service/message-service';
 import { environment } from '../../../environments/environment';
 import { filter } from 'rxjs';
 

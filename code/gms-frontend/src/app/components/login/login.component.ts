@@ -5,7 +5,7 @@ import { catchError, Observable, of } from "rxjs";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { Login } from "../../common/model/login.model";
-import { User } from "../../common/model/user.model";
+import { User } from "../user/model/user.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";

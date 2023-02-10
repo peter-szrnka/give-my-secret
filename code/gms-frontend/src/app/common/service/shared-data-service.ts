@@ -3,9 +3,9 @@ import { Router } from "@angular/router";
 import { catchError, Observable, of, ReplaySubject } from "rxjs";
 import { SystemReadyData } from "../model/system-ready.model";
 import { SystemStatusDto } from "../model/system-status.model";
-import { User } from "../model/user.model";
+import { User } from "../../components/user/model/user.model";
 import { AuthService } from "./auth-service";
-import { SetupService } from "./setup-service";
+import { SetupService } from "../../components/setup/service/setup-service";
 
 /**
  * @author Peter Szrnka

@@ -8,8 +8,8 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "../../common/model/user.model";
-import { ApiKeyService } from "../../common/service/apikey-service";
+import { User } from "../user/model/user.model";
+import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { ApiKeyListComponent } from "./apikey-list.component";
 

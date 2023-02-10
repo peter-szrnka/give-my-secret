@@ -2,13 +2,13 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BaseDetailComponent } from "../../common/components/abstractions/base-detail.component";
+import { BaseDetailComponent } from "../../common/components/abstractions/component/base-detail.component";
 import { PageConfig } from "../../common/model/common.model";
-import { Keystore, PAGE_CONFIG_KEYSTORE } from "../../common/model/keystore.model";
-import { KeystoreService } from "../../common/service/keystore-service";
+import { Keystore, PAGE_CONFIG_KEYSTORE } from "./model/keystore.model";
+import { KeystoreService } from "./service/keystore-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
-import { KeystoreAlias } from "../../common/model/keystore-alias.model";
+import { KeystoreAlias } from "./model/keystore-alias.model";
 import { ArrayDataSource } from "@angular/cdk/collections";
 
 /**

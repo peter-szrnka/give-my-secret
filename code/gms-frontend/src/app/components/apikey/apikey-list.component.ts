@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BaseListComponent } from "../../common/components/abstractions/base-list.component";
-import { ApiKey, PAGE_CONFIG_API_KEY } from "../../common/model/apikey.model";
+import { ApiKey, PAGE_CONFIG_API_KEY } from "./model/apikey.model";
 import { PageConfig } from "../../common/model/common.model";
-import { ApiKeyService } from "../../common/service/apikey-service";
+import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
 
 /**
  * @author Peter Szrnka

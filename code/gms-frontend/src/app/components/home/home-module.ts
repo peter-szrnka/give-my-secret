@@ -6,6 +6,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { HomeComponent } from "./home.component";
+import { HomeResolver } from "./resolver/home.resolver";
 
 /**
  * @author Peter Szrnka
@@ -22,6 +23,6 @@ import { HomeComponent } from "./home.component";
         AppRoutingModule,
         PipesModule
     ],
-    providers: []
+    providers: [ HomeResolver ]
   })
   export class HomeModule { }

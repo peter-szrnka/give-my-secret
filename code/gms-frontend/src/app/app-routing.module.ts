@@ -17,21 +17,21 @@ import { AnnouncementDetailComponent } from './components/announcement/announcem
 import { SettingsSummaryComponent } from './components/settings/settings-summary.component';
 import { MessageListComponent } from './components/messages/message-list.component';
 import { ApiTestingComponent } from './components/api_testing/api-testing.component';
-import { AnnouncementListResolver } from './common/resolver/announcement-list.resolver';
-import { ApiKeyDetailResolver } from './common/resolver/apikey-detail.resolver';
-import { ApiKeyListResolver } from './common/resolver/apikey-list.resolver';
-import { AnnouncementDetailResolver } from './common/resolver/announcement-detail.resolver';
+import { AnnouncementListResolver } from './components/announcement/resolver/announcement-list.resolver';
+import { ApiKeyDetailResolver } from './components/apikey/resolver/apikey-detail.resolver';
+import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.resolver';
+import { AnnouncementDetailResolver } from './components/announcement/resolver/announcement-detail.resolver';
 import { NgModule, Type } from '@angular/core';
 import { SecretListResolver } from './common/resolver/secret-list.resolver';
 import { SecretDetailResolver } from './common/resolver/secret-detail.resolver';
 import { UserDetailResolver } from './common/resolver/user-detail.resolver';
 import { UserListResolver } from './common/resolver/user-list.resolver';
-import { EventListResolver } from './common/resolver/event-list.resolver';
+import { EventListResolver } from './components/event/resolver/event-list.resolver';
 import { KeystoreListResolver } from './common/resolver/keystore-list.resolver';
 import { KeystoreDetailResolver } from './common/resolver/keystore-detail.resolver';
-import { HomeResolver } from './common/resolver/home.resolver';
+import { HomeResolver } from './components/home/resolver/home.resolver';
 import { SystemPropertyListComponent } from './components/system_property/system-property-list.component';
-import { SystemPropertyListResolver } from './common/resolver/system-property-list.resolver';
+import { SystemPropertyListResolver } from './components/system_property/resolver/system-property-list.resolver';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];

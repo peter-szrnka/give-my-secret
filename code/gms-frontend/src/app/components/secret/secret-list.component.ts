@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BaseListComponent } from "../../common/components/abstractions/base-list.component";
 import { PageConfig } from "../../common/model/common.model";
-import { PAGE_CONFIG_SECRET, Secret } from "../../common/model/secret.model";
-import { SecretService } from "../../common/service/secret-service";
+import { PAGE_CONFIG_SECRET, Secret } from "./model/secret.model";
+import { SecretService } from "./service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
 
 /**
  * @author Peter Szrnka

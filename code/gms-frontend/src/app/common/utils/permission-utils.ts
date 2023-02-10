@@ -1,4 +1,4 @@
-import { User } from "../model/user.model";
+import { User } from "../../components/user/model/user.model";
 
 /**
  * @author Peter Szrnka

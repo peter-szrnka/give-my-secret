@@ -1,13 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
-import { ApiTestingService } from "../../common/service/api-testing-service";
+import { ApiTestingService } from "./service/api-testing-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
-import { CredentialPairApiResponse } from "../../common/model/credential-pair-api-response.model";
-import { CredentialApiResponse } from "../../common/model/credential-api-response.model";
-
+import { CredentialPairApiResponse } from "../secret/model/credential-pair-api-response.model";
+import { CredentialApiResponse } from "../secret/model/credential-api-response.model";
 /**
  * @author Peter Szrnka
  */

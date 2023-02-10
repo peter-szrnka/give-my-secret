@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BaseListComponent } from "../../common/components/abstractions/base-list.component";
 import { PageConfig } from "../../common/model/common.model";
-import { Keystore, PAGE_CONFIG_KEYSTORE } from "../../common/model/keystore.model";
-import { KeystoreService } from "../../common/service/keystore-service";
+import { Keystore, PAGE_CONFIG_KEYSTORE } from "./model/keystore.model";
+import { KeystoreService } from "./service/keystore-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
 
 /**
  * @author Peter Szrnka

@@ -5,7 +5,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { SetupService } from "../../common/service/setup-service";
+import { SetupService } from "./service/setup-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { SetupComponent } from "./setup.component";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";

@@ -12,9 +12,9 @@ import { InfoDialog } from "../../common/components/info-dialog/info-dialog.comp
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { IdNamePair } from "../../common/model/id-name-pair.model";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { ApiKeyService } from "../../common/service/apikey-service";
-import { KeystoreService } from "../../common/service/keystore-service";
-import { SecretService } from "../../common/service/secret-service";
+import { ApiKeyService } from "../apikey/service/apikey-service";
+import { KeystoreService } from "../keystore/service/keystore-service";
+import { SecretService } from "./service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SecretDetailComponent } from "./secret-detail.component";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";

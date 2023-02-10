@@ -6,9 +6,11 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { AnnouncementService } from "../../common/service/announcement-service";
+import { AnnouncementService } from "./service/announcement-service";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 import { AnnouncementListComponent } from "./announcement-list.component";
+import { AnnouncementDetailResolver } from "./resolver/announcement-detail.resolver";
+import { AnnouncementListResolver } from "./resolver/announcement-list.resolver";
 
 /**
  * @author Peter Szrnka
@@ -27,7 +29,7 @@ import { AnnouncementListComponent } from "./announcement-list.component";
         PipesModule
     ],
     providers: [ 
-      AnnouncementService
+      AnnouncementService, AnnouncementListResolver, AnnouncementDetailResolver
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })

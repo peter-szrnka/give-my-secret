@@ -5,13 +5,13 @@ import { MatChipInputEvent } from "@angular/material/chips";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs";
-import { BaseDetailComponent } from "../../common/components/abstractions/base-detail.component";
+import { BaseDetailComponent } from "../../common/components/abstractions/component/base-detail.component";
 import { PageConfig } from "../../common/model/common.model";
 import { IdNamePair } from "../../common/model/id-name-pair.model";
-import { PAGE_CONFIG_SECRET, Secret } from "../../common/model/secret.model";
-import { ApiKeyService } from "../../common/service/apikey-service";
-import { KeystoreService } from "../../common/service/keystore-service";
-import { SecretService } from "../../common/service/secret-service";
+import { PAGE_CONFIG_SECRET, Secret } from "./model/secret.model";
+import { ApiKeyService } from "../apikey/service/apikey-service";
+import { KeystoreService } from "../keystore/service/keystore-service";
+import { SecretService } from "./service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 

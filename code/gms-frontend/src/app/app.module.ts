@@ -24,7 +24,6 @@ import { SettingsModule } from './components/settings/settings-module';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { MessageModule } from './components/messages/message-module';
 import { ApiTestingModule } from './components/api_testing/api-testing.module';
-import { ResolverModule } from './common/resolver/resolver.module';
 import { SetupModule } from './components/setup/setup-module';
 import { LoginModule } from './components/login/login-module';
 import { HomeModule } from './components/home/home-module';
@@ -60,7 +59,6 @@ import { SystemPropertyModule } from './components/system_property/system-proper
     SetupModule,
     LoginModule,
     HeaderModule,
-    ResolverModule,
     ServiceModule,
     KeystoreModule,
     ApiKeyModule,

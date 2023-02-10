@@ -9,7 +9,7 @@ import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
-import { ApiTestingService } from "../../common/service/api-testing-service";
+import { ApiTestingService } from "./service/api-testing-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { ApiTestingComponent } from "./api-testing.component";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
