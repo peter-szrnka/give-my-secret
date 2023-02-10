@@ -20,7 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
@@ -41,6 +41,7 @@ import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.util.TestUtils;
+import lombok.SneakyThrows;
 
 /**
  * Unit test of {@link ApiServiceImpl}
@@ -53,7 +54,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 	private static GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
 	
 	@Mock
-	private Gson gson;
+	private ObjectMapper objectMapper;
 
 	@Mock
 	private CryptoService cryptoService;
@@ -180,6 +181,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
 	}
 	
+	@SneakyThrows
 	@ParameterizedTest
 	@MethodSource("inputData")
 	@SuppressWarnings("unchecked")
@@ -210,7 +212,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		}
 		
 		if (expectedResponseType == CredentialPairApiResponseDto.class) {
-			when(gson.fromJson(anyString(), eq(CredentialPairApiResponseDto.class))).thenReturn(new CredentialPairApiResponseDto("u", "p"));
+			when(objectMapper.readValue(anyString(), eq(CredentialPairApiResponseDto.class))).thenReturn(new CredentialPairApiResponseDto("u", "p"));
 		}
 
 		// act

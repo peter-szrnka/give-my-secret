@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.slf4j.MDC;
 import org.springframework.security.core.AuthenticationException;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.dto.ErrorResponseDto;
@@ -35,7 +35,7 @@ import lombok.SneakyThrows;
 class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 
 	@Mock
-	private Gson gson;
+	private ObjectMapper objectMapper;
 	@InjectMocks
 	private GmsAuthenticationEntryPoint entryPoint;
 	
@@ -53,7 +53,7 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		AuthenticationException exception = mock(AuthenticationException.class);
 		PrintWriter mockWriter = mock(PrintWriter.class);
 		when(httpServletResponse.getWriter()).thenReturn(mockWriter);
-		when(gson.toJson(any(ErrorResponseDto.class))).thenReturn("{}");
+		when(objectMapper.writeValueAsString(any(ErrorResponseDto.class))).thenReturn("{}");
 
 		// act
 		entryPoint.commence(httpServletRequest, httpServletResponse, exception);
@@ -61,6 +61,6 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		// assert
 		assertNull(MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
 		verify(mockWriter).write(anyString());
-		verify(gson).toJson(any(ErrorResponseDto.class));
+		verify(objectMapper).writeValueAsString(any(ErrorResponseDto.class));
 	}
 }

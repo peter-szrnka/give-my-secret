@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -26,12 +25,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -85,8 +81,15 @@ public class TestUtils {
 	public static final String NEW_CREDENTIAL = "MyComplexPassword1!";
 	private static final String EMAIL = "email@email.com";
 	private static final String USERNAME = "username";
+
+	public static ObjectMapper objectMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		
+		return mapper;
+	}
 	
-	public static Gson getGson() {
+	/*public static Gson getGson() {
 		return new GsonBuilder()
 				.serializeNulls()
 				.enableComplexMapKeySerialization()
@@ -96,7 +99,7 @@ public class TestUtils {
 				.registerTypeAdapter(ZonedDateTime.class,
 						(JsonSerializer<ZonedDateTime>) (ZonedDateTime, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(ZonedDateTime)))
 				.create();
-	}
+	}*/
 
 	public static HttpHeaders getApiHttpHeaders(String apiKey) {
 		HttpHeaders headers = new HttpHeaders();

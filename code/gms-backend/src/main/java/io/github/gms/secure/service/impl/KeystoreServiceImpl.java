@@ -24,7 +24,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
@@ -73,7 +73,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private KeystoreConverter converter;
 	
 	@Autowired
-	private Gson gson;
+	private ObjectMapper objectMapper;
 	
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
@@ -87,7 +87,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		
 		SaveKeystoreRequestDto dto;
 		try {
-			dto = gson.fromJson(model, SaveKeystoreRequestDto.class);
+			dto = objectMapper.readValue(model, SaveKeystoreRequestDto.class);
 		} catch (Exception e) {
 			throw new GmsException(e);
 		}

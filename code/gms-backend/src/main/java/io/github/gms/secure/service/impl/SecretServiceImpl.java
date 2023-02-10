@@ -14,7 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
@@ -51,7 +51,7 @@ public class SecretServiceImpl implements SecretService {
 	static final String WRONG_KEYSTORE_ALIAS = "Wrong keystore alias!";
 	
 	@Autowired
-	private Gson gson;
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	private CryptoService cryptoService;
@@ -207,7 +207,9 @@ public class SecretServiceImpl implements SecretService {
 			return;
 		}
 		
-		if(gson.fromJson(dto.getValue(), CredentialPair.class) == null) {
+		try {
+			objectMapper.readValue(dto.getValue(), CredentialPair.class);
+		} catch (Exception e) {
 			throw new GmsException("Username password pair is invalid!");
 		}
 	}

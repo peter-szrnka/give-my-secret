@@ -30,8 +30,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
-import com.google.gson.Gson;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.enums.EntityStatus;
@@ -62,7 +62,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	private SecureHeaderInitializerFilter secureHeaderInitializerFilter;
 	
 	@Autowired
-	private Gson gson;
+	private ObjectMapper objectMapper;
 	
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -84,7 +84,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	      jksFileStream.readAllBytes()
 	    );
 	    
-	    String saveRequestJson = gson.toJson(TestUtils.createSaveKeystoreRequestDto());
+	    String saveRequestJson = objectMapper.writeValueAsString(TestUtils.createSaveKeystoreRequestDto());
 	 
 	    MockMultipartHttpServletRequestBuilder multipartRequest =
 	      MockMvcRequestBuilders.multipart("/secure/keystore")

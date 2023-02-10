@@ -16,7 +16,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
@@ -31,7 +31,7 @@ import io.github.gms.common.enums.MdcParameter;
 public class GmsAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
 	@Autowired
-	private Gson gson;
+	private ObjectMapper objectMapper;
 	@Autowired
 	private Clock clock;
 
@@ -44,7 +44,7 @@ public class GmsAuthenticationEntryPoint implements AuthenticationEntryPoint {
     	
         httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
     	httpServletResponse.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
-        httpServletResponse.getWriter().write(gson.toJson(dto));
+        httpServletResponse.getWriter().write(objectMapper.writeValueAsString(dto));
         
         MDC.remove(MdcParameter.CORRELATION_ID.getDisplayName());
     }
