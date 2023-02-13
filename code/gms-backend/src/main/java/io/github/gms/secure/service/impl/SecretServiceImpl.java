@@ -206,10 +206,16 @@ public class SecretServiceImpl implements SecretService {
 		if (SecretType.CREDENTIAL_PAIR != dto.getType()) {
 			return;
 		}
-		
+
+		CredentialPair credentialPair;
+
 		try {
-			objectMapper.readValue(dto.getValue(), CredentialPair.class);
+			credentialPair = objectMapper.readValue(dto.getValue(), CredentialPair.class);
 		} catch (Exception e) {
+			throw new GmsException("Username password pair is invalid!");
+		}
+		
+		if (credentialPair == null) {
 			throw new GmsException("Username password pair is invalid!");
 		}
 	}
