@@ -51,24 +51,6 @@ public class ApplicationConfig implements WebMvcConfigurer {
 		
 		return mapper;
 	}
-	
-	/*@Bean
-	Gson getGson() {
-		return new GsonBuilder()
-				.serializeNulls()
-				.enableComplexMapKeySerialization()
-				.setLenient()
-				.registerTypeAdapter(LocalDateTime.class,
-						(JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-				.registerTypeAdapter(LocalDateTime.class,
-						(JsonSerializer<LocalDateTime>) (json, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(json)))
-				
-				.registerTypeAdapter(ZonedDateTime.class,
-						(JsonDeserializer<ZonedDateTime>) (json, typeOfT, context) -> ZonedDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-				.registerTypeAdapter(ZonedDateTime.class,
-						(JsonSerializer<ZonedDateTime>) (json, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(json)))
-				.create();
-	}*/
 
 	@Bean
 	RestTemplate restTemplate() {

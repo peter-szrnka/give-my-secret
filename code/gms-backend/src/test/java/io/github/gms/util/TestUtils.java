@@ -88,18 +88,6 @@ public class TestUtils {
 		
 		return mapper;
 	}
-	
-	/*public static Gson getGson() {
-		return new GsonBuilder()
-				.serializeNulls()
-				.enableComplexMapKeySerialization()
-				.setLenient()
-				.registerTypeAdapter(ZonedDateTime.class,
-						(JsonDeserializer<ZonedDateTime>) (json, typeOfT, context) -> ZonedDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-				.registerTypeAdapter(ZonedDateTime.class,
-						(JsonSerializer<ZonedDateTime>) (ZonedDateTime, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(ZonedDateTime)))
-				.create();
-	}*/
 
 	public static HttpHeaders getApiHttpHeaders(String apiKey) {
 		HttpHeaders headers = new HttpHeaders();
