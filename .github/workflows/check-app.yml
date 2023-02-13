@@ -1,19 +1,14 @@
 name: Code quality check of application
 
 on:
-  workflow_dispatch:
   push:
     branches: 
       - '*'
       - '*/*'
       - '**'
       - '!main'
-    paths:
-      - './code/**'
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - './code/**'
 jobs:
   analize_backend:
     name: Backend
