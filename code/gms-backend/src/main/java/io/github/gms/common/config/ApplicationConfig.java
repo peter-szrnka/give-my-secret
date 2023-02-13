@@ -2,9 +2,6 @@ package io.github.gms.common.config;
 
 import java.io.IOException;
 import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
@@ -24,11 +21,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  * @author Peter Szrnka
@@ -51,21 +45,11 @@ public class ApplicationConfig implements WebMvcConfigurer {
     }
 	
 	@Bean
-	Gson getGson() {
-		return new GsonBuilder()
-				.serializeNulls()
-				.enableComplexMapKeySerialization()
-				.setLenient()
-				.registerTypeAdapter(LocalDateTime.class,
-						(JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-				.registerTypeAdapter(LocalDateTime.class,
-						(JsonSerializer<LocalDateTime>) (json, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(json)))
-				
-				.registerTypeAdapter(ZonedDateTime.class,
-						(JsonDeserializer<ZonedDateTime>) (json, typeOfT, context) -> ZonedDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-				.registerTypeAdapter(ZonedDateTime.class,
-						(JsonSerializer<ZonedDateTime>) (json, typeOfT, context) -> new JsonPrimitive(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(json)))
-				.create();
+	ObjectMapper objectMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		
+		return mapper;
 	}
 
 	@Bean

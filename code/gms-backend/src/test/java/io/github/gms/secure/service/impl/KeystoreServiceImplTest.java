@@ -48,7 +48,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
@@ -109,7 +109,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	private UserRepository userRepository;
 	
 	@Mock
-	private Gson gson = TestUtils.getGson();
+	private ObjectMapper objectMapper = TestUtils.objectMapper();
 	
 	@Mock
 	private ApplicationEventPublisher applicationEventPublisher;
@@ -144,11 +144,11 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
 		dtoInput.setId(1L);
-		String model = TestUtils.getGson().toJson(dtoInput);
+		String model = TestUtils.objectMapper().writeValueAsString(dtoInput);
 
 		MultipartFile multiPart = mock(MultipartFile.class);
 		when(multiPart.getBytes()).thenReturn("test".getBytes());
-		when(gson.fromJson(eq(model), any(Class.class))).thenReturn(dtoInput);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		doThrow(new RuntimeException("Test failure")).when(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 
@@ -159,7 +159,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("java.lang.RuntimeException: Test failure", exception.getMessage());
 		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 		verify(repository, never()).save(any());
-		verify(gson).fromJson(eq(model), any(Class.class));
+		verify(objectMapper).readValue(eq(model), any(Class.class));
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 		TestUtils.assertLogContains(logAppender, "Keystore validation failed");
 	}
@@ -172,7 +172,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		String model = "{invalidJson}";
 		MultipartFile multiPart = mock(MultipartFile.class);
 
-		when(gson.fromJson(eq(model), any(Class.class))).thenThrow(new RuntimeException("Error!"));
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenThrow(new RuntimeException("Error!"));
 
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
@@ -181,7 +181,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("java.lang.RuntimeException: Error!", exception.getMessage());
 		verify(converter, never()).toNewEntity(any(), eq(multiPart));
 		verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
-		verify(gson).fromJson(eq(model), any(Class.class));
+		verify(objectMapper).readValue(eq(model), any(Class.class));
 	}
 	
 	@Test
@@ -191,8 +191,8 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		dto.setId(null);
-		String model = TestUtils.getGson().toJson(dto);
-		when(gson.fromJson(eq(model), any(Class.class))).thenReturn(dto);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, null));
@@ -201,7 +201,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("Keystore file must be provided!", exception.getMessage());
 		verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 		verify(repository, never()).save(any());
-		verify(gson).fromJson(eq(model), any(Class.class));
+		verify(objectMapper).readValue(eq(model), any(Class.class));
 	}
 	
 	@Test
@@ -211,10 +211,10 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		dto.setId(null);
-		String model = TestUtils.getGson().toJson(dto);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
-		when(gson.fromJson(eq(model), any(Class.class))).thenReturn(dto);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 		when(repository.countAllKeystoresByName(anyLong(), anyString())).thenReturn(1l);
 
 		// act
@@ -226,7 +226,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 		verify(repository).countAllKeystoresByName(anyLong(), anyString());
 		verify(repository, never()).save(any());
-		verify(gson).fromJson(eq(model), any(Class.class));
+		verify(objectMapper).readValue(eq(model), any(Class.class));
 	}
 
 	@Test
@@ -240,7 +240,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 			SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 			dto.setId(null);
 			dto.setUserId(6L);
-			String model = TestUtils.getGson().toJson(dto);
+			String model = TestUtils.objectMapper().writeValueAsString(dto);
 			
 			MultipartFile multiPart = mock(MultipartFile.class);
 			when(multiPart.getOriginalFilename()).thenReturn("my-key2.jks");
@@ -248,7 +248,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	
 			when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
 			when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
-			when(gson.fromJson(eq(model), any(Class.class))).thenReturn(dto);
+			when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
 			// act
 			GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
@@ -258,7 +258,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 			verify(converter).toNewEntity(any(), eq(multiPart));
 			verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 			verify(repository).save(any());
-			verify(gson).fromJson(eq(model), any(Class.class));
+			verify(objectMapper).readValue(eq(model), any(Class.class));
 		}
 	}
 	
@@ -269,7 +269,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		dto.setId(null);
-		String model = TestUtils.getGson().toJson(dto);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
 
@@ -277,7 +277,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		when(multiPart.getBytes()).thenReturn("test".getBytes());
 		when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
 		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
-		when(gson.fromJson(eq(model), any(Class.class))).thenReturn(dto);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
@@ -287,7 +287,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(converter).toNewEntity(any(), eq(multiPart));
 		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 		verify(repository).save(any());
-		verify(gson).fromJson(eq(model), any(Class.class));
+		verify(objectMapper).readValue(eq(model), any(Class.class));
 	}
 	
 	@Test
@@ -297,7 +297,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		dto.setId(null);
-		String model = TestUtils.getGson().toJson(dto);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
 
@@ -305,7 +305,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		when(multiPart.getBytes()).thenReturn("test".getBytes());
 		when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
 		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
-		when(gson.fromJson(eq(model), any(Class.class))).thenReturn(dto);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
 		// act
 		service.save(model, multiPart);
@@ -314,19 +314,20 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(converter).toNewEntity(any(), eq(multiPart));
 		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 		verify(repository).save(any());
-		verify(gson).fromJson(eq(model), any(Class.class));
+		verify(objectMapper).readValue(eq(model), any(Class.class));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	@SneakyThrows
 	void shouldSaveEntityWithoutFile() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-		String model = TestUtils.getGson().toJson(dto);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
 
 		when(converter.toEntity(any(), any(), isNull())).thenReturn(TestUtils.createKeystoreEntity());
 		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
-		when(gson.fromJson(eq(model), any())).thenReturn(dto);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		
 		new File("test-output/" + DemoData.USER_1_ID + "/").mkdirs();
@@ -343,12 +344,13 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(converter).toEntity(any(), any(), isNull());
 		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 		verify(repository).save(any());
-		verify(gson).fromJson(eq(model), any());
+		verify(objectMapper).readValue(eq(model), any(Class.class));
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 		
 		Files.deleteIfExists(Paths.get(JKS_TEST_FILE_LOCATION));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	@SneakyThrows
 	void shouldNotSaveEntityCausedByMissingAlias() {
@@ -356,19 +358,20 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		dto.setAliases(List.of());
 		dto.setId(1L);
-		String model = TestUtils.getGson().toJson(dto);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
-		when(gson.fromJson(eq(model), any())).thenReturn(dto);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
 		// assert
 		assertEquals("You must define at least one keystore alias!", exception.getMessage());
-		verify(gson).fromJson(eq(model), any());
+		verify(objectMapper).readValue(eq(model), any(Class.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	@SneakyThrows
 	void shouldSaveEntity() {
@@ -377,7 +380,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", "test", AliasOperation.DELETE));
 		dto.setStatus(EntityStatus.DISABLED);
 		dto.setId(1L);
-		String model = TestUtils.getGson().toJson(dto);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
 		when(multiPart.getOriginalFilename()).thenReturn("my-key.jks");
@@ -385,7 +388,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
 		when(converter.toEntity(any(), any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
 		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
-		when(gson.fromJson(eq(model), any())).thenReturn(dto);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		
 		KeystoreEntity savedEntity = TestUtils.createKeystoreEntity();
@@ -399,7 +402,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(converter).toEntity(any(), any(), eq(multiPart));
 		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 		verify(repository).save(any());
-		verify(gson).fromJson(eq(model), any());
+		verify(objectMapper).readValue(eq(model), any(Class.class));
 		
 		ArgumentCaptor<EntityChangeEvent> entityDisabledEventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
 		verify(applicationEventPublisher, times(2)).publishEvent(entityDisabledEventCaptor.capture());
@@ -410,17 +413,18 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(EntityChangeType.KEYSTORE_DISABLED, capturedEvent.getType());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	@SneakyThrows
 	void shouldNotSaveEntity() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		dto.setId(1L);
-		String model = TestUtils.getGson().toJson(dto);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
 
-		when(gson.fromJson(eq(model), any())).thenReturn(dto);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
 		// act

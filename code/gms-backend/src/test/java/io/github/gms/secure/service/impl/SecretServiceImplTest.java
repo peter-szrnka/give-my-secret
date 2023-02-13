@@ -32,8 +32,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
@@ -60,6 +60,7 @@ import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.util.TestUtils;
+import lombok.SneakyThrows;
 
 /**
  * Unit test of {@link SecretServiceImpl}
@@ -70,7 +71,7 @@ import io.github.gms.util.TestUtils;
 class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Mock
-	private Gson gson;
+	private ObjectMapper objectMapper;
 
 	@Mock
 	private CryptoService cryptoService;
@@ -209,6 +210,35 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
+	@SneakyThrows
+	void shouldNotSaveNewEntityWhenUsernamePasswordPairisInvalid2() {
+		// arrange
+		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
+		mockedMdcUtils.when(() -> MdcUtils.getUserId()).thenReturn(1L);
+		SecretEntity mockEntity = TestUtils.createSecretEntity();
+		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
+				.thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
+		when(repository.countAllSecretsByUserIdAndSecretId(anyLong(), anyString())).thenReturn(0l);
+		when(objectMapper.readValue(anyString(), any(Class.class))).thenThrow(new RuntimeException("JSON cannot be parsed!"));
+
+		// act & assert
+		SaveSecretRequestDto input = TestUtils.createNewSaveSecretRequestDto();
+		input.setType(SecretType.CREDENTIAL_PAIR);
+		input.setValue("..........invalid");
+		TestUtils.assertGmsException(() -> service.save(input), "Username password pair is invalid!");
+
+		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
+		verify(converter, never()).toNewEntity(any(SaveSecretRequestDto.class));
+		verify(cryptoService, never()).encrypt(mockEntity);
+		verify(keystoreAliasRepository).findById(anyLong());
+		verify(repository, never()).save(any(SecretEntity.class));
+		
+		mockedMdcUtils.close();
+	}
+	
+	@Test
+	@SneakyThrows
 	void shouldSaveNewEntityWhenUsernamePasswordPairIsValid() {
 		// arrange
 		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
@@ -219,7 +249,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(converter.toNewEntity(any(SaveSecretRequestDto.class))).thenReturn(mockEntity);
 		when(repository.countAllSecretsByUserIdAndSecretId(anyLong(), anyString())).thenReturn(0l);
-		when(gson.fromJson(anyString(), eq(CredentialPair.class))).thenReturn(new CredentialPair("x", "y"));
+		when(objectMapper.readValue(anyString(), eq(CredentialPair.class))).thenReturn(new CredentialPair("x", "y"));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of());
 		when(repository.save(any(SecretEntity.class))).thenReturn(mockEntity);
 
