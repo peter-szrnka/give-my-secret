@@ -16,7 +16,6 @@ import com.google.common.collect.Lists;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
@@ -37,7 +36,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 	private Clock clock;
 
 	@InjectMocks
-	private UserConverter converter;
+	private UserConverterImpl converter;
 
 	@Test
 	void checkToEntityWithRoleChange() {
