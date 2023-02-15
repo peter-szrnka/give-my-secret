@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.gms.api.service.ApiService;
@@ -26,7 +27,6 @@ import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.CryptoService;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -107,7 +107,6 @@ public class ApiServiceImpl implements ApiService {
 		return getSecretValue(secretEntity);
 	}
 
-	@SneakyThrows
 	private ApiResponseDto getSecretValue(SecretEntity entity) {
 		String value = (entity.isReturnDecrypted()) ? cryptoService.decrypt(entity) : entity.getValue();
 		
@@ -115,6 +114,10 @@ public class ApiServiceImpl implements ApiService {
 			return new SimpleApiResponseDto(value);
 		}
 
-		return entity.isReturnDecrypted() ? objectMapper.readValue(value, CredentialPairApiResponseDto.class) : new SimpleApiResponseDto(value);
+		try {
+			return entity.isReturnDecrypted() ? objectMapper.readValue(value, CredentialPairApiResponseDto.class) : new SimpleApiResponseDto(value);
+		} catch (JsonProcessingException e) {
+			throw new GmsException(e);
+		}
 	}
 }

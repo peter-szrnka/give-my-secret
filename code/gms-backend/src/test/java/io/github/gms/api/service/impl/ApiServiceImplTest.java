@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.gms.abstraction.AbstractUnitTest;
@@ -50,36 +51,36 @@ import lombok.SneakyThrows;
  * @since 1.0
  */
 class ApiServiceImplTest extends AbstractUnitTest {
-	
+
 	private static GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
-	
+
 	@Mock
 	private ObjectMapper objectMapper;
 
 	@Mock
 	private CryptoService cryptoService;
-	
+
 	@Mock
 	private SecretRepository secretRepository;
-	
+
 	@Mock
 	private ApiKeyRepository apiKeyRepository;
-	
+
 	@Mock
 	private UserRepository userRepository;
-	
+
 	@Mock
 	private KeystoreRepository keystoreRepository;
-	
+
 	@Mock
 	private KeystoreAliasRepository keystoreAliasRepository;
-	
+
 	@Mock
 	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
-	
+
 	@InjectMocks
 	private ApiServiceImpl service;
-	
+
 	@Test
 	void shouldApiKeyMissing() {
 		// arrange
@@ -92,7 +93,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository, never()).findById(anyLong());
 	}
-	
+
 	@Test
 	void shouldUserMissing() {
 		// arrange
@@ -105,7 +106,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository).findById(anyLong());
 	}
-	
+
 	@Test
 	void shouldSecretMissing() {
 		// arrange
@@ -121,7 +122,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(userRepository).findById(anyLong());
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
 	}
-	
+
 	@Test
 	void shouldKeystoreAliasMissing() {
 		// arrange
@@ -139,7 +140,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
 		verify(keystoreAliasRepository).findById(anyLong());
 	}
-	
+
 	@Test
 	void shouldKeystoreMissing() {
 		// arrange
@@ -159,7 +160,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(keystoreAliasRepository).findById(anyLong());
 		verify(keystoreRepository).findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE));
 	}
-	
+
 	@Test
 	void shouldFailBecauseOfApiKeyRestriction() {
 		// arrange
@@ -180,7 +181,32 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
 		verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
 	}
-	
+
+	@Test
+	@SneakyThrows
+	void shouldFailWhenCredentilPairIsInvalid() {
+		// arrange
+		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+				
+		String mockValue = "{\"username\":\"u\",\"password\":\"p\"}";
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(mockValue, true, SecretType.CREDENTIAL_PAIR));
+		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
+		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
+				TestUtils.createApiKeyRestrictionEntity(1L),
+				TestUtils.createApiKeyRestrictionEntity(2L),
+				TestUtils.createApiKeyRestrictionEntity(3L)
+				));
+				
+		when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn("{\"username\":\"u\",\"password\":\"p\"}");
+		when(objectMapper.readValue(anyString(), eq(CredentialPairApiResponseDto.class))).thenThrow(JsonProcessingException.class);
+
+		// act & assert
+		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
+		assertEquals("com.fasterxml.jackson.core.JsonProcessingException: N/A", exception.getMessage());
+	}
+
 	@SneakyThrows
 	@ParameterizedTest
 	@MethodSource("inputData")
@@ -232,16 +258,14 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(keystoreAliasRepository).findById(anyLong());
 		verify(keystoreRepository).findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE));
 	}
-	
+
 	public static Object[][] inputData() {
-		return new Object[][] {
-			{ true, SimpleApiResponseDto.class, SecretType.CREDENTIAL },
-			{ false, SimpleApiResponseDto.class, SecretType.CREDENTIAL },
-			{ true, CredentialPairApiResponseDto.class, SecretType.CREDENTIAL_PAIR },
-			{ false, SimpleApiResponseDto.class, SecretType.CREDENTIAL_PAIR }
-		};
+		return new Object[][] { { true, SimpleApiResponseDto.class, SecretType.CREDENTIAL },
+				{ false, SimpleApiResponseDto.class, SecretType.CREDENTIAL },
+				{ true, CredentialPairApiResponseDto.class, SecretType.CREDENTIAL_PAIR },
+				{ false, SimpleApiResponseDto.class, SecretType.CREDENTIAL_PAIR } };
 	}
-	
+
 	private static SecretEntity createMockSecret(String value, boolean returnDecrypted, SecretType type) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(1L);
@@ -264,7 +288,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		mockApiKey.setId(1L);
 		mockApiKey.setUserId(1L);
 		mockApiKey.setValue("apikey");
-		
+
 		return mockApiKey;
 	}
 }
