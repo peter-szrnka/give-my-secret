@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
+
 import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,9 @@ import io.github.gms.secure.repository.EventRepository;
  */
 class EventServiceImplTest extends AbstractUnitTest {
 
+	@Mock
+	private Clock clock;
+
 	@InjectMocks
 	private EventServiceImpl service;
 
@@ -45,7 +50,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldSaveUserEvent() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 		MDC.put(MdcParameter.USER_NAME.getDisplayName(), "user1");
 
 		// act

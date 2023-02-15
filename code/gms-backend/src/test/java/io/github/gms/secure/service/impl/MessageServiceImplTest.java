@@ -7,6 +7,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
+
 import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.Test;
@@ -38,6 +40,8 @@ import io.github.gms.util.TestUtils;
 class MessageServiceImplTest extends AbstractUnitTest {
 
 	@Mock
+	private Clock clock;
+	@Mock
 	private MessageRepository repository;
 	@Mock
 	private MessageConverter converter;
@@ -47,7 +51,7 @@ class MessageServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldSave() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 		MessageDto dto = MessageDto.builder()
 				.message("test message")
 				.build();

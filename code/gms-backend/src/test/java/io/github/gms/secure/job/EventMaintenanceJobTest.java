@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,8 @@ import io.github.gms.util.TestUtils;
 class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	
 	@Mock
+	private Clock clock;
+	@Mock
 	private EventRepository eventRepository;
 
 	@InjectMocks
@@ -45,7 +48,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		ReflectionTestUtils.setField(job, "oldEventLimit", "1;d");
 		((Logger) LoggerFactory.getLogger(EventMaintenanceJob.class)).addAppender(logAppender);
 		
-		setupClock();
+		setupClock(clock);
 	}
 	
 	@Test

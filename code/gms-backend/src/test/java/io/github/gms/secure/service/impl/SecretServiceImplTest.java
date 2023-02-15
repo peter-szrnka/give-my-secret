@@ -209,6 +209,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		mockedMdcUtils.close();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	@SneakyThrows
 	void shouldNotSaveNewEntityWhenUsernamePasswordPairisInvalid2() {

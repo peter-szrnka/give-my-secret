@@ -24,7 +24,7 @@ import io.github.gms.secure.entity.SystemPropertyEntity;
 @Component
 public class SystemPropertyConverterImpl implements SystemPropertyConverter {
 	
-	private final Clock clock;
+	private Clock clock;
 	
 	public SystemPropertyConverterImpl(Clock clock) {
 		this.clock = clock;

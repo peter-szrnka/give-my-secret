@@ -5,10 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Clock;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -32,13 +34,15 @@ import io.github.gms.util.TestUtils;
  */
 class SecretConverterImplTest extends AbstractUnitTest {
 
+	@Mock
+	private Clock clock;
 	@InjectMocks
 	private SecretConverterImpl converter;
 
 	@Test
 	void checkToEntityWithoutParameters() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 
 		SecretEntity entity = converter.toEntity(TestUtils.createSecretEntity(), new SaveSecretRequestDto());
 
@@ -50,7 +54,7 @@ class SecretConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToEntityWithParameters() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 
 		// arrange
 		SaveSecretRequestDto dto = new SaveSecretRequestDto();
@@ -69,7 +73,7 @@ class SecretConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToNewEntity() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 
 		// arrange
 		SaveSecretRequestDto dto = new SaveSecretRequestDto();

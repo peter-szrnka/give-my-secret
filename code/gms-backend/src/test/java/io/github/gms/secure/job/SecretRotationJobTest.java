@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,9 @@ import io.github.gms.util.TestUtils;
 class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
 	@Mock
+	private Clock clock;
+
+	@Mock
 	private SecretRepository secretRepository;
 
 	@Mock
@@ -48,7 +52,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	public void setup() {
 		super.setup();
 		((Logger) LoggerFactory.getLogger(SecretRotationJob.class)).addAppender(logAppender);
-		setupClock();
+		setupClock(clock);
 	}
 
 	@Test

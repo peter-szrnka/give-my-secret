@@ -7,8 +7,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +35,8 @@ import io.github.gms.util.TestUtils;
 class KeystoreConverterImplTest extends AbstractUnitTest {
 
 	private static final String FILE_NAME = "filename.txt";
+	@Mock
+	private Clock clock;
 	@InjectMocks
 	private KeystoreConverter converter = new KeystoreConverterImpl();
 	
@@ -65,7 +70,7 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToNewEntityWithoutFile() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -82,7 +87,7 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToNewEntity() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();

@@ -29,9 +29,9 @@ public class EncryptedFieldConverter implements AttributeConverter<String, Strin
 	private static final String ENCRYPTION_ALGORITHM = "AES/GCM/NoPadding";
 	private static final String AES = "AES";
 
-	private final boolean enableFieldEncryption;
-	private final String secret;
-	private final String encryptionIv;
+	private boolean enableFieldEncryption;
+	private String secret;
+	private String encryptionIv;
 
 	public EncryptedFieldConverter(
 			@Value("${config.encryption.enable}") boolean enableFieldEncryption, 

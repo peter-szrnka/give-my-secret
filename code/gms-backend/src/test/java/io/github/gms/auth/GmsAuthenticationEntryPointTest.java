@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.PrintWriter;
+import java.time.Clock;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,13 +36,15 @@ import lombok.SneakyThrows;
 class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 
 	@Mock
+	private Clock clock;
+	@Mock
 	private ObjectMapper objectMapper;
 	@InjectMocks
 	private GmsAuthenticationEntryPoint entryPoint;
 	
 	@BeforeEach
 	void setup() {
-		setupClock();
+		setupClock(clock);
 	}
 	
 	@Test

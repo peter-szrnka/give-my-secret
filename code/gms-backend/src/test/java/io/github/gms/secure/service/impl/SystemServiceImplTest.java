@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.core.env.Environment;
@@ -41,6 +42,7 @@ import io.github.gms.secure.repository.UserRepository;
  */
 class SystemServiceImplTest extends AbstractLoggingUnitTest {
 
+	private Clock clock = mock(Clock.class);
 	private UserRepository userRepository;
 	private Environment env;
 	private BuildProperties buildProperties;
@@ -52,9 +54,11 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 		super.setup();
 		((Logger) LoggerFactory.getLogger(SystemServiceImpl.class)).addAppender(logAppender);
 
-		userRepository = mock(UserRepository.class);
-		env = mock(Environment.class);
-		buildProperties = mock(BuildProperties.class);
+		userRepository = mock(UserRepository.class, Mockito.RETURNS_SMART_NULLS);
+		env = mock(Environment.class, Mockito.RETURNS_SMART_NULLS);
+		buildProperties = mock(BuildProperties.class, Mockito.RETURNS_SMART_NULLS);
+		
+		//?setupClock(clock);
 		
 		service = new SystemServiceImpl(userRepository, clock, env);
 		service.setBuildProperties(buildProperties);
@@ -84,7 +88,7 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 			when(buildProperties.getVersion()).thenReturn("1.0.0");
 		} else {
 			service.setBuildProperties(null);
-			setupClock();
+			setupClock(clock);
 		}
 		
 		if (selectedAuth.equals(SELECTED_AUTH_DB)) {

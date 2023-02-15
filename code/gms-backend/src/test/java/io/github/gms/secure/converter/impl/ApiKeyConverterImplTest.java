@@ -3,8 +3,11 @@ package io.github.gms.secure.converter.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.time.Clock;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -25,6 +28,8 @@ import io.github.gms.util.TestUtils;
  */
 class ApiKeyConverterImplTest extends AbstractUnitTest {
 
+	@Mock
+	private Clock clock;
 	@InjectMocks
 	private ApiKeyConverterImpl converter;
 
@@ -56,7 +61,7 @@ class ApiKeyConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToNewEntity() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 
 		// act
 		ApiKeyEntity entity = converter.toNewEntity(TestUtils.createNewSaveApiKeyRequestDto());

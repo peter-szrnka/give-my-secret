@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.util.Optional;
 
 import org.jboss.logging.MDC;
@@ -38,6 +39,9 @@ import io.github.gms.util.TestUtils;
  * @since 1.0
  */
 class AnnouncementServiceImplTest extends AbstractUnitTest {
+	
+	@Mock
+	private Clock clock;
 
 	@InjectMocks
 	private AnnouncementServiceImpl service;
@@ -51,7 +55,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldSaveNewEntity() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		SaveAnnouncementDto dto = SaveAnnouncementDto.builder()
 				.author("author")

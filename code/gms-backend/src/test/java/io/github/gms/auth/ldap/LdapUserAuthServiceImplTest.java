@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,8 @@ import io.github.gms.util.TestUtils;
  */
 class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 
+	@Mock
+	private Clock clock;
 	@Mock
 	private UserRepository repository;
 	@Mock
@@ -122,7 +125,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	@SuppressWarnings("unchecked")
 	void shouldSaveNewLdapUser() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 		ReflectionTestUtils.setField(service, "storeLdapCredential", false);
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(TestUtils.createGmsUser()));
 		when(repository.findByUsername("test")).thenReturn(Optional.empty());

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,9 @@ import io.github.gms.util.TestUtils;
 class SecretRotationServiceImplTest extends AbstractUnitTest {
 
 	private static final String SECRET_VALUE = "12345678";
+
+	@Mock
+	private Clock clock;
 
 	@Mock
 	private SecretRepository secretRepository;
@@ -72,7 +76,7 @@ class SecretRotationServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldRotate() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 		SecretEntity mockSecret = TestUtils.createSecretEntity();
 		
 		when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn(SECRET_VALUE);
@@ -118,7 +122,7 @@ class SecretRotationServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldRotateById() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 		SecretEntity mockSecret = new SecretEntity();
 		mockSecret.setValue("abcdefgh");
 		

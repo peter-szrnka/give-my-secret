@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -16,11 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
  */
 @ExtendWith(MockitoExtension.class)
 public abstract class AbstractUnitTest {
-	
-	@Mock
-	protected Clock clock;
 
-	protected void setupClock() {
+	protected static void setupClock(Clock clock) {
 		when(clock.instant()).thenReturn(Instant.now());
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 	}

@@ -3,6 +3,8 @@ package io.github.gms.secure.converter.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.time.Clock;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,8 +33,11 @@ class UserConverterImplTest extends AbstractUnitTest {
 	@Mock
 	private PasswordEncoder passwordEncoder;
 
+	@Mock
+	private Clock clock;
+
 	@InjectMocks
-	private UserConverter converter = new UserConverterImpl();
+	private UserConverter converter;
 
 	@Test
 	void checkToEntityWithRoleChange() {
@@ -77,7 +82,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToNewEntity() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 
 		// arrange
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
@@ -93,7 +98,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToNewEntityWithRoleChange() {
 		// arrange
-		setupClock();
+		setupClock(clock);
 
 		// arrange
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();

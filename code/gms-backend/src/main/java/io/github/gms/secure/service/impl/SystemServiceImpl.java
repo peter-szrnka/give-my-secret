@@ -34,9 +34,9 @@ import lombok.extern.slf4j.Slf4j;
 @CacheConfig(cacheNames = "systemStatusCache")
 public class SystemServiceImpl implements SystemService {
 
-	private final UserRepository userRepository;
-	private final Clock clock;
-	private final Environment env;
+	private UserRepository userRepository;
+	private Clock clock;
+	private Environment env;
 	// It will be set with setter injection
 	private BuildProperties buildProperties;
 	

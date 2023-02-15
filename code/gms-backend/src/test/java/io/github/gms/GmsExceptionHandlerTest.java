@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Method;
+import java.time.Clock;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,6 +13,7 @@ import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -30,13 +32,15 @@ class GmsExceptionHandlerTest extends AbstractUnitTest {
 
 	private static final String CORRELATION_ID = "CORRELATION_ID";
 
+	@Mock
+	private Clock clock;
 	@InjectMocks
 	private GmsExceptionHandler handler;
 
 	@BeforeEach
 	public void setup() {
 		MDC.put(MdcParameter.CORRELATION_ID.getDisplayName(), CORRELATION_ID);
-		setupClock();
+		setupClock(clock);
 	}
 
 	@Test
