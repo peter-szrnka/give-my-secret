@@ -35,6 +35,7 @@ import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.converter.KeystoreConverter;
+import io.github.gms.secure.dto.DownloadFileResponseDto;
 import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
 import io.github.gms.secure.dto.KeystoreAliasDto;
@@ -83,8 +84,6 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 	@Override
 	public SaveEntityResponseDto save(String model, MultipartFile file) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		
 		SaveKeystoreRequestDto dto;
 		try {
 			dto = objectMapper.readValue(model, SaveKeystoreRequestDto.class);
@@ -92,7 +91,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			throw new GmsException(e);
 		}
 		
-		dto.setUserId(userId);
+		dto.setUserId(getUserId());
 		
 		// Validation
 		validateInput(dto, file);
@@ -104,7 +103,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		try {
 			byte[] fileContent;
 			if (file == null) {
-				File keystoreFile = new File(keystorePath + userId + Constants.SLASH + entity.getFileName());
+				File keystoreFile = new File(getUserFolder() + entity.getFileName());
 				fileContent = Files.readAllBytes(keystoreFile.toPath());
 			} else {
 				fileContent = file.getBytes();
@@ -124,7 +123,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		dto.getAliases().forEach(alias -> processAlias(newEntity, alias));
 		
 		if (EntityStatus.DISABLED == newEntity.getStatus()) {
-			Map<String, Object> metadata = initMetaData(userId, newEntity.getId());
+			Map<String, Object> metadata = initMetaData(getUserId(), newEntity.getId());
 			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
 		}
 
@@ -134,13 +133,13 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 
 		try {
-			String newFileName = keystorePath + userId + Constants.SLASH + file.getOriginalFilename();
+			String newFileName = getUserFolder() + file.getOriginalFilename();
 			
 			if (Files.exists(Paths.get(newFileName))) {
 				throw new GmsException("File name must be unique!");
 			}
 			
-			Files.createDirectories(Paths.get(keystorePath + userId + Constants.SLASH));
+			Files.createDirectories(Paths.get(getUserFolder()));
 			File keystoreFile = new File(newFileName);
 		
 			FileOutputStream outputStream = new FileOutputStream(keystoreFile);
@@ -226,14 +225,12 @@ public class KeystoreServiceImpl implements KeystoreService {
 	
 	@Override
 	public LongValueDto count() {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		return new LongValueDto(repository.countByUserId(userId));
+		return new LongValueDto(repository.countByUserId(getUserId()));
 	}
 	
 	@Override
 	public IdNamePairListDto getAllKeystoreNames() {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		return new IdNamePairListDto(repository.getAllKeystoreNames(userId));
+		return new IdNamePairListDto(repository.getAllKeystoreNames(getUserId()));
 	}
 	
 	@Override
@@ -242,6 +239,21 @@ public class KeystoreServiceImpl implements KeystoreService {
 		getKeystore(keystoreId);
 		
 		return new IdNamePairListDto(aliasRepository.getAllAliasNames(keystoreId));
+	}
+
+	@Override
+	public DownloadFileResponseDto downloadKeystore(Long keystoreId) {
+		KeystoreEntity entity = getKeystore(keystoreId);
+
+		try {
+			return new DownloadFileResponseDto(entity.getFileName(), Files.readAllBytes(Paths.get(getUserFolder() + entity.getFileName())));
+		} catch (Exception e) {
+			throw new GmsException(e);
+		}
+	}
+	
+	private String getUserFolder() {
+		return keystorePath + getUserId() + Constants.SLASH;
 	}
 	
 	private Long getUserId() {

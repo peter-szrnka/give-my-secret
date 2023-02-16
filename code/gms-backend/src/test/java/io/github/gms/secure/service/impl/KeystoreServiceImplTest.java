@@ -12,6 +12,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,6 +62,7 @@ import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.converter.KeystoreConverter;
+import io.github.gms.secure.dto.DownloadFileResponseDto;
 import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
@@ -91,7 +93,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	private static final String JKS_TEST_FILE_LOCATION = "./test-output/" + DemoData.USER_1_ID + "/test.jks";
 
 	@InjectMocks
-	private KeystoreServiceImpl service = new KeystoreServiceImpl();
+	private KeystoreServiceImpl service;
 
 	@Mock
 	private CryptoService cryptoService;
@@ -301,7 +303,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
 
-		when(multiPart.getOriginalFilename()).thenReturn("my-key-" + UUID.randomUUID().toString() + ".jks");
+		when(multiPart.getOriginalFilename()).thenReturn("my-key.jks");
 		when(multiPart.getBytes()).thenReturn("test".getBytes());
 		when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
 		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
@@ -383,7 +385,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		String model = TestUtils.objectMapper().writeValueAsString(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
-		when(multiPart.getOriginalFilename()).thenReturn("my-key.jks");
+		when(multiPart.getOriginalFilename()).thenReturn("my-key "+ UUID.randomUUID().toString()+".jks");
 		when(multiPart.getBytes()).thenReturn("test".getBytes());
 
 		when(converter.toEntity(any(), any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
@@ -637,6 +639,44 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("alias1", response.getResultList().get(0).getName());
 		verify(aliasRepository).getAllAliasNames(anyLong());
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
+	}
+	
+	@Test
+	void shouldNotDownloadFile() {
+		// arrange
+		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+			
+			mockedFiles.when(() -> Files.readAllBytes(any(Path.class))).thenThrow(new RuntimeException("File cannot be downloaded"));
+	
+			// act
+			GmsException exception = assertThrows(GmsException.class, () -> service.downloadKeystore(1L));
+	
+			// assert
+			assertEquals("java.lang.RuntimeException: File cannot be downloaded", exception.getMessage());
+			
+			mockedFiles.verify(() -> Files.readAllBytes(any(Path.class)));
+			
+		}
+	}
+	
+	@Test
+	void shouldDownloadFile() {
+		// arrange
+		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		MockedStatic<Files> mockedFiles = mockStatic(Files.class);
+		
+		mockedFiles.when(() -> Files.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
+
+		// act
+		DownloadFileResponseDto response = service.downloadKeystore(1L);
+		
+		// assert
+		assertNotNull(response);
+		assertEquals("test.jks", response.getFileName());
+		assertEquals("test", new String(response.getFileContent()));
+		
+		mockedFiles.close();
 	}
 	
 	public static List<ValueHolder> valueData() {

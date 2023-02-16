@@ -3,6 +3,7 @@ package io.github.gms.secure.service;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.github.gms.common.abstraction.AbstractCrudService;
+import io.github.gms.secure.dto.DownloadFileResponseDto;
 import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
 import io.github.gms.secure.dto.KeystoreDto;
@@ -23,4 +24,6 @@ public interface KeystoreService extends AbstractCrudService<SaveKeystoreRequest
 	IdNamePairListDto getAllKeystoreNames();
 	
 	IdNamePairListDto getAllKeystoreAliasNames(Long keystoreId);
+
+	DownloadFileResponseDto downloadKeystore(Long keystoreId);
 }

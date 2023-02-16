@@ -10,6 +10,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { KeystoreAlias } from "./model/keystore-alias.model";
 import { ArrayDataSource } from "@angular/cdk/collections";
+import { environment } from "../../../environments/environment";
 
 /**
  * @author Peter Szrnka
@@ -77,6 +78,17 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
     } else {
       this.fileAttr = 'Choose File';
     }
+  }
+
+ public downloadKeystore() : void {
+    const link = document.createElement('a');
+    document.body.appendChild(link);
+    link.setAttribute('style', 'display: none');
+    link.href = environment.baseUrl + "secure/keystore/download/" + this.data.id;
+    link.download = this.data.fileName || "keystore.jks";
+    link.click();
+
+    document.body.removeChild(link);
   }
 
   addNewAlias() {
