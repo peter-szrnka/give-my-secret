@@ -1,7 +1,14 @@
 package io.github.gms.secure.controller;
 
+import java.io.FileNotFoundException;
+
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +26,7 @@ import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
 import io.github.gms.common.util.Constants;
+import io.github.gms.secure.dto.DownloadFileResponseDto;
 import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
 import io.github.gms.secure.dto.KeystoreDto;
@@ -88,5 +96,18 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	@PreAuthorize(Constants.ROLE_USER_OR_VIEWER)
 	public @ResponseBody IdNamePairListDto getAllKeystoreAliases(@PathVariable("keystoreId") Long keystoreId) {
 		return service.getAllKeystoreAliasNames(keystoreId);
+	}
+	
+	@GetMapping(path = "/download/{keystoreId}", produces = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)
+	@PreAuthorize(Constants.ROLE_USER_OR_VIEWER)
+	@Audited(operation = EventOperation.DOWNLOAD)
+	public ResponseEntity<Resource> download(@PathVariable("keystoreId") Long keystoreId) throws FileNotFoundException {
+		DownloadFileResponseDto response = service.downloadKeystore(keystoreId);
+		
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + response.getFileName() + "\"")
+	            .contentLength(response.getFileContent().length)
+	            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+	            .body(new ByteArrayResource(response.getFileContent()));
 	}
 }

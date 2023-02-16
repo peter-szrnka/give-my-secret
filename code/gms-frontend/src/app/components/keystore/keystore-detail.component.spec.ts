@@ -166,4 +166,15 @@ describe('KeystoreDetailComponent', () => {
          expect(component).toBeTruthy();
          expect(component.fileInput.nativeElement.value).not.toEqual('');
     });
+
+    it('should download file', () => {
+        configureTestBed();
+        component.fileInput = mockElementRef;
+
+        // act
+        component.downloadKeystore();
+
+         // assert
+         expect(component).toBeTruthy();
+    });
 });
