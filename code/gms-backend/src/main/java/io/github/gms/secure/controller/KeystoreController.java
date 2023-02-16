@@ -1,7 +1,5 @@
 package io.github.gms.secure.controller;
 
-import java.io.FileNotFoundException;
-
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -101,7 +99,7 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	@GetMapping(path = "/download/{keystoreId}", produces = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)
 	@PreAuthorize(Constants.ROLE_USER_OR_VIEWER)
 	@Audited(operation = EventOperation.DOWNLOAD)
-	public ResponseEntity<Resource> download(@PathVariable("keystoreId") Long keystoreId) throws FileNotFoundException {
+	public ResponseEntity<Resource> download(@PathVariable("keystoreId") Long keystoreId) {
 		DownloadFileResponseDto response = service.downloadKeystore(keystoreId);
 		
 		return ResponseEntity.ok()
