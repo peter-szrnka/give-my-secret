@@ -128,7 +128,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.CREDENTIAL));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL));
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
 
 		// assert
@@ -146,7 +146,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.CREDENTIAL));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL));
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.empty());
 
@@ -166,7 +166,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.CREDENTIAL));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
 				TestUtils.createApiKeyRestrictionEntity(2L),
 				TestUtils.createApiKeyRestrictionEntity(3L)
@@ -190,7 +190,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
 				
 		String mockValue = "{\"username\":\"u\",\"password\":\"p\"}";
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(mockValue, true, SecretType.CREDENTIAL_PAIR));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(mockValue, true, SecretType.MULTIPLE_CREDENTIAL));
 		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
@@ -260,10 +260,10 @@ class ApiServiceImplTest extends AbstractUnitTest {
 	}
 
 	public static Object[][] inputData() {
-		return new Object[][] { { true, SimpleApiResponseDto.class, SecretType.CREDENTIAL },
-				{ false, SimpleApiResponseDto.class, SecretType.CREDENTIAL },
-				{ true, CredentialPairApiResponseDto.class, SecretType.CREDENTIAL_PAIR },
-				{ false, SimpleApiResponseDto.class, SecretType.CREDENTIAL_PAIR } };
+		return new Object[][] { { true, SimpleApiResponseDto.class, SecretType.SIMPLE_CREDENTIAL },
+				{ false, SimpleApiResponseDto.class, SecretType.SIMPLE_CREDENTIAL },
+				{ true, CredentialPairApiResponseDto.class, SecretType.MULTIPLE_CREDENTIAL },
+				{ false, SimpleApiResponseDto.class, SecretType.MULTIPLE_CREDENTIAL } };
 	}
 
 	private static SecretEntity createMockSecret(String value, boolean returnDecrypted, SecretType type) {

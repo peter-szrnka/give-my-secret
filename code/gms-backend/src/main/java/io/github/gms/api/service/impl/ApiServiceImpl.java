@@ -110,7 +110,7 @@ public class ApiServiceImpl implements ApiService {
 	private ApiResponseDto getSecretValue(SecretEntity entity) {
 		String value = (entity.isReturnDecrypted()) ? cryptoService.decrypt(entity) : entity.getValue();
 		
-		if (SecretType.CREDENTIAL == entity.getType()) {
+		if (SecretType.SIMPLE_CREDENTIAL == entity.getType()) {
 			return new SimpleApiResponseDto(value);
 		}
 

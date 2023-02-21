@@ -437,7 +437,7 @@ public class TestUtils {
 		dto.setId(secretId);
 		dto.setRotationPeriod(RotationPeriod.YEARLY);
 		dto.setStatus(EntityStatus.ACTIVE);
-		dto.setType(SecretType.CREDENTIAL);;
+		dto.setType(SecretType.SIMPLE_CREDENTIAL);;
 		dto.setKeystoreAliasId(DemoData.KEYSTORE_ALIAS_ID);
 		dto.setSecretId(DemoData.SECRET_ID1);
 		dto.setUserId(DemoData.USER_1_ID);
