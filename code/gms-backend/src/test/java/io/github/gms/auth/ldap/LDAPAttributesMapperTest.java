@@ -16,6 +16,7 @@ import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.util.Constants;
+import lombok.SneakyThrows;
 
 /**
  * @author Peter Szrnka
@@ -25,9 +26,10 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 
 	private static final LDAPAttributesMapper mapper = new LDAPAttributesMapper();
 
+	@SneakyThrows
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
-	void shouldMapAttributes(boolean returnRoles) throws NamingException {
+	void shouldMapAttributes(boolean returnRoles) {
 		// arrange
 		Attributes input = mock(Attributes.class);
 
