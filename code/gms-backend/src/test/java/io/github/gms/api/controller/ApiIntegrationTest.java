@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
-import io.github.gms.secure.dto.SimpleApiResponseDto;
+import io.github.gms.secure.dto.ApiResponseDto;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
@@ -34,7 +34,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
 		
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoData.API_KEY_CREDENTIAL3));
-		ResponseEntity<SimpleApiResponseDto> response = executeHttpGet("/api/secret/" + DemoData.SECRET_ID3, requestEntity, SimpleApiResponseDto.class);
+		ResponseEntity<ApiResponseDto> response = executeHttpGet("/api/secret/" + DemoData.SECRET_ID3, requestEntity, ApiResponseDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
