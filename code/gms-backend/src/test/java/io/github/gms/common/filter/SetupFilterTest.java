@@ -10,9 +10,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 
 import io.github.gms.abstraction.AbstractUnitTest;
@@ -27,12 +26,16 @@ import lombok.SneakyThrows;
  * @since 1.0
  */
 class SetupFilterTest extends AbstractUnitTest {
-	
-	@Mock
+
 	private SystemService service;
 
-	@InjectMocks
 	private SetupFilter filter;
+	
+	@BeforeEach
+	void setup() {
+		service = mock(SystemService.class);
+		filter = new SetupFilter(service);
+	}
 	
 	@Test
 	@SneakyThrows
