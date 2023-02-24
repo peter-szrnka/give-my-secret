@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -82,7 +81,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldAuthenticate() {
 		// arrange
-		when(authenticationManager.authenticate(any(Authentication.class)))
+		when(authenticationManager.authenticate(any()))
 			.thenReturn(new TestingAuthenticationToken(TestUtils.createGmsUser(), "cred", List.of(new SimpleGrantedAuthority("ROLE_USER"))));
 		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap()))
 			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
@@ -98,7 +97,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		
 		// assert
 		assertNotNull(response);
-		verify(authenticationManager).authenticate(any(Authentication.class));
+		verify(authenticationManager).authenticate(any());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
 		verify(jwtService).generateJwts(anyMap());
