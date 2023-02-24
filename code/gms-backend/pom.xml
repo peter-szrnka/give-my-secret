@@ -20,7 +20,7 @@
 		<spring-boot.version>2.7.3</spring-boot.version>
 		<guava.version>31.1-jre</guava.version>
 
-		<maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
+		<maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
 
 		<!-- Testing & code quality -->
 		<mockito.version>5.1.1</mockito.version>
@@ -536,6 +536,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
+						<version>${maven-surefire-plugin.version}</version>
 						<configuration>
 							<skipTests>true</skipTests>
 						</configuration>
