@@ -1,6 +1,7 @@
 name: Code quality check of application
 
 on:
+  workflow_dispatch:
   push:
     branches: 
       - '*'
