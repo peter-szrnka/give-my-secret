@@ -3,10 +3,10 @@ package io.github.gms.common.filter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
-import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.secure.service.SystemService;
 
@@ -26,7 +27,8 @@ import io.github.gms.secure.service.SystemService;
  * @author Peter Szrnka
  * @since 1.0
  */
-class SetupFilterTest extends AbstractUnitTest {
+@ExtendWith(MockitoExtension.class)
+public class SetupFilterTest {
 
 	private SystemService service;
 
@@ -41,7 +43,7 @@ class SetupFilterTest extends AbstractUnitTest {
 	@Test
 	void shouldSetupEnabled() {
 		SystemStatusDto mock = SystemStatusDto.builder().status("NEED_SETUP").build();
-		when(service.getSystemStatus()).thenReturn(mock);
+		doReturn(mock).when(service).getSystemStatus();
 		
 		// act
 		HttpServletRequest request = mock(HttpServletRequest.class);
@@ -64,7 +66,7 @@ class SetupFilterTest extends AbstractUnitTest {
 	@Test
 	void shouldBeOk() {
 		SystemStatusDto mock = SystemStatusDto.builder().status("OK").build();
-		when(service.getSystemStatus()).thenReturn(mock);
+		doReturn(mock).when(service).getSystemStatus();
 		
 		// act
 		HttpServletRequest request = mock(HttpServletRequest.class);
