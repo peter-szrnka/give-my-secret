@@ -10,10 +10,9 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Spy;
+import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 
 import io.github.gms.abstraction.AbstractUnitTest;
@@ -27,10 +26,9 @@ import lombok.SneakyThrows;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled("Temporarily disabled")
 public class SetupFilterTest extends AbstractUnitTest {
 
-	@Spy
+	@Mock
 	private SystemService service;
 
 	@InjectMocks
