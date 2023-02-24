@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @author Peter Szrnka
  * @since 1.0
  */
-//@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class)
 public abstract class AbstractUnitTest {
 
 	protected static void setupClock(Clock clock) {
