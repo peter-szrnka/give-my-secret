@@ -10,7 +10,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -27,7 +26,6 @@ import lombok.SneakyThrows;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled("Temporarily disabled")
 class SetupFilterTest extends AbstractUnitTest {
 	
 	@Mock
@@ -39,7 +37,8 @@ class SetupFilterTest extends AbstractUnitTest {
 	@Test
 	@SneakyThrows
 	void shouldSetupEnabled() {
-		when(service.getSystemStatus()).thenReturn(SystemStatusDto.builder().status("NEED_SETUP").build());
+		SystemStatusDto mock = SystemStatusDto.builder().status("NEED_SETUP").build();
+		when(service.getSystemStatus()).thenReturn(mock);
 		
 		// act
 		HttpServletRequest request = mock(HttpServletRequest.class);
@@ -57,7 +56,8 @@ class SetupFilterTest extends AbstractUnitTest {
 	@Test
 	@SneakyThrows
 	void shouldBeOk() {
-		when(service.getSystemStatus()).thenReturn(SystemStatusDto.builder().status("OK").build());
+		SystemStatusDto mock = SystemStatusDto.builder().status("OK").build();
+		when(service.getSystemStatus()).thenReturn(mock);
 		
 		// act
 		HttpServletRequest request = mock(HttpServletRequest.class);
