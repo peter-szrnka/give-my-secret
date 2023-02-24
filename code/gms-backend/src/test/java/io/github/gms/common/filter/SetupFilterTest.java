@@ -32,7 +32,7 @@ public class SetupFilterTest extends AbstractUnitTest {
 	private SystemService service;
 
 	@InjectMocks
-	private SetupFilter filter;
+	private SetupFilter filter = new SetupFilter();
 
 	@Test
 	@SneakyThrows
