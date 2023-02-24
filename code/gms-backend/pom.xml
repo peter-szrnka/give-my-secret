@@ -10,18 +10,17 @@
 	<artifactId>gms-backend</artifactId>
 
 	<properties>
-		<java.version>11</java.version>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<java.version>17</java.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<backend.buildname>gms-app</backend.buildname>
 
 		<spring-boot.version>2.7.3</spring-boot.version>
 		<guava.version>31.1-jre</guava.version>
-		<vaadin.version>23.0.9</vaadin.version>
 
-		<maven-surefire-plugin.version>3.0.0-M1</maven-surefire-plugin.version>
+		<maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
 
 		<!-- Testing & code quality -->
 		<mockito.version>5.1.1</mockito.version>
