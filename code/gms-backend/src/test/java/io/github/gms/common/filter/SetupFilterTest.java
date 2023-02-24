@@ -43,7 +43,7 @@ public class SetupFilterTest {
 	@Test
 	void shouldSetupEnabled() {
 		SystemStatusDto mock = SystemStatusDto.builder().status("NEED_SETUP").build();
-		doReturn(mock).when(service).getSystemStatus();
+		doReturn(mock).when(service.getSystemStatus());
 		
 		// act
 		HttpServletRequest request = mock(HttpServletRequest.class);
@@ -66,7 +66,7 @@ public class SetupFilterTest {
 	@Test
 	void shouldBeOk() {
 		SystemStatusDto mock = SystemStatusDto.builder().status("OK").build();
-		doReturn(mock).when(service).getSystemStatus();
+		doReturn(mock).when(service.getSystemStatus());
 		
 		// act
 		HttpServletRequest request = mock(HttpServletRequest.class);
