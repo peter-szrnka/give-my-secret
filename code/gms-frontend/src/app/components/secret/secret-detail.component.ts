@@ -14,6 +14,12 @@ import { KeystoreService } from "../keystore/service/keystore-service";
 import { SecretService } from "./service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
+import { ArrayDataSource } from "@angular/cdk/collections";
+
+interface KeyValuePair {
+    key : string,
+    value : string;
+}
 
 /**
  * @author Peter Szrnka
@@ -28,11 +34,10 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     rotationPeriods: string[] = [
         'MINUTES', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'
     ];
+    displayedColumns: string[] = ['key','value', 'operations'];
 
-    usernamePasswordPair : any = {
-        username : "",
-        password : ""
-    };
+    public datasource : ArrayDataSource<KeyValuePair>;
+    multipleCredential : KeyValuePair[] = [];
     filteredKeystoreOptions$: Observable<IdNamePair[]>;
     filteredKeystoreAliasOptions$: Observable<IdNamePair[]>;
     filteredApiKeyOptions$: Observable<IdNamePair[]>;
@@ -82,17 +87,19 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     override dataLoadingCallback(data: Secret): void {
         this.onKeystoreNameChanged(data.keystoreId);
 
-        if (data.type !== 'CREDENTIAL_PAIR') {
+        if (data.type !== 'MULTIPLE_CREDENTIAL') {
             return;
         }
 
-        this.usernamePasswordPair = JSON.parse(data.value);
+        this.multipleCredential = this.parseValue(data.value);
+        this.refreshTable();
     }
 
     save() {
         this.data.apiKeyRestrictions = this.formData.allApiKeysAllowed ? [] : this.selectedApiKeys.map(apiKey => apiKey.id);
-        this.transformUsernamePasswordPair();
+        this.transformMultipleCredentials();
         this.validateForm();
+        this.cleanOptionalFields();
 
         this.loading = true;
         this.service.save(this.data).subscribe({
@@ -113,9 +120,12 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         this.service.getValue(this.data.id).subscribe(value => {
             this.data.value = value;
 
-            if (this.data.type === 'CREDENTIAL_PAIR') {
-                this.usernamePasswordPair = JSON.parse(this.data.value);
+            if (this.data.type !== 'MULTIPLE_CREDENTIAL') {
+                return;
             }
+
+            this.multipleCredential = this.parseValue(this.data.value);
+            this.refreshTable();
         });
     }
 
@@ -138,18 +148,45 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         this.filteredKeystoreAliasOptions$ = this.keystoreService.getAllKeystoreAliases(selectedId);
     }
 
-    private transformUsernamePasswordPair() {
-        if (this.data.type !== 'CREDENTIAL_PAIR') {
+    addNewMultipleCredential() : void {
+        this.multipleCredential.push({ key: "", value: ""});
+        this.refreshTable();
+    }
+
+    deleteMultipleCredential(index : number) {
+        this.multipleCredential.splice(index, 1);
+        this.refreshTable();
+    }
+
+    private refreshTable() {
+        this.datasource = new ArrayDataSource<KeyValuePair>(this.multipleCredential);
+    }
+    
+    private parseValue(data : string) : KeyValuePair[]  {
+        return data.split(";").map(kvp => {
+            const splitData = kvp.split(":");
+            return { key: splitData[0], value: splitData[1] };
+        });
+    }
+
+    private transformMultipleCredentials() {
+        if (this.data.type !== 'MULTIPLE_CREDENTIAL') {
             return;
         }
 
-        this.data.value = JSON.stringify(this.usernamePasswordPair);
+        this.data.value = this.multipleCredential.map(item => item.key + ":" + item.value).join(";");
     }
 
     private validateForm() {
         if ((this.data.keystoreAliasId === undefined)) {
             throw Error("Please select a keystore alias!");
         }
+    }
+
+    private cleanOptionalFields() {
+        this.data.creationDate = undefined;
+        this.data.lastRotated = undefined;
+        this.data.lastUpdated = undefined;
     }
 
     private refreshSelectableRoles(): void {

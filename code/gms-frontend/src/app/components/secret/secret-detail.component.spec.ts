@@ -186,8 +186,8 @@ describe('SecretDetailComponent', () => {
                     keystoreId : 1,
                     keystoreAliasId : 1,
                     status : "ACTIVE",
-                    value : "{\"username\":\"user\",\"password\":\"pw12345678\"}",
-                    type : 'CREDENTIAL_PAIR',
+                    value : "username:user;password:pw12345678",
+                    type : 'MULTIPLE_CREDENTIAL',
                     creationDate : new Date(),
                     lastUpdated: new Date(),
                     lastRotated: new Date(),
@@ -239,6 +239,7 @@ describe('SecretDetailComponent', () => {
     });
 
     it('Should show secret value for username and password', () => {
+        serviceMock.getValue = jest.fn().mockReturnValue(of("username:user;password:pw12345678"));
         activatedRoute = class {
             data : Data = of({
                 entity : {
@@ -247,8 +248,7 @@ describe('SecretDetailComponent', () => {
                     keystoreId : 1,
                     keystoreAliasId : 1,
                     status : "ACTIVE",
-                    value : "{\"username\":\"user\",\"password\":\"pw12345678\"}",
-                    type : 'CREDENTIAL_PAIR',
+                    type : 'MULTIPLE_CREDENTIAL',
                     creationDate : new Date(),
                     lastUpdated: new Date(),
                     lastRotated: new Date(),
@@ -263,13 +263,19 @@ describe('SecretDetailComponent', () => {
 
         // act
         component.showValue();
+        component.addNewMultipleCredential();
+        component.multipleCredential[2] = { key: "u", value : "p" };
+        component.deleteMultipleCredential(2);
 
         // assert
         expect(component).toBeTruthy();
-        expect(component.usernamePasswordPair.username).toEqual('user');
-        expect(component.usernamePasswordPair.password).toEqual('pw12345678');
-        expect(component.data.type).toEqual('CREDENTIAL_PAIR');
-        expect(component.data.value).toEqual("value");
+        expect(component.multipleCredential.length).toEqual(2);
+        expect(component.multipleCredential[0].key).toEqual('username');
+        expect(component.multipleCredential[0].value).toEqual('user');
+        expect(component.multipleCredential[1].key).toEqual('password');
+        expect(component.multipleCredential[1].value).toEqual('pw12345678');
+        expect(component.data.type).toEqual('MULTIPLE_CREDENTIAL');
+        expect(component.data.value).toEqual("username:user;password:pw12345678");
     });
 
     it('Should show secret value', () => {

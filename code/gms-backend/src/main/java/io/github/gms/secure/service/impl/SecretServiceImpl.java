@@ -190,6 +190,10 @@ public class SecretServiceImpl implements SecretService {
 		}, () -> {
 			throw new GmsException(WRONG_ENTITY);
 		});
+		
+		if (!dto.getKeystoreId().equals(keystoreAlias.getKeystoreId())) {
+			throw new GmsException("Invalid keystore defined in the request!");
+		}
 	}
 	
 	private void validateSecret(SaveSecretRequestDto dto, int expectedCount) {

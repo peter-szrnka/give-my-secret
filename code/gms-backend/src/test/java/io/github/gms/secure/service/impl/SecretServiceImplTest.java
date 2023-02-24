@@ -154,6 +154,21 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
+	void shouldNotSaveNewEntityWhenKeystoreIsNotRelatedToAlias() {
+		// arrange
+		KeystoreEntity mockKeystoreEntity = TestUtils.createKeystoreEntity();
+		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(mockKeystoreEntity));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
+
+		// act & assert
+		SaveSecretRequestDto input = TestUtils.createSaveSecretRequestDto(2L);
+		input.setKeystoreId(9l);
+		TestUtils.assertGmsException(() -> service.save(input), "Invalid keystore defined in the request!");
+		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
+		verify(keystoreAliasRepository).findById(anyLong());
+	}
+	
+	@Test
 	void shouldNotSaveNewEntityWhenSecretIdIsNotUnique() {
 		// arrange
 		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
