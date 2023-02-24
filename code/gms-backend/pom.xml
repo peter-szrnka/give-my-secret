@@ -14,9 +14,9 @@
 		<backend.buildname>gms-app</backend.buildname>
 		<spring-boot.version>2.7.3</spring-boot.version>
 		<guava.version>31.1-jre</guava.version>
-		<maven-surefire-plugin.version>3.0.0-M1</maven-surefire-plugin.version>
+		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 		<!-- Testing & code quality -->
-		<mockito.version>5.1.1</mockito.version>
+		<mockito.version>4.6.1</mockito.version>
 		<jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
 		<skip.jacoco-check-execution>false</skip.jacoco-check-execution>
 		<test.minimum.coverage>0.90</test.minimum.coverage>
