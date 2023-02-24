@@ -1,33 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>io.github.gms</groupId>
 		<artifactId>give-my-secret</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-
 	<artifactId>gms-backend</artifactId>
-
 	<properties>
-		<java.version>17</java.version>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<java.version>11</java.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
 		<backend.buildname>gms-app</backend.buildname>
-
 		<spring-boot.version>2.7.3</spring-boot.version>
 		<guava.version>31.1-jre</guava.version>
-
-		<maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
-
+		<maven-surefire-plugin.version>3.0.0-M1</maven-surefire-plugin.version>
 		<!-- Testing & code quality -->
 		<mockito.version>5.1.1</mockito.version>
-		<jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
+		<jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
 		<skip.jacoco-check-execution>false</skip.jacoco-check-execution>
 		<test.minimum.coverage>0.90</test.minimum.coverage>
-
 		<sonar.organization>peter-szrnka</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.exclusions>**/enums/**, 
@@ -43,10 +35,8 @@
 			**/*Entity.java,
 			**/*Application.java
 		</sonar.exclusions>
-		
 		<skip.parent.version.change>true</skip.parent.version.change>
 	</properties>
-
 	<developers>
 		<developer>
 			<email>szrnka.peter@gmail.com</email>
@@ -59,7 +49,6 @@
 			</roles>
 		</developer>
 	</developers>
-
 	<dependencyManagement>
 		<dependencies>
 			<!-- Spring Boot -->
@@ -70,7 +59,6 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
 			<!-- Testing -->
 			<dependency>
 				<groupId>org.junit</groupId>
@@ -80,12 +68,11 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 	<dependencies>
 		<!-- Spring -->
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-web</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -107,35 +94,30 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
-
 		<!-- LDAP -->
 		<dependency>
 			<groupId>org.springframework.ldap</groupId>
 			<artifactId>spring-ldap-core</artifactId>
 		</dependency>
 		<dependency>
-            <groupId>com.unboundid</groupId>
-            <artifactId>unboundid-ldapsdk</artifactId>
-        </dependency>
-
+			<groupId>com.unboundid</groupId>
+			<artifactId>unboundid-ldapsdk</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 			<scope>runtime</scope>
 		</dependency>
-		
 		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-context-indexer</artifactId>
-		    <optional>true</optional>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-indexer</artifactId>
+			<optional>true</optional>
 		</dependency>
-
-        <!--<dependency>
+		<!--<dependency>
         	<groupId>com.fasterxml.jackson.datatype</groupId>
         	<artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>-->
-
 		<!-- DB -->
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -154,14 +136,14 @@
 			<artifactId>postgresql</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>com.microsoft.sqlserver</groupId>
-		    <artifactId>mssql-jdbc</artifactId>
-		    <version>9.4.1.jre8</version>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>9.4.1.jre8</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.oracle.database.jdbc</groupId>
-		    <artifactId>ojdbc10</artifactId>
-		    <version>19.16.0.0</version>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc10</artifactId>
+			<version>19.16.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
@@ -169,14 +151,14 @@
 			<version>9.8.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.flywaydb</groupId>
-		    <artifactId>flyway-mysql</artifactId>
-		    <version>9.8.1</version>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+			<version>9.8.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.flywaydb</groupId>
-		    <artifactId>flyway-sqlserver</artifactId>
-		    <version>9.8.1</version>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-sqlserver</artifactId>
+			<version>9.8.1</version>
 		</dependency>
 		<!-- Other 3rd party library -->
 		<dependency>
@@ -205,7 +187,6 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
-
 		<!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -225,8 +206,8 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>${mockito.version}</version>
 			<scope>test</scope>
+			<version>${mockito.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -246,7 +227,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<profiles>
 		<profile>
 			<id>default</id>
@@ -260,9 +240,7 @@
 						<artifactId>maven-compiler-plugin</artifactId>
 						<version>${maven-compiler-plugin.version}</version>
 						<configuration>
-							<release>${maven.compiler.source}</release>
-							<source>${maven.compiler.source}</source>
-							<target>${maven.compiler.target}</target>
+							<release>${java.version}</release>
 						</configuration>
 					</plugin>
 					<plugin>
@@ -275,7 +253,6 @@
 							<consoleOutput>true</consoleOutput>
 							<failsOnError>true</failsOnError>
 							<failOnViolation>true</failOnViolation>
-
 							<enableFilesSummary>true</enableFilesSummary>
 							<enableRulesSummary>true</enableRulesSummary>
 							<enableSeveritySummary>true</enableSeveritySummary>
@@ -397,7 +374,6 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			
 			<build>
 				<finalName>gms-app</finalName>
 				<plugins>
@@ -466,7 +442,6 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-
 			<build>
 				<finalName>gms-app</finalName>
 				<plugins>
