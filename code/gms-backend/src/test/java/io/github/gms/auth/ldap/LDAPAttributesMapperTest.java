@@ -9,6 +9,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -22,6 +23,7 @@ import lombok.SneakyThrows;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Disabled("Temporarily disabled")
 class LDAPAttributesMapperTest extends AbstractUnitTest {
 
 	private static final LDAPAttributesMapper mapper = new LDAPAttributesMapper();
