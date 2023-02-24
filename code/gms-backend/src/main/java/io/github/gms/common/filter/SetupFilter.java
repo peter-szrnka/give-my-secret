@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -22,11 +23,8 @@ import io.github.gms.secure.service.SystemService;
 @Component
 public class SetupFilter extends OncePerRequestFilter {
 
-	private final SystemService service;
-	
-	public SetupFilter(SystemService service) {
-		this.service = service;
-	}
+	@Autowired
+	private SystemService service;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
