@@ -5,6 +5,6 @@ package io.github.gms.common.enums;
  * @since 1.0
  */
 public enum SecretType {
-	CREDENTIAL,
-	CREDENTIAL_PAIR;
+	SIMPLE_CREDENTIAL,
+	MULTIPLE_CREDENTIAL;
 }

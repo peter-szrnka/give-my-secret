@@ -5,17 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.github.gms.api.service.ApiService;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.dto.ApiResponseDto;
-import io.github.gms.secure.dto.CredentialPairApiResponseDto;
 import io.github.gms.secure.dto.GetSecretRequestDto;
-import io.github.gms.secure.dto.SimpleApiResponseDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
@@ -36,9 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class ApiServiceImpl implements ApiService {
-	
-	@Autowired
-	private ObjectMapper objectMapper;
 
 	@Autowired
 	private CryptoService cryptoService;
@@ -104,20 +95,6 @@ public class ApiServiceImpl implements ApiService {
 			throw new GmsException("Invalid keystore!");
 		}
 		
-		return getSecretValue(secretEntity);
-	}
-
-	private ApiResponseDto getSecretValue(SecretEntity entity) {
-		String value = (entity.isReturnDecrypted()) ? cryptoService.decrypt(entity) : entity.getValue();
-		
-		if (SecretType.CREDENTIAL == entity.getType()) {
-			return new SimpleApiResponseDto(value);
-		}
-
-		try {
-			return entity.isReturnDecrypted() ? objectMapper.readValue(value, CredentialPairApiResponseDto.class) : new SimpleApiResponseDto(value);
-		} catch (JsonProcessingException e) {
-			throw new GmsException(e);
-		}
+		return new ApiResponseDto((secretEntity.isReturnDecrypted()) ? cryptoService.decrypt(secretEntity) : secretEntity.getValue());
 	}
 }

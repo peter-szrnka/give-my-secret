@@ -22,7 +22,7 @@ export interface Secret {
 
 export const EMPTY_SECRET : Secret = {
     status: "ACTIVE",
-    type : "CREDENTIAL",
+    type : "SIMPLE_CREDENTIAL",
     value: "",
     rotationPeriod: "HOURLY",
     apiKeyRestrictions : [],

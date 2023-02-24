@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
@@ -31,7 +31,6 @@ import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.SecretEntity;
-import io.github.gms.secure.model.CredentialPair;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
@@ -49,9 +48,6 @@ public class SecretServiceImpl implements SecretService {
 	static final String WRONG_ENTITY = "Wrong entity!";
 	static final String PLEASE_PROVIDE_ACTIVE_KEYSTORE = "Please provide an active keystore";
 	static final String WRONG_KEYSTORE_ALIAS = "Wrong keystore alias!";
-	
-	@Autowired
-	private ObjectMapper objectMapper;
 
 	@Autowired
 	private CryptoService cryptoService;
@@ -194,6 +190,10 @@ public class SecretServiceImpl implements SecretService {
 		}, () -> {
 			throw new GmsException(WRONG_ENTITY);
 		});
+		
+		if (!dto.getKeystoreId().equals(keystoreAlias.getKeystoreId())) {
+			throw new GmsException("Invalid keystore defined in the request!");
+		}
 	}
 	
 	private void validateSecret(SaveSecretRequestDto dto, int expectedCount) {
@@ -203,19 +203,16 @@ public class SecretServiceImpl implements SecretService {
 			throw new GmsException("Secret ID name must be unique!");
 		}
 		
-		if (SecretType.CREDENTIAL_PAIR != dto.getType()) {
+		if (SecretType.MULTIPLE_CREDENTIAL != dto.getType()) {
 			return;
 		}
 
-		CredentialPair credentialPair;
-
 		try {
-			credentialPair = objectMapper.readValue(dto.getValue(), CredentialPair.class);
+			Stream.of(dto.getValue().split(";")).map(item -> {
+				String[] keyAndValue = item.split(":");
+				return Pair.of(keyAndValue[0], keyAndValue[1]);
+			}).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
 		} catch (Exception e) {
-			throw new GmsException("Username password pair is invalid!");
-		}
-		
-		if (credentialPair == null) {
 			throw new GmsException("Username password pair is invalid!");
 		}
 	}
