@@ -29,10 +29,10 @@ import lombok.SneakyThrows;
 public class SetupFilterTest extends AbstractUnitTest {
 
 	@Mock
-	private SystemService service;
+	SystemService service;
 
 	@InjectMocks
-	private SetupFilter filter = new SetupFilter();
+	SetupFilter filter = new SetupFilter();
 
 	@Test
 	@SneakyThrows
