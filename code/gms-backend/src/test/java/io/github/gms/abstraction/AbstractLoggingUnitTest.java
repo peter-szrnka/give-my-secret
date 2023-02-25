@@ -12,7 +12,7 @@ import io.github.gms.common.enums.MdcParameter;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class AbstractLoggingUnitTest extends AbstractUnitTest {
+public abstract class AbstractLoggingUnitTest extends AbstractUnitTest {
 
 	protected ListAppender<ILoggingEvent> logAppender;
 
