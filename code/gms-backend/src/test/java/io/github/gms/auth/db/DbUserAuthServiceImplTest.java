@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -26,7 +25,6 @@ import io.github.gms.util.TestUtils;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled("Temporarily disabled")
 class DbUserAuthServiceImplTest extends AbstractUnitTest {
 
 	@Mock

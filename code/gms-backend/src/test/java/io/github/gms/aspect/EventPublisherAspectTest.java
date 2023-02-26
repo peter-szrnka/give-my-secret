@@ -6,23 +6,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.secure.model.UserEvent;
 import io.github.gms.secure.service.EventService;
 
-@ExtendWith(MockitoExtension.class)
-@Disabled("Temporarily disabled")
-class EventPublisherAspectTest {
+class EventPublisherAspectTest extends AbstractUnitTest {
 
 	private EventService service = mock(EventService.class);
 	private EventPublisherAspect aspect = new EventPublisherAspect();

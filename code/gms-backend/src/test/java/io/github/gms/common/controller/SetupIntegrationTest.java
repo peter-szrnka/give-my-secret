@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,7 +26,6 @@ import io.github.gms.util.TestUtils;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled("Temporarily disabled")
 @Tag(TestConstants.TAG_INTEGRATION_TEST)
 class SetupIntegrationTest extends AbstractIntegrationTest {
 

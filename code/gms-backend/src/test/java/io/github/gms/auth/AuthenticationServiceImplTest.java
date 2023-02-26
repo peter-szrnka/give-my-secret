@@ -21,7 +21,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -52,7 +51,6 @@ import io.jsonwebtoken.Claims;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled("Temporarily disabled")
 class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 	@InjectMocks
