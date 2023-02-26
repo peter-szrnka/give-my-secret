@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import io.github.gms.common.enums.EntityStatus;
@@ -206,14 +205,13 @@ public class SecretServiceImpl implements SecretService {
 		if (SecretType.MULTIPLE_CREDENTIAL != dto.getType()) {
 			return;
 		}
-
-		try {
-			Stream.of(dto.getValue().split(";")).map(item -> {
-				String[] keyAndValue = item.split(":");
-				return Pair.of(keyAndValue[0], keyAndValue[1]);
-			}).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
-		} catch (Exception e) {
+		
+		if (!dto.getValue().contains(";") || itemsNotValid(dto.getValue())) {
 			throw new GmsException("Username password pair is invalid!");
 		}
+	}
+	
+	private boolean itemsNotValid(String value) {
+		return Stream.of(value.split(";")).anyMatch(item -> !item.contains(":") || item.split(":").length != 2);
 	}
 }
