@@ -26,7 +26,7 @@ import lombok.SneakyThrows;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class SetupFilterTest extends AbstractUnitTest {
+class SetupFilterTest extends AbstractUnitTest {
 
 	@Mock
 	SystemService service;
