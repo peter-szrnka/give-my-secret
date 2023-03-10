@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -56,10 +55,16 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public EventListDto list(PagingDto dto) {
-		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
-		Pageable pagingRequest = PageRequest.of(dto.getPage(), dto.getSize(), sort);
+		return converter.toDtoList(repository.findAll(createPageable(dto)));
+	}
 
-		Page<EventEntity> resultList = repository.findAll(pagingRequest);
-		return converter.toDtoList(resultList);
+	@Override
+	public EventListDto listByUser(Long userId, PagingDto dto) {
+		return converter.toDtoList(repository.findAllByUserId(userId, createPageable(dto)));
+	}
+	
+	private static Pageable createPageable(PagingDto dto) {
+		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
+		return PageRequest.of(dto.getPage(), dto.getSize(), sort);
 	}
 }

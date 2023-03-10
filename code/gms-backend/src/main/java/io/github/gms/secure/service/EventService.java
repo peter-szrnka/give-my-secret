@@ -14,4 +14,6 @@ public interface EventService extends GmsService {
 	void saveUserEvent(UserEvent event);
 	
 	EventListDto list(PagingDto dto);
+	
+	EventListDto listByUser(Long userId, PagingDto dto);
 }

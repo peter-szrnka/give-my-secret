@@ -3,6 +3,7 @@ package io.github.gms.secure.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EventOperation;
@@ -69,7 +73,8 @@ class EventServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldReturnList() {
 		// arrange
-		//Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(new EventEntity()));
+		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(new EventEntity()));
+		when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
 		when(converter.toDtoList(any())).thenReturn(new EventListDto(Lists.newArrayList(new EventDto())));
 
 		// act
@@ -78,6 +83,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(1, response.getResultList().size());
+		verify(repository).findAll(any(Pageable.class));
 		verify(converter).toDtoList(any());
 	}
 	
@@ -88,5 +94,22 @@ class EventServiceImplTest extends AbstractUnitTest {
 
 		// assert
 		verify(repository).deleteById(1L);
+	}
+	
+	@Test
+	void shouldReturnListByUser() {
+		// arrange
+		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(new EventEntity()));
+		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
+		when(converter.toDtoList(any())).thenReturn(new EventListDto(Lists.newArrayList(new EventDto())));
+
+		// act
+		EventListDto response = service.listByUser(1L, new PagingDto("ASC", "id", 0, 10));
+
+		// assert
+		assertNotNull(response);
+		assertEquals(1, response.getResultList().size());
+		verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
+		verify(converter).toDtoList(any());
 	}
 }
