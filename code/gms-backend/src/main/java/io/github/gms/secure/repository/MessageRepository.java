@@ -1,5 +1,7 @@
 package io.github.gms.secure.repository;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,4 +36,7 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
 	@Modifying
 	@Query("update MessageEntity m set m.opened=true where m.userId = :userId and m.id in :messageIds")
 	void markAsRead(@Param("userId") Long userId, @Param("messageIds") Set<Long> messageIds);
+
+	@Query("select m from MessageEntity m where m.creationDate < :eventDate")
+	List<MessageEntity> findAllEventDateOlderThan(ZonedDateTime creationDate);
 }

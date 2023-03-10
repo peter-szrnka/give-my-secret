@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import io.github.gms.common.abstraction.AbstractLimitBasedJob;
-import io.github.gms.secure.entity.EventEntity;
-import io.github.gms.secure.repository.EventRepository;
+import io.github.gms.secure.entity.MessageEntity;
+import io.github.gms.secure.repository.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,22 +19,22 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "config.job.eventmaintenance.enabled", havingValue = "true", matchIfMissing = true)
-public class EventMaintenanceJob extends AbstractLimitBasedJob {
+@ConditionalOnProperty(value = "config.job.messagecleanup.enabled", havingValue = "true", matchIfMissing = true)
+public class MessageCleanupJob extends AbstractLimitBasedJob {
 	
 	@Autowired
-	private EventRepository eventRepository;
+	private MessageRepository messageRepository;
 	
-	@Value("${config.event.old.limit}")
-	private String oldEventLimit;
-
+	@Value("${config.message.old.limit}")
+	private String oldMessageLimit;
+	
 	@Scheduled(cron = "0 0 * * * ?")
 	public void execute() {
-		List<EventEntity> resultList = eventRepository.findAllEventDateOlderThan(processConfig(oldEventLimit));
-		eventRepository.deleteAll(resultList);
+		List<MessageEntity> resultList = messageRepository.findAllEventDateOlderThan(processConfig(oldMessageLimit));
+		messageRepository.deleteAll(resultList);
 		
 		if (!resultList.isEmpty()) {
-			log.info("{} event(s) deleted", resultList.size());
+			log.info("{} message(s) deleted", resultList.size());
 		}
 	}
 }
