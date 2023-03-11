@@ -29,7 +29,7 @@ public class EventController extends AbstractController<EventService> {
 	}
 	
 	@PostMapping("/list/{userId}")
-	@PreAuthorize(Constants.ROLE_USER_OR_VIEWER)
+	@PreAuthorize(Constants.ROLE_ADMIN)
 	public @ResponseBody EventListDto listByUserId(@PathVariable("userId") Long userId, @RequestBody PagingDto dto) {
 		return service.listByUser(userId, dto);
 	}

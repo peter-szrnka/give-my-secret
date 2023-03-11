@@ -70,4 +70,33 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(EventOperation.GET_BY_ID, responseList.getResultList().get(0).getOperation());
 		assertEquals(EventTarget.API_KEY, responseList.getResultList().get(0).getTarget());
 	}
+	
+	@Test
+	void testListByUserId() {
+		eventRepository.deleteAll();
+		
+		// arrange
+		EventEntity eventEntity = new EventEntity();
+		eventEntity.setId(1L);
+		eventEntity.setUserId(2L);
+		eventEntity.setOperation(EventOperation.GET_BY_ID);
+		eventEntity.setTarget(EventTarget.API_KEY);
+		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1l));
+		eventRepository.save(eventEntity);
+
+		// act
+		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
+
+		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<EventListDto> response = executeHttpPost(path + "/list/2", requestEntity, EventListDto.class);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertNotNull(response.getBody());
+		
+		EventListDto responseList = response.getBody();
+		assertFalse(responseList.getResultList().isEmpty());
+		assertEquals(EventOperation.GET_BY_ID, responseList.getResultList().get(0).getOperation());
+		assertEquals(EventTarget.API_KEY, responseList.getResultList().get(0).getTarget());
+	}
 }

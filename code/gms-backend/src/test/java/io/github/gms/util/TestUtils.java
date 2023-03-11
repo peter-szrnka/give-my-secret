@@ -243,7 +243,7 @@ public class TestUtils {
 		entity.setEventDate(ZonedDateTime.now().minusHours(2));
 		entity.setOperation(EventOperation.GET_BY_ID);
 		entity.setTarget(EventTarget.KEYSTORE);
-		entity.setUserId("user");
+		entity.setUserId(DemoData.USER_1_ID);
 		return entity;
 	}
 

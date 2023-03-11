@@ -5,19 +5,17 @@ import java.time.ZonedDateTime;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.EventConverter;
 import io.github.gms.secure.dto.EventListDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.entity.EventEntity;
 import io.github.gms.secure.model.UserEvent;
 import io.github.gms.secure.repository.EventRepository;
+import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.EventService;
 
 /**
@@ -34,15 +32,17 @@ public class EventServiceImpl implements EventService {
 	private EventRepository repository;
 	
 	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
 	private EventConverter converter;
 
 	@Override
 	public void saveUserEvent(UserEvent event) {
-		String username = MDC.get(MdcParameter.USER_NAME.getDisplayName());
-		
+		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		EventEntity entity = new EventEntity();
 		entity.setEventDate(ZonedDateTime.now(clock));
-		entity.setUserId(username);
+		entity.setUserId(userId);
 		entity.setOperation(event.getOperation());
 		entity.setTarget(event.getTarget());
 		repository.save(entity);
@@ -55,16 +55,18 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public EventListDto list(PagingDto dto) {
-		return converter.toDtoList(repository.findAll(createPageable(dto)));
+		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
+		String username = getUsername(userId);
+		return converter.toDtoList(repository.findAll(ConverterUtils.createPageable(dto)).toList(), username);
 	}
 
 	@Override
 	public EventListDto listByUser(Long userId, PagingDto dto) {
-		return converter.toDtoList(repository.findAllByUserId(userId, createPageable(dto)));
+		String username = getUsername(userId);
+		return converter.toDtoList(repository.findAllByUserId(userId, ConverterUtils.createPageable(dto)).toList(), username);
 	}
 	
-	private static Pageable createPageable(PagingDto dto) {
-		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
-		return PageRequest.of(dto.getPage(), dto.getSize(), sort);
+	private String getUsername(Long userId) {
+		return userRepository.getUsernameById(userId);
 	}
 }

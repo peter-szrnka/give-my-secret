@@ -9,16 +9,13 @@ import java.util.stream.Stream;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.SecretConverter;
 import io.github.gms.secure.dto.LongValueDto;
@@ -116,10 +113,7 @@ public class SecretServiceImpl implements SecretService {
 	@Override
 	public SecretListDto list(PagingDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
-		Pageable pagingRequest = PageRequest.of(dto.getPage(), dto.getSize(), sort);
-
-		Page<SecretEntity> resultList = repository.findAllByUserId(userId, pagingRequest);
+		Page<SecretEntity> resultList = repository.findAllByUserId(userId, ConverterUtils.createPageable(dto));
 		return converter.toDtoList(resultList);
 	}
 

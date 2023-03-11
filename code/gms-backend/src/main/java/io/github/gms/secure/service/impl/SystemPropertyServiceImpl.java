@@ -7,13 +7,11 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.SystemPropertyConverter;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SystemPropertyDto;
@@ -51,10 +49,8 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
 
 	@Override
 	public SystemPropertyListDto list(PagingDto dto) {
-		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
-
 		try {
-			Page<SystemPropertyEntity> resultList = repository.findAll(PageRequest.of(dto.getPage(), dto.getSize(), sort));
+			Page<SystemPropertyEntity> resultList = repository.findAll(ConverterUtils.createPageable(dto));
 			return converter.toDtoList(resultList.getContent());
 		} catch (Exception e) {
 			return new SystemPropertyListDto(Collections.emptyList());
