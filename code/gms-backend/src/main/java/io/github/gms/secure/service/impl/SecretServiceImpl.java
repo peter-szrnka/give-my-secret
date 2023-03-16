@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.SecretConverter;
@@ -39,6 +42,7 @@ import io.github.gms.secure.service.SecretService;
  * @since 1.0
  */
 @Service
+@CacheConfig(cacheNames = { Constants.CACHE_API })
 public class SecretServiceImpl implements SecretService {
 
 	static final String WRONG_ENTITY = "Wrong entity!";
@@ -64,6 +68,7 @@ public class SecretServiceImpl implements SecretService {
 	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
 
 	@Override
+	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveSecretRequestDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		SecretEntity entity;
@@ -123,6 +128,7 @@ public class SecretServiceImpl implements SecretService {
 	}
 
 	@Override
+	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, userId);

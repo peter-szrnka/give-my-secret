@@ -15,6 +15,8 @@ import javax.transaction.Transactional;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -56,6 +58,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
+@CacheConfig(cacheNames = { Constants.CACHE_API })
 public class KeystoreServiceImpl implements KeystoreService {
 
 	@Autowired
@@ -80,6 +83,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private String keystorePath;
 
 	@Override
+	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(String model, MultipartFile file) {
 		SaveKeystoreRequestDto dto;
 		try {
@@ -153,6 +157,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	@Override
+	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveKeystoreRequestDto dto) {
 		throw new UnsupportedOperationException("Not supported!");
 	}
@@ -177,6 +182,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 	@Override
 	@Transactional
+	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public void delete(Long id) {
 		KeystoreEntity entity = getKeystore(id);
 		File keystoreFile = new File(keystorePath + entity.getUserId() + Constants.SLASH + entity.getFileName());
@@ -193,6 +199,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	@Override
+	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
 		KeystoreEntity entity = getKeystore(id);
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
