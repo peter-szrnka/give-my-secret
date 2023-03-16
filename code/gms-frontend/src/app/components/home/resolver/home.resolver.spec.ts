@@ -70,8 +70,8 @@ describe('HomeResolver', () => {
         eventService = {
             list: jest.fn().mockImplementation(() => {
                 return of([
-                    { id: 1, operation: "SAVE", target: "KEYSTORE", userId: "user-1" } as Event,
-                    { id: 2, operation: "SAVE", target: "KEYSTORE", userId: "user-2" } as Event,
+                    { id: 1, operation: "SAVE", target: "KEYSTORE", username: "user-1" } as Event,
+                    { id: 2, operation: "SAVE", target: "KEYSTORE", username: "user-2" } as Event,
                 ]);
             })
         }

@@ -28,6 +28,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	@Query("SELECT COUNT(u) from UserEntity u where u.roles like '%ROLE_USER%' or u.roles like '%ROLE_VIEWER%'")
 	long countNormalUsers();
 
+	// TODO Configure cache for this method
 	@Query("SELECT u.username from UserEntity u where u.id = :userId")
 	String getUsernameById(@Param("userId") Long userId);
 }

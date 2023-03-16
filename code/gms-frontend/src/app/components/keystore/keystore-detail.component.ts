@@ -113,6 +113,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
 
   addAliasDataToRequest() : void {
     this.data.aliases = this.aliasList;
+    this.data.fileName = undefined;
   }
 
   private validateAliases() : void {

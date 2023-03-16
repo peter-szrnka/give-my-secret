@@ -24,7 +24,7 @@ CREATE TABLE gms_event (
 	event_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
 	operation VARCHAR(255) NULL DEFAULT NULL,
 	target VARCHAR(255) NULL DEFAULT NULL,
-	user_name VARCHAR(255) NULL DEFAULT NULL
+	user_id BIGINT NOT NULL
 );
 
 CREATE TABLE gms_keystore (

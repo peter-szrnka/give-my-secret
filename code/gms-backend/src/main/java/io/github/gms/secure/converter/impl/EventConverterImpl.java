@@ -24,7 +24,8 @@ public class EventConverterImpl implements EventConverter {
 		dto.setEventDate(entity.getEventDate());
 		dto.setOperation(entity.getOperation());
 		dto.setTarget(entity.getTarget());
-		dto.setUserId(username);
+		dto.setUserId(entity.getUserId());
+		dto.setUsername(username);
 		return dto;
 	}
 

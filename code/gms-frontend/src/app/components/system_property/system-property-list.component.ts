@@ -91,6 +91,7 @@ export class SystemPropertyListComponent {
   }
 
   public save(element: any) {
+    element.mode = undefined;
     this.service.save(element).subscribe({
       next: () => {
         this.openInformationDialog("System property has been saved!", true, 'information');

@@ -7,7 +7,7 @@ import { EventService } from "./event-service";
 
 const TEST_EVENT : Event = {
   id : 1,
-  userId : "user1",
+  username : "user1",
   eventDate: new Date(),
   target : "USER",
   operation : "SAVE"
@@ -59,6 +59,28 @@ describe("EventService", () => {
         size: 10
       };
       service.list(request).subscribe((res) => expect(res).toBe(mockResponse));
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(request);
+      req.flush(request);
+      httpMock.verify();
+    });
+
+    it('Should list results by user id', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/event/list/2";
+      const mockResponse : Event[] = [TEST_EVENT];
+
+      // act
+      const request : Paging = {
+        direction : "asc",
+        page: 0,
+        property: "id",
+        size: 10
+      };
+      service.listByUserId(request, 2).subscribe((res) => expect(res).toBe(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);

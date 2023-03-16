@@ -21,7 +21,7 @@ describe('EventListResolver', () => {
 
     const mockResponse : Event[] = [{
         id : 1,
-        userId : "user-1",
+        username : "user-1",
         operation : "SAVE",
         target : "EVENT",
         eventDate: new Date()

@@ -2,6 +2,7 @@ package io.github.gms.secure.service.impl;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
+import java.util.stream.Collectors;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,18 +56,18 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public EventListDto list(PagingDto dto) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		String username = getUsername(userId);
-		return converter.toDtoList(repository.findAll(ConverterUtils.createPageable(dto)).toList(), username);
+		return new EventListDto(repository.findAll(ConverterUtils.createPageable(dto)).toList()
+				.stream()
+				.map(entity -> converter.toDto(entity, getUsername(entity.getUserId())))
+				.collect(Collectors.toList()));
 	}
 
 	@Override
 	public EventListDto listByUser(Long userId, PagingDto dto) {
-		String username = getUsername(userId);
-		return converter.toDtoList(repository.findAllByUserId(userId, ConverterUtils.createPageable(dto)).toList(), username);
+		return converter.toDtoList(repository.findAllByUserId(userId, ConverterUtils.createPageable(dto)).toList(), getUsername(userId));
 	}
 	
 	private String getUsername(Long userId) {
-		return userRepository.getUsernameById(userId);
+		return userId.equals(0L) ? "setup" : userRepository.getUsernameById(userId);
 	}
 }

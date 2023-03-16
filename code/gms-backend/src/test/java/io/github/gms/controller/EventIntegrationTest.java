@@ -50,6 +50,7 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 		// arrange
 		EventEntity eventEntity = new EventEntity();
 		eventEntity.setId(1L);
+		eventEntity.setUserId(2L);
 		eventEntity.setOperation(EventOperation.GET_BY_ID);
 		eventEntity.setTarget(EventTarget.API_KEY);
 		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1l));

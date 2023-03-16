@@ -9,6 +9,16 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { PageConfig } from "../../common/model/common.model";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
+import { EventService } from "../event/service/event-service";
+import { Event } from "../event/model/event.model";
+import { ArrayDataSource } from "@angular/cdk/collections";
+
+const EVENT_LIST_FILTER = {
+  direction: "DESC",
+  property: "eventDate",
+  page: 0,
+  size: 10
+};
 
 const ALL_ROLES: string[] = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 
@@ -19,24 +29,46 @@ const ALL_ROLES: string[] = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 })
 export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, UserService> {
 
+  userColumns: string[] = [ 'id', 'operation', 'target', 'eventDate' ];
+
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   @ViewChild('roleInput') roleInput: ElementRef<HTMLInputElement>;
   addOnBlur = true;
   auto = true;
   selectableRoles = ALL_ROLES;
+  eventList : Event[] | undefined;
+  public datasource : ArrayDataSource<Event>;
+
+  public tableConfig = {
+    pageSize : 20
+  };
 
   constructor(
     protected override router: Router,
     protected override sharedData: SharedDataService,
     protected override service: UserService,
     public override dialog: MatDialog,
-    protected override activatedRoute: ActivatedRoute) {
+    protected override activatedRoute: ActivatedRoute,
+    public eventService : EventService) {
     super(router, sharedData, service, dialog, activatedRoute);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override dataLoadingCallback(data: UserData) {
     this.refreshSelectableRoles();
+
+    if (data.id === undefined) {
+      return;
+    }
+
+    this.eventService.listByUserId(EVENT_LIST_FILTER, data.id).subscribe(eventList => {
+      this.eventList = eventList;
+      this.datasource = new ArrayDataSource<Event>(this.eventList);
+    });
+  }
+
+  public getCount() : number {
+    return this.eventList?.length || 0;
   }
 
   private refreshSelectableRoles(): void {
