@@ -19,7 +19,7 @@ import { BaseListComponent } from "../../common/components/abstractions/componen
 })
 export class EventListComponent extends BaseListComponent<Event, EventService> {
 
-    userColumns: string[] = [ 'id', 'userId', 'operation', 'target', 'eventDate' ];
+    userColumns: string[] = [ 'id', 'username', 'operation', 'target', 'eventDate' ];
 
     constructor(
       override router : Router,

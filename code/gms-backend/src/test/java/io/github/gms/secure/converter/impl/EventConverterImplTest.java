@@ -3,9 +3,9 @@ package io.github.gms.secure.converter.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 
 import com.google.common.collect.Lists;
 
@@ -28,10 +28,10 @@ class EventConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToList() {
 		// arrange
-		Page<EventEntity> entityList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity()));
+		List<EventEntity> entityList = Lists.newArrayList(TestUtils.createEventEntity());
 
 		// act
-		EventListDto resultList = converter.toDtoList(entityList);
+		EventListDto resultList = converter.toDtoList(entityList, "username");
 
 		// assert
 		assertNotNull(resultList);

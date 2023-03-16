@@ -37,6 +37,7 @@ public class SetupController {
 	@Audited(operation = EventOperation.SETUP)
 	public @ResponseBody SaveEntityResponseDto saveAdminUser(@RequestBody SaveUserRequestDto dto) {
 		MDC.put(MdcParameter.USER_NAME.getDisplayName(), "setup");
+		MDC.put(MdcParameter.USER_ID.getDisplayName(), "0");
 
 		if (dto.getRoles().isEmpty()) {
 			dto.setRoles(Sets.newHashSet(UserRole.ROLE_ADMIN));

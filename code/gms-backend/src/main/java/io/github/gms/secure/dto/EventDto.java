@@ -17,7 +17,8 @@ public class EventDto implements Serializable {
 	private static final long serialVersionUID = 9068326085717719704L;
 
 	private Long id;
-	private String userId;
+	private Long userId;
+	private String username;
 	private ZonedDateTime eventDate;
 	private EventOperation operation;
 	private EventTarget target;

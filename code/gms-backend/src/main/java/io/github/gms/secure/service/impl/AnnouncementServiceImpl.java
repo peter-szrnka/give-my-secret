@@ -6,15 +6,12 @@ import java.util.stream.Collectors;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.dto.AnnouncementDto;
 import io.github.gms.secure.dto.AnnouncementListDto;
 import io.github.gms.secure.dto.PagingDto;
@@ -62,11 +59,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
 	@Override
 	public AnnouncementListDto list(PagingDto dto) {
-		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
-		Pageable pagingRequest = PageRequest.of(dto.getPage(), dto.getSize(), sort);
-		
 		return new AnnouncementListDto(
-				repository.findAll(pagingRequest)
+				repository.findAll(ConverterUtils.createPageable(dto))
 				.getContent()
 				.stream()
 				.map(this::toDto)

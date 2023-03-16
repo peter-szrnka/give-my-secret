@@ -3,6 +3,9 @@ package io.github.gms.secure.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EventOperation;
@@ -26,6 +32,8 @@ import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.entity.EventEntity;
 import io.github.gms.secure.model.UserEvent;
 import io.github.gms.secure.repository.EventRepository;
+import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.util.TestUtils;
 
 /**
  * Unit test of {@link EventServiceImpl}
@@ -40,6 +48,9 @@ class EventServiceImplTest extends AbstractUnitTest {
 
 	@InjectMocks
 	private EventServiceImpl service;
+	
+	@Mock
+	private UserRepository userRepository;
 
 	@Mock
 	private EventRepository repository;
@@ -51,7 +62,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 	void shouldSaveUserEvent() {
 		// arrange
 		setupClock(clock);
-		MDC.put(MdcParameter.USER_NAME.getDisplayName(), "user1");
+		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 
 		// act
 		service.saveUserEvent(new UserEvent(EventOperation.GET_BY_ID, EventTarget.API_KEY));
@@ -61,26 +72,11 @@ class EventServiceImplTest extends AbstractUnitTest {
 		verify(repository).save(eventCaptor.capture());
 		
 		EventEntity capturedEvent = eventCaptor.getValue();
-		assertEquals("user1", capturedEvent.getUserId());
+		assertEquals(1L, capturedEvent.getUserId());
 		assertEquals(EventOperation.GET_BY_ID, capturedEvent.getOperation());
 		assertEquals(EventTarget.API_KEY, capturedEvent.getTarget());
 	}
 
-	@Test
-	void shouldReturnList() {
-		// arrange
-		//Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(new EventEntity()));
-		when(converter.toDtoList(any())).thenReturn(new EventListDto(Lists.newArrayList(new EventDto())));
-
-		// act
-		EventListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
-
-		// assert
-		assertNotNull(response);
-		assertEquals(1, response.getResultList().size());
-		verify(converter).toDtoList(any());
-	}
-	
 	@Test
 	void shouldDelete() {
 		// act
@@ -88,5 +84,49 @@ class EventServiceImplTest extends AbstractUnitTest {
 
 		// assert
 		verify(repository).deleteById(1L);
+	}
+	
+	@Test
+	void shouldReturnList() {
+		// arrange
+		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
+		
+		EventEntity secondEventEntity = TestUtils.createEventEntity();
+		secondEventEntity.setUserId(0L);
+		
+		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity(), secondEventEntity));
+		when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
+		when(converter.toDto(any(EventEntity.class), anyString())).thenReturn(new EventDto());
+		when(userRepository.getUsernameById(anyLong())).thenReturn("user1");
+
+		// act
+		EventListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+
+		// assert
+		assertNotNull(response);
+		assertEquals(2, response.getResultList().size());
+		verify(repository).findAll(any(Pageable.class));
+		verify(converter, times(2)).toDto(any(EventEntity.class), anyString());
+		verify(userRepository).getUsernameById(anyLong());
+	}
+	
+	@Test
+	void shouldReturnListByUser() {
+		// arrange
+		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
+		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity()));
+		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
+		when(converter.toDtoList(any(), anyString())).thenReturn(new EventListDto(Lists.newArrayList(new EventDto())));
+		when(userRepository.getUsernameById(anyLong())).thenReturn("user1");
+
+		// act
+		EventListDto response = service.listByUser(1L, new PagingDto("ASC", "id", 0, 10));
+
+		// assert
+		assertNotNull(response);
+		assertEquals(1, response.getResultList().size());
+		verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
+		verify(converter).toDtoList(any(), anyString());
+		verify(userRepository).getUsernameById(anyLong());
 	}
 }

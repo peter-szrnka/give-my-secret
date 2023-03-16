@@ -5,7 +5,7 @@ import { PageConfig } from "../../../common/model/common.model";
  */
 export interface Event {
     id : number,
-    userId : string,
+    username : string,
     eventDate : Date,
     operation : string,
     target : string;

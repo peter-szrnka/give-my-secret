@@ -62,6 +62,8 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	@Test
 	void testList() {
+		repository.deleteAll();
+
 		// arrange
 		repository.save(TestUtils.createNewMessageEntity());
 		
@@ -76,11 +78,16 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(response.getBody());
 		
 		MessageListDto responseList = response.getBody();
-		assertEquals(3, responseList.getResultList().size());
+		assertEquals(1, responseList.getResultList().size());
 	}
 	
 	@Test
 	void testGetUnreadMessagesCount() {
+		repository.deleteAll();
+		
+		// arrange
+		repository.save(TestUtils.createNewMessageEntity());
+
 		// act
 		MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().ids(Sets.newHashSet(1L)).build();
 		HttpEntity<MarkAsReadRequestDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
@@ -91,6 +98,6 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(response.getBody());
 
 		LongValueDto responseBody = response.getBody();
-		assertEquals(3, responseBody.getValue());
+		assertEquals(1, responseBody.getValue());
 	}
 }

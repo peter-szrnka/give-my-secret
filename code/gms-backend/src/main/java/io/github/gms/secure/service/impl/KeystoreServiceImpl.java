@@ -17,10 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +30,7 @@ import io.github.gms.common.event.EntityChangeEvent;
 import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.KeystoreConverter;
 import io.github.gms.secure.dto.DownloadFileResponseDto;
 import io.github.gms.secure.dto.GetSecureValueDto;
@@ -170,11 +167,8 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 	@Override
 	public KeystoreListDto list(PagingDto dto) {
-		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
-		Pageable pagingRequest = PageRequest.of(dto.getPage(), dto.getSize(), sort);
-
 		try {
-			Page<KeystoreEntity> resultList = repository.findAllByUserId(getUserId(), pagingRequest);
+			Page<KeystoreEntity> resultList = repository.findAllByUserId(getUserId(), ConverterUtils.createPageable(dto));
 			return converter.toDtoList(resultList);
 		} catch (Exception e) {
 			return new KeystoreListDto(Collections.emptyList());

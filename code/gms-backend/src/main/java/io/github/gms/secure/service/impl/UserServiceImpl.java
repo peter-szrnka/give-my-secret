@@ -10,10 +10,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +19,7 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.event.RefreshCacheEvent;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
 import io.github.gms.secure.dto.LongValueDto;
@@ -80,10 +77,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserListDto list(PagingDto dto) {
-		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
-		Pageable pagingRequest = PageRequest.of(dto.getPage(), dto.getSize(), sort);
-
-		Page<UserEntity> resultList = repository.findAll(pagingRequest);
+		Page<UserEntity> resultList = repository.findAll(ConverterUtils.createPageable(dto));
 		return converter.toDtoList(resultList);
 	}
 

@@ -5,15 +5,12 @@ import java.util.Collections;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.ApiKeyConverter;
 import io.github.gms.secure.dto.ApiKeyDto;
@@ -70,11 +67,8 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 	public ApiKeyListDto list(PagingDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 
-		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
-		Pageable pagingRequest = PageRequest.of(dto.getPage(), dto.getSize(), sort);
-
 		try {
-			Page<ApiKeyEntity> resultList = repository.findAllByUserId(userId, pagingRequest);
+			Page<ApiKeyEntity> resultList = repository.findAllByUserId(userId, ConverterUtils.createPageable(dto));
 			return converter.toDtoList(resultList);
 		} catch (Exception e) {
 			return new ApiKeyListDto(Collections.emptyList());

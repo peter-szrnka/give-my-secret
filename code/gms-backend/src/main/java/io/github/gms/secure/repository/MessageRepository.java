@@ -38,5 +38,5 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
 	void markAsRead(@Param("userId") Long userId, @Param("messageIds") Set<Long> messageIds);
 
 	@Query("select m from MessageEntity m where m.creationDate < :eventDate")
-	List<MessageEntity> findAllEventDateOlderThan(ZonedDateTime creationDate);
+	List<MessageEntity> findAllEventDateOlderThan(@Param("eventDate") ZonedDateTime creationDate);
 }

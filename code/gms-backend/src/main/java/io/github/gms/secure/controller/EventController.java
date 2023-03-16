@@ -1,6 +1,7 @@
 package io.github.gms.secure.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.gms.common.abstraction.AbstractController;
+import io.github.gms.common.util.Constants;
 import io.github.gms.secure.dto.EventListDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.service.EventService;
@@ -24,5 +26,11 @@ public class EventController extends AbstractController<EventService> {
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_VIEWER')")
 	public @ResponseBody EventListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
+	}
+	
+	@PostMapping("/list/{userId}")
+	@PreAuthorize(Constants.ROLE_ADMIN)
+	public @ResponseBody EventListDto listByUserId(@PathVariable("userId") Long userId, @RequestBody PagingDto dto) {
+		return service.listByUser(userId, dto);
 	}
 }

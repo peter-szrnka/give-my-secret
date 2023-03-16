@@ -6,13 +6,10 @@ import java.time.ZonedDateTime;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.MessageConverter;
 import io.github.gms.secure.dto.MarkAsReadRequestDto;
 import io.github.gms.secure.dto.MessageDto;
@@ -58,10 +55,7 @@ public class MessageServiceImpl implements MessageService {
 	public MessageListDto list(PagingDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 
-		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
-		Pageable pagingRequest = PageRequest.of(dto.getPage(), dto.getSize(), sort);
-
-		Page<MessageEntity> resultList = repository.findAllByUserId(userId, pagingRequest);
+		Page<MessageEntity> resultList = repository.findAllByUserId(userId, ConverterUtils.createPageable(dto));
 		return converter.toDtoList(resultList);
 	}
 

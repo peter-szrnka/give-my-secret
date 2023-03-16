@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.github.gms.secure.entity.UserEntity;
@@ -26,4 +27,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 	@Query("SELECT COUNT(u) from UserEntity u where u.roles like '%ROLE_USER%' or u.roles like '%ROLE_VIEWER%'")
 	long countNormalUsers();
+
+	// TODO Configure cache for this method
+	@Query("SELECT u.username from UserEntity u where u.id = :userId")
+	String getUsernameById(@Param("userId") Long userId);
 }
