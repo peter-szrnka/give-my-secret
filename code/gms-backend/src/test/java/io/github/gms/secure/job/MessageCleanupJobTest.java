@@ -31,7 +31,7 @@ import io.github.gms.util.TestUtils;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class MessageCleanupJobTest extends AbstractLoggingUnitTest {
+class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 
 	@Mock
 	private Clock clock;
