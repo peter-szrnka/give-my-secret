@@ -3,6 +3,8 @@ package io.github.gms.api.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import io.github.gms.api.service.ApiService;
@@ -29,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
+@CacheConfig(cacheNames = "apiCache", keyGenerator = "apiCacheKeyGenerator")
 public class ApiServiceImpl implements ApiService {
 
 	@Autowired
@@ -53,6 +56,7 @@ public class ApiServiceImpl implements ApiService {
 	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
 
 	@Override
+	@Cacheable
 	public ApiResponseDto getSecret(GetSecretRequestDto dto) {
 		log.info("Searching for secret={}", dto.getSecretId());
 		ApiKeyEntity apiKeyEntity = apiKeyRepository.findByValueAndStatus(dto.getApiKey(), EntityStatus.ACTIVE);

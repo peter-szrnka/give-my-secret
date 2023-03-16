@@ -5,10 +5,12 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeystoreType;
+import io.github.gms.common.util.Constants;
 import lombok.Data;
 
 /**
@@ -29,6 +31,7 @@ public class KeystoreDto implements Serializable {
 	private KeystoreType type;
 	private String description;
 	private String credential;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
 	private ZonedDateTime creationDate;
 	private List<KeystoreAliasDto> aliases = new ArrayList<>();
 }

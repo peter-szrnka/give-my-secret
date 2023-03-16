@@ -5,10 +5,12 @@ import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
+import io.github.gms.common.util.Constants;
 import lombok.Data;
 
 /**
@@ -27,6 +29,7 @@ public class UserDto implements Serializable {
 	private String email;
 	private EntityStatus status;
 	private String credential;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
 	private ZonedDateTime creationDate;
 	private Set<UserRole> roles = new HashSet<>();
 }

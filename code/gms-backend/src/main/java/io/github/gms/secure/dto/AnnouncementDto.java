@@ -3,6 +3,9 @@ package io.github.gms.secure.dto;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import io.github.gms.common.util.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +25,7 @@ public class AnnouncementDto implements Serializable {
 
 	private Long id;
 	private String author;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
 	private ZonedDateTime announcementDate;
 	private String title;
 	private String description;

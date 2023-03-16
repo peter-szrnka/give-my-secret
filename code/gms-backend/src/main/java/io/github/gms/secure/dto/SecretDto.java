@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SecretType;
+import io.github.gms.common.util.Constants;
 import lombok.Data;
 
 /**
@@ -28,8 +30,11 @@ public class SecretDto implements Serializable {
 	private String secretId;
 	private EntityStatus status;
 	private SecretType type;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
 	private ZonedDateTime creationDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
 	private ZonedDateTime lastUpdated;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
 	private ZonedDateTime lastRotated;
 	private RotationPeriod rotationPeriod;
 	private boolean returnDecrypted;

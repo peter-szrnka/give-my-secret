@@ -4,12 +4,15 @@ import java.util.Collections;
 
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.ApiKeyConverter;
@@ -29,6 +32,7 @@ import io.github.gms.secure.service.ApiKeyService;
  * @since 1.0
  */
 @Service
+@CacheConfig(cacheNames = { Constants.CACHE_API })
 public class ApiKeyServiceImpl implements ApiKeyService {
 
 	static final String ENTITY_NOT_FOUND = "Entity not found!";
@@ -40,6 +44,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 	private ApiKeyConverter converter;
 
 	@Override
+	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveApiKeyRequestDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		ApiKeyEntity entity;
@@ -76,11 +81,13 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 	}
 
 	@Override
+	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public void delete(Long id) {
 		repository.deleteById(id);
 	}
 
 	@Override
+	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 
