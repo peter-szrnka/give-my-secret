@@ -25,9 +25,10 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
 
 	@Test
 	void testGetSecret() {
+
 		// arrange
 		apiKeyRepository.save(TestUtils.createApiKey(DemoData.API_KEY_3_ID, DemoData.API_KEY_CREDENTIAL3));
-		keystoreAliasRepository.save(TestUtils.createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS3_ID));
+		keystoreAliasRepository.save(TestUtils.createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS3_ID, DemoData.KEYSTORE3_ID));
 		keystoreRepository.save(TestUtils.createKeystoreEntity(DemoData.KEYSTORE3_ID, "test"));
 		secretRepository.save(
 				TestUtils.createSecretEntity(DemoData.SECRET_ENTITY3_ID, DemoData.KEYSTORE_ALIAS3_ID, DemoData.SECRET_ID3));

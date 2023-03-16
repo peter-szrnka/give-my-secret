@@ -367,11 +367,11 @@ public class TestUtils {
 		return entity;
 	}
 	
-	public static KeystoreAliasEntity createKeystoreAliasEntity(Long id) {
+	public static KeystoreAliasEntity createKeystoreAliasEntity(Long id, Long keystoreId) {
 		KeystoreAliasEntity entity = new KeystoreAliasEntity();
 		
 		entity.setId(id);
-		entity.setKeystoreId(DemoData.KEYSTORE_ID);
+		entity.setKeystoreId(keystoreId);
 		entity.setAlias("test");
 		entity.setAliasCredential("test");
 		entity.setDescription("description");
@@ -380,7 +380,7 @@ public class TestUtils {
 	}
 
 	public static KeystoreAliasEntity createKeystoreAliasEntity() {
-		return createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS_ID);
+		return createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS_ID, DemoData.KEYSTORE_ID);
 	}
 	
 	@Data
