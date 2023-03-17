@@ -24,7 +24,7 @@ describe('AppComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn()
+            navigate : jest.fn().mockReturnValue(of(true))
         };
 
         mockSubject = new ReplaySubject<User | undefined>();
@@ -46,12 +46,13 @@ describe('AppComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule],
+            //imports : [RouterTestingModule],
             declarations : [AppComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : SharedDataService, useValue : sharedDataService },
-                { provide : SplashScreenStateService, useValue : splashScreenStateService }
+                { provide : SplashScreenStateService, useValue : splashScreenStateService },
+                { provide : Router, useValue : router }
             ]
         });
 

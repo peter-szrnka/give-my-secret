@@ -47,7 +47,7 @@ describe('LoginComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn()
+            navigate : jest.fn().mockReturnValue(of(true))
         };
 
         mockSubject = new ReplaySubject<any>();

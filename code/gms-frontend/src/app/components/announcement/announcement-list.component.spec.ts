@@ -67,7 +67,8 @@ describe('AnnouncementListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK"))
+            delete : jest.fn().mockReturnValue(of("OK")),
+            toggle : jest.fn().mockReturnValue(of())
         };
     });
 

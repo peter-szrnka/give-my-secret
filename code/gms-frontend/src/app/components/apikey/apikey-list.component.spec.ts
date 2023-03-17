@@ -51,7 +51,7 @@ describe('ApiKeyListComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn()
+            navigate : jest.fn().mockReturnValue(of(true))
         };
 
         sharedDataService = {
