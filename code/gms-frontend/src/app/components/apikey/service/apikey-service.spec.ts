@@ -132,4 +132,17 @@ describe("ApiKeyService", () => {
       req.flush(mockHttpResponse);
       httpMock.verify();
   });
+
+  it('should enable entity', () => {
+    // arrange
+    const expectedUrl = environment.baseUrl + "secure/apikey/1?enabled=true";
+
+    // act
+    service.toggle(1, true).subscribe((res) => expect(res).toBeCalled());
+
+    // assert
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('POST');
+    httpMock.verify();
+  });
 });

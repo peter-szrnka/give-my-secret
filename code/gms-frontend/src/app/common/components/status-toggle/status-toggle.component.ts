@@ -14,9 +14,10 @@ export class StatusToggleComponent {
     @Input() status? : string;
     @Input() doNotToggle? : boolean = false;
     @Output() callbackFunction: EventEmitter<any> = new EventEmitter();
+    component: import("events");
 
     public toggle() {
-        if (this.doNotToggle) {
+        if (this.doNotToggle === true) {
             return;
         }
 

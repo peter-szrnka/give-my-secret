@@ -50,7 +50,6 @@ describe('AppComponent', () => {
             declarations : [AppComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
-                { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService }
             ]

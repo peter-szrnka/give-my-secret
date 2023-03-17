@@ -79,7 +79,8 @@ describe('ApiKeyListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK"))
+            delete : jest.fn().mockReturnValue(of("OK")),
+            toggle : jest.fn().mockReturnValue(of("OK"))
         };
     });
 
@@ -136,6 +137,17 @@ describe('ApiKeyListComponent', () => {
         component.promptDelete(1);
 
         expect(component.dialog.open).toHaveBeenCalled();
+        expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+    });
+
+    it('Should toggle(enable) an item', () => {
+        configureTestBed();
+
+        expect(component).toBeTruthy();
+        expect(component.datasource).toBeTruthy();
+
+        component.toggle(1, 'ACTIVE');
+
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 });
