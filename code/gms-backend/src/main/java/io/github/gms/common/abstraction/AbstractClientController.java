@@ -33,6 +33,6 @@ public abstract class AbstractClientController<T extends GmsClientService> exten
 	@Audited(operation = EventOperation.TOGGLE_STATUS)
 	public ResponseEntity<String> toggle(@PathVariable("id") Long id, @RequestParam("enabled") boolean enabled) {
 		service.toggleStatus(id, enabled);
-		return new ResponseEntity<>("OK", HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
