@@ -40,4 +40,8 @@ export class KeystoreService extends ServiceBase<Keystore, KeystoreList> {
     public getAllKeystoreAliases(keystoreId : number) : Observable<IdNamePair[]> {
         return this.http.get<IdNamePairList>(environment.baseUrl + "secure/" + this.scope + '/list_aliases/' + keystoreId, { withCredentials: true, headers : getHeaders() }).pipe(map(value => value.resultList));
     }
+
+    public override toggle(id: number, enabled : boolean): Observable<string> {
+        return this.http.post<string>(environment.baseUrl + "secure/" + this.scope + '/' + id + "?enabled=" + enabled, {}, { withCredentials : true, headers : getHeaders(), responseType : 'text' as 'json' });
+    }
 }

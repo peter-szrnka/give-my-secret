@@ -37,6 +37,10 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
 
     abstract getPageConfig() : PageConfig;
 
+    public toggle(entityId : number, status : string) : void {
+      this.service.toggle(entityId || 0, status !== 'ACTIVE').subscribe(() => this.router.navigate(['/' + this.getPageConfig().scope + "/list"]));
+    }
+
     public getCount() : number {
       return this.count;
     }

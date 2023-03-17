@@ -21,7 +21,7 @@ export class ApiKeyListComponent extends BaseListComponent<ApiKey, ApiKeyService
     constructor(
       override router : Router,
       override sharedData : SharedDataService, 
-      override service : ApiKeyService,
+      public override service : ApiKeyService,
       public override dialog: MatDialog,
       override activatedRoute: ActivatedRoute) {
         super(router, sharedData, service, dialog, activatedRoute);

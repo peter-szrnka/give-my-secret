@@ -8,13 +8,14 @@ import { ConfirmDeleteDialog } from "./confirm-delete/confirm-delete-dialog.comp
 import { InfoDialog } from "./info-dialog/info-dialog.component";
 import { NavBackComponent } from "./nav-back/nav-back.component";
 import { SplashComponent } from "./splash/splash.component";
+import { StatusToggleComponent } from "./status-toggle/status-toggle.component";
 
 /**
  * @author Peter Szrnka
  */
 @NgModule({
     declarations: [ 
-      ConfirmDeleteDialog, InfoDialog, SplashComponent, NavBackComponent
+      ConfirmDeleteDialog, InfoDialog, SplashComponent, NavBackComponent, StatusToggleComponent
      ],
     imports: [
         AngularMaterialModule,
@@ -23,7 +24,7 @@ import { SplashComponent } from "./splash/splash.component";
         AppRoutingModule
     ],
     exports : [
-      ConfirmDeleteDialog, InfoDialog, SplashComponent, NavBackComponent
+      ConfirmDeleteDialog, InfoDialog, SplashComponent, NavBackComponent, StatusToggleComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })

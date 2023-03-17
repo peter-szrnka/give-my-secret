@@ -1,0 +1,4 @@
+<ng-container>
+    <mat-icon *ngIf="status === 'ACTIVE'" (click)="toggle()" class="active">check_circle_outline</mat-icon>
+    <mat-icon *ngIf="status === 'DISABLED'" (click)="toggle()" class="disabled">block</mat-icon>
+</ng-container>

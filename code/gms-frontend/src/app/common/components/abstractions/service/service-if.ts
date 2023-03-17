@@ -16,4 +16,6 @@ export interface Service<T> {
     getById?(id : number) : Observable<T>;
 
     count?() : Observable<number>;
+
+    toggle(id : number, enabled : boolean): Observable<string>;
 }
