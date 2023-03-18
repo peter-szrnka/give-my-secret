@@ -20,4 +20,8 @@ export class UserService extends SaveServiceBase<UserData, UserDataList> {
     public changeCredentials(dto : any) : Observable<void> {
         return this.http.post<void>(environment.baseUrl + "secure/" + this.scope + '/change_credential', dto, { headers : getHeaders() });
     }
+
+    public override toggle(id: number, enabled : boolean): Observable<string> {
+        return this.http.post<string>(environment.baseUrl + "secure/" + this.scope + '/' + id + "?enabled=" + enabled, {}, { withCredentials : true, headers : getHeaders(), responseType : 'text' as 'json' });
+    }
 }

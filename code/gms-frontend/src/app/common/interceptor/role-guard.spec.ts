@@ -1,3 +1,4 @@
+import { of } from "rxjs";
 import { RoleGuard } from "./role-guard";
 
 /**
@@ -17,7 +18,7 @@ describe('RoleGuard', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn()
+            navigate : jest.fn().mockReturnValue(of(true))
         };
     });
 

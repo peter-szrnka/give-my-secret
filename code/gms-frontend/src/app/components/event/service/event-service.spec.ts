@@ -117,4 +117,9 @@ describe("EventService", () => {
       req.flush(2);
       httpMock.verify();
     });
+
+    it('should enable entity', () => {
+      // act
+      service.toggle(1, true).subscribe((res) => expect(res).toBeUndefined());
+    });
 });

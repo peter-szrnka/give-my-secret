@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { map, Observable, tap } from "rxjs";
+import { map, Observable, of, tap } from "rxjs";
 import { environment } from "../../../../../environments/environment";
 import { BaseList } from "../../../model/base-list";
 import { LongValue } from "../../../model/long-value.model";
@@ -29,5 +29,10 @@ export abstract class ServiceBase<T, L extends BaseList<T>> implements Service<T
 
     count(): Observable<number> {
         return this.http.get<LongValue>(environment.baseUrl + 'secure/' + this.scope + '/count', { withCredentials: true, headers : getHeaders() }).pipe(map(dto => dto.value));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    toggle(id: number, enabled: boolean): Observable<string> {
+        return of();
     }
 }

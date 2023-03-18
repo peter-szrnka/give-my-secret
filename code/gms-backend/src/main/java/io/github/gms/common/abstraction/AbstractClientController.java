@@ -31,7 +31,7 @@ public abstract class AbstractClientController<T extends GmsClientService> exten
 	@PostMapping("/{id}")
 	@PreAuthorize(Constants.ROLE_USER)
 	@Audited(operation = EventOperation.TOGGLE_STATUS)
-	public ResponseEntity<String> toggle(@PathVariable("id") Long id, @RequestParam boolean enabled) {
+	public ResponseEntity<String> toggle(@PathVariable("id") Long id, @RequestParam("enabled") boolean enabled) {
 		service.toggleStatus(id, enabled);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

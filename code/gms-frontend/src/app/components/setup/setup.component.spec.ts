@@ -55,7 +55,7 @@ describe('SetupComponent', () => {
         };
 
         router = {
-            navigate : jest.fn()
+            navigate : jest.fn().mockReturnValue(of(true))
         };
 
         splashScreenStateService = {

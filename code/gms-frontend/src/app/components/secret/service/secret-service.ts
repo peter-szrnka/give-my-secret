@@ -23,4 +23,8 @@ export class SecretService extends SaveServiceBase<Secret, SecretList> {
     public rotate(id? : number) : Observable<string> {
         return this.http.post<string>(environment.baseUrl + "secure/" + 'secret/rotate/' + id, {}, { withCredentials: true, headers : getHeaders() });
     }
+
+    public override toggle(id: number, enabled : boolean): Observable<string> {
+        return this.http.post<string>(environment.baseUrl + "secure/" + this.scope + '/' + id + "?enabled=" + enabled, {}, { withCredentials : true, headers : getHeaders(), responseType : 'text' as 'json' });
+    }
 }
