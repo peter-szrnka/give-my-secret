@@ -31,7 +31,6 @@ import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -92,7 +91,7 @@ import lombok.SneakyThrows;
  */
 class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
-	private static final String JKS_TEST_FILE_LOCATION = "./test-output/" + DemoData.USER_1_ID + "/test.jks";
+	private static final String JKS_TEST_FILE_LOCATION = "./unit-test-output/" + DemoData.USER_1_ID + "/test.jks";
 
 	@InjectMocks
 	private KeystoreServiceImpl service;
@@ -121,7 +120,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	@AfterAll
 	@SneakyThrows
 	public static void tearDownAll() {
-		TestUtils.deleteDirectoryWithContent("./test-output");
+		TestUtils.deleteDirectoryWithContent("./unit-test-output");
 	}
 
 	@Override
@@ -130,7 +129,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		super.setup();
 
 		((Logger) LoggerFactory.getLogger(KeystoreServiceImpl.class)).addAppender(logAppender);
-		ReflectionTestUtils.setField(service, "keystorePath", "test-output/");
+		ReflectionTestUtils.setField(service, "keystorePath", "unit-test-output/");
 		ReflectionTestUtils.setField(service, "keystoreTempPath", "temp-output/");
 
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), DemoData.USER_1_ID);
@@ -153,7 +152,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 				@Override
 				public Boolean answer(InvocationOnMock invocation) throws Throwable {
 					Path path = invocation.getArgument(0);
-					
 					return path.toString().equals("temp-output\\generated-fail.jks");
 				}
 			});
@@ -380,7 +378,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		
-		new File("test-output/" + DemoData.USER_1_ID + "/").mkdirs();
+		new File("unit-test-output/" + DemoData.USER_1_ID + "/").mkdirs();
 
 		FileWriter fileWriter = new FileWriter(JKS_TEST_FILE_LOCATION);
 		PrintWriter printWriter = new PrintWriter(fileWriter);
@@ -506,7 +504,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	@Disabled
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
 	void shouldSaveNewEntityWhenGeneratedInputIsAvailable() {
@@ -693,9 +690,9 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	@SneakyThrows
 	void shouldDelete() {
-		new File("test-output/1/").mkdirs();
+		new File("unit-test-output/1/").mkdirs();
 
-		FileWriter fileWriter = new FileWriter("test-output/1/test.jks");
+		FileWriter fileWriter = new FileWriter("unit-test-output/1/test.jks");
 		PrintWriter printWriter = new PrintWriter(fileWriter);
 		printWriter.print("value");
 		printWriter.close();
