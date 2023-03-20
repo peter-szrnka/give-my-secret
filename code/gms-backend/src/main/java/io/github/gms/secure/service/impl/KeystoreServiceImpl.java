@@ -68,40 +68,26 @@ public class KeystoreServiceImpl implements KeystoreService {
 	
 	@Override
 	public String generateKeystore(SaveKeystoreRequestDto dto) {
-		return "TODO.jks";
+		return "test.jks";
 	}
 
 	@Override
 	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(String model, MultipartFile file) {
-		SaveKeystoreRequestDto dto;
-
-		try {
-			dto = objectMapper.readValue(model, SaveKeystoreRequestDto.class);
-		} catch (Exception e) {
-			throw new GmsException(e);
-		}
-		
+		SaveKeystoreRequestDto dto = parseInput(model);
 		dto.setUserId(getUserId());
 		
 		// Validation
 		validateInput(dto, file);
-
-		// Persist data
+		
+		// Prepare data to persist later
 		KeystoreEntity entity = convertKeystore(dto, file);
-
-		// Process and validate file content
-		byte[] fileContent;
-
-		try {
-			fileContent = getFileContent(entity, file, dto.getGeneratedFileName() != null);
-			
-			// Validate keystore file credentials
-			cryptoService.validateKeyStoreFile(dto, fileContent);
-		} catch (Exception e) {
-			log.error("Keystore validation failed", e);
-			throw new GmsException(e);
-		}
+		
+		// Get file content
+		byte[] fileContent = getFileContent(entity, file, dto);
+		
+		// Validate keystore file
+		cryptoService.validateKeyStoreFile(dto, fileContent);
 
 		// Persist the keystore
 		final KeystoreEntity newEntity = repository.save(entity);
@@ -114,12 +100,10 @@ public class KeystoreServiceImpl implements KeystoreService {
 			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
 		}
 
-		if (file == null && dto.getGeneratedFileName() == null) {
-			return new SaveEntityResponseDto(newEntity.getId());
+		if (file != null || dto.getGeneratedFileName() != null) {
+			// Persist file
+			persistFile(newEntity, fileContent);
 		}
-
-		// Persist file
-		persistFile(newEntity, fileContent);
 		
 		return new SaveEntityResponseDto(newEntity.getId());
 	}
@@ -221,6 +205,14 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 	}
 
+	private SaveKeystoreRequestDto parseInput(String model) {
+		try {
+			return objectMapper.readValue(model, SaveKeystoreRequestDto.class);
+		} catch (Exception e) {
+			throw new GmsException(e);
+		}
+	}
+
 	private void persistFile(KeystoreEntity newEntity, byte[] fileContent) {
 		try {
 			String newFileName = getUserFolder() + newEntity.getFileName();
@@ -277,6 +269,11 @@ public class KeystoreServiceImpl implements KeystoreService {
 		if (dto.getAliases().stream().noneMatch(alias -> AliasOperation.DELETE != alias.getOperation())) {
 			throw new GmsException("You must define at least one keystore alias!");
 		}
+		
+		if (file != null && dto.getGeneratedFileName() != null) {
+			// Edge case: User cannot upload a keystore along with a generated keystore, only one can be selected
+			throw new GmsException("Only one keystore source is allowed!");
+		}
 
 		validateKeystore(dto, file, dto.getId() == null ? 0 : 1);
 	}
@@ -317,23 +314,28 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 		return entity.getAliasCredential();
 	}
+	
 
-	private byte[] getFileContent(KeystoreEntity entity, MultipartFile file, boolean generated) throws IOException {
-		byte[] fileContent;
-		String folder = getUserFolder();
+	private byte[] getFileContent(KeystoreEntity entity, MultipartFile file, SaveKeystoreRequestDto dto) {
+		try {
+			if (file != null) {
+				return file.getBytes();
+			}
 
-		if (generated) {
-			folder = keystoreTempPath;
+			String folder = getUserFolder();
+			String filename = entity.getFileName();
+				
+			if (dto.getGeneratedFileName() != null) {
+				folder = keystoreTempPath;
+				filename = dto.getGeneratedFileName();
+			}
+				
+			File keystoreFile = new File(folder + filename);
+			return Files.readAllBytes(keystoreFile.toPath());
+		} catch (Exception e) {
+			log.error("Keystore content cannot be parsed", e);
+			throw new GmsException(e);
 		}
-
-		if (file == null) {
-			File keystoreFile = new File(folder + entity.getFileName());
-			fileContent = Files.readAllBytes(keystoreFile.toPath());
-		} else {
-			fileContent = file.getBytes();
-		}
-
-		return fileContent;
 	}
 	
 	private static Map<String, Object> initMetaData(Long userId, Long keystoreId) {

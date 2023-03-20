@@ -1,43 +1,20 @@
 package io.github.gms.secure.service.impl;
 
-import ch.qos.logback.classic.Logger;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.AliasOperation;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.KeyStoreValueType;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.event.EntityChangeEvent;
-import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.Constants;
-import io.github.gms.secure.converter.KeystoreConverter;
-import io.github.gms.secure.dto.*;
-import io.github.gms.secure.entity.KeystoreEntity;
-import io.github.gms.secure.repository.KeystoreAliasRepository;
-import io.github.gms.secure.repository.KeystoreRepository;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.secure.service.CryptoService;
-import io.github.gms.util.DemoData;
-import io.github.gms.util.TestUtils;
-import io.github.gms.util.TestUtils.ValueHolder;
-import lombok.SneakyThrows;
-import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.*;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.multipart.MultipartFile;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,10 +25,61 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import org.assertj.core.util.Lists;
+import org.jboss.logging.MDC;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.qos.logback.classic.Logger;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.enums.AliasOperation;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.KeyStoreValueType;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.event.EntityChangeEvent;
+import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
+import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.util.Constants;
+import io.github.gms.secure.converter.KeystoreConverter;
+import io.github.gms.secure.dto.DownloadFileResponseDto;
+import io.github.gms.secure.dto.GetSecureValueDto;
+import io.github.gms.secure.dto.IdNamePairDto;
+import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.KeystoreAliasDto;
+import io.github.gms.secure.dto.KeystoreDto;
+import io.github.gms.secure.dto.KeystoreListDto;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
+import io.github.gms.secure.repository.KeystoreRepository;
+import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.secure.service.CryptoService;
+import io.github.gms.util.DemoData;
+import io.github.gms.util.TestUtils;
+import io.github.gms.util.TestUtils.ValueHolder;
+import lombok.SneakyThrows;
 
 /**
  * Unit test of {@link KeystoreServiceImpl}
@@ -114,28 +142,31 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
-	void shouldSaveNewEntityFailCausedByKeystoreValidation() {
+	void shouldNotSaveNewEntityCausedByInvalidKeystoreFile() {
+		MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class);
+		mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class))).thenThrow(new RuntimeException("Test failure"));
+		mockedStaticFiles.when(() -> Files.exists(any())).thenReturn(false);
+
 		// arrange
 		SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
-		dtoInput.setId(1L);
+		dtoInput.setId(null);
+		dtoInput.setGeneratedFileName(UUID.randomUUID().toString());
 		String model = TestUtils.objectMapper().writeValueAsString(dtoInput);
 
-		MultipartFile multiPart = mock(MultipartFile.class);
-		when(multiPart.getBytes()).thenReturn("test".getBytes());
 		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
-		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
-		doThrow(new RuntimeException("Test failure")).when(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
+		when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
 
 		// act
-		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
+		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, null));
 
 		// assert
 		assertEquals("java.lang.RuntimeException: Test failure", exception.getMessage());
-		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 		verify(repository, never()).save(any());
+		verify(converter).toNewEntity(any(), any());
 		verify(objectMapper).readValue(eq(model), any(Class.class));
-		verify(repository).findByIdAndUserId(anyLong(), anyLong());
-		TestUtils.assertLogContains(logAppender, "Keystore validation failed");
+		TestUtils.assertLogContains(logAppender, "Keystore content cannot be parsed");
+		
+		mockedStaticFiles.close();
 	}
 	
 	@Test
@@ -181,7 +212,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
-	void shouldNotSaveNewEntity() {
+	void shouldNotSaveNewEntityWhenKeystoreNameMustBeUnique() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		dto.setId(null);
@@ -349,6 +380,48 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(objectMapper).readValue(eq(model), any(Class.class));
 	}
 
+	@Test
+	@SneakyThrows
+	@SuppressWarnings("unchecked")
+	void shouldNotSaveEntityOccurredWhenOnlyDeletedAliasProvided() {
+		// arrange
+		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		dto.setAliases(List.of(new KeystoreAliasDto(1L, "alias", "test", AliasOperation.DELETE)));
+		dto.setId(1L);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
+		
+		MultipartFile multiPart = mock(MultipartFile.class);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+
+		// act
+		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
+
+		// assert
+		assertEquals("You must define at least one keystore alias!", exception.getMessage());
+		verify(objectMapper).readValue(eq(model), any(Class.class));
+	}
+	
+	@Test
+	@SneakyThrows
+	@SuppressWarnings("unchecked")
+	void shouldNotSaveEntityWhenBothFileInputProvided() {
+		// arrange
+		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		dto.setId(1L);
+		dto.setGeneratedFileName(UUID.randomUUID().toString() + ".jks");
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
+		
+		MultipartFile multiPart = mock(MultipartFile.class);
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+
+		// act
+		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
+
+		// assert
+		assertEquals("Only one keystore source is allowed!", exception.getMessage());
+		verify(objectMapper).readValue(eq(model), any(Class.class));
+	}
+
 	@SuppressWarnings("unchecked")
 	@Test
 	@SneakyThrows
@@ -356,12 +429,12 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", "test", AliasOperation.DELETE));
+		dto.getAliases().add(new KeystoreAliasDto(4L, "alias3", "test", AliasOperation.SAVE));
 		dto.setStatus(EntityStatus.DISABLED);
 		dto.setId(1L);
 		String model = TestUtils.objectMapper().writeValueAsString(dto);
 		
 		MultipartFile multiPart = mock(MultipartFile.class);
-		//when(multiPart.getOriginalFilename()).thenReturn("my-key "+ UUID.randomUUID().toString()+".jks");
 		when(multiPart.getBytes()).thenReturn("test".getBytes());
 
 		when(converter.toEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
@@ -389,6 +462,82 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("userId")));
 		assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("keystoreId")));
 		assertEquals(EntityChangeType.KEYSTORE_DISABLED, capturedEvent.getType());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	@SneakyThrows
+	void shouldSaveNewEntityWhenGeneratedInputIsAvailable() {
+		MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class);
+		mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
+
+		// arrange
+		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		dto.setGeneratedFileName("generated.jks");
+		dto.setId(null);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
+
+		when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
+		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+		
+		KeystoreEntity savedEntity = TestUtils.createKeystoreEntity();
+		when(repository.save(any(KeystoreEntity.class))).thenReturn(savedEntity);
+
+		// act
+		service.save(model, null);
+
+		// assert
+		verify(converter).toNewEntity(any(), any());
+		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
+		verify(repository).save(any());
+		verify(objectMapper).readValue(eq(model), any(Class.class));
+		
+		mockedStaticFiles.close();
+	}
+
+	@Test
+	@SneakyThrows
+	@SuppressWarnings("unchecked")
+	void shouldSaveEntityWithoutFileInputs() {
+		// arrange
+		MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class);
+		mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
+
+		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", "test", AliasOperation.DELETE));
+		dto.setStatus(EntityStatus.DISABLED);
+		dto.setId(1L);
+		dto.setGeneratedFileName(null);
+		String model = TestUtils.objectMapper().writeValueAsString(dto);
+
+		when(converter.toEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
+		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
+		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		
+		KeystoreEntity savedEntity = TestUtils.createKeystoreEntity();
+		savedEntity.setStatus(EntityStatus.DISABLED);
+		when(repository.save(any(KeystoreEntity.class))).thenReturn(savedEntity);
+
+		// act
+		service.save(model, null);
+
+		// assert
+		verify(converter).toEntity(any(), any());
+		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
+		verify(repository).save(any());
+		verify(objectMapper).readValue(eq(model), any(Class.class));
+		
+		ArgumentCaptor<EntityChangeEvent> entityDisabledEventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
+		verify(applicationEventPublisher, times(2)).publishEvent(entityDisabledEventCaptor.capture());
+		
+		EntityChangeEvent capturedEvent = entityDisabledEventCaptor.getValue();
+		assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("userId")));
+		assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("keystoreId")));
+		assertEquals(EntityChangeType.KEYSTORE_DISABLED, capturedEvent.getType());
+		
+		mockedStaticFiles.close();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -657,6 +806,11 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("test", new String(response.getFileContent()));
 		
 		mockedFiles.close();
+	}
+	
+	@Test
+	void shouldGenerateKeystore() {
+		assertEquals("test.jks", service.generateKeystore(new SaveKeystoreRequestDto()));
 	}
 	
 	public static List<ValueHolder> valueData() {
