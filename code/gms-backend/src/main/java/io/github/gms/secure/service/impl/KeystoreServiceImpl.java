@@ -114,7 +114,6 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 
 		Files.delete(Paths.get(keystoreTempPath + generatedFilename));
-		//new File(keystoreTempPath + generatedFilename).delete();
 	}
 
 	@Override
