@@ -1,5 +1,6 @@
 package io.github.gms.secure.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +35,7 @@ import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.service.KeystoreGeneratorService;
 import io.github.gms.secure.service.KeystoreService;
 
 /**
@@ -47,6 +49,9 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	
 	public static final String MULTIPART_MODEL = "model";
 	public static final String MULTIPART_FILE = "file";
+	
+	@Autowired
+	private KeystoreGeneratorService keystoreGeneratorService;
 
 	@PostMapping(consumes = {
 			MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -115,6 +120,6 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	@PreAuthorize(Constants.ROLE_USER)
 	@Audited(operation = EventOperation.GENERATE_KEYSTORE)
 	public @ResponseBody ResponseEntity<String> generateKeystore(@RequestBody SaveKeystoreRequestDto dto) {
-		return new ResponseEntity<>(service.generateKeystore(dto), HttpStatus.OK);
+		return new ResponseEntity<>(keystoreGeneratorService.generate(dto), HttpStatus.OK);
 	}
 }

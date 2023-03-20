@@ -65,11 +65,6 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private String keystorePath;
 	@Value("${config.location.keystoreTemp.path}")
 	private String keystoreTempPath;
-	
-	@Override
-	public String generateKeystore(SaveKeystoreRequestDto dto) {
-		return "generated.jks";
-	}
 
 	@Override
 	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)

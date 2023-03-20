@@ -16,8 +16,6 @@ import io.github.gms.secure.dto.SaveKeystoreRequestDto;
  * @since 1.0
  */
 public interface KeystoreService extends AbstractCrudService<SaveKeystoreRequestDto, SaveEntityResponseDto, KeystoreDto, KeystoreListDto>, CountService {
-	
-	String generateKeystore(SaveKeystoreRequestDto dto);
 
 	SaveEntityResponseDto save(String model, MultipartFile file);
 

@@ -857,11 +857,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		mockedFiles.close();
 	}
 
-	@Test
-	void shouldGenerateKeystore() {
-		assertEquals("generated.jks", service.generateKeystore(new SaveKeystoreRequestDto()));
-	}
-
 	public static List<ValueHolder> valueData() {
 		return Lists.newArrayList(new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, 1L, "test"),
 				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, 1L, "test"),
