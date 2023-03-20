@@ -460,15 +460,22 @@ public class TestUtils {
 	@SneakyThrows
 	public static void deleteDirectoryWithContent(String dir) {
 		Path pathToBeDeleted = Paths.get(dir);
+		
+		if (!pathToBeDeleted.toFile().exists()) {
+			return;
+		}
 
 	    Files.walk(pathToBeDeleted)
 	      .sorted(Comparator.reverseOrder())
 	      .map(Path::toFile)
 	      .forEach(file -> {
+	    	  if (!file.exists()) {
+	    		  return;
+	    	  }
+
 	    	  log.info("file = " + file.getName());
 	    	  file.delete();
 	      });
-	    		  //File::delete);
 	}
 
 	public static Page<AnnouncementEntity> createAnnouncementEntityList() {

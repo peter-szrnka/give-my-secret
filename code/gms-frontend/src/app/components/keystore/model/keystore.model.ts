@@ -14,7 +14,8 @@ export interface Keystore {
     status? : string,
     credential? : string,
     creationDate? : Date,
-    aliases : KeystoreAlias[]
+    aliases : KeystoreAlias[],
+    generatedFileName? : string;
 }
 
 export const EMPTY_KEYSTORE : Keystore = {

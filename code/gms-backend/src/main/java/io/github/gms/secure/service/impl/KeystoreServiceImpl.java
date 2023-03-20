@@ -68,7 +68,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	
 	@Override
 	public String generateKeystore(SaveKeystoreRequestDto dto) {
-		return "test.jks";
+		return "generated.jks";
 	}
 
 	@Override
@@ -100,12 +100,22 @@ public class KeystoreServiceImpl implements KeystoreService {
 			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
 		}
 
-		if (file != null || dto.getGeneratedFileName() != null) {
+		if (dto.getId() == null) {
 			// Persist file
 			persistFile(newEntity, fileContent);
+			
+			removeGeneratedFileFromTempFolder(dto);
 		}
 		
 		return new SaveEntityResponseDto(newEntity.getId());
+	}
+
+	private void removeGeneratedFileFromTempFolder(SaveKeystoreRequestDto dto) {
+		if (dto.getGeneratedFileName() == null) {
+			return;
+		}
+
+		new File(keystoreTempPath + dto.getGeneratedFileName()).delete();
 	}
 
 	@Override
@@ -331,7 +341,14 @@ public class KeystoreServiceImpl implements KeystoreService {
 			}
 				
 			File keystoreFile = new File(folder + filename);
+			
+			if (!Files.exists(keystoreFile.toPath())) {
+				throw new GmsException("Keystore file does not exist!");
+			}
+			
 			return Files.readAllBytes(keystoreFile.toPath());
+		} catch (GmsException e) {
+			throw e;
 		} catch (Exception e) {
 			log.error("Keystore content cannot be parsed", e);
 			throw new GmsException(e);

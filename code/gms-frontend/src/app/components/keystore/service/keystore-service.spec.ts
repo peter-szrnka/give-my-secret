@@ -161,4 +161,17 @@ describe("KeystoreService", () => {
     expect(req.request.method).toBe('POST');
     httpMock.verify();
   });
+
+  it('should generate keystore file', () => {
+    // arrange
+    const expectedUrl = environment.baseUrl + "secure/keystore/generate";
+
+    // act
+    service.generateKeystore(TEST_KEYSTORE).subscribe((res) => expect(res).toBeCalled());
+
+    // assert
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('POST');
+    httpMock.verify();
+  });
 });

@@ -16,7 +16,7 @@ import { BaseListComponent } from "../../common/components/abstractions/componen
     styleUrls : ['./keystore-list.component.scss']
 })
 export class KeystoreListComponent extends BaseListComponent<Keystore, KeystoreService> {
-    keystoreColumns: string[] = ['id', 'name', 'status', 'creationDate', 'operations'];
+    keystoreColumns: string[] = ['id', 'name', 'type', 'status', 'creationDate', 'operations'];
 
     constructor(
       override router : Router,
