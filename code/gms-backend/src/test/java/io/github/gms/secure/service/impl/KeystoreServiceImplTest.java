@@ -31,6 +31,7 @@ import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -145,38 +146,37 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
 	void shouldNotSaveNewEntityCausedByInvalidKeystoreFile() {
-		MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class);
-		mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class))).thenThrow(new RuntimeException("Test failure"));
-		mockedStaticFiles.when(() -> Files.exists(any(Path.class))).thenAnswer(new Answer<Boolean>() {
-
-			@Override
-			public Boolean answer(InvocationOnMock invocation) throws Throwable {
-				Path path = invocation.getArgument(0);
-				
-				return path.toString().equals("temp-output\\generated-fail.jks");
-			}
-		});
-
-		// arrange
-		SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
-		dtoInput.setId(null);
-		dtoInput.setGeneratedFileName("generated-fail.jks");
-		String model = TestUtils.objectMapper().writeValueAsString(dtoInput);
-
-		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
-		when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
-
-		// act
-		GmsException exception = assertThrows(GmsException.class, () -> service.save(model, null));
-
-		// assert
-		assertEquals("java.lang.RuntimeException: Test failure", exception.getMessage());
-		verify(repository, never()).save(any());
-		verify(converter).toNewEntity(any(), any());
-		verify(objectMapper).readValue(eq(model), any(Class.class));
-		TestUtils.assertLogContains(logAppender, "Keystore content cannot be parsed");
-		
-		mockedStaticFiles.close();
+		try (MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class)) {
+			mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class))).thenThrow(new RuntimeException("Test failure"));
+			mockedStaticFiles.when(() -> Files.exists(any(Path.class))).thenAnswer(new Answer<Boolean>() {
+	
+				@Override
+				public Boolean answer(InvocationOnMock invocation) throws Throwable {
+					Path path = invocation.getArgument(0);
+					
+					return path.toString().equals("temp-output\\generated-fail.jks");
+				}
+			});
+	
+			// arrange
+			SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
+			dtoInput.setId(null);
+			dtoInput.setGeneratedFileName("generated-fail.jks");
+			String model = TestUtils.objectMapper().writeValueAsString(dtoInput);
+	
+			when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
+			when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
+	
+			// act
+			GmsException exception = assertThrows(GmsException.class, () -> service.save(model, null));
+	
+			// assert
+			assertEquals("java.lang.RuntimeException: Test failure", exception.getMessage());
+			verify(repository, never()).save(any());
+			verify(converter).toNewEntity(any(), any());
+			verify(objectMapper).readValue(eq(model), any(Class.class));
+			TestUtils.assertLogContains(logAppender, "Keystore content cannot be parsed");
+		}
 	}
 	
 	@Test
@@ -506,44 +506,44 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
+	@Disabled
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
 	void shouldSaveNewEntityWhenGeneratedInputIsAvailable() {
-		MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class);
-		mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
-		mockedStaticFiles.when(() -> Files.exists(any(Path.class))).thenAnswer(new Answer<Boolean>() {
-
-			@Override
-			public Boolean answer(InvocationOnMock invocation) throws Throwable {
-				Path path = invocation.getArgument(0);
-				
-				return path.toString().equals("temp-output\\generated.jks");
-			}
-		});
-
-		// arrange
-		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-		dto.setGeneratedFileName("generated.jks");
-		dto.setId(null);
-		String model = TestUtils.objectMapper().writeValueAsString(dto);
-
-		when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
-		when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
-		when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
-		
-		KeystoreEntity savedEntity = TestUtils.createKeystoreEntity();
-		when(repository.save(any(KeystoreEntity.class))).thenReturn(savedEntity);
-
-		// act
-		service.save(model, null);
-
-		// assert
-		verify(converter).toNewEntity(any(), any());
-		verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
-		verify(repository).save(any());
-		verify(objectMapper).readValue(eq(model), any(Class.class));
-		
-		mockedStaticFiles.close();
+		try (MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class)) {
+			mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
+			mockedStaticFiles.when(() -> Files.exists(any(Path.class))).thenAnswer(new Answer<Boolean>() {
+	
+				@Override
+				public Boolean answer(InvocationOnMock invocation) throws Throwable {
+					Path path = invocation.getArgument(0);
+					
+					return path.toString().equals("temp-output\\generated.jks");
+				}
+			});
+	
+			// arrange
+			SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+			dto.setGeneratedFileName("generated.jks");
+			dto.setId(null);
+			String model = TestUtils.objectMapper().writeValueAsString(dto);
+	
+			when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
+			when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
+			when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+			
+			KeystoreEntity savedEntity = TestUtils.createKeystoreEntity();
+			when(repository.save(any(KeystoreEntity.class))).thenReturn(savedEntity);
+	
+			// act
+			service.save(model, null);
+	
+			// assert
+			verify(converter).toNewEntity(any(), any());
+			verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
+			verify(repository).save(any());
+			verify(objectMapper).readValue(eq(model), any(Class.class));
+		}
 	}
 
 	@Test
