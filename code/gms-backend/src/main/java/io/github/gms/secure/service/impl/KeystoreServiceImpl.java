@@ -345,7 +345,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			if (!Files.exists(keystoreFile.toPath())) {
 				throw new GmsException("Keystore file does not exist!");
 			}
-			
+
 			return Files.readAllBytes(keystoreFile.toPath());
 		} catch (GmsException e) {
 			throw e;

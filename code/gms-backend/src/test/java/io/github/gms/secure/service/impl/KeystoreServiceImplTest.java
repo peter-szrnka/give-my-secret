@@ -40,8 +40,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -149,14 +147,14 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		try (MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class)) {
 			mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class)))
 					.thenThrow(new RuntimeException("Test failure"));
-			mockedStaticFiles.when(() -> Files.exists(any(Path.class))).thenAnswer(new Answer<Boolean>() {
+			mockedStaticFiles.when(() -> Files.exists(any(Path.class))).thenReturn(true);/*.thenAnswer(new Answer<Boolean>() {
 
 				@Override
 				public Boolean answer(InvocationOnMock invocation) throws Throwable {
 					Path path = invocation.getArgument(0);
 					return path.toString().equals("temp-output\\generated-fail.jks");
 				}
-			});
+			});*/
 
 			// arrange
 			SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
@@ -513,12 +511,13 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	@SuppressWarnings("unchecked")
 	void shouldSaveNewEntityWhenGeneratedInputIsAvailable() {
 		new File("temp-output/").mkdirs();
-		Path newFilePath = Files.createFile(Paths.get("temp-output/generated.jks"));
+		String fileName = "generated-" + UUID.randomUUID().toString() + ".jks";
+		Path newFilePath = Files.createFile(Paths.get("temp-output/" + fileName));
 		Files.writeString(newFilePath, "test");
 
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-		dto.setGeneratedFileName("generated.jks");
+		dto.setGeneratedFileName(fileName);
 		dto.setId(null);
 		String model = TestUtils.objectMapper().writeValueAsString(dto);
 
@@ -539,7 +538,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 		verify(objectMapper).readValue(eq(model), any(Class.class));
 
 		newFilePath.toFile().delete();
-		Paths.get("temp-output/").toFile().delete();
+		Paths.get("temp-output").toFile().delete();
 	}
 
 	@Test
