@@ -91,3 +91,4 @@ client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.jdt.core.
 client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.core.resources.prefs
 client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.m2e.core.prefs
 *.versionsBackup
+code/gms-backend/gms-backend.iml

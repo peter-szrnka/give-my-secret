@@ -1,16 +1,5 @@
 package io.github.gms.secure.converter.impl;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
-
 import io.github.gms.secure.converter.KeystoreConverter;
 import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.KeystoreDto;
@@ -18,6 +7,16 @@ import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka
@@ -41,6 +40,8 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		entity.setName(dto.getName());
 		if (file != null) {
 			entity.setFileName(file.getOriginalFilename());
+		} else if (dto.getGeneratedFileName() != null) {
+			entity.setFileName(dto.getGeneratedFileName());
 		}
 		entity.setStatus(dto.getStatus());
 		entity.setType(dto.getType());
@@ -49,7 +50,7 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 	}
 
 	@Override
-	public KeystoreEntity toEntity(KeystoreEntity entity, SaveKeystoreRequestDto dto, MultipartFile file) {
+	public KeystoreEntity toEntity(KeystoreEntity entity, SaveKeystoreRequestDto dto) {
 		entity.setId(dto.getId());
 		
 		entity.setName(dto.getName());
@@ -57,9 +58,6 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		entity.setDescription(dto.getDescription());
 		entity.setCredential(dto.getCredential());
 		entity.setName(dto.getName());
-		if (file != null) {
-			entity.setFileName(file.getOriginalFilename());
-		}
 		entity.setStatus(dto.getStatus());
 		entity.setType(dto.getType());
 

@@ -43,7 +43,7 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToEntityWithoutFile() {
 		// act
-		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(), TestUtils.createSaveKeystoreRequestDto(), null);
+		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(), TestUtils.createSaveKeystoreRequestDto());
 
 		// assert
 		assertNotNull(entity);
@@ -53,18 +53,13 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 
 	@Test
 	void checkToEntityWithParameters() {
-		// arrange
-		MultipartFile multipartFile = mock(MultipartFile.class);
-		when(multipartFile.getOriginalFilename()).thenReturn(FILE_NAME);
-
 		// act
-		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(), TestUtils.createSaveKeystoreRequestDto(), multipartFile);
+		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(), TestUtils.createSaveKeystoreRequestDto());
 
 		// assert
 		assertNotNull(entity);
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
 		assertEquals(FILE_NAME, entity.getFileName());
-		verify(multipartFile).getOriginalFilename();
 	}
 	
 	@Test

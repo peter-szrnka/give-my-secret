@@ -1,29 +1,6 @@
 package io.github.gms.secure.service.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.transaction.Transactional;
-
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
@@ -34,16 +11,7 @@ import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.KeystoreConverter;
-import io.github.gms.secure.dto.DownloadFileResponseDto;
-import io.github.gms.secure.dto.GetSecureValueDto;
-import io.github.gms.secure.dto.IdNamePairListDto;
-import io.github.gms.secure.dto.KeystoreAliasDto;
-import io.github.gms.secure.dto.KeystoreDto;
-import io.github.gms.secure.dto.KeystoreListDto;
-import io.github.gms.secure.dto.LongValueDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.dto.*;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
@@ -51,6 +19,26 @@ import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.secure.service.KeystoreService;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Peter Szrnka
@@ -63,29 +51,31 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 	@Autowired
 	private CryptoService cryptoService;
-
 	@Autowired
 	private KeystoreRepository repository;
-	
 	@Autowired
 	private KeystoreAliasRepository aliasRepository;
-	
 	@Autowired
 	private KeystoreConverter converter;
-	
 	@Autowired
 	private ObjectMapper objectMapper;
-	
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
-	
 	@Value("${config.location.keystore.path}")
 	private String keystorePath;
+	@Value("${config.location.keystoreTemp.path}")
+	private String keystoreTempPath;
+	
+	@Override
+	public String generateKeystore(SaveKeystoreRequestDto dto) {
+		return "TODO.jks";
+	}
 
 	@Override
 	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(String model, MultipartFile file) {
 		SaveKeystoreRequestDto dto;
+
 		try {
 			dto = objectMapper.readValue(model, SaveKeystoreRequestDto.class);
 		} catch (Exception e) {
@@ -101,14 +91,10 @@ public class KeystoreServiceImpl implements KeystoreService {
 		KeystoreEntity entity = convertKeystore(dto, file);
 
 		// Process and validate file content
+		byte[] fileContent;
+
 		try {
-			byte[] fileContent;
-			if (file == null) {
-				File keystoreFile = new File(getUserFolder() + entity.getFileName());
-				fileContent = Files.readAllBytes(keystoreFile.toPath());
-			} else {
-				fileContent = file.getBytes();
-			}
+			fileContent = getFileContent(entity, file, dto.getGeneratedFileName() != null);
 			
 			// Validate keystore file credentials
 			cryptoService.validateKeyStoreFile(dto, fileContent);
@@ -128,30 +114,12 @@ public class KeystoreServiceImpl implements KeystoreService {
 			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
 		}
 
-		// Persist file
-		if (file == null) {
+		if (file == null && dto.getGeneratedFileName() == null) {
 			return new SaveEntityResponseDto(newEntity.getId());
 		}
 
-		try {
-			String newFileName = getUserFolder() + file.getOriginalFilename();
-			
-			if (Files.exists(Paths.get(newFileName))) {
-				throw new GmsException("File name must be unique!");
-			}
-			
-			Files.createDirectories(Paths.get(getUserFolder()));
-			File keystoreFile = new File(newFileName);
-		
-			FileOutputStream outputStream = new FileOutputStream(keystoreFile);
-			outputStream.write(file.getBytes());
-			outputStream.close();
-		} catch (GmsException e) {
-			throw e;
-		} catch (Exception e) {
-			log.error("File cannot be copied", e);
-			throw new GmsException(e);
-		}
+		// Persist file
+		persistFile(newEntity, fileContent);
 		
 		return new SaveEntityResponseDto(newEntity.getId());
 	}
@@ -191,7 +159,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		repository.deleteById(id);
 
 		try {
-			log.info("Keystore file={} will be removed", keystoreFile.toPath().toString());
+			log.info("Keystore file={} will be removed", keystoreFile.toPath());
 			Files.delete(keystoreFile.toPath());
 		} catch (IOException e) {
 			log.error("Keystore file cannot be deleted", e);
@@ -252,6 +220,28 @@ public class KeystoreServiceImpl implements KeystoreService {
 			throw new GmsException(e);
 		}
 	}
+
+	private void persistFile(KeystoreEntity newEntity, byte[] fileContent) {
+		try {
+			String newFileName = getUserFolder() + newEntity.getFileName();
+
+			if (Files.exists(Paths.get(newFileName))) {
+				throw new GmsException("File name must be unique!");
+			}
+
+			Files.createDirectories(Paths.get(getUserFolder()));
+			File keystoreFile = new File(newFileName);
+
+			FileOutputStream outputStream = new FileOutputStream(keystoreFile);
+			outputStream.write(fileContent);
+			outputStream.close();
+		} catch (GmsException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("File cannot be copied", e);
+			throw new GmsException(e);
+		}
+	}
 	
 	private String getUserFolder() {
 		return keystorePath + getUserId() + Constants.SLASH;
@@ -269,7 +259,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		KeystoreEntity foundEntity = repository.findByIdAndUserId(dto.getId(), getUserId())
 				.orElseThrow(() -> new GmsException("Entity not found!"));
 
-		return converter.toEntity(foundEntity, dto, file);
+		return converter.toEntity(foundEntity, dto);
 	}
 
 	private void processAlias(KeystoreEntity newEntity, KeystoreAliasDto alias) {
@@ -284,7 +274,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}	
 
 	private void validateInput(SaveKeystoreRequestDto dto, MultipartFile file) {
-		if (dto.getAliases().stream().filter(alias -> AliasOperation.DELETE != alias.getOperation()).count() == 0) {
+		if (dto.getAliases().stream().noneMatch(alias -> AliasOperation.DELETE != alias.getOperation())) {
 			throw new GmsException("You must define at least one keystore alias!");
 		}
 
@@ -292,6 +282,10 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	private void validateKeystore(SaveKeystoreRequestDto dto, MultipartFile file, int expectedCount) {
+		if (dto.getGeneratedFileName() != null) {
+			return;
+		}
+
 		if (dto.getId() == null && file == null) {
 			throw new GmsException("Keystore file must be provided!");
 		}
@@ -322,6 +316,24 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 
 		return entity.getAliasCredential();
+	}
+
+	private byte[] getFileContent(KeystoreEntity entity, MultipartFile file, boolean generated) throws IOException {
+		byte[] fileContent;
+		String folder = getUserFolder();
+
+		if (generated) {
+			folder = keystoreTempPath;
+		}
+
+		if (file == null) {
+			File keystoreFile = new File(folder + entity.getFileName());
+			fileContent = Files.readAllBytes(keystoreFile.toPath());
+		} else {
+			fileContent = file.getBytes();
+		}
+
+		return fileContent;
 	}
 	
 	private static Map<String, Object> initMetaData(Long userId, Long keystoreId) {

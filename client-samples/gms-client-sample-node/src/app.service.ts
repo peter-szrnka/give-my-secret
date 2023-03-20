@@ -4,10 +4,10 @@ import jks from 'jks-js';
 import crypto from 'crypto';
 import { HttpService } from 'nestjs-http-promise';
 
-const BASE_URL : string = "http://localhost:8080/api/secret/";
+const BASE_URL : string = "https://localhost:8443/api/secret/";
 // Your variables //////////////////////////////////////////////////
-const SECRET_ID : string = "TestSecret1";
-const API_KEY : string = "IntTestApiKey";
+const SECRET_ID : string = "secret1";
+const API_KEY : string = "QWM6bY4gyRUEKL8uT2qtfZpnv6tsm60n";
 ////////////////////////////////////////////////////////////////////
 
 @Injectable()
