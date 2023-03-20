@@ -507,9 +507,14 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
 	void shouldSaveNewEntityWhenGeneratedInputIsAvailable() {
-		try (MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class)) {
-			mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
-			mockedStaticFiles.when(() -> Files.exists(any(Path.class))).thenAnswer(new Answer<Boolean>() {
+		//new File("unit-test-output/1/").mkdirs();
+		//File generatedJks = new File("unit-test-output/1/generated.jks");
+		Path newFilePath = Files.createFile(Paths.get("unit-test-output/1/generated.jks"));
+		Files.writeString(newFilePath, "test");
+
+		/*try (MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class)) {
+			//mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
+			//mockedStaticFiles.when(() -> Files.exists(any(Path.class))).thenAnswer(new Answer<Boolean>() {
 	
 				@Override
 				public Boolean answer(InvocationOnMock invocation) throws Throwable {
@@ -517,7 +522,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 					
 					return path.toString().equals("temp-output\\generated.jks");
 				}
-			});
+			});*/
 	
 			// arrange
 			SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -540,7 +545,10 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 			verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
 			verify(repository).save(any());
 			verify(objectMapper).readValue(eq(model), any(Class.class));
-		}
+		//}
+
+		newPath.delete();
+		Paths.get("unit-test-output/1/").toFile().delete();
 	}
 
 	@Test

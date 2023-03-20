@@ -78,7 +78,8 @@ describe('KeystoreDetailComponent', () => {
         };
 
         service = {
-            save : jest.fn().mockReturnValue(of({ entityId: 1 } as IEntitySaveResponseDto))
+            save : jest.fn().mockReturnValue(of({ entityId: 1 } as IEntitySaveResponseDto)),
+            generateKeystore : jest.fn().mockReturnValue(of("generated.jks"))
         };
     });
 
@@ -94,6 +95,29 @@ describe('KeystoreDetailComponent', () => {
         component.addNewAlias();
         component.changeState({ alias: '...', aliasCredential: '...', operation : 'SAVE' }, 1, 'DELETE');
         component.changeState({ id: 1, alias: '...', aliasCredential: '...', operation : 'SAVE' }, 0, 'DELETE');
+
+        // act
+        component.save();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Keystore has been saved!", type: "information" } as DialogData });
+    });
+
+    it('Should save new generated keystore', () => {
+        dialog = {
+            open : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+        };
+        
+        mockAliases = [
+            { id: 1, alias: '...', aliasCredential: '...', operation : 'SAVE' }
+        ];
+        configureTestBed();
+        component.addNewAlias();
+        component.changeState({ alias: '...', aliasCredential: '...', operation : 'SAVE' }, 1, 'DELETE');
+        component.changeState({ id: 1, alias: '...', aliasCredential: '...', operation : 'SAVE' }, 0, 'DELETE');
+        component.setGenerated(true);
+        component.generateKeystore();
 
         // act
         component.save();
