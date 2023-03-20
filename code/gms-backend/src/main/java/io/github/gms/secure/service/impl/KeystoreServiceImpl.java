@@ -102,20 +102,19 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 		if (dto.getId() == null) {
 			// Persist file
-			persistFile(newEntity, fileContent);
-			
-			removeGeneratedFileFromTempFolder(dto);
+			persistFile(newEntity, fileContent, dto.getGeneratedFileName());
 		}
 		
 		return new SaveEntityResponseDto(newEntity.getId());
 	}
 
-	private void removeGeneratedFileFromTempFolder(SaveKeystoreRequestDto dto) {
-		if (dto.getGeneratedFileName() == null) {
+	private void removeGeneratedFileFromTempFolder(String generatedFilename) throws IOException {
+		if (generatedFilename == null) {
 			return;
 		}
 
-		new File(keystoreTempPath + dto.getGeneratedFileName()).delete();
+		Files.delete(Paths.get(keystoreTempPath + generatedFilename));
+		//new File(keystoreTempPath + generatedFilename).delete();
 	}
 
 	@Override
@@ -223,7 +222,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 	}
 
-	private void persistFile(KeystoreEntity newEntity, byte[] fileContent) {
+	private void persistFile(KeystoreEntity newEntity, byte[] fileContent, String generatedFileName) {
 		try {
 			String newFileName = getUserFolder() + newEntity.getFileName();
 
@@ -237,6 +236,8 @@ public class KeystoreServiceImpl implements KeystoreService {
 			FileOutputStream outputStream = new FileOutputStream(keystoreFile);
 			outputStream.write(fileContent);
 			outputStream.close();
+			
+			removeGeneratedFileFromTempFolder(generatedFileName);
 		} catch (GmsException e) {
 			throw e;
 		} catch (Exception e) {
