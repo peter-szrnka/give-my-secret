@@ -82,7 +82,7 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldDeleteTempFiles() {
+	void shouldNotDeleteTempFiles() {
 		Path p1 = initMockPath("t/", true, false);
 		Path p2 = initMockPath("file1.txt", false, false);
 		Path p3 = initMockPath("file2.txt", false, false);
@@ -103,6 +103,29 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 		}
 	}
 
+	@Test
+	@SneakyThrows
+	void shouldDeleteTempFiles() {
+		Path path1 = mock(Path.class);
+		File mockFile1 = mock(File.class);
+		when(mockFile1.isDirectory()).thenReturn(false);
+		when(mockFile1.getName()).thenReturn("file1.txt");
+		when(mockFile1.delete()).thenReturn(true);
+		when(path1.toFile()).thenReturn(mockFile1);
+
+		try (MockedStatic<Files> mockedStatic = mockStatic(Files.class)) {
+			mockedStatic.when(() -> Files.list(any(Path.class))).thenReturn(Stream.of(path1));
+
+			when(repository.findByFileName("file1.txt")).thenReturn(null);
+
+			// act
+			long response = service.deleteTempKeystoreFiles();
+
+			// assert
+			assertEquals(1L, response);
+		}
+	}
+
 	private Path initMockPath(String fileName, boolean isDirectory, boolean throwError) {
 		Path path1 = mock(Path.class);
 		File mockFile1 = mock(File.class);
@@ -110,7 +133,6 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 
 		if (!isDirectory) {
 			when(mockFile1.getName()).thenReturn(fileName);
-
 		}
 
 		if (throwError) {

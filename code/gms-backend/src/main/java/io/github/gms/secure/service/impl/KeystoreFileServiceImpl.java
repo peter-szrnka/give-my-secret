@@ -15,6 +15,7 @@ import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.Security;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -111,7 +113,7 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 		return repository.findByFileName(path.toFile().getName()) != null ? null : path;
 	}
 
-	private X509Certificate generateCertificate(KeyPair keyPair) throws Exception {
+	private X509Certificate generateCertificate(KeyPair keyPair) throws OperatorCreationException, CertificateException {
 		final Instant now = Instant.now();
 		final Date notBefore = Date.from(now);
 		final Date until = GregorianCalendar.from(ZonedDateTime.now().plusYears(1L)).getTime();
