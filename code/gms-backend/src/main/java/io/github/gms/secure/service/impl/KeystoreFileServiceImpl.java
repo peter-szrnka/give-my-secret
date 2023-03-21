@@ -1,9 +1,12 @@
 package io.github.gms.secure.service.impl;
 
+import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.KeystoreRepository;
+import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.KeystoreFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -13,6 +16,7 @@ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,11 +33,10 @@ import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
+
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 
 /**
  * @author Peter Szrnka
@@ -50,7 +53,8 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 
 	@Autowired
 	private KeystoreRepository repository;
-
+	@Autowired
+	private UserRepository userRepository;
 	@Value("${config.location.keystoreTemp.path}")
 	private String keystoreTempPath;
 
@@ -76,8 +80,16 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 			char[] password = dto.getCredential().toCharArray();
 			ks.load(null, password);
 
-			for (KeystoreAliasDto keystoreAliasDto : dto.getAliases()) {
-				setEntry(ks, keystoreAliasDto);
+			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
+			keyPairGen.initialize(2048);
+			KeyPair keyPair = keyPairGen.generateKeyPair();
+			X509Certificate certificate = generateCertificate(keyPair);
+
+			for (KeystoreAliasDto alias : dto.getAliases()) {
+				ks.setKeyEntry(alias.getAlias(),
+						keyPair.getPrivate(),
+						alias.getAliasCredential().toCharArray(),
+						new X509Certificate[] { certificate });
 			}
 
 			String newKeystoreName = UUID.randomUUID() + "." + dto.getType().getFileExtension();
@@ -89,15 +101,6 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 		} catch (Exception e) {
 			throw new GmsException(e);
 		}
-	}
-
-	private void setEntry(KeyStore ks, KeystoreAliasDto alias) throws Exception {
-		KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
-		keyPairGen.initialize(2048);
-		KeyPair keyPair = keyPairGen.generateKeyPair();
-
-		X509Certificate[] chain = new X509Certificate[] { generateCertificate(keyPair) };
-		ks.setKeyEntry(alias.getAlias(), keyPair.getPrivate(), alias.getAliasCredential().toCharArray(), chain);
 	}
 
 	private boolean deleteTempKeystoreFile(Path path) {
@@ -112,12 +115,18 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 		final Instant now = Instant.now();
 		final Date notBefore = Date.from(now);
 		final Date until = GregorianCalendar.from(ZonedDateTime.now().plusYears(1L)).getTime();
-		// TODO Get parameters from user repository
+
+		UserEntity user = userRepository.findById(getUserId()).orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND));
+
 		final ContentSigner contentSigner = new JcaContentSignerBuilder("SHA256WITHRSA").build(keyPair.getPrivate());
-		final X500Name x500Name = new X500Name("CN=Common Name,O=Organization,L=City,ST=State");
+		final X500Name x500Name = new X500Name("CN=" + user.getName() + ",O=" + user.getName() + ",L=NA,ST=NA");
 		final X509v3CertificateBuilder certificateBuilder = new JcaX509v3CertificateBuilder(x500Name,
 				BigInteger.valueOf(now.toEpochMilli()), notBefore, until, x500Name, keyPair.getPublic());
 		return new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider())
 				.getCertificate(certificateBuilder.build(contentSigner));
+	}
+
+	private Long getUserId() {
+		return Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 	}
 }

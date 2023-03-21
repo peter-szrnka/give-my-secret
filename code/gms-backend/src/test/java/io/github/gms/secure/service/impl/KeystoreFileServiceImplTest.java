@@ -2,8 +2,11 @@ package io.github.gms.secure.service.impl;
 
 import com.google.common.base.Throwables;
 import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
+import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.repository.KeystoreRepository;
+import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
@@ -14,14 +17,17 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.slf4j.MDC;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -35,24 +41,28 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 
 	@Mock
 	private KeystoreRepository repository;
-
+	@Mock
+	private UserRepository userRepository;
 	@InjectMocks
 	private KeystoreFileServiceImpl service;
 
 	@BeforeEach
 	void beforeEach() {
 		ReflectionTestUtils.setField(service, "keystoreTempPath", "./temp-output/");
+		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 	}
 
 	@AfterEach
 	@SneakyThrows
 	public void tearDownAll() {
 		TestUtils.deleteDirectoryWithContent("./temp-output");
+		MDC.clear();
 	}
 
 	@Test
 	@SneakyThrows
 	void shouldGenerateKeystore() {
+		when(userRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
 		Files.createDirectory(Paths.get("./temp-output/"));
 		assertNotNull(service.generate(TestUtils.createSaveKeystoreRequestDto()));
 	}
@@ -60,10 +70,14 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 	@Test
 	@SneakyThrows
 	void shouldGenerateKeystoreFail() {
-		GmsException exception = assertThrows(GmsException.class, () -> service.generate(TestUtils.createSaveKeystoreRequestDto()));
+		// arrange
+		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+
+		// act
+		GmsException exception = assertThrows(GmsException.class, () -> service.generate(dto));
 
 		// assert
-		assertTrue(exception.getMessage().startsWith("java.io.FileNotFoundException"));
+		assertEquals(ENTITY_NOT_FOUND, Throwables.getRootCause(exception).getMessage());
 	}
 
 	@Test
@@ -77,9 +91,9 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 		try (MockedStatic<Files> mockedStatic = mockStatic(Files.class)) {
 			mockedStatic.when(() -> Files.list(any(Path.class))).thenReturn(Stream.of(p1, p2, p3, p4));
 
-			when(repository.findByFileName(eq("file1.txt"))).thenReturn("file1.txt");
-			when(repository.findByFileName(eq("file2.txt"))).thenReturn(null);
-			when(repository.findByFileName(eq("file3.txt"))).thenReturn(null);
+			when(repository.findByFileName("file1.txt")).thenReturn("file1.txt");
+			when(repository.findByFileName("file2.txt")).thenReturn(null);
+			when(repository.findByFileName("file3.txt")).thenReturn(null);
 
 			// act
 			GmsException response = assertThrows(GmsException.class, () -> service.deleteTempKeystoreFiles());
