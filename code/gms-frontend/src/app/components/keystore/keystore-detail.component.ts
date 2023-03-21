@@ -31,7 +31,6 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
   public datasource : ArrayDataSource<KeystoreAlias>;
   aliasList : KeystoreAlias[] = [];
   allAliasesAreValid : boolean;
-  generated = false;
 
   constructor(
     protected override router: Router,
@@ -53,7 +52,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
 
   save() {
     this.addAliasDataToRequest();
-    this.service.save(this.data, (this.generated === true) ? undefined : this.file)
+    this.service.save(this.data, (this.data.generated === true) ? undefined : this.file)
       .subscribe({
         next: () => {
           this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
@@ -95,14 +94,6 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
   addNewAlias() {
     this.aliasList.push({ alias: '', aliasCredential: '', operation : 'SAVE' });
     this.refreshTable();
-  }
-
-  generateKeystore() {
-    this.service.generateKeystore(this.data).subscribe((response) => this.data.generatedFileName = response);
-  }
-
-  setGenerated(isGenerated : boolean) {
-    this.generated = isGenerated;
   }
 
   refreshTable() {

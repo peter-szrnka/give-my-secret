@@ -40,8 +40,6 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		entity.setName(dto.getName());
 		if (file != null) {
 			entity.setFileName(file.getOriginalFilename());
-		} else if (dto.getGeneratedFileName() != null) {
-			entity.setFileName(dto.getGeneratedFileName());
 		}
 		entity.setStatus(dto.getStatus());
 		entity.setType(dto.getType());

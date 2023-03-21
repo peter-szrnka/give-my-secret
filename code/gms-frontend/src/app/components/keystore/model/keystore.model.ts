@@ -15,14 +15,15 @@ export interface Keystore {
     credential? : string,
     creationDate? : Date,
     aliases : KeystoreAlias[],
-    generatedFileName? : string;
+    generated : boolean;
 }
 
 export const EMPTY_KEYSTORE : Keystore = {
     description: "",
     type: "JKS",
     status: "ACTIVE",
-    aliases: []
+    aliases: [],
+    generated: false
 };
 
 export const PAGE_CONFIG_KEYSTORE : PageConfig = {

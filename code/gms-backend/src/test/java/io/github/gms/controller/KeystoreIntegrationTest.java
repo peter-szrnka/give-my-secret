@@ -249,20 +249,6 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		}
 	}
 
-	@Test
-	void testGenerateKeystore() {
-		// arrange
-		SaveKeystoreRequestDto request = new SaveKeystoreRequestDto();
-		HttpEntity<SaveKeystoreRequestDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-
-		// act
-		ResponseEntity<String> response = executeHttpPost("/generate", requestEntity, String.class);
-
-		// assert
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals("generated.jks", response.getBody());
-	}
-
 	public static List<ValueHolder> valueData() {
 		return Lists.newArrayList(new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, DemoData.KEYSTORE_ALIAS_ID, "test"),
 				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, DemoData.KEYSTORE_ALIAS_ID, "test"),

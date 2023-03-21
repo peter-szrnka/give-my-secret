@@ -34,5 +34,5 @@ public class SaveKeystoreRequestDto implements Serializable {
 	private ZonedDateTime creationDate;
 	private KeystoreType type;
 	private List<KeystoreAliasDto> aliases = new ArrayList<>();
-	private String generatedFileName;
+	private boolean generated = false;
 }

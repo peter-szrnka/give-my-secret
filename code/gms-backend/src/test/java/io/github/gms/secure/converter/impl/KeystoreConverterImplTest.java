@@ -1,24 +1,6 @@
 package io.github.gms.secure.converter.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.google.common.collect.Lists;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
@@ -30,6 +12,18 @@ import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.Clock;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link KeystoreConverterImpl}
@@ -145,23 +139,5 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 		assertNotNull(response);
 		assertEquals(1L, response.getId());
 		assertEquals("alias", response.getAlias());
-	}
-
-	@Test
-	void checkGeneratedFileName() {
-		// arrange
-		setupClock(clock);
-
-		// arrange
-		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-		dto.setGeneratedFileName("generated.jks");
-
-		// act
-		KeystoreEntity entity = converter.toNewEntity(dto, null);
-
-		// assert
-		assertNotNull(entity);
-		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
-		assertEquals("generated.jks", entity.getFileName());
 	}
 }

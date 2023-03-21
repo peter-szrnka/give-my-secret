@@ -11,7 +11,8 @@ import { Paging } from "../../../common/model/paging.model";
 const TEST_KEYSTORE : Keystore = {
   id: 1,
   description: "Description",
-  aliases: []
+  aliases: [],
+  generated: false
 };
 
 /**
@@ -155,19 +156,6 @@ describe("KeystoreService", () => {
 
     // act
     service.toggle(1, true).subscribe((res) => expect(res).toBeCalled());
-
-    // assert
-    const req = httpMock.expectOne(expectedUrl);
-    expect(req.request.method).toBe('POST');
-    httpMock.verify();
-  });
-
-  it('should generate keystore file', () => {
-    // arrange
-    const expectedUrl = environment.baseUrl + "secure/keystore/generate";
-
-    // act
-    service.generateKeystore(TEST_KEYSTORE).subscribe((res) => expect(res).toBeCalled());
 
     // assert
     const req = httpMock.expectOne(expectedUrl);

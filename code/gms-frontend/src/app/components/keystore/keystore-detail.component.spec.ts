@@ -78,8 +78,7 @@ describe('KeystoreDetailComponent', () => {
         };
 
         service = {
-            save : jest.fn().mockReturnValue(of({ entityId: 1 } as IEntitySaveResponseDto)),
-            generateKeystore : jest.fn().mockReturnValue(of("generated.jks"))
+            save : jest.fn().mockReturnValue(of({ entityId: 1 } as IEntitySaveResponseDto))
         };
     });
 
@@ -116,8 +115,7 @@ describe('KeystoreDetailComponent', () => {
         component.addNewAlias();
         component.changeState({ alias: '...', aliasCredential: '...', operation : 'SAVE' }, 1, 'DELETE');
         component.changeState({ id: 1, alias: '...', aliasCredential: '...', operation : 'SAVE' }, 0, 'DELETE');
-        component.setGenerated(true);
-        component.generateKeystore();
+        component.data.generated = true;
 
         // act
         component.save();

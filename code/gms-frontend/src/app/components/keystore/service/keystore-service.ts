@@ -44,8 +44,4 @@ export class KeystoreService extends ServiceBase<Keystore, KeystoreList> {
     public override toggle(id: number, enabled : boolean): Observable<string> {
         return this.http.post<string>(environment.baseUrl + "secure/" + this.scope + '/' + id + "?enabled=" + enabled, {}, { withCredentials : true, headers : getHeaders(), responseType : 'text' as 'json' });
     }
-
-    public generateKeystore(keystore : Keystore) : Observable<string> {
-        return this.http.post<string>(environment.baseUrl + "secure/" + this.scope + '/generate', keystore, { withCredentials : true, headers : getHeaders(), responseType : 'text' as 'json' });
-    }
 }

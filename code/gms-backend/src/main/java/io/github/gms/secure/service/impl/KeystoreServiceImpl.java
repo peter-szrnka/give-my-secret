@@ -17,6 +17,7 @@ import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.service.CryptoService;
+import io.github.gms.secure.service.KeystoreFileService;
 import io.github.gms.secure.service.KeystoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -61,12 +62,15 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private ObjectMapper objectMapper;
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
+	@Autowired
+	private KeystoreFileService keystoreFileService;
 	@Value("${config.location.keystore.path}")
 	private String keystorePath;
 	@Value("${config.location.keystoreTemp.path}")
 	private String keystoreTempPath;
 
 	@Override
+	@Transactional
 	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(String model, MultipartFile file) {
 		SaveKeystoreRequestDto dto = parseInput(model);
@@ -91,24 +95,16 @@ public class KeystoreServiceImpl implements KeystoreService {
 		dto.getAliases().forEach(alias -> processAlias(newEntity, alias));
 		
 		if (EntityStatus.DISABLED == newEntity.getStatus()) {
-			Map<String, Object> metadata = initMetaData(getUserId(), newEntity.getId());
+			Map<String, Object> metadata = initMetaData(newEntity.getId());
 			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
 		}
 
 		if (dto.getId() == null) {
 			// Persist file
-			persistFile(newEntity, fileContent, dto.getGeneratedFileName());
+			persistFile(newEntity, fileContent, dto.isGenerated());
 		}
 		
 		return new SaveEntityResponseDto(newEntity.getId());
-	}
-
-	private void removeGeneratedFileFromTempFolder(String generatedFilename) throws IOException {
-		if (generatedFilename == null) {
-			return;
-		}
-
-		Files.delete(Paths.get(keystoreTempPath + generatedFilename));
 	}
 
 	@Override
@@ -164,7 +160,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			return;
 		}
 
-		Map<String, Object> metadata = initMetaData(getUserId(), entity.getId());
+		Map<String, Object> metadata = initMetaData(entity.getId());
 		applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
 	}
 
@@ -208,15 +204,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 	}
 
-	private SaveKeystoreRequestDto parseInput(String model) {
-		try {
-			return objectMapper.readValue(model, SaveKeystoreRequestDto.class);
-		} catch (Exception e) {
-			throw new GmsException(e);
-		}
-	}
-
-	private void persistFile(KeystoreEntity newEntity, byte[] fileContent, String generatedFileName) {
+	private void persistFile(KeystoreEntity newEntity, byte[] fileContent, boolean generated) {
 		try {
 			String newFileName = getUserFolder() + newEntity.getFileName();
 
@@ -231,7 +219,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			outputStream.write(fileContent);
 			outputStream.close();
 			
-			removeGeneratedFileFromTempFolder(generatedFileName);
+			removeGeneratedFileFromTempFolder(newEntity.getFileName(), generated);
 		} catch (GmsException e) {
 			throw e;
 		} catch (Exception e) {
@@ -264,18 +252,34 @@ public class KeystoreServiceImpl implements KeystoreService {
 			aliasRepository.save(converter.toAliasEntity(newEntity.getId(), alias));
 		} else {
 			aliasRepository.deleteById(alias.getId());
-			Map<String, Object> metadata = initMetaData(getUserId(), newEntity.getId());
+			Map<String, Object> metadata = initMetaData(newEntity.getId());
 			metadata.put("aliasId", alias.getId());
 			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED));
 		}
-	}	
+	}
+
+	private void removeGeneratedFileFromTempFolder(String filename, boolean generated) throws IOException {
+		if (!generated) {
+			return;
+		}
+
+		Files.delete(Paths.get(keystoreTempPath + filename));
+	}
+
+	private SaveKeystoreRequestDto parseInput(String model) {
+		try {
+			return objectMapper.readValue(model, SaveKeystoreRequestDto.class);
+		} catch (Exception e) {
+			throw new GmsException(e);
+		}
+	}
 
 	private void validateInput(SaveKeystoreRequestDto dto, MultipartFile file) {
 		if (dto.getAliases().stream().noneMatch(alias -> AliasOperation.DELETE != alias.getOperation())) {
 			throw new GmsException("You must define at least one keystore alias!");
 		}
 		
-		if (file != null && dto.getGeneratedFileName() != null) {
+		if (file != null && dto.isGenerated()) {
 			// Edge case: User cannot upload a keystore along with a generated keystore, only one can be selected
 			throw new GmsException("Only one keystore source is allowed!");
 		}
@@ -284,7 +288,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	private void validateKeystore(SaveKeystoreRequestDto dto, MultipartFile file, int expectedCount) {
-		if (dto.getGeneratedFileName() != null) {
+		if (dto.isGenerated()) {
 			return;
 		}
 
@@ -319,7 +323,6 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 		return entity.getAliasCredential();
 	}
-	
 
 	private byte[] getFileContent(KeystoreEntity entity, MultipartFile file, SaveKeystoreRequestDto dto) {
 		try {
@@ -330,9 +333,10 @@ public class KeystoreServiceImpl implements KeystoreService {
 			String folder = getUserFolder();
 			String filename = entity.getFileName();
 				
-			if (dto.getGeneratedFileName() != null) {
+			if (dto.isGenerated()) {
 				folder = keystoreTempPath;
-				filename = dto.getGeneratedFileName();
+				filename = keystoreFileService.generate(dto);
+				entity.setFileName(filename);
 			}
 				
 			File keystoreFile = new File(folder + filename);
@@ -350,9 +354,9 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 	}
 	
-	private static Map<String, Object> initMetaData(Long userId, Long keystoreId) {
+	private Map<String, Object> initMetaData(Long keystoreId) {
 		Map<String, Object> metadata = new HashMap<>();
-		metadata.put("userId", userId);
+		metadata.put("userId", getUserId());
 		metadata.put("keystoreId", keystoreId);
 		return metadata;
 	}
