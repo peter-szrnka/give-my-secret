@@ -3,9 +3,10 @@ package io.github.gms.secure.service.impl;
 import com.google.common.base.Throwables;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.repository.KeystoreRepository;
+import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,10 +19,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -40,12 +41,29 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 
 	@BeforeEach
 	void beforeEach() {
-		ReflectionTestUtils.setField(service, "keystoreTempPath", "./temp-unit-test/");
+		ReflectionTestUtils.setField(service, "keystoreTempPath", "./temp-output/");
+	}
+
+	@AfterEach
+	@SneakyThrows
+	public void tearDownAll() {
+		TestUtils.deleteDirectoryWithContent("./temp-output");
 	}
 
 	@Test
+	@SneakyThrows
 	void shouldGenerateKeystore() {
-		assertEquals("generated.jks", service.generate(new SaveKeystoreRequestDto()));
+		Files.createDirectory(Paths.get("./temp-output/"));
+		assertNotNull(service.generate(TestUtils.createSaveKeystoreRequestDto()));
+	}
+
+	@Test
+	@SneakyThrows
+	void shouldGenerateKeystoreFail() {
+		GmsException exception = assertThrows(GmsException.class, () -> service.generate(TestUtils.createSaveKeystoreRequestDto()));
+
+		// assert
+		assertTrue(exception.getMessage().startsWith("java.io.FileNotFoundException"));
 	}
 
 	@Test

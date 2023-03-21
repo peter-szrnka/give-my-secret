@@ -81,13 +81,13 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 			}
 
 			String newKeystoreName = UUID.randomUUID() + "." + dto.getType().getFileExtension();
-			FileOutputStream fos = new FileOutputStream(keystoreTempPath + newKeystoreName);
+			FileOutputStream fos = new FileOutputStream(keystoreTempPath + newKeystoreName, false);
 			ks.store(fos, password);
 			fos.close();
 
 			return newKeystoreName;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new GmsException(e);
 		}
 	}
 
