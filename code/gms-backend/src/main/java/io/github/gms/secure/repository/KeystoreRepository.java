@@ -1,8 +1,8 @@
 package io.github.gms.secure.repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.secure.dto.IdNamePairDto;
+import io.github.gms.secure.entity.KeystoreEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,9 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.secure.dto.IdNamePairDto;
-import io.github.gms.secure.entity.KeystoreEntity;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Peter Szrnka
@@ -34,4 +33,7 @@ public interface KeystoreRepository extends JpaRepository<KeystoreEntity, Long> 
 	
 	@Query("select count(k) from KeystoreEntity k where k.userId = :userId and k.name = :name")
 	long countAllKeystoresByName(@Param("userId") Long userId, @Param("name") String name);
+
+	@Query("select k.fileName from KeystoreEntity k where k.fileName = :fileName")
+	String findByFileName(@Param("fileName") String fileName);
 }

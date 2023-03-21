@@ -35,7 +35,7 @@ import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
-import io.github.gms.secure.service.KeystoreGeneratorService;
+import io.github.gms.secure.service.KeystoreFileService;
 import io.github.gms.secure.service.KeystoreService;
 
 /**
@@ -51,7 +51,7 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	public static final String MULTIPART_FILE = "file";
 	
 	@Autowired
-	private KeystoreGeneratorService keystoreGeneratorService;
+	private KeystoreFileService keystoreGeneratorService;
 
 	@PostMapping(consumes = {
 			MediaType.MULTIPART_FORM_DATA_VALUE,
