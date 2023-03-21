@@ -1,5 +1,6 @@
 package io.github.gms.secure.service.impl;
 
+import com.google.common.base.Throwables;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
@@ -66,7 +67,7 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 			GmsException response = assertThrows(GmsException.class, () -> service.deleteTempKeystoreFiles());
 
 			// assert
-			assertEquals("java.lang.RuntimeException: java.lang.RuntimeException", response.getMessage());
+			assertEquals("ERROR!", Throwables.getRootCause(response).getMessage());
 		}
 	}
 
@@ -81,7 +82,7 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 		}
 
 		if (throwError) {
-			when(mockFile1.delete()).thenThrow(RuntimeException.class);
+			when(mockFile1.delete()).thenThrow(new RuntimeException("ERROR!"));
 		}
 		when(path1.toFile()).thenReturn(mockFile1);
 
