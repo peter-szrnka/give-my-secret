@@ -22,9 +22,12 @@ import io.github.gms.secure.service.EventService;
 @Aspect
 @Component
 public class EventPublisherAspect {
-	
-	@Autowired
-	private EventService service;
+
+	private final EventService service;
+
+	public EventPublisherAspect(EventService service) {
+		this.service = service;
+	}
 
 	@Pointcut("execution(* *.*(..))")
 	public void allMethod() {

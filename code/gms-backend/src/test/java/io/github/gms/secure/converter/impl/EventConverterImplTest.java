@@ -23,7 +23,7 @@ import io.github.gms.util.TestUtils;
  */
 class EventConverterImplTest extends AbstractUnitTest {
 
-	private EventConverter converter = new EventConverterImpl();
+	private final EventConverter converter = new EventConverterImpl();
 
 	@Test
 	void checkToList() {

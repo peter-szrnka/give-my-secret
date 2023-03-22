@@ -1,14 +1,12 @@
 package io.github.gms.secure.converter.impl;
 
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.service.SystemPropertyService;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * @author Peter Szrnka
@@ -16,9 +14,12 @@ import io.github.gms.secure.service.SystemPropertyService;
  */
 @Service
 public class GenerateJwtRequestConverterImpl implements GenerateJwtRequestConverter {
-	
-	@Autowired
-	private SystemPropertyService systemPropertyService;
+
+	private final SystemPropertyService systemPropertyService;
+
+	public GenerateJwtRequestConverterImpl(SystemPropertyService systemPropertyService) {
+		this.systemPropertyService = systemPropertyService;
+	}
 
 	@Override
 	public GenerateJwtRequest toRequest(JwtConfigType jwtConfigType, String subject, Map<String, Object> claims) {

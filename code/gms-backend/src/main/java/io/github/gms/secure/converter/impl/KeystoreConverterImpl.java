@@ -7,7 +7,6 @@ import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -24,9 +23,12 @@ import java.util.stream.Collectors;
  */
 @Component
 public class KeystoreConverterImpl implements KeystoreConverter {
-	
-	@Autowired
-	private Clock clock;
+
+	private final Clock clock;
+
+	public KeystoreConverterImpl(Clock clock) {
+		this.clock = clock;
+	}
 
 	@Override
 	public KeystoreEntity toNewEntity(SaveKeystoreRequestDto dto, MultipartFile file) {

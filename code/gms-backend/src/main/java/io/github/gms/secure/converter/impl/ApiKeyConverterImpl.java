@@ -1,19 +1,17 @@
 package io.github.gms.secure.converter.impl;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
-
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.converter.ApiKeyConverter;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka
@@ -22,8 +20,11 @@ import io.github.gms.secure.entity.ApiKeyEntity;
 @Component
 public class ApiKeyConverterImpl implements ApiKeyConverter {
 
-	@Autowired
-	private Clock clock;
+	private final Clock clock;
+
+	public ApiKeyConverterImpl(Clock clock) {
+		this.clock = clock;
+	}
 
 	@Override
 	public ApiKeyEntity toNewEntity(SaveApiKeyRequestDto dto) {

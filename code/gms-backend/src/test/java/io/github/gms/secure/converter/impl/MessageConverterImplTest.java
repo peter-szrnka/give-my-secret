@@ -23,7 +23,7 @@ import io.github.gms.util.TestUtils;
  */
 class MessageConverterImplTest extends AbstractUnitTest {
 
-	private MessageConverter converter = new MessageConverterImpl();
+	private final MessageConverter converter = new MessageConverterImpl();
 
 	@Test
 	void checkToList() {

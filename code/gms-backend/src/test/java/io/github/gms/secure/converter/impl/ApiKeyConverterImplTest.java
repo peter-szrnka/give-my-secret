@@ -1,24 +1,22 @@
 package io.github.gms.secure.converter.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.time.Clock;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-
 import com.google.common.collect.Lists;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+
+import java.time.Clock;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 /**
  * Unit test of {@link ApiKeyConverterImpl}
@@ -28,10 +26,15 @@ import io.github.gms.util.TestUtils;
  */
 class ApiKeyConverterImplTest extends AbstractUnitTest {
 
-	@Mock
 	private Clock clock;
-	@InjectMocks
 	private ApiKeyConverterImpl converter;
+
+	@BeforeEach
+	void beforeEach() {
+		// init
+		clock = mock(Clock.class);
+		converter = new ApiKeyConverterImpl(clock);
+	}
 
 	@Test
 	void checkToEntityWithoutParameters() {

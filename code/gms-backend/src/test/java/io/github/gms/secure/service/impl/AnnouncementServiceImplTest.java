@@ -1,36 +1,26 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.util.Optional;
-
-import org.jboss.logging.MDC;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.data.domain.Pageable;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.Constants;
-import io.github.gms.secure.dto.AnnouncementDto;
-import io.github.gms.secure.dto.AnnouncementListDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveAnnouncementDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.dto.*;
 import io.github.gms.secure.entity.AnnouncementEntity;
 import io.github.gms.secure.repository.AnnouncementRepository;
 import io.github.gms.secure.service.UserService;
 import io.github.gms.util.TestUtils;
+import org.jboss.logging.MDC;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Pageable;
+
+import java.time.Clock;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link AnnouncementServiceImpl}
@@ -39,18 +29,20 @@ import io.github.gms.util.TestUtils;
  * @since 1.0
  */
 class AnnouncementServiceImplTest extends AbstractUnitTest {
-	
-	@Mock
-	private Clock clock;
 
-	@InjectMocks
+	private Clock clock;
 	private AnnouncementServiceImpl service;
-	
-	@Mock
 	private AnnouncementRepository repository;
-	
-	@Mock
 	private UserService userService;
+
+	@BeforeEach
+	void beforeEach() {
+		// init
+		clock = mock(Clock.class);
+		repository = mock(AnnouncementRepository.class);
+		userService = mock(UserService.class);
+		service = new AnnouncementServiceImpl(clock, repository, userService);
+	}
 	
 	@Test
 	void shouldSaveNewEntity() {

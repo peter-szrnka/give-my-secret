@@ -1,11 +1,9 @@
 package io.github.gms.common.abstraction;
 
+import io.github.gms.common.enums.TimeUnit;
+
 import java.time.Clock;
 import java.time.ZonedDateTime;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import io.github.gms.common.enums.TimeUnit;
 
 /**
  * @author Peter Szrnka
@@ -13,8 +11,11 @@ import io.github.gms.common.enums.TimeUnit;
  */
 public abstract class AbstractLimitBasedJob {
 
-	@Autowired
-	protected Clock clock;
+	protected final Clock clock;
+
+	public AbstractLimitBasedJob(Clock clock) {
+		this.clock = clock;
+	}
 	
 	protected ZonedDateTime processConfig(String oldEventLimitValue) {
 		String[] values = oldEventLimitValue.split(";");

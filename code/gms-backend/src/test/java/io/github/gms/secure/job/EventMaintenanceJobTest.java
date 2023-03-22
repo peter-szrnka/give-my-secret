@@ -1,29 +1,21 @@
 package io.github.gms.secure.job;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import ch.qos.logback.classic.Logger;
+import com.google.common.collect.Lists;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.secure.repository.EventRepository;
+import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.slf4j.LoggerFactory;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import com.google.common.collect.Lists;
-
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.secure.repository.EventRepository;
-import io.github.gms.util.TestUtils;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link EventMaintenanceJob}
@@ -32,22 +24,19 @@ import io.github.gms.util.TestUtils;
  * @since 1.0
  */
 class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
-	
-	@Mock
-	private Clock clock;
-	@Mock
-	private EventRepository eventRepository;
 
-	@InjectMocks
+	private EventRepository eventRepository;
 	private EventMaintenanceJob job;
 	
 	@Override
 	@BeforeEach
 	public void setup() {
 		super.setup();
-		ReflectionTestUtils.setField(job, "oldEventLimit", "1;d");
+		// init
+		Clock clock = mock(Clock.class);
+		eventRepository = mock(EventRepository.class);
+		job = new EventMaintenanceJob(clock, eventRepository, "1;d");
 		((Logger) LoggerFactory.getLogger(EventMaintenanceJob.class)).addAppender(logAppender);
-		
 		setupClock(clock);
 	}
 	

@@ -25,7 +25,7 @@ import io.github.gms.secure.entity.SystemPropertyEntity;
  */
 class SystemPropertyConverterImplTest extends AbstractUnitTest {
 
-	private SystemPropertyConverterImpl converter = new SystemPropertyConverterImpl(Clock.systemDefaultZone());
+	private final SystemPropertyConverterImpl converter = new SystemPropertyConverterImpl(Clock.systemDefaultZone());
 
 	@Test
 	void shouldConvertToDtoList() {

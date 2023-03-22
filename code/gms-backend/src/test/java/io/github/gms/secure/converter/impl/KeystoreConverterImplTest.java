@@ -12,9 +12,8 @@ import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,10 +33,14 @@ import static org.mockito.Mockito.*;
 class KeystoreConverterImplTest extends AbstractUnitTest {
 
 	private static final String FILE_NAME = "test.jks";
-	@Mock
 	private Clock clock;
-	@InjectMocks
-	private KeystoreConverter converter = new KeystoreConverterImpl();
+	private KeystoreConverter converter;
+
+	@BeforeEach
+	void beforeEach() {
+		clock = mock(Clock.class);
+		converter = new KeystoreConverterImpl(clock);
+	}
 
 	@Test
 	void checkToEntityWithoutFile() {
