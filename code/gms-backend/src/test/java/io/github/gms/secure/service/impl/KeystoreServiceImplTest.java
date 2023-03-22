@@ -16,7 +16,6 @@ import io.github.gms.secure.dto.*;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
-import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.secure.service.KeystoreFileService;
 import io.github.gms.util.DemoData;
@@ -31,16 +30,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -64,41 +63,48 @@ import static org.mockito.Mockito.*;
 class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     private static final String JKS_TEST_FILE_LOCATION = "./unit-test-output/" + DemoData.USER_1_ID + "/test.jks";
-    @InjectMocks
+
     private KeystoreServiceImpl service;
-    @Mock
     private CryptoService cryptoService;
-    @Mock
     private KeystoreRepository repository;
-    @Mock
     private KeystoreAliasRepository aliasRepository;
-    @Mock
     private KeystoreConverter converter;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private ObjectMapper objectMapper = TestUtils.objectMapper();
-    @Mock
+    private ObjectMapper objectMapper;
     private ApplicationEventPublisher applicationEventPublisher;
-    @Mock
     private KeystoreFileService keystoreFileService;
-    @AfterAll
-    @SneakyThrows
-    public static void tearDownAll() {
-        TestUtils.deleteDirectoryWithContent("./unit-test-output");
-        TestUtils.deleteDirectoryWithContent("./temp-output");
-    }
 
     @Override
     @BeforeEach
     public void setup() {
         super.setup();
 
+        // Init
+        cryptoService = mock(CryptoService.class);
+        repository = mock(KeystoreRepository.class);
+        aliasRepository = mock(KeystoreAliasRepository.class);
+        converter = mock(KeystoreConverter.class);
+        objectMapper = mock(ObjectMapper.class);
+        applicationEventPublisher = mock(ApplicationEventPublisher.class);
+        keystoreFileService = mock(KeystoreFileService.class);
+        service = new KeystoreServiceImpl(cryptoService, repository, aliasRepository, converter, objectMapper,
+                applicationEventPublisher, keystoreFileService);
+
         ((Logger) LoggerFactory.getLogger(KeystoreServiceImpl.class)).addAppender(logAppender);
-        ReflectionTestUtils.setField(service, "keystorePath", "unit-test-output/");
-        ReflectionTestUtils.setField(service, "keystoreTempPath", "temp-output/");
+
+        service.setKeystorePath("unit-test-output/");
+        service.setKeystoreTempPath("temp-output/");
+
+        TestUtils.createDirectory("unit-test-output/");
+        TestUtils.createDirectory("temp-output/");
 
         MDC.put(MdcParameter.USER_ID.getDisplayName(), DemoData.USER_1_ID);
+    }
+
+    @AfterAll
+    @SneakyThrows
+    public static void tearDownAll() {
+        TestUtils.deleteDirectoryWithContent("./unit-test-output");
+        TestUtils.deleteDirectoryWithContent("./temp-output");
     }
 
     @Test
@@ -220,7 +226,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
         MultipartFile multiPart = mock(MultipartFile.class);
         when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
-        when(repository.countAllKeystoresByName(anyLong(), anyString())).thenReturn(1l);
+        when(repository.countAllKeystoresByName(anyLong(), anyString())).thenReturn(1L);
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
@@ -272,6 +278,10 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     @SneakyThrows
     @SuppressWarnings("unchecked")
     void shouldNotSaveNewEntityWithNonUniqueFileName() {
+        String fileName = "my-key.jks";
+        TestUtils.createDirectory("unit-test-output/1/");
+        Path newFilePath = Files.createFile(Paths.get("unit-test-output/1/" + fileName));
+        Files.writeString(newFilePath, "test");
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
@@ -341,7 +351,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         when(repository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
-        new File("unit-test-output/" + DemoData.USER_1_ID + "/").mkdirs();
+        Files.createDirectory(Paths.get("unit-test-output/" + DemoData.USER_1_ID + "/"));
 
         FileWriter fileWriter = new FileWriter(JKS_TEST_FILE_LOCATION);
         PrintWriter printWriter = new PrintWriter(fileWriter);
@@ -462,8 +472,8 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         verify(applicationEventPublisher, times(2)).publishEvent(entityDisabledEventCaptor.capture());
 
         EntityChangeEvent capturedEvent = entityDisabledEventCaptor.getValue();
-        assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("userId")));
-        assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("keystoreId")));
+        assertEquals(1L, (Long) capturedEvent.getMetadata().get("userId"));
+        assertEquals(1L, (Long) capturedEvent.getMetadata().get("keystoreId"));
         assertEquals(EntityChangeType.KEYSTORE_DISABLED, capturedEvent.getType());
     }
 
@@ -471,7 +481,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     @SneakyThrows
     @SuppressWarnings("unchecked")
     void shouldSaveNewEntityWhenGeneratedInputIsAvailable() {
-        new File("temp-output/").mkdirs();
         String fileName = "generated-" + UUID.randomUUID().toString() + ".jks";
         Path newFilePath = Files.createFile(Paths.get("temp-output/" + fileName));
         Files.writeString(newFilePath, "test");
@@ -498,9 +507,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
         verify(objectMapper).readValue(eq(model), any(Class.class));
-
-        newFilePath.toFile().delete();
-        Paths.get("temp-output").toFile().delete();
     }
 
     @Test
@@ -542,8 +548,8 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         verify(applicationEventPublisher, times(2)).publishEvent(entityDisabledEventCaptor.capture());
 
         EntityChangeEvent capturedEvent = entityDisabledEventCaptor.getValue();
-        assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("userId")));
-        assertEquals(1L, Long.class.cast(capturedEvent.getMetadata().get("keystoreId")));
+        assertEquals(1L, (Long) capturedEvent.getMetadata().get("userId"));
+        assertEquals(1L, (Long) capturedEvent.getMetadata().get("keystoreId"));
         assertEquals(EntityChangeType.KEYSTORE_DISABLED, capturedEvent.getType());
 
         mockedStaticFiles.close();
@@ -652,7 +658,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     @Test
     @SneakyThrows
     void shouldDelete() {
-        new File("unit-test-output/1/").mkdirs();
+        TestUtils.createDirectory("unit-test-output/1/");
 
         FileWriter fileWriter = new FileWriter("unit-test-output/1/test.jks");
         PrintWriter printWriter = new PrintWriter(fileWriter);
@@ -669,6 +675,14 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         // assert
         verify(repository).findByIdAndUserId(anyLong(), anyLong());
         verify(repository).deleteById(1L);
+
+        ArgumentCaptor<EntityChangeEvent> entityDisabledEventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
+        verify(applicationEventPublisher).publishEvent(entityDisabledEventCaptor.capture());
+
+        EntityChangeEvent capturedEvent = entityDisabledEventCaptor.getValue();
+        assertEquals(1L, (Long) capturedEvent.getMetadata().get("userId"));
+        assertEquals(1L, (Long) capturedEvent.getMetadata().get("keystoreId"));
+        assertEquals(EntityChangeType.KEYSTORE_DELETED, capturedEvent.getType());
     }
 
     @ParameterizedTest
@@ -718,7 +732,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         when(aliasRepository.findByIdAndKeystoreId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         // act
-        GmsException exception = assertThrows(GmsException.class, () -> getValue());
+        GmsException exception = assertThrows(GmsException.class, this::getValue);
 
         // assert
         assertEquals(Constants.ENTITY_NOT_FOUND, exception.getMessage());

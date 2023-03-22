@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
-import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.event.EntityChangeEvent;
 import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.exception.GmsException;
@@ -19,9 +18,8 @@ import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.secure.service.KeystoreFileService;
 import io.github.gms.secure.service.KeystoreService;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -41,6 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.gms.common.util.MdcUtils.getUserId;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -50,24 +50,37 @@ import java.util.Map;
 @CacheConfig(cacheNames = { Constants.CACHE_API })
 public class KeystoreServiceImpl implements KeystoreService {
 
-	@Autowired
-	private CryptoService cryptoService;
-	@Autowired
-	private KeystoreRepository repository;
-	@Autowired
-	private KeystoreAliasRepository aliasRepository;
-	@Autowired
-	private KeystoreConverter converter;
-	@Autowired
-	private ObjectMapper objectMapper;
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
-	@Autowired
-	private KeystoreFileService keystoreFileService;
+	private final CryptoService cryptoService;
+	private final KeystoreRepository repository;
+	private final KeystoreAliasRepository aliasRepository;
+	private final KeystoreConverter converter;
+	private final ObjectMapper objectMapper;
+	private final ApplicationEventPublisher applicationEventPublisher;
+	private final KeystoreFileService keystoreFileService;
+	@Setter
 	@Value("${config.location.keystore.path}")
 	private String keystorePath;
+	@Setter
 	@Value("${config.location.keystoreTemp.path}")
 	private String keystoreTempPath;
+
+	public KeystoreServiceImpl(
+		CryptoService cryptoService,
+		KeystoreRepository repository,
+		KeystoreAliasRepository aliasRepository,
+		KeystoreConverter converter,
+		ObjectMapper objectMapper,
+		ApplicationEventPublisher applicationEventPublisher,
+		KeystoreFileService keystoreFileService
+	) {
+		this.cryptoService = cryptoService;
+		this.repository = repository;
+		this.aliasRepository = aliasRepository;
+		this.converter = converter;
+		this.objectMapper = objectMapper;
+		this.applicationEventPublisher = applicationEventPublisher;
+		this.keystoreFileService = keystoreFileService;
+	}
 
 	@Override
 	@Transactional
@@ -95,8 +108,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		dto.getAliases().forEach(alias -> processAlias(newEntity, alias));
 		
 		if (EntityStatus.DISABLED == newEntity.getStatus()) {
-			Map<String, Object> metadata = initMetaData(newEntity.getId());
-			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
+			publishEvent(initMetaData(newEntity.getId()), EntityChangeType.KEYSTORE_DISABLED);
 		}
 
 		if (dto.getId() == null) {
@@ -144,6 +156,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		try {
 			log.info("Keystore file={} will be removed", keystoreFile.toPath());
 			Files.delete(keystoreFile.toPath());
+			publishEvent(initMetaData(id), EntityChangeType.KEYSTORE_DELETED);
 		} catch (IOException e) {
 			log.error("Keystore file cannot be deleted", e);
 		}
@@ -160,8 +173,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			return;
 		}
 
-		Map<String, Object> metadata = initMetaData(entity.getId());
-		applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_DISABLED));
+		publishEvent(initMetaData(entity.getId()), EntityChangeType.KEYSTORE_DISABLED);
 	}
 
 	@Override
@@ -232,10 +244,6 @@ public class KeystoreServiceImpl implements KeystoreService {
 		return keystorePath + getUserId() + Constants.SLASH;
 	}
 	
-	private Long getUserId() {
-		return Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-	}
-	
 	private KeystoreEntity convertKeystore(SaveKeystoreRequestDto dto, MultipartFile file) {
 		if (dto.getId() == null) {
 			return converter.toNewEntity(dto, file);
@@ -254,8 +262,12 @@ public class KeystoreServiceImpl implements KeystoreService {
 			aliasRepository.deleteById(alias.getId());
 			Map<String, Object> metadata = initMetaData(newEntity.getId());
 			metadata.put("aliasId", alias.getId());
-			applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED));
+			publishEvent(metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED);
 		}
+	}
+
+	private void publishEvent(Map<String, Object> metadata, EntityChangeType entityChangeType) {
+		applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, entityChangeType));
 	}
 
 	private void removeGeneratedFileFromTempFolder(String filename, boolean generated) throws IOException {
@@ -354,7 +366,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		}
 	}
 	
-	private Map<String, Object> initMetaData(Long keystoreId) {
+	private static Map<String, Object> initMetaData(Long keystoreId) {
 		Map<String, Object> metadata = new HashMap<>();
 		metadata.put("userId", getUserId());
 		metadata.put("keystoreId", keystoreId);

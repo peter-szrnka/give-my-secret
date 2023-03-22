@@ -1,22 +1,22 @@
 package io.github.gms.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.Cookie;
-
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.collect.Sets;
+import io.github.gms.api.controller.ApiController;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.*;
+import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.model.GenerateJwtRequest;
+import io.github.gms.common.util.Constants;
+import io.github.gms.secure.dto.*;
+import io.github.gms.secure.entity.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.data.domain.Page;
@@ -25,51 +25,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.collect.Sets;
+import javax.servlet.http.Cookie;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.ZonedDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import io.github.gms.api.controller.ApiController;
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.AliasOperation;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.EventOperation;
-import io.github.gms.common.enums.EventTarget;
-import io.github.gms.common.enums.KeyStoreValueType;
-import io.github.gms.common.enums.KeystoreType;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.RotationPeriod;
-import io.github.gms.common.enums.SecretType;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.model.GenerateJwtRequest;
-import io.github.gms.common.util.Constants;
-import io.github.gms.secure.dto.ChangePasswordRequestDto;
-import io.github.gms.secure.dto.KeystoreAliasDto;
-import io.github.gms.secure.dto.SaveAnnouncementDto;
-import io.github.gms.secure.dto.SaveApiKeyRequestDto;
-import io.github.gms.secure.dto.SaveKeystoreRequestDto;
-import io.github.gms.secure.dto.SaveSecretRequestDto;
-import io.github.gms.secure.dto.SaveUserRequestDto;
-import io.github.gms.secure.dto.SecretDto;
-import io.github.gms.secure.dto.UserDto;
-import io.github.gms.secure.entity.AnnouncementEntity;
-import io.github.gms.secure.entity.ApiKeyEntity;
-import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
-import io.github.gms.secure.entity.EventEntity;
-import io.github.gms.secure.entity.KeystoreAliasEntity;
-import io.github.gms.secure.entity.KeystoreEntity;
-import io.github.gms.secure.entity.MessageEntity;
-import io.github.gms.secure.entity.SecretEntity;
-import io.github.gms.secure.entity.SystemPropertyEntity;
-import io.github.gms.secure.entity.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Szrnka
@@ -91,7 +56,7 @@ public class TestUtils {
 
 	public static HttpHeaders getApiHttpHeaders(String apiKey) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set(ApiController.API_KEY_HEADER, apiKey);
 
@@ -100,7 +65,7 @@ public class TestUtils {
 	
 	public static HttpHeaders getHttpHeaders(String jwt) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 		headers.setContentType(MediaType.APPLICATION_JSON);	
 
 		if (jwt != null) {
@@ -456,6 +421,13 @@ public class TestUtils {
 	public static SaveSecretRequestDto createNewSaveSecretRequestDto() {
 		return createSaveSecretRequestDto(null, new HashSet<>());
 	}
+
+	@SneakyThrows
+	public static void createDirectory(String dir) {
+		Path path = Paths.get(dir);
+		deleteDirectoryWithContent(dir);
+		Files.createDirectory(path);
+	}
 	
 	@SneakyThrows
 	public static void deleteDirectoryWithContent(String dir) {
@@ -485,7 +457,7 @@ public class TestUtils {
 		entity1.setTitle("Maintenance at 2022-01-01");
 		entity1.setDescription("Test");
 		entity1.setAnnouncementDate(ZonedDateTime.now().minusDays(1));
-		return new PageImpl<AnnouncementEntity>(Lists.newArrayList(entity1));
+		return new PageImpl<>(Lists.newArrayList(entity1));
 	}
 
 	public static AnnouncementEntity createAnnouncementEntity(Long id) {

@@ -18,7 +18,6 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +34,10 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
@@ -53,12 +55,16 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	@Autowired
-	private KeystoreRepository repository;
-	@Autowired
-	private UserRepository userRepository;
-	@Value("${config.location.keystoreTemp.path}")
-	private String keystoreTempPath;
+	private final KeystoreRepository repository;
+	private final UserRepository userRepository;
+	private final String keystoreTempPath;
+
+	public KeystoreFileServiceImpl(KeystoreRepository repository, UserRepository userRepository,
+								   @Value("${config.location.keystoreTemp.path}") String keystoreTempPath) {
+		this.repository = repository;
+		this.userRepository = userRepository;
+		this.keystoreTempPath = keystoreTempPath;
+	}
 
 	@Override
 	public long deleteTempKeystoreFiles()  {

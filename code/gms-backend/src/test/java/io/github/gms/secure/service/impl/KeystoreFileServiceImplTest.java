@@ -12,18 +12,14 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.slf4j.MDC;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -39,17 +35,18 @@ import static org.mockito.Mockito.*;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class KeystoreFileServiceImplTest extends AbstractUnitTest {
 
-	@Mock
 	private KeystoreRepository repository;
-	@Mock
 	private UserRepository userRepository;
-	@InjectMocks
 	private KeystoreFileServiceImpl service;
 
 	@BeforeEach
 	void beforeEach() {
-		ReflectionTestUtils.setField(service, "keystoreTempPath", "./temp-output/");
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
+
+		// Init
+		repository = mock(KeystoreRepository.class);
+		userRepository = mock(UserRepository.class);
+		service = new KeystoreFileServiceImpl(repository, userRepository, "./temp-output/");
 	}
 
 	@AfterEach
@@ -63,7 +60,7 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 	@SneakyThrows
 	void shouldGenerateKeystore() {
 		when(userRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
-		Files.createDirectory(Paths.get("./temp-output/"));
+		TestUtils.createDirectory("./temp-output/");
 		assertNotNull(service.generate(TestUtils.createSaveKeystoreRequestDto()));
 	}
 
