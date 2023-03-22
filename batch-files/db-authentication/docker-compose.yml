@@ -35,3 +35,4 @@ services:
     volumes:
       - "D:/dev/projects/open-source/keystores/:/usr/share/ssl/"
       - "D:/dev/projects/open-source/ks/:/usr/share/keystore/"
+      - "D:/dev/projects/open-source/temp-ks/:/usr/share/keystore-temp/"

@@ -32,7 +32,7 @@ DB_CREDENTIAL=Secret
 
 # Keystore storage path
 KEYSTORE_PATH=/usr/share/keystore/
-KEYSTORE_TEMP_DEFAULT_PATH=D:/dev/projects/open-source/temp-ks/
+KEYSTORE_TEMP_DEFAULT_PATH=/usr/share/keystore-temp/
 
 # Windows specific settings
 COMPOSE_CONVERT_WINDOWS_PATHS=1
