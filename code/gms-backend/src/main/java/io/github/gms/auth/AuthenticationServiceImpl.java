@@ -1,25 +1,5 @@
 package io.github.gms.auth;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-
-import org.jboss.logging.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.util.WebUtils;
-
 import io.github.gms.auth.model.AuthenticationDetails;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -34,6 +14,23 @@ import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.jboss.logging.MDC;
+import org.springframework.data.util.Pair;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Peter Szrnka
@@ -42,21 +39,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
-	
-	@Autowired
-	private AuthenticationManager authenticationManager;
 
-	@Autowired
-	private JwtService jwtService;
-	
-	@Autowired
-	private UserAuthService userAuthService;
-	
-	@Autowired
-	private SystemPropertyService systemPropertyService;
-	
-	@Autowired
-	private GenerateJwtRequestConverter generateJwtRequestConverter;
+	private final AuthenticationManager authenticationManager;
+	private final JwtService jwtService;
+	private final UserAuthService userAuthService;
+	private final SystemPropertyService systemPropertyService;
+	private final GenerateJwtRequestConverter generateJwtRequestConverter;
+
+	public AuthenticationServiceImpl(
+			AuthenticationManager authenticationManager,
+			JwtService jwtService,
+			UserAuthService userAuthService,
+			SystemPropertyService systemPropertyService,
+			GenerateJwtRequestConverter generateJwtRequestConverter) {
+		this.authenticationManager = authenticationManager;
+		this.jwtService = jwtService;
+		this.userAuthService = userAuthService;
+		this.systemPropertyService = systemPropertyService;
+		this.generateJwtRequestConverter = generateJwtRequestConverter;
+	}
 
 	@Override
 	public AuthenticationDetails authenticate(String username, String credential) {

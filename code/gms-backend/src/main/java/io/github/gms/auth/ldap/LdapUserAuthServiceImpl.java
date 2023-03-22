@@ -1,11 +1,12 @@
 package io.github.gms.auth.ldap;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import io.github.gms.auth.UserAuthService;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.util.Constants;
+import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.secure.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.LdapTemplate;
@@ -15,13 +16,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.github.gms.auth.UserAuthService;
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.util.Constants;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka
@@ -32,21 +30,29 @@ import lombok.extern.slf4j.Slf4j;
 @Profile(value = { Constants.CONFIG_AUTH_TYPE_LDAP, Constants.CONFIG_AUTH_TYPE_LDAP_TEST })
 public class LdapUserAuthServiceImpl implements UserAuthService {
 
-	@Value("${config.store.ldap.credential:false}")
-	private boolean storeLdapCredential;
-	@Autowired
-	private Clock clock;
-	@Autowired
-	private UserRepository repository;
-	@Autowired
-	private LdapTemplate ldapTemplate;
+	private final Clock clock;
+	private final UserRepository repository;
+	private final LdapTemplate ldapTemplate;
+
+	private final boolean storeLdapCredential;
+
+	public LdapUserAuthServiceImpl(
+			Clock clock,
+			UserRepository repository,
+			LdapTemplate ldapTemplate,
+			@Value("${config.store.ldap.credential:false}") boolean storeLdapCredential) {
+		this.clock = clock;
+		this.repository = repository;
+		this.ldapTemplate = ldapTemplate;
+		this.storeLdapCredential = storeLdapCredential;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		List<GmsUserDetails> result = ldapTemplate.search(LdapQueryBuilder.query().where("uid").is(username),
 				new LDAPAttributesMapper());
 
-		if (result.isEmpty() || result.size() > 1) {
+		if (result.size() != 1) {
 			throw new UsernameNotFoundException("User not found!");
 		}
 

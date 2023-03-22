@@ -1,36 +1,5 @@
 package io.github.gms.auth;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthenticationDetails;
@@ -44,6 +13,25 @@ import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link AuthenticationServiceImpl}
@@ -53,28 +41,27 @@ import io.jsonwebtoken.Claims;
  */
 class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
-	@InjectMocks
+	private AuthenticationManager authenticationManager;
+	private JwtService jwtService;
+	private UserAuthService userAuthService;
+	private SystemPropertyService systemPropertyService;
+	private GenerateJwtRequestConverter generateJwtRequestConverter;
 	private AuthenticationServiceImpl service;
 
-	@Mock
-	private JwtService jwtService;
-	
-	@Mock
-	private SystemPropertyService systemPropertyService;
-	
-	@Mock
-	private AuthenticationManager authenticationManager;
-
-	@Mock
-	private UserAuthService userAuthService;
-	
-	@Mock
-	private GenerateJwtRequestConverter generateJwtRequestConverter;
-	
 	@Override
 	@BeforeEach
 	public void setup() {
 		super.setup();
+
+		// init
+		authenticationManager = mock(AuthenticationManager.class);
+		jwtService = mock(JwtService.class);
+		userAuthService = mock(UserAuthService.class);
+		systemPropertyService = mock(SystemPropertyService.class);
+		generateJwtRequestConverter = mock(GenerateJwtRequestConverter.class);
+		service = new AuthenticationServiceImpl(authenticationManager, jwtService, userAuthService,
+				systemPropertyService, generateJwtRequestConverter);
+
 		((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
 	}
 	
@@ -113,7 +100,6 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		AuthenticationResponse response = service.authorize(req);
 		
 		// assert
-		//assertFalse(response.isSkip());
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
 		assertEquals("Access denied!", response.getErrorMessage());
 	}
@@ -147,7 +133,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "expired_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(
-				ZonedDateTime.now().minusDays(1l)
+				ZonedDateTime.now().minusDays(1L)
 			      .toInstant()));
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
@@ -172,7 +158,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "valid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
-		when(claims.getExpiration()).thenReturn(Date.from(ZonedDateTime.now().plusDays(1l).toInstant()));
+		when(claims.getExpiration()).thenReturn(Date.from(ZonedDateTime.now().plusDays(1L).toInstant()));
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 		when(claims.get(anyString(), any())).thenReturn(userDetails.getUsername());
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
@@ -197,7 +183,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "valid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
-		when(claims.getExpiration()).thenReturn(Date.from(ZonedDateTime.now().plusDays(1l).toInstant()));
+		when(claims.getExpiration()).thenReturn(Date.from(ZonedDateTime.now().plusDays(1L).toInstant()));
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 		when(claims.get(anyString(), any())).thenReturn(userDetails.getUsername());
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");

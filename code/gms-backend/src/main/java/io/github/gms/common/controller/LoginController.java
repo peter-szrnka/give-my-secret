@@ -1,8 +1,13 @@
 package io.github.gms.common.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import io.github.gms.auth.dto.AuthenticateRequestDto;
+import io.github.gms.auth.dto.AuthenticateResponseDto;
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.CookieUtils;
+import io.github.gms.secure.dto.UserInfoDto;
+import io.github.gms.secure.service.LoginService;
+import io.github.gms.secure.service.SystemPropertyService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,14 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.gms.auth.dto.AuthenticateRequestDto;
-import io.github.gms.auth.dto.AuthenticateResponseDto;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.util.Constants;
-import io.github.gms.common.util.CookieUtils;
-import io.github.gms.secure.dto.UserInfoDto;
-import io.github.gms.secure.service.LoginService;
-import io.github.gms.secure.service.SystemPropertyService;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Peter Szrnka
@@ -31,15 +29,17 @@ public class LoginController {
 	
 	public static final String LOGIN_PATH = "authenticate";
 	public static final String LOGOUT_PATH = "logoutUser";
-	
-	@Value("${config.cookie.secure}")
-	private boolean secure;
 
-	@Autowired
-	private LoginService service;
-	
-	@Autowired
-	private SystemPropertyService systemPropertyService;
+	private final LoginService service;
+	private final SystemPropertyService systemPropertyService;
+	private final boolean secure;
+
+	public LoginController(LoginService service, SystemPropertyService systemPropertyService,
+						   @Value("${config.cookie.secure}") boolean secure) {
+		this.service = service;
+		this.systemPropertyService = systemPropertyService;
+		this.secure = secure;
+	}
 
 	@PostMapping(LOGIN_PATH)
 	public ResponseEntity<UserInfoDto> loginAuthentication(@RequestBody AuthenticateRequestDto dto, HttpServletRequest request) {

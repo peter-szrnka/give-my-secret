@@ -27,12 +27,12 @@ public class LDAPAttributesMapper implements AttributesMapper<GmsUserDetails> {
 				.username(getAttribute(attributes, Constants.LDAP_PROPERTY_UID))
 				.credential(getAttribute(attributes, Constants.LDAP_PROPERTY_CREDENTIAL))
 				.email(getAttribute(attributes, Constants.LDAP_PROPERTY_EMAIL))
-				.authorities(getAttributeCollection(attributes, Constants.LDAP_PROPERTY_ROLE))
+				.authorities(getAttributeCollection(attributes))
 				.build();
 	}
 	
-	private Set<UserRole> getAttributeCollection(Attributes attributes, String attributeName) throws NamingException {
-		Attribute result = attributes.get(attributeName);
+	private Set<UserRole> getAttributeCollection(Attributes attributes) throws NamingException {
+		Attribute result = attributes.get(Constants.LDAP_PROPERTY_ROLE);
 
 		if (result == null) {
 			return Collections.emptySet();

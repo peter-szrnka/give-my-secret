@@ -1,33 +1,26 @@
 package io.github.gms.auth.ldap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.ldap.core.AttributesMapper;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.query.LdapQuery;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.ldap.core.AttributesMapper;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.query.LdapQuery;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.time.Clock;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -35,14 +28,18 @@ import io.github.gms.util.TestUtils;
  */
 class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 
-	@Mock
 	private Clock clock;
-	@Mock
 	private UserRepository repository;
-	@Mock
 	private LdapTemplate ldapTemplate;
-	@InjectMocks
 	private LdapUserAuthServiceImpl service;
+
+	@BeforeEach
+	void beforeEach() {
+		clock = mock(Clock.class);
+		repository = mock(UserRepository.class);
+		ldapTemplate = mock(LdapTemplate.class);
+		service = new LdapUserAuthServiceImpl(clock, repository, ldapTemplate, false);
+	}
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -88,7 +85,8 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	@SuppressWarnings("unchecked")
 	void shouldNotUpdateCredentialsWhenMatching() {
 		// arrange
-		ReflectionTestUtils.setField(service, "storeLdapCredential", true);
+		service = new LdapUserAuthServiceImpl(clock, repository, ldapTemplate, true);
+
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setCredential("test-credential");
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(userDetails));
@@ -109,7 +107,8 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	@SuppressWarnings("unchecked")
 	void shouldUpdateCredentials() {
 		// arrange
-		ReflectionTestUtils.setField(service, "storeLdapCredential", true);
+		service = new LdapUserAuthServiceImpl(clock, repository, ldapTemplate, true);
+
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(TestUtils.createGmsUser()));
 		when(repository.findByUsername("test")).thenReturn(Optional.of(TestUtils.createUser()));
 
@@ -126,7 +125,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	void shouldSaveNewLdapUser() {
 		// arrange
 		setupClock(clock);
-		ReflectionTestUtils.setField(service, "storeLdapCredential", false);
+		service = new LdapUserAuthServiceImpl(clock, repository, ldapTemplate, false);
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(TestUtils.createGmsUser()));
 		when(repository.findByUsername("test")).thenReturn(Optional.empty());
 		when(repository.save(any(UserEntity.class))).thenReturn(TestUtils.createUser());

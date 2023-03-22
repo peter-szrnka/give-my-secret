@@ -1,12 +1,11 @@
 package io.github.gms;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.common.base.Throwables;
+import io.github.gms.common.dto.ErrorResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.exception.GmsException;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -17,12 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.google.common.base.Throwables;
-
-import io.github.gms.common.dto.ErrorResponseDto;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.exception.GmsException;
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import java.time.Clock;
+import java.time.ZonedDateTime;
 
 /**
  * @author Peter Szrnka
@@ -32,8 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice
 public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@Autowired
-	private Clock clock;
+	private final Clock clock;
+
+	public GmsExceptionHandler(Clock clock) {
+		this.clock = clock;
+	}
 
 	@ExceptionHandler(GmsException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

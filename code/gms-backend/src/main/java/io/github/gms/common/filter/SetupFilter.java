@@ -23,8 +23,11 @@ import io.github.gms.secure.service.SystemService;
 @Component
 public class SetupFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private SystemService service;
+	private final SystemService service;
+
+	public SetupFilter(SystemService service) {
+		this.service = service;
+	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

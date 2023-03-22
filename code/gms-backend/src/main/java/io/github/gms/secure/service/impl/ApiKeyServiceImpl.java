@@ -1,14 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import java.util.Collections;
-
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
@@ -16,16 +7,17 @@ import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.ApiKeyConverter;
-import io.github.gms.secure.dto.ApiKeyDto;
-import io.github.gms.secure.dto.ApiKeyListDto;
-import io.github.gms.secure.dto.IdNamePairListDto;
-import io.github.gms.secure.dto.LongValueDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveApiKeyRequestDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.dto.*;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.secure.service.ApiKeyService;
+import org.slf4j.MDC;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 /**
  * @author Peter Szrnka
@@ -37,11 +29,13 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
 	static final String ENTITY_NOT_FOUND = "Entity not found!";
 
-	@Autowired
-	private ApiKeyRepository repository;
+	private final ApiKeyRepository repository;
+	private final ApiKeyConverter converter;
 
-	@Autowired
-	private ApiKeyConverter converter;
+	public ApiKeyServiceImpl(ApiKeyRepository repository, ApiKeyConverter converter) {
+		this.repository = repository;
+		this.converter = converter;
+	}
 
 	@Override
 	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)

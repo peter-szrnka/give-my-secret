@@ -1,44 +1,28 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
+import ch.qos.logback.classic.Logger;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.exception.GmsException;
+import io.github.gms.secure.converter.ApiKeyConverter;
+import io.github.gms.secure.dto.*;
+import io.github.gms.secure.entity.ApiKeyEntity;
+import io.github.gms.secure.repository.ApiKeyRepository;
+import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.converter.ApiKeyConverter;
-import io.github.gms.secure.dto.ApiKeyDto;
-import io.github.gms.secure.dto.ApiKeyListDto;
-import io.github.gms.secure.dto.IdNamePairDto;
-import io.github.gms.secure.dto.IdNamePairListDto;
-import io.github.gms.secure.dto.LongValueDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveApiKeyRequestDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.entity.ApiKeyEntity;
-import io.github.gms.secure.repository.ApiKeyRepository;
-import io.github.gms.util.TestUtils;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -46,19 +30,17 @@ import io.github.gms.util.TestUtils;
  */
 class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 
-	@InjectMocks
 	private ApiKeyServiceImpl service;
-
-	@Mock
 	private ApiKeyRepository repository;
-
-	@Mock
 	private ApiKeyConverter converter;
 
 	@Override
 	@BeforeEach
 	public void setup() {
 		super.setup();
+		repository = mock(ApiKeyRepository.class);
+		converter = mock(ApiKeyConverter.class);
+		service = new ApiKeyServiceImpl(repository, converter);
 		((Logger) LoggerFactory.getLogger(ApiKeyServiceImpl.class)).addAppender(logAppender);
 	}
 
@@ -101,7 +83,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
-		when(repository.countAllApiKeysByName(anyLong(), anyString())).thenReturn(1l);
+		when(repository.countAllApiKeysByName(anyLong(), anyString())).thenReturn(1L);
 
 		// act
 		SaveApiKeyRequestDto input = TestUtils.createNewSaveApiKeyRequestDto();
@@ -118,7 +100,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
-		when(repository.countAllApiKeysByValue(anyLong(), anyString())).thenReturn(1l);
+		when(repository.countAllApiKeysByValue(anyLong(), anyString())).thenReturn(1L);
 
 		// act
 		SaveApiKeyRequestDto input = TestUtils.createNewSaveApiKeyRequestDto();
