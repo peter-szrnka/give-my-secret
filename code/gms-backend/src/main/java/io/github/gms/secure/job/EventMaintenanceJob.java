@@ -28,7 +28,7 @@ public class EventMaintenanceJob extends AbstractLimitBasedJob {
 	@Value("${config.event.old.limit}")
 	private String oldEventLimit;
 
-	@Scheduled(cron = "0 0 * * * ?")
+	@Scheduled(cron = "15 0 * * * ?")
 	public void execute() {
 		List<EventEntity> resultList = eventRepository.findAllEventDateOlderThan(processConfig(oldEventLimit));
 		eventRepository.deleteAll(resultList);

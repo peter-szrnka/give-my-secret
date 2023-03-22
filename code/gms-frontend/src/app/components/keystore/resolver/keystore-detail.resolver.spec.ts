@@ -23,7 +23,8 @@ describe('KeystoreDetailResolver', () => {
         id: 1,
         name: "apiKey",
         description: "Description",
-        aliases: []
+        aliases: [],
+        generated: false
     };
 
     beforeEach(async() => {

@@ -1,14 +1,17 @@
 package io.github.gms.secure.converter.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-
+import com.google.common.collect.Lists;
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.enums.AliasOperation;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.secure.converter.KeystoreConverter;
+import io.github.gms.secure.dto.KeystoreAliasDto;
+import io.github.gms.secure.dto.KeystoreDto;
+import io.github.gms.secure.dto.KeystoreListDto;
+import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -16,15 +19,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.collect.Lists;
+import java.time.Clock;
+import java.util.List;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.secure.converter.KeystoreConverter;
-import io.github.gms.secure.dto.KeystoreListDto;
-import io.github.gms.secure.dto.SaveKeystoreRequestDto;
-import io.github.gms.secure.entity.KeystoreEntity;
-import io.github.gms.util.TestUtils;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link KeystoreConverterImpl}
@@ -34,39 +33,36 @@ import io.github.gms.util.TestUtils;
  */
 class KeystoreConverterImplTest extends AbstractUnitTest {
 
-	private static final String FILE_NAME = "filename.txt";
+	private static final String FILE_NAME = "test.jks";
 	@Mock
 	private Clock clock;
 	@InjectMocks
 	private KeystoreConverter converter = new KeystoreConverterImpl();
-	
+
 	@Test
 	void checkToEntityWithoutFile() {
 		// act
-		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(), TestUtils.createSaveKeystoreRequestDto(), null);
-
-		// assert
-		assertNotNull(entity);
-		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
-		assertEquals("test.jks", entity.getFileName());
-	}
-
-	@Test
-	void checkToEntityWithParameters() {
-		// arrange
-		MultipartFile multipartFile = mock(MultipartFile.class);
-		when(multipartFile.getOriginalFilename()).thenReturn(FILE_NAME);
-
-		// act
-		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(), TestUtils.createSaveKeystoreRequestDto(), multipartFile);
+		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(),
+				TestUtils.createSaveKeystoreRequestDto());
 
 		// assert
 		assertNotNull(entity);
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
 		assertEquals(FILE_NAME, entity.getFileName());
-		verify(multipartFile).getOriginalFilename();
 	}
-	
+
+	@Test
+	void checkToEntityWithParameters() {
+		// act
+		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(),
+				TestUtils.createSaveKeystoreRequestDto());
+
+		// assert
+		assertNotNull(entity);
+		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals(FILE_NAME, entity.getFileName());
+	}
+
 	@Test
 	void checkToNewEntityWithoutFile() {
 		// arrange
@@ -115,5 +111,33 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
+	}
+
+	@Test
+	void checkToDto() {
+		// arrange
+		KeystoreEntity entity = TestUtils.createKeystoreEntity();
+
+		// act
+		KeystoreDto response = converter.toDto(entity, List.of(TestUtils.createKeystoreAliasEntity()));
+
+		// assert
+		assertNotNull(response);
+		assertEquals(1L, response.getAliases().size());
+		assertEquals("keystore", response.getName());
+	}
+
+	@Test
+	void checkToAliasEntity() {
+		// arrange
+		KeystoreAliasDto aliasDto = new KeystoreAliasDto(1L, "alias", "test1234", AliasOperation.SAVE);
+
+		// act
+		KeystoreAliasEntity response = converter.toAliasEntity(1L, aliasDto);
+
+		// assert
+		assertNotNull(response);
+		assertEquals(1L, response.getId());
+		assertEquals("alias", response.getAlias());
 	}
 }

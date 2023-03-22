@@ -33,6 +33,7 @@ DB_MAX_LIFETIME=58000
 
 # Keystore storage path
 KEYSTORE_PATH=/usr/share/keystore/
+KEYSTORE_TEMP_DEFAULT_PATH=D:/dev/projects/open-source/temp-ks/
 
 # Windows specific settings
 COMPOSE_CONVERT_WINDOWS_PATHS=1

@@ -1,11 +1,10 @@
 package io.github.gms.common.event;
 
-import java.util.Map;
-
-import org.springframework.context.ApplicationEvent;
-
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.context.ApplicationEvent;
+
+import java.util.Map;
 
 /**
  * @author Peter Szrnka
@@ -17,7 +16,7 @@ public class EntityChangeEvent extends ApplicationEvent {
 	private static final long serialVersionUID = -722237695149809530L;
 	
 	@Getter
-	private Map<String, Object> metadata;
+	private final Map<String, Object> metadata;
 	private final EntityChangeType type;
 
 	public EntityChangeEvent(Object source, Map<String, Object> metadata, EntityChangeType type) {
@@ -31,16 +30,14 @@ public class EntityChangeEvent extends ApplicationEvent {
 	}
 	public enum EntityChangeType {
 		KEYSTORE_DISABLED("keystore disabled"),
+		KEYSTORE_DELETED("keystore deleted"),
 		KEYSTORE_ALIAS_REMOVED("keystore alias");
 		
 		private EntityChangeType(String displayName) {
 			this.displayName = displayName;
 		}
-		
-		private String displayName;
-		
-		public String getDisplayName() {
-			return displayName;
-		}
+
+		@Getter
+		private final String displayName;
 	}
 }

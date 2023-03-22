@@ -52,7 +52,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
 
   save() {
     this.addAliasDataToRequest();
-    this.service.save(this.data, this.file)
+    this.service.save(this.data, (this.data.generated === true) ? undefined : this.file)
       .subscribe({
         next: () => {
           this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
@@ -111,7 +111,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
     this.refreshTable();
   }
 
-  addAliasDataToRequest() : void {
+  private addAliasDataToRequest() : void {
     this.data.aliases = this.aliasList;
     this.data.fileName = undefined;
   }

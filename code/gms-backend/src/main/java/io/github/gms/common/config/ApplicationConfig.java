@@ -1,8 +1,7 @@
 package io.github.gms.common.config;
 
-import java.io.IOException;
-import java.time.Clock;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -21,8 +20,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
+import java.time.Clock;
 
 /**
  * @author Peter Szrnka

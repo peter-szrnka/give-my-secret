@@ -11,7 +11,8 @@ import { Paging } from "../../../common/model/paging.model";
 const TEST_KEYSTORE : Keystore = {
   id: 1,
   description: "Description",
-  aliases: []
+  aliases: [],
+  generated: false
 };
 
 /**

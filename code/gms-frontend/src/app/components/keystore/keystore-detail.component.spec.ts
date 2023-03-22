@@ -103,6 +103,28 @@ describe('KeystoreDetailComponent', () => {
         expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Keystore has been saved!", type: "information" } as DialogData });
     });
 
+    it('Should save new generated keystore', () => {
+        dialog = {
+            open : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+        };
+        
+        mockAliases = [
+            { id: 1, alias: '...', aliasCredential: '...', operation : 'SAVE' }
+        ];
+        configureTestBed();
+        component.addNewAlias();
+        component.changeState({ alias: '...', aliasCredential: '...', operation : 'SAVE' }, 1, 'DELETE');
+        component.changeState({ id: 1, alias: '...', aliasCredential: '...', operation : 'SAVE' }, 0, 'DELETE');
+        component.data.generated = true;
+
+        // act
+        component.save();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Keystore has been saved!", type: "information" } as DialogData });
+    });
+
     it('Should fail on save keystore | HTTP error', () => {
         service = {
             save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
