@@ -1,20 +1,17 @@
 package io.github.gms.common.filter;
 
-import static io.github.gms.common.util.Constants.OK;
-
-import java.io.IOException;
+import io.github.gms.secure.service.SystemService;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import io.github.gms.secure.service.SystemService;
+import static io.github.gms.common.util.Constants.OK;
 
 /**
  * @author Peter Szrnka

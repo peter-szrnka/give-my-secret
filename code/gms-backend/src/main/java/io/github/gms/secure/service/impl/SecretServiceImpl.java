@@ -1,18 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SecretType;
@@ -21,12 +8,7 @@ import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.SecretConverter;
-import io.github.gms.secure.dto.LongValueDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.dto.SaveSecretRequestDto;
-import io.github.gms.secure.dto.SecretDto;
-import io.github.gms.secure.dto.SecretListDto;
+import io.github.gms.secure.dto.*;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.SecretEntity;
@@ -36,6 +18,17 @@ import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.secure.service.SecretService;
+import org.slf4j.MDC;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Peter Szrnka
@@ -49,23 +42,27 @@ public class SecretServiceImpl implements SecretService {
 	static final String PLEASE_PROVIDE_ACTIVE_KEYSTORE = "Please provide an active keystore";
 	static final String WRONG_KEYSTORE_ALIAS = "Wrong keystore alias!";
 
-	@Autowired
-	private CryptoService cryptoService;
+	private final CryptoService cryptoService;
+	private final KeystoreRepository keystoreRepository;
+	private final KeystoreAliasRepository keystoreAliasRepository;
+	private final SecretRepository repository;
+	private final SecretConverter converter;
+	private final ApiKeyRestrictionRepository apiKeyRestrictionRepository;
 
-	@Autowired
-	private KeystoreRepository keystoreRepository;
-	
-	@Autowired
-	private KeystoreAliasRepository keystoreAliasRepository;
-
-	@Autowired
-	private SecretRepository repository;
-
-	@Autowired
-	private SecretConverter converter;
-
-	@Autowired
-	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
+	public SecretServiceImpl(
+			CryptoService cryptoService,
+			KeystoreRepository keystoreRepository,
+			KeystoreAliasRepository keystoreAliasRepository,
+			SecretRepository repository,
+			SecretConverter converter,
+			ApiKeyRestrictionRepository apiKeyRestrictionRepository) {
+		this.cryptoService = cryptoService;
+		this.keystoreRepository = keystoreRepository;
+		this.keystoreAliasRepository = keystoreAliasRepository;
+		this.repository = repository;
+		this.converter = converter;
+		this.apiKeyRestrictionRepository = apiKeyRestrictionRepository;
+	}
 
 	@Override
 	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)

@@ -1,23 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-import java.io.InputStream;
-import java.security.KeyStore;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.exception.GmsException;
@@ -27,6 +9,20 @@ import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.service.KeystoreDataService;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test of {@link CryptoServiceImpl}
@@ -35,17 +31,16 @@ import lombok.SneakyThrows;
  * @since 1.0
  */
 class CryptoServiceImplTest extends AbstractLoggingUnitTest {
-	
-	@Mock
-	private KeystoreDataService keystoreDataService;
 
-	@InjectMocks
+	private KeystoreDataService keystoreDataService;
 	private CryptoServiceImpl service;
 	
 	@Override
 	@BeforeEach
 	public void setup() {
 		super.setup();
+		keystoreDataService = mock(KeystoreDataService.class);
+		service = new CryptoServiceImpl(keystoreDataService);
 		((Logger) LoggerFactory.getLogger(CryptoServiceImpl.class)).addAppender(logAppender);
 	}
 	
@@ -53,12 +48,7 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	@SneakyThrows
 	void shouldNotValidateKeyStoreFile() {
 		// arrange
-	    MockMultipartFile sampleFile = new MockMultipartFile(
-	      "file",
-	      "test.jks", 
-	      MediaType.APPLICATION_OCTET_STREAM_VALUE,
-	      "wrong key".getBytes()
-	    );
+	    MockMultipartFile sampleFile = getMockMultipartFile("wrong key".getBytes());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		
 		// act & assert
@@ -70,15 +60,7 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	@SneakyThrows
 	void shouldNotFindAlias() {
 		// arrange
-		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream jksFileStream = classloader.getResourceAsStream("test.jks");
-		
-	    MockMultipartFile sampleFile = new MockMultipartFile(
-	      "file",
-	      "test.jks", 
-	      MediaType.APPLICATION_OCTET_STREAM_VALUE,
-	      jksFileStream.readAllBytes()
-	    );
+		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 	    dto.getAliases().get(0).setAlias("aliasfail");
 		
@@ -90,15 +72,7 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	@SneakyThrows
 	void shouldNot2ValidateKeyStoreFile() {
 		// arrange
-		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream jksFileStream = classloader.getResourceAsStream("test.jks");
-		
-	    MockMultipartFile sampleFile = new MockMultipartFile(
-	      "file",
-	      "test.jks", 
-	      MediaType.APPLICATION_OCTET_STREAM_VALUE,
-	      jksFileStream.readAllBytes()
-	    );
+		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 	    dto.getAliases().get(0).setAliasCredential("testfail");
 		
@@ -111,15 +85,7 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	@SneakyThrows
 	void shouldValidateKeyStoreFile() {
 		// arrange
-		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream jksFileStream = classloader.getResourceAsStream("test.jks");
-		
-	    MockMultipartFile sampleFile = new MockMultipartFile(
-	      "file",
-	      "test.jks", 
-	      MediaType.APPLICATION_OCTET_STREAM_VALUE,
-	      jksFileStream.readAllBytes()
-	    );
+		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		
 		// act
@@ -183,6 +149,27 @@ class CryptoServiceImplTest extends AbstractLoggingUnitTest {
 	    // assert
 	    String decrypted = service.decrypt(entity);
 	    assertEquals("test", decrypted);
+	}
+
+	private static MockMultipartFile getMockMultipartFile(byte[] content) throws IOException {
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		try (InputStream jksFileStream = classloader.getResourceAsStream("test.jks")) {
+			assert jksFileStream != null;
+			return new MockMultipartFile(
+					"file",
+					"test.jks",
+					MediaType.APPLICATION_OCTET_STREAM_VALUE,
+					content
+			);
+		}
+	}
+
+	private static byte[] getTestFileContent() throws IOException {
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		try (InputStream jksFileStream = classloader.getResourceAsStream("test.jks")) {
+			assert jksFileStream != null;
+			return jksFileStream.readAllBytes();
+		}
 	}
 
 	private static KeyStore createKeyStore() throws Exception {

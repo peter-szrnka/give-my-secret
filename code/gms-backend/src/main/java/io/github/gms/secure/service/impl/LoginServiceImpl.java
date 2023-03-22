@@ -1,8 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.auth.AuthenticationService;
 import io.github.gms.auth.dto.AuthenticateRequestDto;
 import io.github.gms.auth.dto.AuthenticateResponseDto;
@@ -11,6 +8,7 @@ import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Peter Szrnka
@@ -20,11 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class LoginServiceImpl implements LoginService {
 
-	@Autowired
-	private AuthenticationService authenticationService;
+	private final AuthenticationService authenticationService;
+	private final UserConverter converter;
 
-	@Autowired
-	private UserConverter converter;
+	public LoginServiceImpl(AuthenticationService authenticationService, UserConverter converter) {
+		this.authenticationService = authenticationService;
+		this.converter = converter;
+	}
 
 	@Override
 	public AuthenticateResponseDto login(AuthenticateRequestDto dto) {

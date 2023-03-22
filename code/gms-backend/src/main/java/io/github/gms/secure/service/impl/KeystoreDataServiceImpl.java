@@ -1,19 +1,6 @@
 package io.github.gms.secure.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.google.common.io.Files;
-
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.model.KeystorePair;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
@@ -23,6 +10,16 @@ import io.github.gms.secure.model.GetKeystore;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.service.KeystoreDataService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 
 /**
  * @author Peter Szrnka
@@ -33,14 +30,17 @@ public class KeystoreDataServiceImpl implements KeystoreDataService {
 
 	private static final String SLASH = "/";
 
-	@Autowired
-	private KeystoreRepository keystoreRepository;
+	private final KeystoreRepository keystoreRepository;
+	private final KeystoreAliasRepository keystoreAliasRepository;
+	private final String keystorePath;
 
-	@Autowired
-	private KeystoreAliasRepository keystoreAliasRepository;
-
-	@Value("${config.location.keystore.path}")
-	private String keystorePath;
+	public KeystoreDataServiceImpl(KeystoreRepository keystoreRepository,
+								   KeystoreAliasRepository keystoreAliasRepository,
+								   @Value("${config.location.keystore.path}") String keystorePath) {
+		this.keystoreRepository = keystoreRepository;
+		this.keystoreAliasRepository = keystoreAliasRepository;
+		this.keystorePath = keystorePath;
+	}
 
 	@Override
 	public KeystorePair getKeystoreData(SecretEntity secretEntity)

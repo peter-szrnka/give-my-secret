@@ -1,21 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.exception.GmsException;
@@ -23,6 +7,18 @@ import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+
+import java.time.Clock;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link SecretRotationServiceImpl}
@@ -34,17 +30,18 @@ class SecretRotationServiceImplTest extends AbstractUnitTest {
 
 	private static final String SECRET_VALUE = "12345678";
 
-	@Mock
 	private Clock clock;
-
-	@Mock
 	private SecretRepository secretRepository;
-
-	@Mock
 	private CryptoService cryptoService;
-	
-	@InjectMocks
 	private SecretRotationServiceImpl service;
+
+	@BeforeEach
+	public void setup() {
+		clock = mock(Clock.class);
+		secretRepository = mock(SecretRepository.class);
+		cryptoService = mock(CryptoService.class);
+		service = new SecretRotationServiceImpl(clock, secretRepository, cryptoService);
+	}
 	
 	@Test
 	void shouldNotRotate() {

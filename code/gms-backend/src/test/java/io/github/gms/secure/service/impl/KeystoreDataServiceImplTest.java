@@ -1,21 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
-import org.jboss.logging.MDC;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
@@ -25,20 +9,24 @@ import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
+import org.jboss.logging.MDC;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 class KeystoreDataServiceImplTest extends AbstractLoggingUnitTest {
-	
-	@Mock
+
 	private KeystoreRepository keystoreRepository;
-
-	@Mock
 	private KeystoreAliasRepository keystoreAliasRepository;
-
-	@InjectMocks
 	private KeystoreDataServiceImpl service;
 
 	@Override
@@ -47,7 +35,9 @@ class KeystoreDataServiceImplTest extends AbstractLoggingUnitTest {
 		super.setup();
 
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
-		ReflectionTestUtils.setField(service, "keystorePath", "src/test/resources/");
+		keystoreRepository = mock(KeystoreRepository.class);
+		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
+		service = new KeystoreDataServiceImpl(keystoreRepository, keystoreAliasRepository, "src/test/resources/");
 	}
 	
 	@Test

@@ -1,26 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-
-import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
@@ -34,6 +13,21 @@ import io.github.gms.secure.model.UserEvent;
 import io.github.gms.secure.repository.EventRepository;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.util.TestUtils;
+import org.assertj.core.util.Lists;
+import org.jboss.logging.MDC;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.time.Clock;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link EventServiceImpl}
@@ -43,20 +37,20 @@ import io.github.gms.util.TestUtils;
  */
 class EventServiceImplTest extends AbstractUnitTest {
 
-	@Mock
 	private Clock clock;
-
-	@InjectMocks
-	private EventServiceImpl service;
-	
-	@Mock
-	private UserRepository userRepository;
-
-	@Mock
 	private EventRepository repository;
-
-	@Mock
+	private UserRepository userRepository;
 	private EventConverter converter;
+	private EventServiceImpl service;
+
+	@BeforeEach
+	public void setup() {
+		clock = mock(Clock.class);
+		repository = mock(EventRepository.class);
+		userRepository = mock(UserRepository.class);
+		converter = mock(EventConverter.class);
+		service = new EventServiceImpl(clock, repository, userRepository, converter);
+	}
 	
 	@Test
 	void shouldSaveUserEvent() {

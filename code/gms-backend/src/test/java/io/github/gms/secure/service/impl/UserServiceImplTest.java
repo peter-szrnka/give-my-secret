@@ -1,21 +1,15 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
+import ch.qos.logback.classic.Logger;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.event.RefreshCacheEvent;
+import io.github.gms.common.exception.GmsException;
+import io.github.gms.secure.converter.UserConverter;
+import io.github.gms.secure.dto.*;
+import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -32,20 +24,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.converter.UserConverter;
-import io.github.gms.secure.dto.ChangePasswordRequestDto;
-import io.github.gms.secure.dto.LongValueDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveUserRequestDto;
-import io.github.gms.secure.dto.UserDto;
-import io.github.gms.secure.dto.UserListDto;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.util.TestUtils;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link UserServiceImpl}
@@ -55,25 +38,21 @@ import io.github.gms.util.TestUtils;
  */
 class UserServiceImplTest extends AbstractLoggingUnitTest {
 
-	@Mock
 	private UserRepository repository;
-
-	@Mock
 	private UserConverter converter;
-
-	@Mock
 	private ApplicationEventPublisher applicationEventPublisher;
-	
-	@Mock
 	private PasswordEncoder passwordEncoder;
-
-	@InjectMocks
 	private UserServiceImpl service;
 
 	@Override
 	@BeforeEach
 	public void setup() {
 		super.setup();
+		repository = mock(UserRepository.class);
+		converter = mock(UserConverter.class);
+		applicationEventPublisher = mock(ApplicationEventPublisher.class);
+		passwordEncoder = mock(PasswordEncoder.class);
+		service = new UserServiceImpl(repository, converter, applicationEventPublisher, passwordEncoder);
 		((Logger) LoggerFactory.getLogger(UserServiceImpl.class)).addAppender(logAppender);
 	}
 
@@ -114,6 +93,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		service.save(TestUtils.createSaveUserRequestDto(1L));
 
 		// assert
+		verify(applicationEventPublisher).publishEvent(any(RefreshCacheEvent.class));
 		verify(converter).toEntity(any(UserEntity.class), any(SaveUserRequestDto.class), anyBoolean());
 		verify(repository).save(any(UserEntity.class));
 	}
@@ -230,13 +210,13 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldReturnUserCount() {
 		// arrange
-		when(repository.countNormalUsers()).thenReturn(3l);
+		when(repository.countNormalUsers()).thenReturn(3L);
 		
 		// act
 		LongValueDto response = service.count();
 		
 		// assert
-		assertEquals(3l, response.getValue());
+		assertEquals(3L, response.getValue());
 		verify(repository).countNormalUsers();
 	}
 	

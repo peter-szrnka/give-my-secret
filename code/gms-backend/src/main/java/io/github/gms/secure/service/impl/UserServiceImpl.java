@@ -1,10 +1,19 @@
 package io.github.gms.secure.service.impl;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.UserRole;
+import io.github.gms.common.event.RefreshCacheEvent;
+import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.secure.converter.UserConverter;
+import io.github.gms.secure.dto.*;
+import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.secure.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,25 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.event.RefreshCacheEvent;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.Constants;
-import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.secure.converter.UserConverter;
-import io.github.gms.secure.dto.ChangePasswordRequestDto;
-import io.github.gms.secure.dto.LongValueDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.dto.SaveUserRequestDto;
-import io.github.gms.secure.dto.UserDto;
-import io.github.gms.secure.dto.UserListDto;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.secure.service.UserService;
-import lombok.extern.slf4j.Slf4j;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Peter Szrnka
@@ -45,17 +37,18 @@ public class UserServiceImpl implements UserService {
 	
 	private static final String CREDENTIAL_REGEX = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,255}$";
 
-	@Autowired
-	private UserRepository repository;
+	private final UserRepository repository;
+	private final UserConverter converter;
+	private final ApplicationEventPublisher applicationEventPublisher;
+	private final PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private UserConverter converter;
-
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	public UserServiceImpl(UserRepository repository, UserConverter converter, ApplicationEventPublisher applicationEventPublisher,
+						   PasswordEncoder passwordEncoder ) {
+		this.repository = repository;
+		this.converter = converter;
+		this.applicationEventPublisher = applicationEventPublisher;
+		this.passwordEncoder = passwordEncoder;
+	}
 	
 	@Override
 	@Transactional

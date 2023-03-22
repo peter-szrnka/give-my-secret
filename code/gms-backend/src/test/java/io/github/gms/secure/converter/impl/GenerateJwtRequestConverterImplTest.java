@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class GenerateJwtRequestConverterImplTest extends AbstractUnitTest {
+class GenerateJwtRequestConverterImplTest extends AbstractUnitTest {
 
     private SystemPropertyService systemPropertyService;
     private GenerateJwtRequestConverterImpl converter;

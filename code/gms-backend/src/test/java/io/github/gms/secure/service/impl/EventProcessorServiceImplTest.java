@@ -1,22 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.event.EntityChangeEvent;
 import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
@@ -27,6 +10,19 @@ import io.github.gms.secure.service.MessageService;
 import io.github.gms.util.TestUtils;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link EventProcessorServiceImpl}
@@ -35,15 +31,19 @@ import lombok.ToString;
  * @since 1.0
  */
 class EventProcessorServiceImplTest extends AbstractUnitTest {
-	
-	@Mock
+
 	private MessageService messageService;
-	@Mock
 	private SecretRepository secretRepository;
-	@Mock
 	private KeystoreAliasRepository keystoreAliasRepository;
-	@InjectMocks
 	private EventProcessorServiceImpl service;
+
+	@BeforeEach
+	public void setup() {
+		messageService = mock(MessageService.class);
+		secretRepository = mock(SecretRepository.class);
+		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
+		service = new EventProcessorServiceImpl(messageService, secretRepository, keystoreAliasRepository);
+	}
 	
 	@ParameterizedTest
 	@MethodSource("input")

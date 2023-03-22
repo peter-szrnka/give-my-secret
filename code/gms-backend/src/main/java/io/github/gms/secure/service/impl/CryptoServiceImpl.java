@@ -1,25 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.Certificate;
-import java.util.Base64;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.model.KeystorePair;
 import io.github.gms.secure.dto.KeystoreAliasDto;
@@ -28,6 +8,17 @@ import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.secure.service.KeystoreDataService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.security.cert.Certificate;
+import java.util.Base64;
 
 /**
  * @author Peter Szrnka
@@ -37,8 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class CryptoServiceImpl implements CryptoService {
 
-	@Autowired
-	private KeystoreDataService keystoreDataService;
+	private final KeystoreDataService keystoreDataService;
+
+	public CryptoServiceImpl(KeystoreDataService keystoreDataService) {
+		this.keystoreDataService = keystoreDataService;
+	}
 
 	@Override
 	public void validateKeyStoreFile(SaveKeystoreRequestDto dto, byte[] fileContent) {

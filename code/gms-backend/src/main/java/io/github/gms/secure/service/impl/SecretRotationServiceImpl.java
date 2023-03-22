@@ -1,12 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.entity.SecretEntity;
@@ -14,6 +7,11 @@ import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.secure.service.SecretRotationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
 
 /**
  * @author Peter Szrnka
@@ -22,15 +20,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class SecretRotationServiceImpl implements SecretRotationService {
-	
-	@Autowired
-	private Clock clock;
 
-	@Autowired
-	private SecretRepository secretRepository;
+	private final Clock clock;
+	private final SecretRepository secretRepository;
+	private final CryptoService cryptoService;
 
-	@Autowired
-	private CryptoService cryptoService;
+	public SecretRotationServiceImpl(Clock clock, SecretRepository secretRepository, CryptoService cryptoService) {
+		this.clock = clock;
+		this.secretRepository = secretRepository;
+		this.cryptoService = cryptoService;
+	}
 
 	@Override
 	@Async("secretRotationExecutor")

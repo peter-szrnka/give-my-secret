@@ -1,14 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import java.util.Collections;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.ConverterUtils;
@@ -19,6 +10,13 @@ import io.github.gms.secure.dto.SystemPropertyListDto;
 import io.github.gms.secure.entity.SystemPropertyEntity;
 import io.github.gms.secure.repository.SystemPropertyRepository;
 import io.github.gms.secure.service.SystemPropertyService;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 /**
  * @author Peter Szrnka
@@ -27,12 +25,14 @@ import io.github.gms.secure.service.SystemPropertyService;
 @Service
 @CacheConfig(cacheNames = "systemPropertyCache")
 public class SystemPropertyServiceImpl implements SystemPropertyService {
-	
-	@Autowired
-	private SystemPropertyConverter converter;
 
-	@Autowired
-	private SystemPropertyRepository repository;
+	private final SystemPropertyConverter converter;
+	private final SystemPropertyRepository repository;
+
+	public SystemPropertyServiceImpl(SystemPropertyConverter converter, SystemPropertyRepository repository) {
+		this.converter = converter;
+		this.repository = repository;
+	}
 
 	@Override
 	@CacheEvict(allEntries = true)
