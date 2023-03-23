@@ -1,11 +1,11 @@
 package io.github.gms.common.model;
 
-import java.security.KeyStore;
-
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.security.KeyStore;
 
 /**
  * @author Peter Szrnka

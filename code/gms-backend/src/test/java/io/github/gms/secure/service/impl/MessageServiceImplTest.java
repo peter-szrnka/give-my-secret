@@ -4,7 +4,11 @@ import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.secure.converter.MessageConverter;
-import io.github.gms.secure.dto.*;
+import io.github.gms.secure.dto.MarkAsReadRequestDto;
+import io.github.gms.secure.dto.MessageDto;
+import io.github.gms.secure.dto.MessageListDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.entity.MessageEntity;
 import io.github.gms.secure.repository.MessageRepository;
 import io.github.gms.util.TestUtils;
@@ -23,7 +27,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka

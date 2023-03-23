@@ -1,22 +1,25 @@
 package io.github.gms.auth.ldap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.UserRole;
+import lombok.SneakyThrows;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.util.Constants;
-import lombok.SneakyThrows;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_CN;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_CREDENTIAL;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_EMAIL;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_ROLE;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_UID;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -33,10 +36,10 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 		// arrange
 		Attributes input = mock(Attributes.class);
 
-		mockAttribute(input, Constants.LDAP_PROPERTY_CN, "user1", true);
-		mockAttribute(input, Constants.LDAP_PROPERTY_UID, "My User", true);
-		mockAttribute(input, Constants.LDAP_PROPERTY_CREDENTIAL, "Secret1!", true);
-		mockAttribute(input, Constants.LDAP_PROPERTY_EMAIL, "my.email@email.com", false);
+		mockAttribute(input, LDAP_PROPERTY_CN, "user1", true);
+		mockAttribute(input, LDAP_PROPERTY_UID, "My User", true);
+		mockAttribute(input, LDAP_PROPERTY_CREDENTIAL, "Secret1!", true);
+		mockAttribute(input, LDAP_PROPERTY_EMAIL, "my.email@email.com", false);
 		mockAttributeCollection(input, returnRoles);
 
 		// act
@@ -49,7 +52,7 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 
 	private void mockAttributeCollection(Attributes attributes, boolean returnValue) throws NamingException {
 		if (!returnValue) {
-			when(attributes.get(Constants.LDAP_PROPERTY_ROLE)).thenReturn(null);
+			when(attributes.get(LDAP_PROPERTY_ROLE)).thenReturn(null);
 			return;
 		}
 
@@ -58,7 +61,7 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 		when(attribute.get(1)).thenReturn(UserRole.ROLE_USER.name());
 		when(attribute.size()).thenReturn(2);
 
-		when(attributes.get(Constants.LDAP_PROPERTY_ROLE)).thenReturn(attribute);
+		when(attributes.get(LDAP_PROPERTY_ROLE)).thenReturn(attribute);
 	}
 
 	private void mockAttribute(Attributes attributes, String attributeName, String value, boolean returnValue)

@@ -1,9 +1,9 @@
 package io.github.gms.secure.converter;
 
-import java.util.Map;
-
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.model.GenerateJwtRequest;
+
+import java.util.Map;
 
 /**
  * @author Peter Szrnka

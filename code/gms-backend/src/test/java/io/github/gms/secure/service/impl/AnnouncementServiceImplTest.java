@@ -3,8 +3,11 @@ package io.github.gms.secure.service.impl;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.Constants;
-import io.github.gms.secure.dto.*;
+import io.github.gms.secure.dto.AnnouncementDto;
+import io.github.gms.secure.dto.AnnouncementListDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveAnnouncementDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.entity.AnnouncementEntity;
 import io.github.gms.secure.repository.AnnouncementRepository;
 import io.github.gms.secure.service.UserService;
@@ -17,10 +20,16 @@ import org.springframework.data.domain.Pageable;
 import java.time.Clock;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test of {@link AnnouncementServiceImpl}
@@ -115,7 +124,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
 		// assert
-		assertEquals(Constants.ENTITY_NOT_FOUND, exception.getMessage());
+		assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
 		verify(repository).findById(anyLong());
 	}
 

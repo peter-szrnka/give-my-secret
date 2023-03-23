@@ -4,7 +4,6 @@ import io.github.gms.auth.UserAuthService;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.util.Constants;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import org.springframework.context.annotation.Profile;
@@ -17,12 +16,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Service
-@Profile(Constants.CONFIG_AUTH_TYPE_DB)
+@Profile(CONFIG_AUTH_TYPE_DB)
 public class DbUserAuthServiceImpl implements UserAuthService {
 
 	private final UserRepository repository;

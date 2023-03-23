@@ -1,10 +1,10 @@
 package io.github.gms.secure.service;
 
-import java.util.Map;
-
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.model.GenerateJwtRequest;
 import io.jsonwebtoken.Claims;
+
+import java.util.Map;
 
 /**
  * @author Peter Szrnka

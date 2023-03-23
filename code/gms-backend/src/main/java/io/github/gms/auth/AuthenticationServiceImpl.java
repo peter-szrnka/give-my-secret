@@ -8,7 +8,6 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.model.GenerateJwtRequest;
-import io.github.gms.common.util.Constants;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
@@ -31,6 +30,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 
 /**
  * @author Peter Szrnka
@@ -70,7 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	public AuthenticationResponse authorize(HttpServletRequest request) {
-		Cookie jwtTokenCookie = WebUtils.getCookie(request, Constants.ACCESS_JWT_TOKEN);
+		Cookie jwtTokenCookie = WebUtils.getCookie(request, ACCESS_JWT_TOKEN);
 		
 		if (jwtTokenCookie == null) {
 			return AuthenticationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();

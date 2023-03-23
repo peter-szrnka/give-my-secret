@@ -19,7 +19,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static io.github.gms.common.util.Constants.*;
+import static io.github.gms.common.util.Constants.OK;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 
 /**
  * @author Peter Szrnka

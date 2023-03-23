@@ -1,7 +1,5 @@
 package io.github.gms.secure.service;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import io.github.gms.common.abstraction.AbstractCrudService;
 import io.github.gms.secure.dto.DownloadFileResponseDto;
 import io.github.gms.secure.dto.GetSecureValueDto;
@@ -10,6 +8,7 @@ import io.github.gms.secure.dto.KeystoreDto;
 import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Peter Szrnka

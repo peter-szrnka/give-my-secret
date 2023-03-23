@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "config.job.messagecleanup.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "config.job.messageCleanup.enabled", havingValue = "true", matchIfMissing = true)
 public class MessageCleanupJob extends AbstractLimitBasedJob {
 
 	private final MessageRepository messageRepository;

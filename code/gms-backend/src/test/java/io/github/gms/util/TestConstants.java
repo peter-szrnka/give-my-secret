@@ -5,6 +5,6 @@ package io.github.gms.util;
  */
 public interface TestConstants {
 
-	static final String TAG_INTEGRATION_TEST = "IntegrationTest";
-	static final String TAG_SECURITY_TEST = "SecurityTest";
+	String TAG_INTEGRATION_TEST = "IntegrationTest";
+	String TAG_SECURITY_TEST = "SecurityTest";
 }

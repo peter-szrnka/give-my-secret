@@ -1,13 +1,5 @@
 package io.github.gms.util;
 
-import static io.github.gms.util.DemoData.*;
-
-import java.time.ZonedDateTime;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeystoreType;
 import io.github.gms.common.enums.RotationPeriod;
@@ -26,6 +18,31 @@ import io.github.gms.secure.repository.MessageRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.time.ZonedDateTime;
+
+import static io.github.gms.util.DemoData.ANNOUNCEMENT_ID;
+import static io.github.gms.util.DemoData.API_KEY_1_ID;
+import static io.github.gms.util.DemoData.API_KEY_2_ID;
+import static io.github.gms.util.DemoData.API_KEY_CREDENTIAL1;
+import static io.github.gms.util.DemoData.API_KEY_CREDENTIAL2;
+import static io.github.gms.util.DemoData.CREDENTIAL_TEST;
+import static io.github.gms.util.DemoData.ENCRYPTED_VALUE;
+import static io.github.gms.util.DemoData.KEYSTORE2_ID;
+import static io.github.gms.util.DemoData.KEYSTORE_ALIAS2_ID;
+import static io.github.gms.util.DemoData.KEYSTORE_ALIAS_ID;
+import static io.github.gms.util.DemoData.KEYSTORE_ID;
+import static io.github.gms.util.DemoData.SECRET_ENTITY2_ID;
+import static io.github.gms.util.DemoData.SECRET_ENTITY_ID;
+import static io.github.gms.util.DemoData.SECRET_ID1;
+import static io.github.gms.util.DemoData.SECRET_ID2;
+import static io.github.gms.util.DemoData.USERNAME1;
+import static io.github.gms.util.DemoData.USERNAME2;
+import static io.github.gms.util.DemoData.USER_1_ID;
+import static io.github.gms.util.DemoData.USER_2_ID;
 
 /**
  * @author Peter Szrnka

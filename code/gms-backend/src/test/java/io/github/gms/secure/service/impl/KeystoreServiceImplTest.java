@@ -10,9 +10,17 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.event.EntityChangeEvent;
 import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.Constants;
 import io.github.gms.secure.converter.KeystoreConverter;
-import io.github.gms.secure.dto.*;
+import io.github.gms.secure.dto.DownloadFileResponseDto;
+import io.github.gms.secure.dto.GetSecureValueDto;
+import io.github.gms.secure.dto.IdNamePairDto;
+import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.KeystoreAliasDto;
+import io.github.gms.secure.dto.KeystoreDto;
+import io.github.gms.secure.dto.KeystoreListDto;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
@@ -50,9 +58,22 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test of {@link KeystoreServiceImpl}
@@ -571,7 +592,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
-        assertEquals(Constants.ENTITY_NOT_FOUND, exception.getMessage());
+        assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
         verify(repository).findByIdAndUserId(anyLong(), anyLong());
     }
 
@@ -584,7 +605,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
         // assert
-        assertEquals(Constants.ENTITY_NOT_FOUND, exception.getMessage());
+        assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
         verify(repository).findByIdAndUserId(anyLong(), anyLong());
     }
 
@@ -735,7 +756,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         GmsException exception = assertThrows(GmsException.class, this::getValue);
 
         // assert
-        assertEquals(Constants.ENTITY_NOT_FOUND, exception.getMessage());
+        assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
         verify(repository).findByIdAndUserId(anyLong(), anyLong());
         verify(aliasRepository).findByIdAndKeystoreId(anyLong(), anyLong());
     }

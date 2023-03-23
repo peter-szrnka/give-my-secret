@@ -4,7 +4,13 @@ import io.github.gms.api.service.ApiService;
 import io.github.gms.secure.dto.ApiResponseDto;
 import io.github.gms.secure.dto.GetSecretRequestDto;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import static io.github.gms.common.util.Constants.API_KEY_HEADER;
 
 /**
  * @author Peter Szrnka
@@ -12,8 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class ApiController {
-	
-	public static final String API_KEY_HEADER = "x-api-key";
+
 	private final ApiService service;
 
 	public ApiController(ApiService service) {

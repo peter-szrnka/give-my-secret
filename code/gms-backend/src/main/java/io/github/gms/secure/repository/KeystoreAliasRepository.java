@@ -1,15 +1,14 @@
 package io.github.gms.secure.repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import io.github.gms.secure.dto.IdNamePairDto;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import io.github.gms.secure.dto.IdNamePairDto;
-import io.github.gms.secure.entity.KeystoreAliasEntity;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Peter Szrnka

@@ -1,18 +1,17 @@
 package io.github.gms.api.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import io.github.gms.abstraction.AbstractIntegrationTest;
+import io.github.gms.secure.dto.ApiResponseDto;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
+import io.github.gms.util.DemoData;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import io.github.gms.abstraction.AbstractIntegrationTest;
-import io.github.gms.secure.dto.ApiResponseDto;
-import io.github.gms.secure.repository.KeystoreAliasRepository;
-import io.github.gms.util.DemoData;
-import io.github.gms.util.TestUtils;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Peter Szrnka

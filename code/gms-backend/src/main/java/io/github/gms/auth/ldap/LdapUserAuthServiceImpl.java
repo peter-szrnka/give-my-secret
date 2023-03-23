@@ -3,7 +3,6 @@ package io.github.gms.auth.ldap;
 import io.github.gms.auth.UserAuthService;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.util.Constants;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +20,17 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP_TEST;
+import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Slf4j
 @Service
-@Profile(value = { Constants.CONFIG_AUTH_TYPE_LDAP, Constants.CONFIG_AUTH_TYPE_LDAP_TEST })
+@Profile(value = { CONFIG_AUTH_TYPE_LDAP, CONFIG_AUTH_TYPE_LDAP_TEST })
 public class LdapUserAuthServiceImpl implements UserAuthService {
 
 	private final Clock clock;
@@ -90,7 +93,7 @@ public class LdapUserAuthServiceImpl implements UserAuthService {
 	}
 
 	private String getCredential(GmsUserDetails foundUser) {
-		return storeLdapCredential ? foundUser.getCredential().replace(Constants.LDAP_CRYPT_PREFIX, "")
+		return storeLdapCredential ? foundUser.getCredential().replace(LDAP_CRYPT_PREFIX, "")
 				: "*PROVIDED_BY_LDAP*";
 	}
 }

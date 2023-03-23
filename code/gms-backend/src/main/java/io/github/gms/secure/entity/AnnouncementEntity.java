@@ -1,6 +1,9 @@
 package io.github.gms.secure.entity;
 
-import java.time.ZonedDateTime;
+import io.github.gms.common.abstraction.AbstractGmsEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,12 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-
-import io.github.gms.common.abstraction.AbstractGmsEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.time.ZonedDateTime;
 
 /**
  * @author Peter Szrnka

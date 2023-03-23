@@ -1,9 +1,14 @@
 package io.github.gms.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
+import com.google.common.collect.Sets;
+import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.MarkAsReadRequestDto;
+import io.github.gms.secure.dto.MessageListDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.entity.MessageEntity;
+import io.github.gms.secure.repository.MessageRepository;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -12,23 +17,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.google.common.collect.Sets;
-
-import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.secure.dto.LongValueDto;
-import io.github.gms.secure.dto.MarkAsReadRequestDto;
-import io.github.gms.secure.dto.MessageListDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.entity.MessageEntity;
-import io.github.gms.secure.repository.MessageRepository;
-import io.github.gms.util.TestConstants;
-import io.github.gms.util.TestUtils;
+import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-@Tag(TestConstants.TAG_INTEGRATION_TEST)
+@Tag(TAG_INTEGRATION_TEST)
 class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	@Autowired

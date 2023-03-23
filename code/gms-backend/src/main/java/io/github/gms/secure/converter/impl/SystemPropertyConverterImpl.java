@@ -1,5 +1,13 @@
 package io.github.gms.secure.converter.impl;
 
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.exception.GmsException;
+import io.github.gms.secure.converter.SystemPropertyConverter;
+import io.github.gms.secure.dto.SystemPropertyDto;
+import io.github.gms.secure.dto.SystemPropertyListDto;
+import io.github.gms.secure.entity.SystemPropertyEntity;
+import org.springframework.stereotype.Component;
+
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -7,15 +15,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.springframework.stereotype.Component;
-
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.converter.SystemPropertyConverter;
-import io.github.gms.secure.dto.SystemPropertyDto;
-import io.github.gms.secure.dto.SystemPropertyListDto;
-import io.github.gms.secure.entity.SystemPropertyEntity;
 
 /**
  * @author Peter Szrnka

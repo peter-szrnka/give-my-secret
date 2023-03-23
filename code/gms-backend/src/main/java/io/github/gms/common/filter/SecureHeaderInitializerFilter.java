@@ -6,7 +6,6 @@ import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
 import io.github.gms.secure.service.SystemPropertyService;
 import org.jboss.logging.MDC;
@@ -26,6 +25,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.SET_COOKIE;
 
 /**
  * A custom Spring filter used to authorize user by parsing JWT token.
@@ -68,13 +71,13 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 			return;
 		}
 		
-		String accessCookie = CookieUtils.createCookie(Constants.ACCESS_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.ACCESS_JWT), 
+		String accessCookie = CookieUtils.createCookie(ACCESS_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.ACCESS_JWT),
 				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS), secure).toString();
-		String refreshCookie = CookieUtils.createCookie(Constants.REFRESH_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.REFRESH_JWT), 
+		String refreshCookie = CookieUtils.createCookie(REFRESH_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.REFRESH_JWT),
 				systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS), secure).toString();
 
-		response.addHeader(Constants.SET_COOKIE, accessCookie);
-		response.addHeader(Constants.SET_COOKIE, refreshCookie);
+		response.addHeader(SET_COOKIE, accessCookie);
+		response.addHeader(SET_COOKIE, refreshCookie);
 
 		Authentication authentication = authenticationResponse.getAuthentication();
 		boolean admin = authentication.getAuthorities().stream().anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));

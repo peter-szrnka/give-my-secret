@@ -9,7 +9,12 @@ import io.github.gms.secure.dto.GetSecretRequestDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.repository.*;
+import io.github.gms.secure.repository.ApiKeyRepository;
+import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
+import io.github.gms.secure.repository.KeystoreAliasRepository;
+import io.github.gms.secure.repository.KeystoreRepository;
+import io.github.gms.secure.repository.SecretRepository;
+import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
@@ -23,8 +28,15 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test of {@link ApiServiceImpl}

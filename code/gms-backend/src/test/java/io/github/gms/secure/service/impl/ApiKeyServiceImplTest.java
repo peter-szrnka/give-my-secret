@@ -4,7 +4,14 @@ import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.converter.ApiKeyConverter;
-import io.github.gms.secure.dto.*;
+import io.github.gms.secure.dto.ApiKeyDto;
+import io.github.gms.secure.dto.ApiKeyListDto;
+import io.github.gms.secure.dto.IdNamePairDto;
+import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveApiKeyRequestDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.util.TestUtils;
@@ -20,9 +27,17 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -121,7 +136,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
 		// assert
-		assertEquals(ApiKeyServiceImpl.ENTITY_NOT_FOUND, exception.getMessage());
+		assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 		verify(converter, never()).toDto(any());
 	}

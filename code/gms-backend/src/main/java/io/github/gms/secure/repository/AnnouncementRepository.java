@@ -1,9 +1,8 @@
 package io.github.gms.secure.repository;
 
+import io.github.gms.secure.entity.AnnouncementEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import io.github.gms.secure.entity.AnnouncementEntity;
 
 /**
  * @author Peter Szrnka

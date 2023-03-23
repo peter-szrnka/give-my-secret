@@ -6,12 +6,15 @@ import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.filter.SecureHeaderInitializerFilter;
-import io.github.gms.common.util.Constants;
 import io.github.gms.secure.controller.KeystoreController;
-import io.github.gms.secure.dto.*;
+import io.github.gms.secure.dto.GetSecureValueDto;
+import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.KeystoreDto;
+import io.github.gms.secure.dto.KeystoreListDto;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.util.DemoData;
-import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
 import io.github.gms.util.TestUtils.ValueHolder;
 import lombok.SneakyThrows;
@@ -23,7 +26,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
@@ -38,13 +45,18 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-@Tag(TestConstants.TAG_INTEGRATION_TEST)
+@Tag(TAG_INTEGRATION_TEST)
 class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Autowired
@@ -232,7 +244,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		}
 		
 		HttpHeaders headers = new HttpHeaders();	
-		headers.add("Cookie", Constants.ACCESS_JWT_TOKEN + "=" + jwt + ";Max-Age=3600;HttpOnly");
+		headers.add("Cookie", ACCESS_JWT_TOKEN + "=" + jwt + ";Max-Age=3600;HttpOnly");
 		
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 

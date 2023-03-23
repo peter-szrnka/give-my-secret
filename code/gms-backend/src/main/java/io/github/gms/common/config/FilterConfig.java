@@ -1,10 +1,9 @@
 package io.github.gms.common.config;
 
+import io.github.gms.common.filter.SetupFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import io.github.gms.common.filter.SetupFilter;
 
 /**
  * @author Peter Szrnka

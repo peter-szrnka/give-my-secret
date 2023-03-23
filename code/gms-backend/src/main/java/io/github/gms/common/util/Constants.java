@@ -44,6 +44,7 @@ public final class Constants {
 	public static final String ACCESS_JWT_TOKEN = "jwt";
 	public static final String REFRESH_JWT_TOKEN = "refreshJwt";
 	public static final String SET_COOKIE = "Set-Cookie";
+	public static final String API_KEY_HEADER = "x-api-key";
 	
 	// Cache
 	public static final String CACHE_API = "apiCache";

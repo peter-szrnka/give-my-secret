@@ -5,10 +5,15 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.event.RefreshCacheEvent;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.UserConverter;
-import io.github.gms.secure.dto.*;
+import io.github.gms.secure.dto.ChangePasswordRequestDto;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.dto.SaveUserRequestDto;
+import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.UserService;
@@ -26,13 +31,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.CACHE_USER;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Slf4j
 @Service
-@CacheConfig(cacheNames = { Constants.CACHE_USER, Constants.CACHE_API })
+@CacheConfig(cacheNames = { CACHE_USER, CACHE_API })
 public class UserServiceImpl implements UserService {
 	
 	private static final String CREDENTIAL_REGEX = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,255}$";
@@ -58,7 +66,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_USER, Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveUserRequestDto dto) {
 		boolean isAdmin = Boolean.parseBoolean(MDC.get(MdcParameter.IS_ADMIN.getDisplayName()));
 		return saveUser(dto, isAdmin);
@@ -76,14 +84,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_USER, Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
 	public void delete(Long id) {
 		validateUser(id);
 		repository.deleteById(id);
 	}
 	
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_USER, Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
 		UserEntity entity = validateUser(id);
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);

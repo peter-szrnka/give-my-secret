@@ -1,11 +1,10 @@
 package io.github.gms.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import lombok.Data;
 
 /**
  * @author Peter Szrnka

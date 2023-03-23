@@ -2,9 +2,12 @@ package io.github.gms.secure.service.impl;
 
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.secure.dto.*;
+import io.github.gms.secure.dto.AnnouncementDto;
+import io.github.gms.secure.dto.AnnouncementListDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveAnnouncementDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.entity.AnnouncementEntity;
 import io.github.gms.secure.repository.AnnouncementRepository;
 import io.github.gms.secure.service.AnnouncementService;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
+
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 
 /**
  * @author Peter Szrnka
@@ -66,7 +71,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	@Override
 	public AnnouncementDto getById(Long id) {
 		return toDto(repository.findById(id)
-				.orElseThrow(() -> new GmsException(Constants.ENTITY_NOT_FOUND)));
+				.orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND)));
 	}
 
 	@Override

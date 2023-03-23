@@ -1,6 +1,12 @@
 package io.github.gms.secure.entity;
 
-import java.time.ZonedDateTime;
+import io.github.gms.common.abstraction.AbstractGmsEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,15 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
-
-import io.github.gms.common.abstraction.AbstractGmsEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import java.time.ZonedDateTime;
 
 /**
  * @author Peter Szrnka

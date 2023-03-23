@@ -1,17 +1,5 @@
 package io.github.gms.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.secure.dto.AnnouncementDto;
 import io.github.gms.secure.dto.AnnouncementListDto;
@@ -19,14 +7,25 @@ import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveAnnouncementDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.util.DemoData;
-import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-@Tag(TestConstants.TAG_INTEGRATION_TEST)
+@Tag(TAG_INTEGRATION_TEST)
 class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	protected AnnouncementIntegrationTest() {

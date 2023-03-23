@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "config.job.eventmaintenance.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "config.job.eventMaintenance.enabled", havingValue = "true", matchIfMissing = true)
 public class EventMaintenanceJob extends AbstractLimitBasedJob {
 
 	private final EventRepository eventRepository;

@@ -3,11 +3,16 @@ package io.github.gms.secure.service.impl;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.ApiKeyConverter;
-import io.github.gms.secure.dto.*;
+import io.github.gms.secure.dto.ApiKeyDto;
+import io.github.gms.secure.dto.ApiKeyListDto;
+import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveApiKeyRequestDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.secure.service.ApiKeyService;
@@ -19,15 +24,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Service
-@CacheConfig(cacheNames = { Constants.CACHE_API })
+@CacheConfig(cacheNames = { CACHE_API })
 public class ApiKeyServiceImpl implements ApiKeyService {
-
-	static final String ENTITY_NOT_FOUND = "Entity not found!";
 
 	private final ApiKeyRepository repository;
 	private final ApiKeyConverter converter;
@@ -38,7 +44,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveApiKeyRequestDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		ApiKeyEntity entity;
@@ -75,13 +81,13 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void delete(Long id) {
 		repository.deleteById(id);
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 

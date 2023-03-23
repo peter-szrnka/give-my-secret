@@ -1,13 +1,12 @@
 package io.github.gms.secure.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.github.gms.common.enums.UserRole;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import io.github.gms.common.enums.UserRole;
-import lombok.Data;
 
 /**
  * @author Peter Szrnka

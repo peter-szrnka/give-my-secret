@@ -7,7 +7,6 @@ import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.model.GenerateJwtRequest;
-import io.github.gms.common.util.Constants;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
@@ -29,9 +28,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test of {@link AuthenticationServiceImpl}
@@ -108,7 +116,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	void jwtIsInvalid() {
 		// arrange
 		HttpServletRequest req = mock(HttpServletRequest.class);
-		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "invalid_token")});
+		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(ACCESS_JWT_TOKEN, "invalid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenThrow(new RuntimeException("Wrong JWT token!"));
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
@@ -130,7 +138,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		Claims claims = mock(Claims.class);
 		
-		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "expired_token")});
+		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(ACCESS_JWT_TOKEN, "expired_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(
 				ZonedDateTime.now().minusDays(1L)
@@ -156,7 +164,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		Claims claims = mock(Claims.class);
 		UserDetails userDetails = TestUtils.createBlockedGmsUser();
 
-		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "valid_token")});
+		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(ACCESS_JWT_TOKEN, "valid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(ZonedDateTime.now().plusDays(1L).toInstant()));
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
@@ -181,7 +189,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		Claims claims = mock(Claims.class);
 		UserDetails userDetails = TestUtils.createGmsUser();
 
-		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(Constants.ACCESS_JWT_TOKEN, "valid_token")});
+		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(ACCESS_JWT_TOKEN, "valid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(ZonedDateTime.now().plusDays(1L).toInstant()));
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);

@@ -4,11 +4,15 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.SecretConverter;
-import io.github.gms.secure.dto.*;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.dto.SaveSecretRequestDto;
+import io.github.gms.secure.dto.SecretDto;
+import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.SecretEntity;
@@ -30,12 +34,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.gms.common.util.Constants.CACHE_API;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Service
-@CacheConfig(cacheNames = { Constants.CACHE_API })
+@CacheConfig(cacheNames = { CACHE_API })
 public class SecretServiceImpl implements SecretService {
 
 	static final String WRONG_ENTITY = "Wrong entity!";
@@ -65,7 +71,7 @@ public class SecretServiceImpl implements SecretService {
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveSecretRequestDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		SecretEntity entity;
@@ -125,7 +131,7 @@ public class SecretServiceImpl implements SecretService {
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, userId);

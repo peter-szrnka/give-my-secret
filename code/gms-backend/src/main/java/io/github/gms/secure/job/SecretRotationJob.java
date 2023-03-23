@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "config.job.secretrotation.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "config.job.secretRotation.enabled", havingValue = "true", matchIfMissing = true)
 public class SecretRotationJob {
 	
 	private static final long DELAY_SECONDS = 55L;

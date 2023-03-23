@@ -21,14 +21,14 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
+import static io.github.gms.common.util.Constants.SLASH;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Service
 public class KeystoreDataServiceImpl implements KeystoreDataService {
-
-	private static final String SLASH = "/";
 
 	private final KeystoreRepository keystoreRepository;
 	private final KeystoreAliasRepository keystoreAliasRepository;

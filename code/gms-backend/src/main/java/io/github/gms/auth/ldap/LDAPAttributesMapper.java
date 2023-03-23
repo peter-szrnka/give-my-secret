@@ -1,18 +1,21 @@
 package io.github.gms.auth.ldap;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.UserRole;
+import org.springframework.ldap.core.AttributesMapper;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.springframework.ldap.core.AttributesMapper;
-
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.util.Constants;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_CN;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_CREDENTIAL;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_EMAIL;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_ROLE;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_UID;
 
 /**
  * @author Peter Szrnka
@@ -23,16 +26,16 @@ public class LDAPAttributesMapper implements AttributesMapper<GmsUserDetails> {
 	@Override
 	public GmsUserDetails mapFromAttributes(Attributes attributes) throws NamingException {
 		return GmsUserDetails.builder()
-				.name(getAttribute(attributes, Constants.LDAP_PROPERTY_CN))
-				.username(getAttribute(attributes, Constants.LDAP_PROPERTY_UID))
-				.credential(getAttribute(attributes, Constants.LDAP_PROPERTY_CREDENTIAL))
-				.email(getAttribute(attributes, Constants.LDAP_PROPERTY_EMAIL))
+				.name(getAttribute(attributes, LDAP_PROPERTY_CN))
+				.username(getAttribute(attributes, LDAP_PROPERTY_UID))
+				.credential(getAttribute(attributes, LDAP_PROPERTY_CREDENTIAL))
+				.email(getAttribute(attributes, LDAP_PROPERTY_EMAIL))
 				.authorities(getAttributeCollection(attributes))
 				.build();
 	}
 	
 	private Set<UserRole> getAttributeCollection(Attributes attributes) throws NamingException {
-		Attribute result = attributes.get(Constants.LDAP_PROPERTY_ROLE);
+		Attribute result = attributes.get(LDAP_PROPERTY_ROLE);
 
 		if (result == null) {
 			return Collections.emptySet();

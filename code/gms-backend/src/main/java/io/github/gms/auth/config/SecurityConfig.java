@@ -1,8 +1,6 @@
 package io.github.gms.auth.config;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Value;
+import io.github.gms.common.filter.SecureHeaderInitializerFilter;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,26 +21,24 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import io.github.gms.common.filter.SecureHeaderInitializerFilter;
-import io.github.gms.common.util.Constants;
+import java.util.List;
+
+import static io.github.gms.common.util.Constants.PASSWORD_ENCODER;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-@DependsOn(Constants.PASSWORD_ENCODER)
+@DependsOn(PASSWORD_ENCODER)
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = false, jsr250Enabled = false, prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
 	private static final String[] FILTER_URL = new String[] { "/", "/system/status", "/healthcheck", "/setup/**",
 			"/login", "/authenticate", "/logoutUser", "/api/**", "/h2-console/**",
 			"/gms-app/**", "/favicon.ico", "/assets/**", "/index.html**", "/*.js**", "/*.css**", "/*.json**",
 			"/manifest.webmanifest" };
-
-	@Value("${spring.h2.console.enabled:false}")
-	private boolean h2ConsoleEnabled;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http,

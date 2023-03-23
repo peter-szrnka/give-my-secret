@@ -1,8 +1,7 @@
 package io.github.gms.common.abstraction;
 
-import java.io.Serializable;
-
 import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 
 /**
  * @author Peter Szrnka

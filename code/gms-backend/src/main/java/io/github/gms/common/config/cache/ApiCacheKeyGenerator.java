@@ -1,10 +1,9 @@
 package io.github.gms.common.config.cache;
 
-import java.lang.reflect.Method;
-
+import io.github.gms.secure.dto.GetSecretRequestDto;
 import org.springframework.cache.interceptor.KeyGenerator;
 
-import io.github.gms.secure.dto.GetSecretRequestDto;
+import java.lang.reflect.Method;
 
 /**
  * @author Peter Szrnka

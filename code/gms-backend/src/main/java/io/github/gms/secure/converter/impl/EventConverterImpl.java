@@ -1,14 +1,13 @@
 package io.github.gms.secure.converter.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
-
 import io.github.gms.secure.converter.EventConverter;
 import io.github.gms.secure.dto.EventDto;
 import io.github.gms.secure.dto.EventListDto;
 import io.github.gms.secure.entity.EventEntity;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka

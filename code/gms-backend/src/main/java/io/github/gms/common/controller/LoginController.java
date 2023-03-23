@@ -3,7 +3,6 @@ package io.github.gms.common.controller;
 import io.github.gms.auth.dto.AuthenticateRequestDto;
 import io.github.gms.auth.dto.AuthenticateResponseDto;
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
 import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.service.LoginService;
@@ -18,6 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.SET_COOKIE;
 
 /**
  * @author Peter Szrnka
@@ -51,9 +54,9 @@ public class LoginController {
 		
 		HttpHeaders headers = new HttpHeaders();
 		
-		headers.add(Constants.SET_COOKIE, CookieUtils.createCookie(Constants.ACCESS_JWT_TOKEN, authenticateResult.getToken(), 
+		headers.add(SET_COOKIE, CookieUtils.createCookie(ACCESS_JWT_TOKEN, authenticateResult.getToken(),
 				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS), secure).toString());
-		headers.add(Constants.SET_COOKIE, CookieUtils.createCookie(Constants.REFRESH_JWT_TOKEN, authenticateResult.getRefreshToken(), 
+		headers.add(SET_COOKIE, CookieUtils.createCookie(REFRESH_JWT_TOKEN, authenticateResult.getRefreshToken(),
 				systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS), secure).toString());
 
 		return ResponseEntity.ok().headers(headers).body(authenticateResult.getCurrentUser());
@@ -63,8 +66,8 @@ public class LoginController {
 	public ResponseEntity<Void> logout(HttpServletRequest request) {
 		HttpHeaders headers = new HttpHeaders();
 		
-		headers.add(Constants.SET_COOKIE, CookieUtils.createCookie(Constants.ACCESS_JWT_TOKEN, null, 0, secure).toString());
-		headers.add(Constants.SET_COOKIE, CookieUtils.createCookie(Constants.REFRESH_JWT_TOKEN, null, 0, secure).toString());
+		headers.add(SET_COOKIE, CookieUtils.createCookie(ACCESS_JWT_TOKEN, null, 0, secure).toString());
+		headers.add(SET_COOKIE, CookieUtils.createCookie(REFRESH_JWT_TOKEN, null, 0, secure).toString());
 
 		return ResponseEntity.ok().headers(headers).build();
 	}
