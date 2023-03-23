@@ -21,7 +21,7 @@ public class GeneratedKeystoreCleanupJob {
         this.service = service;
     }
 
-    @Scheduled(cron = "0 0/45 * * * ?")
+    @Scheduled(cron = "0 45 * * * ?")
     public void execute() {
         long deletedCount = service.deleteTempKeystoreFiles();
 

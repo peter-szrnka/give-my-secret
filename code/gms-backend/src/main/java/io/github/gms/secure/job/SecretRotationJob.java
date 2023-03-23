@@ -35,7 +35,7 @@ public class SecretRotationJob {
 		this.service = service;
 	}
 
-	@Scheduled(cron = "30 0 * * * ?")
+	@Scheduled(cron = "0 30 * * * ?")
 	public void execute() {
 		List<SecretEntity> resultList = secretRepository.findAllOldRotated(ZonedDateTime.now(clock).minusSeconds(DELAY_SECONDS));
 		
