@@ -13,8 +13,6 @@ import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Security test of Events
- * 
  * @author Peter Szrnka
  * @since 1.0
  */

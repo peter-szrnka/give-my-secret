@@ -27,8 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
- * Unit test of {@link SecretConverterImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */

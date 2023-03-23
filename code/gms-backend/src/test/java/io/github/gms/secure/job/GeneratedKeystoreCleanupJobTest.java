@@ -15,8 +15,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link GeneratedKeystoreCleanupJob}
- *
  * @author Peter Szrnka
  * @since 1.0
  */

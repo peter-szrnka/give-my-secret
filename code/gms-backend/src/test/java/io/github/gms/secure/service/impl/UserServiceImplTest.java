@@ -47,8 +47,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link UserServiceImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */

@@ -10,8 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Unit test of {@link EncryptedFieldConverter}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */

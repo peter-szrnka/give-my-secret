@@ -16,8 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Unit test of {@link JwtServiceImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */

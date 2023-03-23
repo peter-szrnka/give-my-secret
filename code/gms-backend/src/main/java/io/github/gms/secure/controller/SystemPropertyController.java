@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.github.gms.common.util.Constants.ROLE_ADMIN;
+
 /**
  * @author Peter Szrnka
  * @since 1.0

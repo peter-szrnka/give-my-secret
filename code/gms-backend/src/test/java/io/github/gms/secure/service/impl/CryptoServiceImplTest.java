@@ -28,8 +28,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link CryptoServiceImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */

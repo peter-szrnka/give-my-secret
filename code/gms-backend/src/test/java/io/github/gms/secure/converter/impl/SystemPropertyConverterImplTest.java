@@ -17,8 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Unit test of {@link SystemPropertyConverterImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */

@@ -24,8 +24,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link SecretRotationServiceImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */

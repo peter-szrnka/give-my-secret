@@ -18,8 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Security test of all Api key related functions
- * 
  * @author Peter Szrnka
  * @since 1.0
  */

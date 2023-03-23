@@ -76,8 +76,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link KeystoreServiceImpl}
- *
  * @author Peter Szrnka
  * @since 1.0
  */

@@ -19,8 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 /**
- * Unit test of {@link ApiKeyConverterImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */

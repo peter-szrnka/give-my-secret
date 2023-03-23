@@ -14,8 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * Unit test of {@link MessageConverterImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */
