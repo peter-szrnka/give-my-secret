@@ -1,10 +1,9 @@
 package io.github.gms.secure.converter;
 
-import org.springframework.data.domain.Page;
-
 import io.github.gms.secure.dto.MessageDto;
 import io.github.gms.secure.dto.MessageListDto;
 import io.github.gms.secure.entity.MessageEntity;
+import org.springframework.data.domain.Page;
 
 /**
  * @author Peter Szrnka

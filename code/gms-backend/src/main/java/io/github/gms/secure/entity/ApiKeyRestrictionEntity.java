@@ -1,15 +1,15 @@
 package io.github.gms.secure.entity;
 
+import io.github.gms.common.abstraction.AbstractGmsEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import io.github.gms.common.abstraction.AbstractGmsEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * @author Peter Szrnka

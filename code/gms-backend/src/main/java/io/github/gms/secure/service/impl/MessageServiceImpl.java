@@ -1,13 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.MessageConverter;
@@ -19,6 +11,12 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.entity.MessageEntity;
 import io.github.gms.secure.repository.MessageRepository;
 import io.github.gms.secure.service.MessageService;
+import org.slf4j.MDC;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
 
 /**
  * @author Peter Szrnka
@@ -26,13 +24,16 @@ import io.github.gms.secure.service.MessageService;
  */
 @Service
 public class MessageServiceImpl implements MessageService {
-	
-	@Autowired
-	private Clock clock;
-	@Autowired
-	private MessageRepository repository;
-	@Autowired
-	private MessageConverter converter;
+
+	private final Clock clock;
+	private final MessageRepository repository;
+	private final MessageConverter converter;
+
+	public MessageServiceImpl(Clock clock, MessageRepository repository, MessageConverter converter) {
+		this.clock = clock;
+		this.repository = repository;
+		this.converter = converter;
+	}
 
 	@Override
 	public SaveEntityResponseDto save(MessageDto dto) {

@@ -1,15 +1,14 @@
 package io.github.gms.secure.dto;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SecretType;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Peter Szrnka

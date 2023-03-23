@@ -5,14 +5,39 @@ import ch.qos.logback.core.read.ListAppender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Sets;
-import io.github.gms.api.controller.ApiController;
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.*;
+import io.github.gms.common.enums.AliasOperation;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.EventOperation;
+import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.enums.KeyStoreValueType;
+import io.github.gms.common.enums.KeystoreType;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.common.enums.SecretType;
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.model.GenerateJwtRequest;
-import io.github.gms.common.util.Constants;
-import io.github.gms.secure.dto.*;
-import io.github.gms.secure.entity.*;
+import io.github.gms.secure.dto.ChangePasswordRequestDto;
+import io.github.gms.secure.dto.KeystoreAliasDto;
+import io.github.gms.secure.dto.SaveAnnouncementDto;
+import io.github.gms.secure.dto.SaveApiKeyRequestDto;
+import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.dto.SaveSecretRequestDto;
+import io.github.gms.secure.dto.SaveUserRequestDto;
+import io.github.gms.secure.dto.SecretDto;
+import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.entity.AnnouncementEntity;
+import io.github.gms.secure.entity.ApiKeyEntity;
+import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
+import io.github.gms.secure.entity.EventEntity;
+import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.secure.entity.MessageEntity;
+import io.github.gms.secure.entity.SecretEntity;
+import io.github.gms.secure.entity.SystemPropertyEntity;
+import io.github.gms.secure.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -30,9 +55,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.API_KEY_HEADER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -58,7 +89,7 @@ public class TestUtils {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set(ApiController.API_KEY_HEADER, apiKey);
+		headers.set(API_KEY_HEADER, apiKey);
 
 		return headers;
 	}
@@ -69,14 +100,14 @@ public class TestUtils {
 		headers.setContentType(MediaType.APPLICATION_JSON);	
 
 		if (jwt != null) {
-			headers.add("Cookie", Constants.ACCESS_JWT_TOKEN + "=" + jwt + ";Max-Age=3600;HttpOnly");
+			headers.add("Cookie", ACCESS_JWT_TOKEN + "=" + jwt + ";Max-Age=3600;HttpOnly");
 		}
 
 		return headers;
 	}
 	
 	public static Cookie getCookie(String jwt) {
-		Cookie cookie = new Cookie(Constants.ACCESS_JWT_TOKEN, jwt);
+		Cookie cookie = new Cookie(ACCESS_JWT_TOKEN, jwt);
 		cookie.setHttpOnly(true);
 		cookie.setMaxAge(3600);
 		return cookie;
@@ -107,17 +138,6 @@ public class TestUtils {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
 				.enabled(false)
-				.credential(DemoData.CREDENTIAL_TEST)
-				.userId(DemoData.USER_1_ID)
-				.username(DemoData.USERNAME1)
-				.authorities(Sets.newHashSet(UserRole.ROLE_USER))
-				.build();
-	}
-	
-	public static GmsUserDetails createLockedGmsUser() {
-		return GmsUserDetails.builder()
-				.accountNonLocked(false)
-				.enabled(true)
 				.credential(DemoData.CREDENTIAL_TEST)
 				.userId(DemoData.USER_1_ID)
 				.username(DemoData.USERNAME1)
@@ -280,20 +300,6 @@ public class TestUtils {
 
 	public static SaveKeystoreRequestDto createSaveKeystoreRequestDto() {
 		return createSaveKeystoreRequestDto(DemoData.KEYSTORE_ID);
-	}
-	
-	public static KeystoreEntity createKeystoreEntity(Long id, String credential) {
-		KeystoreEntity entity = new KeystoreEntity();
-		entity.setName("keystore");
-		entity.setId(id);
-		entity.setFileName("test.jks");
-		entity.setUserId(DemoData.USER_1_ID);
-		entity.setCredential(credential);
-		entity.setType(KeystoreType.JKS);
-		entity.setDescription("description");
-		entity.setStatus(EntityStatus.ACTIVE);
-		entity.setCreationDate(ZonedDateTime.now());
-		return entity;
 	}
 
 	public static KeystoreEntity createKeystoreEntity() {

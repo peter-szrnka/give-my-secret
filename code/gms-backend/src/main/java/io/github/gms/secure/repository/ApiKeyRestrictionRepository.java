@@ -1,13 +1,11 @@
 package io.github.gms.secure.repository;
 
-import java.util.List;
-
-import javax.transaction.Transactional;
-
+import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
+import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * @author Peter Szrnka

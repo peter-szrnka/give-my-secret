@@ -1,25 +1,5 @@
 package io.github.gms.api.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.SecretType;
@@ -38,40 +18,55 @@ import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link ApiServiceImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */
 class ApiServiceImplTest extends AbstractUnitTest {
 
-	private static GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
+	private static final GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
 
-	@Mock
 	private CryptoService cryptoService;
-
-	@Mock
 	private SecretRepository secretRepository;
-
-	@Mock
 	private ApiKeyRepository apiKeyRepository;
-
-	@Mock
 	private UserRepository userRepository;
-
-	@Mock
 	private KeystoreRepository keystoreRepository;
-
-	@Mock
 	private KeystoreAliasRepository keystoreAliasRepository;
-
-	@Mock
 	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
-
-	@InjectMocks
 	private ApiServiceImpl service;
+
+	@BeforeEach
+	void beforeEach() {
+		cryptoService = mock(CryptoService.class);
+		secretRepository = mock(SecretRepository.class);
+		apiKeyRepository = mock(ApiKeyRepository.class);
+		userRepository = mock(UserRepository.class);
+		keystoreRepository = mock(KeystoreRepository.class);
+		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
+		apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);
+		service = new ApiServiceImpl(cryptoService, secretRepository, apiKeyRepository, userRepository, keystoreRepository,
+				keystoreAliasRepository, apiKeyRestrictionRepository);
+	}
 
 	@Test
 	void shouldApiKeyMissing() {

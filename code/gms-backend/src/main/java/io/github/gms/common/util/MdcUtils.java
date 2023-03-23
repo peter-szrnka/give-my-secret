@@ -1,8 +1,7 @@
 package io.github.gms.common.util;
 
-import org.slf4j.MDC;
-
 import io.github.gms.common.enums.MdcParameter;
+import org.slf4j.MDC;
 
 /**
  * @author Peter Szrnka

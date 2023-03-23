@@ -1,27 +1,33 @@
 package io.github.gms.aspect;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.enums.EventOperation;
+import io.github.gms.common.enums.EventTarget;
+import io.github.gms.secure.model.UserEvent;
+import io.github.gms.secure.service.EventService;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.EventOperation;
-import io.github.gms.common.enums.EventTarget;
-import io.github.gms.secure.model.UserEvent;
-import io.github.gms.secure.service.EventService;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 
 class EventPublisherAspectTest extends AbstractUnitTest {
 
-	private EventService service = mock(EventService.class);
-	private EventPublisherAspect aspect = new EventPublisherAspect();
+	private EventService service;
+	private EventPublisherAspect aspect;
+
+	@BeforeEach
+	void beforeEach() {
+		service = mock(EventService.class);
+		aspect = new EventPublisherAspect(service);
+	}
 
 	@Test
 	void testAnnotationTargetOnClass() {

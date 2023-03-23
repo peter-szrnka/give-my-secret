@@ -1,7 +1,6 @@
 package io.github.gms.secure.repository;
 
-import java.util.Optional;
-
+import io.github.gms.secure.entity.UserEntity;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,15 +8,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import io.github.gms.common.util.Constants;
-import io.github.gms.secure.entity.UserEntity;
+import java.util.Optional;
+
+import static io.github.gms.common.util.Constants.CACHE_USER;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Repository
-@CacheConfig(cacheNames = Constants.CACHE_USER)
+@CacheConfig(cacheNames = CACHE_USER)
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 	Optional<UserEntity> findByUsernameAndCredential(String username, String credential);

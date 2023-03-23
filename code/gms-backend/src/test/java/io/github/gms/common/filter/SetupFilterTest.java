@@ -1,38 +1,38 @@
 package io.github.gms.common.filter;
 
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.secure.service.SystemService;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.http.HttpStatus;
-
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.secure.service.SystemService;
-import lombok.SneakyThrows;
-
 /**
- * Unit test of {@link SetupFilter}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */
 class SetupFilterTest extends AbstractUnitTest {
 
-	@Mock
 	SystemService service;
+	SetupFilter filter;
 
-	@InjectMocks
-	SetupFilter filter = new SetupFilter();
+	@BeforeEach
+	public void setup() {
+		// init
+		service = mock(SystemService.class);
+		filter = new SetupFilter(service);
+	}
 
 	@Test
 	@SneakyThrows

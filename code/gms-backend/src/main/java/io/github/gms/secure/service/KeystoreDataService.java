@@ -1,12 +1,12 @@
 package io.github.gms.secure.service;
 
+import io.github.gms.common.model.KeystorePair;
+import io.github.gms.secure.entity.SecretEntity;
+
 import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-
-import io.github.gms.common.model.KeystorePair;
-import io.github.gms.secure.entity.SecretEntity;
 
 /**
  * @author Peter Szrnka

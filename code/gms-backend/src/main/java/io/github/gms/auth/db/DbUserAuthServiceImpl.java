@@ -1,34 +1,36 @@
 package io.github.gms.auth.db;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import io.github.gms.auth.UserAuthService;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.UserRole;
+import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.secure.repository.UserRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.github.gms.auth.UserAuthService;
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.util.Constants;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.repository.UserRepository;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Service
-@Profile(Constants.CONFIG_AUTH_TYPE_DB)
+@Profile(CONFIG_AUTH_TYPE_DB)
 public class DbUserAuthServiceImpl implements UserAuthService {
-	
-	@Autowired
-	private UserRepository repository;
+
+	private final UserRepository repository;
+
+	public DbUserAuthServiceImpl(UserRepository repository) {
+		this.repository = repository;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

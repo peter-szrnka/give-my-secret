@@ -1,8 +1,8 @@
 package io.github.gms.common.util;
 
-import java.time.Duration;
-
 import org.springframework.http.ResponseCookie;
+
+import java.time.Duration;
 
 /**
  * @author Peter Szrnka

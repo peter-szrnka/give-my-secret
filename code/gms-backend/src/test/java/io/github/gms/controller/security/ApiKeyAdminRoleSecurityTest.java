@@ -1,13 +1,5 @@
 package io.github.gms.controller.security;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.web.client.HttpClientErrorException;
-
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
@@ -15,16 +7,21 @@ import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.util.DemoData;
-import io.github.gms.util.TestConstants;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpEntity;
+import org.springframework.web.client.HttpClientErrorException;
+
+import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Security test of all Api key related functions
- * 
  * @author Peter Szrnka
  * @since 1.0
  */
-@Tag(TestConstants.TAG_SECURITY_TEST)
+@Tag(TAG_SECURITY_TEST)
 class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
 	@Test

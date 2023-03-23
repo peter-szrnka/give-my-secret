@@ -1,14 +1,13 @@
 package io.github.gms.abstraction;
 
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * The goal of these tests to provide negative scenarios when an admin wants to 

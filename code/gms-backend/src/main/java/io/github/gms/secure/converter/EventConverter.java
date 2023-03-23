@@ -1,10 +1,10 @@
 package io.github.gms.secure.converter;
 
-import java.util.List;
-
 import io.github.gms.secure.dto.EventDto;
 import io.github.gms.secure.dto.EventListDto;
 import io.github.gms.secure.entity.EventEntity;
+
+import java.util.List;
 
 /**
  * @author Peter Szrnka

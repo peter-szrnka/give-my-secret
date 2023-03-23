@@ -1,10 +1,10 @@
 package io.github.gms.common.enums;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import lombok.Getter;
 
 /**
  * @author Peter Szrnka

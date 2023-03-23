@@ -1,11 +1,11 @@
 package io.github.gms.common.types;
 
+import io.github.gms.common.enums.EventTarget;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import io.github.gms.common.enums.EventTarget;
 
 /**
  * @author Peter Szrnka

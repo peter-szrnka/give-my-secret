@@ -1,13 +1,13 @@
 package io.github.gms.abstraction;
 
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka

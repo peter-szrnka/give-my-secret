@@ -1,14 +1,5 @@
 package io.github.gms.secure.converter.impl;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
-
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.converter.SecretConverter;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
@@ -16,6 +7,13 @@ import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.SecretEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka
@@ -23,9 +21,12 @@ import io.github.gms.secure.entity.SecretEntity;
  */
 @Component
 public class SecretConverterImpl implements SecretConverter {
-	
-	@Autowired
-	private Clock clock;
+
+	private final Clock clock;
+
+	public SecretConverterImpl(Clock clock) {
+		this.clock = clock;
+	}
 
 	@Override
 	public SecretEntity toEntity(SecretEntity entity, SaveSecretRequestDto dto) {

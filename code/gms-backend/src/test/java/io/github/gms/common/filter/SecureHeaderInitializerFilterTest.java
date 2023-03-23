@@ -1,31 +1,6 @@
 package io.github.gms.common.filter;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.slf4j.MDC;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import com.google.common.collect.Sets;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.AuthenticationService;
 import io.github.gms.auth.model.AuthenticationResponse;
@@ -35,10 +10,28 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.secure.service.SystemPropertyService;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link SecureHeaderInitializerFilter}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */
@@ -46,14 +39,17 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 
 	private static final String ERROR_MESSAGE = "Error!";
 
-	@Mock
 	private AuthenticationService authenticationService;
-	
-	@Mock
 	private SystemPropertyService systemPropertyService;
-
-	@InjectMocks
 	private SecureHeaderInitializerFilter filter;
+
+	@BeforeEach
+	public void setup() {
+		// init
+		authenticationService = mock(AuthenticationService.class);
+		systemPropertyService = mock(SystemPropertyService.class);
+		filter = new SecureHeaderInitializerFilter(authenticationService, systemPropertyService, false);
+	}
 	
 	@Test
 	@SneakyThrows
@@ -101,7 +97,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 	@SneakyThrows
 	void shouldPass() {
 		// arrange
-		ReflectionTestUtils.setField(filter, "secure", true);
+		filter = new SecureHeaderInitializerFilter(authenticationService, systemPropertyService, true);
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);

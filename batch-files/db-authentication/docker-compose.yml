@@ -31,6 +31,11 @@ services:
       - CONFIG_SECRET_JWT
       - CONFIG_SECRET_CRYPTO
       - CONFIG_ENCRYPTION_IV
+      - EVENT_OLD_LIMIT
+      - MESSAGE_OLD_LIMIT
+      - ENABLE_SECRET_ROTATION
+      - ENABLE_EVENT_MAINTENANCE
+      - ENABLE_MESSAGE_CLEANUP
 
     volumes:
       - "D:/dev/projects/open-source/keystores/:/usr/share/ssl/"

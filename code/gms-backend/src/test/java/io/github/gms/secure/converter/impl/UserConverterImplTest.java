@@ -1,47 +1,51 @@
 package io.github.gms.secure.converter.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.time.Clock;
-
+import com.google.common.collect.Lists;
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.secure.dto.SaveUserRequestDto;
+import io.github.gms.secure.dto.UserInfoDto;
+import io.github.gms.secure.dto.UserListDto;
+import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.util.DemoData;
+import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.google.common.collect.Lists;
+import java.time.Clock;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.secure.dto.SaveUserRequestDto;
-import io.github.gms.secure.dto.UserListDto;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.util.TestUtils;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link UserConverterImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */
 class UserConverterImplTest extends AbstractUnitTest {
-	
-	@Mock
-	private PasswordEncoder passwordEncoder;
 
-	@Mock
 	private Clock clock;
-
-	@InjectMocks
+	private PasswordEncoder passwordEncoder;
 	private UserConverterImpl converter;
+
+	@BeforeEach
+	void beforeEach() {
+		clock = mock(Clock.class);
+		passwordEncoder = mock(PasswordEncoder.class);
+		converter = new UserConverterImpl(clock, passwordEncoder);
+	}
 
 	@Test
 	void checkToEntityWithRoleChange() {
 		// arrange
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
+		when(passwordEncoder.encode(anyString())).thenReturn("encoded");
 
 		// act
 		UserEntity entity = converter.toEntity(TestUtils.createUser(), dto, false);
@@ -49,6 +53,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(entity);
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		verify(passwordEncoder).encode(anyString());
 	}
 	
 	@Test
@@ -69,6 +74,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 	void checkToEntityWithParameters() {
 		// arrange
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
+		when(passwordEncoder.encode(anyString())).thenReturn("encoded");
 
 		// act
 		UserEntity entity = converter.toEntity(TestUtils.createUser(), dto, true);
@@ -76,12 +82,14 @@ class UserConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(entity);
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		verify(passwordEncoder).encode(anyString());
 	}
 	
 	@Test
 	void checkToNewEntity() {
 		// arrange
 		setupClock(clock);
+		when(passwordEncoder.encode(anyString())).thenReturn("encoded");
 
 		// arrange
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
@@ -92,12 +100,14 @@ class UserConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(entity);
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		verify(passwordEncoder).encode(anyString());
 	}
 
 	@Test
 	void checkToNewEntityWithRoleChange() {
 		// arrange
 		setupClock(clock);
+		when(passwordEncoder.encode(anyString())).thenReturn("encoded");
 
 		// arrange
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
@@ -108,6 +118,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(entity);
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		verify(passwordEncoder).encode(anyString());
 	}
 
 	@Test
@@ -121,5 +132,16 @@ class UserConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
+	}
+
+	@Test
+	void checkToUserInfoDto() {
+		// act
+		UserInfoDto dto = converter.toUserInfoDto(TestUtils.createGmsUser());
+
+		// assert
+		assertNotNull(dto);
+		assertEquals(DemoData.USER_1_ID, dto.getId());
+		assertEquals(DemoData.USERNAME1, dto.getUsername());
 	}
 }

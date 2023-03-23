@@ -7,10 +7,18 @@ import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.event.EntityChangeEvent;
 import io.github.gms.common.event.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.KeystoreConverter;
-import io.github.gms.secure.dto.*;
+import io.github.gms.secure.dto.DownloadFileResponseDto;
+import io.github.gms.secure.dto.GetSecureValueDto;
+import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.KeystoreAliasDto;
+import io.github.gms.secure.dto.KeystoreDto;
+import io.github.gms.secure.dto.KeystoreListDto;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
@@ -39,6 +47,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static io.github.gms.common.util.Constants.SLASH;
 import static io.github.gms.common.util.MdcUtils.getUserId;
 
 /**
@@ -47,7 +58,7 @@ import static io.github.gms.common.util.MdcUtils.getUserId;
  */
 @Slf4j
 @Service
-@CacheConfig(cacheNames = { Constants.CACHE_API })
+@CacheConfig(cacheNames = { CACHE_API })
 public class KeystoreServiceImpl implements KeystoreService {
 
 	private final CryptoService cryptoService;
@@ -84,7 +95,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 	@Override
 	@Transactional
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(String model, MultipartFile file) {
 		SaveKeystoreRequestDto dto = parseInput(model);
 		dto.setUserId(getUserId());
@@ -120,7 +131,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveKeystoreRequestDto dto) {
 		throw new UnsupportedOperationException("Not supported!");
 	}
@@ -145,10 +156,10 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 	@Override
 	@Transactional
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void delete(Long id) {
 		KeystoreEntity entity = getKeystore(id);
-		File keystoreFile = new File(keystorePath + entity.getUserId() + Constants.SLASH + entity.getFileName());
+		File keystoreFile = new File(keystorePath + entity.getUserId() + SLASH + entity.getFileName());
 
 		aliasRepository.deleteByKeystoreId(id);
 		repository.deleteById(id);
@@ -163,7 +174,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
 		KeystoreEntity entity = getKeystore(id);
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
@@ -241,7 +252,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 	
 	private String getUserFolder() {
-		return keystorePath + getUserId() + Constants.SLASH;
+		return keystorePath + getUserId() + SLASH;
 	}
 	
 	private KeystoreEntity convertKeystore(SaveKeystoreRequestDto dto, MultipartFile file) {
@@ -317,16 +328,16 @@ public class KeystoreServiceImpl implements KeystoreService {
 	
 	private KeystoreEntity getKeystore(Long id) {
 		return repository.findByIdAndUserId(id, getUserId()).orElseThrow(() -> {
-			log.warn(Constants.ENTITY_NOT_FOUND);
-			throw new GmsException(Constants.ENTITY_NOT_FOUND);
+			log.warn(ENTITY_NOT_FOUND);
+			throw new GmsException(ENTITY_NOT_FOUND);
 		});
 	}
 
 	private String getAliasValue(GetSecureValueDto dto) {
 		KeystoreAliasEntity entity = aliasRepository.findByIdAndKeystoreId(dto.getAliasId(), dto.getEntityId())
 			.orElseThrow(() -> {
-				log.warn(Constants.ENTITY_NOT_FOUND);
-				throw new GmsException(Constants.ENTITY_NOT_FOUND);
+				log.warn(ENTITY_NOT_FOUND);
+				throw new GmsException(ENTITY_NOT_FOUND);
 		});
 
 		if (KeyStoreValueType.KEYSTORE_ALIAS == dto.getValueType()) {

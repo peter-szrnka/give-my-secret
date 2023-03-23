@@ -1,6 +1,11 @@
 package io.github.gms.secure.entity;
 
-import java.time.ZonedDateTime;
+import io.github.gms.common.abstraction.AbstractGmsEntity;
+import io.github.gms.common.db.converter.EncryptedFieldConverter;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.KeystoreType;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -11,13 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import io.github.gms.common.abstraction.AbstractGmsEntity;
-import io.github.gms.common.db.converter.EncryptedFieldConverter;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.KeystoreType;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.time.ZonedDateTime;
 
 /**
  * @author Peter Szrnka

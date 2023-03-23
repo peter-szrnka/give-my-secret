@@ -1,9 +1,7 @@
 package io.github.gms.secure.job;
 
-import io.github.gms.common.abstraction.AbstractLimitBasedJob;
 import io.github.gms.secure.service.KeystoreFileService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,12 +13,15 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @ConditionalOnProperty(value = "config.job.generatedKeystoreCleanup.enabled", havingValue = "true", matchIfMissing = true)
-public class GeneratedKeystoreCleanupJob extends AbstractLimitBasedJob {
+public class GeneratedKeystoreCleanupJob {
 
-    @Autowired
-    private KeystoreFileService service;
+    private final KeystoreFileService service;
 
-    @Scheduled(cron = "45 * * * * ?")
+    public GeneratedKeystoreCleanupJob(KeystoreFileService service) {
+        this.service = service;
+    }
+
+    @Scheduled(cron = "0 0/45 * * * ?")
     public void execute() {
         long deletedCount = service.deleteTempKeystoreFiles();
 

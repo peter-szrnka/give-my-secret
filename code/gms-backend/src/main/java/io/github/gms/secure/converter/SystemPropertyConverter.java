@@ -1,10 +1,10 @@
 package io.github.gms.secure.converter;
 
-import java.util.List;
-
 import io.github.gms.secure.dto.SystemPropertyDto;
 import io.github.gms.secure.dto.SystemPropertyListDto;
 import io.github.gms.secure.entity.SystemPropertyEntity;
+
+import java.util.List;
 
 /**
  * @author Peter Szrnka

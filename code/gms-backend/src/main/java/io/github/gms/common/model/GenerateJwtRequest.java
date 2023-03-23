@@ -1,12 +1,12 @@
 package io.github.gms.common.model;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Map;
 
 /**
  * @author Peter Szrnka

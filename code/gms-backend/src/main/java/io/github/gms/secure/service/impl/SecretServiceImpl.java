@@ -1,23 +1,9 @@
 package io.github.gms.secure.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.SecretConverter;
@@ -36,39 +22,56 @@ import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.secure.service.SecretService;
+import org.slf4j.MDC;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static io.github.gms.common.util.Constants.CACHE_API;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Service
-@CacheConfig(cacheNames = { Constants.CACHE_API })
+@CacheConfig(cacheNames = { CACHE_API })
 public class SecretServiceImpl implements SecretService {
 
 	static final String WRONG_ENTITY = "Wrong entity!";
 	static final String PLEASE_PROVIDE_ACTIVE_KEYSTORE = "Please provide an active keystore";
 	static final String WRONG_KEYSTORE_ALIAS = "Wrong keystore alias!";
 
-	@Autowired
-	private CryptoService cryptoService;
+	private final CryptoService cryptoService;
+	private final KeystoreRepository keystoreRepository;
+	private final KeystoreAliasRepository keystoreAliasRepository;
+	private final SecretRepository repository;
+	private final SecretConverter converter;
+	private final ApiKeyRestrictionRepository apiKeyRestrictionRepository;
 
-	@Autowired
-	private KeystoreRepository keystoreRepository;
-	
-	@Autowired
-	private KeystoreAliasRepository keystoreAliasRepository;
-
-	@Autowired
-	private SecretRepository repository;
-
-	@Autowired
-	private SecretConverter converter;
-
-	@Autowired
-	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
+	public SecretServiceImpl(
+			CryptoService cryptoService,
+			KeystoreRepository keystoreRepository,
+			KeystoreAliasRepository keystoreAliasRepository,
+			SecretRepository repository,
+			SecretConverter converter,
+			ApiKeyRestrictionRepository apiKeyRestrictionRepository) {
+		this.cryptoService = cryptoService;
+		this.keystoreRepository = keystoreRepository;
+		this.keystoreAliasRepository = keystoreAliasRepository;
+		this.repository = repository;
+		this.converter = converter;
+		this.apiKeyRestrictionRepository = apiKeyRestrictionRepository;
+	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveSecretRequestDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		SecretEntity entity;
@@ -128,7 +131,7 @@ public class SecretServiceImpl implements SecretService {
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { Constants.CACHE_API }, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, userId);

@@ -1,35 +1,31 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.secure.service.JwtService;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Unit test of {@link JwtServiceImpl}
- * 
  * @author Peter Szrnka
  * @since 1.0
  */
 class JwtServiceImplTest extends AbstractUnitTest {
 
-	private JwtService service = new JwtServiceImpl();
+	private JwtService service;
 	
 	@BeforeEach
 	void setup() {
-		ReflectionTestUtils.setField(service, "secret", "YXNkZjEyMzQ1Njc4OTBhc2RmMTIzNDU2Nzg5MGFzZGYxMjM0NTY3ODkwYXNkZjEyMzQ1Njc4OTA=");
+		service = new JwtServiceImpl("YXNkZjEyMzQ1Njc4OTBhc2RmMTIzNDU2Nzg5MGFzZGYxMjM0NTY3ODkwYXNkZjEyMzQ1Njc4OTA=");
 	}
 	
 	@Test

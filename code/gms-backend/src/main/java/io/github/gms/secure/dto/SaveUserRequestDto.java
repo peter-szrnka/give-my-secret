@@ -1,17 +1,17 @@
 package io.github.gms.secure.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.UserRole;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.util.Constants;
-import lombok.Data;
+import static io.github.gms.common.util.Constants.DATE_FORMAT;
 
 /**
  * @author Peter Szrnka
@@ -29,7 +29,7 @@ public class SaveUserRequestDto implements Serializable {
 	private String email;
 	private EntityStatus status;
 	private String credential;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
 	private ZonedDateTime creationDate;
 	private Set<UserRole> roles = new HashSet<>();
 }

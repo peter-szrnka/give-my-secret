@@ -1,48 +1,42 @@
 package io.github.gms;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-
-import java.lang.reflect.Method;
-import java.time.Clock;
-
-import javax.servlet.http.HttpServletRequest;
-
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.dto.ErrorResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.exception.GmsException;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.method.HandlerMethod;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.dto.ErrorResponseDto;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.exception.GmsException;
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.time.Clock;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled("Temporary disabled")
+@Disabled
 class GmsExceptionHandlerTest extends AbstractUnitTest {
 
 	private static final String CORRELATION_ID = "CORRELATION_ID";
 
-	@Mock
-	private Clock clock;
-	@InjectMocks
 	private GmsExceptionHandler handler;
 
 	@BeforeEach
 	public void setup() {
 		MDC.put(MdcParameter.CORRELATION_ID.getDisplayName(), CORRELATION_ID);
-		setupClock(clock);
+		Clock clock = Clock.systemDefaultZone();
+		handler = new GmsExceptionHandler(clock);
 	}
 
 	@Test

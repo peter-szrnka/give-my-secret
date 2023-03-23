@@ -1,15 +1,14 @@
 package io.github.gms.common.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.time.Duration;
-
+import io.github.gms.abstraction.AbstractUnitTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseCookie;
 
-import io.github.gms.abstraction.AbstractUnitTest;
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Peter Szrnka

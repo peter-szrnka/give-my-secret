@@ -1,5 +1,18 @@
 package io.github.gms.secure.controller;
 
+import io.github.gms.common.abstraction.AbstractController;
+import io.github.gms.common.enums.EventOperation;
+import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.types.AuditTarget;
+import io.github.gms.common.types.Audited;
+import io.github.gms.secure.dto.ChangePasswordRequestDto;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.dto.SaveUserRequestDto;
+import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.dto.UserListDto;
+import io.github.gms.secure.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,20 +26,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.gms.common.abstraction.AbstractController;
-import io.github.gms.common.enums.EventOperation;
-import io.github.gms.common.enums.EventTarget;
-import io.github.gms.common.types.AuditTarget;
-import io.github.gms.common.types.Audited;
-import io.github.gms.common.util.Constants;
-import io.github.gms.secure.dto.ChangePasswordRequestDto;
-import io.github.gms.secure.dto.LongValueDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.dto.SaveUserRequestDto;
-import io.github.gms.secure.dto.UserDto;
-import io.github.gms.secure.dto.UserListDto;
-import io.github.gms.secure.service.UserService;
+import static io.github.gms.common.util.Constants.ALL_ROLE;
+import static io.github.gms.common.util.Constants.ROLE_ADMIN;
+import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
 
 /**
  * @author Peter Szrnka
@@ -38,26 +40,26 @@ import io.github.gms.secure.service.UserService;
 public class UserController extends AbstractController<UserService> {
 	
 	@PostMapping
-	@PreAuthorize(Constants.ROLE_ADMIN_OR_USER)
+	@PreAuthorize(ROLE_ADMIN_OR_USER)
 	@Audited(operation = EventOperation.SAVE)
 	public @ResponseBody SaveEntityResponseDto save(@RequestBody SaveUserRequestDto dto) {
 		return service.save(dto);
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize(Constants.ROLE_ADMIN_OR_USER)
+	@PreAuthorize(ROLE_ADMIN_OR_USER)
 	public @ResponseBody UserDto getById(@PathVariable("id") Long id) {
 		return service.getById(id);
 	}
 	
 	@PostMapping("/list")
-	@PreAuthorize(Constants.ROLE_ADMIN)
+	@PreAuthorize(ROLE_ADMIN)
 	public @ResponseBody UserListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
 	}
 	
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize(ROLE_ADMIN)
 	@Audited(operation = EventOperation.DELETE)
 	public ResponseEntity<String> delete(@PathVariable("id") Long id) {
 		service.delete(id);
@@ -65,7 +67,7 @@ public class UserController extends AbstractController<UserService> {
 	}
 
 	@PostMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize(ROLE_ADMIN)
 	@Audited(operation = EventOperation.TOGGLE_STATUS)
 	public ResponseEntity<String> toggle(@PathVariable("id") Long id, @RequestParam boolean enabled) {
 		service.toggleStatus(id, enabled);
@@ -73,13 +75,13 @@ public class UserController extends AbstractController<UserService> {
 	}
 	
 	@GetMapping("/count")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize(ROLE_ADMIN)
 	public @ResponseBody LongValueDto userCount() {
 		return service.count();
 	}
 	
 	@PostMapping("/change_credential")
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_VIEWER','ROLE_USER')")
+	@PreAuthorize(ALL_ROLE)
 	public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordRequestDto dto) {
 		service.changePassword(dto);
 		return new ResponseEntity<>(HttpStatus.OK);

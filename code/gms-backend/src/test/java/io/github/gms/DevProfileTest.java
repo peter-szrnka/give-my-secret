@@ -1,7 +1,5 @@
 package io.github.gms;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,13 +9,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.gms.common.util.Constants;
-import io.github.gms.util.TestConstants;
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
+import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@ActiveProfiles({"dev", Constants.CONFIG_AUTH_TYPE_DB})
-@Tag(TestConstants.TAG_INTEGRATION_TEST)
+@ActiveProfiles({"dev", CONFIG_AUTH_TYPE_DB})
+@Tag(TAG_INTEGRATION_TEST)
 class DevProfileTest {
 	
 	@Autowired

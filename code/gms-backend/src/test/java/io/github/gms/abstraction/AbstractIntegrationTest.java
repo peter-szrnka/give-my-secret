@@ -1,5 +1,12 @@
 package io.github.gms.abstraction;
 
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.secure.repository.ApiKeyRepository;
+import io.github.gms.secure.repository.KeystoreRepository;
+import io.github.gms.secure.repository.SecretRepository;
+import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.secure.service.JwtService;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,20 +20,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.util.Constants;
-import io.github.gms.secure.repository.ApiKeyRepository;
-import io.github.gms.secure.repository.KeystoreRepository;
-import io.github.gms.secure.repository.SecretRepository;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.secure.service.JwtService;
-import io.github.gms.util.TestUtils;
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-@ActiveProfiles({ Constants.CONFIG_AUTH_TYPE_DB })
+@ActiveProfiles({ CONFIG_AUTH_TYPE_DB })
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class AbstractIntegrationTest {

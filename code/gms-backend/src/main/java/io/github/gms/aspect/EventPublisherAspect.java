@@ -1,19 +1,17 @@
 package io.github.gms.aspect;
 
-import java.lang.reflect.Method;
-
+import io.github.gms.common.types.AuditTarget;
+import io.github.gms.common.types.Audited;
+import io.github.gms.secure.model.UserEvent;
+import io.github.gms.secure.service.EventService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.github.gms.common.types.AuditTarget;
-import io.github.gms.common.types.Audited;
-import io.github.gms.secure.model.UserEvent;
-import io.github.gms.secure.service.EventService;
+import java.lang.reflect.Method;
 
 /**
  * @author Peter Szrnka
@@ -22,9 +20,12 @@ import io.github.gms.secure.service.EventService;
 @Aspect
 @Component
 public class EventPublisherAspect {
-	
-	@Autowired
-	private EventService service;
+
+	private final EventService service;
+
+	public EventPublisherAspect(EventService service) {
+		this.service = service;
+	}
 
 	@Pointcut("execution(* *.*(..))")
 	public void allMethod() {

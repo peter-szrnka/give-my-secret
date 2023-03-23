@@ -1,14 +1,14 @@
 package io.github.gms.secure.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.github.gms.common.enums.EventOperation;
+import io.github.gms.common.enums.EventTarget;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import io.github.gms.common.enums.EventOperation;
-import io.github.gms.common.enums.EventTarget;
-import io.github.gms.common.util.Constants;
-import lombok.Data;
+import static io.github.gms.common.util.Constants.DATE_FORMAT;
 
 /**
  * @author Peter Szrnka
@@ -22,7 +22,7 @@ public class EventDto implements Serializable {
 	private Long id;
 	private Long userId;
 	private String username;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
 	private ZonedDateTime eventDate;
 	private EventOperation operation;
 	private EventTarget target;

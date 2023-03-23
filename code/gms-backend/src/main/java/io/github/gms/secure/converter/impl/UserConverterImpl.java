@@ -1,17 +1,6 @@
 package io.github.gms.secure.converter.impl;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
 import com.google.common.collect.Sets;
-
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
@@ -21,6 +10,14 @@ import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Peter Szrnka
@@ -28,12 +25,14 @@ import io.github.gms.secure.entity.UserEntity;
  */
 @Component
 public class UserConverterImpl implements UserConverter {
-	
-	@Autowired
-	private Clock clock;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+
+	private final Clock clock;
+	private final PasswordEncoder passwordEncoder;
+
+	public UserConverterImpl(Clock clock, PasswordEncoder passwordEncoder) {
+		this.clock = clock;
+		this.passwordEncoder = passwordEncoder;
+	}
 
 	@Override
 	public UserEntity toNewEntity(SaveUserRequestDto dto, boolean roleChangeEnabled) {

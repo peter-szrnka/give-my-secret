@@ -1,29 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.exception.GmsException;
@@ -39,6 +15,29 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.util.TestUtils;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
+
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -46,19 +45,17 @@ import io.github.gms.util.TestUtils;
  */
 class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 
-	@InjectMocks
 	private ApiKeyServiceImpl service;
-
-	@Mock
 	private ApiKeyRepository repository;
-
-	@Mock
 	private ApiKeyConverter converter;
 
 	@Override
 	@BeforeEach
 	public void setup() {
 		super.setup();
+		repository = mock(ApiKeyRepository.class);
+		converter = mock(ApiKeyConverter.class);
+		service = new ApiKeyServiceImpl(repository, converter);
 		((Logger) LoggerFactory.getLogger(ApiKeyServiceImpl.class)).addAppender(logAppender);
 	}
 
@@ -101,7 +98,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
-		when(repository.countAllApiKeysByName(anyLong(), anyString())).thenReturn(1l);
+		when(repository.countAllApiKeysByName(anyLong(), anyString())).thenReturn(1L);
 
 		// act
 		SaveApiKeyRequestDto input = TestUtils.createNewSaveApiKeyRequestDto();
@@ -118,7 +115,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
-		when(repository.countAllApiKeysByValue(anyLong(), anyString())).thenReturn(1l);
+		when(repository.countAllApiKeysByValue(anyLong(), anyString())).thenReturn(1L);
 
 		// act
 		SaveApiKeyRequestDto input = TestUtils.createNewSaveApiKeyRequestDto();
@@ -139,7 +136,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
 		// assert
-		assertEquals(ApiKeyServiceImpl.ENTITY_NOT_FOUND, exception.getMessage());
+		assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 		verify(converter, never()).toDto(any());
 	}

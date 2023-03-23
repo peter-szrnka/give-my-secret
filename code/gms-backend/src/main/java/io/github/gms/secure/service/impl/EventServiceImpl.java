@@ -1,14 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.stream.Collectors;
-
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.EventConverter;
 import io.github.gms.secure.dto.EventListDto;
@@ -18,6 +9,13 @@ import io.github.gms.secure.model.UserEvent;
 import io.github.gms.secure.repository.EventRepository;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.EventService;
+import org.springframework.stereotype.Component;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.stream.Collectors;
+
+import static io.github.gms.common.util.MdcUtils.getUserId;
 
 /**
  * @author Peter Szrnka
@@ -25,25 +23,25 @@ import io.github.gms.secure.service.EventService;
  */
 @Component
 public class EventServiceImpl implements EventService {
-	
-	@Autowired
-	private Clock clock;
-	
-	@Autowired
-	private EventRepository repository;
-	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private EventConverter converter;
+
+	private final Clock clock;
+	private final EventRepository repository;
+	private final UserRepository userRepository;
+	private final EventConverter converter;
+
+	public EventServiceImpl(Clock clock, EventRepository repository,
+							UserRepository userRepository, EventConverter converter) {
+		this.clock = clock;
+		this.repository = repository;
+		this.userRepository = userRepository;
+		this.converter = converter;
+	}
 
 	@Override
 	public void saveUserEvent(UserEvent event) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		EventEntity entity = new EventEntity();
 		entity.setEventDate(ZonedDateTime.now(clock));
-		entity.setUserId(userId);
+		entity.setUserId(getUserId());
 		entity.setOperation(event.getOperation());
 		entity.setTarget(event.getTarget());
 		repository.save(entity);

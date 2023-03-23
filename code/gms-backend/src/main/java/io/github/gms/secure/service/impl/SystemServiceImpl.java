@@ -1,15 +1,10 @@
 package io.github.gms.secure.service.impl;
 
-import static io.github.gms.common.util.Constants.OK;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
-
-import java.time.Clock;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
+import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.event.RefreshCacheEvent;
+import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.secure.service.SystemService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.cache.annotation.CacheConfig;
@@ -19,11 +14,15 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.common.event.RefreshCacheEvent;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.secure.service.SystemService;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static io.github.gms.common.util.Constants.OK;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 
 /**
  * @author Peter Szrnka
@@ -34,13 +33,12 @@ import lombok.extern.slf4j.Slf4j;
 @CacheConfig(cacheNames = "systemStatusCache")
 public class SystemServiceImpl implements SystemService {
 
-	private UserRepository userRepository;
-	private Clock clock;
-	private Environment env;
+	private final UserRepository userRepository;
+	private final Clock clock;
+	private final Environment env;
 	// It will be set with setter injection
 	private BuildProperties buildProperties;
-	
-	@Autowired
+
 	public SystemServiceImpl(UserRepository userRepository, Clock clock, Environment env) {
 		this.userRepository = userRepository;
 		this.clock = clock;

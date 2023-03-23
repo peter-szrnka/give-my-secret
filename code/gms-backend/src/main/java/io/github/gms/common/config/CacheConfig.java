@@ -1,5 +1,6 @@
 package io.github.gms.common.config;
 
+import io.github.gms.common.config.cache.ApiCacheKeyGenerator;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
@@ -10,8 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import io.github.gms.common.config.cache.ApiCacheKeyGenerator;
-import io.github.gms.common.util.Constants;
+import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.CACHE_USER;
 
 /**
  * @author Peter Szrnka
@@ -24,7 +25,7 @@ public class CacheConfig implements CachingConfigurer {
 	@Override
 	@Bean
     public CacheManager cacheManager() {
-		ConcurrentMapCacheManager manager = new ConcurrentMapCacheManager("systemStatusCache", Constants.CACHE_USER, "systemPropertyCache", Constants.CACHE_API);
+		ConcurrentMapCacheManager manager = new ConcurrentMapCacheManager("systemStatusCache", CACHE_USER, "systemPropertyCache", CACHE_API);
 		manager.setAllowNullValues(false);
 		return manager;
     }

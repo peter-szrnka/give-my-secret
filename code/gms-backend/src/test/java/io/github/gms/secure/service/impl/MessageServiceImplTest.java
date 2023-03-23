@@ -1,26 +1,6 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-
-import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
 import com.google.common.collect.Sets;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.secure.converter.MessageConverter;
@@ -32,6 +12,24 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.entity.MessageEntity;
 import io.github.gms.secure.repository.MessageRepository;
 import io.github.gms.util.TestUtils;
+import org.assertj.core.util.Lists;
+import org.jboss.logging.MDC;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.time.Clock;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -39,15 +37,18 @@ import io.github.gms.util.TestUtils;
  */
 class MessageServiceImplTest extends AbstractUnitTest {
 
-	@Mock
 	private Clock clock;
-	@Mock
 	private MessageRepository repository;
-	@Mock
 	private MessageConverter converter;
-	@InjectMocks
 	private MessageServiceImpl service;
-	
+
+	@BeforeEach
+	public void setup() {
+		clock = mock(Clock.class);
+		repository = mock(MessageRepository.class);
+		converter = mock(MessageConverter.class);
+		service = new MessageServiceImpl(clock, repository, converter);
+	}
 	@Test
 	void shouldSave() {
 		// arrange
