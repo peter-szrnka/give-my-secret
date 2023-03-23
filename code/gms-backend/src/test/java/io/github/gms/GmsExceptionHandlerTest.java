@@ -33,9 +33,8 @@ class GmsExceptionHandlerTest extends AbstractUnitTest {
 	@BeforeEach
 	public void setup() {
 		MDC.put(MdcParameter.CORRELATION_ID.getDisplayName(), CORRELATION_ID);
-		Clock clock = mock(Clock.class);
+		Clock clock = Clock.systemDefaultZone();
 		handler = new GmsExceptionHandler(clock);
-		setupClock(clock);
 	}
 
 	@Test
