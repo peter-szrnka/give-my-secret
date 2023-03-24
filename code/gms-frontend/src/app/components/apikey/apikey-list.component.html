@@ -30,6 +30,9 @@
             <ng-container matColumnDef="operations">
               <th mat-header-cell *matHeaderCellDef>Operations</th>
               <td mat-cell *matCellDef="let element">&nbsp;
+                  <button mat-icon-button color="primary" (click)="copyApiKeyValue(element.value)">
+                    <mat-icon>file_copy</mat-icon>
+                  </button>
                   <button mat-icon-button color="primary" [routerLink]="'/apikey/' + element.id">
                       <mat-icon aria-hidden="false">edit</mat-icon>
                   </button>

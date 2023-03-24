@@ -6,6 +6,8 @@ import { PageConfig } from "../../common/model/common.model";
 import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
+import { Clipboard } from '@angular/cdk/clipboard';
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 /**
  * @author Peter Szrnka
@@ -13,21 +15,42 @@ import { BaseListComponent } from "../../common/components/abstractions/componen
 @Component({
     selector: 'apikey-list',
     templateUrl: './apikey-list.component.html',
-    styleUrls : ['./apikey-list.component.scss']
+    styleUrls: ['./apikey-list.component.scss']
 })
 export class ApiKeyListComponent extends BaseListComponent<ApiKey, ApiKeyService> {
     apiKeyColumns: string[] = ['id', 'name', 'status', 'creationDate', 'operations'];
-    
+
     constructor(
-      override router : Router,
-      override sharedData : SharedDataService, 
-      public override service : ApiKeyService,
-      public override dialog: MatDialog,
-      override activatedRoute: ActivatedRoute) {
+        override router: Router,
+        override sharedData: SharedDataService,
+        public override service: ApiKeyService,
+        public override dialog: MatDialog,
+        override activatedRoute: ActivatedRoute,
+        private clipboard: Clipboard,
+        private snackbar : MatSnackBar) {
         super(router, sharedData, service, dialog, activatedRoute);
     }
 
     getPageConfig(): PageConfig {
         return PAGE_CONFIG_API_KEY;
+    }
+
+    /**
+     * Copies a value to the clipboard
+     * @param value Input value
+     */
+    public copyApiKeyValue(value: string) {
+        const pending = this.clipboard.beginCopy(value);
+        let remainingAttempts = 3;
+        const attempt = () => {
+            const result = pending.copy();
+            if (!result && --remainingAttempts) {
+                setTimeout(attempt);
+            } else {
+                pending.destroy();
+                this.snackbar.open("Api key value copied to clipboard!");
+            }
+        };
+        attempt();
     }
 }

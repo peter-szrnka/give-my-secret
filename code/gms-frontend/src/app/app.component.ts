@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
 
   currentUser: User | undefined;
   systemReady: boolean;
+  showTexts = true;
 
   constructor(private router: Router, public sharedDataService: SharedDataService, private splashScreenStateService: SplashScreenStateService) {
   }
@@ -45,6 +46,10 @@ export class AppComponent implements OnInit {
     if (this.sharedDataService.getUserInfo() === undefined) {
         this.router.navigate(['/login']);
     }
+  }
+
+  toggleTextMenuVisibility() : void {
+    this.showTexts = !this.showTexts;
   }
 
   isNormalUser(): boolean {

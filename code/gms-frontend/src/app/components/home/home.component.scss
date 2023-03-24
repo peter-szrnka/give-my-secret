@@ -23,3 +23,28 @@ tr th {
   vertical-align: text-top;
   margin-left: 5px;
 }
+
+@media screen and (max-width: 1199px) {
+  .gms-sub-box {
+    display: block;
+    width: 100%;
+  }
+  .gms-card-left {
+    margin-top: 0;
+  }
+  .gms-card-right {
+    margin-top: 10px;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .gms-sub-box {
+    display: inline-table;
+    width: 50%;
+  }
+  .gms-card-left {
+    margin: 10px 5px 0 0;
+  }
+  .gms-card-right {
+    margin: 10px 0 0 5px;
+  }
+}
