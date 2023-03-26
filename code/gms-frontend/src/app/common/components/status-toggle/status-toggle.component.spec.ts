@@ -1,25 +1,32 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { SplashScreenStateService } from "../../service/splash-screen-service";
-import { SplashComponent } from "../splash/splash.component";
 import { StatusToggleComponent } from "./status-toggle.component";
-import { EventEmitter } from "stream";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 /**
  * @author Peter Szrnka
  */
-describe('SplashComponent', () => {
+describe('StatusToggleComponent', () => {
     let component : StatusToggleComponent;
+    let snackbar : any;
 
     // Fixtures
     let fixture : ComponentFixture<StatusToggleComponent>;
 
     beforeEach(() => {
+        snackbar = {
+            open : jest.fn()
+        };
         TestBed.configureTestingModule({
             imports : [RouterTestingModule ],
-            declarations : [SplashComponent],
-            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
+            declarations : [StatusToggleComponent],
+            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+            providers : [
+                {
+                    provide: MatSnackBar, useValue : snackbar
+                }
+            ]
         });
     });
 
