@@ -27,6 +27,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -209,7 +210,7 @@ public class SecretServiceImpl implements SecretService {
 			return;
 		}
 
-		if (dto.getValue() != null && (!dto.getValue().contains(";") || itemsNotValid(dto.getValue()))) {
+		if (StringUtils.hasLength(dto.getValue()) && itemsNotValid(dto.getValue())) {
 			throw new GmsException("Username password pair is invalid!");
 		}
 	}
