@@ -12,6 +12,8 @@ import { User } from "../user/model/user.model";
 import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { ApiKeyListComponent } from "./apikey-list.component";
+import { Clipboard } from '@angular/cdk/clipboard';
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 /**
  * @author Peter Szrnka
@@ -27,6 +29,8 @@ describe('ApiKeyListComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
+    let clipboard : any;
+    let snackbar : any;
     // Fixtures
     let fixture : ComponentFixture<ApiKeyListComponent>;
 
@@ -40,7 +44,9 @@ describe('ApiKeyListComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : ApiKeyService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
-                { provide : ActivatedRoute, useClass : activatedRoute }
+                { provide : ActivatedRoute, useClass : activatedRoute },
+                { provide : Clipboard, useValue : clipboard },
+                { provide : MatSnackBar, useValue : snackbar }
             ]
         });
 
@@ -81,6 +87,17 @@ describe('ApiKeyListComponent', () => {
         service = {
             delete : jest.fn().mockReturnValue(of("OK")),
             toggle : jest.fn().mockReturnValue(of("OK"))
+        };
+
+        clipboard = {
+            beginCopy : jest.fn().mockReturnValue({
+                copy : jest.fn().mockImplementation(() => true),
+                destroy : jest.fn()
+            })
+        };
+
+        snackbar = {
+            open : jest.fn()
         };
     });
 
@@ -148,6 +165,28 @@ describe('ApiKeyListComponent', () => {
 
         component.toggle(1, 'ACTIVE');
 
+        expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+    });
+
+    it.each([true, false]) ('Should copy api key value', (input) => {
+        const pendingCopy : any = {
+            copy : jest.fn().mockImplementation(() => input),
+            destroy : jest.fn()
+        };
+        clipboard = {
+            beginCopy : jest.fn().mockReturnValue(pendingCopy)
+        };
+        configureTestBed();
+
+        // act
+        component.copyApiKeyValue('copied-value');
+
+        expect(clipboard.beginCopy).toHaveBeenCalled();
+        expect(pendingCopy.copy).toHaveBeenCalled();
+        expect(pendingCopy.destroy).toHaveBeenCalledTimes(input ? 1 : 0);
+        expect(snackbar.open).toHaveBeenCalledTimes(input ? 1 : 0);
+
+        expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 });

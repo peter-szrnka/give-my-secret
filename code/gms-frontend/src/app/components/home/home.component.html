@@ -1,16 +1,12 @@
 <div>
   <div *ngIf="data.isAdmin === false">
-    <div class="warning" *ngIf="data.apiKeyCount === 0">
-      Please add an API key!
-    </div>
-    <div class="warning" *ngIf="data.keystoreCount === 0">
-      Please add a keystore!
-    </div>
-    <div class="information" *ngIf="data.announcements.length === 0">
-      No announcements found!
-    </div>
-
     <div class="gms-box">
+      <div class="warning" *ngIf="data.apiKeyCount === 0">
+        Please add an API key!
+      </div>
+      <div class="warning" *ngIf="data.keystoreCount === 0">
+        Please add a keystore!
+      </div>
       <div class="gms-sub-box">
         <mat-card class="gms-card-left" *ngIf="data.apiKeyCount > 0 || data.keystoreCount > 0">
           <mat-card-content>
@@ -20,6 +16,9 @@
         </mat-card>
       </div>
       <div class="gms-sub-box">
+        <div class="information" *ngIf="data.announcements.length === 0">
+          No announcements found!
+        </div>
         <mat-card class="gms-card-right" *ngFor="let announcement of data.announcements">
           <mat-card-title><mat-icon matListIcon>announcement</mat-icon> <span class="announcement-title">{{announcement.title}}</span></mat-card-title>
           <mat-card-content>

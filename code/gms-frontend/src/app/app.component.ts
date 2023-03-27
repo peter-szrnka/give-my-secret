@@ -17,9 +17,12 @@ export class AppComponent implements OnInit {
 
   currentUser: User | undefined;
   systemReady: boolean;
-  showTexts = true;
+  showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') || 'true');
 
-  constructor(private router: Router, public sharedDataService: SharedDataService, private splashScreenStateService: SplashScreenStateService) {
+  constructor(
+    private router: Router, 
+    public sharedDataService: SharedDataService, 
+    private splashScreenStateService: SplashScreenStateService) {
   }
 
   ngOnInit(): void {
