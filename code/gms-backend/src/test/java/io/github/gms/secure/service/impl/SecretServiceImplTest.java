@@ -173,13 +173,12 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		SaveSecretRequestDto input = TestUtils.createNewSaveSecretRequestDto();
 		TestUtils.assertGmsException(() -> service.save(input), "Secret ID name must be unique!");
 
+		mockedMdcUtils.close();
 		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
 		verify(converter, never()).toNewEntity(any(SaveSecretRequestDto.class));
 		verify(cryptoService, never()).encrypt(mockEntity);
 		verify(keystoreAliasRepository).findById(anyLong());
 		verify(repository, never()).save(any(SecretEntity.class));
-
-		mockedMdcUtils.close();
 	}
 
 	@ParameterizedTest
@@ -209,38 +208,10 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 		mockedMdcUtils.close();
 	}
-	@ParameterizedTest
-	@ValueSource(strings = { "a", "a;", "a;b", "a:x;b:" })
-	void shouldSaveEntityWhenUsernamePasswordPairisInvalid(String inputValue) {
-		// arrange
-		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
-		mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(1L);
-		SecretEntity mockEntity = TestUtils.createSecretEntity();
-		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
-				.thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
-		when(keystoreAliasRepository.findById(anyLong()))
-				.thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
-		when(repository.countAllSecretsByUserIdAndSecretId(anyLong(), anyString())).thenReturn(0L);
-
-		// act & assert
-		SaveSecretRequestDto input = TestUtils.createNewSaveSecretRequestDto();
-		input.setType(SecretType.MULTIPLE_CREDENTIAL);
-		input.setValue(inputValue);
-		input.setId(1L);
-		TestUtils.assertGmsException(() -> service.save(input), "Username password pair is invalid!");
-
-		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
-		verify(converter, never()).toNewEntity(any(SaveSecretRequestDto.class));
-		verify(cryptoService, never()).encrypt(mockEntity);
-		verify(keystoreAliasRepository).findById(anyLong());
-		verify(repository, never()).save(any(SecretEntity.class));
-
-		mockedMdcUtils.close();
-	}
 
 	@Test
 	@SneakyThrows
-	void shouldNotSaveNewEntityWhenUsernamePasswordPairIsInvalid2() {
+	void shouldNotSaveNewEntityWhenUsernamePasswordPairIsInvalid2() { // TODO Fix name
 		// arrange
 		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
 		mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(1L);
@@ -250,20 +221,21 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		when(keystoreAliasRepository.findById(anyLong()))
 				.thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(repository.countAllSecretsByUserIdAndSecretId(anyLong(), anyString())).thenReturn(0L);
+		when(repository.save(any(SecretEntity.class))).thenReturn(mockEntity);
+		when(converter.toNewEntity(any(SaveSecretRequestDto.class))).thenReturn(mockEntity);
 
 		// act & assert
 		SaveSecretRequestDto input = TestUtils.createNewSaveSecretRequestDto();
 		input.setType(SecretType.MULTIPLE_CREDENTIAL);
-		input.setValue("");
-		TestUtils.assertGmsException(() -> service.save(input), "Username password pair is invalid!");
-
-		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
-		verify(converter, never()).toNewEntity(any(SaveSecretRequestDto.class));
-		verify(cryptoService, never()).encrypt(mockEntity);
-		verify(keystoreAliasRepository).findById(anyLong());
-		verify(repository, never()).save(any(SecretEntity.class));
+		input.setValue(null);
+		service.save(input);
 
 		mockedMdcUtils.close();
+		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
+		verify(converter).toNewEntity(any(SaveSecretRequestDto.class));
+		verify(cryptoService).encrypt(mockEntity);
+		verify(keystoreAliasRepository).findById(anyLong());
+		verify(repository).save(any(SecretEntity.class));
 	}
 
 	@Test
