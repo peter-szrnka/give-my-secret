@@ -12,6 +12,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 import { UserService } from "../../user/service/user-service";
 import { isSpecificUser } from "../../../common/utils/permission-utils";
 import { AnnouncementList } from "../../announcement/model/annoucement-list.model";
+import { EventList } from "../../event/model/event-list.model";
 
 const EVENT_LIST_FILTER = {
     direction: "DESC",
@@ -28,6 +29,7 @@ const ANNOUNCEMENT_LIST_FILTER = {
 };
 
 const NO_ANNOUNCEMENTS = { resultList : [], totalElements : 0 } as AnnouncementList;
+const NO_EVENTS = { resultList : [], totalElements : 0 } as EventList;
 
 /**
  * @author Peter Szrnka
@@ -64,7 +66,7 @@ export class HomeResolver implements Resolve<HomeData> {
             this.eventService.list(EVENT_LIST_FILTER),
             this.userService.count()
         ]).pipe(
-            catchError(() => this.handleError([ [] as Event[], 0, 0 ])),
+            catchError(() => this.handleError([ NO_EVENTS, 0, 0 ])),
             map(([latestEvents, userCount]) => {
                 return {
                     apiKeyCount: 0,
@@ -91,7 +93,7 @@ export class HomeResolver implements Resolve<HomeData> {
                     keystoreCount: keystoreCount,
                     userCount: 0,
                     announcements: announcements,
-                    latestEvents: [],
+                    latestEvents: NO_EVENTS,
                     isAdmin: isAdmin
                 } as HomeData;
             })

@@ -209,7 +209,7 @@ public class SecretServiceImpl implements SecretService {
 			return;
 		}
 		
-		if (dto.getId() == null && (!dto.getValue().contains(";") || itemsNotValid(dto.getValue()))) {
+		if (dto.getValue() != null && (!dto.getValue().contains(";") || itemsNotValid(dto.getValue()))) {
 			throw new GmsException("Username password pair is invalid!");
 		}
 	}
