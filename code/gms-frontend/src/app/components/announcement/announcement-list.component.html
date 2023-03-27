@@ -3,9 +3,9 @@
 
   <nav-back [buttonConfig]="[{url:'/announcement/new', label:'Create +', primary : true}]"></nav-back>
   
-  <mat-card style="margin-top: 10px;">
+  <mat-card class="simple-margin-top">
     <mat-card-content>
-      <table mat-table [dataSource]="datasource" style="width:100%;margin-top: 10px;">
+      <table mat-table [dataSource]="datasource" class="width100-and-margin-top">
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
         <tr mat-row *matRowDef="let row; columns: columns;"></tr>
     

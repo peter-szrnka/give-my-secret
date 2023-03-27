@@ -16,7 +16,7 @@
     <button mat-button [routerLink]="'/messages'">
       <mat-icon matBadge="{{unreadMessageCount}}" matBadgeColor="warn" *ngIf="unreadMessageCount > 0">markunread
       </mat-icon>
-      <mat-icon matListIcon style="color:#aaaaaa;" *ngIf="unreadMessageCount === 0">drafts</mat-icon>
+      <mat-icon matListIcon class="messages-0" *ngIf="unreadMessageCount === 0">drafts</mat-icon>
     </button>
     <button mat-button color="accent" (click)="logout()">
       <mat-icon aria-hidden="false" aria-label="Current user">exit_to_app</mat-icon>Logout
