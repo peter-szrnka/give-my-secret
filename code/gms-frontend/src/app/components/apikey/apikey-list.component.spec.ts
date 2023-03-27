@@ -70,17 +70,20 @@ describe('ApiKeyListComponent', () => {
         
         activatedRoute = class {
             data : Data = of({
-                itemList : [
-                    {
-                        id : 1,
-                        userId : 1,
-                        name : "my-api-key",
-                        value : "test",
-                        description : "string",
-                        status : "ACTIVE",
-                        creationDate : new Date()
-                    }
-                ]
+                data : {
+                    resultList : [
+                        {
+                            id : 1,
+                            userId : 1,
+                            name : "my-api-key",
+                            value : "test",
+                            description : "string",
+                            status : "ACTIVE",
+                            creationDate : new Date()
+                        }
+                    ],
+                    totalElements : 1
+                }
             })
         };
 
@@ -104,6 +107,7 @@ describe('ApiKeyListComponent', () => {
     it('Should create component', () => {
         configureTestBed();
 
+        component.onFetch({ pageSize : 0 });
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });

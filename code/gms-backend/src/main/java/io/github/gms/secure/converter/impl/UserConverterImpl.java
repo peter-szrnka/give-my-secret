@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -87,7 +88,8 @@ public class UserConverterImpl implements UserConverter {
 
 	@Override
 	public UserListDto toDtoList(Page<UserEntity> resultList) {
-		return new UserListDto(resultList.toList().stream().map(this::toDto).collect(Collectors.toList()));
+		List<UserDto> results = resultList.toList().stream().map(this::toDto).collect(Collectors.toList());
+		return UserListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
 	}
 
 	@Override

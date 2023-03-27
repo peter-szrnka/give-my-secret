@@ -176,7 +176,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		Page<ApiKeyEntity> mockList = new PageImpl<>(Lists.newArrayList(new ApiKeyEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
-		when(converter.toDtoList(any())).thenReturn(new ApiKeyListDto(Lists.newArrayList(new ApiKeyDto())));
+		when(converter.toDtoList(any())).thenReturn(ApiKeyListDto.builder().resultList(Lists.newArrayList(new ApiKeyDto())).build());
 
 		// act
 		ApiKeyListDto response = service.list(new PagingDto("ASC", "id", 0, 10));

@@ -44,14 +44,14 @@
                     <button mat-icon-button color="primary" [routerLink]="'/user/' + element.id">
                         <mat-icon aria-hidden="false">edit</mat-icon>
                     </button>
-                    <button [disabled]="getCount() <= 1" mat-icon-button color="warn" (click)="promptDelete(element.id)">
+                    <button [disabled]="tableConfig.count <= 1" mat-icon-button color="warn" (click)="promptDelete(element.id)">
                         <mat-icon aria-hidden="false">delete</mat-icon>
                     </button>
                   </td>
               </ng-container>
       </table>
-
-      <mat-paginator [length]="getCount()" [pageSize]="3" [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
+      <mat-paginator [length]="tableConfig.count" [pageSize]="tableConfig.pageSize" [pageIndex]="tableConfig.pageIndex"
+                        [pageSizeOptions]="[10, 25, 50]" (page)="onFetch($event)"></mat-paginator>
     </mat-card-content>
   </mat-card>
 </div>

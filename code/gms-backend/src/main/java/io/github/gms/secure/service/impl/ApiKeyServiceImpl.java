@@ -76,7 +76,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 			Page<ApiKeyEntity> resultList = repository.findAllByUserId(userId, ConverterUtils.createPageable(dto));
 			return converter.toDtoList(resultList);
 		} catch (Exception e) {
-			return new ApiKeyListDto(Collections.emptyList());
+			return ApiKeyListDto.builder().resultList(Collections.emptyList()).totalElements(0).build();
 		}
 	}
 

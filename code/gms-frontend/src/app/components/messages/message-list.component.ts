@@ -41,8 +41,8 @@ export class MessageListComponent implements OnInit {
 
     private fetchData() : void {
         this.service.list(FILTER).subscribe(response => {
-            this.datasource = new ArrayDataSource<Message>(response);
-            this.count = response.length;
+            this.datasource = new ArrayDataSource<Message>(response.resultList);
+            this.count = response.totalElements;
         });
     }
 }

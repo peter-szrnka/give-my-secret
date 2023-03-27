@@ -76,7 +76,9 @@ class MessageServiceImplTest extends AbstractUnitTest {
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		Page<MessageEntity> mockList = new PageImpl<>(Lists.newArrayList(new MessageEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
-		when(converter.toDtoList(any())).thenReturn(new MessageListDto(Lists.newArrayList(new MessageDto())));
+		when(converter.toDtoList(any())).thenReturn(MessageListDto.builder()
+				.resultList(Lists.newArrayList(new MessageDto()))
+				.totalElements(1).build());
 
 		// act
 		MessageListDto response = service.list(new PagingDto("ASC", "id", 0, 10));

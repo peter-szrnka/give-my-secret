@@ -37,10 +37,13 @@ describe('MessageListComponent', () => {
     beforeEach(() => {
         service = {
             list : jest.fn().mockImplementation(() => {
-                return of([
-                    { id : 1, message : "1", opened : false, creationDate: new Date() } as Message,
-                    { id : 2, message : "2", opened : true, creationDate: new Date() } as Message
-                ]);
+                return of({
+                    resultList : [
+                        { id : 1, message : "1", opened : false, creationDate: new Date() } as Message,
+                        { id : 2, message : "2", opened : true, creationDate: new Date() } as Message
+                    ],
+                    totalElements : 2
+                });
             }),
             markAsRead : jest.fn().mockReturnValue(of("OK"))
         }

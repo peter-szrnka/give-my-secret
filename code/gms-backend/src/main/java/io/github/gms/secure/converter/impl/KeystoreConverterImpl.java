@@ -87,7 +87,8 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 
 	@Override
 	public KeystoreListDto toDtoList(Page<KeystoreEntity> resultList) {
-		return new KeystoreListDto(resultList.toList().stream().map(entity -> toDto(entity, null)).collect(Collectors.toList()));
+		List<KeystoreDto> results = resultList.toList().stream().map(entity -> toDto(entity, null)).collect(Collectors.toList());
+		return KeystoreListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
 	}
 
 	@Override

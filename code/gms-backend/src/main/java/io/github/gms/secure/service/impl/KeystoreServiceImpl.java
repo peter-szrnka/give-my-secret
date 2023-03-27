@@ -150,7 +150,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			Page<KeystoreEntity> resultList = repository.findAllByUserId(getUserId(), ConverterUtils.createPageable(dto));
 			return converter.toDtoList(resultList);
 		} catch (Exception e) {
-			return new KeystoreListDto(Collections.emptyList());
+			return KeystoreListDto.builder().resultList(Collections.emptyList()).totalElements(0).build();
 		}
 	}
 

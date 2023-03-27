@@ -113,7 +113,10 @@ class EventServiceImplTest extends AbstractUnitTest {
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
-		when(converter.toDtoList(any(), anyString())).thenReturn(new EventListDto(Lists.newArrayList(new EventDto())));
+		when(converter.toDtoList(any(), anyString())).thenReturn(EventListDto.builder()
+				.resultList(Lists.newArrayList(new EventDto()))
+				.totalElements(1).build());
+
 		when(userRepository.getUsernameById(anyLong())).thenReturn("user1");
 
 		// act

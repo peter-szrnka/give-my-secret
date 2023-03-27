@@ -16,10 +16,10 @@
         </mat-card>
       </div>
       <div class="gms-sub-box">
-        <div class="information" *ngIf="data.announcements.length === 0">
+        <div class="information" *ngIf="data.announcements.resultList.length === 0">
           No announcements found!
         </div>
-        <mat-card class="gms-card-right" *ngFor="let announcement of data.announcements">
+        <mat-card class="gms-card-right" *ngFor="let announcement of data.announcements.resultList">
           <mat-card-title><mat-icon matListIcon>announcement</mat-icon> <span class="announcement-title">{{announcement.title}}</span></mat-card-title>
           <mat-card-content>
             {{announcement.description}}

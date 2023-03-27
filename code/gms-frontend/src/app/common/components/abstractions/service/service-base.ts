@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { map, Observable, of, tap } from "rxjs";
+import { map, Observable, of } from "rxjs";
 import { environment } from "../../../../../environments/environment";
 import { BaseList } from "../../../model/base-list";
 import { LongValue } from "../../../model/long-value.model";
@@ -18,9 +18,8 @@ export abstract class ServiceBase<T, L extends BaseList<T>> implements Service<T
         return this.http.delete<string>(environment.baseUrl + 'secure/'  + this.scope + '/' + id, { withCredentials: true, headers : getHeaders() });
     }
 
-    list(paging: Paging): Observable<T[]> {
-        return this.http.post<L>(environment.baseUrl + 'secure/' + this.scope + '/list', paging, { withCredentials: true, headers : getHeaders() })
-            .pipe(tap(), map(value => value.resultList));
+    list(paging: Paging): Observable<L> {
+        return this.http.post<L>(environment.baseUrl + 'secure/' + this.scope + '/list', paging, { withCredentials: true, headers : getHeaders() });
     }
 
     getById(id: number): Observable<T> {

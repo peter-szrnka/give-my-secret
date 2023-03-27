@@ -485,7 +485,9 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		Page<SecretEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createSecretEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
-		when(converter.toDtoList(any())).thenReturn(new SecretListDto(Lists.newArrayList(TestUtils.createSecretDto())));
+		when(converter.toDtoList(any())).thenReturn(SecretListDto.builder()
+				.resultList(Lists.newArrayList(TestUtils.createSecretDto()))
+				.totalElements(1).build());
 
 		// act
 		SecretListDto response = service.list(new PagingDto("ASC", "id", 0, 10));

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -68,6 +69,7 @@ public class ApiKeyConverterImpl implements ApiKeyConverter {
 
 	@Override
 	public ApiKeyListDto toDtoList(Page<ApiKeyEntity> resultList) {
-		return new ApiKeyListDto(resultList.toList().stream().map(this::toDto).collect(Collectors.toList()));
+		List<ApiKeyDto> results = resultList.toList().stream().map(this::toDto).collect(Collectors.toList());
+		return ApiKeyListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
 	}
 }
