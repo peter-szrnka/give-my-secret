@@ -211,7 +211,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldNotSaveNewEntityWhenUsernamePasswordPairIsInvalid2() { // TODO Fix name
+	void shouldSaveNewEntityWhenValueIsNotProvided() {
 		// arrange
 		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
 		mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(1L);

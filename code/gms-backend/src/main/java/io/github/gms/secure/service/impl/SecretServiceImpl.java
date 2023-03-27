@@ -208,7 +208,7 @@ public class SecretServiceImpl implements SecretService {
 		if (SecretType.MULTIPLE_CREDENTIAL != dto.getType()) {
 			return;
 		}
-		
+
 		if (dto.getValue() != null && (!dto.getValue().contains(";") || itemsNotValid(dto.getValue()))) {
 			throw new GmsException("Username password pair is invalid!");
 		}
