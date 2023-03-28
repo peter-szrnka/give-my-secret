@@ -3,9 +3,9 @@
 
   <nav-back></nav-back>
 
-  <mat-card style="margin-top: 10px;">
+  <mat-card class="simple-margin-top">
     <mat-card-content>
-      <table mat-table [dataSource]="datasource" style="width:100%;margin-top: 10px;">
+      <table mat-table [dataSource]="datasource" class="width100-and-margin-top">
         <tr mat-header-row *matHeaderRowDef="userColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: userColumns;"></tr>
 
@@ -31,7 +31,8 @@
         </ng-container>
       </table>
 
-      <mat-paginator [length]="getCount()" [pageSize]="tableConfig.pageSize" [pageSizeOptions]="[5, 10, 20, 50]"></mat-paginator>
+      <mat-paginator [length]="tableConfig.count" [pageSize]="tableConfig.pageSize" [pageIndex]="tableConfig.pageIndex"
+                        [pageSizeOptions]="[10, 25, 50]" (page)="onFetch($event)"></mat-paginator>
     </mat-card-content>
   </mat-card>
 </div>

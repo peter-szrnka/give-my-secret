@@ -170,7 +170,9 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		Page<UserEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createUser()));
 		when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
-		when(converter.toDtoList(any())).thenReturn(new UserListDto(Lists.newArrayList(TestUtils.createUserDto())));
+		when(converter.toDtoList(any())).thenReturn(UserListDto.builder()
+				.resultList(Lists.newArrayList(TestUtils.createUserDto()))
+				.totalElements(1).build());
 
 		// act
 		UserListDto response = service.list(new PagingDto("ASC", "id", 0, 10));

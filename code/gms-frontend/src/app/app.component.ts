@@ -17,8 +17,12 @@ export class AppComponent implements OnInit {
 
   currentUser: User | undefined;
   systemReady: boolean;
+  showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') || 'true');
 
-  constructor(private router: Router, public sharedDataService: SharedDataService, private splashScreenStateService: SplashScreenStateService) {
+  constructor(
+    private router: Router, 
+    public sharedDataService: SharedDataService, 
+    private splashScreenStateService: SplashScreenStateService) {
   }
 
   ngOnInit(): void {
@@ -45,6 +49,11 @@ export class AppComponent implements OnInit {
     if (this.sharedDataService.getUserInfo() === undefined) {
         this.router.navigate(['/login']);
     }
+  }
+
+  toggleTextMenuVisibility() : void {
+    this.showTexts = !this.showTexts;
+    localStorage.setItem('showTextsInSidevNav', this.showTexts)
   }
 
   isNormalUser(): boolean {

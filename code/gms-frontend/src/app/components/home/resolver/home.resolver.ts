@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
 import { catchError, combineLatest, map, Observable, throwError } from "rxjs";
-import { Announcement } from "../../announcement/model/announcement.model";
 import { HomeData } from "../model/home-data.model";
 import { User } from "../../user/model/user.model";
 import { AnnouncementService } from "../../announcement/service/announcement-service";
@@ -12,6 +11,8 @@ import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { UserService } from "../../user/service/user-service";
 import { isSpecificUser } from "../../../common/utils/permission-utils";
+import { AnnouncementList } from "../../announcement/model/annoucement-list.model";
+import { EventList } from "../../event/model/event-list.model";
 
 const EVENT_LIST_FILTER = {
     direction: "DESC",
@@ -26,6 +27,9 @@ const ANNOUNCEMENT_LIST_FILTER = {
     page: 0,
     size: 10
 };
+
+const NO_ANNOUNCEMENTS = { resultList : [], totalElements : 0 } as AnnouncementList;
+const NO_EVENTS = { resultList : [], totalElements : 0 } as EventList;
 
 /**
  * @author Peter Szrnka
@@ -62,13 +66,13 @@ export class HomeResolver implements Resolve<HomeData> {
             this.eventService.list(EVENT_LIST_FILTER),
             this.userService.count()
         ]).pipe(
-            catchError(() => this.handleError([ [] as Event[], 0, 0 ])),
+            catchError(() => this.handleError([ NO_EVENTS, 0, 0 ])),
             map(([latestEvents, userCount]) => {
                 return {
                     apiKeyCount: 0,
                     keystoreCount: 0,
                     userCount: userCount,
-                    announcements: [],
+                    announcements: NO_ANNOUNCEMENTS,
                     latestEvents: latestEvents,
                     isAdmin: isAdmin
                 } as HomeData;
@@ -82,14 +86,14 @@ export class HomeResolver implements Resolve<HomeData> {
             this.apiKeyService.count(),
             this.keystoreService.count()
         ]).pipe(
-            catchError(() => this.handleError([ [] as Announcement[], 0, 0 ])),
+            catchError(() => this.handleError([ NO_ANNOUNCEMENTS, 0, 0 ])),
             map(([announcements, apiKeyCount, keystoreCount]) => {
                 return {
                     apiKeyCount: apiKeyCount,
                     keystoreCount: keystoreCount,
                     userCount: 0,
                     announcements: announcements,
-                    latestEvents: [],
+                    latestEvents: NO_EVENTS,
                     isAdmin: isAdmin
                 } as HomeData;
             })

@@ -3,7 +3,7 @@
 
   <nav-back></nav-back>
 
-  <mat-card style="margin-top: 10px;">
+  <mat-card class="simple-margin-top">
     <mat-card-content>
       <table mat-table [dataSource]="datasource" (load)="true">
         <tr mat-header-row *matHeaderRowDef="messageColumns"></tr>
@@ -31,7 +31,7 @@
         </ng-container>
       </table>
 
-      <mat-paginator [length]="getCount()" [pageSize]="10" [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
+      <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
     </mat-card-content>
   </mat-card>
 </div>

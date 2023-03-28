@@ -1,5 +1,5 @@
-import { Announcement } from "../../announcement/model/announcement.model";
-import { Event } from "../../event/model/event.model";
+import { AnnouncementList } from "../../announcement/model/annoucement-list.model";
+import { EventList } from "../../event/model/event-list.model";
 
 /**
  * @author Peter Szrnka
@@ -8,7 +8,7 @@ export interface HomeData {
    apiKeyCount : number,
    keystoreCount : number,
    userCount : number,
-   announcements : Announcement[],
-   latestEvents : Event[],
+   announcements : AnnouncementList,
+   latestEvents : EventList,
    isAdmin : boolean
 }

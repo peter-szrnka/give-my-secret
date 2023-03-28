@@ -12,10 +12,6 @@ import { SystemPropertyService } from "../service/system-property.service";
 @Injectable()
 export class SystemPropertyListResolver implements Resolve<any> {
 
-    public tableConfig = {
-        pageSize : 20
-    };
-
     constructor(protected sharedData : SharedDataService, protected splashScreenStateService: SplashScreenStateService, protected service : SystemPropertyService) {
     }
 
@@ -27,7 +23,8 @@ export class SystemPropertyListResolver implements Resolve<any> {
             direction: "DESC",
             property : "key",
             page : 0,
-            size: this.tableConfig.pageSize
+            size: JSON.parse(localStorage.getItem("system_property_pageSize") || '25')
+            //this.tableConfig.pageSize
         }).pipe(catchError(() => this.sharedData.clearDataAndReturn([])), (data) => {
             this.splashScreenStateService.stop();
             return data;

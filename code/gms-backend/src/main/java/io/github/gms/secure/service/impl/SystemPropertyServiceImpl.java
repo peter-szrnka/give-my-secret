@@ -53,7 +53,7 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
 			Page<SystemPropertyEntity> resultList = repository.findAll(ConverterUtils.createPageable(dto));
 			return converter.toDtoList(resultList.getContent());
 		} catch (Exception e) {
-			return new SystemPropertyListDto(Collections.emptyList());
+			return SystemPropertyListDto.builder().resultList(Collections.emptyList()).totalElements(0).build();
 		}
 	}
 

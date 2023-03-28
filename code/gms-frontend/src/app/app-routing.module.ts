@@ -38,7 +38,7 @@ const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];
 const ROLES_ADMIN = ['ROLE_ADMIN'];
 
 const listRouteBuilder = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
-  return { path: scope + '/list', component : component, data : { 'roles' : roles }, canActivate: [ RoleGuard ], resolve: { 'itemList' : resolver }, runGuardsAndResolvers: 'always' };
+  return { path: scope + '/list', component : component, data : { 'roles' : roles }, canActivate: [ RoleGuard ], resolve: { 'data' : resolver }, runGuardsAndResolvers: 'always' };
 };
 
 const detailRouteBuilder = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {

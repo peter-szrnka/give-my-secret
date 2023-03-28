@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { EMPTY, of, ReplaySubject } from "rxjs";
 import { AppComponent } from "./app.component";
 import { SystemReadyData } from "./common/model/system-ready.model";
@@ -81,6 +80,7 @@ describe('AppComponent', () => {
     });
 
     it('User is a normal user', () => {
+        localStorage.setItem('showTextsInSidevNav', 'true');
         currentUser = {
             roles : ["ROLE_USER"],
             username : "test1",
@@ -88,10 +88,13 @@ describe('AppComponent', () => {
         };
         mockSubject.next(currentUser);
         mockSystemReadySubject.next({ ready: true, status: 200 });
+        component.toggleTextMenuVisibility();
 
         // act & assert
         expect(component.isNormalUser()).toEqual(true);
         expect(component.isAdmin()).toEqual(false);
+        expect(component.showTexts).toBeFalsy();
+        localStorage.removeItem('showTextsInSidevNav');
     });
 
     it('No available user', () => {

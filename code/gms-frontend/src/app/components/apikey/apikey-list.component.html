@@ -3,7 +3,7 @@
 
   <nav-back [buttonConfig]="[{url:'/apikey/new', label:'Create +', primary : true}]"></nav-back>
 
-  <mat-card style="margin-top: 10px;">
+  <mat-card class="simple-margin-top">
     <mat-card-content>
       <table mat-table [dataSource]="datasource" (load)="true">
           <tr mat-header-row *matHeaderRowDef="apiKeyColumns"></tr>
@@ -30,6 +30,9 @@
             <ng-container matColumnDef="operations">
               <th mat-header-cell *matHeaderCellDef>Operations</th>
               <td mat-cell *matCellDef="let element">&nbsp;
+                  <button mat-icon-button color="primary" (click)="copyApiKeyValue(element.value)">
+                    <mat-icon>file_copy</mat-icon>
+                  </button>
                   <button mat-icon-button color="primary" [routerLink]="'/apikey/' + element.id">
                       <mat-icon aria-hidden="false">edit</mat-icon>
                   </button>
@@ -40,8 +43,8 @@
             </ng-container>
       </table>
 
-      <mat-paginator [length]="getCount()" [pageSize]="3"
-                        [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
+      <mat-paginator [length]="tableConfig.count" [pageSize]="tableConfig.pageSize" [pageIndex]="tableConfig.pageIndex"
+                        [pageSizeOptions]="[10, 25, 50]" (page)="onFetch($event)"></mat-paginator>
     </mat-card-content>
   </mat-card>
 </div>

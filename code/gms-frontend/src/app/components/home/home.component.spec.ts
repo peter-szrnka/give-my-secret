@@ -40,7 +40,7 @@ describe('HomeComponent', () => {
                     apiKeyCount: 0,
                     keystoreCount: 0,
                     userCount: 0,
-                    announcements: [],
+                    announcements: { resultList : [], totalElements : 0 },
                     latestEvents: [],
                     isAdmin: false
                  }

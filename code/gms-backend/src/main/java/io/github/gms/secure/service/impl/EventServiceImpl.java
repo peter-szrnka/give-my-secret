@@ -9,6 +9,7 @@ import io.github.gms.secure.model.UserEvent;
 import io.github.gms.secure.repository.EventRepository;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.EventService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -54,15 +55,15 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public EventListDto list(PagingDto dto) {
-		return new EventListDto(repository.findAll(ConverterUtils.createPageable(dto)).toList()
-				.stream()
-				.map(entity -> converter.toDto(entity, getUsername(entity.getUserId())))
-				.collect(Collectors.toList()));
+		Page<EventEntity> results = repository.findAll(ConverterUtils.createPageable(dto));
+		return EventListDto.builder().resultList(results.toList().stream()
+						.map(entity -> converter.toDto(entity, getUsername(entity.getUserId())))
+						.collect(Collectors.toList())).totalElements(results.getTotalElements()).build();
 	}
 
 	@Override
 	public EventListDto listByUser(Long userId, PagingDto dto) {
-		return converter.toDtoList(repository.findAllByUserId(userId, ConverterUtils.createPageable(dto)).toList(), getUsername(userId));
+		return converter.toDtoList(repository.findAllByUserId(userId, ConverterUtils.createPageable(dto)), getUsername(userId));
 	}
 	
 	private String getUsername(Long userId) {

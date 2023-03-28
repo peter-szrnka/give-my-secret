@@ -34,7 +34,7 @@ describe('EventListResolver', () => {
         };
 
         service = {
-            list : jest.fn().mockReturnValue(of(mockResponse))
+            list : jest.fn().mockReturnValue(of({ resultList : mockResponse, totalElements : mockResponse.length }))
         };
 
         sharedData = {
@@ -66,6 +66,9 @@ describe('EventListResolver', () => {
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "1"
+            },
+            "queryParams" : {
+                "page" : "0"
             }
         }
 

@@ -1,11 +1,11 @@
-<div style="margin: 0 auto;margin-top: 10px;">
+<div class="with-margin-top">
 
     <nav-back [buttonConfig]="[{url:'/user/list', label:'Back to user list', primary : true}]"></nav-back>
 
     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
         <mat-tab label="User data">
             <form #form="ngForm"><!-- [formGroup]="form" novalidate>-->
-                <mat-card class="example-card" style="margin: 0 auto;margin-top: 10px;">
+                <mat-card class="with-margin-top">
                     <mat-card-content>
                         In order to make the application works, you must create an admin user. Please fill in the next
                         form.
@@ -62,9 +62,9 @@
             </form>
         </mat-tab>
         <mat-tab label="Events">
-            <mat-card class="example-card" style="margin: 0 auto;margin-top: 10px;">
+            <mat-card class="with-margin-top">
                 <mat-card-content>
-                    <table mat-table [dataSource]="datasource" style="width:100%;margin-top: 10px;">
+                    <table mat-table [dataSource]="datasource" class="width100-and-margin-top">
                         <tr mat-header-row *matHeaderRowDef="userColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: userColumns;"></tr>
                 

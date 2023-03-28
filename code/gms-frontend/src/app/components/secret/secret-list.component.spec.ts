@@ -10,7 +10,8 @@ import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { User } from "../user/model/user.model";
 import { SecretService } from "./service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { SecretListComponent } from "./secret-list.component";
+import { COPY_SECRET_ID_MESSAGE, SecretListComponent } from "./secret-list.component";
+import { ClipboardService } from "../../common/service/clipboard-service";
 
 /**
  * @author Peter Szrnka
@@ -25,6 +26,7 @@ describe('SecretListComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
+    let clipboardService : any;
     // Fixtures
     let fixture : ComponentFixture<SecretListComponent>;
 
@@ -37,9 +39,14 @@ describe('SecretListComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SecretService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
-                { provide : ActivatedRoute, useClass : activatedRoute }
+                { provide : ActivatedRoute, useClass : activatedRoute },
+                { provide : ClipboardService, useValue : clipboardService}
             ]
-        }).compileComponents();
+        });
+
+        fixture = TestBed.createComponent(SecretListComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
     };
 
     beforeEach(() => {
@@ -53,30 +60,34 @@ describe('SecretListComponent', () => {
         
         activatedRoute = class {
             data : Data = of({
-                itemList : [
-                    {
-                        id : 1,
-                        userId : 1,
-                        name : "my-api-key",
-                        value : "test",
-                        description : "string",
-                        status : "ACTIVE",
-                        creationDate : new Date()
-                    }
-                ]
+                data : {
+                    resultList : [
+                        {
+                            id : 1,
+                            userId : 1,
+                            name : "my-api-key",
+                            value : "test",
+                            description : "string",
+                            status : "ACTIVE",
+                            creationDate : new Date()
+                        }
+                    ],
+                    totalElements : 1
+                }
             })
         };
 
         service = {
             delete : jest.fn().mockReturnValue(of("OK"))
         };
+
+        clipboardService = {
+            copyValue : jest.fn()
+        };
     });
 
     it('Should create component', () => {
         configureTestBed();
-        fixture = TestBed.createComponent(SecretListComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
 
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
@@ -85,9 +96,6 @@ describe('SecretListComponent', () => {
     it('Should handle resolver error', () => {
         activatedRoute.data = throwError(() => new Error("Unexpected error!"));
         configureTestBed();
-        fixture = TestBed.createComponent(SecretListComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
 
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
@@ -107,9 +115,6 @@ describe('SecretListComponent', () => {
 
     it('Should delete an item', () => {
         configureTestBed();
-        fixture = TestBed.createComponent(SecretListComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
 
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
@@ -125,9 +130,6 @@ describe('SecretListComponent', () => {
 
     it('Should cancel dialog', () => {
         configureTestBed();
-        fixture = TestBed.createComponent(SecretListComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
 
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
@@ -139,5 +141,15 @@ describe('SecretListComponent', () => {
 
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+    });
+
+    it('Should copy secretId', () => {
+        configureTestBed();
+
+        // act
+        component.copySecretIdValue('value');
+
+        // assert
+        expect(clipboardService.copyValue).toHaveBeenCalledWith('value', COPY_SECRET_ID_MESSAGE);
     });
 });

@@ -38,15 +38,20 @@ describe('AuthInterceptor', () => {
         expect(sharedData.logout).toBeCalledTimes(0);
     });
 
+    it('should not proceed because of 0', () => {
+        const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
+        handler = createHandler("Connection refused", 0);
+
+        // act
+        interceptor.intercept(req, handler).subscribe();
+
+        // assert
+        expect(sharedData.logout).toBeCalledTimes(1);
+    });
+
     it('should not proceed because of 401', () => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
-
-        handler = {
-            handle: () => throwError(() => new HttpErrorResponse({
-                error: new Error("Authentication failed"),
-                status: 401
-            }))
-        } as any;
+        handler = createHandler("Authentication failed", 401);
 
         // act
         interceptor.intercept(req, handler).subscribe();
@@ -57,13 +62,7 @@ describe('AuthInterceptor', () => {
 
     it('should not proceed because of 403', () => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
-
-        handler = {
-            handle: () => throwError(() => new HttpErrorResponse({
-                error: new Error("Authentication failed"),
-                status: 403
-            }))
-        } as any;
+        handler = createHandler("Authentication failed", 403);
 
         // act
         interceptor.intercept(req, handler).subscribe();
@@ -74,13 +73,7 @@ describe('AuthInterceptor', () => {
 
     it('should not proceed because of 500', () => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
-
-        handler = {
-            handle: () => throwError(() => new HttpErrorResponse({
-                error: new Error("Internal server error"),
-                status: 500
-            }))
-        } as any;
+        handler = createHandler("Internal server error", 500);
 
         // act
         interceptor.intercept(req, handler).subscribe();
@@ -88,4 +81,13 @@ describe('AuthInterceptor', () => {
         // assert
         expect(sharedData.logout).toBeCalledTimes(0);
     });
+
+    function createHandler(errorMessage : string, statusCode : number) : any {
+        return {
+            handle: () => throwError(() => new HttpErrorResponse({
+                error: new Error(errorMessage),
+                status: statusCode
+            }))
+        } as any;
+    }
 });

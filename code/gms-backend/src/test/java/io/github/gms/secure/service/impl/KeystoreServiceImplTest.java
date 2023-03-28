@@ -644,7 +644,9 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         // arrange
         Page<KeystoreEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createKeystoreEntity()));
         when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
-        when(converter.toDtoList(any())).thenReturn(new KeystoreListDto(Lists.newArrayList(new KeystoreDto())));
+        when(converter.toDtoList(any())).thenReturn(KeystoreListDto.builder()
+                .resultList(Lists.newArrayList(new KeystoreDto()))
+                .totalElements(1).build());
 
         // act
         KeystoreListDto response = service.list(new PagingDto("ASC", "id", 0, 10));

@@ -7,8 +7,8 @@ import io.github.gms.secure.dto.EventListDto;
 import io.github.gms.secure.entity.EventEntity;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,7 +24,7 @@ class EventConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToList() {
 		// arrange
-		List<EventEntity> entityList = Lists.newArrayList(TestUtils.createEventEntity());
+		Page<EventEntity> entityList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity()));
 
 		// act
 		EventListDto resultList = converter.toDtoList(entityList, "username");

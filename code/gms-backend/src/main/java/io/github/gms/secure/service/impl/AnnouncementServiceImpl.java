@@ -13,6 +13,7 @@ import io.github.gms.secure.repository.AnnouncementRepository;
 import io.github.gms.secure.service.AnnouncementService;
 import io.github.gms.secure.service.UserService;
 import org.slf4j.MDC;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -59,13 +60,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
 	@Override
 	public AnnouncementListDto list(PagingDto dto) {
-		return new AnnouncementListDto(
-				repository.findAll(ConverterUtils.createPageable(dto))
-				.getContent()
-				.stream()
-				.map(this::toDto)
-				.collect(Collectors.toList())
-		);
+		Page<AnnouncementEntity> results = repository.findAll(ConverterUtils.createPageable(dto));
+		return AnnouncementListDto.builder()
+				.resultList(results.stream()
+						.map(this::toDto)
+						.collect(Collectors.toList()))
+				.totalElements(results.getTotalElements())
+				.build();
 	}
 	
 	@Override

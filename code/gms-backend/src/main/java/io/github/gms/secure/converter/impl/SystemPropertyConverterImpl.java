@@ -34,9 +34,13 @@ public class SystemPropertyConverterImpl implements SystemPropertyConverter {
 		Map<SystemProperty, SystemPropertyEntity> propertyMap = resultList.stream()
 			      .collect(Collectors.toMap(SystemPropertyEntity::getKey, Function.identity()));
 
-		return new SystemPropertyListDto(Stream.of(SystemProperty.values())
+		List<SystemPropertyDto> results = Stream.of(SystemProperty.values())
 				.map(property -> toDto(propertyMap, property))
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList());
+		return SystemPropertyListDto.builder()
+				.resultList(results)
+				.totalElements(results.size())
+				.build();
 	}
 	
 	private SystemPropertyDto toDto(Map<SystemProperty, SystemPropertyEntity> propertyMap, SystemProperty property) {

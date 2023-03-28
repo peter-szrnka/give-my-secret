@@ -18,10 +18,11 @@ import { ServiceBase } from "../service/service-base";
 export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>> implements OnInit {
 
     public datasource : ArrayDataSource<T>;
-    protected count  = 0;
 
     public tableConfig = {
-      pageSize : 20
+      count : 0,
+      pageIndex : 0,
+      pageSize : localStorage.getItem(this.getPageConfig().scope + "_pageSize") || 25
     };
 
     constructor(
@@ -38,11 +39,13 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     abstract getPageConfig() : PageConfig;
 
     public toggle(entityId : number, status : string) : void {
-      this.service.toggle(entityId, status !== 'ACTIVE').subscribe(() => this.router.navigate(['/' + this.getPageConfig().scope + "/list"]));
+      this.service.toggle(entityId, status !== 'ACTIVE').subscribe(() => this.reloadPage());
     }
 
-    public getCount() : number {
-      return this.count;
+    public onFetch(event : any) {
+      localStorage.setItem(this.getPageConfig().scope + "_pageSize", event.pageSize);
+      this.tableConfig.pageIndex = event.pageIndex;
+      this.reloadPage();
     }
 
     protected fetchData() {
@@ -56,8 +59,8 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
       this.activatedRoute.data
       .pipe(catchError(async() => this.initDefaultDataTable()))
       .subscribe((response : any) => {
-        this.count = response.itemList.length;
-        this.datasource = new ArrayDataSource<T>(response.itemList);
+        this.tableConfig.count = response.data.totalElements;
+        this.datasource = new ArrayDataSource<T>(response.data.resultList);
       });
     }
 
@@ -72,8 +75,12 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
           return;
         }
 
-        this.service.delete(id).subscribe(() => this.router.navigate(['/' + this.getPageConfig().scope + "/list"]));
+        this.service.delete(id).subscribe(() => this.reloadPage());
       });
+    }
+
+    private reloadPage() : void {
+      this.router.navigate(['/' + this.getPageConfig().scope + "/list"], { queryParams : { "page" : this.tableConfig.pageIndex }});
     }
 
     private initDefaultDataTable() {

@@ -7,6 +7,7 @@ import io.github.gms.secure.entity.MessageEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +30,7 @@ public class MessageConverterImpl implements MessageConverter {
 
 	@Override
 	public MessageListDto toDtoList(Page<MessageEntity> resultList) {
-		return new MessageListDto(resultList.toList().stream().map(this::toDto).collect(Collectors.toList()));
+		List<MessageDto> results = resultList.toList().stream().map(this::toDto).collect(Collectors.toList());
+		return MessageListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
 	}
 }

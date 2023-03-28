@@ -15,6 +15,7 @@ export class SharedDataService {
 
     userSubject$: ReplaySubject<User | undefined> = new ReplaySubject<User | undefined>();
     systemReadySubject$: ReplaySubject<SystemReadyData> = new ReplaySubject<SystemReadyData>();
+    authModeSubject$ : ReplaySubject<string> = new ReplaySubject<string>();
     systemReady?: boolean = undefined;
     authMode: string;
 
@@ -39,10 +40,11 @@ export class SharedDataService {
             return;
         }
 
+        this.router.navigate(['/login']);
+
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         this.authService.logout().subscribe(() => {
             this.clearData();
-            this.router.navigate(['/login']);
         });
     }
 
@@ -62,6 +64,7 @@ export class SharedDataService {
                 }
 
                 this.systemReady = "OK" === response.status;
+                this.authModeSubject$.next(response.authMode);
                 this.authMode = response.authMode;
                 this.systemReadySubject$.next({ ready : this.systemReady, status: 200 });
             });

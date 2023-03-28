@@ -97,7 +97,9 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 		// arrange
 		Page<SystemPropertyEntity> mockList = new PageImpl<>(Lists.newArrayList(new SystemPropertyEntity()));
 		when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
-		when(converter.toDtoList(any())).thenReturn(new SystemPropertyListDto(Lists.newArrayList(SystemPropertyDto.builder().key("a").value("b").build())));
+		when(converter.toDtoList(any())).thenReturn(SystemPropertyListDto.builder()
+				.resultList(Lists.newArrayList(SystemPropertyDto.builder().key("a").value("b").build()))
+				.totalElements(1).build());
 
 		// act
 		SystemPropertyListDto response = service.list(new PagingDto("ASC", "id", 0, 10));

@@ -66,20 +66,23 @@ describe('SystemPropertyListComponent', () => {
         
         activatedRoute = class {
             data : Data = of({
-                itemList : [
-                    {
-                        key : "REFRESH_JWT_ALGORITHM",
-                        value : "HS512",
-                        factoryValue : true,
-                        lastModified : new Date()
-                    },
-                    {
-                        key : "OLD_EVENT_TIME_LIMIT_DAYS",
-                        value : "1",
-                        factoryValue : true,
-                        lastModified : new Date()
-                    }
-                ]
+                data : {
+                    resultList : [
+                        {
+                            key : "REFRESH_JWT_ALGORITHM",
+                            value : "HS512",
+                            factoryValue : true,
+                            lastModified : new Date()
+                        },
+                        {
+                            key : "OLD_EVENT_TIME_LIMIT_DAYS",
+                            value : "1",
+                            factoryValue : true,
+                            lastModified : new Date()
+                        }
+                    ],
+                    totalElements : 2
+                }
             })
         };
 
@@ -95,6 +98,7 @@ describe('SystemPropertyListComponent', () => {
       ])('Should return input type for %i', (input, expected) => {
         configureTestBed();
 
+        component.onFetch({ pageSize : 1});
         // act
         const response = component.getInputType(input);
 

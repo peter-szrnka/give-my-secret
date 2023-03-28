@@ -97,6 +97,7 @@ public class SecretConverterImpl implements SecretConverter {
 
 	@Override
 	public SecretListDto toDtoList(Page<SecretEntity> resultList) {
-		return new SecretListDto(resultList.toList().stream().map(result -> toDto(result, null)).collect(Collectors.toList()));
+		List<SecretDto> results = resultList.toList().stream().map(result -> toDto(result, null)).collect(Collectors.toList());
+		return SecretListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
 	}
 }

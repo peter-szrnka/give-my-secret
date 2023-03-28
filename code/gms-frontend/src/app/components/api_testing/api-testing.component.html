@@ -4,7 +4,7 @@
     <nav-back></nav-back>
 
     <form #form="ngForm" novalidate class="example-form">
-        <mat-card style="margin-top: 10px;">
+        <mat-card class="simple-margin-top">
             <mat-card-content>
                 <div class="information">
                     You can test your secret here. Type in your preferred api key value and the ID of your secret.
@@ -29,7 +29,7 @@
                     (click)="callApi()">Call API endpoint</button>
             </mat-card-actions>
         </mat-card>
-        <mat-card *ngIf="apiResponse !== undefined" style="margin-top: 10px;">
+        <mat-card *ngIf="apiResponse !== undefined" class="simple-margin-top">
             <mat-card-header>
                 <mat-card-title>Response from API</mat-card-title>
             </mat-card-header>

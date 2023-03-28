@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 /**
  * @author Peter Szrnka
@@ -16,11 +17,14 @@ export class StatusToggleComponent {
     @Output() callbackFunction: EventEmitter<any> = new EventEmitter();
     component: import("events");
 
+    constructor(private snackbar : MatSnackBar) {}
+
     public toggle() {
         if (this.doNotToggle === true) {
             return;
         }
 
         this.callbackFunction.emit();
+        this.snackbar.open("Entity status changed!");
     }
 }

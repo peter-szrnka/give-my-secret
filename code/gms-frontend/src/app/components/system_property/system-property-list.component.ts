@@ -44,7 +44,9 @@ export class SystemPropertyListComponent {
   protected count = 0;
 
   public tableConfig = {
-    pageSize: 20
+    count : 0,
+    pageIndex : 0,
+    pageSize : localStorage.getItem("system_property_pageSize") || 25
   };
 
   constructor(
@@ -69,13 +71,14 @@ export class SystemPropertyListComponent {
     this.activatedRoute.data
       .pipe(catchError(async () => this.initDefaultDataTable()))
       .subscribe((response: any) => {
-        this.count = response.itemList.length;
-        this.datasource = new ArrayDataSource<SystemProperty>(response.itemList);
+        this.count = response.data.totalElements;
+        this.datasource = new ArrayDataSource<SystemProperty>(response.data.resultList);
       });
   }
 
-  public getCount(): number {
-    return this.count;
+  public onFetch(event : any) {
+    localStorage.setItem("system_property_pageSize", event.pageSize);
+    this.fetchData();
   }
 
   public getTextDescription(key: string): string {

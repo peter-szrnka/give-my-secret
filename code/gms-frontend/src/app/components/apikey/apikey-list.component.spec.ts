@@ -11,7 +11,8 @@ import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { User } from "../user/model/user.model";
 import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { ApiKeyListComponent } from "./apikey-list.component";
+import { ApiKeyListComponent, COPY_MESSAGE } from "./apikey-list.component";
+import { ClipboardService } from "../../common/service/clipboard-service";
 
 /**
  * @author Peter Szrnka
@@ -27,6 +28,7 @@ describe('ApiKeyListComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
+    let clipboardService : any;
     // Fixtures
     let fixture : ComponentFixture<ApiKeyListComponent>;
 
@@ -40,7 +42,8 @@ describe('ApiKeyListComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : ApiKeyService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
-                { provide : ActivatedRoute, useClass : activatedRoute }
+                { provide : ActivatedRoute, useClass : activatedRoute },
+                { provide : ClipboardService, useValue : clipboardService}
             ]
         });
 
@@ -64,17 +67,20 @@ describe('ApiKeyListComponent', () => {
         
         activatedRoute = class {
             data : Data = of({
-                itemList : [
-                    {
-                        id : 1,
-                        userId : 1,
-                        name : "my-api-key",
-                        value : "test",
-                        description : "string",
-                        status : "ACTIVE",
-                        creationDate : new Date()
-                    }
-                ]
+                data : {
+                    resultList : [
+                        {
+                            id : 1,
+                            userId : 1,
+                            name : "my-api-key",
+                            value : "test",
+                            description : "string",
+                            status : "ACTIVE",
+                            creationDate : new Date()
+                        }
+                    ],
+                    totalElements : 1
+                }
             })
         };
 
@@ -82,11 +88,16 @@ describe('ApiKeyListComponent', () => {
             delete : jest.fn().mockReturnValue(of("OK")),
             toggle : jest.fn().mockReturnValue(of("OK"))
         };
+
+        clipboardService = {
+            copyValue : jest.fn()
+        };
     });
 
     it('Should create component', () => {
         configureTestBed();
 
+        component.onFetch({ pageSize : 0 });
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
@@ -143,11 +154,22 @@ describe('ApiKeyListComponent', () => {
     it('Should toggle(enable) an item', () => {
         configureTestBed();
 
+        // act & assert
         expect(component).toBeTruthy();
         expect(component.datasource).toBeTruthy();
 
         component.toggle(1, 'ACTIVE');
 
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+    });
+
+    it('Should copy value', () => {
+        configureTestBed();
+
+        // act
+        component.copyApiKeyValue('value');
+
+        // assert
+        expect(clipboardService.copyValue).toHaveBeenCalledWith('value', COPY_MESSAGE);
     });
 });

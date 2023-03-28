@@ -1,25 +1,13 @@
-html,
-body {
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
-body {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-}
-
 .header {
   height: 64px;
+  width: 100% !important;
+  flex: auto;
 }
 
-.app-content {
+/*.app-content {
   flex: auto;
   height: 100%;
-}
+}*/
 
 @media all and (min-width: 600px) {
   .aside {
@@ -59,7 +47,7 @@ home {
   border: 0;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh - 64px)
 }
 
 .drawer {
@@ -68,12 +56,21 @@ home {
 }
 
 .sidenav-content {
-  /*height: 100%;*/
   align-items: top;
   padding: 10px;
-  flex: auto;
+  overflow-y: scroll !important;
+  height: calc(100vh - 64px)
 }
 
 mat-list-item {
   cursor: pointer;
+}
+
+.nav-toggle-btn {
+  display: block;
+  left: 0;
+  bottom: 0;
+  position: fixed;
+  /*text-align: center;
+  /*margin: 5px 5px 0 5px;*/
 }
