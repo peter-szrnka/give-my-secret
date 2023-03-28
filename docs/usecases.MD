@@ -25,7 +25,7 @@ Open a command line and run the following command:
 
 > docker compose --env-file env-postgresql.txt -p give-my-secret up -d
 
-![image](https://user-images.githubusercontent.com/8747465/215271172-ed926977-57dc-4a7e-b835-850c54e1564a.png)
+![image](docker-screenshot.png)
 
 # LDAP based authentication with MySQL database
 First, download the Docker image:
