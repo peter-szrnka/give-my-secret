@@ -6,7 +6,6 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { SharedDataService } from "../../common/service/shared-data-service";
 import { SecretDetailComponent } from "./secret-detail.component";
 import { SecretListComponent } from "./secret-list.component";
 import { SecretListResolver } from "./resolver/secret-list.resolver";

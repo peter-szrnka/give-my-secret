@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterTestingModule } from "@angular/router/testing";
-import { Observable, of, throwError } from "rxjs";
+import { Observable, ReplaySubject, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { FORM_GROUP_MOCK } from "../../common/form-helper.spec";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -25,6 +25,7 @@ describe('SettingsSummaryComponent', () => {
     let formBuilder : any;
     let splashScreenService : any;
     let sharedData : any;
+    let mockSubject : ReplaySubject<string>;
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
@@ -58,9 +59,13 @@ describe('SettingsSummaryComponent', () => {
             stop : jest.fn()
         };
 
+        mockSubject = new ReplaySubject<string>();
         sharedData = {
-            authMode : 'db'
+            authMode : 'db',
+            authModeSubject$ : mockSubject
         };
+
+        mockSubject.next('db');
 
         formBuilder = FORM_GROUP_MOCK;
     });

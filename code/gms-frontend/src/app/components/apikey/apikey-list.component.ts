@@ -6,8 +6,9 @@ import { PageConfig } from "../../common/model/common.model";
 import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
-import { Clipboard } from '@angular/cdk/clipboard';
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { ClipboardService } from "../../common/service/clipboard-service";
+
+export const COPY_MESSAGE = "Api key value copied to clipboard!";
 
 /**
  * @author Peter Szrnka
@@ -26,8 +27,7 @@ export class ApiKeyListComponent extends BaseListComponent<ApiKey, ApiKeyService
         public override service: ApiKeyService,
         public override dialog: MatDialog,
         override activatedRoute: ActivatedRoute,
-        private clipboard: Clipboard,
-        private snackbar : MatSnackBar) {
+        private clipboardService: ClipboardService) {
         super(router, sharedData, service, dialog, activatedRoute);
     }
 
@@ -40,17 +40,6 @@ export class ApiKeyListComponent extends BaseListComponent<ApiKey, ApiKeyService
      * @param value Input value
      */
     public copyApiKeyValue(value: string) {
-        const pending = this.clipboard.beginCopy(value);
-        let remainingAttempts = 3;
-        const attempt = () => {
-            const result = pending.copy();
-            if (!result && --remainingAttempts) {
-                setTimeout(attempt);
-            } else {
-                pending.destroy();
-                this.snackbar.open("Api key value copied to clipboard!");
-            }
-        };
-        attempt();
+        this.clipboardService.copyValue(value, COPY_MESSAGE);
     }
 }

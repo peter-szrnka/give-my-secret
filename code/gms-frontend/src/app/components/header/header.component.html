@@ -18,7 +18,7 @@
       </mat-icon>
       <mat-icon matListIcon class="messages-0" *ngIf="unreadMessageCount === 0">drafts</mat-icon>
     </button>
-    <button mat-button color="accent" (click)="logout()">
+    <button mat-button mat-raised (click)="logout()">
       <mat-icon aria-hidden="false" aria-label="Current user">exit_to_app</mat-icon>Logout
     </button>
   </mat-toolbar>

@@ -37,7 +37,7 @@ export class SettingsSummaryComponent implements OnInit {
     private splashScreenService : SplashScreenStateService) { }
 
   ngOnInit(): void {
-    this.passwordEnabled = this.sharedData.authMode === 'db';
+    this.sharedData.authModeSubject$.subscribe(authMode => this.passwordEnabled = authMode === 'db');
   }
 
   save() {

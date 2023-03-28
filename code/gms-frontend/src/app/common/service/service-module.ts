@@ -4,6 +4,7 @@ import { AuthService } from "./auth-service";
 import { SharedDataService } from "./shared-data-service";
 import { SplashScreenStateService } from "./splash-screen-service";
 import { SecureStorageService } from "./secure-storage.service";
+import { ClipboardService } from "./clipboard-service";
 
 /**
  * @author Peter Szrnka
@@ -16,7 +17,7 @@ import { SecureStorageService } from "./secure-storage.service";
         HttpClientModule,
     ],
     providers: [ 
-      SharedDataService, AuthService, SplashScreenStateService, SecureStorageService
+      SharedDataService, AuthService, SplashScreenStateService, SecureStorageService, ClipboardService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   })

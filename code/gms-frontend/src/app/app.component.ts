@@ -53,6 +53,7 @@ export class AppComponent implements OnInit {
 
   toggleTextMenuVisibility() : void {
     this.showTexts = !this.showTexts;
+    localStorage.setItem('showTextsInSidevNav', this.showTexts)
   }
 
   isNormalUser(): boolean {
