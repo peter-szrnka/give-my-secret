@@ -1,5 +1,5 @@
 # What is Give My Secret?
-Sometimes your company has a lot of distributed systems that has it's own credentials and it can be exhausting to manage these passwords. Yes, there're a bunch of ready-to-go solutions, like AWS Secrets Manager, HashiCorp Vault, CyberArk, etc., but sometimes you might need a simpler and smaller solution :)
+Sometimes your company has a lot of distributed systems that has it's own credentials and it can be exhausting to manage these passwords. Yes, there're a bunch of out-of-the-box solutions, like AWS Secrets Manager, HashiCorp Vault, CyberArk, etc., but sometimes you might need a simpler and smaller solution :)
 
 Give My Secret( or GMS) helps you to handle these text based passwords in one application. All passwords will be stored in a reliable and secure way, because all credentials will be encrypted (and decrypted) with the keystore that YOU configure for GMS.
 
@@ -9,6 +9,7 @@ GMS provides a simple REST API that you can call with your other systems to quer
 
 # Main features
 - Text based secret/password/credential storage
+- Complex key/value pairs
 - REST API to query the secrets from your local instance
 - 4 supported database providers (PostgreSQL, MSSQL, MySQL, MariaDb)
 - 2 supported authentications (DB and LDAP)
@@ -18,7 +19,7 @@ GMS provides a simple REST API that you can call with your other systems to quer
 All entity has it's own status, so if one of them is compromised, you can easily disable them.
 
 ## Keystore
-It will be used to encrypt your passwords. You can define multiple aliases in a keystore, so you can select different aliases for different secrets.
+It will be used to encrypt/decrypt your passwords. You can define multiple aliases in a keystore, so you can select different aliases for different secrets.
 
 ## API key
 This is kind of an ID for API calls that identifies the unique GMS user. You can create API keys as much as you want.
