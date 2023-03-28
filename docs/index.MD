@@ -32,8 +32,12 @@ This is the entity where your secrets/passwords/credentials are stored. You can 
 - rotation period,
 - API key restriction can be added to limit which API key can be used for which secret.
 
+### Secret types
+- Simple credential: One secret can be stored
+- Multiple strings: More than one key-value pairs can be stored in this type of secret
+
 ## Announcement
 As an admin you can publish application maintenance related news by creating announcements.
 
 ## Message
-In some certain cases system generated messages will be created.
+In some certain cases system generated messages will be created, for instance: when a keystore has been disabled, all related secrets will be disabled as well.
