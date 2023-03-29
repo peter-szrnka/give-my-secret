@@ -5,10 +5,12 @@ import { EventList } from "../../event/model/event-list.model";
  * @author Peter Szrnka
  */
 export interface HomeData {
+   announcementCount : number,
    apiKeyCount : number,
    keystoreCount : number,
+   secretCount : number,
    userCount : number,
    announcements : AnnouncementList,
-   latestEvents : EventList,
-   isAdmin : boolean
+   events : EventList,
+   admin? : boolean
 }

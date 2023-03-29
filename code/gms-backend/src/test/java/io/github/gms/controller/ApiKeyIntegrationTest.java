@@ -6,7 +6,6 @@ import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
-import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
@@ -132,7 +131,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 		executeHttpPost("/" + DemoData.API_KEY_1_ID + "?enabled="+ !enabled, requestEntity,String.class);
 	}
 
-	@Test
+	/*@Test
 	void testCount() {
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		// act
@@ -142,7 +141,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertEquals(1L, response.getBody().getValue());
-	}
+	}*/
 	
 	
 	@Test

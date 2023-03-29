@@ -10,7 +10,6 @@ import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
 import io.github.gms.secure.dto.KeystoreDto;
 import io.github.gms.secure.dto.KeystoreListDto;
-import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.service.KeystoreService;
@@ -78,13 +77,7 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	public @ResponseBody String getValue(@RequestBody GetSecureValueDto dto) {
 		return service.getValue(dto);
 	}
-	
-	@GetMapping("/count")
-	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public @ResponseBody LongValueDto userCount() {
-		return service.count();
-	}
-	
+
 	@GetMapping("/list_names")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	public @ResponseBody IdNamePairListDto getAllKeystoreNames() {

@@ -11,7 +11,6 @@ import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
 import io.github.gms.secure.dto.KeystoreDto;
 import io.github.gms.secure.dto.KeystoreListDto;
-import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.util.DemoData;
@@ -184,7 +183,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		executeHttpPost("/" + DemoData.KEYSTORE_ID + "?enabled=" + true, requestEntity, String.class);
 	}
 
-	@Test
+	/*@Test
 	void testCount() {
 		// arrange
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -196,7 +195,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertEquals(2L, response.getBody().getValue());
-	}
+	}*/
 
 	@Test
 	void testGetAllKeystoreNames() {

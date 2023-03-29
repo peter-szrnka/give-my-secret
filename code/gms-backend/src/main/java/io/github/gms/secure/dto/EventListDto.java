@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class EventListDto {
 
-	private List<EventDto> resultList;
-	private long totalElements;
+	private List<EventDto> resultList = new ArrayList<>();
+	private long totalElements = 0L;
 }

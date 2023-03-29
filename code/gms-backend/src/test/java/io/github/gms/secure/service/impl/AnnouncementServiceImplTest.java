@@ -5,6 +5,7 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.dto.AnnouncementDto;
 import io.github.gms.secure.dto.AnnouncementListDto;
+import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveAnnouncementDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
@@ -50,7 +51,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		userService = mock(UserService.class);
 		service = new AnnouncementServiceImpl(clock, repository, userService);
 	}
-	
+
 	@Test
 	void shouldSaveNewEntity() {
 		// arrange
@@ -65,14 +66,14 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 
 		// act
 		SaveEntityResponseDto response = service.save(dto);
-		
+
 		// assert
 		assertNotNull(response);
 		assertEquals(1L, response.getEntityId());
-		
+
 		MDC.clear();
 	}
-	
+
 	@Test
 	void shouldSaveExistingEntity() {
 		// arrange
@@ -87,32 +88,32 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 
 		// act
 		SaveEntityResponseDto response = service.save(dto);
-		
+
 		// assert
 		assertNotNull(response);
 		assertEquals(1L, response.getEntityId());
-		
+
 		MDC.clear();
 	}
-	
+
 	@Test
 	void shouldReturnList() {
 		// arrange
 		when(repository.findAll(any(Pageable.class))).thenReturn(TestUtils.createAnnouncementEntityList());
 		when(userService.getUsernameById(anyLong())).thenReturn("myuser");
-		
+
 		// act
 		AnnouncementListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
-		
+
 		// assert
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
 		assertEquals("myuser", response.getResultList().get(0).getAuthor());
-		
+
 		verify(repository).findAll(any(Pageable.class));
 		verify(userService).getUsernameById(anyLong());
 	}
-	
+
 	@Test
 	void shouldNotFindById() {
 		// arrange
@@ -138,7 +139,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		assertNotNull(response);
 		verify(repository).findById(anyLong());
 	}
-	
+
 	@Test
 	void shouldDelete() {
 		// act
@@ -146,5 +147,18 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 
 		// assert
 		verify(repository).deleteById(1L);
+	}
+
+	@Test
+	void shouldReturnCount() {
+		// arrange
+		when(repository.count()).thenReturn(3L);
+
+		// act
+		LongValueDto response = service.count();
+
+		// assert
+		assertEquals(3L, response.getValue());
+		verify(repository).count();
 	}
 }

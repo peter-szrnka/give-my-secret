@@ -1,5 +1,5 @@
 <div>
-  <div *ngIf="data.isAdmin === false">
+  <div *ngIf="data.admin === false">
     <div class="gms-box">
       <div class="warning" *ngIf="data.apiKeyCount === 0">
         Please add an API key!
@@ -32,7 +32,7 @@
       </div>
     </div>
   </div>
-  <div *ngIf="data.isAdmin">
+  <div *ngIf="data.admin">
     <mat-card>
       <mat-card-title>User management</mat-card-title>
       <mat-card-subtitle>Manage your users</mat-card-subtitle>

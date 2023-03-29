@@ -8,7 +8,6 @@ import io.github.gms.common.types.Audited;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
-import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
@@ -61,12 +60,6 @@ public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 		return service.getDecryptedValue(id);
 	}
 
-	@GetMapping("/count")
-	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public @ResponseBody LongValueDto userCount() {
-		return service.count();
-	}
-	
 	@GetMapping("/list_names")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	public @ResponseBody IdNamePairListDto getAllApiKeyNames() {

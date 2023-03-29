@@ -11,7 +11,7 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
  * @author Peter Szrnka
  * @since 1.0
  */
-public interface AnnouncementService extends GmsService {
+public interface AnnouncementService extends GmsService, CountService {
 	
 	SaveEntityResponseDto save(SaveAnnouncementDto dto);
 
