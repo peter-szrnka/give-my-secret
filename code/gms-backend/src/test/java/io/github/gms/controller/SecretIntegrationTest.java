@@ -2,8 +2,6 @@ package io.github.gms.controller;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.secure.dto.GetSecureValueDto;
-import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
@@ -155,7 +153,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 				String.class);
 	}
 
-	@Test
+	/*@Test
 	void testCount() {
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		// act
@@ -165,7 +163,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertEquals(2L, response.getBody().getValue());
-	}
+	}*/
 
 	@Test
 	void testRotateSecret() {

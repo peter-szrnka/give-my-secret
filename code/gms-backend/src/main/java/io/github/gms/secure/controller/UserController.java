@@ -6,7 +6,6 @@ import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
-import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
@@ -72,12 +71,6 @@ public class UserController extends AbstractController<UserService> {
 	public ResponseEntity<String> toggle(@PathVariable("id") Long id, @RequestParam boolean enabled) {
 		service.toggleStatus(id, enabled);
 		return new ResponseEntity<>(HttpStatus.OK);
-	}
-	
-	@GetMapping("/count")
-	@PreAuthorize(ROLE_ADMIN)
-	public @ResponseBody LongValueDto userCount() {
-		return service.count();
 	}
 	
 	@PostMapping("/change_credential")

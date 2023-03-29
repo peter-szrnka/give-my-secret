@@ -1,49 +1,44 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
-import { catchError, combineLatest, map, Observable, throwError } from "rxjs";
+import { catchError, map, Observable, throwError } from "rxjs";
 import { HomeData } from "../model/home-data.model";
 import { User } from "../../user/model/user.model";
-import { AnnouncementService } from "../../announcement/service/announcement-service";
-import { ApiKeyService } from "../../apikey/service/apikey-service";
-import { EventService } from "../../event/service/event-service";
-import { KeystoreService } from "../../keystore/service/keystore-service";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
-import { UserService } from "../../user/service/user-service";
 import { isSpecificUser } from "../../../common/utils/permission-utils";
-import { AnnouncementList } from "../../announcement/model/annoucement-list.model";
-import { EventList } from "../../event/model/event-list.model";
+import { HomeService } from "../service/home.service";
 
-const EVENT_LIST_FILTER = {
-    direction: "DESC",
-    property: "eventDate",
-    page: 0,
-    size: 10
+export const EMPTY_HOME_ADMIN_DATA: HomeData = {
+    announcementCount: 0,
+    userCount: 0,
+    events: { resultList: [], totalElements: 0 },
+    admin: true,
+    apiKeyCount: 0,
+    keystoreCount: 0,
+    secretCount: 0,
+    announcements: { resultList: [], totalElements: 0 }
 };
 
-const ANNOUNCEMENT_LIST_FILTER = {
-    direction: "DESC",
-    property: "announcementDate",
-    page: 0,
-    size: 10
+export const EMPTY_HOME_USER_DATA: HomeData = {
+    announcements: { resultList: [], totalElements: 0 },
+    apiKeyCount: 0,
+    keystoreCount: 0,
+    secretCount: 0,
+    admin: false,
+    announcementCount: 0,
+    userCount: 0,
+    events: { resultList: [], totalElements: 0 }
 };
-
-const NO_ANNOUNCEMENTS = { resultList : [], totalElements : 0 } as AnnouncementList;
-const NO_EVENTS = { resultList : [], totalElements : 0 } as EventList;
 
 /**
  * @author Peter Szrnka
  */
-@Injectable({ providedIn : 'root' })
+@Injectable({ providedIn: 'root' })
 export class HomeResolver implements Resolve<HomeData> {
 
     constructor(
         private sharedData: SharedDataService,
-        private eventService: EventService,
-        private userService: UserService,
-        private annoucementService: AnnouncementService,
-        private apiKeyService: ApiKeyService,
-        private keystoreService: KeystoreService,
+        private homeService: HomeService,
         private splashScreenStateService: SplashScreenStateService
     ) { }
 
@@ -55,52 +50,21 @@ export class HomeResolver implements Resolve<HomeData> {
             return throwError(() => "Invalid user");
         }
 
-        const isAdmin = isSpecificUser(user.roles, 'ROLE_ADMIN');
         this.splashScreenStateService.start();
-
-        return isAdmin ? this.getAdminData(isAdmin) : this.getUserData(isAdmin);
+        return this.getData(isSpecificUser(user.roles, 'ROLE_ADMIN'));
     }
 
-    private getAdminData(isAdmin: boolean): Observable<HomeData> {
-        return combineLatest([
-            this.eventService.list(EVENT_LIST_FILTER),
-            this.userService.count()
-        ]).pipe(
-            catchError(() => this.handleError([ NO_EVENTS, 0, 0 ])),
-            map(([latestEvents, userCount]) => {
-                return {
-                    apiKeyCount: 0,
-                    keystoreCount: 0,
-                    userCount: userCount,
-                    announcements: NO_ANNOUNCEMENTS,
-                    latestEvents: latestEvents,
-                    isAdmin: isAdmin
-                } as HomeData;
-            }),
-        );
-    }
-
-    private getUserData(isAdmin: boolean): Observable<HomeData> {
-        return combineLatest([
-            this.annoucementService.list(ANNOUNCEMENT_LIST_FILTER),
-            this.apiKeyService.count(),
-            this.keystoreService.count()
-        ]).pipe(
-            catchError(() => this.handleError([ NO_ANNOUNCEMENTS, 0, 0 ])),
-            map(([announcements, apiKeyCount, keystoreCount]) => {
-                return {
-                    apiKeyCount: apiKeyCount,
-                    keystoreCount: keystoreCount,
-                    userCount: 0,
-                    announcements: announcements,
-                    latestEvents: NO_EVENTS,
-                    isAdmin: isAdmin
-                } as HomeData;
+    private getData(isAdmin: boolean): Observable<HomeData> {
+        return this.homeService.getData().pipe(
+            catchError(() => this.handleError(isAdmin)),
+            map(homeData => {
+                homeData.admin = isAdmin;
+                return homeData;
             })
         );
     }
 
-    private handleError(data : any) {
-        return this.sharedData.clearDataAndReturn(data);
+    private handleError(isAdmin: boolean) {
+        return this.sharedData.clearDataAndReturn(isAdmin ? EMPTY_HOME_ADMIN_DATA : EMPTY_HOME_USER_DATA);
     }
 }

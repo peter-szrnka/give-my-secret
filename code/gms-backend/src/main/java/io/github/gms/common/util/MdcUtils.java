@@ -14,4 +14,8 @@ public class MdcUtils {
 	public static Long getUserId() {
 		return Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 	}
+
+	public static boolean isAdmin() {
+		return Boolean.parseBoolean(MDC.get(MdcParameter.IS_ADMIN.getDisplayName()));
+	}
 }

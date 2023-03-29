@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
         this.activatedRoute.data
             .subscribe((response: any) => {
                 this.data = response['data'];
-                this.eventDataSource = new ArrayDataSource<Event>(this.data.latestEvents.resultList);
+                this.eventDataSource = new ArrayDataSource<Event>(this.data.events.resultList);
                 this.splashScreenService.stop();
             });
     }

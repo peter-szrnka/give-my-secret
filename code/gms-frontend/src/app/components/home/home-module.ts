@@ -7,6 +7,7 @@ import { AppRoutingModule } from "../../app-routing.module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { HomeComponent } from "./home.component";
 import { HomeResolver } from "./resolver/home.resolver";
+import { HomeService } from "./service/home.service";
 
 /**
  * @author Peter Szrnka
@@ -23,6 +24,6 @@ import { HomeResolver } from "./resolver/home.resolver";
         AppRoutingModule,
         PipesModule
     ],
-    providers: [ HomeResolver ]
+    providers: [ HomeResolver, HomeService ]
   })
   export class HomeModule { }

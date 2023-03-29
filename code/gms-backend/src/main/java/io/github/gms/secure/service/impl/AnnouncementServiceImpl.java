@@ -5,6 +5,7 @@ import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.dto.AnnouncementDto;
 import io.github.gms.secure.dto.AnnouncementListDto;
+import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveAnnouncementDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
@@ -88,5 +89,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 		.id(announcement.getId())
 		.title(announcement.getTitle())
 		.build();
+	}
+
+	@Override
+	public LongValueDto count() {
+		return new LongValueDto(repository.count());
 	}
 }

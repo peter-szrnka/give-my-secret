@@ -24,7 +24,6 @@ export class SystemPropertyListResolver implements Resolve<any> {
             property : "key",
             page : 0,
             size: JSON.parse(localStorage.getItem("system_property_pageSize") || '25')
-            //this.tableConfig.pageSize
         }).pipe(catchError(() => this.sharedData.clearDataAndReturn([])), (data) => {
             this.splashScreenStateService.stop();
             return data;

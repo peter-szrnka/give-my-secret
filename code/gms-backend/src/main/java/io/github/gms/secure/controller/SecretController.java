@@ -5,7 +5,6 @@ import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
-import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
@@ -64,12 +63,6 @@ public class SecretController extends AbstractClientController<SecretService> {
 	@Audited(operation = EventOperation.GET_VALUE)
 	public @ResponseBody ResponseEntity<String> getValue(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(service.getSecretValue(id), HttpStatus.OK);
-	}
-
-	@GetMapping("/count")
-	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public @ResponseBody LongValueDto userCount() {
-		return service.count();
 	}
 	
 	@PostMapping("/rotate/{id}")

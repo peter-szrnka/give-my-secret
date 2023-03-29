@@ -4,7 +4,6 @@ import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
-import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -157,7 +155,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(entity);
 	}
 	
-	@Test
+	/*@Test
 	void testUserCount() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -169,5 +167,5 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		
 		LongValueDto responseBody = response.getBody();
 		assertNotEquals(0L, responseBody.getValue());
-	}
+	}*/
 }
