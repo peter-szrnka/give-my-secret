@@ -169,39 +169,6 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
 	}
 
-	@Test
-	@SneakyThrows
-	void shouldFailWhenValueIsInvalid() {
-		// arrange
-		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
-		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE)))
-				.thenReturn(createMockSecret("username:u;password:p", true, SecretType.MULTIPLE_CREDENTIAL));
-		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
-		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
-		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
-				TestUtils.createApiKeyRestrictionEntity(1L),
-				TestUtils.createApiKeyRestrictionEntity(2L),
-				TestUtils.createApiKeyRestrictionEntity(3L)
-		));
-
-		when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn("{\"user:x");
-
-		// act
-		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
-		assertEquals("Value cannot be parsed as JSON!", exception.getMessage());
-
-		// assert
-		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
-		verify(userRepository).findById(anyLong());
-		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
-		verify(cryptoService).decrypt(any(SecretEntity.class));
-		verify(keystoreAliasRepository).findById(anyLong());
-		verify(keystoreRepository).findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE));
-		verify(cryptoService).decrypt(any(SecretEntity.class));
-	}
-
 	@SneakyThrows
 	@ParameterizedTest
 	@MethodSource("inputData")

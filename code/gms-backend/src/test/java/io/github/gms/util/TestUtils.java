@@ -239,6 +239,7 @@ public class TestUtils {
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue(DemoData.ENCRYPTED_VALUE);
+		entity.setType(SecretType.SIMPLE_CREDENTIAL);
 		entity.setSecretId(secretId);;
 		entity.setKeystoreAliasId(keystoreAliasId);
 		entity.setLastRotated(ZonedDateTime.now());
