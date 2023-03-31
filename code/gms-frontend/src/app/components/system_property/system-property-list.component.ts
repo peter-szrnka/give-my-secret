@@ -26,7 +26,9 @@ export const PROPERTY_TEXT_MAP: any = {
   'ACCESS_JWT_ALGORITHM': { text: 'Access JWT Algorithom', valueSet: ALGORITHM_SET },
   'REFRESH_JWT_EXPIRATION_TIME_SECONDS': { text: 'Refresh JWT expiration time in seconds' },
   'REFRESH_JWT_ALGORITHM': { text: 'Refresh JWT Algorithom', valueSet: ALGORITHM_SET },
-  'OLD_EVENT_TIME_LIMIT_DAYS': { text: 'Limit of old events deletion in days' }
+  'OLD_EVENT_TIME_LIMIT_DAYS': { text: 'Limit of old events deletion in days' },
+  'ORGANIZATION_NAME' : { text: 'Organization / Company name' },
+  'ORGANIZATION_CITY' : { text: 'Location (city) of the organization' }
 };
 
 /**
