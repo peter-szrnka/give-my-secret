@@ -5,7 +5,6 @@ import { ApiTestingService } from "./service/api-testing-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
-import { CredentialPairApiResponse } from "../secret/model/credential-pair-api-response.model";
 import { CredentialApiResponse } from "../secret/model/credential-api-response.model";
 /**
  * @author Peter Szrnka
@@ -38,7 +37,7 @@ export class ApiTestingComponent implements OnInit {
         this.apiResponse = undefined;
         this.service.getSecretValue(this.secretId, this.apiKey)
             .subscribe({
-                next: (response : CredentialApiResponse | CredentialPairApiResponse) => {
+                next: (response : CredentialApiResponse | any) => {
                     this.apiResponse = JSON.stringify(response);
 
                     this.secureStorageService.setItem('apiKey', this.apiKey);

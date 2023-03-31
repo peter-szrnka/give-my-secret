@@ -1,10 +1,11 @@
 package io.github.gms.api.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.dto.ApiResponseDto;
 import io.github.gms.secure.dto.GetSecretRequestDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.SecretEntity;
@@ -25,6 +26,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,6 +56,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 	private KeystoreAliasRepository keystoreAliasRepository;
 	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
 	private ApiServiceImpl service;
+	private ObjectMapper objectMapper;
 
 	@BeforeEach
 	void beforeEach() {
@@ -64,8 +67,10 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		keystoreRepository = mock(KeystoreRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
 		apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);
+		objectMapper = mock(ObjectMapper.class);
 		service = new ApiServiceImpl(cryptoService, secretRepository, apiKeyRepository, userRepository, keystoreRepository,
 				keystoreAliasRepository, apiKeyRestrictionRepository);
+		service.setObjectMapper(objectMapper);
 	}
 
 	@Test
@@ -76,7 +81,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// assert
 		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
 		assertEquals("Wrong API key!", exception.getMessage());
-		
+
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository, never()).findById(anyLong());
 	}
@@ -89,7 +94,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// assert
 		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
 		assertEquals("User not found!", exception.getMessage());
-		
+
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository).findById(anyLong());
 	}
@@ -104,7 +109,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// assert
 		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
 		assertEquals("Secret is not available!", exception.getMessage());
-		
+
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository).findById(anyLong());
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
@@ -121,7 +126,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// assert
 		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
 		assertEquals("Keystore alias is not available!", exception.getMessage());
-		
+
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository).findById(anyLong());
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
@@ -140,7 +145,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// assert
 		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
 		assertEquals("Invalid keystore!", exception.getMessage());
-		
+
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository).findById(anyLong());
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
@@ -157,64 +162,108 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
 				TestUtils.createApiKeyRestrictionEntity(2L),
 				TestUtils.createApiKeyRestrictionEntity(3L)
-				));
+		));
 
 		// assert
 		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
 		assertEquals("You are not allowed to use this API key for this secret!", exception.getMessage());
-		
+
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository).findById(anyLong());
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
 		verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
 	}
 
+	@Test
 	@SneakyThrows
-	@ParameterizedTest
-	@MethodSource("inputData")
-	@SuppressWarnings("unchecked")
-	<T extends ApiResponseDto> void shouldReturnEncrypted(boolean returnDecrypted, SecretType type) {
+	void shouldFailWhenValueIsInvalid() {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		
-		String mockValue = "username:u;password:p";
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(mockValue, returnDecrypted, type));
+		when(objectMapper.readValue(anyString(), any(Class.class))).thenThrow(JsonProcessingException.class);
+
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE)))
+				.thenReturn(createMockSecret("username:u;password:p", true, SecretType.MULTIPLE_CREDENTIAL));
 		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
 				TestUtils.createApiKeyRestrictionEntity(1L),
 				TestUtils.createApiKeyRestrictionEntity(2L),
 				TestUtils.createApiKeyRestrictionEntity(3L)
-				));
-		
+		));
+
+		when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn("{\"user:x");
+
+		// act
+		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
+		assertEquals("Value cannot be parsed as JSON!", exception.getMessage());
+
+		// assert
+		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
+		verify(userRepository).findById(anyLong());
+		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
+		verify(cryptoService).decrypt(any(SecretEntity.class));
+		verify(keystoreAliasRepository).findById(anyLong());
+		verify(keystoreRepository).findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE));
+		verify(cryptoService).decrypt(any(SecretEntity.class));
+	}
+
+	@SneakyThrows
+	@ParameterizedTest
+	@MethodSource("inputData")
+	@SuppressWarnings("unchecked")
+	void shouldReturnValue(boolean returnDecrypted, SecretType type, String expectedValue) {
+		// arrange
+		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+
+		if (SecretType.MULTIPLE_CREDENTIAL == type && returnDecrypted) {
+			when(objectMapper.readValue(anyString(), any(Class.class))).thenReturn(Map.of("username", "u", "password", "p"));
+		}
+
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(expectedValue, returnDecrypted, type));
+		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
+		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
+				TestUtils.createApiKeyRestrictionEntity(1L),
+				TestUtils.createApiKeyRestrictionEntity(2L),
+				TestUtils.createApiKeyRestrictionEntity(3L)
+		));
+
 		if (returnDecrypted) {
-			when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn("username:u;password:p");
+			when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn(expectedValue);
 		}
 
 		// act
-		T response = (T) service.getSecret(dto);
-		
+		Map<String, String> response = service.getSecret(dto);
+
 		// assert
 		Assertions.assertNotNull(response);
-		/*if (expectedResponseType == SimpleApiResponseDto.class) {
-			Assertions.assertEquals(returnDecrypted ? "decrypted" : "encrypted", ((SimpleApiResponseDto) response).getValue());
-		} else {
-			Assertions.assertEquals("u", ((MultipleCredentialApiResponseDto) response).getUsername());
-		}*/
+
+		if (type == SecretType.SIMPLE_CREDENTIAL) {
+			assertEquals(expectedValue, response.get("value"));
+		} else if (returnDecrypted) {
+			assertEquals("u", response.get("username"));
+			assertEquals("p", response.get("password"));
+		}
+
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
 		verify(userRepository).findById(anyLong());
 		verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
 		verify(cryptoService, returnDecrypted ? times(1) : never()).decrypt(any(SecretEntity.class));
 		verify(keystoreAliasRepository).findById(anyLong());
 		verify(keystoreRepository).findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE));
+
+		if (returnDecrypted) {
+			verify(cryptoService).decrypt(any(SecretEntity.class));
+		}
 	}
 
 	public static Object[][] inputData() {
-		return new Object[][] { { true, SecretType.SIMPLE_CREDENTIAL },
-				{ false, SecretType.SIMPLE_CREDENTIAL },
-				{ true, SecretType.MULTIPLE_CREDENTIAL },
-				{ false, SecretType.MULTIPLE_CREDENTIAL } };
+		return new Object[][] { { true, SecretType.SIMPLE_CREDENTIAL, "decrypted" },
+				{ false, SecretType.SIMPLE_CREDENTIAL, "encrypted" },
+				{ true, SecretType.MULTIPLE_CREDENTIAL, "username:u;password:p" },
+				{ false, SecretType.MULTIPLE_CREDENTIAL, "encrypted" } };
 	}
 
 	private static SecretEntity createMockSecret(String value, boolean returnDecrypted, SecretType type) {

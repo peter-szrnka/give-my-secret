@@ -2,8 +2,8 @@ package io.github.gms.api.service.impl;
 
 import io.github.gms.api.service.ApiService;
 import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.dto.ApiResponseDto;
 import io.github.gms.secure.dto.GetSecretRequestDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
@@ -21,7 +21,12 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static io.github.gms.common.util.Constants.VALUE;
 
 /**
  * @author Peter Szrnka
@@ -60,7 +65,7 @@ public class ApiServiceImpl implements ApiService {
 
     @Override
     @Cacheable
-    public ApiResponseDto getSecret(GetSecretRequestDto dto) {
+    public Map<String, String> getSecret(GetSecretRequestDto dto) {
         log.info("Searching for secret={}", dto.getSecretId());
         ApiKeyEntity apiKeyEntity = apiKeyRepository.findByValueAndStatus(dto.getApiKey(), EntityStatus.ACTIVE);
 
@@ -93,7 +98,7 @@ public class ApiServiceImpl implements ApiService {
 
         KeystoreAliasEntity aliasEntity = keystoreAliasRepository.findById(secretEntity.getKeystoreAliasId()).orElseThrow(() -> {
             log.warn("Keystore alias not found");
-            throw new GmsException("Keystore alias is not available!");
+            return new GmsException("Keystore alias is not available!");
         });
 
         if (keystoreRepository
@@ -103,6 +108,30 @@ public class ApiServiceImpl implements ApiService {
             throw new GmsException("Invalid keystore!");
         }
 
-        return new ApiResponseDto((secretEntity.isReturnDecrypted()) ? cryptoService.decrypt(secretEntity) : secretEntity.getValue());
+        Map<String, String> response = getSecretValue(secretEntity);
+        response.put("type", secretEntity.getType().name());
+        return response;
+    }
+
+    private Map<String, String> getSecretValue(SecretEntity secretEntity) {
+        Map<String, String> responseMap = new HashMap<>();
+        if (!secretEntity.isReturnDecrypted()) {
+            responseMap.put(VALUE, secretEntity.getValue());
+            return responseMap;
+        }
+
+        String decryptedRawValue = cryptoService.decrypt(secretEntity);
+
+        if (SecretType.SIMPLE_CREDENTIAL == secretEntity.getType()) {
+            responseMap.put(VALUE, decryptedRawValue);
+            return responseMap;
+        }
+
+        Stream.of(decryptedRawValue.split(";")).forEach(item -> {
+            String[] elements = item.split(":");
+            responseMap.put(elements[0], elements[1]);
+        });
+
+        return responseMap;
     }
 }

@@ -1,7 +1,8 @@
 package io.github.gms.api.service;
 
-import io.github.gms.secure.dto.ApiResponseDto;
 import io.github.gms.secure.dto.GetSecretRequestDto;
+
+import java.util.Map;
 
 /**
  * @author Peter Szrnka
@@ -9,5 +10,5 @@ import io.github.gms.secure.dto.GetSecretRequestDto;
  */
 public interface ApiService {
 
-	ApiResponseDto getSecret(GetSecretRequestDto dto);
+	Map<String, String> getSecret(GetSecretRequestDto dto);
 }
