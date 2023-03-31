@@ -3,6 +3,7 @@ package io.github.gms.util;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeystoreType;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.common.enums.SecretType;
 import io.github.gms.secure.entity.AnnouncementEntity;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
@@ -163,6 +164,7 @@ public class DemoDataManagerService {
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setUserId(USER_1_ID);
 		entity.setValue(ENCRYPTED_VALUE);
+		entity.setType(SecretType.SIMPLE_CREDENTIAL);
 		entity.setSecretId(secretId);
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setReturnDecrypted(returnDecrypted);

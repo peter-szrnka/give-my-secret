@@ -17,6 +17,10 @@ public class GmsException extends RuntimeException {
 		super(message);
 	}
 
+	public GmsException(String message, Exception e) {
+		super(message, e);
+	}
+
 	public GmsException(Exception e) {
 		super(e);
 	}

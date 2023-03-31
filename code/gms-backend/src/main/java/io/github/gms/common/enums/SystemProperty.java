@@ -16,15 +16,17 @@ public enum SystemProperty {
 	ACCESS_JWT_ALGORITHM(PropertyType.STRING, "HS512"),
 	REFRESH_JWT_EXPIRATION_TIME_SECONDS(PropertyType.LONG, "86400"),
 	REFRESH_JWT_ALGORITHM(PropertyType.STRING, "HS512"),
-	OLD_EVENT_TIME_LIMIT_DAYS(PropertyType.LONG, "1");
+	OLD_EVENT_TIME_LIMIT_DAYS(PropertyType.LONG, "1"),
+	ORGANIZATION_NAME(PropertyType.STRING, "NA"),
+	ORGANIZATION_CITY(PropertyType.STRING, "NA");
 
 	private SystemProperty(PropertyType type, String defaultValue) {
 		this.type = type;
 		this.defaultValue = defaultValue;
 	}
 
-	private String defaultValue;
-	private PropertyType type;
+	private final String defaultValue;
+	private final PropertyType type;
 	
 	private static final Map<String, SystemProperty> keyMap = new HashMap<>();
 	
