@@ -1,7 +1,5 @@
 package io.github.gms.api.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.SecretType;
@@ -56,7 +54,6 @@ class ApiServiceImplTest extends AbstractUnitTest {
 	private KeystoreAliasRepository keystoreAliasRepository;
 	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
 	private ApiServiceImpl service;
-	private ObjectMapper objectMapper;
 
 	@BeforeEach
 	void beforeEach() {
@@ -67,10 +64,8 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		keystoreRepository = mock(KeystoreRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
 		apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);
-		objectMapper = mock(ObjectMapper.class);
 		service = new ApiServiceImpl(cryptoService, secretRepository, apiKeyRepository, userRepository, keystoreRepository,
 				keystoreAliasRepository, apiKeyRestrictionRepository);
-		service.setObjectMapper(objectMapper);
 	}
 
 	@Test
@@ -180,7 +175,6 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(objectMapper.readValue(anyString(), any(Class.class))).thenThrow(JsonProcessingException.class);
 
 		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE)))
 				.thenReturn(createMockSecret("username:u;password:p", true, SecretType.MULTIPLE_CREDENTIAL));
@@ -211,15 +205,10 @@ class ApiServiceImplTest extends AbstractUnitTest {
 	@SneakyThrows
 	@ParameterizedTest
 	@MethodSource("inputData")
-	@SuppressWarnings("unchecked")
 	void shouldReturnValue(boolean returnDecrypted, SecretType type, String expectedValue) {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-
-		if (SecretType.MULTIPLE_CREDENTIAL == type && returnDecrypted) {
-			when(objectMapper.readValue(anyString(), any(Class.class))).thenReturn(Map.of("username", "u", "password", "p"));
-		}
 
 		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(expectedValue, returnDecrypted, type));
 		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
