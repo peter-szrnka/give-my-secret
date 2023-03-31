@@ -67,6 +67,6 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest {
 		assertNotNull(response.getBody());
 		
 		SystemPropertyListDto responseList = response.getBody();
-		assertEquals(5, responseList.getResultList().size());
+		assertEquals(SystemProperty.values().length, responseList.getResultList().size());
 	}
 }
