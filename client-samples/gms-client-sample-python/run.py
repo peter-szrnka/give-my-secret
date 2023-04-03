@@ -10,9 +10,12 @@ from javaobj.utils import to_str
 import jks
 from jks.jks import PrivateKeyEntry
 
+secret_id = 'secret1'
+api_key = 'P2jFEjUs0KtHZjBOiFWUlrmw38NRI1J2'
+
 def get_encrypted_value():
     connection = http.client.HTTPConnection('localhost', 8080, timeout=10)
-    connection.request("GET", "/api/secret/TestSecret1", headers ={"X-API-KEY" : "IntTestApiKey"})
+    connection.request("GET", "/api/secret/" + secret_id, headers ={"X-API-KEY" : api_key})
     
     httpresponse = connection.getresponse()
     response_body = httpresponse.read()

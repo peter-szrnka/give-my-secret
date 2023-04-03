@@ -1,5 +1,7 @@
 # Give My Secret Client - Python
 
+# INFO: This client is not working currently due to the pyjks and Crypto dependency issues!
+
 The page contains details about the Python client.
 
 **It's really important that if you set your secret's "return decrypted" setting to TRUE, then you don't have to implement decryption for your secret!**
@@ -18,6 +20,7 @@ Currently only JKS based keystores are supported in GMS, so PyJKS is mandatory t
 
 ```
 pip install pyjks
+pip install crypto
 ```
 
 ## Step 2: Replace the JKS keystore with yours
