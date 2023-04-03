@@ -6,11 +6,13 @@ import { Response } from 'express';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  async getHello(/*@Res() res: Response*/) : Promise<string> {
-    return await this.appService.getHello();/*.then(response => {
-      console.info("response on controller", response);
-      res.json({ success : true });
-    });*/
+  @Get("/simple")
+  async simpleCredential() : Promise<string> {
+    return await this.appService.getHello('test.jks');
+  }
+
+  @Get("/multiple")
+  async multipleCredential() : Promise<string> {
+    return await this.appService.getHello('test.p12');
   }
 }

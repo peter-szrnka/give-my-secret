@@ -7,7 +7,7 @@ import { HttpService } from 'nestjs-http-promise';
 const BASE_URL : string = "https://localhost:8443/api/secret/";
 // Your variables //////////////////////////////////////////////////
 const SECRET_ID : string = "secret1";
-const API_KEY : string = "QWM6bY4gyRUEKL8uT2qtfZpnv6tsm60n";
+const API_KEY : string = "P2jFEjUs0KtHZjBOiFWUlrmw38NRI1J2";
 ////////////////////////////////////////////////////////////////////
 
 @Injectable()
@@ -15,14 +15,15 @@ export class AppService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  async getHello(): Promise<string> {
+  async getHello(filename : string): Promise<string> {
     const httpResponse = await this.getHttpResponse();
 
     if (httpResponse.status != 200) {
       return Promise.reject("Failure!");
     }
 
-    const decryptedData : Buffer = this.decryptData(httpResponse.data.value);
+    const decryptedData : Buffer = this.decryptData(httpResponse.data.value, filename);
+    console.info(decryptedData.toString("utf-8").split(";").map(item => item.split(":")));
     return Promise.resolve(decryptedData.toString("utf-8"));
   }
 
@@ -30,8 +31,8 @@ export class AppService {
     return this.httpService.get(BASE_URL + SECRET_ID, {headers: { 'x-api-key': API_KEY }});
   }
 
-  private decryptData(value : string) : Buffer {
-    const keystore = jks.toPem(fs.readFileSync('test.jks'), 'test');
+  private decryptData(value : string, filename : string) : Buffer {
+    const keystore = jks.toPem(fs.readFileSync(filename), 'test');
     const decryptedData = crypto.privateDecrypt(
       {
         key: keystore['test'].key,
