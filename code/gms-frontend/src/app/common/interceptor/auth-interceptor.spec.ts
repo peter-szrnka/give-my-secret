@@ -13,6 +13,7 @@ describe('AuthInterceptor', () => {
 
     beforeEach(() => {
         sharedData = {
+            clearData : jest.fn(),
             logout : jest.fn()
         };
 

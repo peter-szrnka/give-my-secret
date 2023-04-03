@@ -86,7 +86,7 @@ public class SecretServiceImpl implements SecretService {
 			entity = converter.toEntity(entity, dto);
 		}
 		
-		if (StringUtils.hasText(dto.getValue())) {
+		if (dto.getId() == null || StringUtils.hasText(dto.getValue())) {
 			cryptoService.encrypt(entity);
 		}
 
