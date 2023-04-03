@@ -52,6 +52,7 @@ import static io.github.gms.common.util.MdcUtils.getUserId;
 public class KeystoreFileServiceImpl implements KeystoreFileService {
 
 	private static final String CERT_FORMAT = "CN=%s,O=%s,L=%s,ST=NA";
+	private static final int KEY_SIZE = 2048;
 
 	static {
 		Security.setProperty("crypto.policy", "unlimited");
@@ -95,7 +96,7 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 			ks.load(null, password);
 
 			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
-			keyPairGen.initialize(2048);
+			keyPairGen.initialize(KEY_SIZE);
 			KeyPair keyPair = keyPairGen.generateKeyPair();
 			X509Certificate certificate = generateCertificate(keyPair);
 

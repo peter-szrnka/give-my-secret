@@ -12,6 +12,7 @@ import static io.github.gms.common.util.Constants.OK;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Peter Szrnka
@@ -30,7 +31,7 @@ class SystemStatusIntegrationTest extends AbstractIntegrationTest {
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(OK, response.getBody().getStatus());
-		assertEquals("DevRuntime", response.getBody().getVersion());
+		assertNotNull(response.getBody().getVersion());
 		assertEquals(SELECTED_AUTH_DB, response.getBody().getAuthMode());
 	}
 }

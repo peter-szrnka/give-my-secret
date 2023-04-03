@@ -1,11 +1,9 @@
 package io.github.gms.secure.service.impl;
 
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.SecretConverter;
 import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
@@ -22,7 +20,6 @@ import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.SecretRepository;
 import io.github.gms.secure.service.CryptoService;
 import io.github.gms.secure.service.SecretService;
-import org.slf4j.MDC;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
@@ -36,6 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.MdcUtils.getUserId;
 
 /**
  * @author Peter Szrnka
@@ -74,9 +72,8 @@ public class SecretServiceImpl implements SecretService {
 	@Override
 	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveSecretRequestDto dto) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		SecretEntity entity;
-		dto.setUserId(userId);
+		dto.setUserId(getUserId());
 
 		validateKeystore(dto);
 		validateSecret(dto, dto.getId() == null ? 0 : 1);
@@ -84,16 +81,12 @@ public class SecretServiceImpl implements SecretService {
 		if (dto.getId() == null) {
 			entity = converter.toNewEntity(dto);
 		} else {
-			Optional<SecretEntity> opionalEntity = repository.findById(dto.getId());
-
-			if (opionalEntity.isEmpty()) {
-				throw new GmsException("Secret not found!");
-			}
-
-			entity = converter.toEntity(opionalEntity.get(), dto);
+			entity = repository.findById(dto.getId())
+					.orElseThrow(() -> new GmsException("Secret not found!"));
+			entity = converter.toEntity(entity, dto);
 		}
 		
-		if (dto.getId() == null || dto.getValue() != null) {
+		if (StringUtils.hasText(dto.getValue())) {
 			cryptoService.encrypt(entity);
 		}
 
@@ -105,10 +98,9 @@ public class SecretServiceImpl implements SecretService {
 
 	@Override
 	public SecretDto getById(Long id) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		SecretEntity entity = repository.findById(id).orElseThrow(() -> new GmsException(WRONG_ENTITY));
 		
-		List<ApiKeyRestrictionEntity> result = apiKeyRestrictionRepository.findAllByUserIdAndSecretId(userId, entity.getId());
+		List<ApiKeyRestrictionEntity> result = apiKeyRestrictionRepository.findAllByUserIdAndSecretId(getUserId(), entity.getId());
 		
 		SecretDto response = converter.toDto(entity, result);
 		
@@ -121,8 +113,7 @@ public class SecretServiceImpl implements SecretService {
 
 	@Override
 	public SecretListDto list(PagingDto dto) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		Page<SecretEntity> resultList = repository.findAllByUserId(userId, ConverterUtils.createPageable(dto));
+		Page<SecretEntity> resultList = repository.findAllByUserId(getUserId(), ConverterUtils.createPageable(dto));
 		return converter.toDtoList(resultList);
 	}
 
@@ -134,8 +125,7 @@ public class SecretServiceImpl implements SecretService {
 	@Override
 	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, userId);
+		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, getUserId());
 
 		SecretEntity entity = entityOptionalResult.orElseThrow(() -> new GmsException(WRONG_ENTITY));
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
@@ -144,8 +134,7 @@ public class SecretServiceImpl implements SecretService {
 
 	@Override
 	public String getSecretValue(Long id) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, userId);
+		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, getUserId());
 
 		SecretEntity entity = entityOptionalResult.orElseThrow(() -> new GmsException(WRONG_ENTITY));
 		return cryptoService.decrypt(entity);
@@ -153,8 +142,7 @@ public class SecretServiceImpl implements SecretService {
 
 	@Override
 	public LongValueDto count() {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		return new LongValueDto(repository.countByUserId(userId));
+		return new LongValueDto(repository.countByUserId(getUserId()));
 	}
 
 	private void updateApiRestrictions(SecretEntity entity, Set<Long> apiKeys) {
@@ -200,7 +188,7 @@ public class SecretServiceImpl implements SecretService {
 	}
 	
 	private void validateSecret(SaveSecretRequestDto dto, int expectedCount) {
-		long secretIdCount = repository.countAllSecretsByUserIdAndSecretId(MdcUtils.getUserId(), dto.getSecretId());
+		long secretIdCount = repository.countAllSecretsByUserIdAndSecretId(getUserId(), dto.getSecretId());
 
 		if (secretIdCount > expectedCount) {
 			throw new GmsException("Secret ID name must be unique!");

@@ -46,7 +46,8 @@ describe('AuthInterceptor', () => {
         interceptor.intercept(req, handler).subscribe();
 
         // assert
-        expect(sharedData.logout).toBeCalledTimes(1);
+        expect(sharedData.clearData).toHaveBeenCalled();
+        expect(sharedData.logout).toHaveBeenCalled();
     });
 
     it('should not proceed because of 401', () => {
@@ -57,7 +58,7 @@ describe('AuthInterceptor', () => {
         interceptor.intercept(req, handler).subscribe();
 
         // assert
-        expect(sharedData.logout).toBeCalledTimes(1);
+        expect(sharedData.logout).toHaveBeenCalledTimes(1);
     });
 
     it('should not proceed because of 403', () => {

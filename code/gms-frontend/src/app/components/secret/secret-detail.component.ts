@@ -163,6 +163,10 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     }
     
     private parseValue(data : string) : KeyValuePair[]  {
+        if (!data) {
+            return [];
+        }
+
         return data.split(";").map(kvp => {
             const splitData = kvp.split(":");
             return { key: splitData[0], value: splitData[1] };

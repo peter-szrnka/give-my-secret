@@ -9,6 +9,7 @@ import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.SecretEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
@@ -38,7 +39,7 @@ public class SecretConverterImpl implements SecretConverter {
 		entity.setLastUpdated(ZonedDateTime.now(clock));
 		entity.setType(dto.getType());
 		
-		if (dto.getValue() != null) {
+		if (StringUtils.hasText(dto.getValue())) {
 			entity.setValue(dto.getValue());
 		}
 		
