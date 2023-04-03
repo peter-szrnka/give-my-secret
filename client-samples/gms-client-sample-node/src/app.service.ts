@@ -6,8 +6,9 @@ import { HttpService } from 'nestjs-http-promise';
 
 const BASE_URL : string = "https://localhost:8443/api/secret/";
 // Your variables //////////////////////////////////////////////////
-const SECRET_ID : string = "secret1";
-const API_KEY : string = "QWM6bY4gyRUEKL8uT2qtfZpnv6tsm60n";
+const SECRET_ID1 : string = "secret1";
+const SECRET_ID2 : string = "secret2";
+const API_KEY : string = "P2jFEjUs0KtHZjBOiFWUlrmw38NRI1J2";
 ////////////////////////////////////////////////////////////////////
 
 @Injectable()
@@ -15,23 +16,42 @@ export class AppService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  async getHello(): Promise<string> {
-    const httpResponse = await this.getHttpResponse();
+  async getSimpleStringValue(filename : string): Promise<any> {
+    const httpResponse = await this.getHttpResponse(SECRET_ID1);
 
     if (httpResponse.status != 200) {
       return Promise.reject("Failure!");
     }
 
-    const decryptedData : Buffer = this.decryptData(httpResponse.data.value);
+    const decryptedData : Buffer = this.decryptData(httpResponse.data.value, filename);
     return Promise.resolve(decryptedData.toString("utf-8"));
   }
 
-  private getHttpResponse() {
-    return this.httpService.get(BASE_URL + SECRET_ID, {headers: { 'x-api-key': API_KEY }});
+  async getMultipleStringValues(filename : string): Promise<any> {
+    const httpResponse = await this.getHttpResponse(SECRET_ID2);
+
+    if (httpResponse.status != 200) {
+      return Promise.reject("Failure!");
+    }
+
+    const decryptedData : Buffer = this.decryptData(httpResponse.data.value, filename);
+    const valueString = decryptedData.toString("utf-8");
+    let finalObj = {};
+
+    valueString.split(";").forEach(item => {
+      let elements = item.split(":");
+      finalObj[elements[0]] = elements[1];
+    });
+
+    return Promise.resolve(finalObj);
   }
 
-  private decryptData(value : string) : Buffer {
-    const keystore = jks.toPem(fs.readFileSync('test.jks'), 'test');
+  private getHttpResponse(secretId : string) {
+    return this.httpService.get(BASE_URL + secretId, {headers: { 'x-api-key': API_KEY }});
+  }
+
+  private decryptData(value : string, filename : string) : Buffer {
+    const keystore = jks.toPem(fs.readFileSync(filename), 'test');
     const decryptedData = crypto.privateDecrypt(
       {
         key: keystore['test'].key,
