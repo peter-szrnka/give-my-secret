@@ -8,11 +8,11 @@ export class AppController {
 
   @Get("/simple")
   async simpleCredential() : Promise<string> {
-    return await this.appService.getHello('test.jks');
+    return await this.appService.getSimpleStringValue('test.jks');
   }
 
   @Get("/multiple")
   async multipleCredential() : Promise<string> {
-    return await this.appService.getHello('test.p12');
+    return await this.appService.getMultipleStringValues('test.p12');
   }
 }
