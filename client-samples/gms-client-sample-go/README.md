@@ -6,7 +6,7 @@ The page contains details about the Node.js client.
 
 # Prerequisites
 
--
+Go interpreter
 
 # Configuration & Run
 
@@ -17,9 +17,9 @@ go mod init main
 go mod tidy
 ```
 
-## Step 2: Replace the JKS keystore with yours
+## Step 2: Replace the JKS/P12 keystore with yours
 
-Replace the test keystore with your JKS keystore.
+Replace the test keystore with your JKS/PKCS12 keystore.
 
 ## Step 3: Configure the decryption
 
@@ -28,5 +28,11 @@ You have to specify the same hashing function and padding scheme that you used t
 ## Step 4: Run the app
 
 ```
-go run main/sample.go
+go run jks/sample_jks.go
+```
+
+or
+
+```
+go run p12/sample_p12.go
 ```
