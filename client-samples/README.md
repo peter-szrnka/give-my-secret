@@ -35,3 +35,12 @@ A simple implementation created with Java 11(HTTP client, Keystore readers, etc.
 - Nest.js (Optional)
 
 [Details](gms-client-sample-node/README.md)
+
+# Go
+
+### Prerequisites
+
+- Go 1.x+ interpreter
+- JKS/PKCS12 based keystore with an RSA private key
+
+[Details](gms-client-sample-go/README.md)
