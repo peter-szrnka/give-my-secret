@@ -92,3 +92,5 @@ client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.core.reso
 client-samples/gms-client-sample-java-client-lib/.settings/org.eclipse.m2e.core.prefs
 *.versionsBackup
 code/gms-backend/gms-backend.iml
+client-samples/gms-client-sample-go/.vscode/launch.json
+client-samples/gms-client-sample-go/go.sum
