@@ -1,9 +1,11 @@
 package main
 
 import (
+	"crypto"
 	"crypto/rsa"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -55,7 +57,15 @@ func getHttpResponse() string {
 
 func main() {
 	value := string(getHttpResponse())
+	//byteValue := []byte(value)
+	rawByteValue := []byte{}
 	fmt.Println("- Value loaded from server")
+
+	// TODO
+	rawByteValue, _ = base64.RawStdEncoding.DecodeString(value)
+
+	fmt.Println("- Value Base64 decoded")
+
 	ks := readKeyStore("D:/dev/projects/open-source/github/give-my-secret/client-samples/gms-client-sample-go/test.jks", []byte("test"))
 	fmt.Println("- JKS keystore loaded")
 
@@ -81,10 +91,11 @@ func main() {
 	}
 
 	fmt.Println("- Private key loaded")
-
 	fmt.Println("- Decryption started")
 
-	plaintext, err := privateKey.Decrypt(nil, []byte(value), nil /*&rsa.OAEPOptions{Hash: crypto.SHA512_256}*/)
+	//-plaintext, err := rsa.DecryptPKCS1v15(rand.Reader, privateKey, byteValue)
+	//plaintext, err := rsa.DecryptOAEP(sha256.New(), nil, privateKey, rawByteValue, nil)
+	plaintext, err := privateKey.Decrypt(nil, rawByteValue, &rsa.OAEPOptions{Hash: crypto.SHA256})
 
 	if err != nil {
 		log.Fatal(err.Error())
