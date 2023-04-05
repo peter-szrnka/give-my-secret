@@ -8,7 +8,8 @@ const BASE_URL : string = "https://localhost:8443/api/secret/";
 // Your variables //////////////////////////////////////////////////
 const SECRET_ID1 : string = "secret1";
 const SECRET_ID2 : string = "secret2";
-const API_KEY : string = "P2jFEjUs0KtHZjBOiFWUlrmw38NRI1J2";
+const SECRET_ID3 : string = "secret3";
+const API_KEY : string = "xBpFOEEjfZWpSXSuOXpGoGt3PVvuGTYq";
 ////////////////////////////////////////////////////////////////////
 
 @Injectable()
@@ -28,10 +29,14 @@ export class AppService {
   }
 
   async getMultipleStringValues(filename : string): Promise<any> {
-    const httpResponse = await this.getHttpResponse(SECRET_ID2);
+    const httpResponse = await this.getHttpResponse(SECRET_ID3);
 
     if (httpResponse.status != 200) {
       return Promise.reject("Failure!");
+    }
+
+    if (!httpResponse.data.type) {
+      return Promise.resolve(httpResponse.data);
     }
 
     const decryptedData : Buffer = this.decryptData(httpResponse.data.value, filename);
