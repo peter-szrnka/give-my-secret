@@ -91,12 +91,6 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	public @ResponseBody IdNamePairListDto getAllKeystoreAliases(@PathVariable("keystoreId") Long keystoreId) {
 		return service.getAllKeystoreAliasNames(keystoreId);
 	}
-
-	@GetMapping("/list_algorithms")
-	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public @ResponseBody Set<String> getAllEnabledAlgorithms() {
-		return service.getAllEnabledAlgorithms();
-	}
 	
 	@GetMapping(path = "/download/{keystoreId}", produces = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
