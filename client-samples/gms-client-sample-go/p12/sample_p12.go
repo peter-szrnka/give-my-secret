@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"software.sslmate.com/src/go-pkcs12"
 )
@@ -71,7 +72,7 @@ func main() {
 
 	log.Println("- Value Base64 decoded")
 
-	privateKey := readKeyStore("test.p12", "test")
+	privateKey := readKeyStore("../test.p12", "test")
 	log.Println("- P12 keystore with private key entry loaded")
 	log.Println("- Decryption started")
 	plaintext, err := privateKey.Decrypt(nil, rawByteValue, nil)
@@ -81,5 +82,13 @@ func main() {
 	}
 
 	log.Println("- Decryption finished")
-	log.Printf("Decoded value: %s\n\n", string(plaintext))
+
+	resultmap := make(map[string]string)
+
+	for _, item := range strings.Split(string(plaintext), ";") {
+		values := strings.Split(item, ":")
+		resultmap[values[0]] = values[1]
+	}
+
+	log.Printf("Decoded value: %s\n\n", resultmap)
 }

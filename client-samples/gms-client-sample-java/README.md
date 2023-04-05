@@ -1,4 +1,6 @@
-# Give My Secret Client - Java
+# Give My Secret Client - Java (Deprecated)
+
+**This solution is deprecated, please try to use the Maven library**
 
 The page contains details about the Java client.
 
