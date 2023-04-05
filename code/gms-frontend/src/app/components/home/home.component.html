@@ -10,8 +10,9 @@
       <div class="gms-sub-box">
         <mat-card class="gms-card-left" *ngIf="data.apiKeyCount > 0 || data.keystoreCount > 0">
           <mat-card-content>
-            <mat-icon matListIcon>key</mat-icon> <span class="stat-item">Number of API keys: {{data.apiKeyCount}}</span>
+            <mat-icon matListIcon>security</mat-icon> <span class="stat-item">Number of API keys: {{data.apiKeyCount}}</span>
             <mat-icon matListIcon>widgets</mat-icon> <span class="stat-item">Number of keystores: {{data.keystoreCount}}</span>
+            <mat-icon matListIcon>key</mat-icon> <span class="stat-item">Number of secrets: {{data.secretCount}}</span>
           </mat-card-content>
         </mat-card>
       </div>

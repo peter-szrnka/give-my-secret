@@ -53,6 +53,7 @@ CREATE TABLE gms_keystore_alias (
 	alias VARCHAR(512) NOT NULL COLLATE 'utf8mb3_general_ci',
 	alias_credential VARCHAR(512) NOT NULL COLLATE 'utf8mb3_general_ci',
 	description VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
+	algorithm VARCHAR(64) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
 	
 	PRIMARY KEY (id) USING BTREE
 )

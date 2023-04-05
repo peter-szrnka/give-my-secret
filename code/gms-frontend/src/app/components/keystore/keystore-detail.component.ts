@@ -12,6 +12,27 @@ import { KeystoreAlias } from "./model/keystore-alias.model";
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { environment } from "../../../environments/environment";
 
+const ENABLED_ALGORITHMS : string[] = [
+  "MD2WITHRSA",
+  "MD5WITHRSA",
+  "SHA1WITHRSA",
+  "SHA224WITHRSA",
+  "SHA256WITHRSA",
+  "SHA384WITHRSA",
+  "SHA512WITHRSA",
+  "SHA512_224_WITHRSA",
+  "SHA512_256_WITHRSA",
+  "SHA1WITHRSAANDMGF1",
+  "SHA224WITHRSAANDMGF1",
+  "SHA256WITHRSAANDMGF1",
+  "SHA384WITHRSAANDMGF1",
+  "SHA512WITHRSAANDMGF1",
+  "SHA3_224WITHRSAANDMGF1",
+  "SHA3_256WITHRSAANDMGF1",
+  "SHA3_384WITHRSAANDMGF1",
+  "SHA3_512WITHRSAANDMGF1"
+];
+
 /**
  * @author Peter Szrnka
  */
@@ -26,11 +47,12 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
   fileAttr = 'Choose File';
   file: File;
 
-  displayedColumns: string[] = ['alias','aliasCredential', 'operations'];
+  displayedColumns: string[] = ['alias','aliasCredential', 'algorithm', 'operations'];
 
   public datasource : ArrayDataSource<KeystoreAlias>;
   aliasList : KeystoreAlias[] = [];
   allAliasesAreValid : boolean;
+  enabledAlgorithms : string[] = ENABLED_ALGORITHMS;
 
   constructor(
     protected override router: Router,

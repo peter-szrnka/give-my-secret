@@ -49,6 +49,7 @@ CREATE TABLE gms_keystore_alias (
 	alias VARCHAR(512) NOT NULL,
 	alias_credential VARCHAR(512) NOT NULL,
 	description VARCHAR(255) NULL DEFAULT NULL,
+	algorithm VARCHAR(64) NULL DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 
