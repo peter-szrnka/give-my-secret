@@ -33,7 +33,7 @@ public class KeystoreAliasEntity extends AbstractGmsEntity {
 	@Column(name = "keystore_id")
 	private Long keystoreId;
 	
-	@Column(name = "description", nullable = true)
+	@Column(name = "description")
 	private String description;
 
 	@Column(name = "alias", length = 512)
@@ -43,4 +43,7 @@ public class KeystoreAliasEntity extends AbstractGmsEntity {
 	@Column(name = "alias_credential", length = 512)
 	@Convert(converter = EncryptedFieldConverter.class)
 	private String aliasCredential;
+
+	@Column(name = "algorithm", length = 64)
+	private String algorithm;
 }

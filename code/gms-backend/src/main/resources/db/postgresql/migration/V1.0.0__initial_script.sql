@@ -44,7 +44,8 @@ CREATE TABLE gms_keystore_alias (
 	keystore_id BIGINT NULL DEFAULT NULL,
 	alias VARCHAR(512) NOT NULL,
 	alias_credential VARCHAR(512) NOT NULL,
-	description VARCHAR(255) NULL DEFAULT NULL
+	description VARCHAR(255) NULL DEFAULT NULL,
+	algorithm VARCHAR(64) NULL DEFAULT NULL
 );
 
 CREATE TABLE gms_secret (

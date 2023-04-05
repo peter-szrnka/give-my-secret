@@ -11,6 +11,7 @@ import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.secure.model.EnabledAlgorithm;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -135,7 +136,8 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToAliasEntity() {
 		// arrange
-		KeystoreAliasDto aliasDto = new KeystoreAliasDto(1L, "alias", "test1234", AliasOperation.SAVE);
+		KeystoreAliasDto aliasDto = new KeystoreAliasDto(1L, "alias", "test1234", AliasOperation.SAVE,
+				EnabledAlgorithm.SHA256WITHRSA.getDisplayName());
 
 		// act
 		KeystoreAliasEntity response = converter.toAliasEntity(1L, aliasDto);

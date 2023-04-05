@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Set;
+
 import static io.github.gms.common.util.Constants.ROLE_USER;
 import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
 
@@ -88,6 +90,12 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	public @ResponseBody IdNamePairListDto getAllKeystoreAliases(@PathVariable("keystoreId") Long keystoreId) {
 		return service.getAllKeystoreAliasNames(keystoreId);
+	}
+
+	@GetMapping("/list_algorithms")
+	@PreAuthorize(ROLE_USER_OR_VIEWER)
+	public @ResponseBody Set<String> getAllEnabledAlgorithms() {
+		return service.getAllEnabledAlgorithms();
 	}
 	
 	@GetMapping(path = "/download/{keystoreId}", produces = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)

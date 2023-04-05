@@ -5,6 +5,7 @@ import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.secure.model.EnabledAlgorithm;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.KeystoreFileService;
@@ -98,9 +99,10 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
 			keyPairGen.initialize(KEY_SIZE);
 			KeyPair keyPair = keyPairGen.generateKeyPair();
-			X509Certificate certificate = generateCertificate(keyPair);
 
 			for (KeystoreAliasDto alias : dto.getAliases()) {
+				X509Certificate certificate = generateCertificate(keyPair, alias.getAlgorithm());
+
 				ks.setKeyEntry(alias.getAlias(),
 						keyPair.getPrivate(),
 						alias.getAliasCredential().toCharArray(),
@@ -126,17 +128,19 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 		return repository.findByFileName(path.toFile().getName()) != null ? null : path;
 	}
 
-	private X509Certificate generateCertificate(KeyPair keyPair) throws OperatorCreationException, CertificateException {
+	private X509Certificate generateCertificate(KeyPair keyPair, String alg)
+			throws OperatorCreationException, CertificateException {
 		final Instant now = Instant.now();
 		final Date notBefore = Date.from(now);
 		final Date until = GregorianCalendar.from(ZonedDateTime.now().plusYears(1L)).getTime();
 
 		UserEntity user = userRepository.findById(getUserId()).orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND));
+		EnabledAlgorithm algorithm = EnabledAlgorithm.getByName(alg);
 
 		String organizationName = systemPropertyService.get(SystemProperty.ORGANIZATION_NAME);
 		String organizationLocation = systemPropertyService.get(SystemProperty.ORGANIZATION_CITY);
 
-		final ContentSigner contentSigner = new JcaContentSignerBuilder("SHA256WITHRSA").build(keyPair.getPrivate());
+		final ContentSigner contentSigner = new JcaContentSignerBuilder(algorithm.getDisplayName()).build(keyPair.getPrivate());
 		final X500Name x500Name = new X500Name(String.format(CERT_FORMAT,
 				user.getName(), organizationName, organizationLocation));
 		final X509v3CertificateBuilder certificateBuilder = new JcaX509v3CertificateBuilder(x500Name,

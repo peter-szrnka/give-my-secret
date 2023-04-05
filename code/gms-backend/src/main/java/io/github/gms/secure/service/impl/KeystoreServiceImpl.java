@@ -76,13 +76,13 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private String keystoreTempPath;
 
 	public KeystoreServiceImpl(
-		CryptoService cryptoService,
-		KeystoreRepository repository,
-		KeystoreAliasRepository aliasRepository,
-		KeystoreConverter converter,
-		ObjectMapper objectMapper,
-		ApplicationEventPublisher applicationEventPublisher,
-		KeystoreFileService keystoreFileService
+			CryptoService cryptoService,
+			KeystoreRepository repository,
+			KeystoreAliasRepository aliasRepository,
+			KeystoreConverter converter,
+			ObjectMapper objectMapper,
+			ApplicationEventPublisher applicationEventPublisher,
+			KeystoreFileService keystoreFileService
 	) {
 		this.cryptoService = cryptoService;
 		this.repository = repository;
@@ -99,25 +99,25 @@ public class KeystoreServiceImpl implements KeystoreService {
 	public SaveEntityResponseDto save(String model, MultipartFile file) {
 		SaveKeystoreRequestDto dto = parseInput(model);
 		dto.setUserId(getUserId());
-		
+
 		// Validation
 		validateInput(dto, file);
-		
+
 		// Prepare data to persist later
 		KeystoreEntity entity = convertKeystore(dto, file);
-		
+
 		// Get file content
 		byte[] fileContent = getFileContent(entity, file, dto);
-		
+
 		// Validate keystore file
 		cryptoService.validateKeyStoreFile(dto, fileContent);
 
 		// Persist the keystore
 		final KeystoreEntity newEntity = repository.save(entity);
-		
+
 		// Process aliases
 		dto.getAliases().forEach(alias -> processAlias(newEntity, alias));
-		
+
 		if (EntityStatus.DISABLED == newEntity.getStatus()) {
 			publishEvent(initMetaData(newEntity.getId()), EntityChangeType.KEYSTORE_DISABLED);
 		}
@@ -126,7 +126,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			// Persist file
 			persistFile(newEntity, fileContent, dto.isGenerated());
 		}
-		
+
 		return new SaveEntityResponseDto(newEntity.getId());
 	}
 
@@ -179,7 +179,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		KeystoreEntity entity = getKeystore(id);
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
 		repository.save(entity);
-		
+
 		if (EntityStatus.DISABLED != entity.getStatus()) {
 			return;
 		}
@@ -194,25 +194,25 @@ public class KeystoreServiceImpl implements KeystoreService {
 		if (KeyStoreValueType.KEYSTORE_CREDENTIAL == dto.getValueType()) {
 			return entity.getCredential();
 		}
-		
+
 		return getAliasValue(dto);
 	}
-	
+
 	@Override
 	public LongValueDto count() {
 		return new LongValueDto(repository.countByUserId(getUserId()));
 	}
-	
+
 	@Override
 	public IdNamePairListDto getAllKeystoreNames() {
 		return new IdNamePairListDto(repository.getAllKeystoreNames(getUserId()));
 	}
-	
+
 	@Override
 	public IdNamePairListDto getAllKeystoreAliasNames(Long keystoreId) {
 		// We query the keystore entity just for validation purposes
 		getKeystore(keystoreId);
-		
+
 		return new IdNamePairListDto(aliasRepository.getAllAliasNames(keystoreId));
 	}
 
@@ -241,7 +241,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			FileOutputStream outputStream = new FileOutputStream(keystoreFile);
 			outputStream.write(fileContent);
 			outputStream.close();
-			
+
 			removeGeneratedFileFromTempFolder(newEntity.getFileName(), generated);
 		} catch (GmsException e) {
 			throw e;
@@ -250,16 +250,16 @@ public class KeystoreServiceImpl implements KeystoreService {
 			throw new GmsException(e);
 		}
 	}
-	
+
 	private String getUserFolder() {
 		return keystorePath + getUserId() + SLASH;
 	}
-	
+
 	private KeystoreEntity convertKeystore(SaveKeystoreRequestDto dto, MultipartFile file) {
 		if (dto.getId() == null) {
 			return converter.toNewEntity(dto, file);
 		}
-			
+
 		KeystoreEntity foundEntity = repository.findByIdAndUserId(dto.getId(), getUserId())
 				.orElseThrow(() -> new GmsException("Entity not found!"));
 
@@ -301,7 +301,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		if (dto.getAliases().stream().noneMatch(alias -> AliasOperation.DELETE != alias.getOperation())) {
 			throw new GmsException("You must define at least one keystore alias!");
 		}
-		
+
 		if (file != null && dto.isGenerated()) {
 			// Edge case: User cannot upload a keystore along with a generated keystore, only one can be selected
 			throw new GmsException("Only one keystore source is allowed!");
@@ -325,20 +325,20 @@ public class KeystoreServiceImpl implements KeystoreService {
 			throw new GmsException("Keystore name must be unique!");
 		}
 	}
-	
+
 	private KeystoreEntity getKeystore(Long id) {
 		return repository.findByIdAndUserId(id, getUserId()).orElseThrow(() -> {
 			log.warn(ENTITY_NOT_FOUND);
-			throw new GmsException(ENTITY_NOT_FOUND);
+			return new GmsException(ENTITY_NOT_FOUND);
 		});
 	}
 
 	private String getAliasValue(GetSecureValueDto dto) {
 		KeystoreAliasEntity entity = aliasRepository.findByIdAndKeystoreId(dto.getAliasId(), dto.getEntityId())
-			.orElseThrow(() -> {
-				log.warn(ENTITY_NOT_FOUND);
-				throw new GmsException(ENTITY_NOT_FOUND);
-		});
+				.orElseThrow(() -> {
+					log.warn(ENTITY_NOT_FOUND);
+					return new GmsException(ENTITY_NOT_FOUND);
+				});
 
 		if (KeyStoreValueType.KEYSTORE_ALIAS == dto.getValueType()) {
 			return entity.getAlias();
@@ -355,15 +355,15 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 			String folder = getUserFolder();
 			String filename = entity.getFileName();
-				
+
 			if (dto.isGenerated()) {
 				folder = keystoreTempPath;
 				filename = keystoreFileService.generate(dto);
 				entity.setFileName(filename);
 			}
-				
+
 			File keystoreFile = new File(folder + filename);
-			
+
 			if (!Files.exists(keystoreFile.toPath())) {
 				throw new GmsException("Keystore file does not exist!");
 			}
@@ -376,7 +376,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			throw new GmsException(e);
 		}
 	}
-	
+
 	private static Map<String, Object> initMetaData(Long keystoreId) {
 		Map<String, Object> metadata = new HashMap<>();
 		metadata.put("userId", getUserId());

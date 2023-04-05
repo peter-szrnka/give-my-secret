@@ -99,6 +99,7 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		entity.setKeystoreId(keystoreId);
 		entity.setAlias(dto.getAlias());
 		entity.setAliasCredential(dto.getAliasCredential());
+		entity.setAlgorithm(dto.getAlgorithm());
 
 		return entity;
 	}
@@ -109,6 +110,7 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		dto.setId(entity.getId());
 		dto.setAlias(entity.getAlias());
 		dto.setAliasCredential(entity.getAliasCredential());
+		dto.setAlgorithm(entity.getAlgorithm());
 		
 		return dto;
 	}

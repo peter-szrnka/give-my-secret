@@ -22,6 +22,7 @@ import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.entity.KeystoreEntity;
+import io.github.gms.secure.model.EnabledAlgorithm;
 import io.github.gms.secure.repository.KeystoreAliasRepository;
 import io.github.gms.secure.repository.KeystoreRepository;
 import io.github.gms.secure.service.CryptoService;
@@ -417,7 +418,8 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     void shouldNotSaveEntityOccurredWhenOnlyDeletedAliasProvided() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-        dto.setAliases(List.of(new KeystoreAliasDto(1L, "alias", "test", AliasOperation.DELETE)));
+        dto.setAliases(List.of(new KeystoreAliasDto(1L, "alias", "test", AliasOperation.DELETE,
+                EnabledAlgorithm.SHA256WITHRSA.getDisplayName())));
         dto.setId(1L);
         String model = TestUtils.objectMapper().writeValueAsString(dto);
 
@@ -459,8 +461,10 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     void shouldSaveEntity() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-        dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", "test", AliasOperation.DELETE));
-        dto.getAliases().add(new KeystoreAliasDto(4L, "alias3", "test", AliasOperation.SAVE));
+        dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", "test", AliasOperation.DELETE,
+                EnabledAlgorithm.SHA256WITHRSA.getDisplayName()));
+        dto.getAliases().add(new KeystoreAliasDto(4L, "alias3", "test", AliasOperation.SAVE,
+                EnabledAlgorithm.SHA256WITHRSA.getDisplayName()));
         dto.setStatus(EntityStatus.DISABLED);
         dto.setId(1L);
         String model = TestUtils.objectMapper().writeValueAsString(dto);
@@ -538,7 +542,8 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         mockedStaticFiles.when(() -> Files.exists(any(Path.class))).thenReturn(true);
 
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-        dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", "test", AliasOperation.DELETE));
+        dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", "test", AliasOperation.DELETE,
+                EnabledAlgorithm.SHA256WITHRSA.getDisplayName()));
         dto.setStatus(EntityStatus.DISABLED);
         dto.setId(1L);
         dto.setGenerated(false);
