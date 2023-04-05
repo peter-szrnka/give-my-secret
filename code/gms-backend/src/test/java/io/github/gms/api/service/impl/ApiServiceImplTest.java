@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static io.github.gms.common.util.Constants.VALUE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -197,10 +198,12 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		Assertions.assertNotNull(response);
 
 		if (type == SecretType.SIMPLE_CREDENTIAL) {
-			assertEquals(expectedValue, response.get("value"));
+			assertEquals(expectedValue, response.get(VALUE));
 		} else if (returnDecrypted) {
 			assertEquals("u", response.get("username"));
 			assertEquals("p", response.get("password"));
+		} else {
+			assertEquals("encrypted", response.get(VALUE));
 		}
 
 		verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));

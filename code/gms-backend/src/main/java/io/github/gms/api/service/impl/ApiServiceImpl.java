@@ -108,26 +108,29 @@ public class ApiServiceImpl implements ApiService {
             throw new GmsException("Invalid keystore!");
         }
 
-        Map<String, String> response = getSecretValue(secretEntity);
-        response.put("type", secretEntity.getType().name());
-        return response;
+        return getSecretValue(secretEntity);
     }
 
     private Map<String, String> getSecretValue(SecretEntity secretEntity) {
-        Map<String, String> responseMap = new HashMap<>();
         if (!secretEntity.isReturnDecrypted()) {
-            responseMap.put(VALUE, secretEntity.getValue());
-            return responseMap;
+            // Type field will be added only if it's encrypted
+            return Map.of(
+                    VALUE, secretEntity.getValue(),
+                    "type", secretEntity.getType().name()
+            );
         }
 
-        String decryptedRawValue = cryptoService.decrypt(secretEntity);
+        String decryptedValue = cryptoService.decrypt(secretEntity);
+        return processDecryptedValue(decryptedValue, secretEntity.getType());
+    }
 
-        if (SecretType.SIMPLE_CREDENTIAL == secretEntity.getType()) {
-            responseMap.put(VALUE, decryptedRawValue);
-            return responseMap;
+    private Map<String, String> processDecryptedValue(String decryptedValue, SecretType type) {
+        if (SecretType.SIMPLE_CREDENTIAL == type) {
+            return Map.of(VALUE, decryptedValue);
         }
 
-        Stream.of(decryptedRawValue.split(";")).forEach(item -> {
+        Map<String, String> responseMap = new HashMap<>();
+        Stream.of(decryptedValue.split(";")).forEach(item -> {
             String[] elements = item.split(":");
             responseMap.put(elements[0], elements[1]);
         });
