@@ -6,4 +6,5 @@ export interface KeystoreAlias {
     alias : string;
     aliasCredential? : string;
     operation : string;
+    algorithm? : string;
 }
