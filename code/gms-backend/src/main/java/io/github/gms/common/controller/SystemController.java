@@ -1,13 +1,13 @@
 package io.github.gms.common.controller;
 
-import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.secure.service.SystemService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.secure.service.SystemService;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Peter Szrnka

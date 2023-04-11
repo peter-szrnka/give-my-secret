@@ -1,12 +1,9 @@
 package io.github.gms.common.controller;
 
-import io.github.gms.auth.dto.AuthenticateRequestDto;
-import io.github.gms.auth.dto.AuthenticateResponseDto;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.util.CookieUtils;
-import io.github.gms.secure.dto.UserInfoDto;
-import io.github.gms.secure.service.LoginService;
-import io.github.gms.secure.service.SystemPropertyService;
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.SET_COOKIE;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.SET_COOKIE;
+import io.github.gms.auth.dto.AuthenticateRequestDto;
+import io.github.gms.auth.dto.AuthenticateResponseDto;
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.util.CookieUtils;
+import io.github.gms.secure.dto.UserInfoDto;
+import io.github.gms.secure.service.LoginService;
+import io.github.gms.secure.service.SystemPropertyService;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Peter Szrnka

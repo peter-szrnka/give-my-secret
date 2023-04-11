@@ -1,10 +1,10 @@
 package io.github.gms.auth;
 
-import io.github.gms.auth.model.AuthenticationDetails;
-import io.github.gms.auth.model.AuthenticationResponse;
 import org.springframework.security.core.Authentication;
 
-import javax.servlet.http.HttpServletRequest;
+import io.github.gms.auth.model.AuthenticationDetails;
+import io.github.gms.auth.model.AuthenticationResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Peter Szrnka

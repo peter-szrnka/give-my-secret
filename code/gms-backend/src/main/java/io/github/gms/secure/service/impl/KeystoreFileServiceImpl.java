@@ -1,26 +1,7 @@
 package io.github.gms.secure.service.impl;
 
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.dto.KeystoreAliasDto;
-import io.github.gms.secure.dto.SaveKeystoreRequestDto;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.model.EnabledAlgorithm;
-import io.github.gms.secure.repository.KeystoreRepository;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.secure.service.KeystoreFileService;
-import io.github.gms.secure.service.SystemPropertyService;
-import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.cert.X509v3CertificateBuilder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static io.github.gms.common.util.MdcUtils.getUserId;
 
 import java.io.FileOutputStream;
 import java.math.BigInteger;
@@ -41,14 +22,32 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static io.github.gms.common.util.MdcUtils.getUserId;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.exception.GmsException;
+import io.github.gms.secure.dto.KeystoreAliasDto;
+import io.github.gms.secure.dto.SaveKeystoreRequestDto;
+import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.secure.model.EnabledAlgorithm;
+import io.github.gms.secure.repository.KeystoreRepository;
+import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.secure.service.KeystoreFileService;
+import io.github.gms.secure.service.SystemPropertyService;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-@Slf4j
 @Service
 public class KeystoreFileServiceImpl implements KeystoreFileService {
 

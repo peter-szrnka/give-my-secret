@@ -32,7 +32,7 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 		HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
 			executeHttpPost("/secure/apikey", requestEntity, SaveEntityResponseDto.class));
 		
-		assertTrue(exception.getMessage().contains("403 : [no body]"));
+		assertTrue(exception.getMessage().startsWith("403"));
 	}
 	
 	@Test
@@ -43,7 +43,7 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 		HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
 		executeHttpGet("/secure/apikey/" + DemoData.API_KEY_1_ID, requestEntity, ApiKeyDto.class));
 		
-		assertTrue(exception.getMessage().contains("403 : [no body]"));
+		assertTrue(exception.getMessage().startsWith("403"));
 	}
 	
 	@Test
@@ -55,7 +55,7 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 		HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
 		executeHttpPost("/secure/apikey/list", requestEntity, ApiKeyListDto.class));
 		
-		assertTrue(exception.getMessage().contains("403 : [no body]"));
+		assertTrue(exception.getMessage().startsWith("403"));
 	}
 	
 	@Test
@@ -66,7 +66,7 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 		HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
 		executeHttpGet("/secure/apikey/value/" + DemoData.API_KEY_1_ID, requestEntity, String.class));
 		
-		assertTrue(exception.getMessage().contains("403 : [no body]"));
+		assertTrue(exception.getMessage().startsWith("403"));
 	}
 	
 	@Test
@@ -78,7 +78,7 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 			executeHttpDelete("/secure/apikey/" + DemoData.API_KEY_2_ID, requestEntity,
 				String.class));
 		
-		assertTrue(exception.getMessage().contains("403 : [no body]"));
+		assertTrue(exception.getMessage().startsWith("403"));
 	}
 	
 	@Test
@@ -90,6 +90,6 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 		executeHttpPost("/secure/apikey/" + DemoData.API_KEY_1_ID + "?enabled=true", requestEntity,
 				String.class));
 		
-		assertTrue(exception.getMessage().contains("403 : [no body]"));
+		assertTrue(exception.getMessage().startsWith("403"));
 	}
 }

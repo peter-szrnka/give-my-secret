@@ -1,7 +1,11 @@
 package io.github.gms.common.db.converter;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -9,13 +13,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.persistence.AttributeConverter;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import jakarta.persistence.AttributeConverter;
 
 /**
  * @author Peter Szrnka
@@ -33,7 +35,7 @@ public class EncryptedFieldConverter implements AttributeConverter<String, Strin
 	private final String encryptionIv;
 
 	public EncryptedFieldConverter(
-			@Value("${config.encryption.enable}") boolean enableFieldEncryption, 
+			@Value("${config.encryption.enable:true}") boolean enableFieldEncryption, 
 			@Value("${config.crypto.secret}") String secret, 
 			@Value("${config.encryption.iv}") String encryptionIv) {
 		this.enableFieldEncryption = enableFieldEncryption;

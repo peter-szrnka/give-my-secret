@@ -1,26 +1,28 @@
 package io.github.gms.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.dto.ErrorResponseDto;
-import io.github.gms.common.enums.MdcParameter;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.MDC;
-import org.springframework.security.core.AuthenticationException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.time.Clock;
-
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.io.PrintWriter;
+import java.time.Clock;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
+import org.springframework.security.core.AuthenticationException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.dto.ErrorResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 
 /**
  * @author Peter Szrnka

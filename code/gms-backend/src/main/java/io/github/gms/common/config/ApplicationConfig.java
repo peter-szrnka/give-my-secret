@@ -1,11 +1,9 @@
 package io.github.gms.common.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.catalina.connector.Connector;
-import org.apache.tomcat.util.http.LegacyCookieProcessor;
+import java.io.IOException;
+import java.time.Clock;
+
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -20,8 +18,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
-import java.io.IOException;
-import java.time.Clock;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  * @author Peter Szrnka
@@ -77,7 +75,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
                 });
     }
 
-	@Bean
+	/*@Bean
     public TomcatServletWebServerFactory containerFactory() {
         return new TomcatServletWebServerFactory() {
             @Override
@@ -87,5 +85,5 @@ public class ApplicationConfig implements WebMvcConfigurer {
                 addContextCustomizers(context -> context.setCookieProcessor(new LegacyCookieProcessor()));
             }
         };
-    }
+    }*/
 }

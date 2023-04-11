@@ -1,14 +1,15 @@
 package io.github.gms.secure.repository;
 
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.secure.entity.SystemPropertyEntity;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
-import java.util.Optional;
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.secure.entity.SystemPropertyEntity;
+import jakarta.transaction.Transactional;
 
 /**
  * @author Peter Szrnka

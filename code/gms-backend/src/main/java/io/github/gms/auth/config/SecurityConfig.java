@@ -1,6 +1,9 @@
 package io.github.gms.auth.config;
 
-import io.github.gms.common.filter.SecureHeaderInitializerFilter;
+import static io.github.gms.common.util.Constants.PASSWORD_ENCODER;
+
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +11,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,9 +24,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
-
-import static io.github.gms.common.util.Constants.PASSWORD_ENCODER;
+import io.github.gms.common.filter.SecureHeaderInitializerFilter;
 
 /**
  * @author Peter Szrnka
@@ -32,7 +33,7 @@ import static io.github.gms.common.util.Constants.PASSWORD_ENCODER;
 @DependsOn(PASSWORD_ENCODER)
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
 	private static final String[] FILTER_URL = new String[] { "/", "/system/status", "/healthcheck", "/setup/**",
@@ -46,8 +47,8 @@ public class SecurityConfig {
 			AuthenticationEntryPoint authenticationEntryPoint,
 			SecureHeaderInitializerFilter secureHeaderInitializerFilter) throws Exception {
 		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-				.antMatchers(FILTER_URL).permitAll()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
+				.requestMatchers(FILTER_URL).permitAll()
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().anyRequest()
 				.authenticated();
 

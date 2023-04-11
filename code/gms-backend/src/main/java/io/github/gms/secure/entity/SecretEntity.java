@@ -1,22 +1,22 @@
 package io.github.gms.secure.entity;
 
+import java.time.ZonedDateTime;
+
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SecretType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Type;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.time.ZonedDateTime;
 
 /**
  * @author Peter Szrnka
@@ -69,11 +69,11 @@ public class SecretEntity extends AbstractGmsEntity {
 	private RotationPeriod rotationPeriod;
 	
 	@Column(name = "return_decrypted")
-	@Type(type = "org.hibernate.type.NumericBooleanType")  
+	@Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
 	private boolean returnDecrypted;
 	
 	@Column(name = "rotation_enabled")
-	@Type(type = "org.hibernate.type.NumericBooleanType")  
+	@Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
 	private boolean rotationEnabled;
 	
 }

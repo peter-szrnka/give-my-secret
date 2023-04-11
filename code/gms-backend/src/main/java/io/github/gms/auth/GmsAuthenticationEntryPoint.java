@@ -1,8 +1,9 @@
 package io.github.gms.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.gms.common.dto.ErrorResponseDto;
-import io.github.gms.common.enums.MdcParameter;
+import java.io.IOException;
+import java.time.Clock;
+import java.time.ZonedDateTime;
+
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -10,11 +11,12 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.Clock;
-import java.time.ZonedDateTime;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.github.gms.common.dto.ErrorResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Simple {@link AuthenticationEntryPoint} implementation.

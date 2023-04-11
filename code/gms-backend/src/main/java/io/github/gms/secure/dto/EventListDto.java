@@ -18,6 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 public class EventListDto {
 
+	@Builder.Default
 	private List<EventDto> resultList = new ArrayList<>();
+	@Builder.Default
 	private long totalElements = 0L;
 }

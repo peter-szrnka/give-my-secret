@@ -1,5 +1,23 @@
 package io.github.gms.auth;
 
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.MDC;
+import org.springframework.data.util.Pair;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
+
 import io.github.gms.auth.model.AuthenticationDetails;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -12,26 +30,9 @@ import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.logging.MDC;
-import org.springframework.data.util.Pair;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.util.WebUtils;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 
 /**
  * @author Peter Szrnka
@@ -112,7 +113,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			// Configuration of MDC parameters
 			Stream.of(MdcParameter.values())
 				.filter(MdcParameter::isInput)
-				.forEach(mdcParameter -> MDC.put(mdcParameter.getDisplayName(), jwsResult.get(mdcParameter.getDisplayName())));
+				.forEach(mdcParameter -> MDC.put(mdcParameter.getDisplayName(), String.valueOf(jwsResult.get(mdcParameter.getDisplayName()))));
 
 			return AuthenticationResponse.builder()
 					.authentication(authentication)

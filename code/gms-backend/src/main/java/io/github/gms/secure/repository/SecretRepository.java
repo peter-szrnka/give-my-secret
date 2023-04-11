@@ -23,7 +23,7 @@ public interface SecretRepository extends JpaRepository<SecretEntity, Long> {
 
 	SecretEntity findByUserIdAndSecretIdAndStatus(Long userId, String secretId, EntityStatus status);
 
-	@Query("select s from SecretEntity s where (s.lastRotated is null or s.lastRotated <= ?1) and s.rotationEnabled = true and s.status='ACTIVE'") // 
+	@Query("select s from SecretEntity s where (s.lastRotated is null or s.lastRotated <= ?1) and s.rotationEnabled = true and s.status=io.github.gms.common.enums.EntityStatus.ACTIVE") // 
 	List<SecretEntity> findAllOldRotated(ZonedDateTime input);
 	
 	Optional<SecretEntity> findByIdAndUserId(Long id, Long userId);
@@ -33,7 +33,7 @@ public interface SecretRepository extends JpaRepository<SecretEntity, Long> {
 	long countByUserId(Long userId);
 
 	@Modifying
-	@Query("update SecretEntity s set s.status='DISABLED' where s.status != 'DISABLED' and s.keystoreAliasId = :keystoreAliasId")
+	@Query("update SecretEntity s set s.status=io.github.gms.common.enums.EntityStatus.DISABLED where s.status != io.github.gms.common.enums.EntityStatus.DISABLED and s.keystoreAliasId = :keystoreAliasId")
 	void disableAllActiveByKeystoreAliasId(@Param("keystoreAliasId") Long keystoreAliasId);
 
 	long countAllSecretsByUserIdAndSecretId(Long userId, String secretId);
