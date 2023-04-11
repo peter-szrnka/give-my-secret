@@ -1,33 +1,5 @@
 package io.github.gms.auth;
 
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.auth.model.AuthenticationDetails;
-import io.github.gms.auth.model.AuthenticationResponse;
-import io.github.gms.common.enums.JwtConfigType;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.model.GenerateJwtRequest;
-import io.github.gms.secure.converter.GenerateJwtRequestConverter;
-import io.github.gms.secure.service.JwtService;
-import io.github.gms.secure.service.SystemPropertyService;
-import io.github.gms.util.TestUtils;
-import io.jsonwebtoken.Claims;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -40,6 +12,35 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import ch.qos.logback.classic.Logger;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.auth.model.AuthenticationDetails;
+import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.common.enums.JwtConfigType;
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.model.GenerateJwtRequest;
+import io.github.gms.secure.converter.GenerateJwtRequestConverter;
+import io.github.gms.secure.service.JwtService;
+import io.github.gms.secure.service.SystemPropertyService;
+import io.github.gms.util.TestUtils;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Peter Szrnka

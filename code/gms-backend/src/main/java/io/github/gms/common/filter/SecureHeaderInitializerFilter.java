@@ -1,14 +1,12 @@
 package io.github.gms.common.filter;
 
-import com.google.common.collect.Sets;
-import io.github.gms.auth.AuthenticationService;
-import io.github.gms.auth.model.AuthenticationResponse;
-import io.github.gms.common.enums.JwtConfigType;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.util.CookieUtils;
-import io.github.gms.secure.service.SystemPropertyService;
-import org.jboss.logging.MDC;
+import java.io.IOException;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -16,19 +14,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.collect.Sets;
 
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.SET_COOKIE;
+import io.github.gms.auth.AuthenticationService;
+import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.common.enums.JwtConfigType;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.CookieUtils;
+import io.github.gms.secure.service.SystemPropertyService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * A custom Spring filter used to authorize user by parsing JWT token.
@@ -71,17 +70,17 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 			return;
 		}
 		
-		String accessCookie = CookieUtils.createCookie(ACCESS_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.ACCESS_JWT),
+		String accessCookie = CookieUtils.createCookie(Constants.ACCESS_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.ACCESS_JWT),
 				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS), secure).toString();
-		String refreshCookie = CookieUtils.createCookie(REFRESH_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.REFRESH_JWT),
+		String refreshCookie = CookieUtils.createCookie(Constants.REFRESH_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.REFRESH_JWT),
 				systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS), secure).toString();
 
-		response.addHeader(SET_COOKIE, accessCookie);
-		response.addHeader(SET_COOKIE, refreshCookie);
+		response.addHeader(Constants.SET_COOKIE, accessCookie);
+		response.addHeader(Constants.SET_COOKIE, refreshCookie);
 
 		Authentication authentication = authenticationResponse.getAuthentication();
 		boolean admin = authentication.getAuthorities().stream().anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
-		MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), admin);
+		MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), String.valueOf(admin));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		filterChain.doFilter(request, response);
 		

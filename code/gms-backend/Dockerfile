@@ -1,5 +1,5 @@
 # Deprecated file
-FROM adoptopenjdk/openjdk11:latest
+FROM eclipse-temurin:17-jdk
 LABEL maintainer="Peter Szrnka"
 
 ARG JAR_FILE=target/gms-app.jar

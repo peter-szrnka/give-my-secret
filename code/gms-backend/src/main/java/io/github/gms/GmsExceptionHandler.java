@@ -1,10 +1,8 @@
 package io.github.gms;
 
-import com.google.common.base.Throwables;
-import io.github.gms.common.dto.ErrorResponseDto;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.exception.GmsException;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Clock;
+import java.time.ZonedDateTime;
+
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,9 +14,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.Clock;
-import java.time.ZonedDateTime;
+import com.google.common.base.Throwables;
+
+import io.github.gms.common.dto.ErrorResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.exception.GmsException;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Peter Szrnka

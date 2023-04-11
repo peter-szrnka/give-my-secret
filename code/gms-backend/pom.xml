@@ -7,18 +7,19 @@
 	</parent>
 	<artifactId>gms-backend</artifactId>
 	<properties>
-		<java.version>11</java.version>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<java.version>17</java.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<backend.buildname>gms-app</backend.buildname>
-		<spring-boot.version>2.7.3</spring-boot.version>
+		<spring-boot.version>3.0.1</spring-boot.version>
 		<guava.version>31.1-jre</guava.version>
 		<maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+		<flyway.version>9.8.1</flyway.version>
 		<!-- Testing & code quality -->
 		<junit.jupiter.version>5.8.2</junit.jupiter.version>
 		<mockito.version>4.6.1</mockito.version>
-		<jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+		<jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
 		<skip.jacoco-check-execution>false</skip.jacoco-check-execution>
 		<test.minimum.coverage>0.90</test.minimum.coverage>
 		<sonar.organization>peter-szrnka</sonar.organization>
@@ -67,6 +68,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.yaml</groupId>
+		    		<artifactId>snakeyaml</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -88,6 +95,19 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>jakarta.persistence</groupId>
+		    <artifactId>jakarta.persistence-api</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>jakarta.servlet</groupId>
+		    <artifactId>jakarta.servlet-api</artifactId>
+		</dependency>
+		<!--<dependency>
+		    <groupId>org.hibernate.orm</groupId>
+		    <artifactId>hibernate-core</artifactId>
+		    <version>6.2.0.Final</version>
+		</dependency>-->
 		<!-- LDAP -->
 		<dependency>
 			<groupId>org.springframework.ldap</groupId>
@@ -114,10 +134,6 @@
         </dependency>-->
 		<!-- DB -->
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
 		</dependency>
@@ -132,8 +148,7 @@
 		<dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>mssql-jdbc</artifactId>
-			<version>9.4.1.jre8</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
 			<artifactId>ojdbc10</artifactId>
@@ -142,19 +157,24 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
-			<version>9.8.1</version>
+			<version>${flyway.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-mysql</artifactId>
-			<version>9.8.1</version>
+			<version>${flyway.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-sqlserver</artifactId>
-			<version>9.8.1</version>
+			<version>${flyway.version}</version>
 		</dependency>
 		<!-- Other 3rd party library -->
+		<dependency>
+		    <groupId>org.yaml</groupId>
+		    <artifactId>snakeyaml</artifactId>
+		    <version>2.0</version>
+		</dependency>
 		<dependency>
 		    <groupId>org.bouncycastle</groupId>
 		    <artifactId>bcprov-jdk18on</artifactId>
@@ -192,6 +212,11 @@
 			<version>${guava.version}</version>
 		</dependency>
 		<!-- Testing -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -519,9 +544,9 @@
 						<artifactId>dockerfile-maven-plugin</artifactId>
 						<configuration>
 							<googleContainerRegistryEnabled>false</googleContainerRegistryEnabled>
-							<finalName>gms-app</finalName>
+							<finalName>gms-app-local</finalName>
 							<tag>latest</tag>
-							<repository>gms-app</repository>
+							<repository>gms-app-local</repository>
 							<buildArgs>
 								<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
 							</buildArgs>

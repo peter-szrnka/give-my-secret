@@ -1,20 +1,20 @@
 package io.github.gms.secure.entity;
 
+import java.time.ZonedDateTime;
+
 import io.github.gms.common.abstraction.AbstractGmsEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.time.ZonedDateTime;
 
 /**
  * @author Peter Szrnka
@@ -43,7 +43,7 @@ public class MessageEntity extends AbstractGmsEntity {
 	private String message;
 	
 	@Column(name = "opened")
-	@Type(type = "org.hibernate.type.NumericBooleanType")
+	@Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
 	private boolean opened;
 	
 	@Column(name = "creation_date")

@@ -1,22 +1,22 @@
 package io.github.gms.common.filter;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.secure.service.SystemService;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.secure.service.SystemService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 
 /**
  * @author Peter Szrnka

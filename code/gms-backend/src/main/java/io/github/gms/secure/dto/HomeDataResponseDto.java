@@ -14,8 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HomeDataResponseDto {
-
+	@Builder.Default
     private AnnouncementListDto announcements = new AnnouncementListDto();
+	@Builder.Default
     private EventListDto events = new EventListDto();
     private long announcementCount;
     private long apiKeyCount;
