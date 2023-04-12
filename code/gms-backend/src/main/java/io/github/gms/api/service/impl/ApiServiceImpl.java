@@ -81,12 +81,8 @@ public class ApiServiceImpl implements ApiService {
         });
 
         SecretEntity secretEntity = secretRepository.findByUserIdAndSecretIdAndStatus(apiKeyEntity.getUserId(),
-                dto.getSecretId(), EntityStatus.ACTIVE);
-
-        if (secretEntity == null) {
-            log.warn("Secret not found");
-            throw new GmsException("Secret is not available!");
-        }
+                dto.getSecretId(), EntityStatus.ACTIVE).orElseThrow(() -> {
+                        	log.warn("Secret not found"); return new GmsException("Secret is not available!"); });
 
         List<ApiKeyRestrictionEntity> restrictions = apiKeyRestrictionRepository
                 .findAllByUserIdAndSecretId(apiKeyEntity.getUserId(), secretEntity.getId());
@@ -124,7 +120,7 @@ public class ApiServiceImpl implements ApiService {
         return processDecryptedValue(decryptedValue, secretEntity.getType());
     }
 
-    private Map<String, String> processDecryptedValue(String decryptedValue, SecretType type) {
+    private static Map<String, String> processDecryptedValue(String decryptedValue, SecretType type) {
         if (SecretType.SIMPLE_CREDENTIAL == type) {
             return Map.of(VALUE, decryptedValue);
         }

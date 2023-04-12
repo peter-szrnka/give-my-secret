@@ -1,7 +1,9 @@
 package io.github.gms.secure.repository;
 
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.secure.entity.SecretEntity;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,9 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Optional;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.secure.entity.SecretEntity;
 
 /**
  * @author Peter Szrnka
@@ -21,7 +22,7 @@ import java.util.Optional;
 @Repository
 public interface SecretRepository extends JpaRepository<SecretEntity, Long> {
 
-	SecretEntity findByUserIdAndSecretIdAndStatus(Long userId, String secretId, EntityStatus status);
+	Optional<SecretEntity> findByUserIdAndSecretIdAndStatus(Long userId, String secretId, EntityStatus status);
 
 	@Query("select s from SecretEntity s where (s.lastRotated is null or s.lastRotated <= ?1) and s.rotationEnabled = true and s.status=io.github.gms.common.enums.EntityStatus.ACTIVE") // 
 	List<SecretEntity> findAllOldRotated(ZonedDateTime input);

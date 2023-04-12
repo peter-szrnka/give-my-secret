@@ -100,7 +100,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(null);
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.empty());
 
 		// assert
 		GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecret(dto));
@@ -116,7 +116,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL)));
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
 
 		// assert
@@ -134,7 +134,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL))));
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.empty());
 
@@ -154,7 +154,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL))));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
 				TestUtils.createApiKeyRestrictionEntity(2L),
 				TestUtils.createApiKeyRestrictionEntity(3L)
@@ -178,7 +178,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 		when(userRepository.findById(anyLong())).thenReturn(createMockUser());
 
-		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(createMockSecret(expectedValue, returnDecrypted, type));
+		when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(createMockSecret(expectedValue, returnDecrypted, type))));
 		when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(

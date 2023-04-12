@@ -1,5 +1,10 @@
 package io.github.gms.auth.ldap.config;
 
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
+import static io.github.gms.common.util.Constants.CONFIG_LDAP_PASSWORD_ENCODER;
+import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
+import static io.github.gms.common.util.Constants.PASSWORD_ENCODER;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,18 +12,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP_TEST;
-import static io.github.gms.common.util.Constants.CONFIG_LDAP_PASSWORD_ENCODER;
-import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
-import static io.github.gms.common.util.Constants.PASSWORD_ENCODER;
-
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Configuration
-@Profile(value = { CONFIG_AUTH_TYPE_LDAP, CONFIG_AUTH_TYPE_LDAP_TEST })
+@Profile(value = { CONFIG_AUTH_TYPE_LDAP })
 public class LdapSecurityConfig {
 
 	@Bean(PASSWORD_ENCODER)

@@ -1,11 +1,13 @@
 package io.github.gms.auth.ldap;
 
-import io.github.gms.auth.UserAuthService;
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
+import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.LdapTemplate;
@@ -15,14 +17,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP_TEST;
-import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
+import io.github.gms.auth.UserAuthService;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.secure.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Peter Szrnka
@@ -30,7 +30,7 @@ import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
  */
 @Slf4j
 @Service
-@Profile(value = { CONFIG_AUTH_TYPE_LDAP, CONFIG_AUTH_TYPE_LDAP_TEST })
+@Profile(value = { CONFIG_AUTH_TYPE_LDAP })
 public class LdapUserAuthServiceImpl implements UserAuthService {
 
 	private final Clock clock;
