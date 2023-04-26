@@ -59,7 +59,7 @@ describe('SharedDataService', () => {
       userId: 1
     };
     mockSubject.next(currentUser);
-    mockSystemReadySubject.next({ ready: true, status: 200 });
+    mockSystemReadySubject.next({ ready: true, status: 200, authMode: 'db' });
   });
 
   it('should return OK', () => {

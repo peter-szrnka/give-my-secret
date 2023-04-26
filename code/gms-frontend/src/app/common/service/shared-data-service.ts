@@ -59,14 +59,14 @@ export class SharedDataService {
                 return of({ status: 'FAIL' } as SystemStatusDto);
               })).subscribe(response => {
                 if (response.status === "FAIL") {
-                    this.systemReadySubject$.next({ ready : false, status: 0 });
+                    this.systemReadySubject$.next({ ready : false, status: 0, authMode : response.authMode });
                     return;
                 }
 
                 this.systemReady = "OK" === response.status;
                 this.authModeSubject$.next(response.authMode);
                 this.authMode = response.authMode;
-                this.systemReadySubject$.next({ ready : this.systemReady, status: 200 });
+                this.systemReadySubject$.next({ ready : this.systemReady, status: 200, authMode : response.authMode });
             });
         }
 
