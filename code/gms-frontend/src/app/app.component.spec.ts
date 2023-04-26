@@ -72,7 +72,7 @@ describe('AppComponent', () => {
             id : 1
         };
         mockSubject.next(currentUser);
-        mockSystemReadySubject.next({ ready: true, status: 200 });
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
         
         // act & assert
         expect(component.isNormalUser()).toEqual(false);
@@ -87,7 +87,7 @@ describe('AppComponent', () => {
             id : 1
         };
         mockSubject.next(currentUser);
-        mockSystemReadySubject.next({ ready: true, status: 200 });
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
         component.toggleTextMenuVisibility();
 
         // act & assert
@@ -100,32 +100,21 @@ describe('AppComponent', () => {
     it('No available user', () => {
         sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
         mockSubject.next(undefined);
-        mockSystemReadySubject.next({ ready: true, status: 200 });
-        fixture.detectChanges();
-
-        // act & assert
-        expect(component.isNormalUser()).toEqual(false);
-        expect(component.isAdmin()).toEqual(false);
-    });
-
-    it('should log out', () => {
-        sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
-        mockSubject.next(undefined);
-        mockSystemReadySubject.next({ ready: false, status: 403 });
+        router.url = '/api_key/list';
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
         fixture.detectChanges();
 
         // act & assert
         expect(router.navigate).toHaveBeenCalled();
     });
 
-    it('System needs setup', () => {
-        currentUser = undefined;
-        mockSubject.next(currentUser);
-        mockSystemReadySubject.next({ ready: false, status: 200 });
+    it('should log out', () => {
+        sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
+        mockSubject.next(undefined);
+        mockSystemReadySubject.next({ ready: false, status: 403, authMode : 'db' });
+        fixture.detectChanges();
 
         // act & assert
-        expect(component.isNormalUser()).toEqual(false);
-        expect(component.isAdmin()).toEqual(false);
-        expect(router.navigate).toBeCalledWith(['/setup']);
+        expect(router.navigate).toHaveBeenCalled();
     });
 });

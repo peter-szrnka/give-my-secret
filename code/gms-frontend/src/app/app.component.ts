@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SystemReadyData } from './common/model/system-ready.model';
 import { User } from './components/user/model/user.model';
 import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
+import { combineLatest } from 'rxjs';
+
+const LOGIN_CALLBACK_URL = '/login';
 
 /**
  * @author Peter Szrnka
@@ -27,28 +29,26 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.splashScreenStateService.start();
-    this.sharedDataService.userSubject$.subscribe((data : User | undefined) => {
-      this.currentUser = data;
-    });
+    combineLatest([
+      this.sharedDataService.systemReadySubject$,
+      this.sharedDataService.userSubject$
+    ]).subscribe(([readyData, user]) => {
+      this.currentUser = user;
 
-    this.sharedDataService.systemReadySubject$.subscribe((readyData : SystemReadyData) => {
-      if (readyData.status !== 200) {
-        this.router.navigate(['/login']);
+      if (!readyData.ready && ['ldap'].indexOf(readyData.authMode) < 0) {
+        this.router.navigate(['/setup']);
+        return;
+      }
+
+      if (readyData.status !== 200 || (!this.currentUser && !this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
+        this.router.navigate([LOGIN_CALLBACK_URL]);
         return;
       }
 
       this.systemReady = readyData.ready;
-      if (readyData.ready || this.sharedDataService.authMode === 'ldap') {
-        return;
-      }
-      this.router.navigate(['/setup']);
     });
 
     this.sharedDataService.check();
-
-    if (this.sharedDataService.getUserInfo() === undefined) {
-        this.router.navigate(['/login']);
-    }
   }
 
   toggleTextMenuVisibility() : void {

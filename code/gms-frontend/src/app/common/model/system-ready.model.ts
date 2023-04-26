@@ -3,5 +3,6 @@
  */
 export interface SystemReadyData {
     ready : boolean,
-    status: number
+    status: number,
+    authMode : string
 }
