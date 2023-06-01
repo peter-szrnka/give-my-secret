@@ -36,7 +36,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label>Allowed roles</mat-label>
-                            <mat-chip-list #chipList aria-label="Role selection">
+                            <mat-chip-grid #chipList aria-label="Role selection">
                                 <mat-chip *ngFor="let role of data.roles" (removed)="remove(role)">
                                     {{role}}
                                     <button matChipRemove>
@@ -46,7 +46,7 @@
                                 <input placeholder="Select a role..." #roleInput [matChipInputFor]="chipList"
                                     [matAutocomplete]="auto" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                     (matChipInputTokenEnd)="add($event)">
-                            </mat-chip-list>
+                            </mat-chip-grid>
                             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
                                 <mat-option *ngFor="let role of selectableRoles" [value]="role">
                                     {{role}}
