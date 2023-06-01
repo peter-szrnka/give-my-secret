@@ -8,5 +8,6 @@ if (environment.production) {
   enableProdMode();
 }
 
+// TODO Use standalone component with bootstrapApplication(Appcomponent)
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));
