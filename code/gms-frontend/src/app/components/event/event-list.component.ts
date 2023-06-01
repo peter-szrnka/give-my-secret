@@ -1,7 +1,7 @@
 
 import {  Component } from "@angular/core";
 
-import {MatDialog} from '@angular/material/dialog';
+import { MatDialog} from '@angular/material/dialog';
 import { ActivatedRoute, Router } from "@angular/router";
 import { PageConfig } from "../../common/model/common.model";
 import { Event, PAGE_CONFIG_EVENT } from "./model/event.model";
