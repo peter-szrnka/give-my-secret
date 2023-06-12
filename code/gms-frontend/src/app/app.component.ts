@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
 
   currentUser: User | undefined;
   systemReady: boolean;
-  showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') || 'true');
+  showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') ?? 'true');
 
   constructor(
     private router: Router, 
@@ -65,6 +65,6 @@ export class AppComponent implements OnInit {
   }
 
   roleCheck(currentUser: User, roleName: string): boolean {
-    return currentUser !== undefined && currentUser.roles !== undefined && currentUser.roles.filter(role => role === roleName).length > 0;
+    return currentUser?.roles?.filter(role => role === roleName).length > 0;
   }
 }

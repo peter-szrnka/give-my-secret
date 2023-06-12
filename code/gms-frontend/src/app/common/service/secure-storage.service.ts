@@ -11,7 +11,8 @@ const options = { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 };
 export class SecureStorageService {
 
     getItem(key : string) : string {
-        return CryptoJS.AES.decrypt(CryptoJS.lib.CipherParams.create({ciphertext: CryptoJS.enc.Base64.parse(localStorage.getItem(key) || '')}), secret_key, options).toString(CryptoJS.enc.Utf8)
+        return CryptoJS.AES.decrypt(CryptoJS.lib.CipherParams.create({ciphertext: CryptoJS.enc.Base64.parse(localStorage.getItem(key) ?? '')}), secret_key, options)
+            .toString(CryptoJS.enc.Utf8)
     }
 
     setItem(key : string, data : string) : void {

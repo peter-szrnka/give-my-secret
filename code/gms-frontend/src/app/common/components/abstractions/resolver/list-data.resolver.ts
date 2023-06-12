@@ -26,8 +26,8 @@ export abstract class ListResolver<T, L extends BaseList<T>, S extends ServiceBa
         return this.service.list({
             direction: "DESC",
             property : this.getOrderProperty(),
-            page : route.queryParams['page'] || 0,
-            size: JSON.parse(localStorage.getItem(this.getPageConfig().scope + "_pageSize") || '25')
+            page : route.queryParams['page'] ?? 0,
+            size: JSON.parse(localStorage.getItem(this.getPageConfig().scope + "_pageSize") ?? '25')
         }).pipe(catchError(() => this.sharedData.clearDataAndReturn([])), (data) => {
             this.splashScreenStateService.stop();
             return data;

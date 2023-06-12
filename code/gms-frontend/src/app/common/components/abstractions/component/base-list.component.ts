@@ -22,7 +22,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     public tableConfig = {
       count : 0,
       pageIndex : 0,
-      pageSize : localStorage.getItem(this.getPageConfig().scope + "_pageSize") || 25
+      pageSize : localStorage.getItem(this.getPageConfig().scope + "_pageSize") ?? 25
     };
 
     constructor(
