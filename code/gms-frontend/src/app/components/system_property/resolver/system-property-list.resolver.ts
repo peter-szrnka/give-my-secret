@@ -23,7 +23,7 @@ export class SystemPropertyListResolver implements Resolve<any> {
             direction: "DESC",
             property : "key",
             page : 0,
-            size: JSON.parse(localStorage.getItem("system_property_pageSize") || '25')
+            size: JSON.parse(localStorage.getItem("system_property_pageSize") ?? '25')
         }).pipe(catchError(() => this.sharedData.clearDataAndReturn([])), (data) => {
             this.splashScreenStateService.stop();
             return data;

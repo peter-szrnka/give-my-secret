@@ -74,7 +74,7 @@ export class SharedDataService {
     }
 
     getUserInfo(): User | undefined {
-        const currentUserData : string = localStorage.getItem('currentUser') || '';
+        const currentUserData : string = localStorage.getItem('currentUser') ?? '';
 
         if (currentUserData === '') {
             return undefined;
