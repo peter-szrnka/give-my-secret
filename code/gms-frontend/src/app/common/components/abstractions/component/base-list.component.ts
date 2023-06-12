@@ -80,7 +80,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     }
 
     private reloadPage() : void {
-      this.router.navigate(['/' + this.getPageConfig().scope + "/list"], { queryParams : { "page" : this.tableConfig.pageIndex }});
+      void this.router.navigate(['/' + this.getPageConfig().scope + "/list"], { queryParams : { "page" : this.tableConfig.pageIndex }});
     }
 
     private initDefaultDataTable() {

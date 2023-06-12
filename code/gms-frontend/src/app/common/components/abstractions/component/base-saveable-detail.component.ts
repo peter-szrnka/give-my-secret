@@ -70,7 +70,7 @@ export abstract class BaseSaveableDetailComponent<T, S extends SaveServiceBase<T
             return;
           }
 
-          this.router.navigate(['/' + this.getPageConfig().scope + '/list']);
+          void this.router.navigate(['/' + this.getPageConfig().scope + '/list']);
         });
     }
 }

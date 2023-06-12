@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
                 const currentUser : User = response as unknown as User;
                 this.splashScreenStateService.stop();
                 this.sharedDataService.setCurrentUser(currentUser);
-                this.router.navigate(['']);
+                void this.router.navigate(['']);
             });
     }
 
