@@ -118,7 +118,7 @@ export class SystemPropertyListComponent {
         return;
       }
 
-      this.service.delete(key).subscribe(() => this.router.navigate(['/system_property/list']));
+      this.service.delete(key).subscribe(() => void this.router.navigate(['/system_property/list']));
     });
   }
 
@@ -132,7 +132,7 @@ export class SystemPropertyListComponent {
         return;
       }
 
-      this.router.navigate(['/system_property/list']);
+      void this.router.navigate(['/system_property/list']);
     });
   }
 

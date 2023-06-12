@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
 
   currentUser: User | undefined;
   systemReady: boolean;
-  showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') || 'true');
+  showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') ?? 'true');
 
   constructor(
     private router: Router, 
@@ -36,12 +36,12 @@ export class AppComponent implements OnInit {
       this.currentUser = user;
 
       if (!readyData.ready && ['ldap'].indexOf(readyData.authMode) < 0) {
-        this.router.navigate(['/setup']);
+        void this.router.navigate(['/setup']);
         return;
       }
 
       if (readyData.status !== 200 || (!this.currentUser && !this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
-        this.router.navigate([LOGIN_CALLBACK_URL]);
+        void this.router.navigate([LOGIN_CALLBACK_URL]);
         return;
       }
 
@@ -65,6 +65,6 @@ export class AppComponent implements OnInit {
   }
 
   roleCheck(currentUser: User, roleName: string): boolean {
-    return currentUser !== undefined && currentUser.roles !== undefined && currentUser.roles.filter(role => role === roleName).length > 0;
+    return currentUser?.roles?.filter(role => role === roleName).length > 0;
   }
 }

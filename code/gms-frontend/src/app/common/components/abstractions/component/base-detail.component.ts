@@ -50,7 +50,7 @@ export abstract class BaseDetailComponent<T, S extends ServiceBase<T, BaseList<T
         return;
       }
 
-      this.router.navigate(['/' + this.getPageConfig().scope + '/list']);
+      void this.router.navigate(['/' + this.getPageConfig().scope + '/list']);
     });
   }
 }

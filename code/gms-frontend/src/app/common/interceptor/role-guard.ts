@@ -29,7 +29,7 @@ export class RoleGuard implements CanActivate {
         const checkResult = checker(roles, currentUser.roles);
 
         if (checkResult === false) {
-            this.router.navigate(['']);
+            void this.router.navigate(['']);
             return false;
         }
 

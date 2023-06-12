@@ -36,7 +36,7 @@ export class SetupComponent {
             error: (err) => {
                 this.splashScreenService.stop();
                 if (err.status === 404) {
-                     this.router.navigate(['']);
+                    void this.router.navigate(['']);
                 } else {
                     this.errorMessage = getErrorMessage(err);
                 }

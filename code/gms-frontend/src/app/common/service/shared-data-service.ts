@@ -40,7 +40,7 @@ export class SharedDataService {
             return;
         }
 
-        this.router.navigate(['/login']);
+        void this.router.navigate(['/login']);
 
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         this.authService.logout().subscribe(() => {
