@@ -86,7 +86,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
   }
 
   uploadFileEvt(imgFile: any) {
-    if (imgFile.target.files?.[0]) {
+    if (imgFile.target.files[0]) {
       this.fileAttr = '';
       Array.from(imgFile.target.files).forEach((file: any) => {
         this.fileAttr += file.name + ' - ';

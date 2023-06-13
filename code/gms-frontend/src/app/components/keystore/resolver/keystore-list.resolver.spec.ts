@@ -61,7 +61,10 @@ describe('KeystoreListResolver', () => {
         expect(resolver).toBeTruthy()
     });
 
-    it('should return existing entity', async() => {
+    it.each([
+        [25],
+        [-1]
+    ])('should return existing entity', async(localStorageItemSize : number) => {
         const route : any = jest.fn();
         activatedRouteSnapshot = {
             "params" : {
@@ -72,11 +75,17 @@ describe('KeystoreListResolver', () => {
             }
         }
 
+        if (localStorageItemSize === -1) {
+            localStorage.setItem('keystore_pageSize', '25');
+        }
+
         resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
             expect(splashScreenStateService.start).toBeCalled();
             expect(splashScreenStateService.stop).toBeCalled();
         });
+
+        localStorage.removeItem('keystore_pageSize');
     });
 });

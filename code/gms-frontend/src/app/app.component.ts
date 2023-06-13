@@ -65,6 +65,6 @@ export class AppComponent implements OnInit {
   }
 
   roleCheck(currentUser: User, roleName: string): boolean {
-    return currentUser?.roles?.filter(role => role === roleName).length > 0;
+    return currentUser.roles?.filter(role => role === roleName).length > 0;
   }
 }

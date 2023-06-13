@@ -189,9 +189,12 @@ describe('KeystoreDetailComponent', () => {
          expect(component.fileInput.nativeElement.value).not.toEqual('');
     });
 
-    it('should download file', () => {
+    it.each([
+        ["test"], [undefined]
+    ])('should download file', (fileName : string | undefined) => {
         configureTestBed();
         component.fileInput = mockElementRef;
+        component.data.fileName = fileName;
 
         // act
         component.downloadKeystore();

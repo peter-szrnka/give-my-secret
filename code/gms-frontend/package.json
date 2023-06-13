@@ -11,7 +11,8 @@
     "test": "jest --config=jest.config.js --silent=false",
     "clearTestCache": "jest --clearCache",
     "coverage": "test --coverage --detectOpenHandles",
-    "lint": "eslint --ext .ts . --fix"
+    "lint": "eslint --ext .ts",
+    "lint:fix": "eslint --ext .ts . --fix"
   },
   "private": true,
   "dependencies": {
