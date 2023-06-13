@@ -2,8 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ActivatedRoute, Data } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
@@ -17,7 +16,7 @@ import { KeystoreListComponent } from "./keystore-list.component";
  */
 describe('KeystoreListComponent', () => {
     let component : KeystoreListComponent;
-    const currentUser : User | any = {
+    const currentUser : User = {
         roles :  ["ROLE_USER" ]
     };
     // Injected services
@@ -27,19 +26,21 @@ describe('KeystoreListComponent', () => {
     let activatedRoute : any = {};
     // Fixtures
     let fixture : ComponentFixture<KeystoreListComponent>;
+    let router : any;
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            imports : [ AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
             declarations : [KeystoreListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : KeystoreService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
                 { provide : ActivatedRoute, useClass : activatedRoute }
             ]
-        }).compileComponents();
+        });
     };
 
     beforeEach(() => {
@@ -72,6 +73,10 @@ describe('KeystoreListComponent', () => {
 
         service = {
             delete : jest.fn().mockReturnValue(of("OK"))
+        };
+
+        router = {
+            navigate : jest.fn()
         };
     });
 

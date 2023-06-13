@@ -2,8 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { MatTableModule } from "@angular/material/table";
-import { ActivatedRoute, Data } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { User } from "../user/model/user.model";
@@ -24,15 +23,17 @@ describe('AnnouncementListComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
+    let router : any;
     // Fixtures
     let fixture : ComponentFixture<AnnouncementListComponent>;
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, MatTableModule, PipesModule ],
+            imports : [MatTableModule, PipesModule ],
             declarations : [AnnouncementListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : AnnouncementService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
@@ -72,6 +73,10 @@ describe('AnnouncementListComponent', () => {
         service = {
             delete : jest.fn().mockReturnValue(of("OK")),
             toggle : jest.fn().mockReturnValue(of())
+        };
+
+        router = {
+            navigate : jest.fn()
         };
     });
 

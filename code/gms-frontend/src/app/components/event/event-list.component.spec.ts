@@ -2,8 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ActivatedRoute, Data } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
@@ -25,21 +24,23 @@ describe('EventListComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
+    let router : any;
     // Fixtures
     let fixture : ComponentFixture<EventListComponent>;
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            imports : [ AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
             declarations : [EventListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : EventService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
                 { provide : ActivatedRoute, useClass : activatedRoute }
             ]
-        }).compileComponents();
+        });
     };
 
     beforeEach(() => {
@@ -72,6 +73,10 @@ describe('EventListComponent', () => {
 
         service = {
             delete : jest.fn().mockReturnValue(of("OK"))
+        };
+
+        router = {
+            navigate : jest.fn()
         };
     });
 
