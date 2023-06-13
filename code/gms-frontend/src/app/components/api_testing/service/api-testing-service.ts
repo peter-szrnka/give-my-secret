@@ -12,8 +12,8 @@ export class ApiTestingService {
 
     constructor(private http : HttpClient) {}
 
-    getSecretValue(secretId : string, apiKey : string): Observable<CredentialApiResponse|any> {
-        return this.http.get<CredentialApiResponse|any>(environment.baseUrl + 'api/secret/' + secretId, { 
+    getSecretValue(secretId : string, apiKey : string): Observable<CredentialApiResponse | { [key:string] : string } > {
+        return this.http.get<CredentialApiResponse | { [key:string] : string }>(environment.baseUrl + 'api/secret/' + secretId, { 
             withCredentials: true, headers : new HttpHeaders().set('x-api-key', [ apiKey ])
         });
     }

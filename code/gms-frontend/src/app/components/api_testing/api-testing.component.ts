@@ -37,7 +37,7 @@ export class ApiTestingComponent implements OnInit {
         this.apiResponse = undefined;
         this.service.getSecretValue(this.secretId, this.apiKey)
             .subscribe({
-                next: (response : CredentialApiResponse | any) => {
+                next: (response : CredentialApiResponse | { [key:string] : string }) => {
                     this.apiResponse = JSON.stringify(response);
 
                     this.secureStorageService.setItem('apiKey', this.apiKey);
