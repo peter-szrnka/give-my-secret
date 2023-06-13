@@ -40,4 +40,21 @@ describe("ApiTestingService", () => {
         req.flush(mockResponse);
         httpMock.verify();
     });
+
+    it('Should return complex value', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "api/secret/secret-id";
+      const mockResponse : { [key:string] : string } = { user : "john.doe", credential : "test-value" };
+
+      //act
+      service.getSecretValue("secret-id", "api-key").subscribe((res) => {
+          expect(res).toBe(mockResponse);
+      });
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+      httpMock.verify();
+  });
 });
