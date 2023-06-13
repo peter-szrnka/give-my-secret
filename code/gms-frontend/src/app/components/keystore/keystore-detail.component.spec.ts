@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ActivatedRoute, Data } from "@angular/router";
+import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -27,6 +27,7 @@ describe('KeystoreDetailComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
+    let router : any;
     // Fixtures
     let fixture : ComponentFixture<KeystoreDetailComponent>;
     let mockElementRef : any;
@@ -34,17 +35,18 @@ describe('KeystoreDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, FormsModule, BrowserAnimationsModule, AngularMaterialModule, PipesModule ],
+            imports : [ FormsModule, BrowserAnimationsModule, AngularMaterialModule, PipesModule ],
             declarations : [KeystoreDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : KeystoreService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide: ElementRef, useValue: mockElementRef }
             ]
-        }).compileComponents();
+        });
 
         fixture = TestBed.createComponent(KeystoreDetailComponent);
         component = fixture.componentInstance;
@@ -79,6 +81,10 @@ describe('KeystoreDetailComponent', () => {
 
         service = {
             save : jest.fn().mockReturnValue(of({ entityId: 1 } as IEntitySaveResponseDto))
+        };
+
+        router = {
+            navigate : jest.fn()
         };
     });
 

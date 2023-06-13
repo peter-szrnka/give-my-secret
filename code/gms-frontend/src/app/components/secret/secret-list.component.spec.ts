@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ActivatedRoute, Data } from "@angular/router";
+import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -27,6 +27,7 @@ describe('SecretListComponent', () => {
     let sharedDataService : any;
     let activatedRoute : any = {};
     let clipboardService : any;
+    let router : any;
     // Fixtures
     let fixture : ComponentFixture<SecretListComponent>;
 
@@ -36,6 +37,7 @@ describe('SecretListComponent', () => {
             declarations : [SecretListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SecretService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
@@ -83,6 +85,10 @@ describe('SecretListComponent', () => {
 
         clipboardService = {
             copyValue : jest.fn()
+        };
+
+        router = {
+            navigate : jest.fn()
         };
     });
 
