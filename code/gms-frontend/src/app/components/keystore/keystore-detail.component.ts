@@ -86,7 +86,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
   }
 
   uploadFileEvt(imgFile: any) {
-    if (imgFile.target.files && imgFile.target.files[0]) {
+    if (imgFile.target.files[0]) {
       this.fileAttr = '';
       Array.from(imgFile.target.files).forEach((file: any) => {
         this.fileAttr += file.name + ' - ';
@@ -107,7 +107,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
     document.body.appendChild(link);
     link.setAttribute('style', 'display: none');
     link.href = environment.baseUrl + "secure/keystore/download/" + this.data.id;
-    link.download = this.data.fileName || "keystore.jks";
+    link.download = this.data.fileName ?? "keystore.jks";
     link.click();
 
     document.body.removeChild(link);

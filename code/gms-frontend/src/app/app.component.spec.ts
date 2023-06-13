@@ -21,6 +21,22 @@ describe('AppComponent', () => {
     let mockSubject : ReplaySubject<User | undefined>;
     let mockSystemReadySubject : ReplaySubject<SystemReadyData>;
 
+    const configureTestBed = () => {
+        TestBed.configureTestingModule({
+            declarations : [AppComponent],
+            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+            providers: [
+                { provide : SharedDataService, useValue : sharedDataService },
+                { provide : SplashScreenStateService, useValue : splashScreenStateService },
+                { provide : Router, useValue : router }
+            ]
+        });
+
+        fixture = TestBed.createComponent(AppComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    };
+
     beforeEach(() => {
         router = {
             navigate : jest.fn().mockReturnValue(of(true))
@@ -43,25 +59,10 @@ describe('AppComponent', () => {
         splashScreenStateService = {
             start : jest.fn()
         };
-
-        TestBed.configureTestingModule({
-            //imports : [RouterTestingModule],
-            declarations : [AppComponent],
-            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-            providers: [
-                { provide : SharedDataService, useValue : sharedDataService },
-                { provide : SplashScreenStateService, useValue : splashScreenStateService },
-                { provide : Router, useValue : router }
-            ]
-        });
-
-        fixture = TestBed.createComponent(AppComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
     });
 
     it('Should create component', () => {
-        fixture.detectChanges();
+        configureTestBed();
         expect(component).toBeTruthy();
     });
 
@@ -71,6 +72,7 @@ describe('AppComponent', () => {
             username : "test1",
             id : 1
         };
+        configureTestBed();
         mockSubject.next(currentUser);
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
         
@@ -79,13 +81,16 @@ describe('AppComponent', () => {
         expect(component.isAdmin()).toEqual(true);
     });
 
-    it('User is a normal user', () => {
-        localStorage.setItem('showTextsInSidevNav', 'true');
+    it.each([
+        [true], [false]
+    ])('User is a normal user', (showTexts : boolean) => {
+        localStorage.setItem('showTextsInSidevNav', showTexts.toString());
         currentUser = {
             roles : ["ROLE_USER"],
             username : "test1",
             id : 1
         };
+        configureTestBed();
         mockSubject.next(currentUser);
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
         component.toggleTextMenuVisibility();
@@ -93,12 +98,28 @@ describe('AppComponent', () => {
         // act & assert
         expect(component.isNormalUser()).toEqual(true);
         expect(component.isAdmin()).toEqual(false);
-        expect(component.showTexts).toBeFalsy();
+        expect(component.showTexts).toEqual(!showTexts);
         localStorage.removeItem('showTextsInSidevNav');
+    });
+
+    it('No roles provided', () => {
+        currentUser = {
+            username : "test1",
+            id : 1
+        };
+        configureTestBed();
+        mockSubject.next(currentUser);
+        router.url = '/api_key/list';
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        fixture.detectChanges();
+
+        // act & assert
+        expect(router.navigate).toHaveBeenCalledTimes(0);
     });
 
     it('No available user', () => {
         sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
+        configureTestBed();
         mockSubject.next(undefined);
         router.url = '/api_key/list';
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
@@ -110,6 +131,7 @@ describe('AppComponent', () => {
 
     it('should log out', () => {
         sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
+        configureTestBed();
         mockSubject.next(undefined);
         mockSystemReadySubject.next({ ready: false, status: 403, authMode : 'db' });
         fixture.detectChanges();

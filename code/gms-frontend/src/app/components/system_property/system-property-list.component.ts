@@ -48,7 +48,7 @@ export class SystemPropertyListComponent {
   public tableConfig = {
     count : 0,
     pageIndex : 0,
-    pageSize : localStorage.getItem("system_property_pageSize") || 25
+    pageSize : localStorage.getItem("system_property_pageSize") ?? 25
   };
 
   constructor(

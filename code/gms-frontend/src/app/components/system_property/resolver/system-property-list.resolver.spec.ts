@@ -64,7 +64,10 @@ describe('SystemPropertyListResolver', () => {
         expect(resolver).toBeTruthy();
     });
 
-    it('should return existing entity', async() => {
+    it.each([
+        [25],
+        [-1]
+    ])('should return existing entity', async(localStorageItemSize : number) => {
         const route : any = jest.fn();
         configureTestBed();
         activatedRouteSnapshot = {
@@ -74,6 +77,10 @@ describe('SystemPropertyListResolver', () => {
             "queryParams" : {
                 "page" : "0"
             }
+        };
+
+        if (localStorageItemSize === -1) {
+            localStorage.setItem('system_property_pageSize', '25');
         }
 
         resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
@@ -82,6 +89,8 @@ describe('SystemPropertyListResolver', () => {
             expect(splashScreenStateService.start).toBeCalled();
             expect(splashScreenStateService.stop).toBeCalled();
         });
+
+        localStorage.removeItem('system_property_pageSize');
     });
 
     it('should handle error', async() => {
