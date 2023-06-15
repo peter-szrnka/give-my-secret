@@ -13,7 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<backend.buildname>gms-app</backend.buildname>
 		<spring-boot.version>3.0.1</spring-boot.version>
-		<guava.version>31.1-jre</guava.version>
+		<guava.version>32.0.0-jre</guava.version>
 		<maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
 		<flyway.version>9.8.1</flyway.version>
 		<!-- Testing & code quality -->
