@@ -21,14 +21,18 @@
           No announcements found!
         </div>
         <mat-card class="gms-card-right" *ngFor="let announcement of data.announcements.resultList">
-          <mat-card-title><mat-icon matListIcon>announcement</mat-icon> <span class="announcement-title">{{announcement.title}}</span></mat-card-title>
+          
           <mat-card-content>
+            <mat-card-title>
+              <mat-icon matListIcon>announcement</mat-icon> <span class="announcement-title">{{announcement.title}}</span>
+            </mat-card-title>
             {{announcement.description}}
+
+            <mat-card-footer class="announcement-footer">
+              <hr />
+              {{announcement.announcementDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}
+            </mat-card-footer>
           </mat-card-content>
-          <mat-card-footer class="announcement-footer">
-            <hr />
-            {{announcement.announcementDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}
-          </mat-card-footer>
         </mat-card>
       </div>
     </div>
