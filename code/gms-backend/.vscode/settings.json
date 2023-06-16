@@ -1,0 +1,8 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "sonarlint.connectedMode.project": {
+        "connectionId": "peter-szrnka",
+        "projectKey": "peter-szrnka_give-my-secret-backend"
+    }
+}
