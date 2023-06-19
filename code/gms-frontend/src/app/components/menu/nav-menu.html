@@ -2,39 +2,45 @@
     <mat-list role="list">
         <mat-list-item class="side-menu-list-item" [routerLink]="''">
           <mat-icon matListIcon>home</mat-icon>
-          <span matLine *ngIf="showTexts"> Home </span>
+          <span matLine *ngIf="showTexts" (click)="handleClick()"> Home </span>
         </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'secret/list'" *ngIf="!isAdmin()">
+        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'secret/list'" (click)="handleClick()" *ngIf="!isAdmin()">
           <mat-icon matListIcon>key</mat-icon>
           <span matLine *ngIf="showTexts"> Secrets </span>
         </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'apikey/list'" *ngIf="!isAdmin()">
+        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'apikey/list'" (click)="handleClick()" *ngIf="!isAdmin()">
           <mat-icon matListIcon>security</mat-icon>
           <span matLine *ngIf="showTexts"> API keys </span>
         </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'keystore/list'" *ngIf="!isAdmin()">
+        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'keystore/list'" (click)="handleClick()" *ngIf="!isAdmin()">
           <mat-icon matListIcon>widgets</mat-icon>
           <span matLine *ngIf="showTexts"> Keystores </span>
         </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'api-testing'" *ngIf="!isAdmin()">
+        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'api-testing'" (click)="handleClick()" *ngIf="!isAdmin()">
           <mat-icon matListIcon>speaker_phone</mat-icon>
           <span matLine *ngIf="showTexts"> API Testing </span>
         </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'user/list'" *ngIf="isAdmin()">
+        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'user/list'" (click)="handleClick()" *ngIf="isAdmin()">
           <mat-icon matListIcon>face</mat-icon>
           <h3 matLine *ngIf="showTexts"> Users </h3>
         </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'system_property/list'" *ngIf="isAdmin()">
+        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'system_property/list'" (click)="handleClick()" *ngIf="isAdmin()">
           <mat-icon matListIcon>settings</mat-icon>
           <h3 matLine *ngIf="showTexts"> System properties </h3>
         </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'announcement/list'" *ngIf="isAdmin()">
+        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'announcement/list'" (click)="handleClick()" *ngIf="isAdmin()">
           <mat-icon matListIcon>announcement</mat-icon>
           <h3 matLine *ngIf="showTexts"> Announcements </h3>
         </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'event/list'" *ngIf="isAdmin()">
+        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'event/list'" (click)="handleClick()" *ngIf="isAdmin()">
           <mat-icon matListIcon>event</mat-icon>
           <h3 matLine *ngIf="showTexts"> Events </h3>
+        </mat-list-item>
+      </mat-list>
+
+      <mat-list class="nav-toggle-btn" *ngIf="enableBottomToggle">
+        <mat-list-item>
+            <mat-icon matListIcon  (click)="toggleTextMenuVisibility()">{{showTexts ? 'arrow_back_ios' : 'arrow_forward_ios'}}</mat-icon>
         </mat-list-item>
       </mat-list>
 </div>

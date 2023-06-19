@@ -1,4 +1,5 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
+import { SharedDataService } from "../../common/service/shared-data-service";
 
 /**
  * @author Peter Szrnka
@@ -10,10 +11,23 @@ import { Component } from "@angular/core";
 })
 export class NavMenuComponent {
 
-    showTexts: boolean = true;
+    @Input() showTexts: boolean = true;
+    @Input() enableBottomToggle : boolean = false;
     admin: boolean = false;
+
+    constructor(private sharedDataService : SharedDataService) {
+    }
 
     isAdmin(): boolean {
         return this.admin;
     }
+
+    handleClick() : void {
+        this.sharedDataService.showLargeMenuEvent.emit(false);
+    }
+
+    toggleTextMenuVisibility() : void {
+        this.showTexts = !this.showTexts;
+        localStorage.setItem('showTextsInSidevNav', '' + this.showTexts);
+      }
 }

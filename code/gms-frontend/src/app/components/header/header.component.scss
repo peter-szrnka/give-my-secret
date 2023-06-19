@@ -34,6 +34,18 @@
   }
 }
 
+@media screen and (min-width: 700px) and (max-width: 799px) {
+  .full-screen-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 65px;
+    bottom: 0;
+    background-color: white;
+    z-index: 200;
+  }
+}
+
 @media screen and (min-width: 700px) {
   .show-small {
     display: none;

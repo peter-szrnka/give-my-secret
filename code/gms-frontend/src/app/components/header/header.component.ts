@@ -28,6 +28,7 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.sharedDataService.showLargeMenuEvent.subscribe((result : boolean) => this.showLargeMenu = result);
         this.sharedDataService.messageCountUpdateEvent.subscribe(() => this.getAllUnread());
         this.sharedDataService.userSubject$.subscribe(user => this.currentUser = user);
         this.router.events.pipe(filter(event => (event instanceof NavigationEnd))).subscribe((event) => {
