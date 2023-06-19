@@ -18,18 +18,26 @@
           <td mat-cell *matCellDef="let element"> {{element.title}} </td>
         </ng-container>
         <ng-container matColumnDef="announcementDate">
-          <th mat-header-cell *matHeaderCellDef>Announcement date</th>
-          <td mat-cell *matCellDef="let element"> {{element.announcementDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
+          <th mat-header-cell *matHeaderCellDef class="show-large">Announcement date</th>
+          <td mat-cell *matCellDef="let element" class="show-large"> {{element.announcementDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
         </ng-container>
         <ng-container matColumnDef="operations">
           <th mat-header-cell *matHeaderCellDef>Operations</th>
           <td mat-cell *matCellDef="let element">&nbsp;
-            <button mat-icon-button color="primary" [routerLink]="'/announcement/' + element.id">
-              <mat-icon aria-hidden="false">edit</mat-icon>
+            <button mat-icon-button class="show-small" [matMenuTriggerFor]="menu"
+              aria-label="Operations menu">
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="promptDelete(element.id)">
-              <mat-icon aria-hidden="false">delete</mat-icon>
-            </button>
+            <mat-menu #menu="matMenu" class="show-small">
+              <button mat-menu-item color="primary" [routerLink]="'/announcement/' + element.id">
+                <mat-icon aria-hidden="false">edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item color="warn" (click)="promptDelete(element.id)">
+                <mat-icon aria-hidden="false">delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
           </td>
         </ng-container>
       </table>

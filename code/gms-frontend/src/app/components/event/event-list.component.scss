@@ -1,3 +1,15 @@
 .error {
   border: 1px solid #ff0000;
 }
+
+@media screen and (max-width: 899px) {
+  .show-large {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .show-small {
+    display: none;
+  }
+}

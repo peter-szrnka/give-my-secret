@@ -1,11 +1,13 @@
 <div>
   <mat-toolbar color="primary">
-    <span>Give My Secret</span>
+    <span class="show-large">Give My Secret</span>
+    <span class="show-small">GMS</span>
     <span class="spacer"></span>
 
-    <span *ngIf="isProd === false" class="label_env">Development mode</span>
+    <span *ngIf="isProd === false" class="label_env show-large">Development mode</span>
+    <span *ngIf="isProd === false" class="label_env show-small">Dev</span>
     <button mat-button [matMenuTriggerFor]="menu">
-      <mat-icon aria-hidden="false" aria-label="Current user">person</mat-icon> {{currentUser?.username}}
+      <mat-icon aria-hidden="false" aria-label="Current user">person</mat-icon> <span class="show-large">{{currentUser?.username}}</span>
     </button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item [routerLink]="'/settings'">
@@ -19,7 +21,7 @@
       <mat-icon matListIcon class="messages-0" *ngIf="unreadMessageCount === 0">drafts</mat-icon>
     </button>
     <button mat-button mat-raised (click)="logout()">
-      <mat-icon aria-hidden="false" aria-label="Current user">exit_to_app</mat-icon>Logout
+      <mat-icon aria-hidden="false" aria-label="Current user">exit_to_app</mat-icon><span class="show-large">Logout</span>
     </button>
   </mat-toolbar>
 </div>

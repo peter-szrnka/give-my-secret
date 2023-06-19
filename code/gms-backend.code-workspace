@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "gms-backend"
+		},
+		{
+			"path": "gms-frontend"
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
+}

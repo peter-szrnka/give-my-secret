@@ -27,8 +27,8 @@
           <td mat-cell *matCellDef="let element"> {{element.type}} </td>
         </ng-container>
         <ng-container matColumnDef="lastModified">
-          <th mat-header-cell *matHeaderCellDef>Last modified</th>
-          <td mat-cell *matCellDef="let element"> {{element.lastModified | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
+          <th mat-header-cell *matHeaderCellDef class="show-large">Last modified</th>
+          <td mat-cell *matCellDef="let element" class="show-large"> {{element.lastModified | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
         </ng-container>
         <ng-container matColumnDef="operations">
           <th mat-header-cell *matHeaderCellDef>Operations</th>
