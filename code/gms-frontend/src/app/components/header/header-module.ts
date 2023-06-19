@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { HeaderComponent } from "./header.component";
+import { NavMenuModule } from "../menu/nav-menu.module";
 
 /**
  * @author Peter Szrnka
@@ -18,7 +19,8 @@ import { HeaderComponent } from "./header.component";
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,
-        AppRoutingModule
+        AppRoutingModule,
+        NavMenuModule
     ],
     providers: [],
     exports : [ HeaderComponent ]

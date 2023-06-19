@@ -30,6 +30,7 @@ import { HomeModule } from './components/home/home-module';
 import { HeaderModule } from './components/header/header-module';
 import { PipesModule } from './common/components/pipes/pipes.module';
 import { SystemPropertyModule } from './components/system_property/system-property-module';
+import { NavMenuModule } from './components/menu/nav-menu.module';
 
 /**
  * @author Peter Szrnka
@@ -55,6 +56,7 @@ import { SystemPropertyModule } from './components/system_property/system-proper
     GmsComponentsModule,
     
     // Main application modules
+    NavMenuModule,
     HomeModule,
     SetupModule,
     LoginModule,

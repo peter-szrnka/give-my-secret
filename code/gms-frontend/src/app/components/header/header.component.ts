@@ -19,6 +19,7 @@ export class HeaderComponent implements OnInit {
     unreadMessageCount  = 0;
 
     isProd : boolean = environment.production;
+    showLargeMenu : boolean = false;
 
     constructor(
         public router: Router, 
@@ -41,6 +42,10 @@ export class HeaderComponent implements OnInit {
     logout() : void {
         this.currentUser = undefined;
         this.sharedDataService.logout();
+    }
+
+    toggleMenu() : void {
+        this.showLargeMenu = !this.showLargeMenu;
     }
 
     private getAllUnread() : void {

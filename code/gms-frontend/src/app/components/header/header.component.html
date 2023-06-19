@@ -1,7 +1,10 @@
 <div>
   <mat-toolbar color="primary">
     <span class="show-large">Give My Secret</span>
-    <span class="show-small">GMS</span>
+    
+    <button mat-icon-button color="default" class="show-small" (click)="toggleMenu()">
+      <mat-icon aria-hidden="false">{{showLargeMenu ? 'menu_opened' : 'menu'}}</mat-icon>
+    </button><span class="show-small">GMS</span>
     <span class="spacer"></span>
 
     <span *ngIf="isProd === false" class="label_env show-large">Development mode</span>
@@ -24,4 +27,8 @@
       <mat-icon aria-hidden="false" aria-label="Current user">exit_to_app</mat-icon><span class="show-large">Logout</span>
     </button>
   </mat-toolbar>
+
+  <div class="full-screen-menu" *ngIf="showLargeMenu === true">
+    <nav-menu></nav-menu>
+  </div>
 </div>
