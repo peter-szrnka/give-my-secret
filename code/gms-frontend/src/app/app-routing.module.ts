@@ -41,6 +41,10 @@ const listRouteBuilder = (scope : string, component : Type<any>, resolver : Type
   return { path: scope + '/list', component : component, data : { 'roles' : roles }, canActivate: [ ROLE_GUARD ], resolve: { 'data' : resolver }, runGuardsAndResolvers: 'always' };
 };
 
+const listRouteBuilderV2 = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
+  return { path: scope + '/list', component : component, data : { 'roles' : roles }, canActivate: [ ROLE_GUARD ], resolve: { 'data' : () => inject(resolver).resolve() }, runGuardsAndResolvers: 'always' };
+};
+
 const detailRouteBuilder = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
   return { path: scope + '/:id', component : component, data : { 'roles' : roles }, canActivate: [ ROLE_GUARD ], resolve: { 'entity' : resolver } };
 };
@@ -66,7 +70,7 @@ const routes: Routes = [
   listRouteBuilder('event', EventListComponent, EventListResolver, ROLES_ADMIN),
   listRouteBuilder('announcement', AnnouncementListComponent, AnnouncementListResolver, ROLES_ADMIN),
   detailRouteBuilder('announcement', AnnouncementDetailComponent, AnnouncementDetailResolver, ROLES_ADMIN),
-  listRouteBuilder('system_property', SystemPropertyListComponent, SystemPropertyListResolver, ROLES_ADMIN),
+  listRouteBuilderV2('system_property', SystemPropertyListComponent, SystemPropertyListResolver, ROLES_ADMIN),
 
   // Common functions
   { path: 'messages', component: MessageListComponent, runGuardsAndResolvers: 'always' },

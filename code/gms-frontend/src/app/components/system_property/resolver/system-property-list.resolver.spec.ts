@@ -1,13 +1,13 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
-import { SystemPropertyListResolver } from "./system-property-list.resolver";
-import { SystemPropertyService } from "../service/system-property.service";
 import { SystemProperty } from "../model/system-property.model";
-import { HttpErrorResponse } from "@angular/common/http";
+import { SystemPropertyService } from "../service/system-property.service";
+import { SystemPropertyListResolver } from "./system-property-list.resolver";
+import { ActivatedRouteSnapshot } from "@angular/router";
 
 /**
  * @author Peter Szrnka
@@ -17,7 +17,6 @@ describe('SystemPropertyListResolver', () => {
     let activatedRouteSnapshot : any;
     let splashScreenStateService : any;
     let service : any;
-    let routerStateSnapshot : any;
     let sharedData : any;
 
     const mockResponse : SystemProperty[] = [
@@ -34,7 +33,6 @@ describe('SystemPropertyListResolver', () => {
               { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
               { provide: SplashScreenStateService, useValue : splashScreenStateService },
               { provide : SystemPropertyService, useValue : service },
-              { provide : RouterStateSnapshot, useValue : routerStateSnapshot },
               { provide : SharedDataService, useValue: sharedData }
           ]
           }).compileComponents();
@@ -68,8 +66,6 @@ describe('SystemPropertyListResolver', () => {
         [25],
         [-1]
     ])('should return existing entity', async(localStorageItemSize : number) => {
-        const route : any = jest.fn();
-        configureTestBed();
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "1"
@@ -78,30 +74,30 @@ describe('SystemPropertyListResolver', () => {
                 "page" : "0"
             }
         };
+        configureTestBed();
 
         if (localStorageItemSize === -1) {
             localStorage.setItem('system_property_pageSize', '25');
         }
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
-        });
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve().subscribe(response => {
+                // assert
+                expect(response).toEqual(mockResponse);
+                expect(splashScreenStateService.start).toBeCalled();
+                expect(splashScreenStateService.stop).toBeCalled();
+            });
 
-        localStorage.removeItem('system_property_pageSize');
+            localStorage.removeItem('system_property_pageSize');
+        });
     });
 
     it('should handle error', async() => {
-        const route : any = jest.fn();
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "1"
             },
-            "queryParams" : {
-                "page" : "0"
-            }
+            "queryParams" : {}
         };
 
         service = {
@@ -110,11 +106,13 @@ describe('SystemPropertyListResolver', () => {
 
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve().subscribe(response => {
+                // assert
+                expect(response).toEqual(mockResponse);
+                expect(splashScreenStateService.start).toBeCalled();
+                expect(splashScreenStateService.stop).toBeCalled();
+            });
         });
     });
 });
