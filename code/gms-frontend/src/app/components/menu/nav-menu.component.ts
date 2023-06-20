@@ -13,7 +13,7 @@ export class NavMenuComponent {
 
     @Input() showTexts: boolean = true;
     @Input() enableBottomToggle : boolean = false;
-    admin: boolean = false;
+    @Input() admin: boolean = false;
 
     constructor(private sharedDataService : SharedDataService) {
     }

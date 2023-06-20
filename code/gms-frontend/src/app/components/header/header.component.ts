@@ -5,6 +5,7 @@ import { SharedDataService } from '../../common/service/shared-data-service';
 import { MessageService } from '../messages/service/message-service';
 import { environment } from '../../../environments/environment';
 import { filter } from 'rxjs';
+import { checkRights } from '../../common/utils/permission-utils';
 
 /**
  * @author Peter Szrnka
@@ -47,6 +48,10 @@ export class HeaderComponent implements OnInit {
 
     toggleMenu() : void {
         this.showLargeMenu = !this.showLargeMenu;
+    }
+
+    isAdmin() : boolean {
+        return checkRights(this.currentUser, false);
     }
 
     private getAllUnread() : void {

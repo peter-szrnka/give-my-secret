@@ -4,6 +4,7 @@ import { User } from './components/user/model/user.model';
 import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
 import { combineLatest } from 'rxjs';
+import { roleCheck } from './common/utils/permission-utils';
 
 const LOGIN_CALLBACK_URL = '/login';
 
@@ -57,14 +58,10 @@ export class AppComponent implements OnInit {
   }
 
   isNormalUser(): boolean {
-    return this.systemReady && this.currentUser !== undefined && this.roleCheck(this.currentUser, 'ROLE_USER');
+    return this.systemReady && this.currentUser !== undefined && roleCheck(this.currentUser, 'ROLE_USER');
   }
 
   isAdmin(): boolean {
-    return this.systemReady && this.currentUser !== undefined && this.roleCheck(this.currentUser, 'ROLE_ADMIN');
-  }
-
-  roleCheck(currentUser: User, roleName: string): boolean {
-    return currentUser.roles?.filter(role => role === roleName).length > 0;
+    return this.systemReady && this.currentUser !== undefined && roleCheck(this.currentUser, 'ROLE_ADMIN');
   }
 }

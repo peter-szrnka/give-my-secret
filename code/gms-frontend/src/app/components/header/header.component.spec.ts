@@ -38,6 +38,7 @@ describe('HeaderComponent', () => {
     let sharedDataService: any;
     let messageService: any;
     let eventEmitter: EventEmitter<number>;
+    let menuEmitter: EventEmitter<boolean>;
     let mockSubject: ReplaySubject<any>;
     let currentUser: User | any;
 
@@ -46,11 +47,13 @@ describe('HeaderComponent', () => {
 
     beforeEach(async () => {
         eventEmitter = new EventEmitter<number>();
+        menuEmitter = new EventEmitter<boolean>();
         mockSubject = new ReplaySubject<any>();
 
         sharedDataService = {
             logout: jest.fn(),
             messageCountUpdateEvent: eventEmitter,
+            showLargeMenuEvent: menuEmitter,
             userSubject$: mockSubject,
             getAllUnread : jest.fn()
         };
@@ -84,6 +87,29 @@ describe('HeaderComponent', () => {
         fixture.detectChanges();
     });
 
+    it('should toggle menu', () => {
+        fixture = TestBed.createComponent(HeaderComponent);
+        component = fixture.componentInstance;
+
+        component.currentUser = {
+            roles: ["ROLE_ADMIN"],
+            username: "test1",
+            id: 1
+        };
+        mockSubject.next(currentUser);
+        fixture.detectChanges();
+        menuEmitter.emit(true);
+        eventEmitter.emit(2);
+
+        // act
+        component.toggleMenu();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.isAdmin()).toBeTruthy();
+        expect(component.showLargeMenu).toBeFalsy();
+    });
+
     it('should log out', () => {
         fixture = TestBed.createComponent(HeaderComponent);
         component = fixture.componentInstance;
@@ -95,11 +121,12 @@ describe('HeaderComponent', () => {
         };
         mockSubject.next(currentUser);
         fixture.detectChanges();
+        menuEmitter.emit(true);
+        eventEmitter.emit(2);
 
         component.logout();
 
         // assert
-        eventEmitter.emit(2);
         expect(component).toBeTruthy();
         expect(sharedDataService.logout).toHaveBeenCalled();
     });
