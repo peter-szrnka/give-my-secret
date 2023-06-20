@@ -1,6 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { EMPTY_HOME_ADMIN_DATA, EMPTY_HOME_USER_DATA, HomeResolver } from "./home.resolver";
@@ -15,8 +14,6 @@ import { HomeService } from "../service/home.service";
  */
 describe('HomeResolver', () => {
     let resolver: HomeResolver;
-    let activatedRouteSnapshot: any;
-    let routerStateSnapshot: any;
 
     // Injected services
     let sharedDataService: any;
@@ -27,8 +24,6 @@ describe('HomeResolver', () => {
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientTestingModule],
             providers: [
-                { provide: ActivatedRouteSnapshot, useValue: activatedRouteSnapshot },
-                { provide: RouterStateSnapshot, useValue: routerStateSnapshot },
                 { provide: SharedDataService, useValue: sharedDataService },
                 { provide : HomeService, useValue: homeService },
                 { provide: SplashScreenStateService, useValue: splashScreenStateService }
@@ -52,9 +47,6 @@ describe('HomeResolver', () => {
         homeService = {
             getData : jest.fn()
         }
-
-        activatedRouteSnapshot = { "params": {} };
-        routerStateSnapshot = {};
     })
 
     it('should throw error', () => {
@@ -63,7 +55,7 @@ describe('HomeResolver', () => {
         };
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, routerStateSnapshot).subscribe((response : any) => {
+        resolver.resolve().subscribe((response : any) => {
             // assert
             expect(response).toBeTruthy();
         });
@@ -79,7 +71,7 @@ describe('HomeResolver', () => {
         }
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, routerStateSnapshot).subscribe(() => {
+        resolver.resolve().subscribe(() => {
             // assert
             expect(resolver).toBeTruthy();
             expect(splashScreenStateService.start).toHaveBeenCalled();
@@ -98,7 +90,7 @@ describe('HomeResolver', () => {
         }
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, routerStateSnapshot).subscribe(() => {
+        resolver.resolve().subscribe(() => {
             // assert
             expect(resolver).toBeTruthy();
             expect(splashScreenStateService.start).toHaveBeenCalled();
@@ -117,7 +109,7 @@ describe('HomeResolver', () => {
         };
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, routerStateSnapshot).subscribe((data : HomeData) => {
+        resolver.resolve().subscribe((data : HomeData) => {
             // assert
             expect(resolver).toBeFalsy();
             expect(splashScreenStateService.start).toHaveBeenCalled();
@@ -140,7 +132,7 @@ describe('HomeResolver', () => {
         };
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, routerStateSnapshot).subscribe((data : HomeData) => {
+        resolver.resolve().subscribe((data : HomeData) => {
             // assert
             expect(homeService.getData).toThrowError('Error!');
             expect(sharedDataService.getUserInfo).toHaveBeenCalled();

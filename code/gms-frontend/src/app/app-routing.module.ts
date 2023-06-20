@@ -21,7 +21,7 @@ import { AnnouncementListResolver } from './components/announcement/resolver/ann
 import { ApiKeyDetailResolver } from './components/apikey/resolver/apikey-detail.resolver';
 import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.resolver';
 import { AnnouncementDetailResolver } from './components/announcement/resolver/announcement-detail.resolver';
-import { NgModule, Type } from '@angular/core';
+import { NgModule, Type, inject } from '@angular/core';
 import { HomeResolver } from './components/home/resolver/home.resolver';
 import { SystemPropertyListComponent } from './components/system_property/system-property-list.component';
 import { SystemPropertyListResolver } from './components/system_property/resolver/system-property-list.resolver';
@@ -50,7 +50,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
   // Secured components
-  { path: '', component: HomeComponent, pathMatch: 'full', data : { 'roles' : ROLES_ALL }, canActivate: [ ROLE_GUARD ], resolve : { 'data' : HomeResolver } },
+  { path: '', component: HomeComponent, pathMatch: 'full', data : { 'roles' : ROLES_ALL }, canActivate: [ ROLE_GUARD ],  resolve : { 'data' : () => inject(HomeResolver).resolve() } },
   listRouteBuilder('secret', SecretListComponent, SecretListResolver),
   detailRouteBuilder('secret', SecretDetailComponent, SecretDetailResolver),
   listRouteBuilder('apikey', ApiKeyListComponent, ApiKeyListResolver),
