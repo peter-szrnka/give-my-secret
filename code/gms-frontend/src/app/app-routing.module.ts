@@ -1,7 +1,7 @@
 import { Route, RouterModule, Routes } from '@angular/router';
 import { ApiKeyDetailComponent } from './components/apikey/apikey-detail.component';
 import { ApiKeyListComponent } from './components/apikey/apikey-list.component';
-import { RoleGuard } from './common/interceptor/role-guard';
+import { ROLE_GUARD } from './common/interceptor/role-guard';
 import { EventListComponent } from './components/event/event-list.component';
 import { HomeComponent } from './components/home/home.component';
 import { KeystoreDetailComponent } from './components/keystore/keystore-detail.component';
@@ -38,11 +38,11 @@ const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];
 const ROLES_ADMIN = ['ROLE_ADMIN'];
 
 const listRouteBuilder = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
-  return { path: scope + '/list', component : component, data : { 'roles' : roles }, canActivate: [ RoleGuard ], resolve: { 'data' : resolver }, runGuardsAndResolvers: 'always' };
+  return { path: scope + '/list', component : component, data : { 'roles' : roles }, canActivate: [ ROLE_GUARD ], resolve: { 'data' : resolver }, runGuardsAndResolvers: 'always' };
 };
 
 const detailRouteBuilder = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
-  return { path: scope + '/:id', component : component, data : { 'roles' : roles }, canActivate: [ RoleGuard ], resolve: { 'entity' : resolver } };
+  return { path: scope + '/:id', component : component, data : { 'roles' : roles }, canActivate: [ ROLE_GUARD ], resolve: { 'entity' : resolver } };
 };
 
 const routes: Routes = [
@@ -50,15 +50,15 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
   // Secured components
-  { path: '', component: HomeComponent, pathMatch: 'full', data : { 'roles' : ROLES_ALL }, canActivate: [ RoleGuard ], resolve : { 'data' : HomeResolver } },
+  { path: '', component: HomeComponent, pathMatch: 'full', data : { 'roles' : ROLES_ALL }, canActivate: [ ROLE_GUARD ], resolve : { 'data' : HomeResolver } },
   listRouteBuilder('secret', SecretListComponent, SecretListResolver),
   detailRouteBuilder('secret', SecretDetailComponent, SecretDetailResolver),
   listRouteBuilder('apikey', ApiKeyListComponent, ApiKeyListResolver),
   detailRouteBuilder('apikey', ApiKeyDetailComponent, ApiKeyDetailResolver),
   listRouteBuilder('keystore', KeystoreListComponent, KeystoreListResolver),
   detailRouteBuilder('keystore', KeystoreDetailComponent, KeystoreDetailResolver),
-  { path: 'settings', component: SettingsSummaryComponent, data : {'roles' : ROLES_ALL }, canActivate: [ RoleGuard ] },
-  { path: 'api-testing', component: ApiTestingComponent, data: {'roles' : ROLES_ALL }, canActivate: [ RoleGuard ] },
+  { path: 'settings', component: SettingsSummaryComponent, data : {'roles' : ROLES_ALL }, canActivate: [ ROLE_GUARD ] },
+  { path: 'api-testing', component: ApiTestingComponent, data: {'roles' : ROLES_ALL }, canActivate: [ ROLE_GUARD ] },
 
   // Admin functions
   listRouteBuilder('user', UserListComponent, UserListResolver, ROLES_ADMIN),
