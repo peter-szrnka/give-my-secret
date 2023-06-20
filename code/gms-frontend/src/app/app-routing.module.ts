@@ -72,8 +72,8 @@ const routes: Routes = [
 
   // Secured components
   { path: '', component: HomeComponent, pathMatch: 'full', data : { 'roles' : ROLES_ALL }, canActivate: [ ROLE_GUARD ],  resolve : { 'data' : () => inject(HomeResolver).resolve() } },
-  listRouteBuilder('secret', SecretListComponent, SecretListResolver),
-  detailRouteBuilder('secret', SecretDetailComponent, SecretDetailResolver),
+  listRouteBuilderV2('secret', SecretListComponent, SecretListResolver),
+  detailRouteBuilderV2('secret', SecretDetailComponent, SecretDetailResolver),
   listRouteBuilder('apikey', ApiKeyListComponent, ApiKeyListResolver),
   detailRouteBuilder('apikey', ApiKeyDetailComponent, ApiKeyDetailResolver),
   listRouteBuilder('keystore', KeystoreListComponent, KeystoreListResolver),

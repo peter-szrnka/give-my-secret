@@ -51,9 +51,8 @@ describe('AnnouncementDetailResolver', () => {
             { provide : SharedDataService, useValue: sharedData }
         ]
         }).compileComponents();
-    
-        resolver = TestBed.inject(AnnouncementDetailResolver)
-    })
+        resolver = TestBed.inject(AnnouncementDetailResolver);
+    });
 
     it('should create', () => {
         expect(resolver).toBeTruthy()

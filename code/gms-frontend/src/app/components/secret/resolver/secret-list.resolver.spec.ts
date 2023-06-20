@@ -1,12 +1,12 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
+import { SharedDataService } from "../../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { Secret } from "../model/secret.model";
 import { SecretService } from "../service/secret-service";
 import { SecretListResolver } from "./secret-list.resolver";
-import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
-import { SharedDataService } from "../../../common/service/shared-data-service";
 
 /**
  * @author Peter Szrnka
@@ -16,7 +16,6 @@ describe('SecretListResolver', () => {
     let activatedRouteSnapshot : any;
     let splashScreenStateService : any;
     let service : any;
-    let routerStateSnapshot : any;
     let sharedData : any;
 
     const mockResponse : Secret[] = [{
@@ -27,6 +26,21 @@ describe('SecretListResolver', () => {
         apiKeyRestrictions : [],
         type : 'CREDENTIAL'
     }];
+
+    const configureTestBed = () => {
+        TestBed.configureTestingModule({
+            // add this to imports array
+            imports: [HttpClientTestingModule],
+            providers: [
+              SecretListResolver,
+              { provide : ActivatedRoute, useValue : { 'snapshot': activatedRouteSnapshot} },
+              { provide: SplashScreenStateService, useValue : splashScreenStateService },
+              { provide : SecretService, useValue : service },
+              { provide : SharedDataService, useValue: sharedData }
+          ]
+          }).compileComponents();
+          resolver = TestBed.inject(SecretListResolver);
+    };
 
     beforeEach(async() => {
         splashScreenStateService = {
@@ -41,24 +55,10 @@ describe('SecretListResolver', () => {
         sharedData = {
             clearData: jest.fn()
         };
-
-        TestBed.configureTestingModule({
-          // add this to imports array
-          imports: [HttpClientTestingModule],
-          providers: [
-            SecretListResolver,
-            { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
-            { provide: SplashScreenStateService, useValue : splashScreenStateService },
-            { provide : SecretService, useValue : service },
-            { provide : RouterStateSnapshot, useValue : routerStateSnapshot },
-            { provide : SharedDataService, useValue: sharedData }
-        ]
-        }).compileComponents();
-    
-        resolver = TestBed.inject(SecretListResolver)
     })
 
     it('should create', () => {
+        configureTestBed();
         expect(resolver).toBeTruthy()
     });
 
@@ -71,13 +71,16 @@ describe('SecretListResolver', () => {
             "queryParams" : {
                 "page" : "0"
             }
-        }
+        };
+        configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve().subscribe(response => {
+                // assert
+                expect(response).toEqual(mockResponse);
+                expect(splashScreenStateService.start).toBeCalled();
+                expect(splashScreenStateService.stop).toBeCalled();
+            });
         });
     });
 });
