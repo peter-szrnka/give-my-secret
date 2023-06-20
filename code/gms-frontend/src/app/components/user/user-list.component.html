@@ -41,6 +41,12 @@
               <ng-container matColumnDef="operations">
                 <th mat-header-cell *matHeaderCellDef>Operations</th>
                 <td mat-cell *matCellDef="let element">&nbsp;
+                  <button mat-icon-button color="primary" class="show-large" [routerLink]="['/user/' + element.id]">
+                    <mat-icon aria-hidden="false">edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" class="show-large" (click)="promptDelete(element.id)">
+                    <mat-icon aria-hidden="false">delete</mat-icon>
+                  </button>
                     <button mat-icon-button class="show-small" [matMenuTriggerFor]="menu" aria-label="Operations menu">
                       <mat-icon>more_vert</mat-icon>
                     </button>

@@ -7,7 +7,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 import { SystemProperty } from "../model/system-property.model";
 import { SystemPropertyService } from "../service/system-property.service";
 import { SystemPropertyListResolver } from "./system-property-list.resolver";
-import { ActivatedRouteSnapshot } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 
 /**
  * @author Peter Szrnka
@@ -30,7 +30,7 @@ describe('SystemPropertyListResolver', () => {
             imports: [HttpClientTestingModule],
             providers: [
               SystemPropertyListResolver,
-              { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
+              { provide : ActivatedRoute, useValue : { 'snapshot' : activatedRouteSnapshot } },
               { provide: SplashScreenStateService, useValue : splashScreenStateService },
               { provide : SystemPropertyService, useValue : service },
               { provide : SharedDataService, useValue: sharedData }

@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { Announcement, EMPTY_ANNOUNCEMENT } from "../model/announcement.model";
 import { AnnouncementService } from "../service/announcement-service";
 import { SharedDataService } from "../../../common/service/shared-data-service";
@@ -60,32 +60,51 @@ describe('AnnouncementDetailResolver', () => {
     });
 
     it('should return empty response', async() => {
-        const route : any = jest.fn();
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "new"
             }
         }
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
+        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(EMPTY_ANNOUNCEMENT);
         });
     });
 
-    it('should return existing entity', async() => {
-        const route : any = jest.fn();
+    it('should handle error', async() => {
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "1"
             }
         }
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+        service.getById = jest.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
+                // assert
+                expect(response).toEqual(mockResponse);
+                expect(splashScreenStateService.start).toBeCalled();
+                expect(splashScreenStateService.stop).toBeCalled();
+            });
+        });
+    });
+
+    it('should return existing entity', async() => {
+        activatedRouteSnapshot = {
+            "params" : {
+                "id" : "1"
+            }
+        }
+
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
+                // assert
+                expect(response).toEqual(mockResponse);
+                expect(splashScreenStateService.start).toBeCalled();
+                expect(splashScreenStateService.stop).toBeCalled();
+            });
         });
     });
 });

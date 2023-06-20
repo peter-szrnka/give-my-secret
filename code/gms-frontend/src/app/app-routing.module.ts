@@ -1,4 +1,4 @@
-import { Route, RouterModule, Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, Route, RouterModule, Routes } from '@angular/router';
 import { ApiKeyDetailComponent } from './components/apikey/apikey-detail.component';
 import { ApiKeyListComponent } from './components/apikey/apikey-list.component';
 import { ROLE_GUARD } from './common/interceptor/role-guard';
@@ -37,6 +37,9 @@ const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];
 const ROLES_ADMIN = ['ROLE_ADMIN'];
 
+/**
+ * @deprecated
+ */
 const listRouteBuilder = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
   return { path: scope + '/list', component : component, data : { 'roles' : roles }, canActivate: [ ROLE_GUARD ], resolve: { 'data' : resolver }, runGuardsAndResolvers: 'always' };
 };
@@ -45,8 +48,22 @@ const listRouteBuilderV2 = (scope : string, component : Type<any>, resolver : Ty
   return { path: scope + '/list', component : component, data : { 'roles' : roles }, canActivate: [ ROLE_GUARD ], resolve: { 'data' : () => inject(resolver).resolve() }, runGuardsAndResolvers: 'always' };
 };
 
+/**
+ * @deprecated
+ */
 const detailRouteBuilder = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
   return { path: scope + '/:id', component : component, data : { 'roles' : roles }, canActivate: [ ROLE_GUARD ], resolve: { 'entity' : resolver } };
+};
+
+const detailRouteBuilderV2 = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
+  return { 
+    path: '' + scope + '/:id', 
+    component : component, 
+    data : { 'roles' : roles }, 
+    canActivate: [ ROLE_GUARD ], 
+    resolve: { 'entity' : (snapshot: ActivatedRouteSnapshot) => inject(resolver).resolve(snapshot) }, 
+    runGuardsAndResolvers: 'always',
+  };
 };
 
 const routes: Routes = [
@@ -68,8 +85,8 @@ const routes: Routes = [
   listRouteBuilder('user', UserListComponent, UserListResolver, ROLES_ADMIN),
   detailRouteBuilder('user', UserDetailComponent, UserDetailResolver, ROLES_ADMIN),
   listRouteBuilder('event', EventListComponent, EventListResolver, ROLES_ADMIN),
-  listRouteBuilder('announcement', AnnouncementListComponent, AnnouncementListResolver, ROLES_ADMIN),
-  detailRouteBuilder('announcement', AnnouncementDetailComponent, AnnouncementDetailResolver, ROLES_ADMIN),
+  listRouteBuilderV2('announcement', AnnouncementListComponent, AnnouncementListResolver, ROLES_ADMIN),
+  detailRouteBuilderV2('announcement', AnnouncementDetailComponent, AnnouncementDetailResolver, ROLES_ADMIN),
   listRouteBuilderV2('system_property', SystemPropertyListComponent, SystemPropertyListResolver, ROLES_ADMIN),
 
   // Common functions
