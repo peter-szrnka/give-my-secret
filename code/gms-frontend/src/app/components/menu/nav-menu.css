@@ -1,0 +1,14 @@
+.side-menu-list-item {
+    display: block;
+}
+
+.side-menu-list-item span {
+    vertical-align: super !important;
+}
+
+.nav-toggle-btn {
+    display: block;
+    left: 0;
+    bottom: 0;
+    position: fixed;
+}

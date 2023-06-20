@@ -5,6 +5,7 @@ import { SharedDataService } from '../../common/service/shared-data-service';
 import { MessageService } from '../messages/service/message-service';
 import { environment } from '../../../environments/environment';
 import { filter } from 'rxjs';
+import { checkRights } from '../../common/utils/permission-utils';
 
 /**
  * @author Peter Szrnka
@@ -19,6 +20,7 @@ export class HeaderComponent implements OnInit {
     unreadMessageCount  = 0;
 
     isProd : boolean = environment.production;
+    showLargeMenu : boolean = false;
 
     constructor(
         public router: Router, 
@@ -27,6 +29,7 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.sharedDataService.showLargeMenuEvent.subscribe((result : boolean) => this.showLargeMenu = result);
         this.sharedDataService.messageCountUpdateEvent.subscribe(() => this.getAllUnread());
         this.sharedDataService.userSubject$.subscribe(user => this.currentUser = user);
         this.router.events.pipe(filter(event => (event instanceof NavigationEnd))).subscribe((event) => {
@@ -41,6 +44,14 @@ export class HeaderComponent implements OnInit {
     logout() : void {
         this.currentUser = undefined;
         this.sharedDataService.logout();
+    }
+
+    toggleMenu() : void {
+        this.showLargeMenu = !this.showLargeMenu;
+    }
+
+    isAdmin() : boolean {
+        return checkRights(this.currentUser, false);
     }
 
     private getAllUnread() : void {

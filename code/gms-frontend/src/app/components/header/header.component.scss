@@ -9,3 +9,45 @@
   font-size: small;
   color: white;
 }
+
+@media screen and (max-width: 699px) {
+  .show-large {
+    display: none;
+  }
+
+  .label_env {
+    background-color: #f00;
+    border-radius: 10px;
+    padding: 0 5px 0 5px;
+    font-size: small;
+    color: white;
+  }
+
+  .full-screen-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 55px;
+    bottom: 0;
+    background-color: white;
+    z-index: 200;
+  }
+}
+
+@media screen and (min-width: 700px) and (max-width: 799px) {
+  .full-screen-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 65px;
+    bottom: 0;
+    background-color: white;
+    z-index: 200;
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .show-small {
+    display: none;
+  }
+}

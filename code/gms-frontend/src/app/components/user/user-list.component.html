@@ -29,24 +29,31 @@
                 <td mat-cell *matCellDef="let element"> {{element.email}} </td>
               </ng-container>
               <ng-container matColumnDef="roles">
-                <th mat-header-cell *matHeaderCellDef>Roles</th>
-                <td mat-cell *matCellDef="let element">
+                <th mat-header-cell *matHeaderCellDef class="show-large">Roles</th>
+                <td mat-cell *matCellDef="let element" class="show-large">
                     <span class="mini-chips" *ngFor="let role of element.roles">{{role}}</span>
                 </td>
               </ng-container>
               <ng-container matColumnDef="creationDate">
-                <th mat-header-cell *matHeaderCellDef>Creation date</th>
-                <td mat-cell *matCellDef="let element"> {{element.creationDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
+                <th mat-header-cell *matHeaderCellDef class="show-large">Creation date</th>
+                <td mat-cell *matCellDef="let element" class="show-large"> {{element.creationDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
               </ng-container>
               <ng-container matColumnDef="operations">
                 <th mat-header-cell *matHeaderCellDef>Operations</th>
                 <td mat-cell *matCellDef="let element">&nbsp;
-                    <button mat-icon-button color="primary" [routerLink]="'/user/' + element.id">
+                    <button mat-icon-button class="show-small" [matMenuTriggerFor]="menu" aria-label="Operations menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" class="show-small">
+                      <button mat-menu-item color="primary" [routerLink]="'/user/' + element.id">
                         <mat-icon aria-hidden="false">edit</mat-icon>
-                    </button>
-                    <button [disabled]="tableConfig.count <= 1" mat-icon-button color="warn" (click)="promptDelete(element.id)">
+                        <span>Edit</span>
+                      </button>
+                      <button mat-menu-item color="warn" (click)="promptDelete(element.id)">
                         <mat-icon aria-hidden="false">delete</mat-icon>
-                    </button>
+                        <span>Delete</span>
+                      </button>
+                    </mat-menu>
                   </td>
               </ng-container>
       </table>

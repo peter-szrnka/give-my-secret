@@ -20,6 +20,7 @@ export class SharedDataService {
     authMode: string;
 
     @Output() messageCountUpdateEvent = new EventEmitter<number>();
+    @Output() showLargeMenuEvent = new EventEmitter<boolean>();
 
     constructor(private router: Router, private setupService: SetupService, private authService : AuthService) {
     }

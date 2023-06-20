@@ -4,10 +4,27 @@
   flex: auto;
 }
 
-/*.app-content {
-  flex: auto;
-  height: 100%;
-}*/
+@media screen and (max-width: 599px) {
+  .show-large {
+    display: none;
+  }
+
+  .header {
+    height: 54px;
+  }
+}
+
+@media screen and (max-width: 699px) {
+  .side-menu {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .show-small {
+    display: none;
+  }
+}
 
 @media all and (min-width: 600px) {
   .aside {
@@ -18,14 +35,11 @@
 @media all and (min-width: 800px) {
   .main {
     flex: 3 0px;
+    order: 2;
   }
 
   .aside-1 {
     order: 1;
-  }
-
-  .main {
-    order: 2;
   }
 
   .aside-2 {
@@ -35,10 +49,6 @@
   .footer {
     order: 4;
   }
-}
-
-home {
-  flex: auto;
 }
 
 // Sidenav
@@ -66,11 +76,6 @@ mat-list-item {
   cursor: pointer;
 }
 
-.nav-toggle-btn {
-  display: block;
-  left: 0;
-  bottom: 0;
-  position: fixed;
-  /*text-align: center;
-  /*margin: 5px 5px 0 5px;*/
+.side-menu-list-item span {
+  vertical-align : super !important;
 }
