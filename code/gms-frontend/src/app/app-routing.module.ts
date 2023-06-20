@@ -82,9 +82,9 @@ const routes: Routes = [
   { path: 'api-testing', component: ApiTestingComponent, data: {'roles' : ROLES_ALL }, canActivate: [ ROLE_GUARD ] },
 
   // Admin functions
-  listRouteBuilder('user', UserListComponent, UserListResolver, ROLES_ADMIN),
-  detailRouteBuilder('user', UserDetailComponent, UserDetailResolver, ROLES_ADMIN),
-  listRouteBuilder('event', EventListComponent, EventListResolver, ROLES_ADMIN),
+  listRouteBuilderV2('user', UserListComponent, UserListResolver, ROLES_ADMIN),
+  detailRouteBuilderV2('user', UserDetailComponent, UserDetailResolver, ROLES_ADMIN),
+  listRouteBuilderV2('event', EventListComponent, EventListResolver, ROLES_ADMIN),
   listRouteBuilderV2('announcement', AnnouncementListComponent, AnnouncementListResolver, ROLES_ADMIN),
   detailRouteBuilderV2('announcement', AnnouncementDetailComponent, AnnouncementDetailResolver, ROLES_ADMIN),
   listRouteBuilderV2('system_property', SystemPropertyListComponent, SystemPropertyListResolver, ROLES_ADMIN),
