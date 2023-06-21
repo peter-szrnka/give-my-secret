@@ -36,37 +36,32 @@ import { UserListResolver } from './components/user/resolver/user-list.resolver'
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];
 const ROLES_ADMIN = ['ROLE_ADMIN'];
-const ROUTE_BASE : Route = { canActivate: [ ROLE_GUARD ], runGuardsAndResolvers: 'always' };
+const ROUTE_BASE: Route = { canActivate: [ROLE_GUARD], runGuardsAndResolvers: 'always' };
 
-const routeBuilder = (routePath : string, resolveKey : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
+const routeBuilder = (routePath: string, resolveKey: string, component: Type<any>, resolver: Type<any>, roles = ROLES_USER_AND_VIEWER): Route => {
   return {
-     path: routePath, 
-     component : component, 
-     data : { 'roles' : roles }, 
-     resolve: { [resolveKey] : (snapshot: ActivatedRouteSnapshot) => inject(resolver).resolve(snapshot) },
-     canActivate: [ ROLE_GUARD ],
-     runGuardsAndResolvers: 'always'
+    path: routePath,
+    component: component,
+    data: { 'roles': roles },
+    resolve: { [resolveKey]: (snapshot: ActivatedRouteSnapshot) => inject(resolver).resolve(snapshot) },
+    canActivate: [ROLE_GUARD],
+    runGuardsAndResolvers: 'always'
   };
- };
-
-const listRouteBuilder = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
-  //return routeBuilder(scope + '/list', 'data', component, resolver, roles);
- return {...ROUTE_BASE, ...{
-    path: scope + '/list', 
-    component : component, 
-    data : { 'roles' : roles }, 
-    resolve: { 'data' : () => inject(resolver).resolve() }
- }};
 };
 
-const detailRouteBuilder = (scope : string, component : Type<any>, resolver : Type<any>, roles = ROLES_USER_AND_VIEWER) : Route => {
-  return routeBuilder(scope + '/list', 'entity', component, resolver, roles);
-  /*return {...ROUTE_BASE, ...{
-    path: '' + scope + '/:id', 
-    component : component, 
-    data : { 'roles' : roles }, 
-    resolve: { 'entity' : (snapshot: ActivatedRouteSnapshot) => inject(resolver).resolve(snapshot) }, 
-  }};*/
+const listRouteBuilder = (scope: string, component: Type<any>, resolver: Type<any>, roles = ROLES_USER_AND_VIEWER): Route => {
+  return {
+    ...ROUTE_BASE, ...{
+      path: scope + '/list',
+      component: component,
+      data: { 'roles': roles },
+      resolve: { 'data': () => inject(resolver).resolve() }
+    }
+  };
+};
+
+const detailRouteBuilder = (scope: string, component: Type<any>, resolver: Type<any>, roles = ROLES_USER_AND_VIEWER): Route => {
+  return routeBuilder(scope + '/:id', 'entity', component, resolver, roles);
 };
 
 const routes: Routes = [
@@ -74,15 +69,15 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
   // Secured components
-  { path: '', component: HomeComponent, pathMatch: 'full', data : { 'roles' : ROLES_ALL }, canActivate: [ ROLE_GUARD ],  resolve : { 'data' : () => inject(HomeResolver).resolve() } },
+  { path: '', component: HomeComponent, pathMatch: 'full', data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD], resolve: { 'data': () => inject(HomeResolver).resolve() } },
   listRouteBuilder('secret', SecretListComponent, SecretListResolver),
   detailRouteBuilder('secret', SecretDetailComponent, SecretDetailResolver),
   listRouteBuilder('apikey', ApiKeyListComponent, ApiKeyListResolver),
   detailRouteBuilder('apikey', ApiKeyDetailComponent, ApiKeyDetailResolver),
   listRouteBuilder('keystore', KeystoreListComponent, KeystoreListResolver),
   detailRouteBuilder('keystore', KeystoreDetailComponent, KeystoreDetailResolver),
-  { path: 'settings', component: SettingsSummaryComponent, data : {'roles' : ROLES_ALL }, canActivate: [ ROLE_GUARD ] },
-  { path: 'api-testing', component: ApiTestingComponent, data: {'roles' : ROLES_ALL }, canActivate: [ ROLE_GUARD ] },
+  { path: 'settings', component: SettingsSummaryComponent, data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD] },
+  { path: 'api-testing', component: ApiTestingComponent, data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD] },
 
   // Admin functions
   listRouteBuilder('user', UserListComponent, UserListResolver, ROLES_ADMIN),
@@ -100,7 +95,7 @@ const routes: Routes = [
  * @author Peter Szrnka
  */
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'})],
+  imports: [RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

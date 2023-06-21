@@ -4,14 +4,14 @@ import { KeystoreList } from "../model/keystore-list";
 import { KeystoreService } from "../service/keystore-service";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
-import { ListResolverV2 } from "../../../common/components/abstractions/resolver/list-data.resolver";
+import { ListResolver } from "../../../common/components/abstractions/resolver/list-data.resolver";
 import { PageConfig } from "../../../common/model/common.model";
 
 /**
  * @author Peter Szrnka
  */
 @Injectable()
-export class KeystoreListResolver extends ListResolverV2<Keystore, KeystoreList, KeystoreService> {
+export class KeystoreListResolver extends ListResolver<Keystore, KeystoreList, KeystoreService> {
 
     constructor(sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : KeystoreService) {
         super(sharedData, splashScreenStateService, service);

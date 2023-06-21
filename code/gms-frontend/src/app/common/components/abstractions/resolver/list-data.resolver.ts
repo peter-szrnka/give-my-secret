@@ -11,7 +11,7 @@ import { inject } from "@angular/core";
 /**
  * @author Peter Szrnka
  */
-export abstract class ListResolverV2<T, L extends BaseList<T>, S extends ServiceBase<T, L>> {
+export abstract class ListResolver<T, L extends BaseList<T>, S extends ServiceBase<T, L>> {
 
     constructor(protected sharedData : SharedDataService, protected splashScreenStateService: SplashScreenStateService, protected service : S) {
     }
@@ -20,7 +20,6 @@ export abstract class ListResolverV2<T, L extends BaseList<T>, S extends Service
 
     abstract getOrderProperty() : string;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public resolve(): Observable<BaseList<T>> {
         this.splashScreenStateService.start();
 

@@ -9,7 +9,7 @@ import { ServiceBase } from "../service/service-base";
 /**
  * @author Peter Szrnka
  */
-export abstract class DetailDataResolverV2<T, S extends ServiceBase<T, BaseList<T>>> {
+export abstract class DetailDataResolver<T, S extends ServiceBase<T, BaseList<T>>> {
 
     constructor(protected sharedData : SharedDataService, protected splashScreenStateService: SplashScreenStateService, protected service : S) {
     }
@@ -17,6 +17,7 @@ export abstract class DetailDataResolverV2<T, S extends ServiceBase<T, BaseList<
     protected abstract getEmptyResponse() : T;
 
     public resolve(route: ActivatedRouteSnapshot): Observable<T> {
+        console.info("route == ", route);
         if(route.params['id'] === 'new') {
             return of(this.getEmptyResponse());
         }
