@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { Announcement, EMPTY_ANNOUNCEMENT } from "../model/announcement.model";
 import { AnnouncementService } from "../service/announcement-service";
@@ -16,7 +16,6 @@ describe('AnnouncementDetailResolver', () => {
     let activatedRouteSnapshot : any;
     let splashScreenStateService : any;
     let service : any;
-    let routerStateSnapshot : any;
     let sharedData : any;
 
     const mockResponse : Announcement = {
@@ -47,7 +46,6 @@ describe('AnnouncementDetailResolver', () => {
             { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
             { provide: SplashScreenStateService, useValue : splashScreenStateService },
             { provide : AnnouncementService, useValue : service },
-            { provide : RouterStateSnapshot, useValue : routerStateSnapshot },
             { provide : SharedDataService, useValue: sharedData }
         ]
         }).compileComponents();
@@ -65,9 +63,11 @@ describe('AnnouncementDetailResolver', () => {
             }
         }
 
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(EMPTY_ANNOUNCEMENT);
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
+                // assert
+                expect(response).toEqual(EMPTY_ANNOUNCEMENT);
+            });
         });
     });
 

@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { ApiKey, EMPTY_API_KEY } from "../model/apikey.model";
 import { ApiKeyService } from "../service/apikey-service";
@@ -17,7 +17,6 @@ describe('ApiKeyDetailResolver', () => {
     let activatedRouteSnapshot : any;
     let splashScreenStateService : any;
     let service : any;
-    let routerStateSnapshot : any;
     let sharedData : any;
 
     const configureTestBed = () => {
@@ -29,7 +28,6 @@ describe('ApiKeyDetailResolver', () => {
               { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
               { provide: SplashScreenStateService, useValue : splashScreenStateService },
               { provide : ApiKeyService, useValue : service },
-              { provide : RouterStateSnapshot, useValue : routerStateSnapshot },
               { provide : SharedDataService, useValue: sharedData }
           ]
           }).compileComponents();
@@ -64,7 +62,6 @@ describe('ApiKeyDetailResolver', () => {
     })
 
     it('should return empty response', async() => {
-        const route : any = jest.fn();
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "new"
@@ -72,14 +69,15 @@ describe('ApiKeyDetailResolver', () => {
         };
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
-            // assert
-            expect(response).toEqual(EMPTY_API_KEY);
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
+                // assert
+                expect(response).toEqual(EMPTY_API_KEY);
+            });
         });
     });
 
     it('should handle error', async() => {
-        const route : any = jest.fn();
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "1"
@@ -92,15 +90,16 @@ describe('ApiKeyDetailResolver', () => {
 
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(() => {
-            // assert
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(() => {
+                // assert
+                expect(splashScreenStateService.start).toBeCalled();
+                expect(splashScreenStateService.stop).toBeCalled();
+            });
         });
     });
 
     it('should return existing entity', async() => {
-        const route : any = jest.fn();
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "1"
@@ -108,11 +107,14 @@ describe('ApiKeyDetailResolver', () => {
         };
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+        // act
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
+                // assert
+                expect(response).toEqual(mockResponse);
+                expect(splashScreenStateService.start).toBeCalled();
+                expect(splashScreenStateService.stop).toBeCalled();
+            });
         });
     });
 });

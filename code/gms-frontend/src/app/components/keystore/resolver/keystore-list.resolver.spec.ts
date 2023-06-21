@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
-import { of } from "rxjs";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
+import { of, throwError } from "rxjs";
 import { Keystore } from "../model/keystore.model";
 import { KeystoreService } from "../service/keystore-service";
 import { KeystoreListResolver } from "./keystore-list.resolver";
@@ -16,7 +16,6 @@ describe('KeystoreListResolver', () => {
     let activatedRouteSnapshot : any;
     let splashScreenStateService : any;
     let service : any;
-    let routerStateSnapshot : any;
     let sharedData : any;
 
     const mockResponse : Keystore[] = [{
@@ -26,6 +25,21 @@ describe('KeystoreListResolver', () => {
         aliases : [],
         generated: false
     }];
+
+    const configureTestBed = () => {
+        TestBed.configureTestingModule({
+            // add this to imports array
+            imports: [HttpClientTestingModule],
+            providers: [
+              KeystoreListResolver,
+              { provide: ActivatedRoute, useValue: { 'snapshot': activatedRouteSnapshot } },
+              { provide: SplashScreenStateService, useValue : splashScreenStateService },
+              { provide : KeystoreService, useValue : service },
+              { provide : SharedDataService, useValue: sharedData }
+          ]
+          }).compileComponents();
+          resolver = TestBed.inject(KeystoreListResolver);
+    };
 
     beforeEach(async() => {
         splashScreenStateService = {
@@ -40,32 +54,40 @@ describe('KeystoreListResolver', () => {
         sharedData = {
             clearData: jest.fn()
         };
-
-        TestBed.configureTestingModule({
-          // add this to imports array
-          imports: [HttpClientTestingModule],
-          providers: [
-            KeystoreListResolver,
-            { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
-            { provide: SplashScreenStateService, useValue : splashScreenStateService },
-            { provide : KeystoreService, useValue : service },
-            { provide : RouterStateSnapshot, useValue : routerStateSnapshot },
-            { provide : SharedDataService, useValue: sharedData }
-        ]
-        }).compileComponents();
-    
-        resolver = TestBed.inject(KeystoreListResolver)
     })
 
     it('should create', () => {
+        configureTestBed();
         expect(resolver).toBeTruthy()
+    });
+
+    it('should handle error', async () => {
+        activatedRouteSnapshot = {
+            "params": {
+                "id": "1"
+            },
+            "queryParams": {}
+        };
+        localStorage.setItem('keystore_pageSize', '27');
+        service.list = jest.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        configureTestBed();
+
+        // act & assert
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve().subscribe(response => {
+                // assert
+                expect(response).toEqual(mockResponse);
+                expect(splashScreenStateService.start).toBeCalled();
+                expect(splashScreenStateService.stop).toBeCalled();
+            });
+            localStorage.clear();
+        });
     });
 
     it.each([
         [25],
         [-1]
     ])('should return existing entity', async(localStorageItemSize : number) => {
-        const route : any = jest.fn();
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "1"
@@ -79,13 +101,18 @@ describe('KeystoreListResolver', () => {
             localStorage.setItem('keystore_pageSize', '25');
         }
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
-        });
+        configureTestBed();
 
-        localStorage.removeItem('keystore_pageSize');
+        // act
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve().subscribe(response => {
+                // assert
+                expect(response).toEqual(mockResponse);
+                expect(splashScreenStateService.start).toBeCalled();
+                expect(splashScreenStateService.stop).toBeCalled();
+            });
+
+            localStorage.removeItem('keystore_pageSize');
+        });
     });
 });

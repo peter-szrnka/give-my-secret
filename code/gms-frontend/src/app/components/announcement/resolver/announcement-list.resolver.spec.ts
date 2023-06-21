@@ -80,9 +80,8 @@ describe('AnnouncementListResolver', () => {
                 expect(splashScreenStateService.start).toBeCalled();
                 expect(splashScreenStateService.stop).toBeCalled();
             });
+            localStorage.clear();
         });
-
-        localStorage.clear();
     });
 
     it('should return existing entity', async () => {
