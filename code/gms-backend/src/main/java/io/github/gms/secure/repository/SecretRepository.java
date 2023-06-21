@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.entity.SecretEntity;
@@ -19,7 +18,6 @@ import io.github.gms.secure.entity.SecretEntity;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Repository
 public interface SecretRepository extends JpaRepository<SecretEntity, Long> {
 
 	Optional<SecretEntity> findByUserIdAndSecretIdAndStatus(Long userId, String secretId, EntityStatus status);
