@@ -36,7 +36,6 @@ import { UserListResolver } from './components/user/resolver/user-list.resolver'
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];
 const ROLES_ADMIN = ['ROLE_ADMIN'];
-const ROUTE_BASE: Route = { canActivate: [ROLE_GUARD], runGuardsAndResolvers: 'always' };
 
 const routeBuilder = (routePath: string, resolveKey: string, component: Type<any>, resolver: Type<any>, roles = ROLES_USER_AND_VIEWER): Route => {
   return {
@@ -50,14 +49,7 @@ const routeBuilder = (routePath: string, resolveKey: string, component: Type<any
 };
 
 const listRouteBuilder = (scope: string, component: Type<any>, resolver: Type<any>, roles = ROLES_USER_AND_VIEWER): Route => {
-  return {
-    ...ROUTE_BASE, ...{
-      path: scope + '/list',
-      component: component,
-      data: { 'roles': roles },
-      resolve: { 'data': () => inject(resolver).resolve() }
-    }
-  };
+  return routeBuilder(scope + '/list', 'data', component, resolver, roles);
 };
 
 const detailRouteBuilder = (scope: string, component: Type<any>, resolver: Type<any>, roles = ROLES_USER_AND_VIEWER): Route => {
@@ -88,7 +80,7 @@ const routes: Routes = [
   listRouteBuilder('system_property', SystemPropertyListComponent, SystemPropertyListResolver, ROLES_ADMIN),
 
   // Common functions
-  { path: 'messages', component: MessageListComponent, runGuardsAndResolvers: 'always' },
+  { path: 'messages', component: MessageListComponent },
 ];
 
 /**

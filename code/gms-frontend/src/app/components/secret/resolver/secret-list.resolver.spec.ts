@@ -1,6 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
@@ -12,19 +11,19 @@ import { SecretListResolver } from "./secret-list.resolver";
  * @author Peter Szrnka
  */
 describe('SecretListResolver', () => {
-    let resolver : SecretListResolver;
-    let activatedRouteSnapshot : any;
-    let splashScreenStateService : any;
-    let service : any;
-    let sharedData : any;
+    let resolver: SecretListResolver;
+    let activatedRouteSnapshot: any;
+    let splashScreenStateService: any;
+    let service: any;
+    let sharedData: any;
 
-    const mockResponse : Secret[] = [{
-        id : 1,
-        status : "ACTIVE",
-        rotationPeriod : "HOURLY",
+    const mockResponse: Secret[] = [{
+        id: 1,
+        status: "ACTIVE",
+        rotationPeriod: "HOURLY",
         value: "value-1",
-        apiKeyRestrictions : [],
-        type : 'CREDENTIAL'
+        apiKeyRestrictions: [],
+        type: 'CREDENTIAL'
     }];
 
     const configureTestBed = () => {
@@ -32,24 +31,24 @@ describe('SecretListResolver', () => {
             // add this to imports array
             imports: [HttpClientTestingModule],
             providers: [
-              SecretListResolver,
-              { provide : ActivatedRoute, useValue : { 'snapshot': activatedRouteSnapshot} },
-              { provide: SplashScreenStateService, useValue : splashScreenStateService },
-              { provide : SecretService, useValue : service },
-              { provide : SharedDataService, useValue: sharedData }
-          ]
-          }).compileComponents();
-          resolver = TestBed.inject(SecretListResolver);
+                SecretListResolver,
+                //{ provide: ActivatedRouteSnapshot, useValue: activatedRouteSnapshot },
+                { provide: SplashScreenStateService, useValue: splashScreenStateService },
+                { provide: SecretService, useValue: service },
+                { provide: SharedDataService, useValue: sharedData }
+            ]
+        }).compileComponents();
+        resolver = TestBed.inject(SecretListResolver);
     };
 
-    beforeEach(async() => {
+    beforeEach(async () => {
         splashScreenStateService = {
-            start : jest.fn(),
-            stop : jest.fn()
+            start: jest.fn(),
+            stop: jest.fn()
         };
 
         service = {
-            list : jest.fn().mockReturnValue(of({ resultList : mockResponse, totalElements : mockResponse.length }))
+            list: jest.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
         };
 
         sharedData = {
@@ -62,25 +61,23 @@ describe('SecretListResolver', () => {
         expect(resolver).toBeTruthy()
     });
 
-    it('should return existing entity', async() => {
-        const route : any = jest.fn();
+    it('should return existing entity', async () => {
         activatedRouteSnapshot = {
-            "params" : {
-                "id" : "1"
+            "params": {
+                "id": "1"
             },
-            "queryParams" : {
-                "page" : "0"
+            "queryParams": {
+                "page": "0"
             }
         };
         configureTestBed();
 
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve().subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toBeCalled();
-                expect(splashScreenStateService.stop).toBeCalled();
-            });
+        // act
+        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
+            // assert
+            expect(response).toEqual(mockResponse);
+            expect(splashScreenStateService.start).toBeCalled();
+            expect(splashScreenStateService.stop).toBeCalled();
         });
     });
 });

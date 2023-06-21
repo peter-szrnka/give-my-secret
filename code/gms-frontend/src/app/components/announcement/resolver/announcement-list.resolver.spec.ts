@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { EMPTY, of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
@@ -30,7 +30,7 @@ describe('AnnouncementListResolver', () => {
             imports: [HttpClientTestingModule],
             providers: [
                 AnnouncementListResolver,
-                { provide: ActivatedRoute, useValue: { 'snapshot': activatedRouteSnapshot } },
+                //{ provide: ActivatedRouteSnapshot, activatedRouteSnapshot },
                 { provide: SplashScreenStateService, useValue: splashScreenStateService },
                 { provide: AnnouncementService, useValue: service },
                 { provide: SharedDataService, useValue: sharedData }
@@ -73,15 +73,13 @@ describe('AnnouncementListResolver', () => {
         configureTestBed();
 
         // act & assert
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve().subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toBeCalled();
-                expect(splashScreenStateService.stop).toBeCalled();
-            });
-            localStorage.clear();
+        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
+            // assert
+            expect(response).toEqual(mockResponse);
+            expect(splashScreenStateService.start).toBeCalled();
+            expect(splashScreenStateService.stop).toBeCalled();
         });
+        localStorage.clear();
     });
 
     it('should return existing entity', async () => {
@@ -95,13 +93,11 @@ describe('AnnouncementListResolver', () => {
         };
         configureTestBed();
 
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve().subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toBeCalled();
-                expect(splashScreenStateService.stop).toBeCalled();
-            });
+        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
+            // assert
+            expect(response).toEqual(mockResponse);
+            expect(splashScreenStateService.start).toBeCalled();
+            expect(splashScreenStateService.stop).toBeCalled();
         });
     });
 });

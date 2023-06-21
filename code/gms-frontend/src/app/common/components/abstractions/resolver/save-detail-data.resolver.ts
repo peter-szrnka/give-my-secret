@@ -17,7 +17,6 @@ export abstract class DetailDataResolver<T, S extends ServiceBase<T, BaseList<T>
     protected abstract getEmptyResponse() : T;
 
     public resolve(route: ActivatedRouteSnapshot): Observable<T> {
-        console.info("route == ", route);
         if(route.params['id'] === 'new') {
             return of(this.getEmptyResponse());
         }
