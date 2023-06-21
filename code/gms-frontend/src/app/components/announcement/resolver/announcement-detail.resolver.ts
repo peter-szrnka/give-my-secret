@@ -11,7 +11,10 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 @Injectable()
 export class AnnouncementDetailResolver extends DetailDataResolver<Announcement, AnnouncementService> {
 
-    constructor(protected override sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : AnnouncementService) {
+    constructor(
+        protected override sharedData : SharedDataService, 
+        protected override splashScreenStateService: SplashScreenStateService, 
+        protected override service : AnnouncementService) {
         super(sharedData, splashScreenStateService, service);
     }
 

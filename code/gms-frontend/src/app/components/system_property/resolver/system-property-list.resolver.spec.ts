@@ -1,28 +1,26 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
-import { SystemPropertyListResolver } from "./system-property-list.resolver";
-import { SystemPropertyService } from "../service/system-property.service";
 import { SystemProperty } from "../model/system-property.model";
-import { HttpErrorResponse } from "@angular/common/http";
+import { SystemPropertyService } from "../service/system-property.service";
+import { SystemPropertyListResolver } from "./system-property-list.resolver";
 
 /**
  * @author Peter Szrnka
  */
 describe('SystemPropertyListResolver', () => {
-    let resolver : SystemPropertyListResolver;
-    let activatedRouteSnapshot : any;
-    let splashScreenStateService : any;
-    let service : any;
-    let routerStateSnapshot : any;
-    let sharedData : any;
+    let resolver: SystemPropertyListResolver;
+    let activatedRouteSnapshot: any;
+    let splashScreenStateService: any;
+    let service: any;
+    let sharedData: any;
 
-    const mockResponse : SystemProperty[] = [
-        { key : 'PROPERTY1', value : 'true', type : 'boolean', factoryValue : false },
-        { key : 'PROPERTY2', value : '10', type : 'long', factoryValue : true }
+    const mockResponse: SystemProperty[] = [
+        { key: 'PROPERTY1', value: 'true', type: 'boolean', factoryValue: false },
+        { key: 'PROPERTY2', value: '10', type: 'long', factoryValue: true }
     ];
 
     const configureTestBed = () => {
@@ -30,26 +28,24 @@ describe('SystemPropertyListResolver', () => {
             // add this to imports array
             imports: [HttpClientTestingModule],
             providers: [
-              SystemPropertyListResolver,
-              { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
-              { provide: SplashScreenStateService, useValue : splashScreenStateService },
-              { provide : SystemPropertyService, useValue : service },
-              { provide : RouterStateSnapshot, useValue : routerStateSnapshot },
-              { provide : SharedDataService, useValue: sharedData }
-          ]
-          }).compileComponents();
-      
-          resolver = TestBed.inject(SystemPropertyListResolver);
+                SystemPropertyListResolver,
+                { provide: SplashScreenStateService, useValue: splashScreenStateService },
+                { provide: SystemPropertyService, useValue: service },
+                { provide: SharedDataService, useValue: sharedData }
+            ]
+        }).compileComponents();
+
+        resolver = TestBed.inject(SystemPropertyListResolver);
     };
 
-    beforeEach(async() => {
+    beforeEach(async () => {
         splashScreenStateService = {
-            start : jest.fn(),
-            stop : jest.fn()
+            start: jest.fn(),
+            stop: jest.fn()
         };
 
         service = {
-            list : jest.fn().mockReturnValue(of({ resultList : mockResponse, totalElements : mockResponse.length }))
+            list: jest.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
         };
 
         sharedData = {
@@ -67,23 +63,23 @@ describe('SystemPropertyListResolver', () => {
     it.each([
         [25],
         [-1]
-    ])('should return existing entity', async(localStorageItemSize : number) => {
-        const route : any = jest.fn();
-        configureTestBed();
+    ])('should return existing entity', async (localStorageItemSize: number) => {
         activatedRouteSnapshot = {
-            "params" : {
-                "id" : "1"
+            "params": {
+                "id": "1"
             },
-            "queryParams" : {
-                "page" : "0"
+            "queryParams": {
+                "page": "0"
             }
         };
+        configureTestBed();
 
         if (localStorageItemSize === -1) {
             localStorage.setItem('system_property_pageSize', '25');
         }
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
+        // act
+        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
             expect(splashScreenStateService.start).toBeCalled();
@@ -93,24 +89,22 @@ describe('SystemPropertyListResolver', () => {
         localStorage.removeItem('system_property_pageSize');
     });
 
-    it('should handle error', async() => {
-        const route : any = jest.fn();
+    it('should handle error', async () => {
         activatedRouteSnapshot = {
-            "params" : {
-                "id" : "1"
+            "params": {
+                "id": "1"
             },
-            "queryParams" : {
-                "page" : "0"
-            }
+            "queryParams": {}
         };
 
         service = {
-            list : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })))
+            list: jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
         };
 
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot, route).subscribe(response => {
+        // act
+        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
             expect(splashScreenStateService.start).toBeCalled();

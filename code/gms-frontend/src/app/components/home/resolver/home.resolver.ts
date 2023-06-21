@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
 import { catchError, map, Observable, throwError } from "rxjs";
 import { HomeData } from "../model/home-data.model";
 import { User } from "../../user/model/user.model";
@@ -34,7 +33,7 @@ export const EMPTY_HOME_USER_DATA: HomeData = {
  * @author Peter Szrnka
  */
 @Injectable({ providedIn: 'root' })
-export class HomeResolver implements Resolve<HomeData> {
+export class HomeResolver {
 
     constructor(
         private sharedData: SharedDataService,
@@ -43,7 +42,7 @@ export class HomeResolver implements Resolve<HomeData> {
     ) { }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<HomeData> {
+    public resolve(): Observable<HomeData> {
         const user: User | undefined = this.sharedData.getUserInfo();
 
         if (user === undefined) {

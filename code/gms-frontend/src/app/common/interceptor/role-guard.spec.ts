@@ -1,11 +1,14 @@
+import { TestBed } from "@angular/core/testing";
+import { Router } from "@angular/router";
 import { of } from "rxjs";
-import { RoleGuard } from "./role-guard";
+import { SharedDataService } from "../service/shared-data-service";
+import { ROLE_GUARD } from "./role-guard";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 /**
  * @author Peter Szrnka
  */
 describe('RoleGuard', () => {
-    let roleGuard : RoleGuard;
     let router : any;
     let sharedData : any;
 
@@ -14,6 +17,22 @@ describe('RoleGuard', () => {
         userName : "test-user",
         exp : 1,
         roles : ["ROLE_USER"]
+    };
+
+    const configureTestBed = () => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            providers: [
+              {
+                provide: SharedDataService,
+                useValue: sharedData,
+              },
+              {
+                provide: Router,
+                useValue: router,
+              }
+            ],
+          });
     };
 
     beforeEach(() => {
@@ -28,10 +47,10 @@ describe('RoleGuard', () => {
             getUserInfo : jest.fn().mockReturnValue(userData)
         };
 
-        roleGuard = new RoleGuard(router, sharedData);
+        configureTestBed();
  
         // act
-        const response = roleGuard.canActivate({ data : { roles: ["ROLE_USER", "ROLE_VIEWER"] } } as any, {} as any);
+        const response = TestBed.runInInjectionContext(() => ROLE_GUARD({ data : { roles: ["ROLE_USER", "ROLE_VIEWER"] } } as any));
 
         // assert
         expect(response).toBeTruthy();
@@ -44,10 +63,10 @@ describe('RoleGuard', () => {
         sharedData = {
             getUserInfo : jest.fn().mockReturnValue(userData)
         };
-        roleGuard = new RoleGuard(router, sharedData);
+        configureTestBed();
 
         // act
-        const response = roleGuard.canActivate({ data : { roles: ["ROLE_ADMIN"] } } as any, {} as any);
+        const response = TestBed.runInInjectionContext(() => ROLE_GUARD({ data : { roles: ["ROLE_ADMIN"] } } as any));
 
         // assert
         expect(response).toBeFalsy();
@@ -60,14 +79,12 @@ describe('RoleGuard', () => {
         sharedData = {
             getUserInfo : jest.fn().mockReturnValue(undefined)
         };
-
-        roleGuard = new RoleGuard(router, sharedData);
+        configureTestBed();
  
         // act
-        const response = roleGuard.canActivate({ data : { roles: ["ROLE_USER", "ROLE_VIEWER"] } } as any, {} as any);
+        const response = TestBed.runInInjectionContext(() => ROLE_GUARD({ data : { roles: ["ROLE_USER", "ROLE_VIEWER"] } } as any));
 
         // assert
         expect(response).toBeFalsy();
-
     });
 });

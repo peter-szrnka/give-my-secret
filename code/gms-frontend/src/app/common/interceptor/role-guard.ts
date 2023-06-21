@@ -1,38 +1,27 @@
-import { Injectable } from "@angular/core";
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { Observable } from "rxjs";
+import { inject } from "@angular/core";
+import { ActivatedRouteSnapshot, Router } from "@angular/router";
 import { User } from "../../components/user/model/user.model";
 import { SharedDataService } from "../service/shared-data-service";
 
-const checker = (arr : string[], target : string[]) => target.every(v => arr.includes(v));
+const checker = (arr: string[], target: string[]) => target.every(v => arr.includes(v));
 
 /**
  * @author Peter Szrnka
  */
-@Injectable({
-    providedIn: "root"
-})
-export class RoleGuard implements CanActivate {
+export const ROLE_GUARD = (route: ActivatedRouteSnapshot) => {
+    const roles = route.data["roles"] as string[];
+    const currentUser: User | undefined = inject(SharedDataService).getUserInfo();
 
-    constructor(public router: Router, private sharedData : SharedDataService) {
+    if (currentUser === undefined) {
+        return false;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-        const roles = route.data["roles"] as string[];
-        const currentUser : User | undefined = this.sharedData.getUserInfo();
+    const checkResult = checker(roles, currentUser.roles);
 
-        if (currentUser === undefined) {
-            return false;
-        }
-
-        const checkResult = checker(roles, currentUser.roles);
-
-        if (checkResult === false) {
-            void this.router.navigate(['']);
-            return false;
-        }
-
-        return true;
+    if (checkResult === false) {
+        void inject(Router).navigate(['']);
+        return false;
     }
-}
+
+    return true;
+};
