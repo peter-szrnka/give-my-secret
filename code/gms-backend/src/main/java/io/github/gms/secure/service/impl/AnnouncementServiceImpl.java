@@ -1,5 +1,14 @@
 package io.github.gms.secure.service.impl;
 
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+
+import org.slf4j.MDC;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.ConverterUtils;
@@ -13,15 +22,6 @@ import io.github.gms.secure.entity.AnnouncementEntity;
 import io.github.gms.secure.repository.AnnouncementRepository;
 import io.github.gms.secure.service.AnnouncementService;
 import io.github.gms.secure.service.UserService;
-import org.slf4j.MDC;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.stream.Collectors;
-
-import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 
 /**
  * @author Peter Szrnka
@@ -65,7 +65,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 		return AnnouncementListDto.builder()
 				.resultList(results.stream()
 						.map(this::toDto)
-						.collect(Collectors.toList()))
+						.toList())
 				.totalElements(results.getTotalElements())
 				.build();
 	}

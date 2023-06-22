@@ -36,7 +36,7 @@ public class SystemPropertyConverterImpl implements SystemPropertyConverter {
 
 		List<SystemPropertyDto> results = Stream.of(SystemProperty.values())
 				.map(property -> toDto(propertyMap, property))
-				.collect(Collectors.toList());
+				.toList();
 		return SystemPropertyListDto.builder()
 				.resultList(results)
 				.totalElements(results.size())

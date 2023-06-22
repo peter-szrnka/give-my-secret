@@ -10,10 +10,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,18 +50,22 @@ public class SecurityConfig {
 			DaoAuthenticationProvider authenticationProvider,
 			AuthenticationEntryPoint authenticationEntryPoint,
 			SecureHeaderInitializerFilter secureHeaderInitializerFilter) throws Exception {
-		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
-				.requestMatchers(FILTER_URL).permitAll()
-				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().anyRequest()
-				.authenticated();
+		http
+			.cors(cors -> Customizer.withDefaults())
+			.csrf(CsrfConfigurer::disable)
+			.exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
+			.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.authorizeHttpRequests(authorizeHttpRequest -> 
+				authorizeHttpRequest.requestMatchers(FILTER_URL).permitAll()
+					.requestMatchers(FILTER_URL).permitAll()
+					.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().anyRequest()
+					.authenticated()
+			);
 
 		http.authenticationProvider(authenticationProvider);
-
 		http.addFilterBefore(secureHeaderInitializerFilter, UsernamePasswordAuthenticationFilter.class);
-
-		http.formLogin().disable();
-		http.httpBasic().disable();
+		http.formLogin(FormLoginConfigurer<HttpSecurity>::disable);
+		http.httpBasic(HttpBasicConfigurer<HttpSecurity>::disable);
 
 		return http.build();
 	}

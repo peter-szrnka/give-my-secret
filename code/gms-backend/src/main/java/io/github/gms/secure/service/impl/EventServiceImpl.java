@@ -1,5 +1,13 @@
 package io.github.gms.secure.service.impl;
 
+import static io.github.gms.common.util.MdcUtils.getUserId;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
+
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.secure.converter.EventConverter;
 import io.github.gms.secure.dto.EventListDto;
@@ -9,14 +17,6 @@ import io.github.gms.secure.model.UserEvent;
 import io.github.gms.secure.repository.EventRepository;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.EventService;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
-
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.stream.Collectors;
-
-import static io.github.gms.common.util.MdcUtils.getUserId;
 
 /**
  * @author Peter Szrnka
@@ -58,7 +58,7 @@ public class EventServiceImpl implements EventService {
 		Page<EventEntity> results = repository.findAll(ConverterUtils.createPageable(dto));
 		return EventListDto.builder().resultList(results.toList().stream()
 						.map(entity -> converter.toDto(entity, getUsername(entity.getUserId())))
-						.collect(Collectors.toList())).totalElements(results.getTotalElements()).build();
+						.toList()).totalElements(results.getTotalElements()).build();
 	}
 
 	@Override

@@ -1,5 +1,14 @@
 package io.github.gms.secure.converter.impl;
 
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.converter.SecretConverter;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
@@ -7,14 +16,6 @@ import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
 import io.github.gms.secure.entity.SecretEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka
@@ -98,7 +99,7 @@ public class SecretConverterImpl implements SecretConverter {
 
 	@Override
 	public SecretListDto toDtoList(Page<SecretEntity> resultList) {
-		List<SecretDto> results = resultList.toList().stream().map(result -> toDto(result, null)).collect(Collectors.toList());
+		List<SecretDto> results = resultList.toList().stream().map(result -> toDto(result, null)).toList();
 		return SecretListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
 	}
 }
