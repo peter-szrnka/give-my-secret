@@ -1,5 +1,14 @@
 package io.github.gms.secure.converter.impl;
 
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import io.github.gms.secure.converter.KeystoreConverter;
 import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.KeystoreDto;
@@ -7,15 +16,6 @@ import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka
@@ -79,7 +79,7 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		dto.setCredential(entity.getCredential());
 		
 		if (!CollectionUtils.isEmpty(aliasList)) {
-			dto.setAliases(aliasList.stream().map(this::convertToAliasDto).collect(Collectors.toList()));
+			dto.setAliases(aliasList.stream().map(this::convertToAliasDto).toList());
 		}
 
 		return dto;
@@ -87,7 +87,7 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 
 	@Override
 	public KeystoreListDto toDtoList(Page<KeystoreEntity> resultList) {
-		List<KeystoreDto> results = resultList.toList().stream().map(entity -> toDto(entity, null)).collect(Collectors.toList());
+		List<KeystoreDto> results = resultList.toList().stream().map(entity -> toDto(entity, null)).toList();
 		return KeystoreListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
 	}
 

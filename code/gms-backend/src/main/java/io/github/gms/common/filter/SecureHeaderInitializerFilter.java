@@ -56,7 +56,7 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		MDC.put(MdcParameter.CORRELATION_ID.getDisplayName(), UUID.randomUUID().toString());
-		response.addHeader("X-CORRELATION-ID", (String) MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
+		response.addHeader("X-CORRELATION-ID", MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
 
 		if (shouldSkipUrl(request.getRequestURI())) {
 			filterChain.doFilter(request, response);

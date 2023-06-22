@@ -1,6 +1,17 @@
 package io.github.gms.secure.converter.impl;
 
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
 import com.google.common.collect.Sets;
+
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
@@ -10,15 +21,6 @@ import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Peter Szrnka
@@ -88,7 +90,7 @@ public class UserConverterImpl implements UserConverter {
 
 	@Override
 	public UserListDto toDtoList(Page<UserEntity> resultList) {
-		List<UserDto> results = resultList.toList().stream().map(this::toDto).collect(Collectors.toList());
+		List<UserDto> results = resultList.toList().stream().map(this::toDto).toList();
 		return UserListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
 	}
 

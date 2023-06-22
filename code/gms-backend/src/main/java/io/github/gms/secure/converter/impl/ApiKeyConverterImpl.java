@@ -1,18 +1,18 @@
 package io.github.gms.secure.converter.impl;
 
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
+
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.converter.ApiKeyConverter;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
-
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka
@@ -69,7 +69,7 @@ public class ApiKeyConverterImpl implements ApiKeyConverter {
 
 	@Override
 	public ApiKeyListDto toDtoList(Page<ApiKeyEntity> resultList) {
-		List<ApiKeyDto> results = resultList.toList().stream().map(this::toDto).collect(Collectors.toList());
+		List<ApiKeyDto> results = resultList.toList().stream().map(this::toDto).toList();
 		return ApiKeyListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
 	}
 }
