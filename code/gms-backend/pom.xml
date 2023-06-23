@@ -436,11 +436,12 @@
 								<param>io.github.gms.*</param>
 							</targetTests>
 							<excludedClasses>
-								<param>*.*Config</param>
-								<param>*.*Dto</param>
-								<param>*.*Entity</param>
+								<param>*.**Application</param>
+								<param>*.config.*</param>
+								<param>*.dto.*</param>
+								<param>*.entity.*</param>
 								<param>*.model.*</param>
-								<param>*.*Repository</param>
+								<param>*.repository.*</param>
 							</excludedClasses>
 							<excludedTestClasses>
 								<param>io.github.gms.**IntegrationTest</param>
