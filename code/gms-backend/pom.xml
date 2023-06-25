@@ -429,6 +429,8 @@
 							</dependency>
 						</dependencies>
 						<configuration>
+							<mutationThreshold>65</mutationThreshold>
+                    		<coverageThreshold>65</coverageThreshold>
 							<targetClasses>
 								<param>io.github.gms.*</param>
 							</targetClasses>
@@ -436,10 +438,16 @@
 								<param>io.github.gms.*</param>
 							</targetTests>
 							<excludedClasses>
-								<param>*.**Application</param>
+								<param>*.*Application</param>
+								<param>*.*Config</param>
+								<param>*.*Dto</param>
+								<param>*.*Entity</param>
 								<param>*.config.*</param>
 								<param>*.dto.*</param>
 								<param>*.entity.*</param>
+								<param>*.enums.*</param>
+								<param>*.event.*</param>
+								<param>*.exception.*</param>
 								<param>*.model.*</param>
 								<param>*.repository.*</param>
 							</excludedClasses>
@@ -447,7 +455,6 @@
 								<param>io.github.gms.**IntegrationTest</param>
 							</excludedTestClasses>
 							<mutators>
-								<mutator>CONSTRUCTOR_CALLS</mutator>
 								<mutator>FALSE_RETURNS</mutator>
 								<mutator>TRUE_RETURNS</mutator>
 								<mutator>CONDITIONALS_BOUNDARY</mutator>

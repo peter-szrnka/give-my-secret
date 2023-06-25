@@ -77,8 +77,8 @@ public class TestUtils {
 	
 	public static final String OLD_CREDENTIAL = "OldCredential";
 	public static final String NEW_CREDENTIAL = "MyComplexPassword1!";
-	private static final String EMAIL = "email@email.com";
-	private static final String USERNAME = "username";
+	public static final String EMAIL = "email@email.com";
+	public static final String USERNAME = "username";
 
 	public static ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -200,6 +200,8 @@ public class TestUtils {
 		UserEntity user = new UserEntity();
 		user.setId(1L);
 		user.setUsername(USERNAME);
+		user.setCredential(NEW_CREDENTIAL);
+		user.setEmail("test@email.hu");
 		user.setName("name");
 		user.setRoles("ROLE_USER");
 		user.setStatus(status);

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.secure.service.SystemService;
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Peter Szrnka
@@ -25,7 +24,7 @@ public class SystemController {
 
 	@ResponseBody
 	@GetMapping("/status")
-	public SystemStatusDto status(HttpServletRequest request) {
+	public SystemStatusDto status() {
 		return systemService.getSystemStatus();
 	}
 }
