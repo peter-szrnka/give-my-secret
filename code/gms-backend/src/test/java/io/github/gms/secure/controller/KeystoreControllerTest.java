@@ -2,6 +2,7 @@ package io.github.gms.secure.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -16,6 +17,7 @@ import org.mockito.Mockito;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.github.gms.secure.dto.DownloadFileResponseDto;
@@ -70,8 +72,8 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     @Test
     void shouldSave() {
         // arrange
-        MultipartFile multiPartFile = mock(MultipartFile.class);
-        when(service.save("{'test':'value'}", multiPartFile)).thenReturn(new SaveEntityResponseDto(2L));
+        MultipartFile multiPartFile = new MockMultipartFile("test", "data".getBytes());
+        when(service.save(eq("{'test':'value'}"), eq(multiPartFile))).thenReturn(new SaveEntityResponseDto(2L));
 
         // act
         SaveEntityResponseDto response = controller.save("{'test':'value'}", multiPartFile);
@@ -81,7 +83,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
         assertEquals(2L, response.getEntityId());
 
         ArgumentCaptor<String> modelCaptor = ArgumentCaptor.forClass(String.class);
-        verify(service).save(modelCaptor.capture(), multiPartFile);
+        verify(service).save(modelCaptor.capture(), eq(multiPartFile));
         assertEquals("{'test':'value'}", modelCaptor.getValue());
     }
 

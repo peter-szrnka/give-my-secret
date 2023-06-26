@@ -57,6 +57,7 @@ import io.github.gms.secure.dto.SaveSecretRequestDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.AnnouncementEntity;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
@@ -607,5 +608,9 @@ public class TestUtils {
 
     public static KeystoreListDto createKeystoreListDto() {
         return new KeystoreListDto(List.of(createKeystoreDto()), 1);
+    }
+
+    public static UserListDto createUserListDto() {
+        return UserListDto.builder().resultList(List.of(createUserDto())).totalElements(1L).build();
     }
 }

@@ -8,11 +8,13 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.secure.service.SystemService;
 
+/**
+ * @author Peter Szrnka
+ */
 @ExtendWith(MockitoExtension.class)
 class SystemControllerTest {
     

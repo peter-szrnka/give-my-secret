@@ -1,23 +1,5 @@
 package io.github.gms.auth.ldap;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.util.TestUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.ldap.core.AttributesMapper;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.query.LdapQuery;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import java.time.Clock;
-import java.util.List;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,23 +9,68 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+import org.springframework.ldap.core.AttributesMapper;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.query.LdapQuery;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.util.TestUtils;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 
+	private ListAppender<ILoggingEvent> logAppender;
 	private Clock clock;
 	private UserRepository repository;
 	private LdapTemplate ldapTemplate;
 	private LdapUserAuthServiceImpl service;
 
 	@BeforeEach
+	public void setup() {
+		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
+		
+		logAppender = new ListAppender<>();
+		logAppender.start();
+	}
+
+	@BeforeEach
 	void beforeEach() {
+		logAppender = new ListAppender<>();
+		logAppender.start();
+
 		clock = mock(Clock.class);
 		repository = mock(UserRepository.class);
 		ldapTemplate = mock(LdapTemplate.class);
 		service = new LdapUserAuthServiceImpl(clock, repository, ldapTemplate, false);
+		((Logger) LoggerFactory.getLogger(LdapUserAuthServiceImpl.class)).addAppender(logAppender);
+	}
+	
+	@AfterEach
+	public void teardown() {
+		logAppender.list.clear();
+		logAppender.stop();
 	}
 
 	@Test
@@ -83,7 +110,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		UserDetails response = service.loadUserByUsername("test");
 
 		// assert
-		assertNotNull(response);
+		assertNotNull(response);		
 	}
 	
 	@Test
@@ -123,6 +150,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		verify(repository).save(any(UserEntity.class));
+		TestUtils.assertLogContains(logAppender, "Credential has been updated for user=");
 	}
 	
 	@Test
@@ -146,5 +174,6 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		
 		UserEntity capturedUserEnttiy = userEntityCaptor.getValue();
 		assertEquals("*PROVIDED_BY_LDAP*", capturedUserEnttiy.getCredential());
+		TestUtils.assertLogContains(logAppender, "User data has been saved into DB for user=");
 	}
 }
