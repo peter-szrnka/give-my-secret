@@ -264,6 +264,7 @@ public class TestUtils {
 	public static SecretEntity createSecretEntityWithUniqueKeystoreAliasId(Long keystoreAliasId) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(1L);
+		entity.setSecretId("secret");
 		entity.setCreationDate(ZonedDateTime.now());
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setStatus(EntityStatus.ACTIVE);
@@ -271,6 +272,7 @@ public class TestUtils {
 		entity.setKeystoreAliasId(keystoreAliasId);
 		entity.setLastRotated(ZonedDateTime.now());
 		entity.setUserId(1L);
+		entity.setType(SecretType.SIMPLE_CREDENTIAL);
 		return entity;
 	}
 	

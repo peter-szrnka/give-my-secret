@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -178,6 +179,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
         // assert
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
+        assertEquals("attachment; filename=\"test.jks\"", response.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION).get(0));
 
         ByteArrayResource resource = (ByteArrayResource) response.getBody();
         assertEquals(4, resource.contentLength());
