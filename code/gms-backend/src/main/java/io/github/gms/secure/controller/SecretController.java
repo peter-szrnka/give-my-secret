@@ -1,17 +1,8 @@
 package io.github.gms.secure.controller;
 
-import io.github.gms.common.abstraction.AbstractClientController;
-import io.github.gms.common.enums.EventOperation;
-import io.github.gms.common.enums.EventTarget;
-import io.github.gms.common.types.AuditTarget;
-import io.github.gms.common.types.Audited;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.dto.SaveSecretRequestDto;
-import io.github.gms.secure.dto.SecretDto;
-import io.github.gms.secure.dto.SecretListDto;
-import io.github.gms.secure.service.SecretRotationService;
-import io.github.gms.secure.service.SecretService;
+import static io.github.gms.common.util.Constants.ROLE_USER;
+import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static io.github.gms.common.util.Constants.ROLE_USER;
-import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
+import io.github.gms.common.abstraction.AbstractClientController;
+import io.github.gms.common.enums.EventOperation;
+import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.types.AuditTarget;
+import io.github.gms.common.types.Audited;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.dto.SaveSecretRequestDto;
+import io.github.gms.secure.dto.SecretDto;
+import io.github.gms.secure.dto.SecretListDto;
+import io.github.gms.secure.service.SecretRotationService;
+import io.github.gms.secure.service.SecretService;
 
 /**
  * @author Peter Szrnka
@@ -38,6 +39,10 @@ public class SecretController extends AbstractClientController<SecretService> {
 	
 	@Autowired
 	private SecretRotationService secretRotationService;
+
+	public SecretController(SecretService service) {
+		super(service);
+	}
 
 	@PostMapping
 	@PreAuthorize(ROLE_USER)

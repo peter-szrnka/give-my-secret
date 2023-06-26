@@ -44,8 +44,12 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.model.GenerateJwtRequest;
+import io.github.gms.secure.dto.ApiKeyDto;
+import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
 import io.github.gms.secure.dto.KeystoreAliasDto;
+import io.github.gms.secure.dto.KeystoreDto;
+import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.SaveAnnouncementDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
@@ -577,4 +581,31 @@ public class TestUtils {
 				.claims(claims)
 				.build();
 	}
+
+    public static ApiKeyDto createApiKeyDto() {
+		ApiKeyDto dto = new ApiKeyDto();
+		dto.setId(1L);
+		dto.setName("api-key-1");
+		dto.setValue("value");
+		dto.setStatus(EntityStatus.ACTIVE);
+		dto.setDescription("test");
+        return dto;
+    }
+
+    public static ApiKeyListDto createApiKeyListDto() {
+        return new ApiKeyListDto(List.of(createApiKeyDto()), 1);
+    }
+
+	public static KeystoreDto createKeystoreDto() {
+		KeystoreDto dto = new KeystoreDto();
+		dto.setId(1L);
+		dto.setName("my-jks-1");
+		dto.setType(KeystoreType.JKS);
+		dto.setStatus(EntityStatus.ACTIVE);
+		return dto;
+	}
+
+    public static KeystoreListDto createKeystoreListDto() {
+        return new KeystoreListDto(List.of(createKeystoreDto()), 1);
+    }
 }

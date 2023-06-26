@@ -11,6 +11,8 @@ import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveAnnouncementDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.service.AnnouncementService;
+import io.github.gms.secure.service.ApiKeyService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +36,10 @@ import static io.github.gms.common.util.Constants.ROLE_ADMIN;
 @RequestMapping("/secure/announcement")
 @AuditTarget(EventTarget.ANNOUNCEMENT)
 public class AnnouncementController extends AbstractController<AnnouncementService> {
+
+	public AnnouncementController(AnnouncementService service) {
+		super(service);
+	}
 
 	@PostMapping
 	@PreAuthorize(ROLE_ADMIN)
