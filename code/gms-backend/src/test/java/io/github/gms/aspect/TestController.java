@@ -25,7 +25,7 @@ public class TestController {
 	
 	@ResponseBody
 	@GetMapping("/test2")
-	@AuditTarget(EventTarget.ADMIN_USER)
+	@AuditTarget(EventTarget.API_KEY)
 	@Audited(operation = EventOperation.GET_BY_ID)
 	public String test2() {
 		return "OK";

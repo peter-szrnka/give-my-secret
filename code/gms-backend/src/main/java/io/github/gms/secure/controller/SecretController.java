@@ -3,7 +3,6 @@ package io.github.gms.secure.controller;
 import static io.github.gms.common.util.Constants.ROLE_USER;
 import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,12 +35,12 @@ import io.github.gms.secure.service.SecretService;
 @RequestMapping("/secure/secret")
 @AuditTarget(EventTarget.SECRET)
 public class SecretController extends AbstractClientController<SecretService> {
-	
-	@Autowired
-	private SecretRotationService secretRotationService;
 
-	public SecretController(SecretService service) {
+	private final SecretRotationService secretRotationService;
+
+	public SecretController(SecretService service, SecretRotationService secretRotationService) {
 		super(service);
+		this.secretRotationService = secretRotationService;
 	}
 
 	@PostMapping
