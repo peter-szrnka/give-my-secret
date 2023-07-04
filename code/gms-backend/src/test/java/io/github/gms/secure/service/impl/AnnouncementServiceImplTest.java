@@ -15,12 +15,15 @@ import static org.mockito.Mockito.when;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
+import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import io.github.gms.abstraction.AbstractUnitTest;
@@ -125,7 +128,12 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldReturnList() {
 		// arrange
-		when(repository.findAll(any(Pageable.class))).thenReturn(TestUtils.createAnnouncementEntityList());
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+
+		AnnouncementEntity entity = TestUtils.createAnnouncementEntity(1L);
+		entity.setAnnouncementDate(ZonedDateTime.now(clock));
+		when(repository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Lists.newArrayList(entity)));
 		when(userService.getUsernameById(anyLong())).thenReturn("myuser");
 
 		// act
@@ -134,7 +142,10 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
+		assertEquals("Maintenance at 2022-01-01", response.getResultList().get(0).getTitle());
+		assertEquals("Test", response.getResultList().get(0).getDescription());
 		assertEquals("myuser", response.getResultList().get(0).getAuthor());
+		assertEquals("2023-06-29T00:00Z", response.getResultList().get(0).getAnnouncementDate().toString());
 		assertEquals(1L, response.getTotalElements());
 
 		verify(repository).findAll(any(Pageable.class));

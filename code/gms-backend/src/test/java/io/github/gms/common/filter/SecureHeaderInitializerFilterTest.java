@@ -3,8 +3,11 @@ package io.github.gms.common.filter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,8 +17,10 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -28,6 +33,8 @@ import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
+import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.CookieUtils;
 import io.github.gms.secure.service.SystemPropertyService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -121,15 +128,30 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		when(systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS))
 			.thenReturn(86400L);
 
+		MockedStatic<CookieUtils> mockCookieUtils = mockStatic(CookieUtils.class);
+		ResponseCookie accessJwtCookie = mock(ResponseCookie.class);
+        when(accessJwtCookie.toString()).thenReturn("mock-cookie1");
+        mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.ACCESS_JWT_TOKEN), eq("ACCESS_JWT"), eq(900L), eq(true))).thenReturn(accessJwtCookie);
+
+        ResponseCookie refreshJwtCookie = mock(ResponseCookie.class);
+        when(refreshJwtCookie.toString()).thenReturn("mock-cookie2");
+        mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESH_JWT"), eq(86400L), eq(true))).thenReturn(refreshJwtCookie);
+
 		// act
 		filter.doFilterInternal(request, response, filterChain);
 		
 		// assert
 		assertNull(MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
+		verify(response).addHeader("Set-Cookie", "mock-cookie1");
+		verify(response).addHeader("Set-Cookie", "mock-cookie2");
 		verify(filterChain).doFilter(any(), any());
 		verify(response, never()).sendError(HttpStatus.BAD_REQUEST.value(), ERROR_MESSAGE);
 		verify(authenticationService).authorize(any(HttpServletRequest.class));
 		verify(systemPropertyService).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		verify(systemPropertyService).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
+
+		mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.ACCESS_JWT_TOKEN), eq("ACCESS_JWT"), eq(900L), eq(true)));
+        mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESH_JWT"), eq(86400L), eq(true)));
+		mockCookieUtils.close();
 	}
 }

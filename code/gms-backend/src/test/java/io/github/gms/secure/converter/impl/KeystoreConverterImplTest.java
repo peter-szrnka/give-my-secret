@@ -55,8 +55,14 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
+		assertEquals("keystore", entity.getName());
+		assertEquals(1L, entity.getUserId());
+		assertEquals("description", entity.getDescription());
+		assertEquals("test", entity.getCredential());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals(KeystoreType.JKS, entity.getType());
 		assertEquals(FILE_NAME, entity.getFileName());
+		assertEquals("test.jks", entity.getFileName());
 	}
 
 	@Test
@@ -67,8 +73,14 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
+		assertEquals("keystore", entity.getName());
+		assertEquals(1L, entity.getUserId());
+		assertEquals("description", entity.getDescription());
+		assertEquals("test", entity.getCredential());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals(KeystoreType.JKS, entity.getType());
 		assertEquals(FILE_NAME, entity.getFileName());
+		assertEquals("test.jks", entity.getFileName());
 	}
 
 	@Test
@@ -90,7 +102,6 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 		assertEquals("test", entity.getCredential());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
 		assertEquals(KeystoreType.JKS, entity.getType());
-		assertEquals(FILE_NAME, entity.getFileName());
 		assertNull(entity.getFileName());
 	}
 
@@ -130,6 +141,7 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
+		assertEquals(1L, resultList.getTotalElements());
 	}
 
 	@Test
@@ -144,6 +156,18 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 		assertNotNull(response);
 		assertEquals(1L, response.getAliases().size());
 		assertEquals("keystore", response.getName());
+		assertEquals(1L, response.getUserId());
+		assertEquals("description", response.getDescription());
+		assertEquals("test", response.getCredential());
+		assertEquals(EntityStatus.ACTIVE, response.getStatus());
+		assertEquals(KeystoreType.JKS, response.getType());
+		assertEquals(FILE_NAME, response.getFileName());
+
+		KeystoreAliasDto aliasDto = response.getAliases().get(0);
+		assertEquals("algorithm", aliasDto.getAlgorithm());
+		assertEquals("test", aliasDto.getAlias());
+		assertEquals("test", aliasDto.getAliasCredential());
+		assertEquals(1L, aliasDto.getId());
 	}
 
 	@Test
@@ -158,6 +182,9 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(1L, response.getId());
+		assertEquals(1, response.getKeystoreId());
 		assertEquals("alias", response.getAlias());
+		assertEquals("test1234", response.getAliasCredential());
+		assertEquals(EnabledAlgorithm.SHA256WITHRSA.getDisplayName(), response.getAlgorithm());
 	}
 }

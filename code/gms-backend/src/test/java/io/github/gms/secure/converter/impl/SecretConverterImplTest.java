@@ -6,8 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -50,21 +54,31 @@ class SecretConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToEntityWithoutParameters() {
 		// arrange
-		setupClock(clock);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
-		SecretEntity entity = converter.toEntity(TestUtils.createSecretEntity(), new SaveSecretRequestDto());
+		SecretEntity originalEntity = TestUtils.createSecretEntity();
+		originalEntity.setCreationDate(ZonedDateTime.now(clock));
+		originalEntity.setLastRotated(ZonedDateTime.now(clock));
+		originalEntity.setLastUpdated(ZonedDateTime.now(clock));
+		SecretEntity entity = converter.toEntity(originalEntity, new SaveSecretRequestDto());
 
 		// assert
 		assertNotNull(entity);
-		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals("SecretEntity(id=1, userId=null, keystoreAliasId=null, secretId=null, value=test, status=ACTIVE, type=null, creationDate=2023-06-29T00:00Z, lastUpdated=2023-06-29T00:00Z, lastRotated=2023-06-29T00:00Z, rotationPeriod=YEARLY, returnDecrypted=false, rotationEnabled=false)", entity.toString());
 	}
 
 	@Test
 	void checkToEntityWithParameters() {
 		// arrange
-		setupClock(clock);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
-		// arrange
+		SecretEntity originalEntity = TestUtils.createSecretEntity();
+		originalEntity.setCreationDate(ZonedDateTime.now(clock));
+		originalEntity.setLastRotated(ZonedDateTime.now(clock));
+		originalEntity.setLastUpdated(ZonedDateTime.now(clock));
+
 		SaveSecretRequestDto dto = new SaveSecretRequestDto();
 		dto.setValue("value");
 		dto.setRotationPeriod(RotationPeriod.DAILY);
@@ -77,25 +91,18 @@ class SecretConverterImplTest extends AbstractUnitTest {
 		dto.setType(SecretType.SIMPLE_CREDENTIAL);
 
 		// act
-		SecretEntity entity = converter.toEntity(TestUtils.createSecretEntity(), dto);
+		SecretEntity entity = converter.toEntity(originalEntity, dto);
 
 		// assert
 		assertNotNull(entity);
-		assertEquals(EntityStatus.DISABLED, entity.getStatus());
-		assertEquals(RotationPeriod.DAILY, entity.getRotationPeriod());
-		assertEquals("value", entity.getValue());
-		assertEquals("secret", entity.getSecretId());
-		assertEquals(1L, entity.getUserId());
-		assertTrue(entity.isRotationEnabled());
-		assertFalse(entity.isReturnDecrypted());
-		assertEquals(SecretType.SIMPLE_CREDENTIAL, entity.getType());
-		assertNotNull(entity.getLastUpdated());
+		assertEquals("SecretEntity(id=1, userId=1, keystoreAliasId=1, secretId=secret, value=value, status=DISABLED, type=SIMPLE_CREDENTIAL, creationDate=2023-06-29T00:00Z, lastUpdated=2023-06-29T00:00Z, lastRotated=2023-06-29T00:00Z, rotationPeriod=DAILY, returnDecrypted=false, rotationEnabled=true)", entity.toString());
 	}
 
 	@Test
 	void checkToNewEntity() {
 		// arrange
-		setupClock(clock);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
 		// arrange
 		SaveSecretRequestDto dto = new SaveSecretRequestDto();
@@ -128,7 +135,11 @@ class SecretConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToList() {
 		// arrange
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		Page<SecretEntity> entityList = new PageImpl<>(Lists.newArrayList(TestUtils.createSecretEntity()));
+		entityList.getContent().get(0).setCreationDate(ZonedDateTime.now(clock));
+		entityList.getContent().get(0).setLastRotated(ZonedDateTime.now(clock));
 
 		// act
 		SecretListDto resultList = converter.toDtoList(entityList);
@@ -136,6 +147,8 @@ class SecretConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
+		assertEquals(1L, resultList.getTotalElements());
+		assertEquals("SecretDto(id=1, userId=1, keystoreId=null, keystoreAliasId=1, secretId=secret, status=ACTIVE, type=SIMPLE_CREDENTIAL, creationDate=2023-06-29T00:00Z, lastUpdated=null, lastRotated=2023-06-29T00:00Z, rotationPeriod=YEARLY, returnDecrypted=false, rotationEnabled=false, apiKeyRestrictions=null)", resultList.getResultList().get(0).toString());
 	}
 	
 	@Test

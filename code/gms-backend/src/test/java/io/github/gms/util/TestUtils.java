@@ -66,6 +66,7 @@ import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.dto.SystemPropertyDto;
 import io.github.gms.secure.dto.SystemPropertyListDto;
 import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.AnnouncementEntity;
 import io.github.gms.secure.entity.ApiKeyEntity;
@@ -143,8 +144,10 @@ public class TestUtils {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
 				.enabled(true)
+				.email("a@b.com")
 				.credential(DemoData.CREDENTIAL_TEST)
 				.userId(DemoData.USER_1_ID)
+				.name(DemoData.USERNAME1)
 				.username(DemoData.USERNAME1)
 				.authorities(Sets.newHashSet(UserRole.ROLE_USER))
 				.build();
@@ -186,6 +189,8 @@ public class TestUtils {
 		request.setUserId(1L);
 		request.setValue("12345678");
 		request.setStatus(EntityStatus.ACTIVE);
+		request.setName("api-key-name");
+		request.setDescription("description2");
 		return request;
 	}
 
@@ -194,6 +199,7 @@ public class TestUtils {
 		user.setId(1L);
 		user.setUsername(USERNAME);
 		user.setName("name");
+		user.setEmail("a@b.com");
 		user.setRoles("ROLE_USER");
 		user.setStatus(EntityStatus.ACTIVE);
 		user.setCredential(OLD_CREDENTIAL);
@@ -232,12 +238,14 @@ public class TestUtils {
 	}
 
 	public static ApiKeyEntity createApiKey() {
-		ApiKeyEntity user = new ApiKeyEntity();
-		user.setId(1L);
-		user.setUserId(1L);
-		user.setStatus(EntityStatus.ACTIVE);
-		user.setValue("apikey");
-		return user;
+		ApiKeyEntity entity = new ApiKeyEntity();
+		entity.setId(1L);
+		entity.setName("test");
+		entity.setUserId(1L);
+		entity.setStatus(EntityStatus.ACTIVE);
+		entity.setValue("apikey");
+		entity.setDescription("description");
+		return entity;
 	}
 
 	public static EventEntity createEventEntity() {
@@ -364,6 +372,7 @@ public class TestUtils {
 		KeystoreAliasEntity entity = new KeystoreAliasEntity();
 
 		entity.setId(id);
+		entity.setAlgorithm("algorithm");
 		entity.setKeystoreId(keystoreId);
 		entity.setAlias("test");
 		entity.setAliasCredential("test");
@@ -667,5 +676,15 @@ public class TestUtils {
 			.opened(false)
 			.creationDate(ZonedDateTime.now().minusDays(1))
 			.build())).build();
+    }
+
+    public static UserInfoDto createUserInfoDto() {
+		UserInfoDto dto = new UserInfoDto();
+		dto.setId(1L);
+		dto.setUsername("user");
+		dto.setName("name");
+		dto.setRoles(Set.of(UserRole.ROLE_USER));
+		dto.setEmail("a@b.com");
+        return dto;
     }
 }

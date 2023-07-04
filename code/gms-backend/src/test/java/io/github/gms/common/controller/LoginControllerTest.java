@@ -3,23 +3,17 @@ package io.github.gms.common.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.time.Duration;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 
@@ -31,6 +25,7 @@ import io.github.gms.common.util.CookieUtils;
 import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.service.LoginService;
 import io.github.gms.secure.service.SystemPropertyService;
+import io.github.gms.util.TestUtils;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -78,6 +73,7 @@ class LoginControllerTest {
         AuthenticateResponseDto mockResponse = new AuthenticateResponseDto();
         mockResponse.setRefreshToken("REFRESHTOKEN");
         mockResponse.setToken("TOKEN");
+        mockResponse.setCurrentUser(TestUtils.createUserInfoDto());
         when(service.login(dto)).thenReturn(mockResponse);
 
         when(systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(2L);
@@ -102,10 +98,13 @@ class LoginControllerTest {
         assertEquals(1, response.getHeaders().size());
         assertTrue(response.getHeaders().get("Set-Cookie").stream().anyMatch(item -> item.equals("mock-cookie1")));
         assertTrue(response.getHeaders().get("Set-Cookie").stream().anyMatch(item -> item.equals("mock-cookie2")));
+        assertEquals("UserInfoDto(id=1, name=name, username=user, email=a@b.com, roles=[ROLE_USER])", response.getBody().toString());
 
         verify(systemPropertyService).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		verify(systemPropertyService).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
 
+        mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.ACCESS_JWT_TOKEN), eq("TOKEN"), eq(2L), eq(false)));
+        mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESHTOKEN"), eq(3L), eq(false)));
         mockCookieUtils.close();
     }
 

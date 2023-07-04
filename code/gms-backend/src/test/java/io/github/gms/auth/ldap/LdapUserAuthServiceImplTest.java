@@ -168,6 +168,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(response);
+		assertEquals("GmsUserDetails(name=username1, email=a@b.com, userId=1, username=username1, credential=test, authorities=[ROLE_USER], accountNonLocked=true, enabled=true)", response.toString());
 		
 		ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
 		verify(repository).save(userEntityCaptor.capture());
