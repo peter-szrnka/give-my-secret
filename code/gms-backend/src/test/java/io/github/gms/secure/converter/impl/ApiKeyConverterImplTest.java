@@ -64,13 +64,19 @@ class ApiKeyConverterImplTest extends AbstractUnitTest {
 		// arrange
 		SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
 		dto.setId(3L);
+		dto.setUserId(6L);
+		ApiKeyEntity existingEntity = TestUtils.createApiKey();
+		existingEntity.setValue("");
+		existingEntity.setId(5L);
+		existingEntity.setUserId(2L);
+		existingEntity.setStatus(EntityStatus.DISABLED);
 
 		// act
-		ApiKeyEntity entity = converter.toEntity(TestUtils.createApiKey(), dto);
+		ApiKeyEntity entity = converter.toEntity(existingEntity, dto);
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("ApiKeyEntity(id=3, userId=1, name=api-key-name, value=12345678, description=description2, status=ACTIVE, creationDate=null)", entity.toString());
+		assertEquals("ApiKeyEntity(id=3, userId=6, name=api-key-name, value=12345678, description=description2, status=ACTIVE, creationDate=null)", entity.toString());
 	}
 
 	@Test

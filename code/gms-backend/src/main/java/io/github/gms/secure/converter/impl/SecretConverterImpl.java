@@ -58,7 +58,6 @@ public class SecretConverterImpl implements SecretConverter {
 	@Override
 	public SecretEntity toNewEntity(SaveSecretRequestDto dto) {
 		SecretEntity entity = new SecretEntity();
-		entity.setId(dto.getId());
 		entity.setSecretId(dto.getSecretId());
 		entity.setKeystoreAliasId(dto.getKeystoreAliasId());
 		entity.setUserId(dto.getUserId());

@@ -37,10 +37,12 @@ class SystemPropertyConverterImplTest extends AbstractUnitTest {
 		SystemPropertyEntity entity = new SystemPropertyEntity();
 		entity.setKey(SystemProperty.ACCESS_JWT_ALGORITHM);
 		entity.setValue("HMAC512");
+		entity.setLastModified(ZonedDateTime.now());
 
 		SystemPropertyEntity entity2 = new SystemPropertyEntity();
 		entity2.setKey(null);
 		entity2.setValue("HMAC512");
+		entity2.setLastModified(ZonedDateTime.now());
 
 		// act
 		SystemPropertyListDto response = converter.toDtoList(List.of(entity, entity2));
@@ -49,6 +51,8 @@ class SystemPropertyConverterImplTest extends AbstractUnitTest {
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
 		assertEquals(7L, response.getTotalElements());
+		assertEquals(6L, response.getResultList().stream().filter((item) -> item.isFactoryValue()).count());
+		assertEquals(1L, response.getResultList().stream().filter((item) -> item.getLastModified() != null).count());
 	}
 	
 	@Test
