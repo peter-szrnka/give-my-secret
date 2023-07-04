@@ -67,6 +67,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 	void checkToEntityWithoutCredential() {
 		// arrange
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
+		dto.setId(1L);
 		dto.setCredential(null);
 
 		// act
@@ -74,7 +75,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=null, roles=ROLE_USER)", entity.toString());
+		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=null, roles=ROLE_USER)", entity.toString());
 	}
 
 	@Test

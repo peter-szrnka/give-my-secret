@@ -14,11 +14,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -66,20 +70,18 @@ class ApiKeyConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals(3L, entity.getId());
-		assertEquals(1L, entity.getUserId());
-		assertEquals("api-key-name", entity.getName());
-		assertEquals("description2", entity.getDescription());
-		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals("ApiKeyEntity(id=3, userId=1, name=api-key-name, value=12345678, description=description2, status=ACTIVE, creationDate=null)", entity.toString());
 	}
 
 	@Test
 	void checkToNewEntity() {
 		// arrange
-		setupClock(clock);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
 
 		// act
-		ApiKeyEntity entity = converter.toNewEntity(TestUtils.createNewSaveApiKeyRequestDto());
+		ApiKeyEntity entity = converter.toNewEntity(dto);
 
 		// assert
 		assertNotNull(entity);
@@ -89,12 +91,17 @@ class ApiKeyConverterImplTest extends AbstractUnitTest {
 		assertEquals("description2", entity.getDescription());
 		assertEquals("12345678", entity.getValue());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals("2023-06-29T00:00Z", entity.getCreationDate().toString());
 	}
 
 	@Test
 	void checkToList() {
 		// arrange
-		Page<ApiKeyEntity> entityList = new PageImpl<>(Lists.newArrayList(TestUtils.createApiKey()));
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		ApiKeyEntity apiKeyEntity = TestUtils.createApiKey();
+		apiKeyEntity.setCreationDate(ZonedDateTime.now(clock));
+		Page<ApiKeyEntity> entityList = new PageImpl<>(Lists.newArrayList(apiKeyEntity));
 
 		// act
 		ApiKeyListDto resultList = converter.toDtoList(entityList);
@@ -111,5 +118,6 @@ class ApiKeyConverterImplTest extends AbstractUnitTest {
 		assertEquals("description", entity.getDescription());
 		assertEquals("apikey", entity.getValue());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals("2023-06-29T00:00Z", entity.getCreationDate().toString());
 	}
 }
