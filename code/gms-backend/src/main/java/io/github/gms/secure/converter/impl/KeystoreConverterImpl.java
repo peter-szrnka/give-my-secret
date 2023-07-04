@@ -39,7 +39,6 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		entity.setDescription(dto.getDescription());
 		entity.setCreationDate(ZonedDateTime.now(clock));
 		entity.setCredential(dto.getCredential());
-		entity.setName(dto.getName());
 		if (file != null) {
 			entity.setFileName(file.getOriginalFilename());
 		}
@@ -57,7 +56,6 @@ public class KeystoreConverterImpl implements KeystoreConverter {
 		entity.setUserId(dto.getUserId());
 		entity.setDescription(dto.getDescription());
 		entity.setCredential(dto.getCredential());
-		entity.setName(dto.getName());
 		entity.setStatus(dto.getStatus());
 		entity.setType(dto.getType());
 

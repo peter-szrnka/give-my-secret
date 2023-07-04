@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.Duration;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.ResponseCookie;
@@ -16,6 +17,11 @@ import io.github.gms.abstraction.AbstractUnitTest;
  * @since 1.0
  */
 class CookieUtilsTest extends AbstractUnitTest {
+
+    @Test
+    void shouldTestPrivateConstructor() {
+        assertPrivateConstructor(CookieUtils.class);
+    }
 
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })

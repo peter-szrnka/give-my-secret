@@ -13,7 +13,7 @@ public abstract class AbstractLimitBasedJob {
 
 	protected final Clock clock;
 
-	public AbstractLimitBasedJob(Clock clock) {
+	protected AbstractLimitBasedJob(Clock clock) {
 		this.clock = clock;
 	}
 	
