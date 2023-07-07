@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -176,6 +177,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("User is blocked")));
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
+		assertEquals("User is blocked", response.getErrorMessage());
 
 		verify(jwtService).parseJwt(anyString(), anyString());
 		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);
@@ -211,6 +213,12 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertFalse(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("Authentication failed: JWT token has expired!")));
 		assertEquals(HttpStatus.OK, response.getResponseStatus());
+		assertTrue(response.getJwtPair().toString().contains("REFRESH_JWT=REFRESH_JWT"));
+		assertTrue(response.getJwtPair().toString().contains("ACCESS_JWT=ACCESS_JWT"));
+
+		UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) response.getAuthentication();
+		assertEquals("username1", token.getName());
+
 		verify(jwtService).parseJwt(anyString(), anyString());
 		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);
 		

@@ -66,16 +66,21 @@ class UserConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToEntityWithoutCredential() {
 		// arrange
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
 		dto.setId(1L);
 		dto.setCredential(null);
 
+		UserEntity existingEntity = TestUtils.createUser();
+		existingEntity.setCreationDate(ZonedDateTime.now(clock));
+
 		// act
-		UserEntity entity = converter.toEntity(TestUtils.createUser(), dto, false);
+		UserEntity entity = converter.toEntity(existingEntity, dto, false);
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=null, roles=ROLE_USER)", entity.toString());
+		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=2023-06-29T00:00Z, roles=ROLE_USER)", entity.toString());
 	}
 
 	@Test

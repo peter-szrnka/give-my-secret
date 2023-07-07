@@ -31,12 +31,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -213,9 +218,14 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	@SneakyThrows
 	void shouldSaveNewEntityWhenValueIsNotProvided() {
 		// arrange
+		Clock clock = mock(Clock.class);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
 		mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(1L);
 		SecretEntity mockEntity = TestUtils.createSecretEntity();
+		mockEntity.setCreationDate(ZonedDateTime.now(clock));
+		mockEntity.setLastRotated(ZonedDateTime.now(clock));
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
 				.thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 		when(keystoreAliasRepository.findById(anyLong()))
@@ -235,7 +245,12 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		verify(converter).toNewEntity(any(SaveSecretRequestDto.class));
 		verify(cryptoService).encrypt(mockEntity);
 		verify(keystoreAliasRepository).findById(anyLong());
-		verify(repository).save(any(SecretEntity.class));
+
+		ArgumentCaptor<SecretEntity> argumentCaptor = ArgumentCaptor.forClass(SecretEntity.class);
+		verify(repository).save(argumentCaptor.capture());
+
+		SecretEntity capturedEntity = argumentCaptor.getValue();
+		assertEquals("SecretEntity(id=1, userId=1, keystoreAliasId=1, secretId=secret, value=test, status=ACTIVE, type=SIMPLE_CREDENTIAL, creationDate=2023-06-29T00:00Z, lastUpdated=null, lastRotated=2023-06-29T00:00Z, rotationPeriod=YEARLY, returnDecrypted=false, rotationEnabled=false)", capturedEntity.toString());
 	}
 
 	@Test

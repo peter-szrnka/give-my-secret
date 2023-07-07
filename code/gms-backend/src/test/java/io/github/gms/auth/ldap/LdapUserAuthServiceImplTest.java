@@ -10,12 +10,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -135,11 +139,12 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		verify(repository, never()).save(any(UserEntity.class));
 	}
 	
-	@Test
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
 	@SuppressWarnings("unchecked")
-	void shouldUpdateCredentials() {
+	void shouldUpdateCredentials(boolean storeLdapCredential) {
 		// arrange
-		service = new LdapUserAuthServiceImpl(clock, repository, ldapTemplate, true);
+		service = new LdapUserAuthServiceImpl(clock, repository, ldapTemplate, storeLdapCredential);
 
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(TestUtils.createGmsUser()));
 		when(repository.findByUsername("test")).thenReturn(Optional.of(TestUtils.createUser()));
@@ -149,15 +154,22 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(response);
-		verify(repository).save(any(UserEntity.class));
-		TestUtils.assertLogContains(logAppender, "Credential has been updated for user=");
+
+		if (storeLdapCredential) {
+			ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
+			verify(repository).save(userEntityCaptor.capture());
+			UserEntity capturedUserEntity = userEntityCaptor.getValue();
+			assertEquals("UserEntity(id=1, name=name, username=username, email=a@b.com, status=ACTIVE, credential=test, creationDate=null, roles=ROLE_USER)", capturedUserEntity.toString());
+			TestUtils.assertLogContains(logAppender, "Credential has been updated for user=");
+		}
 	}
 	
 	@Test
 	@SuppressWarnings("unchecked")
 	void shouldSaveNewLdapUser() {
 		// arrange
-		setupClock(clock);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		service = new LdapUserAuthServiceImpl(clock, repository, ldapTemplate, false);
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(TestUtils.createGmsUser()));
 		when(repository.findByUsername("test")).thenReturn(Optional.empty());
@@ -173,8 +185,8 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
 		verify(repository).save(userEntityCaptor.capture());
 		
-		UserEntity capturedUserEnttiy = userEntityCaptor.getValue();
-		assertEquals("*PROVIDED_BY_LDAP*", capturedUserEnttiy.getCredential());
+		UserEntity capturedUserEntity = userEntityCaptor.getValue();
+		assertEquals("UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=ACTIVE, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, roles=ROLE_USER)", capturedUserEntity.toString());
 		TestUtils.assertLogContains(logAppender, "User data has been saved into DB for user=");
 	}
 }
