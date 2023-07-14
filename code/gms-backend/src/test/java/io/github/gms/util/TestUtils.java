@@ -177,6 +177,7 @@ public class TestUtils {
 	public static SaveApiKeyRequestDto createSaveApiKeyRequestDto() {
 		SaveApiKeyRequestDto request = new SaveApiKeyRequestDto();
 		request.setId(1L);
+		request.setName("api key 1");
 		request.setUserId(1L);
 		request.setValue("12345678");
 		request.setStatus(EntityStatus.ACTIVE);

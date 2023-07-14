@@ -93,7 +93,11 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// act
 		UserEntity mockEntity = TestUtils.createUser();
+		mockEntity.setName("Test Test");
+		mockEntity.setUsername("my-user-1");
 		mockEntity.setCreationDate(ZonedDateTime.now(clock));
+		mockEntity.setStatus(EntityStatus.DISABLED);
+		mockEntity.setRoles("ROLE_VIEWER");
 		UserEntity entity = converter.toEntity(mockEntity, dto, true);
 
 		// assert
@@ -166,6 +170,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 		assertEquals(EntityStatus.ACTIVE, dto.getStatus());
 		assertEquals(1, dto.getRoles().size());
 		assertEquals(UserRole.ROLE_USER, dto.getRoles().iterator().next());
+		assertEquals("2023-06-29T00:00Z", dto.getCreationDate().toString());
 	}
 
 	@Test

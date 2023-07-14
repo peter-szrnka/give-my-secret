@@ -74,14 +74,22 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		KeystoreEntity existingEntity = TestUtils.createKeystoreEntity();
+		existingEntity.setType(KeystoreType.PKCS12);
+		existingEntity.setDescription("Loooong story short");
+		existingEntity.setCredential("asdasdasd");
+		existingEntity.setFileName("my-sample-test.jks");
 		existingEntity.setCreationDate(ZonedDateTime.now(clock));
+		existingEntity.setStatus(EntityStatus.DISABLED);
+		existingEntity.setName("no-not-again.p12");
+		existingEntity.setId(123213L);
+		existingEntity.setUserId(4L);
 
 		// act
 		KeystoreEntity entity = converter.toEntity(existingEntity, TestUtils.createSaveKeystoreRequestDto());
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("KeystoreEntity(id=1, userId=1, status=ACTIVE, name=keystore, fileName=test.jks, type=JKS, description=description, credential=test, creationDate=2023-06-29T00:00Z)", entity.toString());
+		assertEquals("KeystoreEntity(id=1, userId=1, status=ACTIVE, name=keystore, fileName=my-sample-test.jks, type=JKS, description=description, credential=test, creationDate=2023-06-29T00:00Z)", entity.toString());
 	}
 
 	@Test

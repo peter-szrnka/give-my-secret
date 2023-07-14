@@ -57,6 +57,7 @@ class ApiKeyConverterImplTest extends AbstractUnitTest {
 		assertEquals("api-key-name", entity.getName());
 		assertEquals("description2", entity.getDescription());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals("apikey", entity.getValue());
 	}
 
 	@Test

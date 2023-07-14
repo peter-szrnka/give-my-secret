@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,14 +76,15 @@ class SecretRotationServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldRotate() {
 		// arrange
-		setupClock(clock);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		SecretEntity mockSecret = TestUtils.createSecretEntity();
 		
 		when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn(SECRET_VALUE);
 
 		// act
 		service.rotateSecret(mockSecret);
-		
+
 		// assert
 		ArgumentCaptor<SecretEntity> secretEntityCaptor = ArgumentCaptor.forClass(SecretEntity.class);
 		
@@ -97,6 +100,7 @@ class SecretRotationServiceImplTest extends AbstractUnitTest {
 		capturedSecret = secretEntityCaptor.getValue();
 		assertEquals(EntityStatus.ACTIVE, capturedSecret.getStatus());
 		assertEquals(SECRET_VALUE, capturedSecret.getValue());
+		assertEquals("2023-06-29T00:00Z", capturedSecret.getLastRotated().toString());
 	}
 	
 	@Test
