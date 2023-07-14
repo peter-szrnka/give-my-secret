@@ -429,8 +429,8 @@
 							</dependency>
 						</dependencies>
 						<configuration>
-							<mutationThreshold>65</mutationThreshold>
-                    		<coverageThreshold>65</coverageThreshold>
+							<mutationThreshold>90</mutationThreshold>
+                    		<coverageThreshold>90</coverageThreshold>
 							<targetClasses>
 								<param>io.github.gms.*</param>
 							</targetClasses>
