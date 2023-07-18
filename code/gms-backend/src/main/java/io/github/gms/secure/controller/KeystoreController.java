@@ -1,18 +1,8 @@
 package io.github.gms.secure.controller;
 
-import io.github.gms.common.abstraction.AbstractClientController;
-import io.github.gms.common.enums.EventOperation;
-import io.github.gms.common.enums.EventTarget;
-import io.github.gms.common.types.AuditTarget;
-import io.github.gms.common.types.Audited;
-import io.github.gms.secure.dto.DownloadFileResponseDto;
-import io.github.gms.secure.dto.GetSecureValueDto;
-import io.github.gms.secure.dto.IdNamePairListDto;
-import io.github.gms.secure.dto.KeystoreDto;
-import io.github.gms.secure.dto.KeystoreListDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.service.KeystoreService;
+import static io.github.gms.common.util.Constants.ROLE_USER;
+import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
+
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -31,8 +21,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import static io.github.gms.common.util.Constants.ROLE_USER;
-import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
+import io.github.gms.common.abstraction.AbstractClientController;
+import io.github.gms.common.enums.EventOperation;
+import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.types.AuditTarget;
+import io.github.gms.common.types.Audited;
+import io.github.gms.secure.dto.DownloadFileResponseDto;
+import io.github.gms.secure.dto.GetSecureValueDto;
+import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.KeystoreDto;
+import io.github.gms.secure.dto.KeystoreListDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.service.KeystoreService;
 
 /**
  * @author Peter Szrnka
@@ -45,6 +46,10 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	
 	public static final String MULTIPART_MODEL = "model";
 	public static final String MULTIPART_FILE = "file";
+
+	public KeystoreController(KeystoreService service) {
+		super(service);
+	}
 
 	@PostMapping(consumes = {
 			MediaType.MULTIPART_FORM_DATA_VALUE,

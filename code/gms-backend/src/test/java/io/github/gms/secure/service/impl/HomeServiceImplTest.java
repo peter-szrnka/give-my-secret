@@ -15,6 +15,7 @@ import io.github.gms.secure.service.SecretService;
 import io.github.gms.secure.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.slf4j.MDC;
 
 import java.util.List;
@@ -71,7 +72,10 @@ class HomeServiceImplTest extends AbstractUnitTest {
 
         verify(announcementService).count();
         verify(userService).count();
-        verify(eventService).list(any(PagingDto.class));
+        ArgumentCaptor<PagingDto> captor = ArgumentCaptor.forClass(PagingDto.class);
+        verify(eventService).list(captor.capture());
+        PagingDto captured = captor.getValue();
+        assertEquals("PagingDto(direction=DESC, property=eventDate, page=0, size=10)", captured.toString());
     }
 
     @Test
@@ -94,5 +98,10 @@ class HomeServiceImplTest extends AbstractUnitTest {
         verify(apiKeyService).count();
         verify(keystoreService).count();
         verify(secretService).count();
+
+        ArgumentCaptor<PagingDto> captor = ArgumentCaptor.forClass(PagingDto.class);
+        verify(announcementService).list(captor.capture());
+        PagingDto captured = captor.getValue();
+        assertEquals("PagingDto(direction=DESC, property=announcementDate, page=0, size=10)", captured.toString());
     }
 }

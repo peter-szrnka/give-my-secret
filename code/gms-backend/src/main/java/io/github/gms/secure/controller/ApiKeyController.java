@@ -33,6 +33,10 @@ import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
 @AuditTarget(EventTarget.API_KEY)
 public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 
+	public ApiKeyController(ApiKeyService service) {
+		super(service);
+	}
+
 	@PostMapping
 	@PreAuthorize(ROLE_USER)
 	@Audited(operation = EventOperation.SAVE)

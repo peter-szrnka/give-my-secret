@@ -11,6 +11,7 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserListDto;
+import io.github.gms.secure.service.SecretService;
 import io.github.gms.secure.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,10 @@ import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
 @RequestMapping("/secure/user")
 @AuditTarget(EventTarget.USER)
 public class UserController extends AbstractController<UserService> {
+
+	public UserController(UserService service) {
+		super(service);
+	}
 	
 	@PostMapping
 	@PreAuthorize(ROLE_ADMIN_OR_USER)

@@ -1,5 +1,19 @@
 package io.github.gms.secure.controller;
 
+import static io.github.gms.common.util.Constants.ROLE_USER;
+import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.github.gms.common.abstraction.AbstractClientController;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
@@ -12,20 +26,6 @@ import io.github.gms.secure.dto.SecretDto;
 import io.github.gms.secure.dto.SecretListDto;
 import io.github.gms.secure.service.SecretRotationService;
 import io.github.gms.secure.service.SecretService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import static io.github.gms.common.util.Constants.ROLE_USER;
-import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
 
 /**
  * @author Peter Szrnka
@@ -35,9 +35,13 @@ import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
 @RequestMapping("/secure/secret")
 @AuditTarget(EventTarget.SECRET)
 public class SecretController extends AbstractClientController<SecretService> {
-	
-	@Autowired
-	private SecretRotationService secretRotationService;
+
+	private final SecretRotationService secretRotationService;
+
+	public SecretController(SecretService service, SecretRotationService secretRotationService) {
+		super(service);
+		this.secretRotationService = secretRotationService;
+	}
 
 	@PostMapping
 	@PreAuthorize(ROLE_USER)

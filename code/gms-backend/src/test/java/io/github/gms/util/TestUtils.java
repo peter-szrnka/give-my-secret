@@ -44,15 +44,30 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.model.GenerateJwtRequest;
+import io.github.gms.secure.dto.AnnouncementDto;
+import io.github.gms.secure.dto.AnnouncementListDto;
+import io.github.gms.secure.dto.ApiKeyDto;
+import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
+import io.github.gms.secure.dto.EventDto;
+import io.github.gms.secure.dto.EventListDto;
 import io.github.gms.secure.dto.KeystoreAliasDto;
+import io.github.gms.secure.dto.KeystoreDto;
+import io.github.gms.secure.dto.KeystoreListDto;
+import io.github.gms.secure.dto.MessageDto;
+import io.github.gms.secure.dto.MessageListDto;
 import io.github.gms.secure.dto.SaveAnnouncementDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveKeystoreRequestDto;
 import io.github.gms.secure.dto.SaveSecretRequestDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.SecretDto;
+import io.github.gms.secure.dto.SecretListDto;
+import io.github.gms.secure.dto.SystemPropertyDto;
+import io.github.gms.secure.dto.SystemPropertyListDto;
 import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.dto.UserInfoDto;
+import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.AnnouncementEntity;
 import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.ApiKeyRestrictionEntity;
@@ -74,16 +89,16 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class TestUtils {
-	
+
 	public static final String OLD_CREDENTIAL = "OldCredential";
 	public static final String NEW_CREDENTIAL = "MyComplexPassword1!";
-	private static final String EMAIL = "email@email.com";
-	private static final String USERNAME = "username";
+	public static final String EMAIL = "email@email.com";
+	public static final String USERNAME = "username";
 
 	public static ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		
+
 		return mapper;
 	}
 
@@ -95,11 +110,11 @@ public class TestUtils {
 
 		return headers;
 	}
-	
+
 	public static HttpHeaders getHttpHeaders(String jwt) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);	
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		if (jwt != null) {
 			headers.add("Cookie", ACCESS_JWT_TOKEN + "=" + jwt + ";Max-Age=3600;HttpOnly");
@@ -107,14 +122,14 @@ public class TestUtils {
 
 		return headers;
 	}
-	
+
 	public static Cookie getCookie(String jwt) {
 		Cookie cookie = new Cookie(ACCESS_JWT_TOKEN, jwt);
 		cookie.setHttpOnly(true);
 		cookie.setMaxAge(3600);
 		return cookie;
 	}
-	
+
 	public static GmsUserDetails createGmsUser(Long userId, String username, String role) {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
@@ -129,13 +144,15 @@ public class TestUtils {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
 				.enabled(true)
+				.email("a@b.com")
 				.credential(DemoData.CREDENTIAL_TEST)
 				.userId(DemoData.USER_1_ID)
+				.name(DemoData.USERNAME1)
 				.username(DemoData.USERNAME1)
 				.authorities(Sets.newHashSet(UserRole.ROLE_USER))
 				.build();
 	}
-	
+
 	public static GmsUserDetails createBlockedGmsUser() {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
@@ -146,7 +163,7 @@ public class TestUtils {
 				.authorities(Sets.newHashSet(UserRole.ROLE_USER))
 				.build();
 	}
-	
+
 	public static GmsUserDetails createGmsAdminUser() {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
@@ -160,18 +177,21 @@ public class TestUtils {
 	public static SaveApiKeyRequestDto createSaveApiKeyRequestDto() {
 		SaveApiKeyRequestDto request = new SaveApiKeyRequestDto();
 		request.setId(1L);
+		request.setName("api key 1");
 		request.setUserId(1L);
 		request.setValue("12345678");
 		request.setStatus(EntityStatus.ACTIVE);
 		return request;
 	}
-	
+
 	public static SaveApiKeyRequestDto createNewSaveApiKeyRequestDto() {
 		SaveApiKeyRequestDto request = new SaveApiKeyRequestDto();
 		request.setName("api key 1");
 		request.setUserId(1L);
 		request.setValue("12345678");
 		request.setStatus(EntityStatus.ACTIVE);
+		request.setName("api-key-name");
+		request.setDescription("description2");
 		return request;
 	}
 
@@ -180,12 +200,13 @@ public class TestUtils {
 		user.setId(1L);
 		user.setUsername(USERNAME);
 		user.setName("name");
+		user.setEmail("a@b.com");
 		user.setRoles("ROLE_USER");
 		user.setStatus(EntityStatus.ACTIVE);
 		user.setCredential(OLD_CREDENTIAL);
 		return user;
 	}
-	
+
 	public static UserEntity createAdminUser() {
 		UserEntity user = new UserEntity();
 		user.setId(1L);
@@ -195,17 +216,19 @@ public class TestUtils {
 		user.setStatus(EntityStatus.ACTIVE);
 		return user;
 	}
-	
+
 	public static UserEntity createUserWithStatus(EntityStatus status) {
 		UserEntity user = new UserEntity();
 		user.setId(1L);
 		user.setUsername(USERNAME);
+		user.setCredential(NEW_CREDENTIAL);
+		user.setEmail("test@email.hu");
 		user.setName("name");
 		user.setRoles("ROLE_USER");
 		user.setStatus(status);
 		return user;
 	}
-	
+
 	public static ApiKeyEntity createApiKey(Long id, String value) {
 		ApiKeyEntity user = new ApiKeyEntity();
 		user.setId(id);
@@ -216,12 +239,14 @@ public class TestUtils {
 	}
 
 	public static ApiKeyEntity createApiKey() {
-		ApiKeyEntity user = new ApiKeyEntity();
-		user.setId(1L);
-		user.setUserId(1L);
-		user.setStatus(EntityStatus.ACTIVE);
-		user.setValue("apikey");
-		return user;
+		ApiKeyEntity entity = new ApiKeyEntity();
+		entity.setId(1L);
+		entity.setName("test");
+		entity.setUserId(1L);
+		entity.setStatus(EntityStatus.ACTIVE);
+		entity.setValue("apikey");
+		entity.setDescription("description");
+		return entity;
 	}
 
 	public static EventEntity createEventEntity() {
@@ -242,21 +267,23 @@ public class TestUtils {
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue(DemoData.ENCRYPTED_VALUE);
 		entity.setType(SecretType.SIMPLE_CREDENTIAL);
-		entity.setSecretId(secretId);;
+		entity.setSecretId(secretId);
+		;
 		entity.setKeystoreAliasId(keystoreAliasId);
 		entity.setLastRotated(ZonedDateTime.now());
 		entity.setReturnDecrypted(false);
 		entity.setUserId(1L);
 		return entity;
 	}
-	
+
 	public static SecretEntity createSecretEntity() {
 		return createSecretEntityWithUniqueKeystoreAliasId(DemoData.KEYSTORE_ALIAS_ID);
 	}
-	
+
 	public static SecretEntity createSecretEntityWithUniqueKeystoreAliasId(Long keystoreAliasId) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(1L);
+		entity.setSecretId("secret");
 		entity.setCreationDate(ZonedDateTime.now());
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setStatus(EntityStatus.ACTIVE);
@@ -264,9 +291,10 @@ public class TestUtils {
 		entity.setKeystoreAliasId(keystoreAliasId);
 		entity.setLastRotated(ZonedDateTime.now());
 		entity.setUserId(1L);
+		entity.setType(SecretType.SIMPLE_CREDENTIAL);
 		return entity;
 	}
-	
+
 	public static SecretEntity createSecretEntity(RotationPeriod rotationPeriod, ZonedDateTime lastRotated) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(1L);
@@ -287,7 +315,7 @@ public class TestUtils {
 		dto.setStatus(EntityStatus.ACTIVE);
 		return dto;
 	}
-	
+
 	public static SaveKeystoreRequestDto createSaveKeystoreRequestDto(Long id) {
 		SaveKeystoreRequestDto dto = new SaveKeystoreRequestDto();
 		dto.setId(id);
@@ -317,7 +345,7 @@ public class TestUtils {
 		entity.setStatus(EntityStatus.ACTIVE);
 		return entity;
 	}
-	
+
 	public static KeystoreEntity createJKSKeystoreEntity() {
 		KeystoreEntity entity = new KeystoreEntity();
 		entity.setId(DemoData.KEYSTORE_ID);
@@ -328,7 +356,7 @@ public class TestUtils {
 		entity.setStatus(EntityStatus.ACTIVE);
 		return entity;
 	}
-	
+
 	public static KeystoreEntity createNewKeystoreEntity(Long id) {
 		KeystoreEntity entity = new KeystoreEntity();
 		entity.setId(id);
@@ -340,23 +368,24 @@ public class TestUtils {
 		entity.setStatus(EntityStatus.ACTIVE);
 		return entity;
 	}
-	
+
 	public static KeystoreAliasEntity createKeystoreAliasEntity(Long id, Long keystoreId) {
 		KeystoreAliasEntity entity = new KeystoreAliasEntity();
-		
+
 		entity.setId(id);
+		entity.setAlgorithm("algorithm");
 		entity.setKeystoreId(keystoreId);
 		entity.setAlias("test");
 		entity.setAliasCredential("test");
 		entity.setDescription("description");
-		
+
 		return entity;
 	}
 
 	public static KeystoreAliasEntity createKeystoreAliasEntity() {
 		return createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS_ID, DemoData.KEYSTORE_ID);
 	}
-	
+
 	@Data
 	@AllArgsConstructor
 	public static class ValueHolder {
@@ -364,7 +393,7 @@ public class TestUtils {
 		Long aliasId;
 		String expectedValue;
 	}
-	
+
 	public static SaveUserRequestDto createSaveUserRequestDto(Long id, String username, String email) {
 		SaveUserRequestDto dto = new SaveUserRequestDto();
 		dto.setId(id);
@@ -376,7 +405,7 @@ public class TestUtils {
 		dto.setStatus(EntityStatus.ACTIVE);
 		return dto;
 	}
-	
+
 	public static SaveUserRequestDto createSaveUserRequestDtoWithNoRoles(String username, String email) {
 		SaveUserRequestDto dto = new SaveUserRequestDto();
 		dto.setId(null);
@@ -387,7 +416,7 @@ public class TestUtils {
 		dto.setStatus(EntityStatus.ACTIVE);
 		return dto;
 	}
-	
+
 	public static SaveUserRequestDto createSaveUserRequestDto(Long id) {
 		return createSaveUserRequestDto(id, USERNAME, EMAIL);
 	}
@@ -405,7 +434,7 @@ public class TestUtils {
 		user.setStatus(EntityStatus.ACTIVE);
 		return user;
 	}
-	
+
 	public static SaveSecretRequestDto createSaveSecretRequestDto(Long secretId, Set<Long> apiKeyRestrictionList) {
 		SaveSecretRequestDto dto = new SaveSecretRequestDto();
 		dto.setId(secretId);
@@ -422,7 +451,7 @@ public class TestUtils {
 		dto.setApiKeyRestrictions(apiKeyRestrictionList);
 		return dto;
 	}
-	
+
 	public static SaveSecretRequestDto createSaveSecretRequestDto(Long secretId) {
 		return createSaveSecretRequestDto(secretId, new HashSet<>());
 	}
@@ -437,26 +466,26 @@ public class TestUtils {
 		deleteDirectoryWithContent(dir);
 		Files.createDirectory(path);
 	}
-	
+
 	@SneakyThrows
 	public static void deleteDirectoryWithContent(String dir) {
 		Path pathToBeDeleted = Paths.get(dir);
-		
+
 		if (!pathToBeDeleted.toFile().exists()) {
 			return;
 		}
 
-	    Files.walk(pathToBeDeleted)
-	      .sorted(Comparator.reverseOrder())
-	      .map(Path::toFile)
-	      .forEach(file -> {
-	    	  if (!file.exists()) {
-	    		  return;
-	    	  }
+		Files.walk(pathToBeDeleted)
+				.sorted(Comparator.reverseOrder())
+				.map(Path::toFile)
+				.forEach(file -> {
+					if (!file.exists()) {
+						return;
+					}
 
-	    	  log.info("file = " + file.getName());
-	    	  file.delete();
-	      });
+					log.info("file = " + file.getName());
+					file.delete();
+				});
 	}
 
 	public static Page<AnnouncementEntity> createAnnouncementEntityList() {
@@ -494,7 +523,7 @@ public class TestUtils {
 	public static MessageEntity createMessageEntity() {
 		return MessageEntity.builder().id(1L).message("test message").opened(false).userId(1L).build();
 	}
-	
+
 	public static MessageEntity createNewMessageEntity() {
 		return MessageEntity.builder().message("test message").opened(false).userId(1L).build();
 	}
@@ -507,15 +536,16 @@ public class TestUtils {
 		entity.setUserId(1L);
 		return entity;
 	}
-	
+
 	public static void assertLogContains(ListAppender<ILoggingEvent> appender, String expectedMessage) {
 		assertTrue(appender.list.stream().anyMatch(event -> event.getFormattedMessage().contains(expectedMessage)));
 	}
-	
-	public static <T extends Exception> void assertException(Class<T> cls, Executable executable, String expectedMessage) {
+
+	public static <T extends Exception> void assertException(Class<T> cls, Executable executable,
+			String expectedMessage) {
 		try {
 			executable.execute();
-		} catch(Throwable e) {
+		} catch (Throwable e) {
 			assertEquals(expectedMessage, e.getMessage());
 		}
 	}
@@ -523,7 +553,7 @@ public class TestUtils {
 	public static void assertGmsException(Executable executable, String expectedMessage) {
 		assertException(GmsException.class, executable, expectedMessage);
 	}
-	
+
 	private static List<KeystoreAliasDto> createKeystoreAliasList() {
 		KeystoreAliasDto dto = new KeystoreAliasDto();
 		dto.setId(1L);
@@ -541,7 +571,7 @@ public class TestUtils {
 		entity.setValue(value);
 		return entity;
 	}
-	
+
 	public static GenerateJwtRequest createJwtAdminRequest() {
 		return createJwtAdminRequest(GmsUserDetails.builder()
 				.userId(DemoData.USER_1_ID)
@@ -554,25 +584,108 @@ public class TestUtils {
 		Map<String, Object> claims = Map.of(
 				MdcParameter.USER_ID.getDisplayName(), user.getUserId(),
 				MdcParameter.USER_NAME.getDisplayName(), user.getUsername(),
-				"roles", user.getAuthorities().stream() .map(GrantedAuthority::getAuthority).collect(Collectors.toSet())
-		);
+				"roles",
+				user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()));
 
 		return GenerateJwtRequest.builder().subject(user.getUsername()).algorithm("HS512")
 				.expirationDateInSeconds(30L)
 				.claims(claims)
 				.build();
 	}
-	
+
 	public static GenerateJwtRequest createJwtUserRequest() {
 		Map<String, Object> claims = Map.of(
 				MdcParameter.USER_ID.getDisplayName(), DemoData.USER_1_ID,
 				MdcParameter.USER_NAME.getDisplayName(), DemoData.USERNAME1,
-				"roles", List.of("ROLE_USER")
-		);
+				"roles", List.of("ROLE_USER"));
 
 		return GenerateJwtRequest.builder().subject(DemoData.USERNAME1).algorithm("HS512")
 				.expirationDateInSeconds(30L)
 				.claims(claims)
 				.build();
 	}
+
+	public static ApiKeyDto createApiKeyDto() {
+		ApiKeyDto dto = new ApiKeyDto();
+		dto.setId(1L);
+		dto.setName("api-key-1");
+		dto.setValue("value");
+		dto.setStatus(EntityStatus.ACTIVE);
+		dto.setDescription("test");
+		return dto;
+	}
+
+	public static ApiKeyListDto createApiKeyListDto() {
+		return new ApiKeyListDto(List.of(createApiKeyDto()), 1);
+	}
+
+	public static KeystoreDto createKeystoreDto() {
+		KeystoreDto dto = new KeystoreDto();
+		dto.setId(1L);
+		dto.setName("my-jks-1");
+		dto.setType(KeystoreType.JKS);
+		dto.setStatus(EntityStatus.ACTIVE);
+		return dto;
+	}
+
+	public static KeystoreListDto createKeystoreListDto() {
+		return new KeystoreListDto(List.of(createKeystoreDto()), 1);
+	}
+
+	public static UserListDto createUserListDto() {
+		return UserListDto.builder().resultList(List.of(createUserDto())).totalElements(1L).build();
+	}
+
+	public static AnnouncementDto createAnnouncementDto() {
+		return AnnouncementDto.builder()
+				.id(1L)
+				.author(DemoData.USERNAME1)
+				.title("title")
+				.description("description")
+				.build();
+	}
+
+    public static AnnouncementListDto createAnnouncementListDto() {
+        return AnnouncementListDto.builder().resultList(List.of(createAnnouncementDto())).totalElements(1L).build();
+    }
+
+    public static SystemPropertyDto createSystemPropertyDto() {
+		return SystemPropertyDto.builder()
+			.key("key")
+			.value("value")
+			.factoryValue(false)
+			.build();
+    }
+
+    public static SystemPropertyListDto createSystemPropertyListDto() {
+        return SystemPropertyListDto.builder().resultList(List.of(createSystemPropertyDto())).totalElements(1L).build();
+    }
+
+    public static EventListDto createEventListDto() {
+        return EventListDto.builder().resultList(List.of(new EventDto())).totalElements(1L).build();
+    }
+
+    public static SecretListDto createSecretListDto() {
+        return SecretListDto.builder().resultList(List.of(createSecretDto())).totalElements(1L).build();
+    }
+
+    public static MessageListDto createMessageListDto() {
+        return MessageListDto.builder().resultList(List.of(MessageDto.builder()
+			.id(1L)
+			.message("message")
+			.userId(1L)
+			.opened(false)
+			.creationDate(ZonedDateTime.now().minusDays(1))
+			.build())).build();
+    }
+
+    public static UserInfoDto createUserInfoDto() {
+		UserInfoDto dto = new UserInfoDto();
+		dto.setId(1L);
+		dto.setUsername("user");
+		dto.setName("name");
+		dto.setRoles(Set.of(UserRole.ROLE_USER));
+		dto.setEmail("a@b.com");
+        return dto;
+    }
 }

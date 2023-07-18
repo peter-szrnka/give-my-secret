@@ -13,7 +13,9 @@ import java.time.Clock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.util.MimeTypeUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -59,5 +61,7 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		assertNull(MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
 		verify(mockWriter).write(anyString());
 		verify(objectMapper).writeValueAsString(any(ErrorResponseDto.class));
+		verify(httpServletResponse).setStatus(HttpStatus.FORBIDDEN.value());
+		verify(httpServletResponse).setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
 	}
 }

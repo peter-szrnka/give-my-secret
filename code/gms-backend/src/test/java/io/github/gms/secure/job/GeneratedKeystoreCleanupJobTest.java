@@ -51,14 +51,14 @@ class GeneratedKeystoreCleanupJobTest  extends AbstractLoggingUnitTest  {
     @Test
     void shouldProcess() {
         // arrange
-        when(service.deleteTempKeystoreFiles()).thenReturn(3L);
+        when(service.deleteTempKeystoreFiles()).thenReturn(1L);
 
         // act
         job.execute();
 
         // assert
         assertFalse(logAppender.list.isEmpty());
-        assertEquals("3 temporary keystore(s) deleted", logAppender.list.get(0).getFormattedMessage());
+        assertEquals("1 temporary keystore(s) deleted", logAppender.list.get(0).getFormattedMessage());
         verify(service).deleteTempKeystoreFiles();
     }
 }

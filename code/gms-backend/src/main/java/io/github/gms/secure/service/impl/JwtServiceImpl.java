@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
@@ -26,9 +27,11 @@ import java.util.UUID;
 @Service
 public class JwtServiceImpl implements JwtService {
 
+	private final Clock clock;
 	private final String secret;
 
-	public JwtServiceImpl(@Value("${config.jwt.secret}") String secret) {
+	public JwtServiceImpl(Clock clock, @Value("${config.jwt.secret}") String secret) {
+		this.clock = clock;
 		this.secret = secret;
 	}
 
@@ -43,7 +46,7 @@ public class JwtServiceImpl implements JwtService {
 	public String generateJwt(GenerateJwtRequest request) {
 		Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), getAlgorithmByName(request.getAlgorithm()).getJcaName());
 
-		Instant now = Instant.now();
+		Instant now = clock.instant();
 		return Jwts.builder()
 				.setClaims(request.getClaims())
 				.setSubject(request.getSubject())

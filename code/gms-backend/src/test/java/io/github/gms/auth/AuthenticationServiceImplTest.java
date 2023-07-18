@@ -20,12 +20,17 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+
+import com.google.common.collect.Sets;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
@@ -33,6 +38,7 @@ import io.github.gms.auth.model.AuthenticationDetails;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.service.JwtService;
@@ -176,6 +182,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("User is blocked")));
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
+		assertEquals("User is blocked", response.getErrorMessage());
 
 		verify(jwtService).parseJwt(anyString(), anyString());
 		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);
@@ -188,6 +195,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		Claims claims = mock(Claims.class);
 		UserDetails userDetails = TestUtils.createGmsUser();
 
+		when(req.getRemoteAddr()).thenReturn("127.0.0.1");
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(ACCESS_JWT_TOKEN, "valid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenReturn(claims);
 		when(claims.getExpiration()).thenReturn(Date.from(ZonedDateTime.now().plusDays(1L).toInstant()));
@@ -196,7 +204,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 		
 		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap()))
-			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
+			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of("k1", "v1", "k2", "v2", "k3", "v3")).expirationDateInSeconds(900L).build());
 		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap()))
 			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
 		
@@ -211,11 +219,28 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertFalse(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("Authentication failed: JWT token has expired!")));
 		assertEquals(HttpStatus.OK, response.getResponseStatus());
+		assertTrue(response.getJwtPair().toString().contains("REFRESH_JWT=REFRESH_JWT"));
+		assertTrue(response.getJwtPair().toString().contains("ACCESS_JWT=ACCESS_JWT"));
+
+		UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) response.getAuthentication();
+		assertNotNull(token.getDetails());
+		assertNotNull(token.getAuthorities());
+		assertTrue(token.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_USER")));
+
+		WebAuthenticationDetails tokenDetails = (WebAuthenticationDetails) token.getDetails();
+		assertEquals("127.0.0.1", tokenDetails.getRemoteAddress());
+		assertEquals("username1", token.getName());
+
 		verify(jwtService).parseJwt(anyString(), anyString());
 		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);
 		
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
-		verify(jwtService).generateJwts(anyMap());
+
+		ArgumentCaptor<Map<JwtConfigType, GenerateJwtRequest>> mapCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(jwtService).generateJwts(mapCaptor.capture());
+
+		Map<JwtConfigType, GenerateJwtRequest> capturedMap = mapCaptor.getValue();
+		assertEquals(3, capturedMap.get(JwtConfigType.ACCESS_JWT).getClaims().size());
 	}
 }

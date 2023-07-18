@@ -22,6 +22,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,7 +54,8 @@ class MessageServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldSave() {
 		// arrange
-		setupClock(clock);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		MessageDto dto = MessageDto.builder()
 				.message("test message")
 				.build();
@@ -63,11 +66,12 @@ class MessageServiceImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(response);
+		assertEquals(1L, response.getEntityId());
 		ArgumentCaptor<MessageEntity> messageEntityCaptor = ArgumentCaptor.forClass(MessageEntity.class);
 		verify(repository).save(messageEntityCaptor.capture());
 		
 		MessageEntity capturedEntity = messageEntityCaptor.getValue();
-		assertEquals("test message", capturedEntity.getMessage());
+		assertEquals("MessageEntity(id=null, userId=null, message=test message, opened=false, creationDate=2023-06-29T00:00Z)", capturedEntity.toString());
 	}
 	
 	@Test

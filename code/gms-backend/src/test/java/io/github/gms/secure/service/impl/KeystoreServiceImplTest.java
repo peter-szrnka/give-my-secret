@@ -1,7 +1,53 @@
 package io.github.gms.secure.service.impl;
 
-import ch.qos.logback.classic.Logger;
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.assertj.core.util.Lists;
+import org.jboss.logging.MDC;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
@@ -31,50 +77,6 @@ import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import io.github.gms.util.TestUtils.ValueHolder;
 import lombok.SneakyThrows;
-import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -123,8 +125,8 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     @AfterAll
     @SneakyThrows
     public static void tearDownAll() {
-        TestUtils.deleteDirectoryWithContent("./unit-test-output");
-        TestUtils.deleteDirectoryWithContent("./temp-output");
+        TestUtils.deleteDirectoryWithContent("./unit-test-output/");
+        TestUtils.deleteDirectoryWithContent("./temp-output/");
     }
 
     @Test
@@ -677,6 +679,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         // assert
         TestUtils.assertLogContains(logAppender, "Keystore file cannot be deleted");
         verify(repository).findByIdAndUserId(anyLong(), anyLong());
+        verify(aliasRepository).deleteByKeystoreId(anyLong());
 
         mockedStatic.close();
     }
@@ -701,6 +704,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         // assert
         verify(repository).findByIdAndUserId(anyLong(), anyLong());
         verify(repository).deleteById(1L);
+        verify(aliasRepository).deleteByKeystoreId(anyLong());
 
         ArgumentCaptor<EntityChangeEvent> entityDisabledEventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
         verify(applicationEventPublisher).publishEvent(entityDisabledEventCaptor.capture());
@@ -722,8 +726,20 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         service.toggleStatus(1L, enabled);
 
         // assert
-        verify(repository).save(any());
+        ArgumentCaptor<KeystoreEntity> argumentCaptor = ArgumentCaptor.forClass(KeystoreEntity.class);
+        verify(repository).save(argumentCaptor.capture());
+        KeystoreEntity capturedEntity = argumentCaptor.getValue();
+        assertEquals(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED, capturedEntity.getStatus()); 
         verify(repository).findByIdAndUserId(anyLong(), anyLong());
+
+        if (!enabled) {
+            ArgumentCaptor<EntityChangeEvent> eventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
+            verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
+            EntityChangeEvent capturedEvent = eventCaptor.getValue();
+            assertEquals(1L, capturedEvent.getMetadata().get("userId"));
+            assertEquals(1L, capturedEvent.getMetadata().get("keystoreId"));
+            assertEquals(EntityChangeType.KEYSTORE_DISABLED, capturedEvent.getType());
+        }
     }
 
     @ParameterizedTest

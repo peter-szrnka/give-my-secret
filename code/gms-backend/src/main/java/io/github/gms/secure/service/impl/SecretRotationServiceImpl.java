@@ -45,8 +45,6 @@ public class SecretRotationServiceImpl implements SecretRotationService {
 	}
 	
 	private void rotateSecretEntity(SecretEntity entity) {
-		String originalValue = entity.getValue();
-
 		try {
 			String decrypted = cryptoService.decrypt(entity);
 			entity.setValue(decrypted);
@@ -54,7 +52,6 @@ public class SecretRotationServiceImpl implements SecretRotationService {
 			entity.setLastRotated(ZonedDateTime.now(clock));
 		} catch (Exception e) {
 			entity.setStatus(EntityStatus.DISABLED);
-			entity.setValue(originalValue);
 		}
 
 		secretRepository.save(entity);

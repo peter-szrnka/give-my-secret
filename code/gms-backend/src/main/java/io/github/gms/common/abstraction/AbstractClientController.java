@@ -20,6 +20,10 @@ import static io.github.gms.common.util.Constants.ROLE_USER;
  */
 public abstract class AbstractClientController<T extends GmsClientService> extends AbstractController<T> {
 
+	protected AbstractClientController(T service) {
+		super(service);
+	}
+
 	@DeleteMapping("/{id}")
 	@PreAuthorize(ROLE_USER)
 	@Audited(operation = EventOperation.DELETE)

@@ -1,5 +1,31 @@
 package io.github.gms.secure.service.impl;
 
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Optional;
+
+import org.assertj.core.util.Lists;
+import org.jboss.logging.MDC;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
@@ -13,24 +39,6 @@ import io.github.gms.secure.entity.AnnouncementEntity;
 import io.github.gms.secure.repository.AnnouncementRepository;
 import io.github.gms.secure.service.UserService;
 import io.github.gms.util.TestUtils;
-import org.jboss.logging.MDC;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Pageable;
-
-import java.time.Clock;
-import java.util.Optional;
-
-import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -55,7 +63,8 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldSaveNewEntity() {
 		// arrange
-		setupClock(clock);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		SaveAnnouncementDto dto = SaveAnnouncementDto.builder()
 				.author("author")
@@ -70,6 +79,16 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(1L, response.getEntityId());
+
+		ArgumentCaptor<AnnouncementEntity> entityCaptor = ArgumentCaptor.forClass(AnnouncementEntity.class);
+		verify(repository).save(entityCaptor.capture());
+
+		AnnouncementEntity capturedValue = entityCaptor.getValue();
+		assertNull(capturedValue.getId());
+		assertEquals("title", capturedValue.getTitle());
+		assertEquals("description", capturedValue.getDescription());
+		assertEquals(1L, capturedValue.getAuthorId());
+		assertEquals("2023-06-29T00:00Z", capturedValue.getAnnouncementDate().toString());
 
 		MDC.clear();
 	}
@@ -79,19 +98,29 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		SaveAnnouncementDto dto = SaveAnnouncementDto.builder()
-				.id(1L)
+				.id(2L)
 				.author("author")
 				.description("description")
 				.title("title")
 				.build();
-		when(repository.save(any(AnnouncementEntity.class))).thenReturn(TestUtils.createAnnouncementEntity(1L));
+		when(repository.save(any(AnnouncementEntity.class))).thenReturn(TestUtils.createAnnouncementEntity(2L));
 
 		// act
 		SaveEntityResponseDto response = service.save(dto);
 
 		// assert
 		assertNotNull(response);
-		assertEquals(1L, response.getEntityId());
+		assertEquals(2L, response.getEntityId());
+
+		ArgumentCaptor<AnnouncementEntity> entityCaptor = ArgumentCaptor.forClass(AnnouncementEntity.class);
+		verify(repository).save(entityCaptor.capture());
+
+		AnnouncementEntity capturedValue = entityCaptor.getValue();
+		assertEquals(2L, capturedValue.getId());
+		assertEquals("title", capturedValue.getTitle());
+		assertEquals("description", capturedValue.getDescription());
+		assertEquals(1L, capturedValue.getAuthorId());
+		assertNull(capturedValue.getAnnouncementDate());
 
 		MDC.clear();
 	}
@@ -99,7 +128,12 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldReturnList() {
 		// arrange
-		when(repository.findAll(any(Pageable.class))).thenReturn(TestUtils.createAnnouncementEntityList());
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+
+		AnnouncementEntity entity = TestUtils.createAnnouncementEntity(1L);
+		entity.setAnnouncementDate(ZonedDateTime.now(clock));
+		when(repository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Lists.newArrayList(entity)));
 		when(userService.getUsernameById(anyLong())).thenReturn("myuser");
 
 		// act
@@ -108,7 +142,12 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
+		assertEquals(1L, response.getResultList().get(0).getId());
+		assertEquals("Maintenance at 2022-01-01", response.getResultList().get(0).getTitle());
+		assertEquals("Test", response.getResultList().get(0).getDescription());
 		assertEquals("myuser", response.getResultList().get(0).getAuthor());
+		assertEquals("2023-06-29T00:00Z", response.getResultList().get(0).getAnnouncementDate().toString());
+		assertEquals(1L, response.getTotalElements());
 
 		verify(repository).findAll(any(Pageable.class));
 		verify(userService).getUsernameById(anyLong());

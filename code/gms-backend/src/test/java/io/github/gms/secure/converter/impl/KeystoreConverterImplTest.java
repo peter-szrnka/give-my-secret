@@ -1,10 +1,30 @@
 package io.github.gms.secure.converter.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.google.common.collect.Lists;
+
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.secure.converter.KeystoreConverter;
+import io.github.gms.common.enums.KeystoreType;
 import io.github.gms.secure.dto.KeystoreAliasDto;
 import io.github.gms.secure.dto.KeystoreDto;
 import io.github.gms.secure.dto.KeystoreListDto;
@@ -13,21 +33,6 @@ import io.github.gms.secure.entity.KeystoreAliasEntity;
 import io.github.gms.secure.entity.KeystoreEntity;
 import io.github.gms.secure.model.EnabledAlgorithm;
 import io.github.gms.util.TestUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.time.Clock;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -37,7 +42,7 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 
 	private static final String FILE_NAME = "test.jks";
 	private Clock clock;
-	private KeystoreConverter converter;
+	private KeystoreConverterImpl converter;
 
 	@BeforeEach
 	void beforeEach() {
@@ -53,20 +58,38 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
+		assertEquals("keystore", entity.getName());
+		assertEquals(1L, entity.getUserId());
+		assertEquals("description", entity.getDescription());
+		assertEquals("test", entity.getCredential());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals(KeystoreType.JKS, entity.getType());
 		assertEquals(FILE_NAME, entity.getFileName());
+		assertEquals("test.jks", entity.getFileName());
 	}
 
 	@Test
 	void checkToEntityWithParameters() {
+		// arrange
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		KeystoreEntity existingEntity = TestUtils.createKeystoreEntity();
+		existingEntity.setType(KeystoreType.PKCS12);
+		existingEntity.setDescription("Loooong story short");
+		existingEntity.setCredential("asdasdasd");
+		existingEntity.setFileName("my-sample-test.jks");
+		existingEntity.setCreationDate(ZonedDateTime.now(clock));
+		existingEntity.setStatus(EntityStatus.DISABLED);
+		existingEntity.setName("no-not-again.p12");
+		existingEntity.setId(123213L);
+		existingEntity.setUserId(4L);
+
 		// act
-		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(),
-				TestUtils.createSaveKeystoreRequestDto());
+		KeystoreEntity entity = converter.toEntity(existingEntity, TestUtils.createSaveKeystoreRequestDto());
 
 		// assert
 		assertNotNull(entity);
-		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
-		assertEquals(FILE_NAME, entity.getFileName());
+		assertEquals("KeystoreEntity(id=1, userId=1, status=ACTIVE, name=keystore, fileName=my-sample-test.jks, type=JKS, description=description, credential=test, creationDate=2023-06-29T00:00Z)", entity.toString());
 	}
 
 	@Test
@@ -82,14 +105,20 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
+		assertEquals("keystore", entity.getName());
+		assertEquals(1L, entity.getUserId());
+		assertEquals("description", entity.getDescription());
+		assertEquals("test", entity.getCredential());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals(KeystoreType.JKS, entity.getType());
 		assertNull(entity.getFileName());
 	}
 
 	@Test
 	void checkToNewEntity() {
 		// arrange
-		setupClock(clock);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -101,8 +130,14 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
+		assertEquals("keystore", entity.getName());
+		assertEquals(1L, entity.getUserId());
+		assertEquals("description", entity.getDescription());
+		assertEquals("test", entity.getCredential());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
+		assertEquals(KeystoreType.JKS, entity.getType());
 		assertEquals(FILE_NAME, entity.getFileName());
+		assertEquals("2023-06-29T00:00Z", entity.getCreationDate().toString());
 		verify(multipartFile).getOriginalFilename();
 	}
 
@@ -117,20 +152,25 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
+		assertEquals(1L, resultList.getTotalElements());
+		assertNotNull(resultList.getResultList().get(0));
+		assertEquals("KeystoreDto(id=1, userId=1, status=ACTIVE, name=keystore, fileName=test.jks, type=JKS, description=description, credential=test, creationDate=null, aliases=[])", resultList.getResultList().get(0).toString());
 	}
 
 	@Test
 	void checkToDto() {
 		// arrange
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		KeystoreEntity entity = TestUtils.createKeystoreEntity();
+		entity.setCreationDate(ZonedDateTime.now(clock));
 
 		// act
 		KeystoreDto response = converter.toDto(entity, List.of(TestUtils.createKeystoreAliasEntity()));
 
 		// assert
 		assertNotNull(response);
-		assertEquals(1L, response.getAliases().size());
-		assertEquals("keystore", response.getName());
+		assertEquals("KeystoreDto(id=1, userId=1, status=ACTIVE, name=keystore, fileName=test.jks, type=JKS, description=description, credential=test, creationDate=2023-06-29T00:00Z, aliases=[KeystoreAliasDto(id=1, alias=test, aliasCredential=test, operation=null, algorithm=algorithm)])", response.toString());
 	}
 
 	@Test
@@ -145,6 +185,9 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(1L, response.getId());
+		assertEquals(1, response.getKeystoreId());
 		assertEquals("alias", response.getAlias());
+		assertEquals("test1234", response.getAliasCredential());
+		assertEquals(EnabledAlgorithm.SHA256WITHRSA.getDisplayName(), response.getAlgorithm());
 	}
 }
