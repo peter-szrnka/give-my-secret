@@ -78,7 +78,7 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 		Assertions.assertEquals(mockResponse, response.getStatus());
 		verify(userRepository).countExistingAdmins();
 		assertEquals("db", response.getAuthMode());
-		assertEquals("2023-06-29T02:00:00+02:00", response.getBuilt());
+		assertEquals("2023-06-29T00:00:00Z", response.getBuilt());
 	}
 	
 	@ParameterizedTest
