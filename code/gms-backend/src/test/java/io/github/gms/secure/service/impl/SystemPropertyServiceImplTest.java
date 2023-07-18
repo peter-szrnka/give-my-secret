@@ -1,5 +1,25 @@
 package io.github.gms.secure.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.exception.GmsException;
@@ -10,24 +30,6 @@ import io.github.gms.secure.dto.SystemPropertyListDto;
 import io.github.gms.secure.entity.SystemPropertyEntity;
 import io.github.gms.secure.repository.SystemPropertyRepository;
 import io.github.gms.util.TestUtils;
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -49,14 +51,21 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldSaveNewSystemProperty() {
 		// arrange
-		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS))
-			.thenReturn(TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900"));
+		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
+		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("900").build();
+		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(mockEntity);
+		when(converter.toEntity(mockEntity, inputDto)).thenReturn(mockEntity);
 		
 		//act
-		assertDoesNotThrow(() -> service.save(SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("900").build()));
+		assertDoesNotThrow(() -> service.save(inputDto));
 		
 		// assert
 		verify(repository).findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
+		ArgumentCaptor<SystemPropertyEntity> captor = ArgumentCaptor.forClass(SystemPropertyEntity.class);
+		verify(converter).toEntity(mockEntity, inputDto);
+		verify(repository).save(captor.capture());
+		SystemPropertyEntity captured = captor.getValue();
+		assertEquals("SystemPropertyEntity(id=null, key=ACCESS_JWT_EXPIRATION_TIME_SECONDS, value=900, lastModified=null)", captured.toString());
 	}
 	
 	@Test
@@ -88,6 +97,7 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(0, response.getResultList().size());
+		assertEquals(0L, response.getTotalElements());
 		verify(repository).findAll(any(Pageable.class));
 		verify(converter, never()).toDtoList(any());
 	}
@@ -97,9 +107,10 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 		// arrange
 		Page<SystemPropertyEntity> mockList = new PageImpl<>(Lists.newArrayList(new SystemPropertyEntity()));
 		when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
-		when(converter.toDtoList(any())).thenReturn(SystemPropertyListDto.builder()
+		SystemPropertyListDto mockDto = SystemPropertyListDto.builder()
 				.resultList(Lists.newArrayList(SystemPropertyDto.builder().key("a").value("b").build()))
-				.totalElements(1).build());
+				.totalElements(1).build();
+		when(converter.toDtoList(any())).thenReturn(mockDto);
 
 		// act
 		SystemPropertyListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
@@ -107,6 +118,7 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(1, response.getResultList().size());
+		assertEquals(mockDto.getResultList().get(0).toString(), response.getResultList().get(0).toString());
 		verify(repository).findAll(any(Pageable.class));
 		verify(converter).toDtoList(any());
 	}

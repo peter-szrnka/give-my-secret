@@ -108,6 +108,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		SaveEntityResponseDto response = service.save(TestUtils.createSaveApiKeyRequestDto());
 
 		assertNotNull(response);
+		assertEquals(1L, response.getEntityId());
 		verify(converter).toEntity(any(ApiKeyEntity.class), any(SaveApiKeyRequestDto.class));
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 		verify(repository).save(any(ApiKeyEntity.class));
@@ -189,6 +190,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(0, response.getResultList().size());
+		assertEquals(0L, response.getTotalElements());
 		verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
 		verify(converter, never()).toDtoList(any());
 	}

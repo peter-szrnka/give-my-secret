@@ -131,7 +131,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
-		when(converter.toDtoList(any(), anyString())).thenReturn(EventListDto.builder()
+		when(converter.toDtoList(any(), eq("user1"))).thenReturn(EventListDto.builder()
 				.resultList(Lists.newArrayList(new EventDto()))
 				.totalElements(1).build());
 
@@ -144,7 +144,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 		assertNotNull(response);
 		assertEquals(1, response.getResultList().size());
 		verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
-		verify(converter).toDtoList(any(), anyString());
+		verify(converter).toDtoList(any(), eq("user1"));
 		verify(userRepository).getUsernameById(anyLong());
 	}
 }

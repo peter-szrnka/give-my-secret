@@ -56,8 +56,9 @@ class EventProcessorServiceImplTest extends AbstractUnitTest {
 		
 		// act
 		Map<String, Object> metadata = new HashMap<>();
-		metadata.put("userId", 1L);
-		metadata.put("keystoreId", 1L);
+		metadata.put("userId", 5L);
+		metadata.put("keystoreId", 6L);
+		metadata.put("aliasId", 2L);
 		service.disableEntity(new EntityChangeEvent(new Object(), metadata, input.eventType));
 		
 		// assert
@@ -65,13 +66,13 @@ class EventProcessorServiceImplTest extends AbstractUnitTest {
 		ArgumentCaptor<MessageDto> messageDtoCaptor = ArgumentCaptor.forClass(MessageDto.class);
 		verify(secretRepository).disableAllActiveByKeystoreAliasId(keystoreIdCaptor.capture());
 		verify(keystoreAliasRepository, times(input.eventType == EntityChangeType.KEYSTORE_DISABLED ? 1 : 0)).findAllByKeystoreId(anyLong());
-		verify(secretRepository, times(input.eventType == EntityChangeType.KEYSTORE_DISABLED ? 1 : 0)).disableAllActiveByKeystoreAliasId(anyLong());
 		verify(messageService).save(messageDtoCaptor.capture());
 		
-		assertEquals(input.eventType == EntityChangeType.KEYSTORE_DISABLED ? 1L : null, keystoreIdCaptor.getValue());
+		assertEquals(input.eventType == EntityChangeType.KEYSTORE_DISABLED ? 1L : 2L, keystoreIdCaptor.getValue());
 		
 		MessageDto capturedDto = messageDtoCaptor.getValue();
 		assertNotNull(capturedDto);
+		assertEquals(5L, capturedDto.getUserId());
 		assertEquals(input.expectedMessage,
 				capturedDto.getMessage());
 	}

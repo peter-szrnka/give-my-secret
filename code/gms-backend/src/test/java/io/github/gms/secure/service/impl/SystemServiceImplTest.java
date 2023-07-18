@@ -19,6 +19,7 @@ import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static io.github.gms.common.util.Constants.OK;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH;
@@ -53,10 +54,8 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 
 		userRepository = mock(UserRepository.class, Mockito.RETURNS_SMART_NULLS);
 		env = mock(Environment.class, Mockito.RETURNS_SMART_NULLS);
-		buildProperties = mock(BuildProperties.class, Mockito.RETURNS_SMART_NULLS);
-		
-		//?setupClock(clock);
-		
+		buildProperties = mock(BuildProperties.class);
+
 		service = new SystemServiceImpl(userRepository, clock, env);
 		service.setBuildProperties(buildProperties);
 	}
@@ -64,15 +63,22 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "NEED_SETUP", OK })
 	void shouldReturnSystemStatus(String mockResponse) {
+		// arrange
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+
 		when(env.getProperty(eq(SELECTED_AUTH), anyString())).thenReturn("db");
 		when(userRepository.countExistingAdmins()).thenReturn(OK.equals(mockResponse) ? 1L : 0L);
-		when(buildProperties.getTime()).thenReturn(Instant.now(Clock.systemDefaultZone()));
 		
+		// act
 		SystemStatusDto response = service.getSystemStatus();
 		
 		// assert
 		Assertions.assertEquals(mockResponse, response.getStatus());
 		verify(userRepository).countExistingAdmins();
+		assertEquals("db", response.getAuthMode());
+		assertEquals("2023-06-29T02:00:00+02:00", response.getBuilt());
 	}
 	
 	@ParameterizedTest

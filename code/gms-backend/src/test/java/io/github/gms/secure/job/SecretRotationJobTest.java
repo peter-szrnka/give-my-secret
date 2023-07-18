@@ -58,8 +58,9 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldNotProcess() {
 		// arrange
+		Clock mockClock = Clock.fixed(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());
 		when(secretRepository.findAllOldRotated(any(ZonedDateTime.class)))
-			.thenReturn(Lists.newArrayList());
+			.thenReturn(Lists.newArrayList(TestUtils.createSecretEntity(RotationPeriod.MONTHLY, ZonedDateTime.now(mockClock).minusDays(10L))));
 
 		// act
 		job.execute();

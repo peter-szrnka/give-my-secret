@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.security.Key;
@@ -13,11 +14,13 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.JwtConfigType;
@@ -57,6 +60,10 @@ class JwtServiceImplTest extends AbstractUnitTest {
 			JwtConfigType.ACCESS_JWT, generateRequest1, 
 			JwtConfigType.REFRESH_JWT, generateRequest2
 		);
+		MockedStatic<UUID> mockedUUID = mockStatic(UUID.class);
+		UUID mockUUID = mock(UUID.class);
+		when(mockUUID.toString()).thenReturn("123456-1234-1234-123456");
+		mockedUUID.when(() -> UUID.randomUUID()).thenReturn(mockUUID);
 		
 		// act
 		Map<JwtConfigType, String> response = service.generateJwts(request);
@@ -72,6 +79,11 @@ class JwtServiceImplTest extends AbstractUnitTest {
 		assertEquals("subject1", claims.getSubject());
 		assertNull(claims.getAudience());
 		assertEquals("v1", claims.get("k1"));
+		assertEquals("123456-1234-1234-123456", claims.getId());
+		assertNotNull(claims.getIssuedAt().toString());
+		assertNotNull(claims.getExpiration());
+
+		mockedUUID.close();
 	}
 	
 	@Test
