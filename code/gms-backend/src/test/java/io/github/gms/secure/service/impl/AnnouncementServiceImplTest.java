@@ -142,6 +142,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
+		assertEquals(1L, response.getResultList().get(0).getId());
 		assertEquals("Maintenance at 2022-01-01", response.getResultList().get(0).getTitle());
 		assertEquals("Test", response.getResultList().get(0).getDescription());
 		assertEquals("myuser", response.getResultList().get(0).getAuthor());

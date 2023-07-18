@@ -1,12 +1,13 @@
 package io.github.gms.secure.converter.impl;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.dto.SystemPropertyDto;
-import io.github.gms.secure.dto.SystemPropertyListDto;
-import io.github.gms.secure.entity.SystemPropertyEntity;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -14,13 +15,14 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Test;
+
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.exception.GmsException;
+import io.github.gms.secure.dto.SystemPropertyDto;
+import io.github.gms.secure.dto.SystemPropertyListDto;
+import io.github.gms.secure.entity.SystemPropertyEntity;
 
 /**
  * @author Peter Szrnka
@@ -35,13 +37,13 @@ class SystemPropertyConverterImplTest extends AbstractUnitTest {
 	void shouldConvertToDtoList() {
 		// arrange
 		SystemPropertyEntity entity = new SystemPropertyEntity();
-		entity.setKey(SystemProperty.ACCESS_JWT_ALGORITHM);
-		entity.setValue("HMAC512");
+		entity.setKey(SystemProperty.ORGANIZATION_CITY);
+		entity.setValue("Budapest");
 		entity.setLastModified(ZonedDateTime.now());
 
 		SystemPropertyEntity entity2 = new SystemPropertyEntity();
 		entity2.setKey(null);
-		entity2.setValue("HMAC512");
+		entity2.setValue("Test value");
 		entity2.setLastModified(ZonedDateTime.now());
 
 		// act
@@ -51,6 +53,10 @@ class SystemPropertyConverterImplTest extends AbstractUnitTest {
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
 		assertEquals(7L, response.getTotalElements());
+		assertEquals("Budapest", response.getResultList().stream()
+			.filter(property -> property.getKey().equals("ORGANIZATION_CITY"))
+			.map(item -> item.getValue()).findFirst().get());
+		assertTrue(response.getResultList().stream().noneMatch(item -> item.getType() == null || item.getKey() == null || item.getValue() == null));
 		assertEquals(6L, response.getResultList().stream().filter((item) -> item.isFactoryValue()).count());
 		assertEquals(1L, response.getResultList().stream().filter((item) -> item.getLastModified() != null).count());
 	}
@@ -82,10 +88,7 @@ class SystemPropertyConverterImplTest extends AbstractUnitTest {
 		
 		// assert
 		assertNotNull(response);
-		assertEquals(2L, response.getId());
-		assertEquals(SystemProperty.OLD_EVENT_TIME_LIMIT_DAYS, response.getKey());
-		assertEquals("1", response.getValue());
-		assertEquals("2023-06-29T00:00Z", entity.getLastModified().toString());
+		assertEquals("SystemPropertyEntity(id=2, key=OLD_EVENT_TIME_LIMIT_DAYS, value=1, lastModified=2023-06-29T00:00Z)", response.toString());
 	}
 	
 	@Test

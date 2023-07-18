@@ -17,7 +17,6 @@ import org.springframework.data.domain.PageImpl;
 import com.google.common.collect.Lists;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.secure.converter.MessageConverter;
 import io.github.gms.secure.dto.MessageDto;
 import io.github.gms.secure.dto.MessageListDto;
 import io.github.gms.secure.entity.MessageEntity;
@@ -29,7 +28,7 @@ import io.github.gms.util.TestUtils;
  */
 class MessageConverterImplTest extends AbstractUnitTest {
 
-	private final MessageConverter converter = new MessageConverterImpl();
+	private final MessageConverterImpl converter = new MessageConverterImpl();
 
 	@Test
 	void checkToList() {
@@ -39,6 +38,7 @@ class MessageConverterImplTest extends AbstractUnitTest {
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		MessageEntity entity = TestUtils.createMessageEntity();
 		entity.setCreationDate(ZonedDateTime.now(clock));
+		entity.setOpened(true);
 		Page<MessageEntity> entityList = new PageImpl<>(Lists.newArrayList(entity));
 
 		// act
@@ -50,6 +50,6 @@ class MessageConverterImplTest extends AbstractUnitTest {
 		assertEquals(1L, resultList.getTotalElements());
 
 		MessageDto dto = resultList.getResultList().get(0);
-		assertEquals("MessageDto(id=1, userId=1, opened=false, message=test message, creationDate=2023-06-29T00:00Z)", dto.toString());
+		assertEquals("MessageDto(id=1, userId=1, opened=true, message=test message, creationDate=2023-06-29T00:00Z)", dto.toString());
 	}
 }

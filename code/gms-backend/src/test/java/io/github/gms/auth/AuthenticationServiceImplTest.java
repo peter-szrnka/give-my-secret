@@ -30,12 +30,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
+import com.google.common.collect.Sets;
+
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthenticationDetails;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.service.JwtService;
@@ -221,6 +224,8 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 		UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) response.getAuthentication();
 		assertNotNull(token.getDetails());
+		assertNotNull(token.getAuthorities());
+		assertTrue(token.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_USER")));
 
 		WebAuthenticationDetails tokenDetails = (WebAuthenticationDetails) token.getDetails();
 		assertEquals("127.0.0.1", tokenDetails.getRemoteAddress());

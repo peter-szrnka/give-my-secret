@@ -23,15 +23,15 @@ class ConverterUtilsTest extends AbstractUnitTest {
     
     @Test
     void shouldCreatePageable() {
-        PagingDto dto = new PagingDto("DESC", "id", 0, 10);
+        PagingDto dto = new PagingDto("DESC", "id", 1, 10);
         // act
         Pageable response = ConverterUtils.createPageable(dto);
 
         // assert
         assertNotNull(response);
         assertTrue(response.getSort().isSorted());
-        assertEquals(0, response.getPageNumber());
-        assertEquals(0, response.getOffset());
+        assertEquals(1, response.getPageNumber());
+        assertEquals(10, response.getOffset());
         assertEquals(10, response.getPageSize());
     }
 }

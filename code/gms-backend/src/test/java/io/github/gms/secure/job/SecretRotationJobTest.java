@@ -77,7 +77,6 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 		when(secretRepository.findAllOldRotated(any(ZonedDateTime.class)))
 			.thenReturn(Lists.newArrayList(
 					TestUtils.createSecretEntity(RotationPeriod.HOURLY, ZonedDateTime.now(mockClock).minusDays(10L)), 
-					TestUtils.createSecretEntity(RotationPeriod.HOURLY, ZonedDateTime.now(mockClock).minusDays(10L)),
 					TestUtils.createSecretEntity(RotationPeriod.MONTHLY, ZonedDateTime.now(mockClock).minusDays(10L))
 			));
 
@@ -85,10 +84,10 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 		job.execute();
 
 		// assert
-		verify(service, times(2)).rotateSecret(any(SecretEntity.class));
+		verify(service, times(1)).rotateSecret(any(SecretEntity.class));
 		verify(secretRepository).findAllOldRotated(any(ZonedDateTime.class));
 		assertFalse(logAppender.list.isEmpty());
-		assertEquals("2 entities updated", logAppender.list.get(0).getFormattedMessage());
+		assertEquals("1 entities updated", logAppender.list.get(0).getFormattedMessage());
 
 		ArgumentCaptor<ZonedDateTime> dateCArgumentCaptor = ArgumentCaptor.forClass(ZonedDateTime.class);
 		verify(secretRepository).findAllOldRotated(dateCArgumentCaptor.capture());
