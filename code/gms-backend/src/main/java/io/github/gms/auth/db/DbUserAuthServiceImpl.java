@@ -46,6 +46,7 @@ public class DbUserAuthServiceImpl implements UserAuthService {
 				.authorities(authorities)
 				.accountNonLocked(user.getStatus() == EntityStatus.ACTIVE)
 				.enabled(user.getStatus() == EntityStatus.ACTIVE)
+				.mfaEnabled(user.isMfaEnabled())
 				.build();
 	}
 }

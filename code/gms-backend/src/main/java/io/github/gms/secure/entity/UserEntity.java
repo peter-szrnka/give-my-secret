@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.enums.EntityStatus;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -53,4 +54,11 @@ public class UserEntity extends AbstractGmsEntity {
 	
 	@Column(name = "roles")
 	private String roles;
+
+	@Column(name = "mfa_enabled")
+	@Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
+	private boolean mfaEnabled;
+
+	@Column(name = "mfa_secret", nullable = true)
+	private String mfaSecret;
 }

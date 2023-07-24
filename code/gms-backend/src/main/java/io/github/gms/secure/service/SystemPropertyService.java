@@ -20,4 +20,6 @@ public interface SystemPropertyService {
 	String get(SystemProperty key);
 	
 	Long getLong(SystemProperty key);
+
+	boolean getBoolean(SystemProperty key);
 }

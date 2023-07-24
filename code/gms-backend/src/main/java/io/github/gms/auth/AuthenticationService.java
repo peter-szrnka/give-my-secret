@@ -1,10 +1,7 @@
 package io.github.gms.auth;
 
-import org.springframework.security.core.Authentication;
-
-import io.github.gms.auth.model.AuthenticationDetails;
-import io.github.gms.auth.model.AuthenticationResponse;
-import jakarta.servlet.http.HttpServletRequest;
+import io.github.gms.auth.dto.AuthenticateResponseDto;
+import io.github.gms.common.dto.LoginVerificationRequestDto;
 
 /**
  * @author Peter Szrnka
@@ -12,15 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public interface AuthenticationService {
 
-	AuthenticationDetails authenticate(String username, String credential);
-	
-	/**
-	 * - Authorizes the incoming request with JWT
-	 * - Configures MDC parameters
-	 * - Returns with a {@link Authentication} instance.
-	 * 
-	 * @param request {@link HttpServletRequest}
-	 * @return A new {@link AuthenticationResponse} instance.
-	 */
-	AuthenticationResponse authorize(HttpServletRequest request);
+	AuthenticateResponseDto authenticate(String username, String credential);
+
+	AuthenticateResponseDto verify(LoginVerificationRequestDto dto);
 }

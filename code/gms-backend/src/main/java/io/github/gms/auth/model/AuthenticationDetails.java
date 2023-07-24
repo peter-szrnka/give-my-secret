@@ -9,8 +9,10 @@ import java.util.Map;
 /**
  * @author Peter Szrnka
  * @since 1.0
+ * @deprecated
  */
 @Data
+@Deprecated
 @AllArgsConstructor
 public class AuthenticationDetails {
 

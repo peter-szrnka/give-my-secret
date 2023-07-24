@@ -72,4 +72,9 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
 	private SystemProperty getSystemPropertyByName(String key) {
 		return SystemProperty.getByKey(key).orElseThrow(() -> new GmsException("Unknown system property!"));
 	}
+
+	@Override
+	public boolean getBoolean(SystemProperty key) {
+		return Boolean.parseBoolean(get(key));
+	}
 }

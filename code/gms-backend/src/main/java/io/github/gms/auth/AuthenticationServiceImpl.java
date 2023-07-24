@@ -1,37 +1,21 @@
 package io.github.gms.auth;
 
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-
-import java.util.Date;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.slf4j.MDC;
-import org.springframework.data.util.Pair;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.WebUtils;
 
-import io.github.gms.auth.model.AuthenticationDetails;
-import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.auth.dto.AuthenticateResponseDto;
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.auth.types.AuthResponsePhase;
+import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.JwtConfigType;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
+import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -40,127 +24,46 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthenticationServiceImpl extends AbstractAuthServiceImpl implements AuthenticationService {
 
-	private final AuthenticationManager authenticationManager;
-	private final JwtService jwtService;
-	private final UserAuthService userAuthService;
-	private final SystemPropertyService systemPropertyService;
-	private final GenerateJwtRequestConverter generateJwtRequestConverter;
+	private final UserConverter converter;
 
 	public AuthenticationServiceImpl(
 			AuthenticationManager authenticationManager,
 			JwtService jwtService,
-			UserAuthService userAuthService,
 			SystemPropertyService systemPropertyService,
-			GenerateJwtRequestConverter generateJwtRequestConverter) {
-		this.authenticationManager = authenticationManager;
-		this.jwtService = jwtService;
-		this.userAuthService = userAuthService;
-		this.systemPropertyService = systemPropertyService;
-		this.generateJwtRequestConverter = generateJwtRequestConverter;
+			GenerateJwtRequestConverter generateJwtRequestConverter,
+			UserConverter converter) {
+		super(authenticationManager, jwtService, systemPropertyService, generateJwtRequestConverter);
+		this.converter = converter;
 	}
 
 	@Override
-	public AuthenticationDetails authenticate(String username, String credential) {
-		Authentication authenticate = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
-		GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
-
-		return getAuthenticationDetails(user);
-	}
-
-	@Override
-	public AuthenticationResponse authorize(HttpServletRequest request) {
-		Cookie jwtTokenCookie = WebUtils.getCookie(request, ACCESS_JWT_TOKEN);
-		
-		if (jwtTokenCookie == null) {
-			return AuthenticationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();
-		}
-		
-		String jwtToken = jwtTokenCookie.getValue();
-		// JWT processing & authentication
+	public AuthenticateResponseDto authenticate(String username, String credential) {
 		try {
-			String algorithm = systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM);
-			
-			Claims jwsResult = jwtService.parseJwt(jwtToken, algorithm);
-			Pair<HttpStatus, String> validationResult = validateJwt(jwsResult);
-			
-			if (validationResult.getFirst() != HttpStatus.OK) {
-				log.warn("Authentication failed: {}", validationResult.getSecond());
-				return AuthenticationResponse.builder()
-						.responseStatus(validationResult.getFirst())
-						.errorMessage(validationResult.getSecond())
-						.build();
-			}
+			Authentication authenticate = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
+			GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
+			Map<JwtConfigType, String> authenticationDetails = getAuthenticationDetails(user);
 
-			GmsUserDetails userDetails = (GmsUserDetails) userAuthService.loadUserByUsername(jwsResult.get(MdcParameter.USER_NAME.getDisplayName(), String.class));
-
-			if (!userDetails.isEnabled()) {
-				log.warn("User is blocked");
-				return AuthenticationResponse.builder()
-						.responseStatus(HttpStatus.FORBIDDEN)
-						.errorMessage("User is blocked")
-						.build();
-			}
-			
-			// Let's refresh the existing tokens
-			AuthenticationDetails authenticationDetails = getAuthenticationDetails(userDetails);
-			
-			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-			// Configuration of MDC parameters
-			Stream.of(MdcParameter.values())
-				.filter(MdcParameter::isInput)
-				.forEach(mdcParameter -> MDC.put(mdcParameter.getDisplayName(), String.valueOf(jwsResult.get(mdcParameter.getDisplayName()))));
-
-			return AuthenticationResponse.builder()
-					.authentication(authentication)
-					.jwtPair(authenticationDetails.getJwtPair())
-					.build();
-		} catch (Exception e) {
-			log.warn("Authentication failed: {}", e.getMessage());
-			return AuthenticationResponse.builder()
-					.responseStatus(HttpStatus.FORBIDDEN)
-					.errorMessage("Authentication failed!")
-					.build();
+			return AuthenticateResponseDto.builder()
+				.currentUser(converter.toUserInfoDto(user))
+				.token(authenticationDetails.get(JwtConfigType.ACCESS_JWT))
+				.refreshToken(authenticationDetails.get(JwtConfigType.REFRESH_JWT))
+				.phase(isMfaEnabled(user) ? AuthResponsePhase.MFA_REQUIRED : AuthResponsePhase.COMPLETED)
+				.build();
+		} catch (Exception ex) {
+			log.warn("Login failed", ex);
+			return new AuthenticateResponseDto();
 		}
 	}
-	
-	
-	private AuthenticationDetails getAuthenticationDetails(GmsUserDetails user) {
-		Map<JwtConfigType, GenerateJwtRequest> input = Map.of(
-				JwtConfigType.ACCESS_JWT, buildAccessJwtRequest(user.getUserId(), user.getUsername(), 
-						user.getAuthorities().stream().map(authority -> UserRole.getByName(authority.getAuthority())).collect(Collectors.toSet())),
-				JwtConfigType.REFRESH_JWT, buildRefreshTokenRequest(user.getUsername())
-		);
-		
-		return new AuthenticationDetails(jwtService.generateJwts(input), user);
-	}
-	
-	private GenerateJwtRequest buildRefreshTokenRequest(String userName) {
-		Map<String, Object> claims = Map.of(
-				MdcParameter.USER_NAME.getDisplayName(), userName
-		);
-		return generateJwtRequestConverter.toRequest(JwtConfigType.REFRESH_JWT, userName, claims);
-	}
 
-	private GenerateJwtRequest buildAccessJwtRequest(Long userId, String userName, Set<UserRole> roles) {
-		Map<String, Object> claims = Map.of(
-				MdcParameter.USER_ID.getDisplayName(), userId,
-				MdcParameter.USER_NAME.getDisplayName(), userName,
-				"roles", roles
-		);
-
-		return generateJwtRequestConverter.toRequest(JwtConfigType.ACCESS_JWT, userName, claims);
-	}
-
-	private static Pair<HttpStatus, String> validateJwt(Claims jwsResult) {
-		if (jwsResult.getExpiration().before(new Date())) {
-			return Pair.of(HttpStatus.BAD_REQUEST, "JWT token has expired!");
-		}
-		
-		return Pair.of(HttpStatus.OK, "");
+	@Override
+	public AuthenticateResponseDto verify(LoginVerificationRequestDto dto) {
+		// TODO Complete
+		// Verify codes
+		return AuthenticateResponseDto.builder()
+				.phase(AuthResponsePhase.COMPLETED)
+				.build();
 	}
 }

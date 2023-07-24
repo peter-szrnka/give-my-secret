@@ -98,6 +98,12 @@ public class UserConverterImpl implements UserConverter {
 	public UserInfoDto toUserInfoDto(GmsUserDetails user) {
 		UserInfoDto dto = new UserInfoDto();
 		dto.setId(user.getUserId());
+
+		if (user.isMfaEnabled()) {
+			dto.setMfaSecret(user.getMfaSecret());
+			return dto;
+		}
+
 		dto.setName(user.getName());
 		dto.setUsername(user.getUsername());
 		dto.setEmail(user.getEmail());

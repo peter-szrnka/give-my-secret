@@ -34,6 +34,8 @@ public class GmsUserDetails implements UserDetails {
 	private Boolean accountNonLocked = true;
 	@Builder.Default
 	private Boolean enabled = true;
+	private boolean mfaEnabled;
+	private String mfaSecret;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -70,4 +72,7 @@ public class GmsUserDetails implements UserDetails {
 		return enabled;
 	}
 
+	public boolean isMfaEnabled() {
+		return mfaEnabled;
+	}
 }

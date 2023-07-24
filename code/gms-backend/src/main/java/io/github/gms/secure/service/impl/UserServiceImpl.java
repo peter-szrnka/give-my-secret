@@ -1,5 +1,23 @@
 package io.github.gms.secure.service.impl;
 
+import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.CACHE_USER;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.slf4j.MDC;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
@@ -18,21 +36,6 @@ import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static io.github.gms.common.util.Constants.CACHE_API;
-import static io.github.gms.common.util.Constants.CACHE_USER;
 
 /**
  * @author Peter Szrnka
@@ -43,6 +46,7 @@ import static io.github.gms.common.util.Constants.CACHE_USER;
 @CacheConfig(cacheNames = { CACHE_USER, CACHE_API })
 public class UserServiceImpl implements UserService {
 	
+	private static String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
 	private static final String CREDENTIAL_REGEX = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,255}$";
 
 	private final UserRepository repository;
@@ -117,7 +121,15 @@ public class UserServiceImpl implements UserService {
 		user.setCredential(passwordEncoder.encode(dto.getNewCredential()));
 		repository.save(user);
 	}
-	
+
+	@Override
+	public String getMfaQrUrl() throws UnsupportedEncodingException {
+		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
+		UserEntity entity = validateUser(userId);
+		return QR_PREFIX + URLEncoder.encode(String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s", 
+			"gms", entity.getEmail(), entity.getMfaSecret(), "gms"), "UTF-8");
+	}
+
 	private SaveEntityResponseDto saveUser(SaveUserRequestDto dto, boolean roleChangeEnabled) {
 		validateUserExistence(dto);
 

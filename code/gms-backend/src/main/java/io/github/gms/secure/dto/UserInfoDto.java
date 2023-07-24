@@ -23,4 +23,5 @@ public class UserInfoDto implements Serializable {
 	private String username;
 	private String email;
 	private Set<UserRole> roles = new HashSet<>();
+	private String mfaSecret;
 }

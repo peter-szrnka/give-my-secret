@@ -29,7 +29,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.google.common.collect.Sets;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.auth.AuthenticationService;
+import io.github.gms.auth.AuthorizationService;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
@@ -51,16 +51,16 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 
 	private static final String ERROR_MESSAGE = "Error!";
 
-	private AuthenticationService authenticationService;
+	private AuthorizationService authorizationService;
 	private SystemPropertyService systemPropertyService;
 	private SecureHeaderInitializerFilter filter;
 
 	@BeforeEach
 	public void setup() {
 		// init
-		authenticationService = mock(AuthenticationService.class);
+		authorizationService = mock(AuthorizationService.class);
 		systemPropertyService = mock(SystemPropertyService.class);
-		filter = new SecureHeaderInitializerFilter(authenticationService, systemPropertyService, false);
+		filter = new SecureHeaderInitializerFilter(authorizationService, systemPropertyService, false);
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		
 		// assert
 		assertNotNull(MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
-		verify(authenticationService, never()).authorize(any(HttpServletRequest.class));
+		verify(authorizationService, never()).authorize(any(HttpServletRequest.class));
 		verify(filterChain).doFilter(any(), any());
 		verify(response, never()).sendError(HttpStatus.OK.value(), ERROR_MESSAGE);
 	}
@@ -90,7 +90,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);
 		when(request.getRequestURI()).thenReturn("/secure/apikey/list");
-		when(authenticationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthenticationResponse.builder()
+		when(authorizationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthenticationResponse.builder()
 				.responseStatus(HttpStatus.BAD_REQUEST)
 				.errorMessage(ERROR_MESSAGE)
 				.build());
@@ -111,13 +111,13 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 	void shouldPass(UserRole role, boolean admin) {
 		// arrange
 		MockedStatic<MDC>  mockedMDC = mockStatic(MDC.class);
-		filter = new SecureHeaderInitializerFilter(authenticationService, systemPropertyService, true);
+		filter = new SecureHeaderInitializerFilter(authorizationService, systemPropertyService, true);
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);
 		Authentication mockAuthentication = mock(Authentication.class);
 
-		when(authenticationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthenticationResponse.builder()
+		when(authorizationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthenticationResponse.builder()
 			.responseStatus(HttpStatus.OK)
 			.authentication(mockAuthentication)
 			.jwtPair(Map.of(JwtConfigType.ACCESS_JWT, "ACCESS_JWT", JwtConfigType.REFRESH_JWT, "REFRESH_JWT"))
@@ -151,7 +151,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		verify(response).addHeader("Set-Cookie", "mock-cookie2");
 		verify(filterChain).doFilter(any(), any());
 		verify(response, never()).sendError(HttpStatus.BAD_REQUEST.value(), ERROR_MESSAGE);
-		verify(authenticationService).authorize(any(HttpServletRequest.class));
+		verify(authorizationService).authorize(any(HttpServletRequest.class));
 		verify(systemPropertyService).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		verify(systemPropertyService).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
 

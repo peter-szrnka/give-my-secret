@@ -18,7 +18,13 @@ public enum SystemProperty {
 	REFRESH_JWT_ALGORITHM(PropertyType.STRING, "HS512"),
 	OLD_EVENT_TIME_LIMIT_DAYS(PropertyType.LONG, "1"),
 	ORGANIZATION_NAME(PropertyType.STRING, "NA"),
-	ORGANIZATION_CITY(PropertyType.STRING, "NA");
+	ORGANIZATION_CITY(PropertyType.STRING, "NA"),
+	// MFA is mandatory for all users
+	ENABLE_GLOBAL_MFA(PropertyType.BOOLEAN, "false"),
+	// MFA is enabled for users to use
+	ENABLE_MFA(PropertyType.BOOLEAN, "false"),
+	// MFA provider: google, microsoft, etc.
+	MFA_PROVIDER(PropertyType.STRING, "google");
 
 	private SystemProperty(PropertyType type, String defaultValue) {
 		this.type = type;

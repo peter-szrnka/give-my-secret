@@ -11,7 +11,6 @@ import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserListDto;
-import io.github.gms.secure.service.SecretService;
 import io.github.gms.secure.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 import static io.github.gms.common.util.Constants.ALL_ROLE;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author Peter Szrnka
@@ -83,5 +84,15 @@ public class UserController extends AbstractController<UserService> {
 	public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordRequestDto dto) {
 		service.changePassword(dto);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/mfa_qr_code")
+	@PreAuthorize(ALL_ROLE)
+	public ResponseEntity<String> getMfaQrUrl() {
+		try {
+			return new ResponseEntity<>(service.getMfaQrUrl(), HttpStatus.OK);
+		} catch (UnsupportedEncodingException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 }

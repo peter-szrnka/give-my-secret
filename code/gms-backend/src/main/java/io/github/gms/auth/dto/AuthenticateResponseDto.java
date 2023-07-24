@@ -1,7 +1,9 @@
 package io.github.gms.auth.dto;
 
+import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.secure.dto.UserInfoDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +14,7 @@ import java.io.Serializable;
  * @since 1.0
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticateResponseDto implements Serializable {
@@ -21,4 +24,6 @@ public class AuthenticateResponseDto implements Serializable {
 	private UserInfoDto currentUser;
 	private String token;
 	private String refreshToken;
+	@Builder.Default
+	private AuthResponsePhase phase = AuthResponsePhase.FAILED;
 }

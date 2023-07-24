@@ -17,13 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 
+import io.github.gms.auth.AuthenticationService;
 import io.github.gms.auth.dto.AuthenticateRequestDto;
 import io.github.gms.auth.dto.AuthenticateResponseDto;
+import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
-import io.github.gms.secure.dto.UserInfoDto;
-import io.github.gms.secure.service.LoginService;
 import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,12 +37,12 @@ import jakarta.servlet.http.HttpServletRequest;
 class LoginControllerTest {
     
     private LoginController controller;
-    private LoginService service;
+    private AuthenticationService service;
 	private SystemPropertyService systemPropertyService;
 
     @BeforeEach
     void setup() {
-        service = mock(LoginService.class);
+        service = mock(AuthenticationService.class);
         systemPropertyService = mock(SystemPropertyService.class);
         controller = new LoginController(service, systemPropertyService, false);
     }
@@ -54,10 +54,11 @@ class LoginControllerTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         AuthenticateResponseDto mockResponse = new AuthenticateResponseDto();
-        when(service.login(dto)).thenReturn(mockResponse);
+        mockResponse.setPhase(AuthResponsePhase.FAILED);
+        when(service.authenticate("user", "pass")).thenReturn(mockResponse);
 
         // act
-        ResponseEntity<UserInfoDto> response = controller.loginAuthentication(dto, request);
+        ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto, request);
 
         // assert
         assertNotNull(response);
@@ -74,7 +75,8 @@ class LoginControllerTest {
         mockResponse.setRefreshToken("REFRESHTOKEN");
         mockResponse.setToken("TOKEN");
         mockResponse.setCurrentUser(TestUtils.createUserInfoDto());
-        when(service.login(dto)).thenReturn(mockResponse);
+        mockResponse.setPhase(AuthResponsePhase.COMPLETED);
+        when(service.authenticate("user", "pass")).thenReturn(mockResponse);
 
         when(systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(2L);
         when(systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(3L);
@@ -90,7 +92,7 @@ class LoginControllerTest {
         mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESHTOKEN"), eq(3L), eq(false))).thenReturn(refreshJwtCookie);
 
         // act
-        ResponseEntity<UserInfoDto> response = controller.loginAuthentication(dto, request);
+        ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto, request);
 
         // assert
         assertNotNull(response);
@@ -98,7 +100,7 @@ class LoginControllerTest {
         assertEquals(1, response.getHeaders().size());
         assertTrue(response.getHeaders().get("Set-Cookie").stream().anyMatch(item -> item.equals("mock-cookie1")));
         assertTrue(response.getHeaders().get("Set-Cookie").stream().anyMatch(item -> item.equals("mock-cookie2")));
-        assertEquals("UserInfoDto(id=1, name=name, username=user, email=a@b.com, roles=[ROLE_USER])", response.getBody().toString());
+        assertEquals("AuthenticateResponseDto(currentUser=UserInfoDto(id=1, name=name, username=user, email=a@b.com, roles=[ROLE_USER], mfaSecret=null), token=TOKEN, refreshToken=REFRESHTOKEN, phase=COMPLETED)", response.getBody().toString());
 
         verify(systemPropertyService).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		verify(systemPropertyService).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
