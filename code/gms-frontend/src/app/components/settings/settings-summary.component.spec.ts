@@ -52,7 +52,8 @@ describe('SettingsSummaryComponent', () => {
         userService = {
             changeCredentials : jest.fn().mockImplementation(() : Observable<void> => {
                 return of(void 0);
-            })
+            }),
+            isMfaActive: jest.fn().mockResolvedValue(true)
         };
         splashScreenService = {
             start : jest.fn(),

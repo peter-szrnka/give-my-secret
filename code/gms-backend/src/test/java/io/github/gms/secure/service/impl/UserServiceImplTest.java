@@ -330,4 +330,36 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).findById(1L);
 		MDC.clear();
 	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
+	void shouldToggleMfa(boolean value) {
+		// arrange
+		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
+
+		// act
+		service.toggleMfa(value);
+
+		// assert
+		ArgumentCaptor<UserEntity> captor = ArgumentCaptor.forClass(UserEntity.class);
+		verify(repository).save(captor.capture());
+		verify(repository).findById(1L);
+		assertEquals(value, captor.getValue().isMfaEnabled());
+	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
+	void shouldMfaActive(boolean value) {
+		// arrange
+		UserEntity entity = TestUtils.createUser();
+		entity.setMfaEnabled(value);
+		when(repository.findById(1L)).thenReturn(Optional.of(entity));
+
+		// act
+		boolean response = service.isMfaActive();
+
+		// assert
+		assertEquals(value, response);
+		verify(repository).findById(1L);
+	}
 }

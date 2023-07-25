@@ -7,11 +7,12 @@ import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { of, ReplaySubject, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { Login } from "../../common/model/login.model";
+import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { LoginComponent } from "./login.component";
+import { User } from "../user/model/user.model";
 
 /**
  * @author Peter Szrnka
@@ -65,9 +66,17 @@ describe('LoginComponent', () => {
             stop : jest.fn()
         };
 
+        const mockCurrentUser: User = {
+            roles: []
+        };
+
+        const mockResponse: LoginResponse = {
+            currentUser: mockCurrentUser,
+            phase: AuthenticationPhase.COMPLETED
+        };
         authService = {
             login : jest.fn().mockImplementation(() => {
-                return of("mock_jwt");
+                return of(mockResponse);
             })
         };
     });
@@ -83,7 +92,7 @@ describe('LoginComponent', () => {
         expect(component).toBeTruthy();
         expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
-        expect(sharedDataService.setCurrentUser).toBeCalledWith('mock_jwt');
+        expect(sharedDataService.setCurrentUser).toBeCalledWith({ roles: [] });
     });
 
     it('Should fail after login', () => {
