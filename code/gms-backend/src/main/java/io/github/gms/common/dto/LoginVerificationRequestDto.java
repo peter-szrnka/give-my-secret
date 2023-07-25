@@ -11,6 +11,6 @@ import lombok.Data;
 @Data
 public class LoginVerificationRequestDto implements Serializable {
     
-    private Long userId;
+    private String username;
     private String verificationCode;
 }

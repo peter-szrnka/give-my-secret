@@ -6,6 +6,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.UnsupportedEncodingException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,6 +21,7 @@ import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.service.UserService;
 import io.github.gms.util.TestUtils;
+import lombok.SneakyThrows;
 
 /**
  * Unit test of {@link UserController}
@@ -118,5 +121,36 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).changePassword(dto);
+    }
+
+    @Test
+    @SneakyThrows
+    void shouldNotReturnQrCode() {
+        // arrange
+        when(service.getMfaQrCode()).thenThrow(UnsupportedEncodingException.class);
+
+        // act
+        ResponseEntity<byte[]> response = controller.getMfaQrCode();
+
+        // assert
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCode().value());
+        verify(service).getMfaQrCode();
+    }
+
+    @Test
+    @SneakyThrows
+    void shouldReturnQrCode() {
+        // arrange
+        when(service.getMfaQrCode()).thenReturn("QR-url".getBytes());
+
+        // act
+        ResponseEntity<byte[]> response = controller.getMfaQrCode();
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("QR-url".getBytes(), response.getBody());
+        verify(service).getMfaQrCode();
     }
 }

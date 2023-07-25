@@ -6,7 +6,9 @@ CREATE TABLE gms_user (
 	name VARCHAR(255) NOT NULL,
 	roles VARCHAR(255) NOT NULL,
 	status VARCHAR(255) NOT NULL,
-	user_name VARCHAR(255) NOT NULL
+	user_name VARCHAR(255) NOT NULL,
+	mfa_enabled INT NOT NULL DEFAULT 0,
+	mfa_secret VARCHAR(32) NOT NULL
 );
 
 CREATE TABLE gms_api_key (

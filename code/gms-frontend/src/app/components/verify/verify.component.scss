@@ -1,0 +1,16 @@
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.container > .box {
+    min-width: 30%;
+    height: 250px;
+}
+
+.form-control {
+    width: 100%;
+}

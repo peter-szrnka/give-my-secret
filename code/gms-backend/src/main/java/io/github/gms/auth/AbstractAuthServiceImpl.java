@@ -26,16 +26,19 @@ public abstract class AbstractAuthServiceImpl {
 	final JwtService jwtService;
 	final SystemPropertyService systemPropertyService;
 	final GenerateJwtRequestConverter generateJwtRequestConverter;
+	final UserAuthService userAuthService;
 
     AbstractAuthServiceImpl(
 			AuthenticationManager authenticationManager,
 			JwtService jwtService,
 			SystemPropertyService systemPropertyService,
-			GenerateJwtRequestConverter generateJwtRequestConverter) {
+			GenerateJwtRequestConverter generateJwtRequestConverter,
+			UserAuthService userAuthService) {
 		this.authenticationManager = authenticationManager;
 		this.jwtService = jwtService;
 		this.systemPropertyService = systemPropertyService;
 		this.generateJwtRequestConverter = generateJwtRequestConverter;
+		this.userAuthService = userAuthService;
 	}
 
     boolean isMfaEnabled(GmsUserDetails userDetails) {

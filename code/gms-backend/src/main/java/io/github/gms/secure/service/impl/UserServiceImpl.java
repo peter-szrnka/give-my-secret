@@ -3,8 +3,6 @@ package io.github.gms.secure.service.impl;
 import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.CACHE_USER;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,12 +16,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dev.samstevens.totp.code.HashingAlgorithm;
+import dev.samstevens.totp.exceptions.QrGenerationException;
+import dev.samstevens.totp.qr.QrData;
+import dev.samstevens.totp.qr.QrGenerator;
+import dev.samstevens.totp.qr.ZxingPngQrGenerator;
+import dev.samstevens.totp.secret.DefaultSecretGenerator;
+import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.event.RefreshCacheEvent;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.common.util.MdcUtils;
 import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
 import io.github.gms.secure.dto.LongValueDto;
@@ -46,7 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 @CacheConfig(cacheNames = { CACHE_USER, CACHE_API })
 public class UserServiceImpl implements UserService {
 	
-	private static String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
 	private static final String CREDENTIAL_REGEX = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,255}$";
 
 	private final UserRepository repository;
@@ -115,19 +120,39 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void changePassword(ChangePasswordRequestDto dto) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		UserEntity user = validateUser(userId);
+		UserEntity user = validateUser(MdcUtils.getUserId());
 		validateCredentials(user, dto);
 		user.setCredential(passwordEncoder.encode(dto.getNewCredential()));
 		repository.save(user);
 	}
 
 	@Override
-	public String getMfaQrUrl() throws UnsupportedEncodingException {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		UserEntity entity = validateUser(userId);
-		return QR_PREFIX + URLEncoder.encode(String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s", 
-			"gms", entity.getEmail(), entity.getMfaSecret(), "gms"), "UTF-8");
+	public byte[] getMfaQrCode() throws QrGenerationException {
+		UserEntity entity = validateUser(MdcUtils.getUserId());
+		QrData data = new QrData.Builder()
+			.label(entity.getEmail())
+			.secret(entity.getMfaSecret())
+			.issuer("Give My Secret")
+			.algorithm(HashingAlgorithm.SHA1) // More on this below
+			.digits(6)
+			.period(30)
+			.build();
+
+		QrGenerator generator = new ZxingPngQrGenerator();
+		return generator.generate(data);
+	}
+
+	@Override
+	public void toggleMfa(boolean enabled) {
+		UserEntity entity = validateUser(MdcUtils.getUserId());
+		entity.setMfaEnabled(enabled);
+		repository.save(entity);
+	}
+
+	@Override
+	public boolean isMfaActive() {
+		UserEntity entity = validateUser(MdcUtils.getUserId());
+		return entity.isMfaEnabled();
 	}
 
 	private SaveEntityResponseDto saveUser(SaveUserRequestDto dto, boolean roleChangeEnabled) {
@@ -137,6 +162,10 @@ public class UserServiceImpl implements UserService {
 
 		if (dto.getId() == null) {
 			entity = converter.toNewEntity(dto, roleChangeEnabled);
+
+			// Generate an MFA secret for the user
+			SecretGenerator secretGenerator = new DefaultSecretGenerator();
+			entity.setMfaSecret(secretGenerator.generate());
 		} else {
 			entity = converter.toEntity(repository.findById(dto.getId())
 					.orElseThrow(() -> new GmsException("User entity not found!")), dto, roleChangeEnabled);

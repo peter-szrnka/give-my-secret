@@ -2,7 +2,7 @@ package io.github.gms.auth;
 
 import org.springframework.security.core.Authentication;
 
-import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.auth.model.AuthorizationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -17,7 +17,7 @@ public interface AuthorizationService {
 	 * - Returns with a {@link Authentication} instance.
 	 * 
 	 * @param request {@link HttpServletRequest}
-	 * @return A new {@link AuthenticationResponse} instance.
+	 * @return A new {@link AuthorizationResponse} instance.
 	 */
-	AuthenticationResponse authorize(HttpServletRequest request);
+	AuthorizationResponse authorize(HttpServletRequest request);
 }

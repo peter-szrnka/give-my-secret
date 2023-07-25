@@ -212,10 +212,10 @@
 			<version>${guava.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jboss.aerogear</groupId>
-			<artifactId>aerogear-otp-java</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+			<groupId>dev.samstevens.totp</groupId>
+			<artifactId>totp</artifactId>
+			<version>1.7.1</version>
+		  </dependency>
 		<!-- Testing -->
 		<dependency>
 			<groupId>com.h2database</groupId>

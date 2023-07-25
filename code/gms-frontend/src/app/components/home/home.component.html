@@ -71,6 +71,7 @@
             These are the latest 10 events.
 
             <table mat-table [dataSource]="eventDataSource" (load)="true">
+              <caption>Events</caption>
               <tr mat-header-row *matHeaderRowDef="eventColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: eventColumns;"></tr>
 

@@ -30,7 +30,7 @@ import com.google.common.collect.Sets;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.AuthorizationService;
-import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
@@ -90,7 +90,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);
 		when(request.getRequestURI()).thenReturn("/secure/apikey/list");
-		when(authorizationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthenticationResponse.builder()
+		when(authorizationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthorizationResponse.builder()
 				.responseStatus(HttpStatus.BAD_REQUEST)
 				.errorMessage(ERROR_MESSAGE)
 				.build());
@@ -117,7 +117,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		FilterChain filterChain = mock(FilterChain.class);
 		Authentication mockAuthentication = mock(Authentication.class);
 
-		when(authorizationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthenticationResponse.builder()
+		when(authorizationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthorizationResponse.builder()
 			.responseStatus(HttpStatus.OK)
 			.authentication(mockAuthentication)
 			.jwtPair(Map.of(JwtConfigType.ACCESS_JWT, "ACCESS_JWT", JwtConfigType.REFRESH_JWT, "REFRESH_JWT"))

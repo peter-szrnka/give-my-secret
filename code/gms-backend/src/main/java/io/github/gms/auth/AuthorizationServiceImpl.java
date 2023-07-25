@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
-import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
@@ -30,21 +30,18 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class AuthorizationServiceImpl extends AbstractAuthServiceImpl implements AuthorizationService {
 
-    private final UserAuthService userAuthService;
-
     AuthorizationServiceImpl(AuthenticationManager authenticationManager, JwtService jwtService,
             SystemPropertyService systemPropertyService, GenerateJwtRequestConverter generateJwtRequestConverter,
             UserAuthService userAuthService) {
-        super(authenticationManager, jwtService, systemPropertyService, generateJwtRequestConverter);
-        this.userAuthService = userAuthService;
+        super(authenticationManager, jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
     }
 
     @Override
-	public AuthenticationResponse authorize(HttpServletRequest request) {
+	public AuthorizationResponse authorize(HttpServletRequest request) {
 		Cookie jwtTokenCookie = WebUtils.getCookie(request, ACCESS_JWT_TOKEN);
 		
 		if (jwtTokenCookie == null) {
-			return AuthenticationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();
+			return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();
 		}
 		
 		String jwtToken = jwtTokenCookie.getValue();
@@ -57,7 +54,7 @@ public class AuthorizationServiceImpl extends AbstractAuthServiceImpl implements
 			
 			if (validationResult.getFirst() != HttpStatus.OK) {
 				log.warn("Authentication failed: {}", validationResult.getSecond());
-				return AuthenticationResponse.builder()
+				return AuthorizationResponse.builder()
 						.responseStatus(validationResult.getFirst())
 						.errorMessage(validationResult.getSecond())
 						.build();
@@ -67,7 +64,7 @@ public class AuthorizationServiceImpl extends AbstractAuthServiceImpl implements
 
 			if (!userDetails.isEnabled()) {
 				log.warn("User is blocked");
-				return AuthenticationResponse.builder()
+				return AuthorizationResponse.builder()
 						.responseStatus(HttpStatus.FORBIDDEN)
 						.errorMessage("User is blocked")
 						.build();
@@ -82,13 +79,13 @@ public class AuthorizationServiceImpl extends AbstractAuthServiceImpl implements
 				.filter(MdcParameter::isInput)
 				.forEach(mdcParameter -> MDC.put(mdcParameter.getDisplayName(), String.valueOf(jwsResult.get(mdcParameter.getDisplayName()))));
 
-			return AuthenticationResponse.builder()
+			return AuthorizationResponse.builder()
 					.authentication(authentication)
 					.jwtPair(getAuthenticationDetails(userDetails))
 					.build();
 		} catch (Exception e) {
 			log.warn("Authorization failed: {}", e.getMessage());
-			return AuthenticationResponse.builder()
+			return AuthorizationResponse.builder()
 					.responseStatus(HttpStatus.FORBIDDEN)
 					.errorMessage("Authorization failed!")
 					.build();

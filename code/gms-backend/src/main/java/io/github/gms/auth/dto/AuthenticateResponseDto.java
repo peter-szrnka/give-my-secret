@@ -22,8 +22,6 @@ public class AuthenticateResponseDto implements Serializable {
 	private static final long serialVersionUID = 5395019181044919899L;
 
 	private UserInfoDto currentUser;
-	private String token;
-	private String refreshToken;
 	@Builder.Default
 	private AuthResponsePhase phase = AuthResponsePhase.FAILED;
 }

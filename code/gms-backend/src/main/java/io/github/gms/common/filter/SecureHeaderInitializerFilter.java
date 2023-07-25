@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.google.common.collect.Sets;
 
 import io.github.gms.auth.AuthorizationService;
-import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
@@ -63,8 +63,8 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		AuthenticationResponse authenticationResponse = authorizationService.authorize(request);
-		
+		AuthorizationResponse authenticationResponse = authorizationService.authorize(request);
+
 		if (authenticationResponse.getResponseStatus() != HttpStatus.OK) {
 			response.sendError(authenticationResponse.getResponseStatus().value(), authenticationResponse.getErrorMessage());
 			return;

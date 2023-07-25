@@ -1,6 +1,6 @@
 package io.github.gms.auth;
 
-import io.github.gms.auth.dto.AuthenticateResponseDto;
+import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
 
 /**
@@ -9,7 +9,7 @@ import io.github.gms.common.dto.LoginVerificationRequestDto;
  */
 public interface AuthenticationService {
 
-	AuthenticateResponseDto authenticate(String username, String credential);
+	AuthenticationResponse authenticate(String username, String credential);
 
-	AuthenticateResponseDto verify(LoginVerificationRequestDto dto);
+	AuthenticationResponse verify(LoginVerificationRequestDto dto);
 }

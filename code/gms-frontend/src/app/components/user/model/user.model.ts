@@ -4,7 +4,6 @@
 export interface User {
     id? : number,
     username? : string,
-    //exp? : number,
     roles : string[]
 }
 

@@ -1,0 +1,21 @@
+<div class="container">
+  <form #form="ngForm" novalidate autocomplete="off">
+    <mat-card class="box">
+      <mat-card-header>
+
+        <mat-card-title>Give My Secret</mat-card-title>
+        <mat-card-subtitle>Login verification</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="information">Please open your Authenticator application on your mobile device and type the verification code</div>
+        <mat-form-field appearance="fill" class="form-control">
+          <mat-label>Verification code</mat-label>
+          <input type="number" maxlength="6" matInput name="verificationCode" required [(ngModel)]="formModel.verificationCode">
+        </mat-form-field>
+        <button [disabled]="form.status ==='INVALID'" (click)="verifyLogin()"
+          mat-raised-button color="primary" class="btn-block">Verify login</button>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</div>

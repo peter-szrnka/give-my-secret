@@ -95,17 +95,16 @@ public class UserConverterImpl implements UserConverter {
 	}
 
 	@Override
-	public UserInfoDto toUserInfoDto(GmsUserDetails user) {
+	public UserInfoDto toUserInfoDto(GmsUserDetails user, boolean mfaRequired) {
 		UserInfoDto dto = new UserInfoDto();
-		dto.setId(user.getUserId());
+		dto.setUsername(user.getUsername());
 
-		if (user.isMfaEnabled()) {
-			dto.setMfaSecret(user.getMfaSecret());
+		if (mfaRequired) {
 			return dto;
 		}
 
+		dto.setId(user.getUserId());
 		dto.setName(user.getName());
-		dto.setUsername(user.getUsername());
 		dto.setEmail(user.getEmail());
 		dto.setRoles(Sets.newHashSet(user.getAuthorities().stream().map(authority -> UserRole.getByName(authority.getAuthority())).collect(Collectors.toSet())));
 

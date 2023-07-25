@@ -177,7 +177,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToUserInfoDto() {
 		// act
-		UserInfoDto dto = converter.toUserInfoDto(TestUtils.createGmsUser());
+		UserInfoDto dto = converter.toUserInfoDto(TestUtils.createGmsUser(), false);
 
 		// assert
 		assertNotNull(dto);
@@ -197,10 +197,10 @@ class UserConverterImplTest extends AbstractUnitTest {
 		testUser.setMfaSecret("secret");
 
 		// act
-		UserInfoDto dto = converter.toUserInfoDto(testUser);
+		UserInfoDto dto = converter.toUserInfoDto(testUser, true);
 
 		// assert
 		assertNotNull(dto);
-		assertEquals("UserInfoDto(id=1, name=null, username=null, email=null, roles=[], mfaSecret=secret)", dto.toString());
+		assertEquals("UserInfoDto(id=1, name=null, username=null, email=null, roles=[])", dto.toString());
 	}
 }

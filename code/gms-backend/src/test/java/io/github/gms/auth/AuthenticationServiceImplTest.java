@@ -21,7 +21,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.auth.dto.AuthenticateResponseDto;
+import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
@@ -41,6 +41,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	private SystemPropertyService systemPropertyService;
 	private GenerateJwtRequestConverter generateJwtRequestConverter;
 	private UserConverter userConverter;
+	private UserAuthService userAuthService;
 	private AuthenticationServiceImpl service;
 
 	@Override
@@ -54,8 +55,9 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		systemPropertyService = mock(SystemPropertyService.class);
 		generateJwtRequestConverter = mock(GenerateJwtRequestConverter.class);
 		userConverter = mock(UserConverter.class);
+		userAuthService = mock(UserAuthService.class);
 		service = new AuthenticationServiceImpl(authenticationManager, jwtService,
-				systemPropertyService, generateJwtRequestConverter, userConverter);
+				systemPropertyService, generateJwtRequestConverter, userConverter, userAuthService);
 
 		((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
 	}
@@ -75,7 +77,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 				));
 		
 		//act
-		AuthenticateResponseDto response = service.authenticate("user", "credential");
+		AuthenticationResponse response = service.authenticate("user", "credential");
 		
 		// assert
 		assertNotNull(response);

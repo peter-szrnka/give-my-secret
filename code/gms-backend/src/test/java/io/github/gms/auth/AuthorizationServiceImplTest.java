@@ -29,7 +29,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.model.GenerateJwtRequest;
@@ -78,7 +78,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		when(req.getCookies()).thenReturn(new Cookie[] {});
 
 		// act
-		AuthenticationResponse response = service.authorize(req);
+		AuthorizationResponse response = service.authorize(req);
 		
 		// assert
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
@@ -94,7 +94,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
 		// act
-		AuthenticationResponse response = service.authorize(req);
+		AuthorizationResponse response = service.authorize(req);
 		
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().contains("Authorization failed: ")));
@@ -119,7 +119,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
 		// act
-		AuthenticationResponse response = service.authorize(req);
+		AuthorizationResponse response = service.authorize(req);
 		
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("Authentication failed: JWT token has expired!")));
@@ -145,7 +145,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
 		// act
-		AuthenticationResponse response = service.authorize(req);
+		AuthorizationResponse response = service.authorize(req);
 		
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("User is blocked")));
@@ -182,7 +182,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 				));
 
 		// act
-		AuthenticationResponse response = service.authorize(req);
+		AuthorizationResponse response = service.authorize(req);
 		
 		// assert
 		assertFalse(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("Authentication failed: JWT token has expired!")));

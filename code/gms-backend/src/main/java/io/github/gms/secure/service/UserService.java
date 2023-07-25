@@ -1,7 +1,6 @@
 package io.github.gms.secure.service;
 
-import java.io.UnsupportedEncodingException;
-
+import dev.samstevens.totp.exceptions.QrGenerationException;
 import io.github.gms.common.abstraction.AbstractCrudService;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
@@ -23,5 +22,9 @@ public interface UserService extends AbstractCrudService<SaveUserRequestDto, Sav
 
 	void changePassword(ChangePasswordRequestDto dto);
 
-    String getMfaQrUrl() throws UnsupportedEncodingException;
+    byte[] getMfaQrCode() throws QrGenerationException;
+
+	void toggleMfa(boolean enabled);
+
+    boolean isMfaActive();
 }

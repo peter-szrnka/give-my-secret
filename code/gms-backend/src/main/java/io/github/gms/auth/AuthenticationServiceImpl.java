@@ -7,7 +7,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import io.github.gms.auth.dto.AuthenticateResponseDto;
+import dev.samstevens.totp.code.CodeGenerator;
+import dev.samstevens.totp.code.CodeVerifier;
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.code.DefaultCodeVerifier;
+import dev.samstevens.totp.time.SystemTimeProvider;
+import dev.samstevens.totp.time.TimeProvider;
+import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
@@ -33,37 +39,64 @@ public class AuthenticationServiceImpl extends AbstractAuthServiceImpl implement
 			JwtService jwtService,
 			SystemPropertyService systemPropertyService,
 			GenerateJwtRequestConverter generateJwtRequestConverter,
-			UserConverter converter) {
-		super(authenticationManager, jwtService, systemPropertyService, generateJwtRequestConverter);
+			UserConverter converter,
+			UserAuthService userAuthService) {
+		super(authenticationManager, jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
 		this.converter = converter;
 	}
 
 	@Override
-	public AuthenticateResponseDto authenticate(String username, String credential) {
+	public AuthenticationResponse authenticate(String username, String credential) {
 		try {
 			Authentication authenticate = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
 			GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
+
+			log.info("mfa enabled for the user? {}", user);
+			if (isMfaEnabled(user)) {
+				return AuthenticationResponse.builder()
+				.currentUser(converter.toUserInfoDto(user, true))
+				.phase(AuthResponsePhase.MFA_REQUIRED)
+				.build(); 
+			} 
+
 			Map<JwtConfigType, String> authenticationDetails = getAuthenticationDetails(user);
 
-			return AuthenticateResponseDto.builder()
-				.currentUser(converter.toUserInfoDto(user))
+			return AuthenticationResponse.builder()
+				.currentUser(converter.toUserInfoDto(user, false))
 				.token(authenticationDetails.get(JwtConfigType.ACCESS_JWT))
 				.refreshToken(authenticationDetails.get(JwtConfigType.REFRESH_JWT))
-				.phase(isMfaEnabled(user) ? AuthResponsePhase.MFA_REQUIRED : AuthResponsePhase.COMPLETED)
+				.phase(AuthResponsePhase.COMPLETED)
 				.build();
 		} catch (Exception ex) {
 			log.warn("Login failed", ex);
-			return new AuthenticateResponseDto();
+			return new AuthenticationResponse();
 		}
 	}
 
 	@Override
-	public AuthenticateResponseDto verify(LoginVerificationRequestDto dto) {
-		// TODO Complete
-		// Verify codes
-		return AuthenticateResponseDto.builder()
-				.phase(AuthResponsePhase.COMPLETED)
+	public AuthenticationResponse verify(LoginVerificationRequestDto dto) {
+		try {
+			GmsUserDetails userDetails = (GmsUserDetails) userAuthService.loadUserByUsername(dto.getUsername());
+
+			TimeProvider timeProvider = new SystemTimeProvider();
+			CodeGenerator codeGenerator = new DefaultCodeGenerator();
+			CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+			boolean isValid = verifier.isValidCode(userDetails.getMfaSecret(), dto.getVerificationCode());
+
+			Map<JwtConfigType, String> authenticationDetails = getAuthenticationDetails(userDetails);
+
+			// Verify codes
+			return AuthenticationResponse.builder()
+				.currentUser(isValid ? converter.toUserInfoDto(userDetails, false) : null)
+				.phase(isValid ? AuthResponsePhase.COMPLETED : AuthResponsePhase.FAILED)
+				.token(isValid ? authenticationDetails.get(JwtConfigType.ACCESS_JWT) : null)
+				.refreshToken(isValid ? authenticationDetails.get(JwtConfigType.REFRESH_JWT) : null)
 				.build();
+		} catch (Exception e) {
+			return AuthenticationResponse.builder()
+				.phase(AuthResponsePhase.FAILED)
+				.build();
+		}
 	}
 }

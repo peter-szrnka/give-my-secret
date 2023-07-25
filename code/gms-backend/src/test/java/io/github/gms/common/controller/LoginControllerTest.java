@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import io.github.gms.auth.AuthenticationService;
 import io.github.gms.auth.dto.AuthenticateRequestDto;
 import io.github.gms.auth.dto.AuthenticateResponseDto;
+import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
@@ -53,7 +54,7 @@ class LoginControllerTest {
         AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        AuthenticateResponseDto mockResponse = new AuthenticateResponseDto();
+        AuthenticationResponse mockResponse = new AuthenticationResponse();
         mockResponse.setPhase(AuthResponsePhase.FAILED);
         when(service.authenticate("user", "pass")).thenReturn(mockResponse);
 
@@ -71,7 +72,7 @@ class LoginControllerTest {
         AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        AuthenticateResponseDto mockResponse = new AuthenticateResponseDto();
+        AuthenticationResponse mockResponse = new AuthenticationResponse();
         mockResponse.setRefreshToken("REFRESHTOKEN");
         mockResponse.setToken("TOKEN");
         mockResponse.setCurrentUser(TestUtils.createUserInfoDto());
