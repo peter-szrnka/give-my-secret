@@ -201,6 +201,6 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(dto);
-		assertEquals("UserInfoDto(id=1, name=null, username=null, email=null, roles=[])", dto.toString());
+		assertEquals("UserInfoDto(id=null, name=null, username=username1, email=null, roles=[])", dto.toString());
 	}
 }

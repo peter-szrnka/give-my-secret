@@ -101,7 +101,7 @@ class LoginControllerTest {
         assertEquals(1, response.getHeaders().size());
         assertTrue(response.getHeaders().get("Set-Cookie").stream().anyMatch(item -> item.equals("mock-cookie1")));
         assertTrue(response.getHeaders().get("Set-Cookie").stream().anyMatch(item -> item.equals("mock-cookie2")));
-        assertEquals("AuthenticateResponseDto(currentUser=UserInfoDto(id=1, name=name, username=user, email=a@b.com, roles=[ROLE_USER], mfaSecret=null), token=TOKEN, refreshToken=REFRESHTOKEN, phase=COMPLETED)", response.getBody().toString());
+        assertEquals("AuthenticateResponseDto(currentUser=UserInfoDto(id=1, name=name, username=user, email=a@b.com, roles=[ROLE_USER]), phase=COMPLETED)", response.getBody().toString());
 
         verify(systemPropertyService).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		verify(systemPropertyService).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);

@@ -52,7 +52,6 @@ public class AuthenticationServiceImpl extends AbstractAuthServiceImpl implement
 				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
 			GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
 
-			log.info("mfa enabled for the user? {}", user);
 			if (isMfaEnabled(user)) {
 				return AuthenticationResponse.builder()
 				.currentUser(converter.toUserInfoDto(user, true))
