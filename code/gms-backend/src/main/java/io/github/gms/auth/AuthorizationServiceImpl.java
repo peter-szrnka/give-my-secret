@@ -87,10 +87,10 @@ public class AuthorizationServiceImpl extends AbstractAuthServiceImpl implements
 					.jwtPair(getAuthenticationDetails(userDetails))
 					.build();
 		} catch (Exception e) {
-			log.warn("Authentication failed: {}", e.getMessage());
+			log.warn("Authorization failed: {}", e.getMessage());
 			return AuthenticationResponse.builder()
 					.responseStatus(HttpStatus.FORBIDDEN)
-					.errorMessage("Authentication failed!")
+					.errorMessage("Authorization failed!")
 					.build();
 		}
 	}

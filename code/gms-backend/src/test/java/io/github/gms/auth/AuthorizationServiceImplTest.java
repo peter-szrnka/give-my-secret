@@ -68,7 +68,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		service = new AuthorizationServiceImpl(authenticationManager, jwtService,
 				systemPropertyService, generateJwtRequestConverter, userAuthService);
 
-		((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
+		((Logger) LoggerFactory.getLogger(AuthorizationServiceImpl.class)).addAppender(logAppender);
 	}
 	
 	@Test
@@ -97,9 +97,9 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		AuthenticationResponse response = service.authorize(req);
 		
 		// assert
-		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().contains("Authentication failed: ")));
+		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().contains("Authorization failed: ")));
 		//assertFalse(response.isSkip());
-		assertEquals("Authentication failed!", response.getErrorMessage());
+		assertEquals("Authorization failed!", response.getErrorMessage());
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
 		verify(jwtService).parseJwt(anyString(), anyString());
 		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);

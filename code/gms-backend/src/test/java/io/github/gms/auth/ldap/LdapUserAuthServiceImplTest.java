@@ -159,7 +159,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 			ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
 			verify(repository).save(userEntityCaptor.capture());
 			UserEntity capturedUserEntity = userEntityCaptor.getValue();
-			assertEquals("UserEntity(id=1, name=name, username=username, email=a@b.com, status=ACTIVE, credential=test, creationDate=null, roles=ROLE_USER)", capturedUserEntity.toString());
+			assertEquals("UserEntity(id=1, name=name, username=username, email=a@b.com, status=ACTIVE, credential=test, creationDate=null, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", capturedUserEntity.toString());
 			TestUtils.assertLogContains(logAppender, "Credential has been updated for user=");
 		}
 	}
@@ -180,13 +180,13 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(response);
-		assertEquals("GmsUserDetails(name=username1, email=a@b.com, userId=1, username=username1, credential=test, authorities=[ROLE_USER], accountNonLocked=true, enabled=true)", response.toString());
+		assertEquals("GmsUserDetails(name=username1, email=a@b.com, userId=1, username=username1, credential=test, authorities=[ROLE_USER], accountNonLocked=true, enabled=true, mfaEnabled=false, mfaSecret=null)", response.toString());
 		
 		ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
 		verify(repository).save(userEntityCaptor.capture());
 		
 		UserEntity capturedUserEntity = userEntityCaptor.getValue();
-		assertEquals("UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=ACTIVE, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, roles=ROLE_USER)", capturedUserEntity.toString());
+		assertEquals("UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=ACTIVE, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", capturedUserEntity.toString());
 		TestUtils.assertLogContains(logAppender, "User data has been saved into DB for user=");
 	}
 }
