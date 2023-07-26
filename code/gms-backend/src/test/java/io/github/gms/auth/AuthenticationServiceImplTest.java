@@ -22,6 +22,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import ch.qos.logback.classic.Logger;
+import dev.samstevens.totp.code.CodeVerifier;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -48,6 +49,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	private GenerateJwtRequestConverter generateJwtRequestConverter;
 	private UserConverter userConverter;
 	private UserAuthService userAuthService;
+	private CodeVerifier verifier;
 	private AuthenticationServiceImpl service;
 
 	@Override
@@ -62,8 +64,9 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		generateJwtRequestConverter = mock(GenerateJwtRequestConverter.class);
 		userConverter = mock(UserConverter.class);
 		userAuthService = mock(UserAuthService.class);
+		verifier = mock(CodeVerifier.class);
 		service = new AuthenticationServiceImpl(authenticationManager, jwtService,
-				systemPropertyService, generateJwtRequestConverter, userConverter, userAuthService);
+				systemPropertyService, generateJwtRequestConverter, userConverter, userAuthService, verifier);
 
 		((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
 	}

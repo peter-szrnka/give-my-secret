@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationServiceImpl extends AbstractAuthServiceImpl implements AuthenticationService {
 
 	private final UserConverter converter;
+	private final CodeVerifier verifier;
 
 	public AuthenticationServiceImpl(
 			AuthenticationManager authenticationManager,
@@ -40,9 +41,11 @@ public class AuthenticationServiceImpl extends AbstractAuthServiceImpl implement
 			SystemPropertyService systemPropertyService,
 			GenerateJwtRequestConverter generateJwtRequestConverter,
 			UserConverter converter,
-			UserAuthService userAuthService) {
+			UserAuthService userAuthService,
+			CodeVerifier verifier) {
 		super(authenticationManager, jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
 		this.converter = converter;
+		this.verifier = verifier;
 	}
 
 	@Override
@@ -78,19 +81,18 @@ public class AuthenticationServiceImpl extends AbstractAuthServiceImpl implement
 		try {
 			GmsUserDetails userDetails = (GmsUserDetails) userAuthService.loadUserByUsername(dto.getUsername());
 
-			TimeProvider timeProvider = new SystemTimeProvider();
-			CodeGenerator codeGenerator = new DefaultCodeGenerator();
-			CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
-			boolean isValid = verifier.isValidCode(userDetails.getMfaSecret(), dto.getVerificationCode());
+			if (!verifier.isValidCode(userDetails.getMfaSecret(), dto.getVerificationCode())) {
+				return AuthenticationResponse.builder().phase(AuthResponsePhase.FAILED).build();
+			}
 
 			Map<JwtConfigType, String> authenticationDetails = getAuthenticationDetails(userDetails);
 
 			// Verify codes
 			return AuthenticationResponse.builder()
-				.currentUser(isValid ? converter.toUserInfoDto(userDetails, false) : null)
-				.phase(isValid ? AuthResponsePhase.COMPLETED : AuthResponsePhase.FAILED)
-				.token(isValid ? authenticationDetails.get(JwtConfigType.ACCESS_JWT) : null)
-				.refreshToken(isValid ? authenticationDetails.get(JwtConfigType.REFRESH_JWT) : null)
+				.currentUser(converter.toUserInfoDto(userDetails, false))
+				.phase(AuthResponsePhase.COMPLETED)
+				.token(authenticationDetails.get(JwtConfigType.ACCESS_JWT))
+				.refreshToken(authenticationDetails.get(JwtConfigType.REFRESH_JWT))
 				.build();
 		} catch (Exception e) {
 			return AuthenticationResponse.builder()

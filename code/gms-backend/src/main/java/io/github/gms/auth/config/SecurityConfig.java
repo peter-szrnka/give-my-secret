@@ -28,6 +28,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import dev.samstevens.totp.code.CodeGenerator;
+import dev.samstevens.totp.code.CodeVerifier;
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.code.DefaultCodeVerifier;
+import dev.samstevens.totp.time.SystemTimeProvider;
+import dev.samstevens.totp.time.TimeProvider;
 import io.github.gms.common.filter.SecureHeaderInitializerFilter;
 
 /**
@@ -98,4 +104,10 @@ public class SecurityConfig {
 		return source;
 	}
 
+	@Bean
+	public CodeVerifier codeVerifier() {
+		TimeProvider timeProvider = new SystemTimeProvider();
+		CodeGenerator codeGenerator = new DefaultCodeGenerator();
+		return new DefaultCodeVerifier(codeGenerator, timeProvider);
+	}
 }
