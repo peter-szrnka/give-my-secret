@@ -26,6 +26,7 @@ import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.auth.types.AuthResponsePhase;
+import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.model.GenerateJwtRequest;
@@ -122,5 +123,18 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		verify(authenticationManager).authenticate(any());
 		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(true));
 		verify(systemPropertyService).getBoolean(SystemProperty.ENABLE_MFA);
+	}
+
+	@Test
+	void shouldVerifyFail() {
+		// arrange
+		LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
+
+		// act
+		AuthenticationResponse response = service.verify(dto);
+
+		// assert
+		assertNotNull(response);
+		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
 	}
 }
