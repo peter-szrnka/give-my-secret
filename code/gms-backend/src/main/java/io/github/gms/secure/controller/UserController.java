@@ -99,7 +99,7 @@ public class UserController extends AbstractController<UserService> {
 	@PostMapping("/toggle_mfa")
 	@PreAuthorize(ALL_ROLE)
 	@Audited(operation = EventOperation.TOGGLE_MFA)
-	public ResponseEntity<String> toggleMfa(@RequestParam boolean enabled) {
+	public ResponseEntity<Void> toggleMfa(@RequestParam boolean enabled) {
 		service.toggleMfa(enabled);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

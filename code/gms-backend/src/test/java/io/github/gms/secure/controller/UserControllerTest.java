@@ -6,10 +6,10 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.UnsupportedEncodingException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 
@@ -153,5 +153,36 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
         assertEquals(200, response.getStatusCode().value());
         assertEquals("QR-url", new String(response.getBody()));
         verify(service).getMfaQrCode();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = { true, false })
+    void shouldToggleMfa(boolean input) {
+        // arrange
+        doNothing().when(service).toggleMfa(input);
+
+        // act
+        ResponseEntity<Void> response = controller.toggleMfa(input);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        verify(service).toggleMfa(input);
+    }
+
+    @Test
+    @SneakyThrows
+    void shouldReturnMfaIsActive() {
+        // arrange
+        when(service.isMfaActive()).thenReturn(true);
+
+        // act
+        ResponseEntity<Boolean> response = controller.isMfaActive();
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(true, response.getBody());
+        verify(service).isMfaActive();
     }
 }
