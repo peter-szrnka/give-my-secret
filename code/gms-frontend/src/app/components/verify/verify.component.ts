@@ -1,9 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
-import { catchError, Observable, of } from "rxjs";
-import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
-import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
+import { catchError } from "rxjs";
+import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
 import { AuthenticationPhase, LoginResponse, VerifyLogin } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -17,16 +16,16 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
     templateUrl: './verify.component.html',
     styleUrls: ['./verify.component.scss']
 })
-export class VerifyComponent implements OnInit {
+export class VerifyComponent extends BaseLoginComponent {
 
     constructor(
-        private router: Router,
+        protected override router: Router,
         private authService: AuthService,
-        private sharedDataService: SharedDataService,
-        private splashScreenStateService: SplashScreenStateService,
-        private dialog: MatDialog) {
-
-        this.formModel.username = this.router.getCurrentNavigation()?.extras?.state?.['username'];
+        protected override sharedDataService: SharedDataService,
+        protected override splashScreenStateService: SplashScreenStateService,
+        protected override dialog: MatDialog) {
+            super(router, sharedDataService, dialog, splashScreenStateService)
+            this.formModel.username = this.router.getCurrentNavigation()?.extras?.state?.['username'];
     }
 
     formModel: VerifyLogin = {
@@ -34,45 +33,25 @@ export class VerifyComponent implements OnInit {
         verificationCode: undefined
     };
 
-    ngOnInit(): void {
-        this.splashScreenStateService.stop();
-    }
-
     verifyLogin(): void {
         this.splashScreenStateService.start();
 
         this.authService.verifyLogin(this.formModel)
             .pipe(catchError((err) => this.handleError(err)))
             .subscribe((response : LoginResponse) => {
+                this.splashScreenStateService.stop();
                 if (response === null) {
-                    this.splashScreenStateService.stop();
-                    this.showErrorModal();
+                    this.displayErrorModal();
                     return;
                 }
 
                 if (response.phase !== AuthenticationPhase.COMPLETED) {
-                    this.splashScreenStateService.stop();
                     this.showErrorModal();
                     this.router.navigateByUrl('/login');
                     return;
                 }
 
-                this.splashScreenStateService.stop();
-                this.sharedDataService.setCurrentUser(response.currentUser);
-                void this.router.navigate(['']);
+                this.finalizeSuccessfulLogin(response);
             });
-    }
-
-    private showErrorModal() {
-        this.dialog.open(InfoDialog, {
-            width: '250px',
-            data: { text : "Login verification failed!", type : 'warning' } as DialogData
-        });
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private handleError(err : any): Observable<any> {  
-        console.error("Unexpected error occurred during login", err);
-        return of(null);
     }
 }

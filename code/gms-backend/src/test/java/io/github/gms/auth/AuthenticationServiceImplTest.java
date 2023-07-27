@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -75,10 +76,12 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
 	}
 	
-	@Test
-	void shouldAuthenticate() {
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
+	void shouldAuthenticate(boolean userMfaEnabled) {
 		// arrange
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
+		userDetails.setMfaEnabled(userMfaEnabled);
 		when(authenticationManager.authenticate(any()))
 			.thenReturn(new TestingAuthenticationToken(userDetails, "cred", List.of(new SimpleGrantedAuthority("ROLE_USER"))));
 		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap()))
@@ -90,6 +93,8 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 				JwtConfigType.REFRESH_JWT, "REFRESH_JWT"
 				));
 		when(userConverter.toUserInfoDto(any(GmsUserDetails.class), eq(false))).thenReturn(TestUtils.createUserInfoDto());
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_GLOBAL_MFA)).thenReturn(false);
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MFA)).thenReturn(false);
 		
 		//act
 		AuthenticationResponse response = service.authenticate("user", "credential");
@@ -105,6 +110,8 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
 		verify(jwtService).generateJwts(anyMap());
 		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(false));
+		verify(systemPropertyService).getBoolean(SystemProperty.ENABLE_GLOBAL_MFA);
+		verify(systemPropertyService).getBoolean(SystemProperty.ENABLE_MFA);
 	}
 
 	@ParameterizedTest
@@ -132,6 +139,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		
 		verify(authenticationManager).authenticate(any());
 		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(true));
+		verify(systemPropertyService).getBoolean(SystemProperty.ENABLE_GLOBAL_MFA);
 		verify(systemPropertyService, enableGlobalMfa ? never() : times(1)).getBoolean(SystemProperty.ENABLE_MFA);
 	}
 

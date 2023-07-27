@@ -105,6 +105,7 @@ describe('VerifyComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
+        expect(component.formModel.username).toEqual('user-1');
         expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
