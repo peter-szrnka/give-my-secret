@@ -65,6 +65,7 @@ export class SettingsSummaryComponent implements OnInit {
   }
 
   toggleMfa() {
+    this.splashScreenService.start();
     this.userService.toggleMfa(this.mfaEnabled).subscribe({
       next: () => {
         this.dialog.open(InfoDialog, { data: { text : "MFA toggle updated successfully!", type : "information" } });

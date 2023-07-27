@@ -142,4 +142,30 @@ describe("SecretService", () => {
       expect(req.request.method).toBe('POST');
       httpMock.verify();
     });
+
+    it.each([ true, false ])('should toggle MFA', (input: boolean) => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/user/toggle_mfa?enabled=" + input;
+
+      // act
+      service.toggleMfa(input).subscribe((res) => expect(res).toBeCalled());
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('POST');
+      httpMock.verify();
+    });
+
+    it('should toggle MFA', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/user/mfa_active";
+
+      // act
+      service.isMfaActive().subscribe((res) => expect(res).toBeCalled());
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('GET');
+      httpMock.verify();
+    });
 });

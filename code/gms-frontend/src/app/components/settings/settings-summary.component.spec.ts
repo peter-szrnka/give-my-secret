@@ -75,11 +75,7 @@ describe('SettingsSummaryComponent', () => {
     });
 
     it('Should fail on save', () => {
-        userService = {
-            changeCredentials : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"}))),
-            isMfaActive: jest.fn().mockReturnValue(of(false)),
-            toggleMfa: jest.fn().mockReturnValue(of(''))
-        };
+        userService.changeCredentials  =jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
         component.credentialData.oldCredential = "oldPassword";
@@ -91,6 +87,8 @@ describe('SettingsSummaryComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
+        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        expect(component.dialog.open).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
     });
@@ -107,6 +105,23 @@ describe('SettingsSummaryComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
+        expect(splashScreenService.start).toHaveBeenCalled();
+        expect(splashScreenService.stop).toHaveBeenCalled();
+    });
+
+    it('Should toggle MFA fail', () => {
+        // arrange
+        userService.toggleMfa =jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
+        configTestBed();
+        component.mfaEnabled = true;
+
+        // act
+        component.toggleMfa();
+
+        // assert
+        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        expect(component.dialog.open).toHaveBeenCalled();
+        expect(userService.toggleMfa).toHaveBeenCalledWith(true);
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
     });

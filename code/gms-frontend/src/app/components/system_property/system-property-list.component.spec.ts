@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
@@ -8,12 +9,11 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "../user/model/user.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { PROPERTY_TEXT_MAP, SystemPropertyListComponent } from "./system-property-list.component";
-import { SystemPropertyService } from "./service/system-property.service";
+import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { SystemPropertyService } from "./service/system-property.service";
+import { PROPERTY_TEXT_MAP, SystemPropertyListComponent } from "./system-property-list.component";
 
 /**
  * @author Peter Szrnka
@@ -162,10 +162,12 @@ describe('SystemPropertyListComponent', () => {
 
         // act
         const valueSet : string[] = component.getValueSet('REFRESH_JWT_ALGORITHM');
+        const valueSetUnknown : string[] = component.getValueSet('UNKNOWN');
         component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         // assert
         expect(valueSet).toEqual(PROPERTY_TEXT_MAP['REFRESH_JWT_ALGORITHM'].valueSet);
+        expect(valueSetUnknown).toEqual([]);
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(router.navigate).toBeCalledWith(['/system_property/list']);

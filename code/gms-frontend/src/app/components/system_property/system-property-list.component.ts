@@ -1,16 +1,16 @@
+import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { SharedDataService } from "../../common/service/shared-data-service";
-import { SystemProperty } from "./model/system-property.model";
-import { SystemPropertyService } from "./service/system-property.service";
-import { ArrayDataSource } from "@angular/cdk/collections";
 import { catchError } from "rxjs";
 import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
-import { User } from "../user/model/user.model";
-import { checkRights } from "../../common/utils/permission-utils";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
+import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
+import { checkRights } from "../../common/utils/permission-utils";
+import { User } from "../user/model/user.model";
+import { SystemProperty } from "./model/system-property.model";
+import { SystemPropertyService } from "./service/system-property.service";
 
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
@@ -105,7 +105,6 @@ export class SystemPropertyListComponent {
     try {
       return PROPERTY_TEXT_MAP[key].valueSet;
     } catch(e) {
-      console.error("problem with", key);
       return [];
     }
   }
