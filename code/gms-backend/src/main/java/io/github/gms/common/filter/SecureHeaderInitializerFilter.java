@@ -16,8 +16,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.google.common.collect.Sets;
 
-import io.github.gms.auth.AuthenticationService;
-import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.auth.AuthorizationService;
+import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
@@ -39,14 +39,14 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 	
 	private static final Set<String> IGNORED_URLS = Sets.newHashSet("/secure/.*");
-	private final AuthenticationService authenticationService;
+	private final AuthorizationService authorizationService;
 	private final SystemPropertyService systemPropertyService;
 	private final boolean secure;
 
-	public SecureHeaderInitializerFilter(AuthenticationService authenticationService,
+	public SecureHeaderInitializerFilter(AuthorizationService authorizationService,
 										 SystemPropertyService systemPropertyService,
 										 @Value("${config.cookie.secure}") boolean secure) {
-		this.authenticationService = authenticationService;
+		this.authorizationService = authorizationService;
 		this.systemPropertyService = systemPropertyService;
 		this.secure = secure;
 	}
@@ -63,8 +63,8 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		AuthenticationResponse authenticationResponse = authenticationService.authorize(request);
-		
+		AuthorizationResponse authenticationResponse = authorizationService.authorize(request);
+
 		if (authenticationResponse.getResponseStatus() != HttpStatus.OK) {
 			response.sendError(authenticationResponse.getResponseStatus().value(), authenticationResponse.getErrorMessage());
 			return;

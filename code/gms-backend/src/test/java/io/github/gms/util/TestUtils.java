@@ -31,6 +31,7 @@ import com.google.common.collect.Sets;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.EventOperation;
@@ -150,6 +151,7 @@ public class TestUtils {
 				.name(DemoData.USERNAME1)
 				.username(DemoData.USERNAME1)
 				.authorities(Sets.newHashSet(UserRole.ROLE_USER))
+				.mfaSecret("MFA_SECRET")
 				.build();
 	}
 
@@ -686,6 +688,13 @@ public class TestUtils {
 		dto.setName("name");
 		dto.setRoles(Set.of(UserRole.ROLE_USER));
 		dto.setEmail("a@b.com");
+        return dto;
+    }
+
+    public static LoginVerificationRequestDto createLoginVerificationRequestDto() {
+		LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
+		dto.setUsername("user1");
+		dto.setVerificationCode("123456");
         return dto;
     }
 }

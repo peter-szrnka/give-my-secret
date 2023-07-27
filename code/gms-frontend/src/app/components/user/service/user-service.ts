@@ -24,4 +24,12 @@ export class UserService extends SaveServiceBase<UserData, UserDataList> {
     public override toggle(id: number, enabled : boolean): Observable<string> {
         return this.http.post<string>(environment.baseUrl + "secure/" + this.scope + '/' + id + "?enabled=" + enabled, {}, { withCredentials : true, headers : getHeaders(), responseType : 'text' as 'json' });
     }
+
+    public toggleMfa(enabled : boolean): Observable<string> {
+        return this.http.post<string>(environment.baseUrl + "secure/" + this.scope + "/toggle_mfa?enabled=" + enabled, {}, { withCredentials : true, headers : getHeaders(), responseType : 'text' as 'json' });
+    }
+
+    public isMfaActive(): Observable<boolean> {
+        return this.http.get<boolean>(environment.baseUrl + "secure/" + this.scope + "/mfa_active", { withCredentials : true, headers : getHeaders() });
+    }
 }

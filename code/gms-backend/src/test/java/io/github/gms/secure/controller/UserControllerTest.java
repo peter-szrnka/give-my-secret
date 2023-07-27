@@ -8,9 +8,12 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 
+import dev.samstevens.totp.exceptions.QrGenerationException;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
@@ -19,6 +22,7 @@ import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.service.UserService;
 import io.github.gms.util.TestUtils;
+import lombok.SneakyThrows;
 
 /**
  * Unit test of {@link UserController}
@@ -118,5 +122,67 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).changePassword(dto);
+    }
+
+    @Test
+    @SneakyThrows
+    void shouldNotReturnQrCode() {
+        // arrange
+        when(service.getMfaQrCode()).thenThrow(QrGenerationException.class);
+
+        // act
+        ResponseEntity<byte[]> response = controller.getMfaQrCode();
+
+        // assert
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCode().value());
+        verify(service).getMfaQrCode();
+    }
+
+    @Test
+    @SneakyThrows
+    void shouldReturnQrCode() {
+        // arrange
+        when(service.getMfaQrCode()).thenReturn("QR-url".getBytes());
+
+        // act
+        ResponseEntity<byte[]> response = controller.getMfaQrCode();
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("QR-url", new String(response.getBody()));
+        verify(service).getMfaQrCode();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = { true, false })
+    void shouldToggleMfa(boolean input) {
+        // arrange
+        doNothing().when(service).toggleMfa(input);
+
+        // act
+        ResponseEntity<Void> response = controller.toggleMfa(input);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        verify(service).toggleMfa(input);
+    }
+
+    @Test
+    @SneakyThrows
+    void shouldReturnMfaIsActive() {
+        // arrange
+        when(service.isMfaActive()).thenReturn(true);
+
+        // act
+        ResponseEntity<Boolean> response = controller.isMfaActive();
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(true, response.getBody());
+        verify(service).isMfaActive();
     }
 }

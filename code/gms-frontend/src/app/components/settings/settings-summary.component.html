@@ -7,7 +7,7 @@
         Your password is managed in LDAP
       </div>
       <mat-expansion-panel hideToggle [disabled]="passwordEnabled === false">
-        <mat-expansion-panel-header >
+        <mat-expansion-panel-header>
           <mat-panel-title>
             Password
           </mat-panel-title>
@@ -34,6 +34,21 @@
         </mat-form-field>
 
         <button mat-button color="primary" [disabled]="form.status ==='INVALID'" (click)="save()">Save</button>
+      </mat-expansion-panel>
+      <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Multi-Factor Authentication
+          </mat-panel-title>
+          <mat-panel-description>
+            Enable or disable MFA
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <img src="{{imageBaseUrl}}secure/user/mfa_qr_code" alt="MFA QR code" />
+        <hr />
+        Turn on or off to enable or disable the MFA in your authentication process:
+        <mat-checkbox  name="mfaEnabled" [(ngModel)]="mfaEnabled" [checked]="mfaEnabled === true" (change)="toggleMfa()" />
       </mat-expansion-panel>
     </mat-accordion>
   </form>

@@ -48,6 +48,7 @@ import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.util.TestUtils;
+import lombok.SneakyThrows;
 
 /**
  * @author Peter Szrnka
@@ -307,5 +308,58 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("MyNewEncodedPassword2!", credentialCaptor.getValue());
 
 		MDC.clear();
+	}
+
+	@Test
+	@SneakyThrows
+	void shouldReturnQrCodeUrl() {
+		// arrange
+		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
+		UserEntity entity = TestUtils.createUser();
+		entity.setEmail("szrnka.peter@gmail.com");
+		entity.setMfaSecret("test");
+		entity.setMfaEnabled(true);
+		when(repository.findById(1L)).thenReturn(Optional.of(entity));
+
+		// act
+		byte[] response = service.getMfaQrCode();
+
+		// assert
+		assertNotNull(response);
+		//assertEquals("https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth%3A%2F%2Ftotp%2Fgms%3Aszrnka.peter%40gmail.com%3Fsecret%3Dtest%26issuer%3Dgms", response);
+		verify(repository).findById(1L);
+		MDC.clear();
+	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
+	void shouldToggleMfa(boolean value) {
+		// arrange
+		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
+
+		// act
+		service.toggleMfa(value);
+
+		// assert
+		ArgumentCaptor<UserEntity> captor = ArgumentCaptor.forClass(UserEntity.class);
+		verify(repository).save(captor.capture());
+		verify(repository).findById(1L);
+		assertEquals(value, captor.getValue().isMfaEnabled());
+	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
+	void shouldMfaActive(boolean value) {
+		// arrange
+		UserEntity entity = TestUtils.createUser();
+		entity.setMfaEnabled(value);
+		when(repository.findById(1L)).thenReturn(Optional.of(entity));
+
+		// act
+		boolean response = service.isMfaActive();
+
+		// assert
+		assertEquals(value, response);
+		verify(repository).findById(1L);
 	}
 }

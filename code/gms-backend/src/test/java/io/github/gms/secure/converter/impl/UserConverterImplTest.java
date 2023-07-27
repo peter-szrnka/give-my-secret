@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.google.common.collect.Lists;
 
 import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.secure.dto.SaveUserRequestDto;
@@ -59,7 +60,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=null, roles=ROLE_USER)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=null, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -80,7 +81,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=2023-06-29T00:00Z, roles=ROLE_USER)", entity.toString());
+		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", entity.toString());
 	}
 
 	@Test
@@ -102,7 +103,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -121,7 +122,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=null)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=null, mfaEnabled=false, mfaSecret=null)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -140,7 +141,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -176,7 +177,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 	@Test
 	void checkToUserInfoDto() {
 		// act
-		UserInfoDto dto = converter.toUserInfoDto(TestUtils.createGmsUser());
+		UserInfoDto dto = converter.toUserInfoDto(TestUtils.createGmsUser(), false);
 
 		// assert
 		assertNotNull(dto);
@@ -186,5 +187,20 @@ class UserConverterImplTest extends AbstractUnitTest {
 		assertEquals("a@b.com", dto.getEmail());
 		assertEquals(1, dto.getRoles().size());
 		assertEquals(UserRole.ROLE_USER, dto.getRoles().iterator().next());
+	}
+
+	@Test
+	void checkToUserInfoDtoWithMfa() {
+		// arrange
+		GmsUserDetails testUser = TestUtils.createGmsUser();
+		testUser.setMfaEnabled(true);
+		testUser.setMfaSecret("secret");
+
+		// act
+		UserInfoDto dto = converter.toUserInfoDto(testUser, true);
+
+		// assert
+		assertNotNull(dto);
+		assertEquals("UserInfoDto(id=null, name=null, username=username1, email=null, roles=[])", dto.toString());
 	}
 }

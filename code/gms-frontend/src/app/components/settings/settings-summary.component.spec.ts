@@ -52,7 +52,11 @@ describe('SettingsSummaryComponent', () => {
         userService = {
             changeCredentials : jest.fn().mockImplementation(() : Observable<void> => {
                 return of(void 0);
-            })
+            }),
+            isMfaActive: jest.fn().mockImplementation(() : Observable<boolean> => {
+                return of(true);
+            }),
+            toggleMfa: jest.fn().mockReturnValue(of(''))
         };
         splashScreenService = {
             start : jest.fn(),
@@ -71,9 +75,7 @@ describe('SettingsSummaryComponent', () => {
     });
 
     it('Should fail on save', () => {
-        userService = {
-            changeCredentials : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
-        };
+        userService.changeCredentials  =jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
         component.credentialData.oldCredential = "oldPassword";
@@ -85,6 +87,8 @@ describe('SettingsSummaryComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
+        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        expect(component.dialog.open).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
     });
@@ -105,4 +109,32 @@ describe('SettingsSummaryComponent', () => {
         expect(splashScreenService.stop).toHaveBeenCalled();
     });
 
+    it('Should toggle MFA fail', () => {
+        // arrange
+        userService.toggleMfa =jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
+        configTestBed();
+        component.mfaEnabled = true;
+
+        // act
+        component.toggleMfa();
+
+        // assert
+        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        expect(component.dialog.open).toHaveBeenCalled();
+        expect(userService.toggleMfa).toHaveBeenCalledWith(true);
+        expect(splashScreenService.start).toHaveBeenCalled();
+        expect(splashScreenService.stop).toHaveBeenCalled();
+    });
+
+    it('Should toggle MFA', () => {
+        // arrange
+        configTestBed();
+        component.mfaEnabled = true;
+
+        // act
+        component.toggleMfa();
+
+        // assert
+        expect(userService.toggleMfa).toHaveBeenCalledWith(true);
+    });
 });

@@ -1,12 +1,11 @@
 package io.github.gms.auth.model;
 
-import io.github.gms.common.enums.JwtConfigType;
+import io.github.gms.auth.types.AuthResponsePhase;
+import io.github.gms.secure.dto.UserInfoDto;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-
-import java.util.Map;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Peter Szrnka
@@ -14,11 +13,13 @@ import java.util.Map;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AuthenticationResponse {
 
-	private Authentication authentication;
+	private UserInfoDto currentUser;
+	private String token;
+	private String refreshToken;
 	@Builder.Default
-	private HttpStatus responseStatus = HttpStatus.OK;
-	private String errorMessage;
-	private Map<JwtConfigType, String> jwtPair;
+	private AuthResponsePhase phase = AuthResponsePhase.FAILED;
 }

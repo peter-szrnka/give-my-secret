@@ -1,17 +1,7 @@
 package io.github.gms.secure.controller;
 
-import io.github.gms.common.abstraction.AbstractController;
-import io.github.gms.common.enums.EventOperation;
-import io.github.gms.common.enums.EventTarget;
-import io.github.gms.common.types.AuditTarget;
-import io.github.gms.common.types.Audited;
-import io.github.gms.secure.dto.AnnouncementDto;
-import io.github.gms.secure.dto.AnnouncementListDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveAnnouncementDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.service.AnnouncementService;
-import io.github.gms.secure.service.ApiKeyService;
+import static io.github.gms.common.util.Constants.ALL_ROLE;
+import static io.github.gms.common.util.Constants.ROLE_ADMIN;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static io.github.gms.common.util.Constants.ALL_ROLE;
-import static io.github.gms.common.util.Constants.ROLE_ADMIN;
+import io.github.gms.common.abstraction.AbstractController;
+import io.github.gms.common.enums.EventOperation;
+import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.types.AuditTarget;
+import io.github.gms.common.types.Audited;
+import io.github.gms.secure.dto.AnnouncementDto;
+import io.github.gms.secure.dto.AnnouncementListDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveAnnouncementDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.service.AnnouncementService;
 
 /**
  * @author Peter Szrnka

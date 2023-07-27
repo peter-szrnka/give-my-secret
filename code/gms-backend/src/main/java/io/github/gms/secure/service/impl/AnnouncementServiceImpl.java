@@ -63,7 +63,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	public AnnouncementListDto list(PagingDto dto) {
 		Page<AnnouncementEntity> results = repository.findAll(ConverterUtils.createPageable(dto));
 		return AnnouncementListDto.builder()
-				.resultList(results.stream()
+				.resultList(results.toList().stream()
 						.map(this::toDto)
 						.toList())
 				.totalElements(results.getTotalElements())

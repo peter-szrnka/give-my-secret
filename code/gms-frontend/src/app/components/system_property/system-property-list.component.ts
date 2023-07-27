@@ -1,16 +1,16 @@
+import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { SharedDataService } from "../../common/service/shared-data-service";
-import { SystemProperty } from "./model/system-property.model";
-import { SystemPropertyService } from "./service/system-property.service";
-import { ArrayDataSource } from "@angular/cdk/collections";
 import { catchError } from "rxjs";
 import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
-import { User } from "../user/model/user.model";
-import { checkRights } from "../../common/utils/permission-utils";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
+import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
+import { checkRights } from "../../common/utils/permission-utils";
+import { User } from "../user/model/user.model";
+import { SystemProperty } from "./model/system-property.model";
+import { SystemPropertyService } from "./service/system-property.service";
 
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
@@ -18,8 +18,15 @@ const ALGORITHM_SET: any = [
 
 const TYPE_MAP : any = {
   'LONG' : 'number',
-  'STRING' : 'text'
+  'STRING' : 'text',
+  'BOOLEAN': 'boolean',
 }
+
+const BOOL_VALUE_SET : string[] = ['true','false'];
+
+const PROVIDER_SET : any = {
+  'google': 'google',
+};
 
 export const PROPERTY_TEXT_MAP: any = {
   'ACCESS_JWT_EXPIRATION_TIME_SECONDS': { text: 'Access JWT expiration time in seconds' },
@@ -28,7 +35,10 @@ export const PROPERTY_TEXT_MAP: any = {
   'REFRESH_JWT_ALGORITHM': { text: 'Refresh JWT Algorithom', valueSet: ALGORITHM_SET },
   'OLD_EVENT_TIME_LIMIT_DAYS': { text: 'Limit of old events deletion in days' },
   'ORGANIZATION_NAME' : { text: 'Organization / Company name' },
-  'ORGANIZATION_CITY' : { text: 'Location (city) of the organization' }
+  'ORGANIZATION_CITY' : { text: 'Location (city) of the organization' },
+  'ENABLE_GLOBAL_MFA' : { text: 'Global MFA usage is enabled or not', valueSet: BOOL_VALUE_SET },
+	'ENABLE_MFA': { text: 'MFA usage is enabled or not for the users', valueSet: BOOL_VALUE_SET },
+	'MFA_PROVIDER' : { text: 'MFA provider( Google, Microsoft, etc.)', valueSet: PROVIDER_SET }
 };
 
 /**
@@ -92,11 +102,16 @@ export class SystemPropertyListComponent {
   }
 
   public getValueSet(key: string): string[] {
-    return PROPERTY_TEXT_MAP[key].valueSet;
+    try {
+      return PROPERTY_TEXT_MAP[key].valueSet;
+    } catch(e) {
+      return [];
+    }
   }
 
   public save(element: any) {
     element.mode = undefined;
+    element.valueSet = undefined;
     this.service.save(element).subscribe({
       next: () => {
         this.openInformationDialog("System property has been saved!", true, 'information');

@@ -20,5 +20,5 @@ public interface UserConverter extends GmsConverter<UserListDto, UserEntity> {
 	
 	UserDto toDto(UserEntity entity);
 
-	UserInfoDto toUserInfoDto(GmsUserDetails user);
+	UserInfoDto toUserInfoDto(GmsUserDetails user, boolean mfaRequired);
 }

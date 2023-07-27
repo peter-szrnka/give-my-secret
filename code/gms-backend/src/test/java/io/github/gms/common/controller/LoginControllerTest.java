@@ -2,10 +2,12 @@ package io.github.gms.common.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,13 +19,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 
+import io.github.gms.auth.AuthenticationService;
 import io.github.gms.auth.dto.AuthenticateRequestDto;
 import io.github.gms.auth.dto.AuthenticateResponseDto;
+import io.github.gms.auth.model.AuthenticationResponse;
+import io.github.gms.auth.types.AuthResponsePhase;
+import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
 import io.github.gms.secure.dto.UserInfoDto;
-import io.github.gms.secure.service.LoginService;
 import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,12 +42,12 @@ import jakarta.servlet.http.HttpServletRequest;
 class LoginControllerTest {
     
     private LoginController controller;
-    private LoginService service;
+    private AuthenticationService service;
 	private SystemPropertyService systemPropertyService;
 
     @BeforeEach
     void setup() {
-        service = mock(LoginService.class);
+        service = mock(AuthenticationService.class);
         systemPropertyService = mock(SystemPropertyService.class);
         controller = new LoginController(service, systemPropertyService, false);
     }
@@ -53,11 +58,12 @@ class LoginControllerTest {
         AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        AuthenticateResponseDto mockResponse = new AuthenticateResponseDto();
-        when(service.login(dto)).thenReturn(mockResponse);
+        AuthenticationResponse mockResponse = new AuthenticationResponse();
+        mockResponse.setPhase(AuthResponsePhase.FAILED);
+        when(service.authenticate("user", "pass")).thenReturn(mockResponse);
 
         // act
-        ResponseEntity<UserInfoDto> response = controller.loginAuthentication(dto, request);
+        ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto, request);
 
         // assert
         assertNotNull(response);
@@ -70,11 +76,12 @@ class LoginControllerTest {
         AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        AuthenticateResponseDto mockResponse = new AuthenticateResponseDto();
+        AuthenticationResponse mockResponse = new AuthenticationResponse();
         mockResponse.setRefreshToken("REFRESHTOKEN");
         mockResponse.setToken("TOKEN");
         mockResponse.setCurrentUser(TestUtils.createUserInfoDto());
-        when(service.login(dto)).thenReturn(mockResponse);
+        mockResponse.setPhase(AuthResponsePhase.COMPLETED);
+        when(service.authenticate("user", "pass")).thenReturn(mockResponse);
 
         when(systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(2L);
         when(systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(3L);
@@ -90,7 +97,7 @@ class LoginControllerTest {
         mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESHTOKEN"), eq(3L), eq(false))).thenReturn(refreshJwtCookie);
 
         // act
-        ResponseEntity<UserInfoDto> response = controller.loginAuthentication(dto, request);
+        ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto, request);
 
         // assert
         assertNotNull(response);
@@ -98,7 +105,7 @@ class LoginControllerTest {
         assertEquals(1, response.getHeaders().size());
         assertTrue(response.getHeaders().get("Set-Cookie").stream().anyMatch(item -> item.equals("mock-cookie1")));
         assertTrue(response.getHeaders().get("Set-Cookie").stream().anyMatch(item -> item.equals("mock-cookie2")));
-        assertEquals("UserInfoDto(id=1, name=name, username=user, email=a@b.com, roles=[ROLE_USER])", response.getBody().toString());
+        assertEquals("AuthenticateResponseDto(currentUser=UserInfoDto(id=1, name=name, username=user, email=a@b.com, roles=[ROLE_USER]), phase=COMPLETED)", response.getBody().toString());
 
         verify(systemPropertyService).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		verify(systemPropertyService).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
@@ -106,6 +113,71 @@ class LoginControllerTest {
         mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.ACCESS_JWT_TOKEN), eq("TOKEN"), eq(2L), eq(false)));
         mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESHTOKEN"), eq(3L), eq(false)));
         mockCookieUtils.close();
+    }
+
+    @Test
+    void shouldLoginRequireMfa() {
+        // arrange
+        AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        AuthenticationResponse mockResponse = new AuthenticationResponse();
+        mockResponse.setPhase(AuthResponsePhase.MFA_REQUIRED);
+        when(service.authenticate("user", "pass")).thenReturn(mockResponse);
+
+        // act
+        ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto, request);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(0, response.getHeaders().size());
+        assertEquals(AuthResponsePhase.MFA_REQUIRED, response.getBody().getPhase());
+        assertEquals("AuthenticateResponseDto(currentUser=null, phase=MFA_REQUIRED)", response.getBody().toString());
+
+        verify(systemPropertyService, never()).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
+		verify(systemPropertyService, never()).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
+    }
+
+    @Test
+    void shouldVerify() {
+        // arrange
+        LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
+        UserInfoDto userInfoDto = TestUtils.createUserInfoDto();
+        AuthenticationResponse mockResponse = new AuthenticationResponse();
+        mockResponse.setCurrentUser(userInfoDto);
+        mockResponse.setPhase(AuthResponsePhase.COMPLETED);
+        when(service.verify(dto)).thenReturn(mockResponse);
+
+        // act
+        ResponseEntity<AuthenticateResponseDto> response = controller.verify(dto);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(userInfoDto, response.getBody().getCurrentUser());
+        assertEquals(AuthResponsePhase.COMPLETED, response.getBody().getPhase());
+        verify(service).verify(dto);
+    }
+
+    @Test
+    void shouldVerifyFail() {
+        // arrange
+        LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
+        UserInfoDto userInfoDto = TestUtils.createUserInfoDto();
+        AuthenticationResponse mockResponse = new AuthenticationResponse();
+        mockResponse.setCurrentUser(userInfoDto);
+        mockResponse.setPhase(AuthResponsePhase.FAILED);
+        when(service.verify(dto)).thenReturn(mockResponse);
+
+        // act
+        ResponseEntity<AuthenticateResponseDto> response = controller.verify(dto);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(401, response.getStatusCode().value());
+        assertNull(response.getBody());
+        verify(service).verify(dto);
     }
 
     @Test

@@ -31,6 +31,7 @@ import { HeaderModule } from './components/header/header-module';
 import { PipesModule } from './common/components/pipes/pipes.module';
 import { SystemPropertyModule } from './components/system_property/system-property-module';
 import { NavMenuModule } from './components/menu/nav-menu.module';
+import { VerifyModule } from './components/verify/verify-module';
 
 /**
  * @author Peter Szrnka
@@ -72,6 +73,7 @@ import { NavMenuModule } from './components/menu/nav-menu.module';
     MessageModule,
     ApiTestingModule,
     SystemPropertyModule,
+    VerifyModule,
     PipesModule
   ],
   providers: [ 

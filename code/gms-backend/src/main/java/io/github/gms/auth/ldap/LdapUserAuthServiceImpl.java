@@ -86,6 +86,8 @@ public class LdapUserAuthServiceImpl implements UserAuthService {
 		userEntity.setEmail(foundUser.getEmail());
 		userEntity.setRoles(foundUser.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(",")));
+		userEntity.setMfaEnabled(foundUser.isMfaEnabled());
+		userEntity.setMfaSecret(foundUser.getMfaSecret());
 		userEntity = repository.save(userEntity);
 
 		foundUser.setUserId(userEntity.getId());

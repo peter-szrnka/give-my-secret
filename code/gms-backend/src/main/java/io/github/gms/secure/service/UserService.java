@@ -1,5 +1,6 @@
 package io.github.gms.secure.service;
 
+import dev.samstevens.totp.exceptions.QrGenerationException;
 import io.github.gms.common.abstraction.AbstractCrudService;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
@@ -20,4 +21,10 @@ public interface UserService extends AbstractCrudService<SaveUserRequestDto, Sav
 	String getUsernameById(Long id);
 
 	void changePassword(ChangePasswordRequestDto dto);
+
+    byte[] getMfaQrCode() throws QrGenerationException;
+
+	void toggleMfa(boolean enabled);
+
+    boolean isMfaActive();
 }

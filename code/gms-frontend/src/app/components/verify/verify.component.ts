@@ -1,41 +1,52 @@
-import { Component } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { NavigationExtras, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
-import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
+import { AuthenticationPhase, LoginResponse, VerifyLogin } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { WINDOW_TOKEN } from "../../window.provider";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
-    selector: 'login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+    selector: 'verify',
+    templateUrl: './verify.component.html',
+    styleUrls: ['./verify.component.scss']
 })
-export class LoginComponent extends BaseLoginComponent {
+export class VerifyComponent extends BaseLoginComponent {
 
     constructor(
+        @Inject(WINDOW_TOKEN) private window: Window,
         protected override router: Router,
         private authService: AuthService,
         protected override sharedDataService: SharedDataService,
         protected override splashScreenStateService: SplashScreenStateService,
         protected override dialog: MatDialog) {
-            super(router, sharedDataService, dialog, splashScreenStateService)
+            super(router, sharedDataService, dialog, splashScreenStateService);      
     }
 
-    formModel: Login = {
+    formModel: VerifyLogin = {
         username: undefined,
-        credential: undefined
+        verificationCode: undefined
     };
 
-    login(): void {
+    override ngOnInit(): void {
+        super.ngOnInit();
+        this.formModel.username = this.window.history.state.username;
+
+        if (!this.formModel.username) {
+            this.router.navigateByUrl('/');
+        }
+    }
+
+    verifyLogin(): void {
         this.splashScreenStateService.start();
 
-        this.authService.login(this.formModel)
+        this.authService.verifyLogin(this.formModel)
             .pipe(catchError((err) => this.handleError(err)))
             .subscribe((response : LoginResponse) => {
                 this.splashScreenStateService.stop();
@@ -44,14 +55,9 @@ export class LoginComponent extends BaseLoginComponent {
                     return;
                 }
 
-                if (response.phase === AuthenticationPhase.MFA_REQUIRED) {
-                    const navigationExtras: NavigationExtras = {
-                        state: {
-                          username: response.currentUser.username
-                        }
-                      };
-
-                    this.router.navigate(['/verify'], navigationExtras);
+                if (response.phase !== AuthenticationPhase.COMPLETED) {
+                    this.showErrorModal();
+                    this.router.navigateByUrl('/login');
                     return;
                 }
 
