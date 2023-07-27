@@ -30,6 +30,6 @@ export class UserService extends SaveServiceBase<UserData, UserDataList> {
     }
 
     public isMfaActive(): Observable<boolean> {
-        return this.http.get<boolean>(environment.baseUrl + "secure/" + this.scope + "/mfa_active", { withCredentials : true, headers : getHeaders(), responseType : 'text' as 'json' });
+        return this.http.get<boolean>(environment.baseUrl + "secure/" + this.scope + "/mfa_active", { withCredentials : true, headers : getHeaders() });
     }
 }

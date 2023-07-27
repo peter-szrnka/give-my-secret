@@ -8,6 +8,8 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +18,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -103,15 +107,18 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(false));
 	}
 
-	@Test
-	void shouldExpectMfa() {
+	@ParameterizedTest
+	@MethodSource("mfaTestData")
+	void shouldExpectMfa(boolean enableGlobalMfa, boolean enableMfa) {
 		// arrange
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setMfaEnabled(true);
 		when(authenticationManager.authenticate(any()))
 			.thenReturn(new TestingAuthenticationToken(userDetails, "cred", List.of(new SimpleGrantedAuthority("ROLE_USER"))));
-		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_GLOBAL_MFA)).thenReturn(false);
-		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MFA)).thenReturn(true);
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_GLOBAL_MFA)).thenReturn(enableGlobalMfa);
+		if (!enableGlobalMfa) {
+			when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MFA)).thenReturn(enableMfa);
+		}
 		when(userConverter.toUserInfoDto(any(GmsUserDetails.class), eq(true))).thenReturn(TestUtils.createUserInfoDto());
 		
 		//act
@@ -125,13 +132,13 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		
 		verify(authenticationManager).authenticate(any());
 		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(true));
-		verify(systemPropertyService).getBoolean(SystemProperty.ENABLE_MFA);
+		verify(systemPropertyService, enableGlobalMfa ? never() : times(1)).getBoolean(SystemProperty.ENABLE_MFA);
 	}
 
 	@Test
-	void shouldVerifyFail() {
+	void shouldVerifyThrowsAnError() {
 		// arrange
-		LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
+		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 
 		// act
 		AuthenticationResponse response = service.verify(dto);
@@ -139,5 +146,62 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
+	}
+
+	@Test
+	void shouldVerifyFail() {
+		// arrange
+		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
+		GmsUserDetails userDetails = TestUtils.createGmsUser();
+		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
+		when(verifier.isValidCode(anyString(), anyString())).thenReturn(false);
+
+		// act
+		AuthenticationResponse response = service.verify(dto);
+
+		// assert
+		assertNotNull(response);
+		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
+	}
+
+	@Test
+	void shouldVerify() {
+		// arrange
+		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
+		GmsUserDetails userDetails = TestUtils.createGmsUser();
+		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
+		when(verifier.isValidCode(anyString(), anyString())).thenReturn(true);
+		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap()))
+			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
+		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap()))
+			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
+		when(jwtService.generateJwts(anyMap())).thenReturn(Map.of(
+				JwtConfigType.ACCESS_JWT, "ACCESS_JWT",
+				JwtConfigType.REFRESH_JWT, "REFRESH_JWT"
+				));
+		when(userConverter.toUserInfoDto(any(GmsUserDetails.class), eq(false))).thenReturn(TestUtils.createUserInfoDto());
+
+		// act
+		AuthenticationResponse response = service.verify(dto);
+
+		// assert
+		assertNotNull(response);
+		assertEquals(AuthResponsePhase.COMPLETED, response.getPhase());
+		assertEquals("ACCESS_JWT", response.getToken());
+		assertEquals("REFRESH_JWT", response.getRefreshToken());
+		
+		verify(userAuthService).loadUserByUsername(anyString());
+		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
+		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
+		verify(jwtService).generateJwts(anyMap());
+		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(false));
+	}
+
+	private static Object[][] mfaTestData() {
+		return new Object[][] {
+			{ true, false },
+			{ true, true },
+			{ false, true }
+		};
 	}
 }

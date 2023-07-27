@@ -55,7 +55,8 @@ describe('SettingsSummaryComponent', () => {
             }),
             isMfaActive: jest.fn().mockImplementation(() : Observable<boolean> => {
                 return of(true);
-            })
+            }),
+            toggleMfa: jest.fn().mockReturnValue(of(''))
         };
         splashScreenService = {
             start : jest.fn(),
@@ -75,7 +76,9 @@ describe('SettingsSummaryComponent', () => {
 
     it('Should fail on save', () => {
         userService = {
-            changeCredentials : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+            changeCredentials : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"}))),
+            isMfaActive: jest.fn().mockReturnValue(of(false)),
+            toggleMfa: jest.fn().mockReturnValue(of(''))
         };
         configTestBed();
 
@@ -108,4 +111,15 @@ describe('SettingsSummaryComponent', () => {
         expect(splashScreenService.stop).toHaveBeenCalled();
     });
 
+    it('Should toggle MFA', () => {
+        // arrange
+        configTestBed();
+        component.mfaEnabled = true;
+
+        // act
+        component.toggleMfa();
+
+        // assert
+        expect(userService.toggleMfa).toHaveBeenCalledWith(true);
+    });
 });
