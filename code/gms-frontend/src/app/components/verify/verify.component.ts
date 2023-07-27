@@ -25,7 +25,7 @@ export class VerifyComponent extends BaseLoginComponent {
         protected override splashScreenStateService: SplashScreenStateService,
         protected override dialog: MatDialog) {
             super(router, sharedDataService, dialog, splashScreenStateService)
-            this.formModel.username = this.router.getCurrentNavigation()?.extras?.state?.['username'];
+            this.formModel.username = this.router.getCurrentNavigation()!.extras.state!['username'];
     }
 
     formModel: VerifyLogin = {
