@@ -77,8 +77,8 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
-	void shouldAuthenticate(boolean userMfaEnabled) {
+	@MethodSource("nonMfaTestData")
+	void shouldAuthenticate(boolean systemLevelMfaEnabled, boolean userMfaEnabled) {
 		// arrange
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setMfaEnabled(userMfaEnabled);
@@ -94,7 +94,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 				));
 		when(userConverter.toUserInfoDto(any(GmsUserDetails.class), eq(false))).thenReturn(TestUtils.createUserInfoDto());
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_GLOBAL_MFA)).thenReturn(false);
-		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MFA)).thenReturn(false);
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MFA)).thenReturn(systemLevelMfaEnabled);
 		
 		//act
 		AuthenticationResponse response = service.authenticate("user", "credential");
@@ -203,6 +203,14 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
 		verify(jwtService).generateJwts(anyMap());
 		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(false));
+	}
+
+	private static Object[][] nonMfaTestData() {
+		return new Object[][] {
+			{ true, false },
+			{ false, true },
+			{ false, false }
+		};
 	}
 
 	private static Object[][] mfaTestData() {
