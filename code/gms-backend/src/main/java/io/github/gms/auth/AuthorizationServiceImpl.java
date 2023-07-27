@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 import org.slf4j.MDC;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,7 @@ import org.springframework.web.util.WebUtils;
 
 import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.abstraction.AbstractAuthService;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
@@ -28,12 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class AuthorizationServiceImpl extends AbstractAuthServiceImpl implements AuthorizationService {
+public class AuthorizationServiceImpl extends AbstractAuthService implements AuthorizationService {
 
-    AuthorizationServiceImpl(AuthenticationManager authenticationManager, JwtService jwtService,
-            SystemPropertyService systemPropertyService, GenerateJwtRequestConverter generateJwtRequestConverter,
+    AuthorizationServiceImpl(
+			JwtService jwtService,
+            SystemPropertyService systemPropertyService, 
+			GenerateJwtRequestConverter generateJwtRequestConverter,
             UserAuthService userAuthService) {
-        super(authenticationManager, jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
+        super(jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
     }
 
     @Override

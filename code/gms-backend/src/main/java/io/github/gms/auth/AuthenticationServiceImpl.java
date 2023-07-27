@@ -7,17 +7,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.CodeVerifier;
-import dev.samstevens.totp.code.DefaultCodeGenerator;
-import dev.samstevens.totp.code.DefaultCodeVerifier;
-import dev.samstevens.totp.time.SystemTimeProvider;
-import dev.samstevens.totp.time.TimeProvider;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.auth.types.AuthResponsePhase;
+import io.github.gms.common.abstraction.AbstractAuthService;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.JwtConfigType;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.service.JwtService;
@@ -30,8 +27,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
-public class AuthenticationServiceImpl extends AbstractAuthServiceImpl implements AuthenticationService {
+public class AuthenticationServiceImpl extends AbstractAuthService implements AuthenticationService {
 
+	private final AuthenticationManager authenticationManager;
 	private final UserConverter converter;
 	private final CodeVerifier verifier;
 
@@ -43,7 +41,8 @@ public class AuthenticationServiceImpl extends AbstractAuthServiceImpl implement
 			UserConverter converter,
 			UserAuthService userAuthService,
 			CodeVerifier verifier) {
-		super(authenticationManager, jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
+		super(jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
+		this.authenticationManager = authenticationManager;
 		this.converter = converter;
 		this.verifier = verifier;
 	}
@@ -99,5 +98,10 @@ public class AuthenticationServiceImpl extends AbstractAuthServiceImpl implement
 				.phase(AuthResponsePhase.FAILED)
 				.build();
 		}
+	}
+
+    private boolean isMfaEnabled(GmsUserDetails userDetails) {
+		return systemPropertyService.getBoolean(SystemProperty.ENABLE_GLOBAL_MFA) || 
+			(systemPropertyService.getBoolean(SystemProperty.ENABLE_MFA) && userDetails.isMfaEnabled());
 	}
 }

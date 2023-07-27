@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -47,7 +46,6 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 
-	private AuthenticationManager authenticationManager;
 	private JwtService jwtService;
 	private UserAuthService userAuthService;
 	private SystemPropertyService systemPropertyService;
@@ -60,12 +58,11 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		super.setup();
 
 		// init
-		authenticationManager = mock(AuthenticationManager.class);
 		jwtService = mock(JwtService.class);
 		userAuthService = mock(UserAuthService.class);
 		systemPropertyService = mock(SystemPropertyService.class);
 		generateJwtRequestConverter = mock(GenerateJwtRequestConverter.class);
-		service = new AuthorizationServiceImpl(authenticationManager, jwtService,
+		service = new AuthorizationServiceImpl(jwtService,
 				systemPropertyService, generateJwtRequestConverter, userAuthService);
 
 		((Logger) LoggerFactory.getLogger(AuthorizationServiceImpl.class)).addAppender(logAppender);

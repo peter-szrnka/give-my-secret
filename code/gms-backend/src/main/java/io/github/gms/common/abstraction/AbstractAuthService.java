@@ -1,15 +1,13 @@
-package io.github.gms.auth;
+package io.github.gms.common.abstraction;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.security.authentication.AuthenticationManager;
-
+import io.github.gms.auth.UserAuthService;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.secure.converter.GenerateJwtRequestConverter;
@@ -20,33 +18,25 @@ import io.github.gms.secure.service.SystemPropertyService;
  * @author Peter Szrnka
  * @since 1.0
  */
-public abstract class AbstractAuthServiceImpl {
-    
-    final AuthenticationManager authenticationManager;
-	final JwtService jwtService;
-	final SystemPropertyService systemPropertyService;
-	final GenerateJwtRequestConverter generateJwtRequestConverter;
-	final UserAuthService userAuthService;
+public abstract class AbstractAuthService {
 
-    AbstractAuthServiceImpl(
-			AuthenticationManager authenticationManager,
+	protected final JwtService jwtService;
+	protected final SystemPropertyService systemPropertyService;
+	protected final GenerateJwtRequestConverter generateJwtRequestConverter;
+	protected final UserAuthService userAuthService;
+
+    protected AbstractAuthService(
 			JwtService jwtService,
 			SystemPropertyService systemPropertyService,
 			GenerateJwtRequestConverter generateJwtRequestConverter,
 			UserAuthService userAuthService) {
-		this.authenticationManager = authenticationManager;
 		this.jwtService = jwtService;
 		this.systemPropertyService = systemPropertyService;
 		this.generateJwtRequestConverter = generateJwtRequestConverter;
 		this.userAuthService = userAuthService;
 	}
-
-    boolean isMfaEnabled(GmsUserDetails userDetails) {
-		return systemPropertyService.getBoolean(SystemProperty.ENABLE_GLOBAL_MFA) || 
-			(systemPropertyService.getBoolean(SystemProperty.ENABLE_MFA) && userDetails.isMfaEnabled());
-	}
 	
-	Map<JwtConfigType, String> getAuthenticationDetails(GmsUserDetails user) {
+	protected Map<JwtConfigType, String> getAuthenticationDetails(GmsUserDetails user) {
 		Map<JwtConfigType, GenerateJwtRequest> input = Map.of(
 				JwtConfigType.ACCESS_JWT, buildAccessJwtRequest(user.getUserId(), user.getUsername(), 
 						user.getAuthorities().stream().map(authority -> UserRole.getByName(authority.getAuthority())).collect(Collectors.toSet())),
