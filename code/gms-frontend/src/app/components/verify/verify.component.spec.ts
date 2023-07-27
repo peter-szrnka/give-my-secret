@@ -13,6 +13,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { User } from "../user/model/user.model";
 import { VerifyComponent } from "./verify.component";
+import { WINDOW_TOKEN } from "../../window.provider";
 
 /**
  * @author Peter Szrnka
@@ -27,12 +28,14 @@ describe('VerifyComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let splashScreenStateService : any;
+    let mockWindow : any;
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
             imports : [ RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule ],
             declarations : [VerifyComponent],
             providers: [
+                { provide : WINDOW_TOKEN, useValue : mockWindow },
                 { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
@@ -47,6 +50,14 @@ describe('VerifyComponent', () => {
     };
 
     beforeEach(() => {
+        mockWindow = {
+            history : {
+                state: {
+                    username: 'user-1'
+                }
+            }
+        };
+
         router = {
             navigate : jest.fn().mockReturnValue(of(true)),
             navigateByUrl : jest.fn().mockReturnValue(of(true)),
@@ -83,6 +94,15 @@ describe('VerifyComponent', () => {
                 return of(mockResponse);
             })
         };
+    });
+
+    it('Should forced call redirected', () => {
+        mockWindow.history.state = {};
+        configTestBed();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(router.navigateByUrl).toHaveBeenCalledWith('/');
     });
 
     it('Should MFA verification succeed', () => {

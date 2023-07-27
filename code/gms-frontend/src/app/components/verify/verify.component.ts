@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { catchError } from "rxjs";
@@ -7,6 +7,7 @@ import { AuthenticationPhase, LoginResponse, VerifyLogin } from "../../common/mo
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { WINDOW_TOKEN } from "../../window.provider";
 
 /**
  * @author Peter Szrnka
@@ -19,19 +20,28 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 export class VerifyComponent extends BaseLoginComponent {
 
     constructor(
+        @Inject(WINDOW_TOKEN) private window: Window,
         protected override router: Router,
         private authService: AuthService,
         protected override sharedDataService: SharedDataService,
         protected override splashScreenStateService: SplashScreenStateService,
         protected override dialog: MatDialog) {
-            super(router, sharedDataService, dialog, splashScreenStateService)
-            this.formModel.username = this.router.getCurrentNavigation()!.extras.state!['username'];
+            super(router, sharedDataService, dialog, splashScreenStateService);      
     }
 
     formModel: VerifyLogin = {
         username: undefined,
         verificationCode: undefined
     };
+
+    override ngOnInit(): void {
+        super.ngOnInit();
+        this.formModel.username = this.window.history.state.username;
+
+        if (!this.formModel.username) {
+            this.router.navigateByUrl('/');
+        }
+    }
 
     verifyLogin(): void {
         this.splashScreenStateService.start();

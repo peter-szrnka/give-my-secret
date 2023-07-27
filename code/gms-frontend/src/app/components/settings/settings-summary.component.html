@@ -45,7 +45,7 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <img src="{{imageBaseUrl}}/secure/user/mfa_qr_code" alt="MFA QR code" />
+        <img src="{{imageBaseUrl}}secure/user/mfa_qr_code" alt="MFA QR code" />
         <hr />
         Turn on or off to enable or disable the MFA in your authentication process:
         <mat-checkbox  name="mfaEnabled" [(ngModel)]="mfaEnabled" [checked]="mfaEnabled === true" (change)="toggleMfa()" />
