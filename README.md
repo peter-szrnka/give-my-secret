@@ -45,6 +45,11 @@ For further information & sample configurations, please check the sub folders un
 
 Sample configurations can be found under "batch-files" folder.
 
+## Two Factor Authentication
+The following authenticator applications are supported:
+- Google Authenticator
+- Microsoft Authenticator
+
 ## Encryption
 
 Currently only AES encryption is supported.  In the future this will be configured by an environment property.
