@@ -32,6 +32,7 @@ export class SettingsSummaryComponent implements OnInit {
   };
   passwordEnabled = true;
   mfaEnabled = false;
+  showQrCode = false;
 
   constructor(
     private sharedData : SharedDataService,

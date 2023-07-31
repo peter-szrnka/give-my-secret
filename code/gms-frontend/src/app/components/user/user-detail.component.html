@@ -61,7 +61,7 @@
                 </mat-card>
             </form>
         </mat-tab>
-        <mat-tab label="Events">
+        <mat-tab label="Events" *ngIf="data.id !== undefined">
             <mat-card class="with-margin-top">
                 <mat-card-content>
                     <table mat-table [dataSource]="datasource" class="width100-and-margin-top">

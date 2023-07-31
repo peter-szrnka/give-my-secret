@@ -1,26 +1,6 @@
 
 package io.github.gms.secure.service.impl;
 
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.common.event.RefreshCacheEvent;
-import io.github.gms.secure.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.info.BuildProperties;
-import org.springframework.core.env.Environment;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-
 import static io.github.gms.common.util.Constants.OK;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
@@ -33,6 +13,27 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.info.BuildProperties;
+import org.springframework.core.env.Environment;
+
+import ch.qos.logback.classic.Logger;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.event.RefreshCacheEvent;
+import io.github.gms.secure.repository.UserRepository;
 
 /**
  * @author Peter Szrnka
@@ -65,7 +66,7 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldReturnSystemStatus(String mockResponse) {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
 		when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 
 		when(env.getProperty(eq(SELECTED_AUTH), anyString())).thenReturn("db");
@@ -78,20 +79,23 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 		Assertions.assertEquals(mockResponse, response.getStatus());
 		verify(userRepository).countExistingAdmins();
 		assertEquals("db", response.getAuthMode());
-		assertEquals("2023-06-29T00:00:00Z", response.getBuilt());
+		assertEquals("2023-06-29T02:00:00.000+0200", response.getBuilt());
 	}
 	
 	@ParameterizedTest
 	@MethodSource("inputData")
 	void shouldReturnOkWithDifferentAuthMethod(String selectedAuth, boolean hasBuildProperties, String expectedVersion) {
 		when(env.getProperty(eq(SELECTED_AUTH), anyString())).thenReturn(selectedAuth);
-		
+
 		if (hasBuildProperties) {
-			when(buildProperties.getTime()).thenReturn(Instant.now(Clock.systemDefaultZone()));
+			when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+			when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
+			when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 			when(buildProperties.getVersion()).thenReturn("1.0.0");
 		} else {
 			service.setBuildProperties(null);
-			setupClock(clock);
+			when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+			when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
 		}
 		
 		if (selectedAuth.equals(SELECTED_AUTH_DB)) {

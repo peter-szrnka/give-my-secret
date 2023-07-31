@@ -24,10 +24,6 @@ const TYPE_MAP : any = {
 
 const BOOL_VALUE_SET : string[] = ['true','false'];
 
-const PROVIDER_SET : any = {
-  'google': 'google',
-};
-
 export const PROPERTY_TEXT_MAP: any = {
   'ACCESS_JWT_EXPIRATION_TIME_SECONDS': { text: 'Access JWT expiration time in seconds' },
   'ACCESS_JWT_ALGORITHM': { text: 'Access JWT Algorithom', valueSet: ALGORITHM_SET },
@@ -37,8 +33,7 @@ export const PROPERTY_TEXT_MAP: any = {
   'ORGANIZATION_NAME' : { text: 'Organization / Company name' },
   'ORGANIZATION_CITY' : { text: 'Location (city) of the organization' },
   'ENABLE_GLOBAL_MFA' : { text: 'Global MFA usage is enabled or not', valueSet: BOOL_VALUE_SET },
-	'ENABLE_MFA': { text: 'MFA usage is enabled or not for the users', valueSet: BOOL_VALUE_SET },
-	'MFA_PROVIDER' : { text: 'MFA provider( Google, Microsoft, etc.)', valueSet: PROVIDER_SET }
+	'ENABLE_MFA': { text: 'MFA usage is enabled or not for the users', valueSet: BOOL_VALUE_SET }
 };
 
 /**

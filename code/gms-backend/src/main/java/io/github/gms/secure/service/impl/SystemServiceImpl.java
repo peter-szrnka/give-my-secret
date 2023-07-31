@@ -1,10 +1,15 @@
 package io.github.gms.secure.service.impl;
 
-import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.common.event.RefreshCacheEvent;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.secure.service.SystemService;
-import lombok.extern.slf4j.Slf4j;
+import static io.github.gms.common.util.Constants.OK;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
+
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.cache.annotation.CacheConfig;
@@ -14,15 +19,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
-import static io.github.gms.common.util.Constants.OK;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
+import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.event.RefreshCacheEvent;
+import io.github.gms.common.util.Constants;
+import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.secure.service.SystemService;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Peter Szrnka
@@ -52,7 +54,7 @@ public class SystemServiceImpl implements SystemService {
 		String auth = env.getProperty(SELECTED_AUTH, SELECTED_AUTH_DB);
 		builder.authMode(auth);
 		builder.version(getVersion());
-		builder.built(getBuildTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+		builder.built(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
 		
 		if (SELECTED_AUTH_LDAP.equals(auth)) {
 			return builder.status(OK).build();
@@ -79,6 +81,6 @@ public class SystemServiceImpl implements SystemService {
 	}
 	
 	private ZonedDateTime getBuildTime() {
-		return buildProperties != null ? buildProperties.getTime().atZone(ZoneId.systemDefault()) : ZonedDateTime.now(clock);
+		return buildProperties != null ? buildProperties.getTime().atZone(clock.getZone()) : ZonedDateTime.now(clock);
 	}
 }

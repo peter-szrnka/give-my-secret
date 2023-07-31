@@ -2,8 +2,10 @@
     display: block;
 }
 
-.side-menu-list-item span {
-    vertical-align: super !important;
+.mat-line {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
 }
 
 .nav-toggle-btn {
