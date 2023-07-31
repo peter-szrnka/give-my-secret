@@ -86,13 +86,16 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 	@MethodSource("inputData")
 	void shouldReturnOkWithDifferentAuthMethod(String selectedAuth, boolean hasBuildProperties, String expectedVersion) {
 		when(env.getProperty(eq(SELECTED_AUTH), anyString())).thenReturn(selectedAuth);
-		
+
 		if (hasBuildProperties) {
-			when(buildProperties.getTime()).thenReturn(Instant.now(Clock.systemDefaultZone()));
+			when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+			when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
+			when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 			when(buildProperties.getVersion()).thenReturn("1.0.0");
 		} else {
 			service.setBuildProperties(null);
-			setupClock(clock);
+			when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+			when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
 		}
 		
 		if (selectedAuth.equals(SELECTED_AUTH_DB)) {
