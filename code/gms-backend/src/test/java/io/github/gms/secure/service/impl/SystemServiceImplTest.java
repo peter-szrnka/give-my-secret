@@ -1,27 +1,6 @@
 
 package io.github.gms.secure.service.impl;
 
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.common.event.RefreshCacheEvent;
-import io.github.gms.secure.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.info.BuildProperties;
-import org.springframework.core.env.Environment;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-
 import static io.github.gms.common.util.Constants.OK;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
@@ -34,6 +13,27 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.info.BuildProperties;
+import org.springframework.core.env.Environment;
+
+import ch.qos.logback.classic.Logger;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.event.RefreshCacheEvent;
+import io.github.gms.secure.repository.UserRepository;
 
 /**
  * @author Peter Szrnka

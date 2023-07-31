@@ -81,6 +81,6 @@ public class SystemServiceImpl implements SystemService {
 	}
 	
 	private ZonedDateTime getBuildTime() {
-		return buildProperties != null ? buildProperties.getTime().atZone(ZoneId.systemDefault()) : ZonedDateTime.now(clock);
+		return buildProperties != null ? buildProperties.getTime().atZone(clock.getZone()) : ZonedDateTime.now(clock);
 	}
 }
