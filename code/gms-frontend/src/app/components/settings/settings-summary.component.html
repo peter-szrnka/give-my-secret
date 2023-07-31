@@ -44,11 +44,16 @@
             Enable or disable MFA
           </mat-panel-description>
         </mat-expansion-panel-header>
-
-        <img src="{{imageBaseUrl}}secure/user/mfa_qr_code" alt="MFA QR code" />
-        <hr />
-        Turn on or off to enable or disable the MFA in your authentication process:
         <mat-checkbox  name="mfaEnabled" [(ngModel)]="mfaEnabled" [checked]="mfaEnabled === true" (change)="toggleMfa()" />
+        Multi-Factor Authentication enabled
+
+        <div *ngIf="showQrCode">
+          <img src="{{imageBaseUrl}}secure/user/mfa_qr_code" alt="MFA QR code" /> <br/>
+          Scan this QR code with your preferred/supported Authenticator app.
+        </div>
+        <div *ngIf="!showQrCode">
+          <button mat-raised-button color="primary" (click)="showQrCode = !showQrCode">Show QR code</button>
+        </div>
       </mat-expansion-panel>
     </mat-accordion>
   </form>
