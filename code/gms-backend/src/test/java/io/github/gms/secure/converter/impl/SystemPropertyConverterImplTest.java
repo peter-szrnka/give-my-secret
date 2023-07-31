@@ -52,12 +52,12 @@ class SystemPropertyConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
-		assertEquals(10L, response.getTotalElements());
+		assertEquals(9L, response.getTotalElements());
 		assertEquals("Budapest", response.getResultList().stream()
 			.filter(property -> property.getKey().equals("ORGANIZATION_CITY"))
 			.map(item -> item.getValue()).findFirst().get());
 		assertTrue(response.getResultList().stream().noneMatch(item -> item.getType() == null || item.getKey() == null || item.getValue() == null));
-		assertEquals(9L, response.getResultList().stream().filter((item) -> item.isFactoryValue()).count());
+		assertEquals(8L, response.getResultList().stream().filter((item) -> item.isFactoryValue()).count());
 		assertEquals(1L, response.getResultList().stream().filter((item) -> item.getLastModified() != null).count());
 	}
 	
