@@ -19,6 +19,7 @@ import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 import static io.github.gms.common.util.Constants.OK;
@@ -65,7 +66,7 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldReturnSystemStatus(String mockResponse) {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-		when(clock.getZone()).thenReturn(ZoneOffset.systemDefault());
+		when(clock.getZone()).thenReturn(ZoneId.systemDefault());
 		when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 
 		when(env.getProperty(eq(SELECTED_AUTH), anyString())).thenReturn("db");
@@ -78,7 +79,7 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 		Assertions.assertEquals(mockResponse, response.getStatus());
 		verify(userRepository).countExistingAdmins();
 		assertEquals("db", response.getAuthMode());
-		assertEquals("2023-06-29T02:00:00+02:00", response.getBuilt());
+		assertEquals("2023-06-29T02:00:00.000+0200", response.getBuilt());
 	}
 	
 	@ParameterizedTest
