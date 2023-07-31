@@ -73,7 +73,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     void shouldSave() {
         // arrange
         MultipartFile multiPartFile = new MockMultipartFile("test", "data".getBytes());
-        when(service.save(eq("{'test':'value'}"), eq(multiPartFile))).thenReturn(new SaveEntityResponseDto(2L));
+        when(service.save("{'test':'value'}", multiPartFile)).thenReturn(new SaveEntityResponseDto(2L));
 
         // act
         SaveEntityResponseDto response = controller.save("{'test':'value'}", multiPartFile);
