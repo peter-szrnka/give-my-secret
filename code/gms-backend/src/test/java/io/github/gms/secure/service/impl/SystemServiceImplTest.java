@@ -66,7 +66,7 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldReturnSystemStatus(String mockResponse) {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-		when(clock.getZone()).thenReturn(ZoneId.systemDefault());
+		when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
 		when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 
 		when(env.getProperty(eq(SELECTED_AUTH), anyString())).thenReturn("db");
