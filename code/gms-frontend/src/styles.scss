@@ -4,14 +4,14 @@
 
 html,
 body {
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  /*display: flex;*/
-  /*flex-direction: column;*/
-  overflow: hidden;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    overflow: hidden;
 }
 
 // Colors
@@ -55,7 +55,7 @@ body {
 }
 
 .width100-and-margin-top {
-    width:100%;
+    width: 100%;
     margin-top: 10px;
 }
 
@@ -69,5 +69,5 @@ body {
 }
 
 .messages-0 {
-    color:#aaaaaa;
+    color: #aaaaaa;
 }

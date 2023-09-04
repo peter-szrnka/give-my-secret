@@ -6,7 +6,6 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 
 import java.time.Clock;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -55,13 +54,13 @@ public class SystemServiceImpl implements SystemService {
 		builder.authMode(auth);
 		builder.version(getVersion());
 		builder.built(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
-		
+
 		if (SELECTED_AUTH_LDAP.equals(auth)) {
 			return builder.status(OK).build();
 		}
 
 		long result = userRepository.countExistingAdmins();
-		return  builder.status(result > 0 ? OK : "NEED_SETUP").build();
+		return builder.status(result > 0 ? OK : "NEED_SETUP").build();
 	}
 
 	@Override
@@ -70,16 +69,16 @@ public class SystemServiceImpl implements SystemService {
 	public void refreshSystemStatus(RefreshCacheEvent userChangedEvent) {
 		log.info("System status cache refreshed");
 	}
-	
+
 	@Autowired(required = false)
 	public void setBuildProperties(BuildProperties buildProperties) {
 		this.buildProperties = buildProperties;
 	}
-	
+
 	private String getVersion() {
 		return buildProperties != null ? buildProperties.getVersion() : "DevRuntime";
 	}
-	
+
 	private ZonedDateTime getBuildTime() {
 		return buildProperties != null ? buildProperties.getTime().atZone(clock.getZone()) : ZonedDateTime.now(clock);
 	}

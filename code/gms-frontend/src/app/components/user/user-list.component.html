@@ -20,7 +20,7 @@
               <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef>Status</th>
                 <td mat-cell *matCellDef="let element">
-                  <status-toggle [entityId]="element.id" [doNotToggle]="element.id === 1"
+                  <status-toggle *ngIf="element.id !== 1" [entityId]="element.id" [doNotToggle]="element.id === 1"
                     [status]="element.status" (callbackFunction)="toggle(element.id, element.status)"></status-toggle>
                 </td>
               </ng-container>
@@ -44,7 +44,7 @@
                   <button mat-icon-button color="primary" class="show-large" [routerLink]="['/user/' + element.id]">
                     <mat-icon aria-hidden="false">edit</mat-icon>
                   </button>
-                  <button mat-icon-button color="warn" class="show-large" (click)="promptDelete(element.id)">
+                  <button *ngIf="element.id !== 1" mat-icon-button color="warn" class="show-large" (click)="promptDelete(element.id)">
                     <mat-icon aria-hidden="false">delete</mat-icon>
                   </button>
                     <button mat-icon-button class="show-small" [matMenuTriggerFor]="menu" aria-label="Operations menu">

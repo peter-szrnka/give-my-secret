@@ -1,13 +1,13 @@
 import { Component, Inject } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
-import { catchError } from "rxjs";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
 import { AuthenticationPhase, LoginResponse, VerifyLogin } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { WINDOW_TOKEN } from "../../window.provider";
+import { firstValueFrom } from "rxjs";
 
 /**
  * @author Peter Szrnka
@@ -24,7 +24,7 @@ export class VerifyComponent extends BaseLoginComponent {
         protected override router: Router,
         private authService: AuthService,
         protected override sharedDataService: SharedDataService,
-        protected override splashScreenStateService: SplashScreenStateService,
+        public override splashScreenStateService: SplashScreenStateService,
         protected override dialog: MatDialog) {
             super(router, sharedDataService, dialog, splashScreenStateService);      
     }
@@ -43,13 +43,8 @@ export class VerifyComponent extends BaseLoginComponent {
         }
     }
 
-    verifyLogin(): void {
-        this.splashScreenStateService.start();
-
-        this.authService.verifyLogin(this.formModel)
-            .pipe(catchError((err) => this.handleError(err)))
-            .subscribe((response : LoginResponse) => {
-                this.splashScreenStateService.stop();
+    handleResponse(response : LoginResponse): void {
+        this.splashScreenStateService.stop();
                 if (response === null) {
                     this.displayErrorModal();
                     return;
@@ -62,6 +57,25 @@ export class VerifyComponent extends BaseLoginComponent {
                 }
 
                 this.finalizeSuccessfulLogin(response);
+    }
+
+    verifyLogin(): void {
+        this.splashScreenStateService.start();
+
+        firstValueFrom(this.authService.verifyLogin(this.formModel))
+            .then((response : LoginResponse) => {
+                this.splashScreenStateService.stop();
+
+                if (response.phase !== AuthenticationPhase.COMPLETED) {
+                    this.showErrorModal();
+                    this.router.navigateByUrl('/login');
+                    return;
+                }
+
+                this.finalizeSuccessfulLogin(response);
+            })
+            .catch(() => {
+                this.displayErrorModal();
             });
     }
 }

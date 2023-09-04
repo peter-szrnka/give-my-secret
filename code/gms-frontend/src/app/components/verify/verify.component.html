@@ -11,7 +11,7 @@
           <mat-label>Verification code</mat-label>
           <input type="number" maxlength="6" matInput name="verificationCode" required [(ngModel)]="formModel.verificationCode">
         </mat-form-field>
-        <button [disabled]="form.status ==='INVALID'" (click)="verifyLogin()"
+        <button type="button" [disabled]="form.status ==='INVALID'" (click)="verifyLogin()"
           mat-raised-button color="primary" class="btn-block">Verify login</button>
       </mat-card-content>
     </mat-card>
