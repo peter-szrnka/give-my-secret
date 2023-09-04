@@ -135,7 +135,7 @@ describe('UserDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(component.getCount()).toEqual(1);
+        expect(component.getCount()).toEqual(0);
     });
 
     it('should save details', () => {
@@ -169,5 +169,6 @@ describe('UserDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
+        expect(component.getCount()).toEqual(1);
     });
 });
