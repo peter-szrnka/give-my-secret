@@ -7,7 +7,7 @@ import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { WINDOW_TOKEN } from "../../window.provider";
-import { catchError, firstValueFrom } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 /**
  * @author Peter Szrnka
