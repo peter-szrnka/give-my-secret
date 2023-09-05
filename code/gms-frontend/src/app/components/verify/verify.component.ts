@@ -52,14 +52,6 @@ export class VerifyComponent extends BaseLoginComponent {
         } catch (err) {
             this.handleFailure();
         }
-
-        // TODO Remove these tested solutions once the technical details clarified
-        /*firstValueFrom(this.authService.verifyLogin(this.formModel))
-            .then(this.handleResponse)
-            .catch(() => this.handleFailure());*/
-        /*this.authService.verifyLogin(this.formModel)
-            .pipe(catchError((err) => this.handleError(err)))
-            .subscribe(this.handleResponse);*/
     }
 
     private handleResponse(response: LoginResponse): void {
