@@ -7,7 +7,7 @@ import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { WINDOW_TOKEN } from "../../window.provider";
-import { firstValueFrom } from "rxjs";
+import { catchError, firstValueFrom } from "rxjs";
 
 /**
  * @author Peter Szrnka
@@ -24,7 +24,7 @@ export class VerifyComponent extends BaseLoginComponent {
         protected override router: Router,
         private authService: AuthService,
         protected override sharedDataService: SharedDataService,
-        public override splashScreenStateService: SplashScreenStateService,
+        protected override splashScreenStateService: SplashScreenStateService,
         protected override dialog: MatDialog) {
             super(router, sharedDataService, dialog, splashScreenStateService);      
     }
@@ -43,39 +43,36 @@ export class VerifyComponent extends BaseLoginComponent {
         }
     }
 
-    handleResponse(response : LoginResponse): void {
-        this.splashScreenStateService.stop();
-                if (response === null) {
-                    this.displayErrorModal();
-                    return;
-                }
-
-                if (response.phase !== AuthenticationPhase.COMPLETED) {
-                    this.showErrorModal();
-                    this.router.navigateByUrl('/login');
-                    return;
-                }
-
-                this.finalizeSuccessfulLogin(response);
-    }
-
-    verifyLogin(): void {
+    async verifyLogin(): Promise<void> {
         this.splashScreenStateService.start();
 
-        firstValueFrom(this.authService.verifyLogin(this.formModel))
-            .then((response : LoginResponse) => {
-                this.splashScreenStateService.stop();
+        try {
+            const response: LoginResponse = await firstValueFrom(this.authService.verifyLogin(this.formModel));
+            this.handleResponse(response);
+        } catch (err) {
+            this.handleFailure();
+        }
 
-                if (response.phase !== AuthenticationPhase.COMPLETED) {
-                    this.showErrorModal();
-                    this.router.navigateByUrl('/login');
-                    return;
-                }
+        // TODO Remove these tested solutions once the technical details clarified
+        /*firstValueFrom(this.authService.verifyLogin(this.formModel))
+            .then(this.handleResponse)
+            .catch(() => this.handleFailure());*/
+        /*this.authService.verifyLogin(this.formModel)
+            .pipe(catchError((err) => this.handleError(err)))
+            .subscribe(this.handleResponse);*/
+    }
 
-                this.finalizeSuccessfulLogin(response);
-            })
-            .catch(() => {
-                this.displayErrorModal();
-            });
+    private handleResponse(response: LoginResponse): void {
+        if (response.phase !== AuthenticationPhase.COMPLETED) {
+            this.handleFailure();
+            return;
+        }
+
+        this.finalizeSuccessfulLogin(response);
+    }
+
+    private handleFailure(): void {
+        this.displayErrorModal();
+        this.router.navigateByUrl('/login');
     }
 }
