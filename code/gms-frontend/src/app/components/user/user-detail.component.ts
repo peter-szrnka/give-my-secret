@@ -68,7 +68,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
   }
 
   public getCount() : number {
-    return this.eventList?.length ?? 0;
+    return this.eventList?.length || 0;
   }
 
   private refreshSelectableRoles(): void {
