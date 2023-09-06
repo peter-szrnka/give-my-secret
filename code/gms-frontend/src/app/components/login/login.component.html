@@ -14,8 +14,9 @@
 
         <mat-form-field appearance="fill" class="form-control">
           <mat-label>Password</mat-label>
-          <input type="password" matInput placeholder="Password"
+          <input [type]="showPassword ? 'text' : 'password'" matInput placeholder="Password" autocomplete="off"
             name="credential" required [(ngModel)]="formModel.credential">
+          <mat-icon matSuffix class="w-pointer" (click)="togglePasswordDisplay()" alt="Toggle password">{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
         </mat-form-field>
         <button [disabled]="form.status ==='INVALID'" (click)="login()"
           mat-raised-button color="primary" class="btn-block">Login</button>

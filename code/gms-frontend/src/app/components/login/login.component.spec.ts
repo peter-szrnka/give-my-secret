@@ -87,6 +87,7 @@ describe('LoginComponent', () => {
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
+        component.togglePasswordDisplay();
         component.login();
 
         // assert
@@ -94,6 +95,7 @@ describe('LoginComponent', () => {
         expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(sharedDataService.setCurrentUser).toBeCalledWith({ roles: [] });
+        expect(component.showPassword).toBeTruthy();
     });
 
     it('Should require MFA', () => {
