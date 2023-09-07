@@ -36,7 +36,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
   addOnBlur = true;
   auto = true;
   selectableRoles = ALL_ROLES;
-  eventList : Event[] | undefined;
+  eventList : Event[] = [];
   public datasource : ArrayDataSource<Event>;
 
   public tableConfig = {
@@ -68,7 +68,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
   }
 
   public getCount() : number {
-    return this.eventList?.length || 0;
+    return this.eventList.length;
   }
 
   private refreshSelectableRoles(): void {
