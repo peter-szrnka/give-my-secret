@@ -1,13 +1,13 @@
 import { Component, Inject } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
-import { catchError } from "rxjs";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
 import { AuthenticationPhase, LoginResponse, VerifyLogin } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { WINDOW_TOKEN } from "../../window.provider";
+import { firstValueFrom } from "rxjs";
 
 /**
  * @author Peter Szrnka
@@ -43,25 +43,28 @@ export class VerifyComponent extends BaseLoginComponent {
         }
     }
 
-    verifyLogin(): void {
+    async verifyLogin(): Promise<void> {
         this.splashScreenStateService.start();
 
-        this.authService.verifyLogin(this.formModel)
-            .pipe(catchError((err) => this.handleError(err)))
-            .subscribe((response : LoginResponse) => {
-                this.splashScreenStateService.stop();
-                if (response === null) {
-                    this.displayErrorModal();
-                    return;
-                }
+        try {
+            const response: LoginResponse = await firstValueFrom(this.authService.verifyLogin(this.formModel));
+            this.handleResponse(response);
+        } catch (err) {
+            this.handleFailure();
+        }
+    }
 
-                if (response.phase !== AuthenticationPhase.COMPLETED) {
-                    this.showErrorModal();
-                    this.router.navigateByUrl('/login');
-                    return;
-                }
+    private handleResponse(response: LoginResponse): void {
+        if (response.phase !== AuthenticationPhase.COMPLETED) {
+            this.handleFailure();
+            return;
+        }
 
-                this.finalizeSuccessfulLogin(response);
-            });
+        this.finalizeSuccessfulLogin(response);
+    }
+
+    private handleFailure(): void {
+        this.displayErrorModal();
+        this.router.navigateByUrl('/login');
     }
 }

@@ -16,6 +16,7 @@ import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
 import { EventService } from "../event/service/event-service";
 import { Event } from "../event/model/event.model";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -31,6 +32,7 @@ describe('UserDetailComponent', () => {
     let sharedDataService : any;
     let activatedRoute : any = {};
     let formBuilder : any;
+    let splashScreenStateService: any = {};
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -44,7 +46,8 @@ describe('UserDetailComponent', () => {
                 { provide : MatDialog, useValue : dialog },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : FormBuilder, useValue : formBuilder },
-                { provide : EventService, useValue : eventServiceMock }
+                { provide : EventService, useValue : eventServiceMock },
+                { provide : SplashScreenStateService, useValue : splashScreenStateService }
             ]
         });
 
@@ -83,6 +86,11 @@ describe('UserDetailComponent', () => {
 
         serviceMock = {
             save : jest.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>)
+        };
+
+        splashScreenStateService = {
+            start: jest.fn(),
+            stop: jest.fn()
         };
 
         formBuilder = FORM_GROUP_MOCK;
@@ -135,6 +143,7 @@ describe('UserDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
+        expect(component.getCount()).toEqual(0);
     });
 
     it('should save details', () => {
@@ -168,5 +177,6 @@ describe('UserDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
+        expect(component.getCount()).toEqual(1);
     });
 });

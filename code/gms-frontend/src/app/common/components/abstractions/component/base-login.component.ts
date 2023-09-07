@@ -25,7 +25,7 @@ export abstract class BaseLoginComponent implements OnInit {
         this.splashScreenStateService.stop();
     }
     
-    protected showErrorModal() {
+    private showErrorModal() {
         this.dialog.open(InfoDialog, {
             width: '250px',
             data: { text : "Login failed!", type : 'warning' } as DialogData

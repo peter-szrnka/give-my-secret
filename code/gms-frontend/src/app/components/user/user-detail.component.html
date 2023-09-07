@@ -4,7 +4,7 @@
 
     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
         <mat-tab label="User data">
-            <form #form="ngForm"><!-- [formGroup]="form" novalidate>-->
+            <form #form="ngForm" autocomplete="off">
                 <mat-card class="with-margin-top">
                     <mat-card-content>
                         In order to make the application works, you must create an admin user. Please fill in the next
@@ -24,7 +24,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label>Credential</mat-label>
-                            <input type="password" matInput autocomplete="off" name="credential" required
+                            <input type="password" matInput autocomplete="new-password" name="credential" required="{{!data.id}}"
                                 [(ngModel)]="data.credential">
                         </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">

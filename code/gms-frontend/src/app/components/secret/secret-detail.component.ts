@@ -15,6 +15,7 @@ import { SecretService } from "./service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { ArrayDataSource } from "@angular/cdk/collections";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 interface KeyValuePair {
     key : string,
@@ -60,8 +61,9 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         public override dialog: MatDialog,
         protected override activatedRoute: ActivatedRoute,
         private keystoreService: KeystoreService,
-        private apiKeyService: ApiKeyService) {
-        super(router, sharedData, service, dialog, activatedRoute);
+        private apiKeyService: ApiKeyService,
+        protected override splashScreenStateService: SplashScreenStateService) {
+        super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);
     }
 
     override getPageConfig(): PageConfig {
@@ -96,22 +98,21 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     }
 
     save() {
+        this.splashScreenStateService.start();
         this.data.apiKeyRestrictions = this.formData.allApiKeysAllowed ? [] : this.selectedApiKeys.map(apiKey => apiKey.id);
         this.transformMultipleCredentials();
         this.validateForm();
         this.cleanOptionalFields();
 
-        this.loading = true;
         this.service.save(this.data).subscribe({
             next: () => {
                 this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
             },
             error: (err) => {
-                this.loading = false;
                 this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
             },
             complete: () => {
-                this.loading = false;
+                this.splashScreenStateService.stop();
             }
         });
     }

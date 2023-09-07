@@ -18,6 +18,7 @@ import { SecretService } from "./service/secret-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SecretDetailComponent } from "./secret-detail.component";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -33,6 +34,7 @@ describe('SecretDetailComponent', () => {
     let activatedRoute : any = {};
     let keystoreService = {};
     let apiKeyService = {};
+    let splashScreenStateService: any = {};
 
     const idPair1 : IdNamePair =  { id: 1, name : "name-1"};
     const idPair2 : IdNamePair =  { id: 2, name : "name-2"};
@@ -49,7 +51,8 @@ describe('SecretDetailComponent', () => {
                 { provide : MatDialog, useValue : dialog },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : KeystoreService, useValue : keystoreService },
-                { provide : ApiKeyService, useValue : apiKeyService }
+                { provide : ApiKeyService, useValue : apiKeyService },
+                { provide : SplashScreenStateService, useValue : splashScreenStateService }
             ],
         }).compileComponents();
 
@@ -105,6 +108,11 @@ describe('SecretDetailComponent', () => {
 
         apiKeyService = {
             getAllApiKeyNames : jest.fn().mockReturnValue(of(mockNames))
+        };
+
+        splashScreenStateService = {
+            start: jest.fn(),
+            stop: jest.fn()
         };
     });
 

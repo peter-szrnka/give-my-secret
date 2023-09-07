@@ -7,6 +7,7 @@ import { SharedDataService } from "../../../service/shared-data-service";
 import { getErrorMessage } from "../../../utils/error-utils";
 import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { SaveServiceBase } from "../service/save-service-base";
+import { SplashScreenStateService } from "../../../service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -15,14 +16,14 @@ import { SaveServiceBase } from "../service/save-service-base";
 export abstract class BaseSaveableDetailComponent<T, S extends SaveServiceBase<T, BaseList<T>>> implements OnInit {
 
     data : T;
-    loading  = true;
 
     constructor(
         protected router : Router,
         protected sharedData : SharedDataService, 
         protected service : S,
         public dialog: MatDialog,
-        protected activatedRoute: ActivatedRoute) {}
+        protected activatedRoute: ActivatedRoute,
+        protected splashScreenStateService: SplashScreenStateService) {}
 
     abstract getPageConfig() : PageConfig;
 
@@ -36,7 +37,7 @@ export abstract class BaseSaveableDetailComponent<T, S extends SaveServiceBase<T
     }
 
     save() {
-        this.loading = true;
+        this.splashScreenStateService.start();
         this.service.save(this.data)
         .subscribe({
             next: () => {
@@ -45,17 +46,15 @@ export abstract class BaseSaveableDetailComponent<T, S extends SaveServiceBase<T
             error: (err) => {
                 this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
             },
-            complete :() => {
-                this.loading = false;
+            complete: () => {
+                this.splashScreenStateService.stop();
             }
         });
     }
 
     private fetchData() {
-        this.loading = true;
         this.activatedRoute.data.subscribe((response : any) => {
             this.data = response['entity'];
-            this.loading = false;
             this.dataLoadingCallback(this.data);
         });
     }

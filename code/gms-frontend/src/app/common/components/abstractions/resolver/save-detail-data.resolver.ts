@@ -24,9 +24,6 @@ export abstract class DetailDataResolver<T, S extends ServiceBase<T, BaseList<T>
         this.splashScreenStateService.start();
 
         return this.service.getById(route.params['id'])
-        .pipe(catchError(() => this.sharedData.clearDataAndReturn({} as T)), (data) => {
-            this.splashScreenStateService.stop();
-            return data;
-        });
+        .pipe(catchError(() => this.sharedData.clearDataAndReturn({} as T)), (data) => data);
     }
 }

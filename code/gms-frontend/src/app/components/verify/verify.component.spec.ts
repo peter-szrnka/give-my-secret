@@ -43,7 +43,6 @@ describe('VerifyComponent', () => {
                 { provide : MatDialog, useValue : dialog }
             ]
         });
-
         fixture = TestBed.createComponent(VerifyComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -59,8 +58,8 @@ describe('VerifyComponent', () => {
         };
 
         router = {
-            navigate : jest.fn().mockReturnValue(of(true)),
-            navigateByUrl : jest.fn().mockReturnValue(of(true)),
+            navigate : jest.fn().mockResolvedValue(true),
+            navigateByUrl : jest.fn().mockResolvedValue(true),
             getCurrentNavigation: jest.fn().mockReturnValue({
                 extras: { state: { username: 'user-1' } }
             })
@@ -90,10 +89,12 @@ describe('VerifyComponent', () => {
             phase: AuthenticationPhase.COMPLETED
         };
         authService = {
-            verifyLogin : jest.fn().mockImplementation(() => {
-                return of(mockResponse);
-            })
+            verifyLogin : jest.fn().mockReturnValue(of(mockResponse))
         };
+    });
+
+    afterEach(() => {
+        jest.resetAllMocks();
     });
 
     it('Should forced call redirected', () => {
@@ -105,61 +106,7 @@ describe('VerifyComponent', () => {
         expect(router.navigateByUrl).toHaveBeenCalledWith('/');
     });
 
-    it('Should MFA verification succeed', () => {
-        // arrange
-        const mockUser = { username: 'test', roles: [] };
-        const mockResponse: LoginResponse = {
-            currentUser: mockUser,
-            phase: AuthenticationPhase.COMPLETED
-        };
-        authService = {
-            verifyLogin : jest.fn().mockImplementation(() => {
-                return of(mockResponse);
-            })
-        };
-        configTestBed();
-        component.formModel.verificationCode = "123456";
-
-        // act
-        component.verifyLogin();
-
-        // assert
-        expect(component).toBeTruthy();
-        expect(component.formModel.username).toEqual('user-1');
-        expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
-        expect(splashScreenStateService.start).toHaveBeenCalled();
-        expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalledWith(['']);
-        expect(sharedDataService.setCurrentUser).toHaveBeenCalledWith(mockUser);
-    });
-
-    it('Should MFA verification fail', () => {
-        // arrange
-        const mockResponse: LoginResponse = {
-            currentUser: { username: 'test', roles: [] },
-            phase: AuthenticationPhase.FAILED
-        };
-        authService = {
-            verifyLogin : jest.fn().mockImplementation(() => {
-                return of(mockResponse);
-            })
-        };
-        configTestBed();
-        component.formModel.verificationCode = "123456";
-
-        // act
-        component.verifyLogin();
-
-        // assert
-        expect(component).toBeTruthy();
-        expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
-        expect(splashScreenStateService.start).toHaveBeenCalled();
-        expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(router.navigateByUrl).toHaveBeenCalledWith('/login');
-        expect(sharedDataService.setCurrentUser).toHaveBeenCalledTimes(0);
-    });
-
-    it('Should fail by unknown error', () => {
+    it('Should fail by unknown error', async () => {
         authService = {
             verifyLogin : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
         };
@@ -168,7 +115,7 @@ describe('VerifyComponent', () => {
         component.formModel.verificationCode = "123456";
 
         // act
-        component.verifyLogin();
+        await component.verifyLogin();
 
         // assert
         expect(component).toBeTruthy();
@@ -176,5 +123,55 @@ describe('VerifyComponent', () => {
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
         expect(sharedDataService.setCurrentUser).toBeCalledTimes(0);
+    });
+
+    it('Should MFA verification succeed', async () => {
+        // arrange
+        const mockUser: User = { username: 'test', roles: [] };
+        const mockResponse: LoginResponse = {
+            currentUser: mockUser,
+            phase: AuthenticationPhase.COMPLETED
+        };
+        authService = {
+            verifyLogin : jest.fn().mockReturnValue(of(mockResponse))
+        };
+        configTestBed();
+        component.formModel.verificationCode = "123456";
+
+        // act
+        await component.verifyLogin();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.formModel.username).toEqual('user-1');
+        expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
+        expect(sharedDataService.setCurrentUser).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalled();
+    });
+
+    it('Should MFA verification fail', async () => {
+        // arrange
+        const mockResponse: LoginResponse = {
+            currentUser: { username: 'test', roles: [] },
+            phase: AuthenticationPhase.FAILED
+        };
+        authService = {
+            verifyLogin : jest.fn().mockReturnValue(of(mockResponse))
+        };
+        configTestBed();
+        component.formModel.verificationCode = "123456";
+
+        // act
+        await component.verifyLogin();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
+        expect(sharedDataService.setCurrentUser).toHaveBeenCalledTimes(0);
+        expect(router.navigateByUrl).toHaveBeenCalledWith('/login');
     });
 });

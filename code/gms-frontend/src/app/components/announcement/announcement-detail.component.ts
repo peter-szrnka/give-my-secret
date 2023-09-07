@@ -6,6 +6,7 @@ import { PageConfig } from "../../common/model/common.model";
 import { AnnouncementService } from "./service/announcement-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -22,8 +23,9 @@ export class AnnouncementDetailComponent extends BaseSaveableDetailComponent<Ann
     override sharedData : SharedDataService, 
     override service : AnnouncementService,
     public override dialog: MatDialog,
-    override activatedRoute: ActivatedRoute) {
-      super(router, sharedData, service, dialog, activatedRoute);
+    override activatedRoute: ActivatedRoute,
+    protected override splashScreenStateService: SplashScreenStateService) {
+      super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);
   }
 
   getPageConfig(): PageConfig {

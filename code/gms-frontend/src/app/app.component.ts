@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
 import { User } from './components/user/model/user.model';
 import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
-import { combineLatest } from 'rxjs';
+import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { roleCheck } from './common/utils/permission-utils';
 
 const LOGIN_CALLBACK_URL = '/login';
@@ -16,8 +16,9 @@ const LOGIN_CALLBACK_URL = '/login';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
+  unsubscribe = new Subject<void>();
   currentUser: User | undefined;
   systemReady: boolean;
   showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') ?? 'true');
@@ -30,6 +31,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.splashScreenStateService.start();
+    this.router.events.pipe(takeUntil(this.unsubscribe))
+      .subscribe((routerEvent) => this.checkRouterEvent(routerEvent as RouterEvent));
+
     combineLatest([
       this.sharedDataService.systemReadySubject$,
       this.sharedDataService.userSubject$
@@ -52,6 +56,18 @@ export class AppComponent implements OnInit {
     this.sharedDataService.check();
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe.next();
+  }
+
+  checkRouterEvent(routerEvent: RouterEvent): void {
+    if (routerEvent instanceof NavigationStart) {
+      this.splashScreenStateService.start();
+    } else if (this.isNavigationEndInstance(routerEvent)) {
+       this.splashScreenStateService.stop();
+    }
+  }
+
   toggleTextMenuVisibility() : void {
     this.showTexts = !this.showTexts;
     localStorage.setItem('showTextsInSidevNav', this.showTexts)
@@ -63,5 +79,9 @@ export class AppComponent implements OnInit {
 
   isAdmin(): boolean {
     return this.systemReady && this.currentUser !== undefined && roleCheck(this.currentUser, 'ROLE_ADMIN');
+  }
+
+  private isNavigationEndInstance(routerEvent: RouterEvent): boolean {
+    return routerEvent instanceof NavigationEnd || routerEvent instanceof NavigationCancel || routerEvent instanceof NavigationError;
   }
 }

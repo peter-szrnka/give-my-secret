@@ -31,6 +31,7 @@ export class LoginComponent extends BaseLoginComponent {
         username: undefined,
         credential: undefined
     };
+    showPassword: boolean = false;
 
     login(): void {
         this.splashScreenStateService.start();
@@ -57,5 +58,9 @@ export class LoginComponent extends BaseLoginComponent {
 
                 this.finalizeSuccessfulLogin(response);
             });
+    }
+
+    togglePasswordDisplay(): void {
+        this.showPassword = !this.showPassword;
     }
 }
