@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { Router } from "@angular/router";
-import { EMPTY, of, ReplaySubject } from "rxjs";
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
+import { EMPTY, Observable, of, ReplaySubject } from "rxjs";
 import { AppComponent } from "./app.component";
 import { SystemReadyData } from "./common/model/system-ready.model";
 import { User } from "./components/user/model/user.model";
@@ -20,6 +20,7 @@ describe('AppComponent', () => {
     let fixture : ComponentFixture<AppComponent>;
     let mockSubject : ReplaySubject<User | undefined>;
     let mockSystemReadySubject : ReplaySubject<SystemReadyData>;
+    let mockEvents: any[] = [];
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -38,8 +39,18 @@ describe('AppComponent', () => {
     };
 
     beforeEach(() => {
+        mockEvents = [
+            new NavigationStart(0, 'http://localhost:4200/login'),
+            new NavigationEnd(0, 'http://localhost:4200/login', 'http://localhost:4200/login'),
+            new NavigationCancel(0, 'http://localhost:4200/login', 'user cancelled'),
+            new NavigationError(0, 'http://localhost:4200/login', new Error())
+        ];
         router = {
-            navigate : jest.fn().mockReturnValue(of(true))
+            navigate : jest.fn().mockReturnValue(of(true)),
+            events: new Observable(observer => {
+                mockEvents.forEach(event => observer.next(event));
+                observer.complete();
+            })
         };
 
         mockSubject = new ReplaySubject<User | undefined>();
@@ -57,13 +68,15 @@ describe('AppComponent', () => {
         };
 
         splashScreenStateService = {
-            start : jest.fn()
+            start: jest.fn(),
+            stop: jest.fn()
         };
     });
 
     it('Should create component', () => {
         configureTestBed();
         expect(component).toBeTruthy();
+        component.ngOnDestroy();
     });
 
     it('User is admin', () => {
@@ -79,6 +92,8 @@ describe('AppComponent', () => {
         // act & assert
         expect(component.isNormalUser()).toEqual(false);
         expect(component.isAdmin()).toEqual(true);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
     it.each([
@@ -100,6 +115,8 @@ describe('AppComponent', () => {
         expect(component.isAdmin()).toEqual(false);
         expect(component.showTexts).toEqual(!showTexts);
         localStorage.removeItem('showTextsInSidevNav');
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
     it('No roles provided', () => {
@@ -115,6 +132,8 @@ describe('AppComponent', () => {
 
         // act & assert
         expect(router.navigate).toHaveBeenCalledTimes(0);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
     it('No available user', () => {
@@ -127,6 +146,8 @@ describe('AppComponent', () => {
 
         // act & assert
         expect(router.navigate).toHaveBeenCalled();
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
     it('should log out', () => {
@@ -138,5 +159,7 @@ describe('AppComponent', () => {
 
         // act & assert
         expect(router.navigate).toHaveBeenCalled();
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 });

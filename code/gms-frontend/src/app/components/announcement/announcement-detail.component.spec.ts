@@ -13,6 +13,7 @@ import { User } from "../user/model/user.model";
 import { AnnouncementService } from "./service/announcement-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -28,6 +29,7 @@ describe('AnnouncementDetailComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
+    let splashScreenStateService: any = {};
     // Fixtures
     let fixture : ComponentFixture<AnnouncementDetailComponent>;
 
@@ -63,6 +65,11 @@ describe('AnnouncementDetailComponent', () => {
             })
         };
 
+        splashScreenStateService = {
+            start: jest.fn(),
+            stop: jest.fn()
+        };
+
         TestBed.configureTestingModule({
             imports : [RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, PipesModule ],
             declarations : [AnnouncementDetailComponent],
@@ -72,7 +79,8 @@ describe('AnnouncementDetailComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : AnnouncementService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
-                { provide : ActivatedRoute, useClass : activatedRoute }
+                { provide : ActivatedRoute, useClass : activatedRoute },
+                { provide : SplashScreenStateService, useValue : splashScreenStateService }
             ]
         }).compileComponents();
     });

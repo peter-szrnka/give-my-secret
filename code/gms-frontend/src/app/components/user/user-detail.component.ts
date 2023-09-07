@@ -12,6 +12,7 @@ import { BaseSaveableDetailComponent } from "../../common/components/abstraction
 import { EventService } from "../event/service/event-service";
 import { Event } from "../event/model/event.model";
 import { ArrayDataSource } from "@angular/cdk/collections";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 const EVENT_LIST_FILTER = {
   direction: "DESC",
@@ -49,8 +50,9 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
     protected override service: UserService,
     public override dialog: MatDialog,
     protected override activatedRoute: ActivatedRoute,
-    public eventService : EventService) {
-    super(router, sharedData, service, dialog, activatedRoute);
+    public eventService : EventService,
+    protected override splashScreenStateService: SplashScreenStateService) {
+    super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

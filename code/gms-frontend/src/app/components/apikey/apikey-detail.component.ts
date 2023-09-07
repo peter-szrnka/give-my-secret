@@ -8,6 +8,7 @@ import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import randomstring from "randomstring";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -28,8 +29,9 @@ export class ApiKeyDetailComponent extends BaseSaveableDetailComponent<ApiKey, A
         protected override sharedData: SharedDataService,
         protected override service: ApiKeyService,
         public override dialog: MatDialog,
-        protected override activatedRoute: ActivatedRoute) {
-        super(router, sharedData, service, dialog, activatedRoute);
+        protected override activatedRoute: ActivatedRoute,
+        protected override splashScreenStateService: SplashScreenStateService) {
+        super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);
     }
 
     override getPageConfig(): PageConfig {

@@ -16,6 +16,7 @@ import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.
 import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { ApiKeyDetailComponent } from "./apikey-detail.component";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -29,6 +30,7 @@ describe('ApiKeyDetailComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
+    let splashScreenStateService: any = {};
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -40,7 +42,8 @@ describe('ApiKeyDetailComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : MatDialog, useValue : dialog },
                 { provide : ActivatedRoute, useClass : activatedRoute },
-                { provide : ApiKeyService, useValue : service }
+                { provide : ApiKeyService, useValue : service },
+                { provide : SplashScreenStateService, useValue : splashScreenStateService }
             ]
         }).compileComponents();
 
@@ -75,6 +78,11 @@ describe('ApiKeyDetailComponent', () => {
 
         service = {
             save : jest.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>)
+        };
+
+        splashScreenStateService = {
+            start: jest.fn(),
+            stop: jest.fn()
         };
     });
 

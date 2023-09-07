@@ -16,6 +16,7 @@ import { KeystoreService } from "./service/keystore-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { KeystoreDetailComponent } from "./keystore-detail.component";
 import { KeystoreAlias } from "./model/keystore-alias.model";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -32,6 +33,7 @@ describe('KeystoreDetailComponent', () => {
     let fixture : ComponentFixture<KeystoreDetailComponent>;
     let mockElementRef : any;
     let mockAliases : KeystoreAlias[] = [];
+    let splashScreenStateService: any = {};
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -44,7 +46,8 @@ describe('KeystoreDetailComponent', () => {
                 { provide : KeystoreService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
                 { provide : ActivatedRoute, useClass : activatedRoute },
-                { provide: ElementRef, useValue: mockElementRef }
+                { provide: ElementRef, useValue: mockElementRef },
+                { provide : SplashScreenStateService, useValue : splashScreenStateService }
             ]
         });
 
@@ -85,6 +88,11 @@ describe('KeystoreDetailComponent', () => {
 
         router = {
             navigate : jest.fn()
+        };
+
+        splashScreenStateService = {
+            start: jest.fn(),
+            stop: jest.fn()
         };
     });
 

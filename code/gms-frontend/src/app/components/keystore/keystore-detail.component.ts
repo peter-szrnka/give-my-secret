@@ -11,6 +11,7 @@ import { getErrorMessage } from "../../common/utils/error-utils";
 import { KeystoreAlias } from "./model/keystore-alias.model";
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { environment } from "../../../environments/environment";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 const ENABLED_ALGORITHMS : string[] = [
   "MD2WITHRSA",
@@ -59,8 +60,9 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
     protected override sharedData: SharedDataService,
     protected override service: KeystoreService,
     public override dialog: MatDialog,
-    protected override activatedRoute: ActivatedRoute) {
-    super(router, sharedData, service, dialog, activatedRoute);
+    protected override activatedRoute: ActivatedRoute,
+    protected override splashScreenStateService: SplashScreenStateService) {
+    super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);
   }
 
   override getPageConfig(): PageConfig {
@@ -74,6 +76,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
 
   save() {
     this.addAliasDataToRequest();
+    this.splashScreenStateService.start();
     this.service.save(this.data, (this.data.generated === true) ? undefined : this.file)
       .subscribe({
         next: () => {
@@ -81,6 +84,9 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
         },
         error: (err) => {
           this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
+        },
+        complete: () => {
+            this.splashScreenStateService.stop();
         }
       });
   }

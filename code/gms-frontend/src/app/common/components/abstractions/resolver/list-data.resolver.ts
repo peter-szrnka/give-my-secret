@@ -27,9 +27,6 @@ export abstract class ListResolver<T, L extends BaseList<T>, S extends ServiceBa
             property : this.getOrderProperty(),
             page : snapshot.queryParams['page'] ?? 0,
             size: JSON.parse(localStorage.getItem(this.getPageConfig().scope + "_pageSize") ?? '25')
-        }).pipe(catchError(() => this.sharedData.clearDataAndReturn([])), (data) => {
-            this.splashScreenStateService.stop();
-            return data;
-        });
+        }).pipe(catchError(() => this.sharedData.clearDataAndReturn([])), (data) => data);
     }
 }
