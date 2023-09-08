@@ -29,7 +29,7 @@ import java.util.UUID;
 
 import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -122,9 +122,9 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         MDC.put(MdcParameter.USER_ID.getDisplayName(), DemoData.USER_1_ID);
     }
 
-    @AfterAll
+    @AfterEach
     @SneakyThrows
-    public static void tearDownAll() {
+    public void tearDown() {
         TestUtils.deleteDirectoryWithContent("./unit-test-output/");
         TestUtils.deleteDirectoryWithContent("./temp-output/");
     }
@@ -308,6 +308,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
             String model = TestUtils.objectMapper().writeValueAsString(dto);
 
             MultipartFile multiPart = mock(MultipartFile.class);
+            when(multiPart.getOriginalFilename()).thenReturn("test.jks");
             when(multiPart.getBytes()).thenReturn("test".getBytes());
 
             when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
@@ -340,6 +341,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         String model = TestUtils.objectMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
+        when(multiPart.getOriginalFilename()).thenReturn(fileName);
         when(multiPart.getBytes()).thenReturn("test".getBytes());
 
         KeystoreEntity keystoreEntity = TestUtils.createKeystoreEntity();
@@ -372,6 +374,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         MultipartFile multiPart = mock(MultipartFile.class);
 
         when(multiPart.getBytes()).thenReturn("test".getBytes());
+        when(multiPart.getOriginalFilename()).thenReturn("test.jks");
         when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
 
         KeystoreEntity keystoreEntity = TestUtils.createKeystoreEntity();
@@ -502,6 +505,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         String model = TestUtils.objectMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
+        when(multiPart.getOriginalFilename()).thenReturn("test.jks");
         when(multiPart.getBytes()).thenReturn("test".getBytes());
 
         when(converter.toEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
