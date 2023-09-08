@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
@@ -232,8 +233,10 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private void persistFile(KeystoreEntity newEntity, byte[] fileContent, boolean generated) {
 		try {
 			String newFileName = getUserFolder() + newEntity.getFileName();
+			validatePath(newFileName);
+			Path newFilePath = Paths.get(newFileName);
 
-			if (Files.exists(Paths.get(newFileName))) {
+			if (Files.exists(newFilePath)) {
 				throw new GmsException("File name must be unique!");
 			}
 
@@ -352,6 +355,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private byte[] getFileContent(KeystoreEntity entity, MultipartFile file, SaveKeystoreRequestDto dto) {
 		try {
 			if (file != null) {
+				validatePath(file.getOriginalFilename());
 				return file.getBytes();
 			}
 
@@ -364,13 +368,13 @@ public class KeystoreServiceImpl implements KeystoreService {
 				entity.setFileName(filename);
 			}
 
-			File keystoreFile = new File(folder + filename);
+			Path keystoreFile = new File(folder + filename).toPath();
 
-			if (!Files.exists(keystoreFile.toPath())) {
+			if (!Files.exists(keystoreFile)) {
 				throw new GmsException("Keystore file does not exist!");
 			}
 
-			return Files.readAllBytes(keystoreFile.toPath());
+			return Files.readAllBytes(keystoreFile);
 		} catch (GmsException e) {
 			throw e;
 		} catch (Exception e) {
@@ -384,5 +388,11 @@ public class KeystoreServiceImpl implements KeystoreService {
 		metadata.put("userId", getUserId());
 		metadata.put("keystoreId", keystoreId);
 		return metadata;
+	}
+
+	private void validatePath(String path) {
+		if (path.contains("../")) {
+			throw new GmsException("Could not upload file!");
+		}
 	}
 }

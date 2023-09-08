@@ -169,6 +169,37 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     @Test
     @SneakyThrows
     @SuppressWarnings("unchecked")
+    void shouldNotSaveNewEntityCausedByVulnerableKeystoreFile() {
+        try (MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class)) {
+            mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class)))
+                    .thenThrow(new RuntimeException("Test failure"));
+            mockedStaticFiles.when(() -> Files.exists(any(Path.class))).thenReturn(true);
+
+            // arrange
+            MultipartFile multiPart = mock(MultipartFile.class);
+            when(multiPart.getOriginalFilename()).thenReturn("hack/../../root/etc/password");
+
+            SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
+            dtoInput.setId(null);
+            dtoInput.setGenerated(false);
+            String model = TestUtils.objectMapper().writeValueAsString(dtoInput);
+            when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
+            when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
+
+            // act
+            GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
+
+            // assert
+            assertEquals("Could not upload file!", exception.getMessage());
+            verify(repository, never()).save(any());
+            verify(converter).toNewEntity(any(), any());
+            verify(objectMapper).readValue(eq(model), any(Class.class));
+        }
+    }
+
+    @Test
+    @SneakyThrows
+    @SuppressWarnings("unchecked")
     void shouldNotSaveNewEntityWhenKeystoreFileIsMissing() {
         MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class);
         mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class)))
@@ -277,7 +308,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
             String model = TestUtils.objectMapper().writeValueAsString(dto);
 
             MultipartFile multiPart = mock(MultipartFile.class);
-            // when(multiPart.getOriginalFilename()).thenReturn("test.jks");
             when(multiPart.getBytes()).thenReturn("test".getBytes());
 
             when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
