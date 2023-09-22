@@ -8,6 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @ExtendWith(MockitoExtension.class)
 class HealthcheckControllerTest {
     
@@ -21,7 +25,7 @@ class HealthcheckControllerTest {
         // act
         ResponseEntity<Void> response = controller.healthcheck();
 
-        // arrange
+        // assert
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
     }

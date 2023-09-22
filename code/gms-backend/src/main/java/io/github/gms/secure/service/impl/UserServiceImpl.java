@@ -1,10 +1,14 @@
 package io.github.gms.secure.service.impl;
 
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+
 import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.CACHE_USER;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.MDC;
 import org.springframework.cache.annotation.CacheConfig;
@@ -15,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.WebUtils;
 
 import dev.samstevens.totp.code.HashingAlgorithm;
 import dev.samstevens.totp.exceptions.QrGenerationException;
@@ -37,10 +42,15 @@ import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.secure.service.JwtClaimService;
 import io.github.gms.secure.service.UserService;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -58,13 +68,15 @@ public class UserServiceImpl implements UserService {
 	private final UserConverter converter;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final PasswordEncoder passwordEncoder;
+	private final JwtClaimService jwtClaimService;
 
 	public UserServiceImpl(UserRepository repository, UserConverter converter, ApplicationEventPublisher applicationEventPublisher,
-						   PasswordEncoder passwordEncoder ) {
+						   PasswordEncoder passwordEncoder, JwtClaimService jwtClaimService) {
 		this.repository = repository;
 		this.converter = converter;
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.passwordEncoder = passwordEncoder;
+		this.jwtClaimService = jwtClaimService;
 	}
 	
 	@Override
@@ -83,7 +95,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto getById(Long id) {
-		return converter.toDto(validateUser(id));
+		return converter.toDto(validateAndReturnUser(id));
 	}
 
 	@Override
@@ -95,14 +107,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
 	public void delete(Long id) {
-		validateUser(id);
+		validateAndReturnUser(id);
 		repository.deleteById(id);
 	}
 	
 	@Override
 	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
-		UserEntity entity = validateUser(id);
+		UserEntity entity = validateAndReturnUser(id);
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
 		repository.save(entity);
 	}
@@ -120,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void changePassword(ChangePasswordRequestDto dto) {
-		UserEntity user = validateUser(MdcUtils.getUserId());
+		UserEntity user = validateAndReturnUser(MdcUtils.getUserId());
 		validateCredentials(user, dto);
 		user.setCredential(passwordEncoder.encode(dto.getNewCredential()));
 		repository.save(user);
@@ -128,7 +140,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public byte[] getMfaQrCode() throws QrGenerationException {
-		UserEntity entity = validateUser(MdcUtils.getUserId());
+		UserEntity entity = validateAndReturnUser(MdcUtils.getUserId());
 		QrData data = new QrData.Builder()
 			.label(entity.getEmail())
 			.secret(entity.getMfaSecret())
@@ -144,15 +156,35 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void toggleMfa(boolean enabled) {
-		UserEntity entity = validateUser(MdcUtils.getUserId());
+		UserEntity entity = validateAndReturnUser(MdcUtils.getUserId());
 		entity.setMfaEnabled(enabled);
 		repository.save(entity);
 	}
 
 	@Override
 	public boolean isMfaActive() {
-		UserEntity entity = validateUser(MdcUtils.getUserId());
+		UserEntity entity = validateAndReturnUser(MdcUtils.getUserId());
 		return entity.isMfaEnabled();
+	}
+
+	@Override
+	public UserInfoDto getUserInfo(HttpServletRequest request) {
+		Cookie jwtTokenCookie = WebUtils.getCookie(request, ACCESS_JWT_TOKEN);
+
+		if (jwtTokenCookie == null) {
+			// We should not return an error, just simply return nothing
+			return null;
+		}
+
+		Claims claims = jwtClaimService.getClaims(jwtTokenCookie.getValue());
+		UserEntity entity = validateAndReturnUser(claims.get(MdcParameter.USER_ID.getDisplayName(), Long.class));
+		return UserInfoDto.builder()
+			.id(entity.getId())
+			.name(entity.getName())
+			.username(entity.getUsername())
+			.roles(Stream.of(entity.getRoles().split(";")).map(UserRole::getByName).collect(Collectors.toSet()))
+			.email(entity.getEmail())
+			.build();
 	}
 
 	private SaveEntityResponseDto saveUser(SaveUserRequestDto dto, boolean roleChangeEnabled) {
@@ -190,7 +222,7 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	private UserEntity validateUser(Long userId) {
+	private UserEntity validateAndReturnUser(Long userId) {
 		return repository.findById(userId).orElseThrow(() -> {
 			log.warn("User not found");
 			throw new GmsException("User not found!");

@@ -47,7 +47,7 @@ import io.github.gms.common.filter.SecureHeaderInitializerFilter;
 public class SecurityConfig {
 
 	private static final String[] FILTER_URL = new String[] { "/", "/system/status", "/healthcheck", "/setup/**",
-			"/login", "/authenticate", "/verify", "/logoutUser", "/api/**",
+			"/login", "/authenticate", "/verify", "/logoutUser", "/api/**", "/info/me",
 			"/gms-app/**", "/favicon.ico", "/assets/**", "/index.html**", "/*.js**", "/*.css**", "/*.json**",
 			"/manifest.webmanifest" };
 

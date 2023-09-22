@@ -1,8 +1,10 @@
 package io.github.gms.secure.service.impl;
 
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,6 +18,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.util.Lists;
@@ -44,10 +47,15 @@ import io.github.gms.secure.dto.LongValueDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.secure.service.JwtClaimService;
 import io.github.gms.util.TestUtils;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 
 /**
@@ -60,6 +68,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	private UserConverter converter;
 	private ApplicationEventPublisher applicationEventPublisher;
 	private PasswordEncoder passwordEncoder;
+	private JwtClaimService jwtClaimService;
 	private UserServiceImpl service;
 
 	@Override
@@ -70,7 +79,8 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		converter = mock(UserConverter.class);
 		applicationEventPublisher = mock(ApplicationEventPublisher.class);
 		passwordEncoder = mock(PasswordEncoder.class);
-		service = new UserServiceImpl(repository, converter, applicationEventPublisher, passwordEncoder);
+		jwtClaimService = mock(JwtClaimService.class);
+		service = new UserServiceImpl(repository, converter, applicationEventPublisher, passwordEncoder, jwtClaimService);
 		((Logger) LoggerFactory.getLogger(UserServiceImpl.class)).addAppender(logAppender);
 	}
 
@@ -360,6 +370,40 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 		// assert
 		assertEquals(value, response);
+		verify(repository).findById(1L);
+	}
+
+	@Test
+	void shouldNotGetUserInfo() {
+		// arrange
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getCookies()).thenReturn(null);
+
+		// act
+		UserInfoDto response = service.getUserInfo(request);
+
+		// assert
+		assertNull(response);
+		verify(jwtClaimService, never()).getClaims(anyString());
+		verify(repository, never()).findById(1L);
+	}
+
+	@Test
+	void shouldGetUserInfo() {
+		// arrange
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getCookies()).thenReturn(List.of(new Cookie(ACCESS_JWT_TOKEN, "jwt")).toArray(new Cookie[1]));
+		Claims claims = mock(Claims.class);
+		when(claims.get(MdcParameter.USER_ID.getDisplayName(), Long.class)).thenReturn(1L);
+		when(jwtClaimService.getClaims(anyString())).thenReturn(claims);
+		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
+
+		// act
+		UserInfoDto response = service.getUserInfo(request);
+
+		// assert
+		assertNotNull(response);
+		verify(jwtClaimService).getClaims(anyString());
 		verify(repository).findById(1L);
 	}
 }
