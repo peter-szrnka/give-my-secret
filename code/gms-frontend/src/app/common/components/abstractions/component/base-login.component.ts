@@ -43,9 +43,9 @@ export abstract class BaseLoginComponent implements OnInit {
         this.showErrorModal();
     }
 
-    protected finalizeSuccessfulLogin(response : LoginResponse) {
+    protected finalizeSuccessfulLogin() {
         this.splashScreenStateService.stop();
-        this.sharedDataService.setCurrentUser(response.currentUser);
+        this.sharedDataService.refreshCurrentUserInfo();
         void this.router.navigate(['']);
     }
 }

@@ -62,7 +62,6 @@ describe('SecretDetailResolver', () => {
     })
 
     it('should return empty response', async() => {
-        const route : any = jest.fn();
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "new"
@@ -95,7 +94,6 @@ describe('SecretDetailResolver', () => {
     });
 
     it('should return existing entity', async() => {
-        const route : any = jest.fn();
         activatedRouteSnapshot = {
             "params" : {
                 "id" : "1"

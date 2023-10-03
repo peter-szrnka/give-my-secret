@@ -1,9 +1,13 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { HomeData } from "./model/home-data.model";
+import { Router } from "@angular/router";
+import { SharedDataService } from "../../common/service/shared-data-service";
+import { isSpecificUser } from "../../common/utils/permission-utils";
 import { Event } from "../event/model/event.model";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { User } from "../user/model/user.model";
+import { EMPTY_HOME_DATA, HomeData } from "./model/home-data.model";
+import { Observable, map, mergeMap } from "rxjs";
+import { HomeService } from "./service/home.service";
 
 /**
  * @author Peter Szrnka
@@ -21,17 +25,31 @@ export class HomeComponent implements OnInit {
 
     constructor(
         public router: Router,
-        protected activatedRoute: ActivatedRoute,
-        private splashScreenService: SplashScreenStateService
-    ) {
-    }
+        private sharedData: SharedDataService,
+        private homeService: HomeService,
+    ) {}
 
     ngOnInit(): void {
-        this.activatedRoute.data
-            .subscribe((response: any) => {
-                this.data = response['data'];
+        this.sharedData.userSubject$
+            .pipe(mergeMap((user: User | undefined): Observable<HomeData> => this.processUser(user)))
+            .subscribe((homeData: HomeData) => {
+                this.data = {
+                    ...EMPTY_HOME_DATA,
+                    ...homeData
+                };
                 this.eventDataSource = new ArrayDataSource<Event>(this.data.events.resultList);
-                this.splashScreenService.stop();
             });
+    }
+
+    private processUser(user: User | undefined): Observable<HomeData> {
+        if (!user) {
+            throw new Error('Invalid user!');
+        }
+
+        return this.homeService.getData().pipe(map((response): HomeData => {
+            const data: HomeData = response;
+            data.admin = isSpecificUser(user.roles, 'ROLE_ADMIN');
+            return data;
+        }));
     }
 }

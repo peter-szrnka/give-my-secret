@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="data">
   <div *ngIf="data.admin === false">
     <div class="gms-box">
       <div class="warning" *ngIf="data.apiKeyCount === 0">
@@ -11,21 +11,25 @@
         <mat-card class="gms-card-left">
           <mat-card-content>
             <span class="number-of-container">
-              <mat-icon matListIcon>security</mat-icon> <span class="stat-item">Number of API keys: {{data.apiKeyCount}}</span>
+              <mat-icon matListIcon>security</mat-icon> <span class="stat-item">API keys: {{data.apiKeyCount}}</span>
             </span>
             <span class="number-of-container">
-              <mat-icon matListIcon>widgets</mat-icon> <span class="stat-item">Number of keystores: {{data.keystoreCount}}</span>
+              <mat-icon matListIcon>widgets</mat-icon> <span class="stat-item">Keystores: {{data.keystoreCount}}</span>
             </span>
             <span class="number-of-container">
-              <mat-icon matListIcon>key</mat-icon> <span class="stat-item">Number of secrets: {{data.secretCount}}</span>
+              <mat-icon matListIcon>key</mat-icon> <span class="stat-item">Secrets: {{data.secretCount}}</span>
             </span>
           </mat-card-content>
         </mat-card>
       </div>
       <div class="gms-sub-box">
-        <div class="information" *ngIf="data.announcements.resultList.length === 0">
-          No announcements found!
-        </div>
+        <mat-card class="gms-card-right"  *ngIf="data.announcements.resultList.length === 0">
+          <mat-card-content>
+            <div class="information">
+              No announcements found!
+            </div>
+        </mat-card-content>
+      </mat-card>
         <mat-card class="gms-card-right" *ngFor="let announcement of data.announcements.resultList">
           
           <mat-card-content>

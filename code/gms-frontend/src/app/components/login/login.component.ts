@@ -56,7 +56,7 @@ export class LoginComponent extends BaseLoginComponent {
                     return;
                 }
 
-                this.finalizeSuccessfulLogin(response);
+                this.finalizeSuccessfulLogin();
             });
     }
 

@@ -6,7 +6,6 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { HomeComponent } from "./home.component";
-import { HomeResolver } from "./resolver/home.resolver";
 import { HomeService } from "./service/home.service";
 
 /**
@@ -24,6 +23,6 @@ import { HomeService } from "./service/home.service";
         AppRoutingModule,
         PipesModule
     ],
-    providers: [ HomeResolver, HomeService ]
+    providers: [ HomeService ]
   })
   export class HomeModule { }

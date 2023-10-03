@@ -6,6 +6,7 @@ import { SystemStatusDto } from "../model/system-status.model";
 import { User } from "../../components/user/model/user.model";
 import { AuthService } from "./auth-service";
 import { SetupService } from "../../components/setup/service/setup-service";
+import { InformationService } from "./info-service";
 
 /**
  * @author Peter Szrnka
@@ -13,6 +14,7 @@ import { SetupService } from "../../components/setup/service/setup-service";
 @Injectable({ providedIn: 'any' })
 export class SharedDataService {
 
+    currentUser: User | undefined;
     userSubject$: ReplaySubject<User | undefined> = new ReplaySubject<User | undefined>();
     systemReadySubject$: ReplaySubject<SystemReadyData> = new ReplaySubject<SystemReadyData>();
     authModeSubject$ : ReplaySubject<string> = new ReplaySubject<string>();
@@ -22,18 +24,29 @@ export class SharedDataService {
     @Output() messageCountUpdateEvent = new EventEmitter<number>();
     @Output() showLargeMenuEvent = new EventEmitter<boolean>();
 
-    constructor(private router: Router, private setupService: SetupService, private authService : AuthService) {
-    }
+    constructor(
+        private router: Router, 
+        private setupService: SetupService, 
+        private authService: AuthService,
+        private infoService: InformationService
+    ) {}
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public setCurrentUser(currentUser: User) {
+    // @deprecated
+    public setCurrentUser(currentUser: User): void {
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
         this.userSubject$.next(currentUser);
     }
 
+    public refreshCurrentUserInfo(): void {
+        this.infoService.getUserInfo().then((user: User | null) => {
+            this.currentUser = user ?? undefined;
+            this.userSubject$.next(this.currentUser);
+        });
+    }
+
     public clearData() {
         this.userSubject$.next(undefined);
-        localStorage.removeItem('currentUser');
     }
 
     public logout() {
@@ -42,13 +55,12 @@ export class SharedDataService {
         }
 
         void this.router.navigate(['/login']);
-
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        this.authService.logout().subscribe(() => {
-            this.clearData();
-        });
+        this.authService.logout().subscribe(() => this.clearData());
     }
 
+    /**
+     * @deprecated
+     */
     public clearDataAndReturn(data : any) : Observable<any> {
         this.clearData();
         return of(data);
@@ -71,16 +83,10 @@ export class SharedDataService {
             });
         }
 
-        this.userSubject$.next(this.getUserInfo());
+        this.refreshCurrentUserInfo();
     }
 
     getUserInfo(): User | undefined {
-        const currentUserData : string = localStorage.getItem('currentUser') ?? '';
-
-        if (currentUserData === '') {
-            return undefined;
-        }
-
-        return JSON.parse(currentUserData);
+        return this.currentUser;
     }
 }

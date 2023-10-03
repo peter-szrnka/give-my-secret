@@ -12,7 +12,7 @@ export const ROLE_GUARD = (route: ActivatedRouteSnapshot) => {
     const roles = route.data["roles"] as string[];
     const currentUser: User | undefined = inject(SharedDataService).getUserInfo();
 
-    if (currentUser === undefined) {
+    if (!currentUser) {
         return false;
     }
 
