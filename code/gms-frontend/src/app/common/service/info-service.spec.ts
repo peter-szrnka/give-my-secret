@@ -20,7 +20,7 @@ describe('InformationService', () => {
         httpMock = TestBed.inject(HttpTestingController);
       });
 
-    it('Should provide null userinfo', async () => {
+    it('Should provide null userinfo', () => {
         // arrange
         const expectedUrl = environment.baseUrl + "info/me";
         const mockResponse: User  = {
@@ -29,15 +29,17 @@ describe('InformationService', () => {
             roles: ["ROLE_USER"]
         };
 
+
         //act
-        const response: User | null = await service.getUserInfo();
+        service.getUserInfo().then(user => {
+            expect(user).toEqual(mockResponse);
+        });
 
         // assert
-        expect(service).toBeTruthy();
-        expect(response).toEqual(null);
         const req = httpMock.expectOne(expectedUrl);
         expect(req.request.method).toBe('GET');
         req.flush(mockResponse);
+        
         httpMock.verify();
     });
 });
