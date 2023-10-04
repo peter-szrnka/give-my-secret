@@ -67,7 +67,7 @@ describe('VerifyComponent', () => {
 
         mockSubject = new ReplaySubject<any>();
         sharedDataService = {
-            setCurrentUser : jest.fn(),
+            refreshCurrentUserInfo : jest.fn(),
             userSubject$ : mockSubject
         };
 
@@ -122,7 +122,7 @@ describe('VerifyComponent', () => {
         expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(sharedDataService.setCurrentUser).toBeCalledTimes(0);
+        expect(sharedDataService.refreshCurrentUserInfo).toBeCalledTimes(0);
     });
 
     it('Should MFA verification succeed', async () => {
@@ -147,7 +147,7 @@ describe('VerifyComponent', () => {
         expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(sharedDataService.setCurrentUser).toHaveBeenCalled();
+        expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
     });
 
@@ -171,7 +171,7 @@ describe('VerifyComponent', () => {
         expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(sharedDataService.setCurrentUser).toHaveBeenCalledTimes(0);
+        expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalledTimes(0);
         expect(router.navigateByUrl).toHaveBeenCalledWith('/login');
     });
 });

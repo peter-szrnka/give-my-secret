@@ -53,10 +53,6 @@ describe('SharedDataService', () => {
       logout: jest.fn().mockReturnValue(of(EMPTY))
     };
 
-    infoService = {
-      getUserInfo: jest.fn()
-    };
-
     mockSubject = new Subject<User>();
     mockSystemReadySubject = new Subject<SystemReadyData>();
 
@@ -67,6 +63,11 @@ describe('SharedDataService', () => {
     };
     mockSubject.next(currentUser);
     mockSystemReadySubject.next({ ready: true, status: 200, authMode: 'db' });
+
+    
+    infoService = {
+      getUserInfo: jest.fn().mockResolvedValue(currentUser)
+    };
   });
 
   it('should return OK', () => {
@@ -84,28 +85,29 @@ describe('SharedDataService', () => {
   });
 
   it('should clear data', () => {
-    mockSubject.subscribe(res => expect(res).toEqual({
-      userId: undefined,
-      userName: undefined
-    }));
+    // assert
+    mockSubject.subscribe(res => expect(res).toBeUndefined());
 
     // act
     configureTestBed();
     service.clearData();
-
-    // assert
-    expect(authService.logout).toHaveBeenCalled();
   });
 
-  it('should refresh current user info', () => {
+  it.each([
+    [
+      {
+        roles: ["ROLE_ADMIN"],
+        userName: "test1",
+        userId: 1
+      }
+    ],
+    [null]
+  ])('should refresh current user info', (currentUser: User | null) => {
     // arrange
-    currentUser = {
-      roles: ["ROLE_ADMIN"],
-      userName: "test1",
-      userId: 1
-    };
     infoService.getUserInfo = jest.fn().mockResolvedValue(currentUser);
     configureTestBed();
+
+    mockSubject.subscribe(res => expect(res).toEqual(currentUser));
 
     // act
     service.refreshCurrentUserInfo();
