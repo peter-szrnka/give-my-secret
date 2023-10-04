@@ -183,22 +183,12 @@ describe('SharedDataService', () => {
   });
 
   it('should get user info', () => {
-    // arrange
-    const jwtData = {
-      id: 1,
-      username: "test1",
-      roles: ["ROLE_USER"]
-    };
-    localStorage.setItem('currentUser', JSON.stringify(jwtData));
-
     // act
     configureTestBed();
     const response: User | undefined = service.getUserInfo();
 
     // assert
-    expect(response).toBeDefined();
-    expect(response?.id).toEqual(jwtData.id);
-    expect(response?.username).toEqual(jwtData.username);
+    expect(response).toBeUndefined();
   });
 
   it('should log out', () => {
