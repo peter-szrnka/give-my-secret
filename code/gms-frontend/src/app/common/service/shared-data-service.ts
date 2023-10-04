@@ -31,13 +31,6 @@ export class SharedDataService {
         private infoService: InformationService
     ) {}
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // @deprecated
-    public setCurrentUser(currentUser: User): void {
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        this.userSubject$.next(currentUser);
-    }
-
     public refreshCurrentUserInfo(): void {
         this.infoService.getUserInfo().then((user: User | null) => {
             this.currentUser = user ?? undefined;

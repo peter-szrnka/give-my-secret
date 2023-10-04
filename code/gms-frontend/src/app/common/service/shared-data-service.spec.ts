@@ -10,18 +10,20 @@ import { SystemStatusDto } from "../model/system-status.model";
 import { AuthService } from "./auth-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SystemReadyData } from "../model/system-ready.model";
+import { InformationService } from "./info-service";
 
 /**
  * @author Peter Szrnka
  */
 describe('SharedDataService', () => {
   let router: any;
-  let currentUser: User | any;
+  let currentUser: any;
   let service: SharedDataService;
   let setupService: any;
   let mockSubject: Subject<User>;
   let mockSystemReadySubject: Subject<SystemReadyData>;
   let authService: any;
+  let infoService: any;
 
   const configureTestBed = () => {
     TestBed.configureTestingModule({
@@ -30,6 +32,7 @@ describe('SharedDataService', () => {
         { provide: Router, useValue: router },
         { provide: SetupService, useValue: setupService },
         { provide: AuthService, useValue: authService },
+        { provide: InformationService, useValue: infoService },
         SharedDataService
       ]
     });
@@ -48,6 +51,10 @@ describe('SharedDataService', () => {
 
     authService = {
       logout: jest.fn().mockReturnValue(of(EMPTY))
+    };
+
+    infoService = {
+      getUserInfo: jest.fn()
     };
 
     mockSubject = new Subject<User>();
@@ -76,24 +83,6 @@ describe('SharedDataService', () => {
     mockSystemReadySubject.subscribe(res => expect(res).toEqual(false));
   });
 
-  it('should set current user', () => {
-    // arrange
-    const jwtData = {
-      userId: 1,
-      userName: "test-user",
-      exp: new Date().getTime() + 100000,
-      roles: ["ROLE_USER"]
-    } as User;
-
-    // act & assert
-    configureTestBed();
-    mockSubject.subscribe(res => expect(res).toEqual(currentUser));
-    service.setCurrentUser(jwtData);
-
-    // assert
-    expect(localStorage.getItem('currentUser')).toBe(JSON.stringify(jwtData));
-  });
-
   it('should clear data', () => {
     mockSubject.subscribe(res => expect(res).toEqual({
       userId: undefined,
@@ -105,11 +94,24 @@ describe('SharedDataService', () => {
     service.clearData();
 
     // assert
-    authService.logout().subscribe(() => {
-      expect(localStorage.removeItem('currentUser')).toHaveBeenCalled();
-    });
     expect(authService.logout).toHaveBeenCalled();
-    //
+  });
+
+  it('should refresh current user info', () => {
+    // arrange
+    currentUser = {
+      roles: ["ROLE_ADMIN"],
+      userName: "test1",
+      userId: 1
+    };
+    infoService.getUserInfo = jest.fn().mockResolvedValue(currentUser);
+    configureTestBed();
+
+    // act
+    service.refreshCurrentUserInfo();
+
+    // assert
+    expect(infoService.getUserInfo).toHaveBeenCalled();
   });
 
   it('should clear data and return', () => {
