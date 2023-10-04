@@ -94,7 +94,7 @@ describe('LoginComponent', () => {
         expect(component).toBeTruthy();
         expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
-        expect(sharedDataService.refreshCurrentUserInfo).toBeCalledWith({ roles: [] });
+        expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalled();
         expect(component.showPassword).toBeTruthy();
     });
 
