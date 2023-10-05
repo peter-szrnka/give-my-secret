@@ -107,7 +107,7 @@ describe('EventListComponent', () => {
         configureTestBed();
         fixture = TestBed.createComponent(EventListComponent);
         component = fixture.componentInstance;
-        jest.spyOn(component.sharedData, 'getUserInfo').mockReturnValue(undefined);
+        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         fixture.detectChanges();
 
         expect(component).toBeTruthy();

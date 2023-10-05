@@ -182,10 +182,10 @@ describe('SharedDataService', () => {
     service.check();
   });
 
-  it('should get user info', () => {
+  it('should get user info', async() => {
     // act
     configureTestBed();
-    const response: User | undefined = service.getUserInfo();
+    const response: User | undefined = await service.getUserInfo();
 
     // assert
     expect(response).toBeUndefined();

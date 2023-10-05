@@ -57,6 +57,7 @@ describe('ApiKeyDetailComponent', () => {
 
         };
         sharedDataService = {
+            refreshCurrentUserInfo: jest.fn()
         };
 
         dialog = {

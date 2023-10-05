@@ -114,7 +114,7 @@ describe('ApiKeyListComponent', () => {
     });
 
     it('Should return empty table | Invalid user', () => {
-        jest.spyOn(component.sharedData, 'getUserInfo').mockReturnValue(undefined);
+        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         configureTestBed();
 
         expect(component).toBeTruthy();
