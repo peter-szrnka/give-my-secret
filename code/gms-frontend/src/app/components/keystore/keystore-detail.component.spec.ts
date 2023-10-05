@@ -61,7 +61,9 @@ describe('KeystoreDetailComponent', () => {
             nativeElement : {}
         };
 
-        sharedDataService = {};
+        sharedDataService = {
+            refreshCurrentUserInfo: jest.fn()
+        };
 
         dialog = {
             open : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of() })

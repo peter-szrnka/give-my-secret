@@ -45,7 +45,8 @@ describe('EventListComponent', () => {
 
     beforeEach(() => {
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser)
+            getUserInfo : jest.fn().mockReturnValue(currentUser),
+            refreshCurrentUserInfo: jest.fn()
         };
 
         dialog = {
