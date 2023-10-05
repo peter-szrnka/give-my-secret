@@ -6,7 +6,7 @@ import { isSpecificUser } from "../../common/utils/permission-utils";
 import { Event } from "../event/model/event.model";
 import { User } from "../user/model/user.model";
 import { EMPTY_HOME_DATA, HomeData } from "./model/home-data.model";
-import { Observable, map, mergeMap } from "rxjs";
+import { Observable, map, mergeMap, of } from "rxjs";
 import { HomeService } from "./service/home.service";
 
 /**
@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
 
     private processUser(user: User | undefined): Observable<HomeData> {
         if (!user) {
-            throw new Error('Invalid user!');
+            return of(EMPTY_HOME_DATA);
         }
 
         return this.homeService.getData().pipe(map((response): HomeData => {

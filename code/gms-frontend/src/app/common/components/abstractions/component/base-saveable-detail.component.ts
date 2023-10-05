@@ -33,6 +33,7 @@ export abstract class BaseSaveableDetailComponent<T, S extends SaveServiceBase<T
     }
 
     ngOnInit(): void {
+        this.sharedData.refreshCurrentUserInfo();
         this.fetchData();
     }
 

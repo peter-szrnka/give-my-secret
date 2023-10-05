@@ -79,7 +79,12 @@ export class SharedDataService {
         this.refreshCurrentUserInfo();
     }
 
-    getUserInfo(): User | undefined {
+    async getUserInfo(): Promise<User | undefined> {
+        if (!this.currentUser) {
+            this.currentUser = await this.infoService.getUserInfo() ?? undefined;
+            this.userSubject$.next(this.currentUser);
+        }
+
         return this.currentUser;
     }
 }

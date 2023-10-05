@@ -25,6 +25,7 @@ export abstract class BaseDetailComponent<T, S extends ServiceBase<T, BaseList<T
     protected splashScreenStateService: SplashScreenStateService) { }
 
   ngOnInit(): void {
+    this.sharedData.refreshCurrentUserInfo();
     this.fetchData();
   }
 

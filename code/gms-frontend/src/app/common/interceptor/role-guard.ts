@@ -8,9 +8,10 @@ const checker = (arr: string[], target: string[]) => target.every(v => arr.inclu
 /**
  * @author Peter Szrnka
  */
-export const ROLE_GUARD = (route: ActivatedRouteSnapshot) => {
+export const ROLE_GUARD = async (route: ActivatedRouteSnapshot): Promise<boolean> => {
     const roles = route.data["roles"] as string[];
-    const currentUser: User | undefined = inject(SharedDataService).getUserInfo();
+    const service: SharedDataService = inject(SharedDataService);
+    const currentUser: User | undefined = await service.getUserInfo();
 
     if (!currentUser) {
         return false;

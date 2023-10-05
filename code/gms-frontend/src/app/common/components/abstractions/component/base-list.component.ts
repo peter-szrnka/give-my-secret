@@ -34,6 +34,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     protected activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.sharedData.refreshCurrentUserInfo();
     this.fetchData();
   }
 
@@ -49,8 +50,8 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     this.reloadPage();
   }
 
-  protected fetchData() {
-    const user: User | undefined = this.sharedData.getUserInfo();
+  protected async fetchData() {
+    const user: User | undefined = await this.sharedData.getUserInfo();
 
     if (checkRights(user)) {
       this.initDefaultDataTable();
