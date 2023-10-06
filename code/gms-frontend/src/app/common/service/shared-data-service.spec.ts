@@ -20,7 +20,7 @@ describe('SharedDataService', () => {
   let currentUser: any;
   let service: SharedDataService;
   let setupService: any;
-  let mockSubject: Subject<User>;
+  let mockSubject: Subject<User | undefined>;
   let mockSystemReadySubject: Subject<SystemReadyData>;
   let authService: any;
   let infoService: any;
@@ -53,7 +53,7 @@ describe('SharedDataService', () => {
       logout: jest.fn().mockReturnValue(of(EMPTY))
     };
 
-    mockSubject = new Subject<User>();
+    mockSubject = new Subject<User | undefined>();
     mockSystemReadySubject = new Subject<SystemReadyData>();
 
     currentUser = {
@@ -61,7 +61,6 @@ describe('SharedDataService', () => {
       userName: "test1",
       userId: 1
     };
-    mockSubject.next(currentUser);
     mockSystemReadySubject.next({ ready: true, status: 200, authMode: 'db' });
 
     
@@ -101,11 +100,12 @@ describe('SharedDataService', () => {
         userId: 1
       }
     ],
-    [null]
-  ])('should refresh current user info', (currentUser: User | null) => {
+    [undefined]
+  ])('should refresh current user info', (currentUser: User | undefined) => {
     // arrange
     infoService.getUserInfo = jest.fn().mockResolvedValue(currentUser);
     configureTestBed();
+    mockSubject.next(currentUser);
 
     mockSubject.subscribe(res => expect(res).toEqual(currentUser));
 
@@ -124,6 +124,7 @@ describe('SharedDataService', () => {
 
     // act
     configureTestBed();
+    mockSubject.next(currentUser);
     service.clearDataAndReturn({ value: 'mock' }).subscribe(data => {
       expect(data).toEqual({ value: 'mock' });
     });
@@ -146,6 +147,7 @@ describe('SharedDataService', () => {
     };
 
     configureTestBed();
+    mockSubject.next(currentUser);
 
     mockSubject.subscribe(res => expect(res).toEqual(jwtData));
     mockSystemReadySubject.subscribe(res => expect(res.ready).toEqual(true));
@@ -171,6 +173,7 @@ describe('SharedDataService', () => {
     };
 
     configureTestBed();
+    mockSubject.next(currentUser);
 
     mockSubject.subscribe(res => expect(res).toEqual(jwtData));
     mockSystemReadySubject.subscribe(res => {
@@ -182,18 +185,31 @@ describe('SharedDataService', () => {
     service.check();
   });
 
-  it('should get user info', async() => {
+  it('should get user info from infoservice', async() => {
     // act
     configureTestBed();
     const response: User | undefined = await service.getUserInfo();
 
     // assert
-    expect(response).toBeUndefined();
+    expect(response).toBeDefined();
+    expect(infoService.getUserInfo).toHaveBeenCalled();
+  });
+
+  it('should get user info from subject', async() => {
+    // act
+    configureTestBed();
+    service.currentUser = currentUser;
+    const response: User | undefined = await service.getUserInfo();
+
+    // assert
+    expect(response).toBeDefined();
+    expect(infoService.getUserInfo).toHaveBeenCalledTimes(0);
   });
 
   it('should log out', () => {
     // act & assert
     configureTestBed();
+    mockSubject.next(currentUser);
     service.logout();
 
     expect(authService.logout).toHaveBeenCalled();
@@ -206,6 +222,7 @@ describe('SharedDataService', () => {
 
     // act & assert
     configureTestBed();
+    mockSubject.next(currentUser);
     service.logout();
 
     expect(authService.logout).toHaveBeenCalledTimes(0);

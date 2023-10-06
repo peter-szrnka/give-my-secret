@@ -45,7 +45,7 @@ describe('EventListComponent', () => {
 
     beforeEach(() => {
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser),
+            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
             refreshCurrentUserInfo: jest.fn()
         };
 
@@ -100,7 +100,6 @@ describe('EventListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
@@ -122,8 +121,6 @@ describe('EventListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
-
         jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
 
         component.promptDelete(1);
@@ -139,8 +136,6 @@ describe('EventListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
-
         jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);

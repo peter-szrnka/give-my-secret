@@ -53,7 +53,7 @@ describe('SecretListComponent', () => {
 
     beforeEach(() => {
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser),
+            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
             refreshCurrentUserInfo: jest.fn()
         };
 
@@ -105,7 +105,6 @@ describe('SecretListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 

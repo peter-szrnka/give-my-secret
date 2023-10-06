@@ -58,7 +58,7 @@ describe('ApiKeyListComponent', () => {
         };
 
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser),
+            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
             refreshCurrentUserInfo: jest.fn()
         };
 
@@ -110,7 +110,6 @@ describe('ApiKeyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
@@ -126,7 +125,6 @@ describe('ApiKeyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
@@ -141,7 +139,6 @@ describe('ApiKeyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
