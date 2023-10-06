@@ -33,8 +33,9 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     public dialog: MatDialog,
     protected activatedRoute: ActivatedRoute) { }
 
-  ngOnInit(): void {
-    this.fetchData();
+  async ngOnInit(): Promise<void> {
+    this.sharedData.refreshCurrentUserInfo();
+    await this.fetchData();
   }
 
   abstract getPageConfig(): PageConfig;
@@ -49,8 +50,8 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     this.reloadPage();
   }
 
-  protected fetchData() {
-    const user: User | undefined = this.sharedData.getUserInfo();
+  protected async fetchData(): Promise<void> {
+    const user: User | undefined = await this.sharedData.getUserInfo();
 
     if (checkRights(user)) {
       this.initDefaultDataTable();

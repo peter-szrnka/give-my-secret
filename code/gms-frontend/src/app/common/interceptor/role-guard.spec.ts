@@ -41,7 +41,7 @@ describe('RoleGuard', () => {
         };
     });
 
-    it('should return true', () => {
+    it('should return true', async () => {
         // arrange
         sharedData = {
             getUserInfo : jest.fn().mockReturnValue(userData)
@@ -50,7 +50,7 @@ describe('RoleGuard', () => {
         configureTestBed();
  
         // act
-        const response = TestBed.runInInjectionContext(() => ROLE_GUARD({ data : { roles: ["ROLE_USER", "ROLE_VIEWER"] } } as any));
+        const response = await TestBed.runInInjectionContext(async () => ROLE_GUARD({ data : { roles: ["ROLE_USER", "ROLE_VIEWER"] } } as any, router));
 
         // assert
         expect(response).toBeTruthy();
@@ -58,7 +58,7 @@ describe('RoleGuard', () => {
 
     });
 
-    it('should return false', () => {
+    it('should return false', async() => {
         // arrange
         sharedData = {
             getUserInfo : jest.fn().mockReturnValue(userData)
@@ -66,7 +66,7 @@ describe('RoleGuard', () => {
         configureTestBed();
 
         // act
-        const response = TestBed.runInInjectionContext(() => ROLE_GUARD({ data : { roles: ["ROLE_ADMIN"] } } as any));
+        const response = await TestBed.runInInjectionContext(async () => ROLE_GUARD({ data : { roles: ["ROLE_ADMIN"] } } as any, router));
 
         // assert
         expect(response).toBeFalsy();
@@ -74,7 +74,7 @@ describe('RoleGuard', () => {
         expect(router.navigate).toHaveBeenCalledWith([""]);
     });
 
-    it('should deny empty user', () => {
+    it('should deny empty user', async () => {
         // arrange
         sharedData = {
             getUserInfo : jest.fn().mockReturnValue(undefined)
@@ -82,7 +82,7 @@ describe('RoleGuard', () => {
         configureTestBed();
  
         // act
-        const response = TestBed.runInInjectionContext(() => ROLE_GUARD({ data : { roles: ["ROLE_USER", "ROLE_VIEWER"] } } as any));
+        const response = await TestBed.runInInjectionContext(async () => ROLE_GUARD({ data : { roles: ["ROLE_USER", "ROLE_VIEWER"] } } as any, router));
 
         // assert
         expect(response).toBeFalsy();

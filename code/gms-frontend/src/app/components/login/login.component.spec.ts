@@ -53,7 +53,7 @@ describe('LoginComponent', () => {
 
         mockSubject = new ReplaySubject<any>();
         sharedDataService = {
-            setCurrentUser : jest.fn(),
+            refreshCurrentUserInfo : jest.fn(),
             userSubject$ : mockSubject
         };
 
@@ -94,7 +94,7 @@ describe('LoginComponent', () => {
         expect(component).toBeTruthy();
         expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
-        expect(sharedDataService.setCurrentUser).toBeCalledWith({ roles: [] });
+        expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalled();
         expect(component.showPassword).toBeTruthy();
     });
 
@@ -121,7 +121,7 @@ describe('LoginComponent', () => {
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalledWith(['/verify'], { state: { username: 'test' } });
-        expect(sharedDataService.setCurrentUser).toHaveBeenCalledTimes(0);
+        expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalledTimes(0);
     });
 
     it('Should fail after login', () => {
@@ -140,6 +140,6 @@ describe('LoginComponent', () => {
         expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(sharedDataService.setCurrentUser).toBeCalledTimes(0);
+        expect(sharedDataService.refreshCurrentUserInfo).toBeCalledTimes(0);
     });
 });

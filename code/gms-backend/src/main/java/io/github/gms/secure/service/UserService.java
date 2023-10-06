@@ -6,7 +6,9 @@ import io.github.gms.secure.dto.ChangePasswordRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.dto.UserListDto;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Peter Szrnka
@@ -27,4 +29,6 @@ public interface UserService extends AbstractCrudService<SaveUserRequestDto, Sav
 	void toggleMfa(boolean enabled);
 
     boolean isMfaActive();
+
+	UserInfoDto getUserInfo(HttpServletRequest request);
 }

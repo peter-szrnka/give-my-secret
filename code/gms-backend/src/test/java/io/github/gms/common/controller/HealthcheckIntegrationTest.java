@@ -1,14 +1,15 @@
 package io.github.gms.common.controller;
 
-import io.github.gms.abstraction.AbstractIntegrationTest;
+import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import io.github.gms.abstraction.AbstractIntegrationTest;
 
 /**
  * @author Peter Szrnka

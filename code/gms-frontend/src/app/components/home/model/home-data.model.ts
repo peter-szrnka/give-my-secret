@@ -14,3 +14,20 @@ export interface HomeData {
    events : EventList,
    admin? : boolean
 }
+
+export const EMPTY_HOME_DATA: HomeData = {
+   events: {
+    resultList: [],
+    totalElements: 0
+   },
+   announcements: {
+    resultList: [],
+    totalElements: 0
+   },
+   userCount: 0,
+   admin: false,
+   apiKeyCount: 0,
+   keystoreCount: 0,
+   announcementCount: 0,
+   secretCount: 0
+};

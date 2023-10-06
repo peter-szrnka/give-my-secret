@@ -5,7 +5,6 @@ import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { SplashScreenStateService } from "../../../service/splash-screen-service";
 import { Router } from "@angular/router";
-import { LoginResponse } from "../../../model/login.model";
 import { SharedDataService } from "../../../service/shared-data-service";
 
 /**
@@ -43,9 +42,9 @@ export abstract class BaseLoginComponent implements OnInit {
         this.showErrorModal();
     }
 
-    protected finalizeSuccessfulLogin(response : LoginResponse) {
+    protected finalizeSuccessfulLogin() {
         this.splashScreenStateService.stop();
-        this.sharedDataService.setCurrentUser(response.currentUser);
+        this.sharedDataService.refreshCurrentUserInfo();
         void this.router.navigate(['']);
     }
 }

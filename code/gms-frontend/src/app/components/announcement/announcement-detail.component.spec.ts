@@ -42,7 +42,8 @@ describe('AnnouncementDetailComponent', () => {
             open : jest.fn()
         }
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser)
+            getUserInfo : jest.fn().mockReturnValue(currentUser),
+            refreshCurrentUserInfo: jest.fn()
         };
 
         service = {

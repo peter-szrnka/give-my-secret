@@ -10,18 +10,20 @@ import { SystemStatusDto } from "../model/system-status.model";
 import { AuthService } from "./auth-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SystemReadyData } from "../model/system-ready.model";
+import { InformationService } from "./info-service";
 
 /**
  * @author Peter Szrnka
  */
 describe('SharedDataService', () => {
   let router: any;
-  let currentUser: User | any;
+  let currentUser: any;
   let service: SharedDataService;
   let setupService: any;
-  let mockSubject: Subject<User>;
+  let mockSubject: Subject<User | undefined>;
   let mockSystemReadySubject: Subject<SystemReadyData>;
   let authService: any;
+  let infoService: any;
 
   const configureTestBed = () => {
     TestBed.configureTestingModule({
@@ -30,6 +32,7 @@ describe('SharedDataService', () => {
         { provide: Router, useValue: router },
         { provide: SetupService, useValue: setupService },
         { provide: AuthService, useValue: authService },
+        { provide: InformationService, useValue: infoService },
         SharedDataService
       ]
     });
@@ -50,7 +53,7 @@ describe('SharedDataService', () => {
       logout: jest.fn().mockReturnValue(of(EMPTY))
     };
 
-    mockSubject = new Subject<User>();
+    mockSubject = new Subject<User | undefined>();
     mockSystemReadySubject = new Subject<SystemReadyData>();
 
     currentUser = {
@@ -58,8 +61,12 @@ describe('SharedDataService', () => {
       userName: "test1",
       userId: 1
     };
-    mockSubject.next(currentUser);
     mockSystemReadySubject.next({ ready: true, status: 200, authMode: 'db' });
+
+    
+    infoService = {
+      getUserInfo: jest.fn().mockResolvedValue(currentUser)
+    };
   });
 
   it('should return OK', () => {
@@ -76,40 +83,37 @@ describe('SharedDataService', () => {
     mockSystemReadySubject.subscribe(res => expect(res).toEqual(false));
   });
 
-  it('should set current user', () => {
-    // arrange
-    const jwtData = {
-      userId: 1,
-      userName: "test-user",
-      exp: new Date().getTime() + 100000,
-      roles: ["ROLE_USER"]
-    } as User;
-
-    // act & assert
-    configureTestBed();
-    mockSubject.subscribe(res => expect(res).toEqual(currentUser));
-    service.setCurrentUser(jwtData);
-
-    // assert
-    expect(localStorage.getItem('currentUser')).toBe(JSON.stringify(jwtData));
-  });
-
   it('should clear data', () => {
-    mockSubject.subscribe(res => expect(res).toEqual({
-      userId: undefined,
-      userName: undefined
-    }));
+    // assert
+    mockSubject.subscribe(res => expect(res).toBeUndefined());
 
     // act
     configureTestBed();
     service.clearData();
+  });
+
+  it.each([
+    [
+      {
+        roles: ["ROLE_ADMIN"],
+        userName: "test1",
+        userId: 1
+      }
+    ],
+    [undefined]
+  ])('should refresh current user info', (currentUser: User | undefined) => {
+    // arrange
+    infoService.getUserInfo = jest.fn().mockResolvedValue(currentUser);
+    configureTestBed();
+    mockSubject.next(currentUser);
+
+    mockSubject.subscribe(res => expect(res).toEqual(currentUser));
+
+    // act
+    service.refreshCurrentUserInfo();
 
     // assert
-    authService.logout().subscribe(() => {
-      expect(localStorage.removeItem('currentUser')).toHaveBeenCalled();
-    });
-    expect(authService.logout).toHaveBeenCalled();
-    //
+    expect(infoService.getUserInfo).toHaveBeenCalled();
   });
 
   it('should clear data and return', () => {
@@ -120,6 +124,7 @@ describe('SharedDataService', () => {
 
     // act
     configureTestBed();
+    mockSubject.next(currentUser);
     service.clearDataAndReturn({ value: 'mock' }).subscribe(data => {
       expect(data).toEqual({ value: 'mock' });
     });
@@ -142,6 +147,7 @@ describe('SharedDataService', () => {
     };
 
     configureTestBed();
+    mockSubject.next(currentUser);
 
     mockSubject.subscribe(res => expect(res).toEqual(jwtData));
     mockSystemReadySubject.subscribe(res => expect(res.ready).toEqual(true));
@@ -167,6 +173,7 @@ describe('SharedDataService', () => {
     };
 
     configureTestBed();
+    mockSubject.next(currentUser);
 
     mockSubject.subscribe(res => expect(res).toEqual(jwtData));
     mockSystemReadySubject.subscribe(res => {
@@ -178,28 +185,31 @@ describe('SharedDataService', () => {
     service.check();
   });
 
-  it('should get user info', () => {
-    // arrange
-    const jwtData = {
-      id: 1,
-      username: "test1",
-      roles: ["ROLE_USER"]
-    };
-    localStorage.setItem('currentUser', JSON.stringify(jwtData));
-
+  it('should get user info from infoservice', async() => {
     // act
     configureTestBed();
-    const response: User | undefined = service.getUserInfo();
+    const response: User | undefined = await service.getUserInfo();
 
     // assert
     expect(response).toBeDefined();
-    expect(response?.id).toEqual(jwtData.id);
-    expect(response?.username).toEqual(jwtData.username);
+    expect(infoService.getUserInfo).toHaveBeenCalled();
+  });
+
+  it('should get user info from subject', async() => {
+    // act
+    configureTestBed();
+    service.currentUser = currentUser;
+    const response: User | undefined = await service.getUserInfo();
+
+    // assert
+    expect(response).toBeDefined();
+    expect(infoService.getUserInfo).toHaveBeenCalledTimes(0);
   });
 
   it('should log out', () => {
     // act & assert
     configureTestBed();
+    mockSubject.next(currentUser);
     service.logout();
 
     expect(authService.logout).toHaveBeenCalled();
@@ -212,6 +222,7 @@ describe('SharedDataService', () => {
 
     // act & assert
     configureTestBed();
+    mockSubject.next(currentUser);
     service.logout();
 
     expect(authService.logout).toHaveBeenCalledTimes(0);

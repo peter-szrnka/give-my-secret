@@ -13,7 +13,6 @@ import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.res
 import { EventListComponent } from './components/event/event-list.component';
 import { EventListResolver } from './components/event/resolver/event-list.resolver';
 import { HomeComponent } from './components/home/home.component';
-import { HomeResolver } from './components/home/resolver/home.resolver';
 import { KeystoreDetailComponent } from './components/keystore/keystore-detail.component';
 import { KeystoreListComponent } from './components/keystore/keystore-list.component';
 import { KeystoreDetailResolver } from './components/keystore/resolver/keystore-detail.resolver';
@@ -63,7 +62,7 @@ const routes: Routes = [
   { path: 'verify', component: VerifyComponent },
 
   // Secured components
-  { path: '', component: HomeComponent, pathMatch: 'full', data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD], resolve: { 'data': () => inject(HomeResolver).resolve() } },
+  { path: '', component: HomeComponent, pathMatch: 'full', data: { 'roles': ROLES_ALL } },
   listRouteBuilder('secret', SecretListComponent, SecretListResolver),
   detailRouteBuilder('secret', SecretDetailComponent, SecretDetailResolver),
   listRouteBuilder('apikey', ApiKeyListComponent, ApiKeyListResolver),

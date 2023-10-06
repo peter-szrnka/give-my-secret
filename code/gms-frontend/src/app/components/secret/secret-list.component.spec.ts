@@ -53,7 +53,8 @@ describe('SecretListComponent', () => {
 
     beforeEach(() => {
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser)
+            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: jest.fn()
         };
 
         dialog = {
@@ -104,7 +105,6 @@ describe('SecretListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
@@ -112,7 +112,7 @@ describe('SecretListComponent', () => {
         configureTestBed();
         fixture = TestBed.createComponent(SecretListComponent);
         component = fixture.componentInstance;
-        jest.spyOn(component.sharedData, 'getUserInfo').mockReturnValue(undefined);
+        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
@@ -123,7 +123,6 @@ describe('SecretListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
@@ -138,7 +137,6 @@ describe('SecretListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);

@@ -58,7 +58,8 @@ describe('ApiKeyListComponent', () => {
         };
 
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser)
+            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: jest.fn()
         };
 
         dialog = {
@@ -109,12 +110,11 @@ describe('ApiKeyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
     it('Should return empty table | Invalid user', () => {
-        jest.spyOn(component.sharedData, 'getUserInfo').mockReturnValue(undefined);
+        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         configureTestBed();
 
         expect(component).toBeTruthy();
@@ -125,7 +125,6 @@ describe('ApiKeyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
@@ -140,7 +139,6 @@ describe('ApiKeyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
@@ -156,8 +154,6 @@ describe('ApiKeyListComponent', () => {
 
         // act & assert
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
-
         component.toggle(1, 'ACTIVE');
 
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();

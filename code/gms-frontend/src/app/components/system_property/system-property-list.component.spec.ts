@@ -57,7 +57,8 @@ describe('SystemPropertyListComponent', () => {
         };
 
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser)
+            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: jest.fn()
         };
 
         dialog = {
@@ -101,11 +102,13 @@ describe('SystemPropertyListComponent', () => {
         component.onFetch({ pageSize : 1});
         // act
         const response = component.getInputType(input);
+        const textDescription: string = component.getTextDescription('ACCESS_JWT_EXPIRATION_TIME_SECONDS');
 
         // assert
         expect(response).toEqual(expected);
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+        expect(textDescription).toEqual('Access JWT expiration time in seconds');
     });
 
     it('Should handle resolver error', () => {
@@ -115,7 +118,6 @@ describe('SystemPropertyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
@@ -137,7 +139,6 @@ describe('SystemPropertyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
@@ -155,7 +156,6 @@ describe('SystemPropertyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
@@ -178,7 +178,6 @@ describe('SystemPropertyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
@@ -197,7 +196,6 @@ describe('SystemPropertyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);

@@ -66,6 +66,7 @@ describe('SecretDetailComponent', () => {
 
         };
         sharedDataService = {
+            refreshCurrentUserInfo: jest.fn()
         };
 
         dialog = {
