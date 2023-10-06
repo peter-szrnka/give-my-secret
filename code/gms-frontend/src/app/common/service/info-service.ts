@@ -13,7 +13,7 @@ export class InformationService {
 
     constructor(private http : HttpClient) {}
 
-    getUserInfo() : Promise<User | null> {
+    getUserInfo() : Promise<User> {
         return firstValueFrom(this.http.get<User>(environment.baseUrl + 'info/me', { withCredentials : true, headers : getHeaders() }));
     }
 }

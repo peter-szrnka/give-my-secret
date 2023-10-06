@@ -5,7 +5,6 @@ import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { SplashScreenStateService } from "../../../service/splash-screen-service";
 import { Router } from "@angular/router";
-import { LoginResponse } from "../../../model/login.model";
 import { SharedDataService } from "../../../service/shared-data-service";
 
 /**

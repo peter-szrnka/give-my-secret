@@ -81,7 +81,7 @@ export class SharedDataService {
 
     async getUserInfo(): Promise<User | undefined> {
         if (!this.currentUser) {
-            this.currentUser = await this.infoService.getUserInfo() ?? undefined;
+            this.currentUser = await this.infoService.getUserInfo();
             this.userSubject$.next(this.currentUser);
         }
 

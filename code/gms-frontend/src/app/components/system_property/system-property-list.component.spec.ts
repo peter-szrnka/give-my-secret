@@ -102,11 +102,13 @@ describe('SystemPropertyListComponent', () => {
         component.onFetch({ pageSize : 1});
         // act
         const response = component.getInputType(input);
+        const textDescription: string = component.getTextDescription('ACCESS_JWT_EXPIRATION_TIME_SECONDS');
 
         // assert
         expect(response).toEqual(expected);
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+        expect(textDescription).toEqual('Access JWT expiration time in seconds');
     });
 
     it('Should handle resolver error', () => {
