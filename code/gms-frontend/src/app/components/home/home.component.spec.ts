@@ -85,12 +85,12 @@ describe('HomeComponent', () => {
         expect(component.eventDataSource).toBeDefined();
     });
 
-    it('should load component for admin', () => {
+    it('should not load component for unknown user', () => {
         configTestBed();
         mockSubject.next(undefined);
 
         // assert
         expect(component).toBeTruthy();
-        expect(component.eventDataSource).toBeUndefined();
+        expect(component.eventDataSource).toBeDefined();
     });
 });

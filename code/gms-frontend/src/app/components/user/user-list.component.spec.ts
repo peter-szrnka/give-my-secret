@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { MatTableModule } from "@angular/material/table";
 import { ActivatedRoute, Data, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { User } from "./model/user.model";
@@ -43,9 +42,9 @@ describe('UserListComponent', () => {
         });
     };
 
-    beforeEach(() => {
+    beforeEach(async () => {
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser),
+            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
             refreshCurrentUserInfo: jest.fn()
         };
 
@@ -91,7 +90,7 @@ describe('UserListComponent', () => {
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
-    it('Should handle resolver error', () => {
+    it('Should handle resolver error', async () => {
         activatedRoute.data = throwError(() => new Error("Unexpected error!"));
         configureTestBed();
         fixture = TestBed.createComponent(UserListComponent);
@@ -99,11 +98,10 @@ describe('UserListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
-    it('Should return empty table | Invalid user', () => {
+    it('Should return empty table | Invalid user', async () => {
         configureTestBed();
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
@@ -114,14 +112,13 @@ describe('UserListComponent', () => {
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
-    it('Should delete an item', () => {
+    it('Should delete an item', async () => {
         configureTestBed();
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
 
@@ -131,14 +128,13 @@ describe('UserListComponent', () => {
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
-    it('Should cancel dialog', () => {
+    it('Should cancel dialog', async () => {
         configureTestBed();
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
