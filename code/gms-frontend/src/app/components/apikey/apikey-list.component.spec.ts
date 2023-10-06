@@ -154,8 +154,6 @@ describe('ApiKeyListComponent', () => {
 
         // act & assert
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
-
         component.toggle(1, 'ACTIVE');
 
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();

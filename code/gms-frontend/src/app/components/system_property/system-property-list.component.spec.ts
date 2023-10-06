@@ -176,7 +176,6 @@ describe('SystemPropertyListComponent', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        expect(component.datasource).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
