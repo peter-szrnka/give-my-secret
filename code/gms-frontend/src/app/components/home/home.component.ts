@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
     eventColumns: string[] = ['id', 'userId', 'eventDate', 'operation', 'target'];
     eventDataSource: ArrayDataSource<Event>;
     data: HomeData;
+    loading = true;
 
     constructor(
         public router: Router,
@@ -38,6 +39,7 @@ export class HomeComponent implements OnInit {
                     ...homeData
                 };
                 this.eventDataSource = new ArrayDataSource<Event>(this.data.events.resultList);
+                this.loading = false;
             });
     }
 

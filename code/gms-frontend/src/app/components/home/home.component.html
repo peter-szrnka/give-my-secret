@@ -1,10 +1,10 @@
 <div *ngIf="data">
   <div *ngIf="data.admin === false">
     <div class="gms-box">
-      <div class="warning" *ngIf="data.apiKeyCount === 0">
+      <div class="warning" *ngIf="!loading && data.apiKeyCount === 0">
         Please add an API key!
       </div>
-      <div class="warning" *ngIf="data.keystoreCount === 0">
+      <div class="warning" *ngIf="!loading && data.keystoreCount === 0">
         Please add a keystore!
       </div>
       <div class="gms-sub-box">
