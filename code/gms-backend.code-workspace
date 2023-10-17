@@ -12,6 +12,7 @@
 		"java.configuration.updateBuildConfiguration": "automatic",
 		"jest.disabledWorkspaceFolders": [
 			"gms-backend"
-		]
+		],
+		"java.debug.settings.onBuildFailureProceed": true
 	}
 }
