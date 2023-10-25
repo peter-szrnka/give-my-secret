@@ -67,7 +67,7 @@ jobs:
         with:
           args:
             -Dsonar.projectKey=peter-szrnka_give-my-secret-frontend
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }}
+            -Dsonar.organization=peter-szrnka
             -Dsonar.test.inclusions=**/*.spec.ts
             -Dsonar.exclusions=**/*.java,**/*.class,**/*.scss,**/*.html,**/*.json,**/*.xml,**/*.js,**/environments/*.*,**/polyfills.ts,**/*module.ts,**/main.ts,**/mock-config.ts,**/*.provider.ts
             -Dsonar.typescript.lcov.reportPaths=./code/gms-frontend/coverage/lcov.info
