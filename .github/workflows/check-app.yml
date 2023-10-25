@@ -59,17 +59,16 @@ jobs:
         working-directory: ./code/gms-frontend
         run: npm run test
       - name: Sonarcloud scan
-        
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          args:
-            -Dsonar.projectKey=peter-szrnka_give-my-secret-frontend
-            -Dsonar.organization=peter-szrnka
-            -Dsonar.test.inclusions=**/*.spec.ts
+          args: >
+            -Dsonar.projectKey=peter-szrnka_give-my-secret-frontend 
+            -Dsonar.organization=peter-szrnka 
+            -Dsonar.test.inclusions=**/*.spec.ts 
             -Dsonar.exclusions=**/*.java,**/*.class,**/*.scss,**/*.html,**/*.json,**/*.xml,**/*.js,**/environments/*.*,**/polyfills.ts,**/*module.ts,**/main.ts,**/mock-config.ts,**/*.provider.ts
-            -Dsonar.typescript.lcov.reportPaths=./code/gms-frontend/coverage/lcov.info
-            -Dsonar.javascript.lcov.reportPaths=./code/gms-frontend/coverage/lcov.info
-            -Dsonar.sources=./code/gms-frontend/src
+            -Dsonar.typescript.lcov.reportPaths=./code/gms-frontend/coverage/lcov.info 
+            -Dsonar.javascript.lcov.reportPaths=./code/gms-frontend/coverage/lcov.info 
+            -Dsonar.sources=./code/gms-frontend/src 
