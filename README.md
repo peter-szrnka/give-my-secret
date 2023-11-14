@@ -6,9 +6,6 @@ Give My Secret is a credential storage application, that stores secrets, passwor
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | [![CodeQL](https://github.com/peter-szrnka/give-my-secret/actions/workflows/codeql.yml/badge.svg)](https://github.com/peter-szrnka/give-my-secret/actions/workflows/codeql.yml) | Backend:&nbsp;&nbsp;&nbsp; ![Code coverage](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-backend&metric=coverage) <br /> Frontend:&nbsp;&nbsp; [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret-frontend) | Backend:&nbsp;&nbsp;&nbsp; [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=peter-szrnka_give-my-secret-backend) <br/>Frontend:&nbsp;&nbsp; [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=peter-szrnka_give-my-secret-frontend) |
 
-# Donate
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7YEPKTQRNK5YA)
-
 # Tech stack
 
 - Java 17 (Eclipse Temurin)
@@ -69,3 +66,7 @@ Currently only AES encryption is supported.  In the future this will be configur
 # Code samples
 
 You can find client code examples for Java, Python and Node.js [here](client-samples/README.md).
+
+
+# Donate
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7YEPKTQRNK5YA)
