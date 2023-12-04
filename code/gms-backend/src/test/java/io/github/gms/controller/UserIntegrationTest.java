@@ -154,18 +154,4 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		UserEntity entity = userRepository.getReferenceById(DemoData.USER_1_ID);
 		assertNotNull(entity);
 	}
-	
-	/*@Test
-	void testUserCount() {
-		// act
-		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<LongValueDto> response = executeHttpGet("/count", requestEntity, LongValueDto.class);
-
-		// Assert
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertNotNull(response.getBody());
-		
-		LongValueDto responseBody = response.getBody();
-		assertNotEquals(0L, responseBody.getValue());
-	}*/
 }

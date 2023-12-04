@@ -2,6 +2,8 @@ package io.github.gms.secure.service.impl;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.secure.dto.AnnouncementDto;
+import io.github.gms.secure.dto.AnnouncementListDto;
 import io.github.gms.secure.dto.EventDto;
 import io.github.gms.secure.dto.EventListDto;
 import io.github.gms.secure.dto.HomeDataResponseDto;
@@ -69,6 +71,7 @@ class HomeServiceImplTest extends AbstractUnitTest {
         assertNotNull(response);
         assertEquals(2L, response.getAnnouncementCount());
         assertEquals(5L, response.getUserCount());
+        assertEquals(1L, response.getEvents().getResultList().size());
 
         verify(announcementService).count();
         verify(userService).count();
@@ -85,12 +88,15 @@ class HomeServiceImplTest extends AbstractUnitTest {
         when(apiKeyService.count()).thenReturn(new LongValueDto(4L));
         when(keystoreService.count()).thenReturn(new LongValueDto(2L));
         when(secretService.count()).thenReturn(new LongValueDto(3L));
+        when(announcementService.list(any(PagingDto.class))).thenReturn(AnnouncementListDto.builder().totalElements(1)
+                .resultList(List.of(new AnnouncementDto())).build());
 
         // act
         HomeDataResponseDto response = service.getHomeData();
 
         // assert
         assertNotNull(response);
+        assertEquals(1L, response.getAnnouncements().getTotalElements());
         assertEquals(4L, response.getApiKeyCount());
         assertEquals(2L, response.getKeystoreCount());
         assertEquals(3L, response.getSecretCount());
