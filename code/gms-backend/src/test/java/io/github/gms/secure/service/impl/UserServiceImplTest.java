@@ -1,5 +1,45 @@
 package io.github.gms.secure.service.impl;
 
+import ch.qos.logback.classic.Logger;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.event.RefreshCacheEvent;
+import io.github.gms.common.exception.GmsException;
+import io.github.gms.secure.converter.UserConverter;
+import io.github.gms.secure.dto.ChangePasswordRequestDto;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.dto.SaveUserRequestDto;
+import io.github.gms.secure.dto.UserDto;
+import io.github.gms.secure.dto.UserInfoDto;
+import io.github.gms.secure.dto.UserListDto;
+import io.github.gms.secure.entity.UserEntity;
+import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.secure.service.JwtClaimService;
+import io.github.gms.util.TestUtils;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.SneakyThrows;
+import org.assertj.core.util.Lists;
+import org.jboss.logging.MDC;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
+import java.util.Optional;
+
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,46 +57,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.ArgumentCaptor;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.event.RefreshCacheEvent;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.converter.UserConverter;
-import io.github.gms.secure.dto.ChangePasswordRequestDto;
-import io.github.gms.secure.dto.LongValueDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveUserRequestDto;
-import io.github.gms.secure.dto.UserDto;
-import io.github.gms.secure.dto.UserInfoDto;
-import io.github.gms.secure.dto.UserListDto;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.secure.service.JwtClaimService;
-import io.github.gms.util.TestUtils;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.SneakyThrows;
 
 /**
  * @author Peter Szrnka
@@ -91,13 +91,16 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		when(repository.save(any(UserEntity.class))).thenReturn(TestUtils.createUser());
 
 		// act
-		service.saveAdminUser(TestUtils.createSaveUserRequestDto());
+		SaveEntityResponseDto response = service.saveAdminUser(TestUtils.createSaveUserRequestDto());
 
 		// assert
+		assertNotNull(response);
 		assertTrue(logAppender.list.stream()
 				.anyMatch(log -> log.getFormattedMessage().contains("service saveUser called")));
 		verify(converter).toNewEntity(any(SaveUserRequestDto.class), eq(true));
-		verify(repository).save(any(UserEntity.class));
+		ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
+		verify(repository).save(userEntityArgumentCaptor.capture());
+		assertNotNull(userEntityArgumentCaptor.getValue().getMfaSecret());
 	}
 
 	@Test
@@ -120,9 +123,11 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createAdminUser()));
 
 		// act
-		service.save(TestUtils.createSaveUserRequestDto(1L));
+		SaveEntityResponseDto response = service.save(TestUtils.createSaveUserRequestDto(1L));
 
 		// assert
+		assertNotNull(response);
+		assertEquals(1L, response.getEntityId());
 		verify(applicationEventPublisher).publishEvent(any(RefreshCacheEvent.class));
 		verify(converter).toEntity(any(UserEntity.class), any(SaveUserRequestDto.class), eq(admin));
 		verify(repository).save(any(UserEntity.class));

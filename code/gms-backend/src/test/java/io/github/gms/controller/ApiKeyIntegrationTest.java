@@ -130,18 +130,6 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 		executeHttpPost("/" + DemoData.API_KEY_1_ID + "?enabled="+ !enabled, requestEntity,String.class);
 	}
-
-	/*@Test
-	void testCount() {
-		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		// act
-		ResponseEntity<LongValueDto> response = executeHttpGet("/count", requestEntity, LongValueDto.class);
-		
-		// assert
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertNotNull(response.getBody());
-		assertEquals(1L, response.getBody().getValue());
-	}*/
 	
 	
 	@Test

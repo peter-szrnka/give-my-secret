@@ -12,14 +12,20 @@ import lombok.SneakyThrows;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.MockedStatic;
 
+import java.security.KeyStore;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -79,17 +85,25 @@ class KeystoreDataServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	@SneakyThrows
 	void shouldGetKeystoreData() {
-		// arrange
-		SecretEntity entity = TestUtils.createSecretEntity();
-		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
-		when(keystoreRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createJKSKeystoreEntity()));
+		try (MockedStatic<KeyStore> keyStoreMockedStatic = mockStatic(KeyStore.class)) {
+			// arrange
+			SecretEntity entity = TestUtils.createSecretEntity();
+			when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
+			when(keystoreRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createJKSKeystoreEntity()));
+			KeyStore mockKeyStore = mock(KeyStore.class);
+			keyStoreMockedStatic.when(() -> KeyStore.getInstance(anyString())).thenReturn(mockKeyStore);
 
-		// act
-		KeystorePair response = service.getKeystoreData(entity);
-		
-		// assert
-		assertNotNull(response);
-		verify(keystoreAliasRepository).findById(anyLong());
-		verify(keystoreRepository).findById(anyLong());
+			// act
+			KeystorePair response = service.getKeystoreData(entity);
+
+			// assert
+			assertNotNull(response);
+			assertNotNull(response.getEntity());
+			assertNotNull(response.getKeystore());
+			verify(keystoreAliasRepository).findById(anyLong());
+			verify(keystoreRepository).findById(anyLong());
+			verify(mockKeyStore).load(any(), ArgumentMatchers.eq("test".toCharArray()));
+			keyStoreMockedStatic.verify(() -> KeyStore.getInstance(anyString()));
+		}
 	}
 }

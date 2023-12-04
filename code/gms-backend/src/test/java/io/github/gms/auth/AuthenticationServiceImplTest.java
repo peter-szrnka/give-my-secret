@@ -1,31 +1,5 @@
 package io.github.gms.auth;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import ch.qos.logback.classic.Logger;
 import dev.samstevens.totp.code.CodeVerifier;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
@@ -41,6 +15,32 @@ import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -75,6 +75,20 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 		((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
 	}
+
+	@Test
+	void shouldAuthenticateFail() {
+		// arrange
+		when(authenticationManager.authenticate(any())).thenThrow(IllegalArgumentException.class);
+
+		// act
+		AuthenticationResponse response = service.authenticate("user", "credential");
+
+		// assert
+		assertNotNull(response);
+		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
+		assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equalsIgnoreCase("Login failed")));
+	}
 	
 	@ParameterizedTest
 	@MethodSource("nonMfaTestData")
@@ -85,9 +99,9 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		when(authenticationManager.authenticate(any()))
 			.thenReturn(new TestingAuthenticationToken(userDetails, "cred", List.of(new SimpleGrantedAuthority("ROLE_USER"))));
 		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap()))
-			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
+			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of("role","ROLE_USER")).expirationDateInSeconds(900L).build());
 		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap()))
-			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
+			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of("role","ROLE_USER")).expirationDateInSeconds(900L).build());
 		when(jwtService.generateJwts(anyMap())).thenReturn(Map.of(
 				JwtConfigType.ACCESS_JWT, "ACCESS_JWT",
 				JwtConfigType.REFRESH_JWT, "REFRESH_JWT"
@@ -108,7 +122,14 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		verify(authenticationManager).authenticate(any());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
-		verify(jwtService).generateJwts(anyMap());
+		ArgumentCaptor<Map<JwtConfigType, GenerateJwtRequest>> argumentCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(jwtService).generateJwts(argumentCaptor.capture());
+		Map<JwtConfigType, GenerateJwtRequest> capturedMap = argumentCaptor.getValue();
+		assertNotNull(capturedMap.get(JwtConfigType.ACCESS_JWT));
+		assertNotNull(capturedMap.get(JwtConfigType.REFRESH_JWT));
+		assertEquals(1, capturedMap.get(JwtConfigType.ACCESS_JWT).getClaims().size());
+		assertEquals(1, capturedMap.get(JwtConfigType.REFRESH_JWT).getClaims().size());
+
 		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(false));
 		verify(systemPropertyService).getBoolean(SystemProperty.ENABLE_GLOBAL_MFA);
 		verify(systemPropertyService).getBoolean(SystemProperty.ENABLE_MFA);

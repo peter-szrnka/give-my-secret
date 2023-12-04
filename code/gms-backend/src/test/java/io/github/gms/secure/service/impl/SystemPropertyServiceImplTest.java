@@ -1,25 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.exception.GmsException;
@@ -30,6 +10,25 @@ import io.github.gms.secure.dto.SystemPropertyListDto;
 import io.github.gms.secure.entity.SystemPropertyEntity;
 import io.github.gms.secure.repository.SystemPropertyRepository;
 import io.github.gms.util.TestUtils;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -147,5 +146,18 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 		// assert
 		assertEquals(3600L, response);
 		verify(repository).getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
+	}
+
+	@Test
+	void shouldGetBooleanValue() {
+		// arrange
+		when(repository.getValueByKey(SystemProperty.ENABLE_GLOBAL_MFA)).thenReturn(Optional.of("true"));
+
+		//act
+		Boolean response = service.getBoolean(SystemProperty.ENABLE_GLOBAL_MFA);
+
+		// assert
+		assertEquals(true, response);
+		verify(repository).getValueByKey(SystemProperty.ENABLE_GLOBAL_MFA);
 	}
 }

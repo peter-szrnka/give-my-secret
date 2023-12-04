@@ -3,6 +3,7 @@ package io.github.gms.controller.security;
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
+import io.github.gms.secure.dto.IdNamePairListDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
@@ -89,7 +90,16 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 		HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
 		executeHttpPost("/secure/apikey/" + DemoData.API_KEY_1_ID + "?enabled=true", requestEntity,
 				String.class));
-		
+
+		assertTrue(exception.getMessage().startsWith("403"));
+	}
+
+	@Test
+	void testListAllApiKeyNamesFailWithHttp403() {
+		// assert
+		HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
+				executeHttpGet("/secure/apikey/list_names", null, IdNamePairListDto.class));
+
 		assertTrue(exception.getMessage().startsWith("403"));
 	}
 }
