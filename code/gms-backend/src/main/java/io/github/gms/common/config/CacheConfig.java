@@ -1,6 +1,7 @@
 package io.github.gms.common.config;
 
 import io.github.gms.common.config.cache.ApiCacheKeyGenerator;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
@@ -20,6 +21,7 @@ import static io.github.gms.common.util.Constants.CACHE_USER;
  */
 @Configuration
 @EnableCaching
+@ConditionalOnProperty(name = "config.cache.redis.enabled", havingValue = "false")
 public class CacheConfig implements CachingConfigurer {
 	
 	@Override
