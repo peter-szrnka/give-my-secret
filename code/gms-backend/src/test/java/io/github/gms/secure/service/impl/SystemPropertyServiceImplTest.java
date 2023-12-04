@@ -13,6 +13,8 @@ import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -148,16 +150,17 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 		verify(repository).getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 	}
 
-	@Test
-	void shouldGetBooleanValue() {
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
+	void shouldGetBooleanValue(boolean value) {
 		// arrange
-		when(repository.getValueByKey(SystemProperty.ENABLE_GLOBAL_MFA)).thenReturn(Optional.of("true"));
+		when(repository.getValueByKey(SystemProperty.ENABLE_GLOBAL_MFA)).thenReturn(Optional.of(String.valueOf(value)));
 
 		//act
 		Boolean response = service.getBoolean(SystemProperty.ENABLE_GLOBAL_MFA);
 
 		// assert
-		assertEquals(true, response);
+		assertEquals(value, response);
 		verify(repository).getValueByKey(SystemProperty.ENABLE_GLOBAL_MFA);
 	}
 }
