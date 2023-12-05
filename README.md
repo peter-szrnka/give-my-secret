@@ -38,6 +38,13 @@ To start a new container, you have to set up a bunch of environment properties. 
 
 For further information & sample configurations, please check the sub folders under the "db" folder.
 
+## Caching
+
+2 types of cache provided:
+
+- Built-in cache
+- Redis
+
 ## Authentication
 
 - [Database](batch-files/db-authentication)
@@ -65,7 +72,7 @@ Currently only AES encryption is supported.  In the future this will be configur
 
 # Code samples
 
-You can find client code examples for Java, Python and Node.js [here](client-samples/README.md).
+You can find client code examples for Java, Go, Python and Node.js [here](client-samples/README.md).
 
 
 # Donate

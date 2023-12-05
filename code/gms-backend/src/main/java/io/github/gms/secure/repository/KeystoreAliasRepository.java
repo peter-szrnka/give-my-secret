@@ -5,6 +5,7 @@ import io.github.gms.secure.entity.KeystoreAliasEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import java.util.Optional;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Repository
 public interface KeystoreAliasRepository extends JpaRepository<KeystoreAliasEntity, Long> {
 
 	List<KeystoreAliasEntity> findAllByKeystoreId(Long keystoreId);

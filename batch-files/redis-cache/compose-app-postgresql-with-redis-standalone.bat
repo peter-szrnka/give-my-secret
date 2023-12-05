@@ -1,0 +1,1 @@
+docker compose --env-file env-postgresql-with-redis.txt -p give-my-secret up -d

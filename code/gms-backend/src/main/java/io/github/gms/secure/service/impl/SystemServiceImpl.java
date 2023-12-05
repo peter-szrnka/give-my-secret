@@ -1,29 +1,26 @@
 package io.github.gms.secure.service.impl;
 
-import static io.github.gms.common.util.Constants.OK;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
-
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.info.BuildProperties;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.event.RefreshCacheEvent;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.SystemService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.info.BuildProperties;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static io.github.gms.common.util.Constants.OK;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 
 /**
  * @author Peter Szrnka
@@ -31,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
-@CacheConfig(cacheNames = "systemStatusCache")
 public class SystemServiceImpl implements SystemService {
 
 	private final UserRepository userRepository;
@@ -47,7 +43,6 @@ public class SystemServiceImpl implements SystemService {
 	}
 
 	@Override
-	@Cacheable
 	public SystemStatusDto getSystemStatus() {
 		SystemStatusDto.SystemStatusDtoBuilder builder = SystemStatusDto.builder();
 		String auth = env.getProperty(SELECTED_AUTH, SELECTED_AUTH_DB);
