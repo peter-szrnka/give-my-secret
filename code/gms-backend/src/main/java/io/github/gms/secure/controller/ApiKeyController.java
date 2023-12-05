@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ROLE_USER;
@@ -40,20 +39,20 @@ public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 	@PostMapping
 	@PreAuthorize(ROLE_USER)
 	@Audited(operation = EventOperation.SAVE)
-	public @ResponseBody SaveEntityResponseDto save(@RequestBody SaveApiKeyRequestDto dto) {
+	public SaveEntityResponseDto save(@RequestBody SaveApiKeyRequestDto dto) {
 		return service.save(dto);
 	}
 	
 	@GetMapping("/{id}")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	@Audited(operation = EventOperation.GET_BY_ID)
-	public @ResponseBody ApiKeyDto getById(@PathVariable("id") Long id) {
+	public ApiKeyDto getById(@PathVariable("id") Long id) {
 		return service.getById(id);
 	}
 	
 	@PostMapping("/list")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public @ResponseBody ApiKeyListDto list(@RequestBody PagingDto dto) {
+	public ApiKeyListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
 	}
 	
@@ -66,7 +65,7 @@ public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 
 	@GetMapping("/list_names")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public @ResponseBody IdNamePairListDto getAllApiKeyNames() {
+	public IdNamePairListDto getAllApiKeyNames() {
 		return service.getAllApiKeyNames();
 	}
 }

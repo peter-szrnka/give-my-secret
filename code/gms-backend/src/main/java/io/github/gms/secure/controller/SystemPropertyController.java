@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ROLE_ADMIN;
@@ -54,7 +53,7 @@ public class SystemPropertyController {
 	
 	@PostMapping("/list")
 	@PreAuthorize(ROLE_ADMIN)
-	public @ResponseBody SystemPropertyListDto list(@RequestBody PagingDto dto) {
+	public SystemPropertyListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
 	}
 }

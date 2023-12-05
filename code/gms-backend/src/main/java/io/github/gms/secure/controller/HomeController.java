@@ -5,7 +5,6 @@ import io.github.gms.secure.service.HomeService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ALL_ROLE;
@@ -26,7 +25,7 @@ public class HomeController {
 
     @GetMapping("/")
     @PreAuthorize(ALL_ROLE)
-    public @ResponseBody HomeDataResponseDto getHomeData() {
+    public HomeDataResponseDto getHomeData() {
         return service.getHomeData();
     }
 }

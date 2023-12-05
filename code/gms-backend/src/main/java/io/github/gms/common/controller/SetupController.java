@@ -15,7 +15,6 @@ import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -35,7 +34,7 @@ public class SetupController {
 
 	@PostMapping("/user")
 	@Audited(operation = EventOperation.SETUP)
-	public @ResponseBody SaveEntityResponseDto saveAdminUser(@RequestBody SaveUserRequestDto dto) {
+	public SaveEntityResponseDto saveAdminUser(@RequestBody SaveUserRequestDto dto) {
 		MDC.put(MdcParameter.USER_NAME.getDisplayName(), "setup");
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "0");
 
