@@ -1,13 +1,11 @@
 package io.github.gms.common.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.github.gms.secure.dto.UserInfoDto;
 import io.github.gms.secure.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Peter Szrnka
@@ -24,7 +22,7 @@ public class InformationController {
     }
 
 	@GetMapping("/me")
-    public @ResponseBody UserInfoDto getUserInfo(HttpServletRequest request) {
+    public UserInfoDto getUserInfo(HttpServletRequest request) {
         return userService.getUserInfo(request);
     }
 }

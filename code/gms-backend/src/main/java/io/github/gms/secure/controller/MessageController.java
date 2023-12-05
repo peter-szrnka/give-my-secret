@@ -1,7 +1,11 @@
 package io.github.gms.secure.controller;
 
-import static io.github.gms.common.util.Constants.ALL_ROLE;
-
+import io.github.gms.common.abstraction.AbstractController;
+import io.github.gms.secure.dto.LongValueDto;
+import io.github.gms.secure.dto.MarkAsReadRequestDto;
+import io.github.gms.secure.dto.MessageListDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.service.MessageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,15 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.gms.common.abstraction.AbstractController;
-import io.github.gms.secure.dto.LongValueDto;
-import io.github.gms.secure.dto.MarkAsReadRequestDto;
-import io.github.gms.secure.dto.MessageListDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.service.MessageService;
+import static io.github.gms.common.util.Constants.ALL_ROLE;
 
 /**
  * @author Peter Szrnka
@@ -34,13 +32,13 @@ public class MessageController extends AbstractController<MessageService> {
 
 	@PostMapping("/list")
 	@PreAuthorize(ALL_ROLE)
-	public @ResponseBody MessageListDto list(@RequestBody PagingDto dto) {
+	public MessageListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
 	}
 	
 	@GetMapping("/unread")
 	@PreAuthorize(ALL_ROLE)
-	public @ResponseBody LongValueDto unreadMessagesCount() {
+	public LongValueDto unreadMessagesCount() {
 		return new LongValueDto(service.getUnreadMessagesCount());
 	}
 

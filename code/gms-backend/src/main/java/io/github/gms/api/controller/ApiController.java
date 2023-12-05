@@ -6,7 +6,6 @@ import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -27,7 +26,7 @@ public class ApiController {
 	}
 
 	@GetMapping(path = "/api/secret/{secretId}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-	public @ResponseBody Map<String, String> getSecret(@RequestHeader(name = API_KEY_HEADER, required = true) String apiKey, @PathVariable(name = "secretId") String secretId) {
+	public Map<String, String> getSecret(@RequestHeader(name = API_KEY_HEADER) String apiKey, @PathVariable(name = "secretId") String secretId) {
 		return service.getSecret(new GetSecretRequestDto(apiKey, secretId));
 	}
 }

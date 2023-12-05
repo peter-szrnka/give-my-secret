@@ -1,23 +1,5 @@
 package io.github.gms.secure.controller;
 
-import static io.github.gms.common.util.Constants.ALL_ROLE;
-import static io.github.gms.common.util.Constants.ROLE_ADMIN;
-import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.github.gms.common.abstraction.AbstractController;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
@@ -30,6 +12,22 @@ import io.github.gms.secure.dto.SaveUserRequestDto;
 import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import static io.github.gms.common.util.Constants.ALL_ROLE;
+import static io.github.gms.common.util.Constants.ROLE_ADMIN;
+import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
 
 /**
  * @author Peter Szrnka
@@ -47,19 +45,19 @@ public class UserController extends AbstractController<UserService> {
 	@PostMapping
 	@PreAuthorize(ROLE_ADMIN_OR_USER)
 	@Audited(operation = EventOperation.SAVE)
-	public @ResponseBody SaveEntityResponseDto save(@RequestBody SaveUserRequestDto dto) {
+	public SaveEntityResponseDto save(@RequestBody SaveUserRequestDto dto) {
 		return service.save(dto);
 	}
 
 	@GetMapping("/{id}")
 	@PreAuthorize(ROLE_ADMIN_OR_USER)
-	public @ResponseBody UserDto getById(@PathVariable("id") Long id) {
+	public UserDto getById(@PathVariable("id") Long id) {
 		return service.getById(id);
 	}
 	
 	@PostMapping("/list")
 	@PreAuthorize(ROLE_ADMIN)
-	public @ResponseBody UserListDto list(@RequestBody PagingDto dto) {
+	public UserListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
 	}
 	

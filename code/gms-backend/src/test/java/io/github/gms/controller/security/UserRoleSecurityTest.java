@@ -9,10 +9,12 @@ import io.github.gms.secure.dto.UserDto;
 import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
+import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,7 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
+@Tag(TAG_SECURITY_TEST)
+class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     @Test
     void testSaveFailWithHttp403() {

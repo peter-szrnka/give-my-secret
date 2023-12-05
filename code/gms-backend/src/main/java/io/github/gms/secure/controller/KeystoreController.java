@@ -1,8 +1,18 @@
 package io.github.gms.secure.controller;
 
-import static io.github.gms.common.util.Constants.ROLE_USER;
-import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
-
+import io.github.gms.common.abstraction.AbstractClientController;
+import io.github.gms.common.enums.EventOperation;
+import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.types.AuditTarget;
+import io.github.gms.common.types.Audited;
+import io.github.gms.secure.dto.DownloadFileResponseDto;
+import io.github.gms.secure.dto.GetSecureValueDto;
+import io.github.gms.secure.dto.IdNamePairListDto;
+import io.github.gms.secure.dto.KeystoreDto;
+import io.github.gms.secure.dto.KeystoreListDto;
+import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.secure.dto.SaveEntityResponseDto;
+import io.github.gms.secure.service.KeystoreService;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -17,23 +27,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.github.gms.common.abstraction.AbstractClientController;
-import io.github.gms.common.enums.EventOperation;
-import io.github.gms.common.enums.EventTarget;
-import io.github.gms.common.types.AuditTarget;
-import io.github.gms.common.types.Audited;
-import io.github.gms.secure.dto.DownloadFileResponseDto;
-import io.github.gms.secure.dto.GetSecureValueDto;
-import io.github.gms.secure.dto.IdNamePairListDto;
-import io.github.gms.secure.dto.KeystoreDto;
-import io.github.gms.secure.dto.KeystoreListDto;
-import io.github.gms.secure.dto.PagingDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.service.KeystoreService;
+import static io.github.gms.common.util.Constants.ROLE_USER;
+import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
 
 /**
  * @author Peter Szrnka
@@ -59,39 +57,39 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	})
 	@PreAuthorize(ROLE_USER)
 	@Audited(operation = EventOperation.SAVE)
-	public @ResponseBody SaveEntityResponseDto save(@ModelAttribute(name = MULTIPART_MODEL) String model, @RequestPart(name = MULTIPART_FILE, required = false) MultipartFile file) {
+	public SaveEntityResponseDto save(@ModelAttribute(name = MULTIPART_MODEL) String model, @RequestPart(name = MULTIPART_FILE, required = false) MultipartFile file) {
 		return service.save(model, file);
 	}
 	
 	@GetMapping("/{id}")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	@Audited(operation = EventOperation.GET_BY_ID)
-	public @ResponseBody KeystoreDto getById(@PathVariable("id") Long id) {
+	public KeystoreDto getById(@PathVariable("id") Long id) {
 		return service.getById(id);
 	}
 	
 	@PostMapping("/list")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public @ResponseBody KeystoreListDto list(@RequestBody PagingDto dto) {
+	public KeystoreListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
 	}
 	
 	@PostMapping("/value")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	@Audited(operation = EventOperation.GET_VALUE)
-	public @ResponseBody String getValue(@RequestBody GetSecureValueDto dto) {
+	public String getValue(@RequestBody GetSecureValueDto dto) {
 		return service.getValue(dto);
 	}
 
 	@GetMapping("/list_names")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public @ResponseBody IdNamePairListDto getAllKeystoreNames() {
+	public IdNamePairListDto getAllKeystoreNames() {
 		return service.getAllKeystoreNames();
 	}
 	
 	@GetMapping("/list_aliases/{keystoreId}")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public @ResponseBody IdNamePairListDto getAllKeystoreAliases(@PathVariable("keystoreId") Long keystoreId) {
+	public IdNamePairListDto getAllKeystoreAliases(@PathVariable("keystoreId") Long keystoreId) {
 		return service.getAllKeystoreAliasNames(keystoreId);
 	}
 	

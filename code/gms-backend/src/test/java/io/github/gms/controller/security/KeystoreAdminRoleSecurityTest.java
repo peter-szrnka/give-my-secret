@@ -7,11 +7,13 @@ import io.github.gms.secure.dto.KeystoreListDto;
 import io.github.gms.secure.dto.PagingDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
+import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
+@Tag(TAG_SECURITY_TEST)
+class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     @Test
     void testGetByIdFailWithHttp403() {
