@@ -12,11 +12,13 @@ import org.springframework.data.repository.query.Param;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.secure.dto.IdNamePairDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
+@Repository
 public interface ApiKeyRepository extends JpaRepository<ApiKeyEntity, Long> {
 
 	ApiKeyEntity findByValueAndStatus(String value, EntityStatus status);

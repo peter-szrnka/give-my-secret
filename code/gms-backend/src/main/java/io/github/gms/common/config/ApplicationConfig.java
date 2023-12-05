@@ -1,10 +1,10 @@
 package io.github.gms.common.config;
 
-import java.io.IOException;
-import java.time.Clock;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -18,8 +18,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
+import java.time.Clock;
 
 /**
  * @author Peter Szrnka
@@ -28,6 +28,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @Configuration
 @EnableScheduling
 @EnableAsync
+@ComponentScan(basePackages = "io.github.gms")
 @EnableJpaRepositories(basePackages = "io.github.gms.secure.repository")
 public class ApplicationConfig implements WebMvcConfigurer {
 
