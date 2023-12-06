@@ -70,7 +70,7 @@ describe('HomeComponent', () => {
             totalElements: 0
            },
            userCount: 1,
-           admin: true,
+           role: 'ROLE_ADMIN',
            apiKeyCount: 0,
            keystoreCount: 0,
            announcementCount: 0,
