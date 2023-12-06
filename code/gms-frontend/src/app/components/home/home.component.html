@@ -1,10 +1,10 @@
-<div *ngIf="data">
-  <div *ngIf="data.admin === false">
+<div *ngIf="data !== undefined && loading !== ''">
+  <div *ngIf="data.role === 'ROLE_USER'">
     <div class="gms-box">
-      <div class="warning" *ngIf="!loading && data.apiKeyCount === 0">
+      <div class="warning" *ngIf="loading === 'LOADED' && data.apiKeyCount === 0">
         Please add an API key!
       </div>
-      <div class="warning" *ngIf="!loading && data.keystoreCount === 0">
+      <div class="warning" *ngIf="loading === 'LOADED' && data.keystoreCount === 0">
         Please add a keystore!
       </div>
       <div class="gms-sub-box">
@@ -47,17 +47,17 @@
       </div>
     </div>
   </div>
-  <div *ngIf="data.admin">
+  <div *ngIf="data.role === 'ROLE_ADMIN'">
     <div class="gms-box">
       <div class="gms-sub-box">
         <mat-card class="gms-card-left">
           <mat-card-content>
             <mat-card-title>User management</mat-card-title>
             <mat-card-subtitle>Manage your users</mat-card-subtitle>
-            <div class="warning" *ngIf="data.userCount === 0">
+            <div class="warning" *ngIf="loading === 'LOADED' && data.userCount === 0">
               <b>Warning:</b> No user registered yet!
             </div>
-            <p *ngIf="data.userCount > 0">
+            <p *ngIf="loading === 'LOADED' && data.userCount > 0">
               Number of users: <b>{{data.userCount}}</b><br />
             </p>
           </mat-card-content>

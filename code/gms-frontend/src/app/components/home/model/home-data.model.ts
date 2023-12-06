@@ -12,7 +12,7 @@ export interface HomeData {
    userCount : number,
    announcements : AnnouncementList,
    events : EventList,
-   admin? : boolean
+   role? : string
 }
 
 export const EMPTY_HOME_DATA: HomeData = {
@@ -25,7 +25,7 @@ export const EMPTY_HOME_DATA: HomeData = {
     totalElements: 0
    },
    userCount: 0,
-   admin: false,
+   role: undefined,
    apiKeyCount: 0,
    keystoreCount: 0,
    announcementCount: 0,

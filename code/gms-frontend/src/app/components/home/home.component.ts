@@ -2,7 +2,6 @@ import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { isSpecificUser } from "../../common/utils/permission-utils";
 import { Event } from "../event/model/event.model";
 import { User } from "../user/model/user.model";
 import { EMPTY_HOME_DATA, HomeData } from "./model/home-data.model";
@@ -22,7 +21,7 @@ export class HomeComponent implements OnInit {
     eventColumns: string[] = ['id', 'userId', 'eventDate', 'operation', 'target'];
     eventDataSource: ArrayDataSource<Event>;
     data: HomeData;
-    loading = true;
+    loading: string = '';
 
     constructor(
         public router: Router,
@@ -31,6 +30,7 @@ export class HomeComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.loading = 'LOADING';
         this.sharedData.userSubject$
             .pipe(mergeMap((user: User | undefined): Observable<HomeData> => this.processUser(user)))
             .subscribe((homeData: HomeData) => {
@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
                     ...homeData
                 };
                 this.eventDataSource = new ArrayDataSource<Event>(this.data.events.resultList);
-                this.loading = false;
+                this.loading = 'LOADED';
             });
     }
 
@@ -50,7 +50,8 @@ export class HomeComponent implements OnInit {
 
         return this.homeService.getData().pipe(map((response): HomeData => {
             const data: HomeData = response;
-            data.admin = isSpecificUser(user.roles, 'ROLE_ADMIN');
+            // TODO Refactor the app to allow only 1 type of role
+            data.role = user.roles[0];
             return data;
         }));
     }
