@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
         return this.homeService.getData().pipe(map((response): HomeData => {
             const data: HomeData = response;
             // TODO Refactor the app to allow only 1 type of role
-            data.role = user.roles?.[0];
+            data.role = user.roles[0];
             return data;
         }));
     }
