@@ -107,6 +107,17 @@
 		    <groupId>jakarta.servlet</groupId>
 		    <artifactId>jakarta.servlet-api</artifactId>
 		</dependency>
+		<!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.12</version>
+        </dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.4.12</version>
+		</dependency>
 		<!-- LDAP -->
 		<dependency>
 			<groupId>org.springframework.ldap</groupId>
