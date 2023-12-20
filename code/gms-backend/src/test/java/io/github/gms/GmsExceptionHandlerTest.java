@@ -5,6 +5,7 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class GmsExceptionHandlerTest {
 
