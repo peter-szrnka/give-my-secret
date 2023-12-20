@@ -1,13 +1,13 @@
 package io.github.gms;
 
-import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,15 +29,15 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled
-class GmsExceptionHandlerTest extends AbstractUnitTest {
+@ExtendWith(MockitoExtension.class)
+class GmsExceptionHandlerTest {
 
 	private static final String CORRELATION_ID = "CORRELATION_ID";
 
 	private GmsExceptionHandler handler;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		MDC.put(MdcParameter.CORRELATION_ID.getDisplayName(), CORRELATION_ID);
 		Clock clock = mock(Clock.class);
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
