@@ -1,26 +1,21 @@
 package io.github.gms;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-
+import com.google.common.base.Throwables;
+import io.github.gms.common.dto.ErrorResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.exception.GmsException;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 
-import com.google.common.base.Throwables;
-
-import io.github.gms.common.dto.ErrorResponseDto;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.exception.GmsException;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Clock;
+import java.time.ZonedDateTime;
 
 /**
  * @author Peter Szrnka
@@ -28,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @ControllerAdvice
-public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
+public class GmsExceptionHandler {
 
 	private final Clock clock;
 
@@ -37,28 +32,32 @@ public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(GmsException.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public @ResponseBody ErrorResponseDto handleOtherException(HttpServletRequest request, HandlerMethod handlerMethod, GmsException ex) {
+	public ResponseEntity<ErrorResponseDto> handleGmsException(GmsException ex, WebRequest request) {
 		log.error("GmsException handled", ex);
-		return new ErrorResponseDto(Throwables.getRootCause(ex).getMessage(), MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()), ZonedDateTime.now(clock));
+		return getResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@ExceptionHandler(AccessDeniedException.class)
-	@ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "Access forbidden")
-	public @ResponseBody ErrorResponseDto handleOtherException(HttpServletRequest request, HandlerMethod handlerMethod, AccessDeniedException ex) {
-		return new ErrorResponseDto(Throwables.getRootCause(ex).getMessage(), MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()), ZonedDateTime.now(clock));
+	public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+		return getResponse(ex, HttpStatus.FORBIDDEN);
 	}
-	
+
 	@ExceptionHandler(MissingRequestHeaderException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public @ResponseBody ErrorResponseDto handleOtherException(HttpServletRequest request, HandlerMethod handlerMethod, MissingRequestHeaderException ex) {
-		return new ErrorResponseDto(Throwables.getRootCause(ex).getMessage(), MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()), ZonedDateTime.now(clock));
+	public ResponseEntity<ErrorResponseDto> handleMissingRequestHeaderException(MissingRequestHeaderException ex, WebRequest request) {
+		return getResponse(ex, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(Exception.class)
-	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-	public @ResponseBody ErrorResponseDto handleOtherException(HttpServletRequest request, HandlerMethod handlerMethod, Exception ex) {
+	public ResponseEntity<ErrorResponseDto> handleOtherException(Exception ex, WebRequest request) {
 		log.error("Exception handled", ex);
-		return new ErrorResponseDto(Throwables.getRootCause(ex).getMessage(), MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()), ZonedDateTime.now(clock));
+		return getResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	private ResponseEntity<ErrorResponseDto> getResponse(Exception ex, HttpStatus httpStatus) {
+		return new ResponseEntity<>(new ErrorResponseDto(
+				Throwables.getRootCause(ex).getMessage(),
+				MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()),
+				ZonedDateTime.now(clock)
+		), httpStatus);
 	}
 }

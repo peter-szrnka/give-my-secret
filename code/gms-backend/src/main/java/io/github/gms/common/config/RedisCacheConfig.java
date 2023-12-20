@@ -1,6 +1,7 @@
 package io.github.gms.common.config;
 
 import io.github.gms.common.config.cache.ApiCacheKeyGenerator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 
@@ -30,6 +32,17 @@ import static io.github.gms.common.util.Constants.CACHE_USER;
 @EnableCaching
 @ConditionalOnProperty(name = "config.cache.redis.enabled", havingValue = "true")
 public class RedisCacheConfig {
+
+    @Value("${config.cache.redis.host}")
+    private String host;
+
+    @Value("${config.cache.redis.port}")
+    private Integer port;
+
+    @Bean
+    public LettuceConnectionFactory lettuceConnectionFactory() {
+        return new LettuceConnectionFactory(host, port);
+    }
 
     @Primary
     @Bean

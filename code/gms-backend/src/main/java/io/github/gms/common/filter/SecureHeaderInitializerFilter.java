@@ -1,21 +1,6 @@
 package io.github.gms.common.filter;
 
-import java.io.IOException;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.google.common.collect.Sets;
-
 import io.github.gms.auth.AuthorizationService;
 import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.common.enums.JwtConfigType;
@@ -28,6 +13,19 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A custom Spring filter used to authorize user by parsing JWT token.
@@ -60,6 +58,7 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 
 		if (shouldSkipUrl(request.getRequestURI())) {
 			filterChain.doFilter(request, response);
+			MDC.clear();
 			return;
 		}
 
