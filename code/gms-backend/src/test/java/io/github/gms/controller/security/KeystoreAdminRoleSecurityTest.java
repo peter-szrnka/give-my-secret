@@ -1,6 +1,7 @@
 package io.github.gms.controller.security;
 
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
+import io.github.gms.secure.dto.GetSecureValueDto;
 import io.github.gms.secure.dto.IdNamePairListDto;
 import io.github.gms.secure.dto.KeystoreDto;
 import io.github.gms.secure.dto.KeystoreListDto;
@@ -49,11 +50,13 @@ class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     @Test
     void testGetValueFailWithHttp403() {
-        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+        GetSecureValueDto dto = new GetSecureValueDto();
+        dto.setEntityId(DemoData.KEYSTORE_ID);
+        HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
 
         // assert
         HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-                executeHttpGet("/secure/keystore/value/" + DemoData.KEYSTORE_ID, requestEntity, String.class));
+                executeHttpPost("/secure/keystore/value", requestEntity, String.class));
 
         assertTrue(exception.getMessage().startsWith("403"));
     }

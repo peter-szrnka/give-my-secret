@@ -72,7 +72,7 @@ public class UserController extends AbstractController<UserService> {
 	@PostMapping("/{id}")
 	@PreAuthorize(ROLE_ADMIN)
 	@Audited(operation = EventOperation.TOGGLE_STATUS)
-	public ResponseEntity<String> toggle(@PathVariable("id") Long id, @RequestParam boolean enabled) {
+	public ResponseEntity<String> toggle(@PathVariable("id") Long id, @RequestParam("enabled") boolean enabled) {
 		service.toggleStatus(id, enabled);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -97,7 +97,7 @@ public class UserController extends AbstractController<UserService> {
 	@PostMapping("/toggle_mfa")
 	@PreAuthorize(ALL_ROLE)
 	@Audited(operation = EventOperation.TOGGLE_MFA)
-	public ResponseEntity<Void> toggleMfa(@RequestParam boolean enabled) {
+	public ResponseEntity<Void> toggleMfa(@RequestParam("enabled") boolean enabled) {
 		service.toggleMfa(enabled);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
