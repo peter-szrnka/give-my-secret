@@ -6,7 +6,6 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.exception.GmsException;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled
 class GmsExceptionHandlerTest extends AbstractUnitTest {
 
 	private static final String CORRELATION_ID = "CORRELATION_ID";
