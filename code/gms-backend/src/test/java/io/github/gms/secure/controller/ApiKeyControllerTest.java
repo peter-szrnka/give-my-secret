@@ -1,18 +1,5 @@
 package io.github.gms.secure.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
-
 import io.github.gms.secure.dto.ApiKeyDto;
 import io.github.gms.secure.dto.ApiKeyListDto;
 import io.github.gms.secure.dto.IdNamePairDto;
@@ -22,6 +9,17 @@ import io.github.gms.secure.dto.SaveApiKeyRequestDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.service.ApiKeyService;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test of {@link ApiKeyController}
@@ -38,8 +36,6 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
 
     @Test
     void shouldDeleteEntity() {
-        // arrange
-        doNothing().when(service).delete(1L);
 
         // act
         ResponseEntity<String> response = controller.delete(1L);

@@ -1,16 +1,5 @@
 package io.github.gms.secure.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
-
 import io.github.gms.secure.dto.AnnouncementDto;
 import io.github.gms.secure.dto.AnnouncementListDto;
 import io.github.gms.secure.dto.PagingDto;
@@ -18,6 +7,15 @@ import io.github.gms.secure.dto.SaveAnnouncementDto;
 import io.github.gms.secure.dto.SaveEntityResponseDto;
 import io.github.gms.secure.service.AnnouncementService;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test of {@link AnnouncementController}
@@ -34,8 +32,6 @@ class AnnouncementControllerTest extends AbstractClientControllerTest<Announceme
 
     @Test
     void shouldDeleteEntity() {
-        // arrange
-        doNothing().when(service).delete(1L);
 
         // act
         ResponseEntity<String> response = controller.delete(1L);
