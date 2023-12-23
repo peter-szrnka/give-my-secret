@@ -1,9 +1,12 @@
 package io.github.gms.auth.config;
 
-import static io.github.gms.common.util.Constants.PASSWORD_ENCODER;
-
-import java.util.List;
-
+import dev.samstevens.totp.code.CodeGenerator;
+import dev.samstevens.totp.code.CodeVerifier;
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.code.DefaultCodeVerifier;
+import dev.samstevens.totp.time.SystemTimeProvider;
+import dev.samstevens.totp.time.TimeProvider;
+import io.github.gms.common.filter.SecureHeaderInitializerFilter;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,13 +31,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import dev.samstevens.totp.code.CodeGenerator;
-import dev.samstevens.totp.code.CodeVerifier;
-import dev.samstevens.totp.code.DefaultCodeGenerator;
-import dev.samstevens.totp.code.DefaultCodeVerifier;
-import dev.samstevens.totp.time.SystemTimeProvider;
-import dev.samstevens.totp.time.TimeProvider;
-import io.github.gms.common.filter.SecureHeaderInitializerFilter;
+import java.util.List;
+
+import static io.github.gms.common.util.Constants.PASSWORD_ENCODER;
 
 /**
  * @author Peter Szrnka
@@ -47,7 +46,7 @@ import io.github.gms.common.filter.SecureHeaderInitializerFilter;
 public class SecurityConfig {
 
 	private static final String[] FILTER_URL = new String[] { "/", "/system/status", "/healthcheck", "/setup/**",
-			"/login", "/authenticate", "/verify", "/logoutUser", "/api/**", "/info/me",
+			"/login", "/authenticate", "/verify", "/logoutUser", "/api/**", "/info/me", "/actuator/**",
 			"/gms-app/**", "/favicon.ico", "/assets/**", "/index.html**", "/*.js**", "/*.css**", "/*.json**",
 			"/manifest.webmanifest" };
 
