@@ -1,6 +1,8 @@
 package io.github.gms;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.data.redis.RedisHealthContributorAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.ldap.LdapHealthContributorAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -15,7 +17,11 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 @SpringBootApplication(exclude = {
 	LdapRepositoriesAutoConfiguration.class,
 	JacksonAutoConfiguration.class,
-	RedisAutoConfiguration.class
+	LdapRepositoriesAutoConfiguration.class,
+	RedisAutoConfiguration.class,
+	// Actuator auto configurations
+	LdapHealthContributorAutoConfiguration.class,
+	RedisHealthContributorAutoConfiguration.class
 })
 public class GmsApplication {
 
