@@ -28,7 +28,7 @@ CREATE TABLE gms_event (
 	event_date TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	operation VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
 	target VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
-	user_id BIGINT(20) NOT NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
+	user_id BIGINT(20) NOT NULL COLLATE 'utf8mb3_general_ci',
 	PRIMARY KEY (id) USING BTREE
 )
 COLLATE='utf8mb3_general_ci' ENGINE=InnoDB;
