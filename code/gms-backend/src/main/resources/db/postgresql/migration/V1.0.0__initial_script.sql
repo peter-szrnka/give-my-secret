@@ -91,8 +91,8 @@ CREATE TABLE gms_api_key_restriction (
 
 CREATE TABLE gms_system_property (
 	id SERIAL PRIMARY KEY,
-	key VARCHAR(255) NULL DEFAULT NULL,
-	value VARCHAR(255) NULL DEFAULT NULL,
+	prop_key VARCHAR(255) NULL DEFAULT NULL,
+	prop_value VARCHAR(255) NULL DEFAULT NULL,
 	last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 

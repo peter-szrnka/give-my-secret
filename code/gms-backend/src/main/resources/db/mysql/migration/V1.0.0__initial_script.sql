@@ -35,29 +35,29 @@ COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 CREATE TABLE gms_keystore (
 	id BIGINT(20) NOT NULL AUTO_INCREMENT,
-	name VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci',
+	name VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp(),
-	credential VARCHAR(512) NOT NULL COLLATE 'utf8mb3_general_ci',
-	description VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
-	file_name VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
-	status VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci',
-	type VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci',
+	credential VARCHAR(512) NOT NULL COLLATE 'utf8mb4_general_ci',
+	description VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	file_name VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	status VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	type VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	user_id BIGINT(20) NULL DEFAULT NULL,
 	PRIMARY KEY (id) USING BTREE
 )
-COLLATE='utf8mb3_general_ci' ENGINE=InnoDB;
+COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 CREATE TABLE gms_keystore_alias (
 	id BIGINT(20) NOT NULL AUTO_INCREMENT,
 	keystore_id BIGINT(20) NULL DEFAULT NULL,
-	alias VARCHAR(512) NOT NULL COLLATE 'utf8mb3_general_ci',
-	alias_credential VARCHAR(512) NOT NULL COLLATE 'utf8mb3_general_ci',
-	description VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
-	algorithm VARCHAR(64) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
+	alias VARCHAR(512) NOT NULL COLLATE 'utf8mb4_general_ci',
+	alias_credential VARCHAR(512) NOT NULL COLLATE 'utf8mb4_general_ci',
+	description VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	algorithm VARCHAR(64) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	
 	PRIMARY KEY (id) USING BTREE
 )
-COLLATE='utf8mb3_general_ci' ENGINE=InnoDB;
+COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 CREATE TABLE gms_secret (
 	id BIGINT NOT NULL AUTO_INCREMENT,
@@ -108,8 +108,8 @@ COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 CREATE TABLE gms_system_property (
 	id BIGINT NOT NULL AUTO_INCREMENT,
-	key VARCHAR(255) NULL DEFAULT NULL,
-	value VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
+	prop_key VARCHAR(255) NULL DEFAULT NULL,
+	prop_value VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	PRIMARY KEY (id) USING BTREE
 )
