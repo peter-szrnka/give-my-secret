@@ -1,7 +1,5 @@
 package io.github.gms.secure.entity;
 
-import java.time.ZonedDateTime;
-
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.enums.SystemProperty;
 import jakarta.persistence.Column;
@@ -14,6 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.time.ZonedDateTime;
 
 /**
  * @author Peter Szrnka
@@ -32,11 +32,11 @@ public class SystemPropertyEntity extends AbstractGmsEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "key")
+	@Column(name = "prop_key")
 	@Enumerated(EnumType.STRING)
 	private SystemProperty key;
 	
-	@Column(name = "value")
+	@Column(name = "prop_value")
 	private String value;
 
 	@Column(name = "last_modified")

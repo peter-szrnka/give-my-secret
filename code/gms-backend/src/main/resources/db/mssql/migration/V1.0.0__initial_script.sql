@@ -26,7 +26,7 @@ CREATE TABLE gms_event (
 	event_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	operation VARCHAR(255) NULL DEFAULT NULL,
 	target VARCHAR(255) NULL DEFAULT NULL,
-	user_id BIGINT NOT NULL DEFAULT NULL,
+	user_id BIGINT NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -98,8 +98,30 @@ CREATE TABLE gms_api_key_restriction (
 
 CREATE TABLE gms_system_property (
 	id BIGINT NOT NULL IDENTITY(1, 1),
-	key VARCHAR(255) NULL DEFAULT NULL,
-	value VARCHAR(255) NULL DEFAULT NULL,
-	last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	prop_key VARCHAR(255) NULL DEFAULT NULL,
+	prop_value VARCHAR(255) NULL DEFAULT NULL,
+	last_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (id)
 );
+
+CREATE INDEX idx_gms_user ON gms_user(id);
+CREATE INDEX idx_gms_api_key ON gms_api_key(id);
+CREATE INDEX idx_gms_event ON gms_event(id);
+CREATE INDEX idx_gms_keystore ON gms_keystore(id);
+CREATE INDEX idx_gms_ks_alias ON gms_keystore_alias(id);
+CREATE INDEX idx_gms_secret ON gms_secret(id);
+CREATE INDEX idx_gms_announcement ON gms_announcement(id);
+CREATE INDEX idx_gms_message ON gms_message(id);
+CREATE INDEX idx_gms_api_kr ON gms_api_key_restriction(id);
+CREATE INDEX idx_gms_sys_prop ON gms_system_property(id);
+
+CREATE UNIQUE INDEX idx_unq_gms_user ON gms_user(id);
+CREATE UNIQUE INDEX idx_unq_gms_api_key ON gms_api_key(id);
+CREATE UNIQUE INDEX idx_unq_gms_event ON gms_event(id);
+CREATE UNIQUE INDEX idx_unq_gms_keystore ON gms_keystore(id);
+CREATE UNIQUE INDEX idx_unq_gms_ks_alias ON gms_keystore_alias(id);
+CREATE UNIQUE INDEX idx_unq_gms_secret ON gms_secret(id);
+CREATE UNIQUE INDEX id_unq_gms_announcement ON gms_announcement(id);
+CREATE UNIQUE INDEX idx_unq_gms_message ON gms_message(id);
+CREATE UNIQUE INDEX idx_unq_gms_api_kr ON gms_api_key_restriction(id);
+CREATE UNIQUE INDEX idx_unq_gms_sys_prop ON gms_system_property(id);
