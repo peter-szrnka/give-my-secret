@@ -1,18 +1,5 @@
 package io.github.gms.auth;
 
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-
-import java.util.Date;
-import java.util.stream.Stream;
-
-import org.slf4j.MDC;
-import org.springframework.data.util.Pair;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.util.WebUtils;
-
 import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.abstraction.AbstractAuthService;
@@ -25,7 +12,23 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.data.util.Pair;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
 
+import java.util.Date;
+import java.util.stream.Stream;
+
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Slf4j
 @Service
 public class AuthorizationServiceImpl extends AbstractAuthService implements AuthorizationService {
