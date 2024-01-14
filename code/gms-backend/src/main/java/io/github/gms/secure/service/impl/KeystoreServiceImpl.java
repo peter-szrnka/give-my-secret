@@ -1,31 +1,6 @@
 package io.github.gms.secure.service.impl;
 
-import static io.github.gms.common.util.Constants.CACHE_API;
-import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static io.github.gms.common.util.Constants.SLASH;
-import static io.github.gms.common.util.MdcUtils.getUserId;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
@@ -54,6 +29,32 @@ import io.github.gms.secure.service.KeystoreService;
 import jakarta.transaction.Transactional;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static io.github.gms.common.util.Constants.ALIAS_ID;
+import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static io.github.gms.common.util.Constants.KEYSTORE_ID;
+import static io.github.gms.common.util.Constants.SLASH;
+import static io.github.gms.common.util.Constants.USER_ID;
+import static io.github.gms.common.util.MdcUtils.getUserId;
 
 /**
  * @author Peter Szrnka
@@ -277,7 +278,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		} else {
 			aliasRepository.deleteById(alias.getId());
 			Map<String, Object> metadata = initMetaData(newEntity.getId());
-			metadata.put("aliasId", alias.getId());
+			metadata.put(ALIAS_ID, alias.getId());
 			publishEvent(metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED);
 		}
 	}
@@ -385,8 +386,8 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 	private static Map<String, Object> initMetaData(Long keystoreId) {
 		Map<String, Object> metadata = new HashMap<>();
-		metadata.put("userId", getUserId());
-		metadata.put("keystoreId", keystoreId);
+		metadata.put(USER_ID, getUserId());
+		metadata.put(KEYSTORE_ID, keystoreId);
 		return metadata;
 	}
 

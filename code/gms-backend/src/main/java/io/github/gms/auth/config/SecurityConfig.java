@@ -7,6 +7,7 @@ import dev.samstevens.totp.code.DefaultCodeVerifier;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
 import io.github.gms.common.filter.SecureHeaderInitializerFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,6 +27,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -42,7 +45,7 @@ import static io.github.gms.common.util.Constants.PASSWORD_ENCODER;
 @DependsOn(PASSWORD_ENCODER)
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfig {
 
 	private static final String[] FILTER_URL = new String[] { "/", "/system/status", "/healthcheck", "/setup/**",
@@ -57,7 +60,16 @@ public class SecurityConfig {
 			SecureHeaderInitializerFilter secureHeaderInitializerFilter) throws Exception {
 		http
 			.cors(cors -> Customizer.withDefaults())
-			.csrf(CsrfConfigurer::disable)
+			.csrf(csrf -> csrf
+					.requireCsrfProtectionMatcher(new RequestMatcher() {
+						private final RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("/secure/*", null);
+							@Override
+							public boolean matches(HttpServletRequest request) {
+								return regexRequestMatcher.matches(request);
+							}
+					})
+					.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+			)
 			.exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
 			.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(authorizeHttpRequest -> 

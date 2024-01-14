@@ -1,8 +1,9 @@
 package io.github.gms.common.dto;
 
-import java.io.Serializable;
-
 import lombok.Data;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * @author Peter Szrnka
@@ -10,7 +11,9 @@ import lombok.Data;
  */
 @Data
 public class LoginVerificationRequestDto implements Serializable {
-    
+
+    @Serial
+    private static final long serialVersionUID = 260522957233658543L;
     private String username;
     private String verificationCode;
 }

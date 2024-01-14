@@ -1,7 +1,5 @@
 package io.github.gms.secure.entity;
 
-import java.time.ZonedDateTime;
-
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.RotationPeriod;
@@ -18,6 +16,11 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
+import java.time.ZonedDateTime;
+
+import static io.github.gms.common.util.Constants.ID;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -28,10 +31,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class SecretEntity extends AbstractGmsEntity {
 
+	@Serial
 	private static final long serialVersionUID = 5114924217467033850L;
 	
 	@Id
-	@Column(name = "id")
+	@Column(name = ID)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 

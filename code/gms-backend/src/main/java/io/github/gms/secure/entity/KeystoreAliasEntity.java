@@ -12,6 +12,10 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
+
+import static io.github.gms.common.util.Constants.ID;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -22,10 +26,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class KeystoreAliasEntity extends AbstractGmsEntity {
 
+	@Serial
 	private static final long serialVersionUID = -5558391835366268906L;
 
 	@Id
-	@Column(name = "id")
+	@Column(name = ID)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 

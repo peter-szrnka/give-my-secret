@@ -13,7 +13,10 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.time.ZonedDateTime;
+
+import static io.github.gms.common.util.Constants.ID;
 
 /**
  * @author Peter Szrnka
@@ -25,10 +28,11 @@ import java.time.ZonedDateTime;
 @EqualsAndHashCode(callSuper = false)
 public class SystemPropertyEntity extends AbstractGmsEntity {
 
+	@Serial
 	private static final long serialVersionUID = 7838750742371446801L;
 	
 	@Id
-	@Column(name = "id")
+	@Column(name = ID)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	

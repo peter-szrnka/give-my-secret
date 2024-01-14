@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 import static io.github.gms.common.util.Constants.DATE_FORMAT;
@@ -18,8 +20,10 @@ import static io.github.gms.common.util.Constants.DATE_FORMAT;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MessageDto {
+public class MessageDto implements Serializable {
 
+	@Serial
+	private static final long serialVersionUID = -7730830096112955243L;
 	private Long id;
 	private Long userId;
 	private boolean opened;

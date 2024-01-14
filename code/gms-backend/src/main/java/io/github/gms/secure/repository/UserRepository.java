@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.CACHE_USER;
+import static io.github.gms.common.util.Constants.USER_ID;
 
 /**
  * @author Peter Szrnka
@@ -34,5 +35,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 	@Cacheable
 	@Query("SELECT u.username from UserEntity u where u.id = :userId")
-	String getUsernameById(@Param("userId") Long userId);
+	String getUsernameById(@Param(USER_ID) Long userId);
 }

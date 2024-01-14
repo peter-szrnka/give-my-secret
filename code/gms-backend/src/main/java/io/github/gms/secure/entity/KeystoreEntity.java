@@ -1,7 +1,5 @@
 package io.github.gms.secure.entity;
 
-import java.time.ZonedDateTime;
-
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.db.converter.EncryptedFieldConverter;
 import io.github.gms.common.enums.EntityStatus;
@@ -18,6 +16,11 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
+import java.time.ZonedDateTime;
+
+import static io.github.gms.common.util.Constants.ID;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -28,10 +31,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class KeystoreEntity extends AbstractGmsEntity {
 
+	@Serial
 	private static final long serialVersionUID = 7355366159631069375L;
 	
 	@Id
-	@Column(name = "id")
+	@Column(name = ID)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 

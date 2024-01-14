@@ -1,7 +1,5 @@
 package io.github.gms.secure.entity;
 
-import java.time.ZonedDateTime;
-
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.enums.EntityStatus;
 import jakarta.persistence.Column;
@@ -16,6 +14,11 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
+import java.time.ZonedDateTime;
+
+import static io.github.gms.common.util.Constants.ID;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -26,10 +29,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class UserEntity extends AbstractGmsEntity {
 
+	@Serial
 	private static final long serialVersionUID = 6223008984478998461L;
 	
 	@Id
-	@Column(name = "id")
+	@Column(name = ID)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 

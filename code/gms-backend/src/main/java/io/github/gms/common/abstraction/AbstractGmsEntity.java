@@ -1,8 +1,8 @@
 package io.github.gms.common.abstraction;
 
-import java.io.Serializable;
-
 import jakarta.persistence.MappedSuperclass;
+
+import java.io.Serializable;
 
 /**
  * @author Peter Szrnka
@@ -10,6 +10,4 @@ import jakarta.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class AbstractGmsEntity implements Serializable {
-
-	private static final long serialVersionUID = -5706779850849304191L;
 }

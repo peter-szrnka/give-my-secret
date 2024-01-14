@@ -6,6 +6,7 @@ import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SecretType;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +18,7 @@ import java.util.Set;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SaveSecretRequestDto implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 8744862858176214735L;
 
 	private Long id;

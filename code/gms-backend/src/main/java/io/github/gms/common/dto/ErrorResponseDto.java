@@ -1,7 +1,6 @@
 package io.github.gms.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.io.Serial;
@@ -15,7 +14,6 @@ import static io.github.gms.common.util.Constants.DATE_FORMAT;
  * @since 1.0
  */
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponseDto implements Serializable {
 
 	@Serial

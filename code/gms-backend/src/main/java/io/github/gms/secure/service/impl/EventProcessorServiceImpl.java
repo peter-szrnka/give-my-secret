@@ -10,6 +10,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static io.github.gms.common.util.Constants.ALIAS_ID;
+import static io.github.gms.common.util.Constants.KEYSTORE_ID;
+import static io.github.gms.common.util.Constants.USER_ID;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -36,8 +40,8 @@ public class EventProcessorServiceImpl implements EventProcessorService {
 	@Transactional
 	@EventListener
 	public void disableEntity(EntityChangeEvent event) {
-		Long userId = (Long) event.getMetadata().get("userId");
-		Long keystoreId = (Long) event.getMetadata().get("keystoreId");
+		Long userId = (Long) event.getMetadata().get(USER_ID);
+		Long keystoreId = (Long) event.getMetadata().get(KEYSTORE_ID);
 
 		if (event.getType() == EntityChangeEvent.EntityChangeType.KEYSTORE_DISABLED) {
 			// We have to disable all secret by alias id where the given keystore is used
@@ -47,7 +51,7 @@ public class EventProcessorServiceImpl implements EventProcessorService {
 			return;
 		}
 		
-		Long aliasId = (Long) event.getMetadata().get("aliasId");
+		Long aliasId = (Long) event.getMetadata().get(ALIAS_ID);
 		secretRepository.disableAllActiveByKeystoreAliasId(aliasId);
 
 		sendMessage(userId, REASON_KEYSTORE_ALIAS_REMOVED);

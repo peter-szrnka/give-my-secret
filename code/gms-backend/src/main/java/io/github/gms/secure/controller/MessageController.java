@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ALL_ROLE;
+import static io.github.gms.common.util.Constants.PATH_LIST;
 
 /**
  * @author Peter Szrnka
@@ -30,7 +31,7 @@ public class MessageController extends AbstractController<MessageService> {
 		super(service);
 	}
 
-	@PostMapping("/list")
+	@PostMapping(PATH_LIST)
 	@PreAuthorize(ALL_ROLE)
 	public MessageListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);

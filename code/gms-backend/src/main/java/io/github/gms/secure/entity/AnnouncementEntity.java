@@ -1,9 +1,5 @@
 package io.github.gms.secure.entity;
 
-import java.time.ZonedDateTime;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +9,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+
+import java.io.Serial;
+import java.time.ZonedDateTime;
+
+import static io.github.gms.common.util.Constants.ID;
 
 /**
  * @author Peter Szrnka
@@ -22,13 +24,14 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "gms_announcement")
 @EqualsAndHashCode(callSuper = false)
-@ConditionalOnProperty(name = "config.x", havingValue = "true")
+@ConditionalOnProperty(name = "config.x", havingValue = "true") // FIXME
 public class AnnouncementEntity extends AbstractGmsEntity {
 
+	@Serial
 	private static final long serialVersionUID = 5171308736459567016L;
 
 	@Id
-	@Column(name = "id")
+	@Column(name = ID)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	

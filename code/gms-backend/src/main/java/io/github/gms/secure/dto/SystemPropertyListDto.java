@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SystemPropertyListDto implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 8921222088599739123L;
 
 	private List<SystemPropertyDto> resultList;

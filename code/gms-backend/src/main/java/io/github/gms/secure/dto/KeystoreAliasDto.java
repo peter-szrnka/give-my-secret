@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -20,6 +21,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class KeystoreAliasDto implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = -8584105411899700590L;
 
 	private Long id;

@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -13,8 +16,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HomeDataResponseDto {
-	@Builder.Default
+public class HomeDataResponseDto implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 5142397705164311963L;
+    @Builder.Default
     private AnnouncementListDto announcements = new AnnouncementListDto();
 	@Builder.Default
     private EventListDto events = new EventListDto();
