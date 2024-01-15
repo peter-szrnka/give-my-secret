@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.github.gms.common.util.Constants.PATH_LIST;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN;
+import static io.github.gms.common.util.Constants.USER_ID;
 
 /**
  * @author Peter Szrnka
@@ -25,7 +27,7 @@ public class EventController extends AbstractController<EventService> {
 		super(service);
 	}
 
-	@PostMapping("/list")
+	@PostMapping(PATH_LIST)
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_VIEWER')")
 	public EventListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
@@ -33,7 +35,7 @@ public class EventController extends AbstractController<EventService> {
 	
 	@PostMapping("/list/{userId}")
 	@PreAuthorize(ROLE_ADMIN)
-	public EventListDto listByUserId(@PathVariable("userId") Long userId, @RequestBody PagingDto dto) {
+	public EventListDto listByUserId(@PathVariable(USER_ID) Long userId, @RequestBody PagingDto dto) {
 		return service.listByUser(userId, dto);
 	}
 }

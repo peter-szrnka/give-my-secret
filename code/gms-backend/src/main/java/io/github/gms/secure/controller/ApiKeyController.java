@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.github.gms.common.util.Constants.ID;
+import static io.github.gms.common.util.Constants.PATH_LIST;
+import static io.github.gms.common.util.Constants.PATH_LIST_NAMES;
+import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
 import static io.github.gms.common.util.Constants.ROLE_USER;
 import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
 
@@ -43,14 +47,14 @@ public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 		return service.save(dto);
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	@Audited(operation = EventOperation.GET_BY_ID)
-	public ApiKeyDto getById(@PathVariable("id") Long id) {
+	public ApiKeyDto getById(@PathVariable(ID) Long id) {
 		return service.getById(id);
 	}
 	
-	@PostMapping("/list")
+	@PostMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	public ApiKeyListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
@@ -59,11 +63,11 @@ public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 	@GetMapping("/value/{id}")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	@Audited(operation = EventOperation.GET_VALUE)
-	public String getValue(@PathVariable("id") Long id) {
+	public String getValue(@PathVariable(ID) Long id) {
 		return service.getDecryptedValue(id);
 	}
 
-	@GetMapping("/list_names")
+	@GetMapping(PATH_LIST_NAMES)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	public IdNamePairListDto getAllApiKeyNames() {
 		return service.getAllApiKeyNames();

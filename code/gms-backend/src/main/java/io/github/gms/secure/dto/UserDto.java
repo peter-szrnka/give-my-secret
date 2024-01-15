@@ -6,6 +6,7 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import static io.github.gms.common.util.Constants.DATE_FORMAT;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = -1043138827939793289L;
 
 	private Long id;

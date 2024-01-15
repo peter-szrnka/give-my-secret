@@ -30,6 +30,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import static io.github.gms.common.util.Constants.ID;
+import static io.github.gms.common.util.Constants.KEYSTORE_ID;
+import static io.github.gms.common.util.Constants.PATH_LIST;
+import static io.github.gms.common.util.Constants.PATH_LIST_NAMES;
+import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
 import static io.github.gms.common.util.Constants.ROLE_USER;
 import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
 
@@ -61,14 +66,14 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 		return service.save(model, file);
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	@Audited(operation = EventOperation.GET_BY_ID)
-	public KeystoreDto getById(@PathVariable("id") Long id) {
+	public KeystoreDto getById(@PathVariable(ID) Long id) {
 		return service.getById(id);
 	}
 	
-	@PostMapping("/list")
+	@PostMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	public KeystoreListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
@@ -81,7 +86,7 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 		return service.getValue(dto);
 	}
 
-	@GetMapping("/list_names")
+	@GetMapping(PATH_LIST_NAMES)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	public IdNamePairListDto getAllKeystoreNames() {
 		return service.getAllKeystoreNames();
@@ -89,14 +94,14 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	
 	@GetMapping("/list_aliases/{keystoreId}")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public IdNamePairListDto getAllKeystoreAliases(@PathVariable("keystoreId") Long keystoreId) {
+	public IdNamePairListDto getAllKeystoreAliases(@PathVariable(KEYSTORE_ID) Long keystoreId) {
 		return service.getAllKeystoreAliasNames(keystoreId);
 	}
 	
 	@GetMapping(path = "/download/{keystoreId}", produces = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	@Audited(operation = EventOperation.DOWNLOAD)
-	public ResponseEntity<Resource> download(@PathVariable("keystoreId") Long keystoreId) {
+	public ResponseEntity<Resource> download(@PathVariable(KEYSTORE_ID) Long keystoreId) {
 		DownloadFileResponseDto response = service.downloadKeystore(keystoreId);
 		
 		return ResponseEntity.ok()

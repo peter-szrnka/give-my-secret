@@ -10,6 +10,10 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
+
+import static io.github.gms.common.util.Constants.ID;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -20,10 +24,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class ApiKeyRestrictionEntity extends AbstractGmsEntity {
 
+	@Serial
 	private static final long serialVersionUID = -6965366285964443078L;
 
 	@Id
-	@Column(name = "id")
+	@Column(name = ID)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 

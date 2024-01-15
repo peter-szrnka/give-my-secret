@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class IdNamePairListDto implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = -4136554261517005342L;
 
 	private List<IdNamePairDto> resultList;

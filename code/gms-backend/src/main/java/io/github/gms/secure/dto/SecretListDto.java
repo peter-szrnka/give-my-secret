@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -15,7 +17,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SecretListDto {
+public class SecretListDto implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = -232796913804612186L;
 
 	private List<SecretDto> resultList;
 	private long totalElements;

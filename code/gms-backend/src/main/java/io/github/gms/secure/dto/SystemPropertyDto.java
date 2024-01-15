@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
@@ -22,6 +23,7 @@ import static io.github.gms.common.util.Constants.DATE_FORMAT;
 @AllArgsConstructor
 public class SystemPropertyDto implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 9035787175353459355L;
 	
 	private String key;

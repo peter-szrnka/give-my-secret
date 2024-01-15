@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import static io.github.gms.common.util.Constants.KEYSTORE_ID;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -24,5 +26,5 @@ public interface KeystoreAliasRepository extends JpaRepository<KeystoreAliasEnti
 	Optional<KeystoreAliasEntity> findByIdAndKeystoreId(Long id, Long keystoreId);
 
 	@Query("select new io.github.gms.secure.dto.IdNamePairDto(a.id,a.alias) from KeystoreAliasEntity a where a.keystoreId = :keystoreId")
-	List<IdNamePairDto> getAllAliasNames(@Param("keystoreId") Long keystoreId);
+	List<IdNamePairDto> getAllAliasNames(@Param(KEYSTORE_ID) Long keystoreId);
 }

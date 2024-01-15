@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import static io.github.gms.common.util.Constants.USER_ID;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -29,10 +31,10 @@ public interface KeystoreRepository extends JpaRepository<KeystoreEntity, Long> 
 	long countByUserId(Long userId);
 
 	@Query("select new io.github.gms.secure.dto.IdNamePairDto(k.id,k.name) from KeystoreEntity k where k.status='ACTIVE' and k.userId = :userId")
-	List<IdNamePairDto> getAllKeystoreNames(@Param("userId") Long userId);
+	List<IdNamePairDto> getAllKeystoreNames(@Param(USER_ID) Long userId);
 	
 	@Query("select count(k) from KeystoreEntity k where k.userId = :userId and k.name = :name")
-	long countAllKeystoresByName(@Param("userId") Long userId, @Param("name") String name);
+	long countAllKeystoresByName(@Param(USER_ID) Long userId, @Param("name") String name);
 
 	@Query("select k.fileName from KeystoreEntity k where k.fileName = :fileName")
 	String findByFileName(@Param("fileName") String fileName);

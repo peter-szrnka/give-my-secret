@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -19,6 +20,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class AuthenticateResponseDto implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 5395019181044919899L;
 
 	private UserInfoDto currentUser;

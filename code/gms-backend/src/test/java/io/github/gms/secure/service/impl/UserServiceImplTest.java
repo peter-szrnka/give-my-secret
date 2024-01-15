@@ -4,7 +4,6 @@ import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.event.RefreshCacheEvent;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
@@ -31,7 +30,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -66,7 +64,6 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	private UserRepository repository;
 	private UserConverter converter;
-	private ApplicationEventPublisher applicationEventPublisher;
 	private PasswordEncoder passwordEncoder;
 	private JwtClaimService jwtClaimService;
 	private UserServiceImpl service;
@@ -77,10 +74,9 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		super.setup();
 		repository = mock(UserRepository.class);
 		converter = mock(UserConverter.class);
-		applicationEventPublisher = mock(ApplicationEventPublisher.class);
 		passwordEncoder = mock(PasswordEncoder.class);
 		jwtClaimService = mock(JwtClaimService.class);
-		service = new UserServiceImpl(repository, converter, applicationEventPublisher, passwordEncoder, jwtClaimService);
+		service = new UserServiceImpl(repository, converter, passwordEncoder, jwtClaimService);
 		((Logger) LoggerFactory.getLogger(UserServiceImpl.class)).addAppender(logAppender);
 	}
 
@@ -128,7 +124,6 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(1L, response.getEntityId());
-		verify(applicationEventPublisher).publishEvent(any(RefreshCacheEvent.class));
 		verify(converter).toEntity(any(UserEntity.class), any(SaveUserRequestDto.class), eq(admin));
 		verify(repository).save(any(UserEntity.class));
 		MDC.remove(MdcParameter.IS_ADMIN.getDisplayName());

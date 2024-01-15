@@ -2,6 +2,10 @@ package io.github.gms.secure.model;
 
 import lombok.Getter;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 public enum EnabledAlgorithm {
     SHA1WITHRSA("SHA1WITHRSA"),
     SHA224WITHRSA("SHA224WITHRSA"),

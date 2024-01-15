@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ALL_ROLE;
+import static io.github.gms.common.util.Constants.ID;
+import static io.github.gms.common.util.Constants.PATH_LIST;
+import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN;
 
 /**
@@ -45,22 +48,22 @@ public class AnnouncementController extends AbstractController<AnnouncementServi
 		return service.save(dto);
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ALL_ROLE)
-	public AnnouncementDto getById(@PathVariable("id") Long id) {
+	public AnnouncementDto getById(@PathVariable(ID) Long id) {
 		return service.getById(id);
 	}
 	
-	@PostMapping("/list")
+	@PostMapping(PATH_LIST)
 	@PreAuthorize(ALL_ROLE)
 	public AnnouncementListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
 	}
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ROLE_ADMIN)
 	@Audited(operation = EventOperation.DELETE)
-	public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+	public ResponseEntity<String> delete(@PathVariable(ID) Long id) {
 		service.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

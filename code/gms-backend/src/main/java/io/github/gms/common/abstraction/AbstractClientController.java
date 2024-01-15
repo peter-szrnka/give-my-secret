@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static io.github.gms.common.util.Constants.ID;
+import static io.github.gms.common.util.Constants.PATH_ENABLED;
+import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
 import static io.github.gms.common.util.Constants.ROLE_USER;
 
 /**
@@ -24,18 +27,18 @@ public abstract class AbstractClientController<T extends GmsClientService> exten
 		super(service);
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ROLE_USER)
 	@Audited(operation = EventOperation.DELETE)
-	public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+	public ResponseEntity<String> delete(@PathVariable(ID) Long id) {
 		service.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@PostMapping("/{id}")
+	@PostMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ROLE_USER)
 	@Audited(operation = EventOperation.TOGGLE_STATUS)
-	public ResponseEntity<String> toggle(@PathVariable("id") Long id, @RequestParam("enabled") boolean enabled) {
+	public ResponseEntity<String> toggle(@PathVariable(ID) Long id, @RequestParam(PATH_ENABLED) boolean enabled) {
 		service.toggleStatus(id, enabled);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -15,6 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper=false)
 public class SaveEntityResponseDto extends SimpleResponseDto {
 
+	@Serial
 	private static final long serialVersionUID = 8978351781176023545L;
 
 	private Long entityId;

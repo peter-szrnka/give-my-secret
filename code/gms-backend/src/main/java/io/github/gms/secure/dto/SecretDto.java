@@ -7,6 +7,7 @@ import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SecretType;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Set;
@@ -21,6 +22,7 @@ import static io.github.gms.common.util.Constants.DATE_FORMAT;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SecretDto implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = -5511904398286163112L;
 
 	private Long id;

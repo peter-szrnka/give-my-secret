@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static io.github.gms.common.util.Constants.USER_ID;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -29,12 +31,12 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
 	long countByUserId(Long userId);
 	
 	@Query("select count(m) from MessageEntity m where m.opened = false and m.userId = :userId")
-	Long countAllUnreadByUserId(@Param("userId") Long id);
+	Long countAllUnreadByUserId(@Param(USER_ID) Long id);
 	
 	@Transactional
 	@Modifying
 	@Query("update MessageEntity m set m.opened=true where m.userId = :userId and m.id in :messageIds")
-	void markAsRead(@Param("userId") Long userId, @Param("messageIds") Set<Long> messageIds);
+	void markAsRead(@Param(USER_ID) Long userId, @Param("messageIds") Set<Long> messageIds);
 
 	@Query("select m from MessageEntity m where m.creationDate < :eventDate")
 	List<MessageEntity> findAllEventDateOlderThan(@Param("eventDate") ZonedDateTime creationDate);

@@ -26,6 +26,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ALL_ROLE;
+import static io.github.gms.common.util.Constants.ID;
+import static io.github.gms.common.util.Constants.PATH_ENABLED;
+import static io.github.gms.common.util.Constants.PATH_LIST;
+import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
 
@@ -49,30 +53,30 @@ public class UserController extends AbstractController<UserService> {
 		return service.save(dto);
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ROLE_ADMIN_OR_USER)
-	public UserDto getById(@PathVariable("id") Long id) {
+	public UserDto getById(@PathVariable(ID) Long id) {
 		return service.getById(id);
 	}
 	
-	@PostMapping("/list")
+	@PostMapping(PATH_LIST)
 	@PreAuthorize(ROLE_ADMIN)
 	public UserListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
 	}
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ROLE_ADMIN)
 	@Audited(operation = EventOperation.DELETE)
-	public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+	public ResponseEntity<String> delete(@PathVariable(ID) Long id) {
 		service.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@PostMapping("/{id}")
+	@PostMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ROLE_ADMIN)
 	@Audited(operation = EventOperation.TOGGLE_STATUS)
-	public ResponseEntity<String> toggle(@PathVariable("id") Long id, @RequestParam("enabled") boolean enabled) {
+	public ResponseEntity<String> toggle(@PathVariable(ID) Long id, @RequestParam(PATH_ENABLED) boolean enabled) {
 		service.toggleStatus(id, enabled);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -97,7 +101,7 @@ public class UserController extends AbstractController<UserService> {
 	@PostMapping("/toggle_mfa")
 	@PreAuthorize(ALL_ROLE)
 	@Audited(operation = EventOperation.TOGGLE_MFA)
-	public ResponseEntity<Void> toggleMfa(@RequestParam("enabled") boolean enabled) {
+	public ResponseEntity<Void> toggleMfa(@RequestParam(PATH_ENABLED) boolean enabled) {
 		service.toggleMfa(enabled);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

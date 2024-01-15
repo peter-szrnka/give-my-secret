@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ApiKeyListDto implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = -8839092933626161502L;
 	private List<ApiKeyDto> resultList;
 	private long totalElements;

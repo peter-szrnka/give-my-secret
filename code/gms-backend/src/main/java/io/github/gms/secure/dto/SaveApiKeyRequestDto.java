@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.github.gms.common.enums.EntityStatus;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
@@ -16,6 +17,7 @@ import static io.github.gms.common.util.Constants.DATE_FORMAT;
 @Data
 public class SaveApiKeyRequestDto implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = -8287465195543229193L;
 	private Long id;
 	private Long userId;

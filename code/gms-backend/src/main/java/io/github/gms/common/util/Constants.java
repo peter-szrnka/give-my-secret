@@ -11,6 +11,9 @@ public final class Constants {
 	public static final String SLASH = "/";
 	public static final String OK = "OK";
 	public static final String VALUE = "value";
+	public static final String ALIAS_ID = "aliasId";
+	public static final String USER_ID = "userId";
+	public static final String KEYSTORE_ID = "keystoreId";
 
 	public static final String ENTITY_NOT_FOUND = "Entity not found!";
 	public static final String LDAP_CRYPT_PREFIX = "{CRYPT}";
@@ -53,4 +56,11 @@ public final class Constants {
 	
 	// Formats
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+
+	public static final String PATH_VARIABLE_ID = "/{id}";
+	public static final String PATH_LIST = "/list";
+	public static final String PATH_LIST_NAMES = "/list_names";
+	public static final String PATH_ENABLED = "enabled";
+	public static final String ID = "id";
 }

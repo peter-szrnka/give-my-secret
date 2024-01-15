@@ -7,6 +7,8 @@ CREATE TABLE gms_user (
 	roles VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	status VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	user_name VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	mfa_enabled INT NOT NULL DEFAULT 0,
+    mfa_secret VARCHAR(32) NOT NULL COLLATE 'utf8mb4_general_ci',
 	PRIMARY KEY (id) USING BTREE
 )
 COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;

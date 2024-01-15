@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +18,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventListDto {
+public class EventListDto implements Serializable {
 
+	@Serial
+	private static final long serialVersionUID = -686851266183351444L;
 	@Builder.Default
 	private List<EventDto> resultList = new ArrayList<>();
 	@Builder.Default

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.github.gms.common.util.Constants.PATH_LIST;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN;
 
 /**
@@ -51,7 +52,7 @@ public class SystemPropertyController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@PostMapping("/list")
+	@PostMapping(PATH_LIST)
 	@PreAuthorize(ROLE_ADMIN)
 	public SystemPropertyListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
