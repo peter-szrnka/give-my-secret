@@ -1,26 +1,5 @@
 package io.github.gms.secure.service.impl;
 
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-
-import static io.github.gms.common.util.Constants.CACHE_API;
-import static io.github.gms.common.util.Constants.CACHE_USER;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.slf4j.MDC;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.WebUtils;
-
 import dev.samstevens.totp.code.HashingAlgorithm;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import dev.samstevens.totp.qr.QrData;
@@ -31,7 +10,6 @@ import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.event.RefreshCacheEvent;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
@@ -52,6 +30,24 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.WebUtils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.CACHE_USER;
 
 /**
  * @author Peter Szrnka
@@ -66,15 +62,13 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository repository;
 	private final UserConverter converter;
-	private final ApplicationEventPublisher applicationEventPublisher;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtClaimService jwtClaimService;
 
-	public UserServiceImpl(UserRepository repository, UserConverter converter, ApplicationEventPublisher applicationEventPublisher,
+	public UserServiceImpl(UserRepository repository, UserConverter converter,
 						   PasswordEncoder passwordEncoder, JwtClaimService jwtClaimService) {
 		this.repository = repository;
 		this.converter = converter;
-		this.applicationEventPublisher = applicationEventPublisher;
 		this.passwordEncoder = passwordEncoder;
 		this.jwtClaimService = jwtClaimService;
 	}
@@ -204,11 +198,6 @@ public class UserServiceImpl implements UserService {
 		}
 
 		entity = repository.save(entity);
-
-		if (entity.getRoles().contains(UserRole.ROLE_ADMIN.name())) {
-			applicationEventPublisher.publishEvent(new RefreshCacheEvent(this));
-		}
-
 		return new SaveEntityResponseDto(entity.getId());
 	}
 	
@@ -225,7 +214,7 @@ public class UserServiceImpl implements UserService {
 	private UserEntity validateAndReturnUser(Long userId) {
 		return repository.findById(userId).orElseThrow(() -> {
 			log.warn("User not found");
-			throw new GmsException("User not found!");
+            return new GmsException("User not found!");
 		});
 	}
 	

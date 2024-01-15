@@ -7,7 +7,6 @@ import dev.samstevens.totp.code.DefaultCodeVerifier;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
 import io.github.gms.common.filter.SecureHeaderInitializerFilter;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +18,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,9 +27,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.util.matcher.RegexRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -60,16 +57,7 @@ public class SecurityConfig {
 			SecureHeaderInitializerFilter secureHeaderInitializerFilter) throws Exception {
 		http
 			.cors(cors -> Customizer.withDefaults())
-			.csrf(csrf -> csrf
-					.requireCsrfProtectionMatcher(new RequestMatcher() {
-						private final RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("/secure/*", null);
-							@Override
-							public boolean matches(HttpServletRequest request) {
-								return regexRequestMatcher.matches(request);
-							}
-					})
-					.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-			)
+			.csrf(AbstractHttpConfigurer::disable)
 			.exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
 			.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(authorizeHttpRequest -> 

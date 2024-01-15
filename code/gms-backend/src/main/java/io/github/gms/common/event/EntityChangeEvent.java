@@ -4,18 +4,20 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.context.ApplicationEvent;
 
+import java.io.Serial;
 import java.util.Map;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
+@Getter
 @ToString
 public class EntityChangeEvent extends ApplicationEvent {
 
+	@Serial
 	private static final long serialVersionUID = -722237695149809530L;
 	
-	@Getter
 	private final Map<String, Object> metadata;
 	private final EntityChangeType type;
 
@@ -25,9 +27,6 @@ public class EntityChangeEvent extends ApplicationEvent {
 		this.type = type;
 	}
 
-	public EntityChangeType getType() {
-		return type;
-	}
 	public enum EntityChangeType {
 		KEYSTORE_DISABLED("keystore disabled"),
 		KEYSTORE_DELETED("keystore deleted"),

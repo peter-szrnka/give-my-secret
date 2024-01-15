@@ -1,15 +1,12 @@
 package io.github.gms.secure.service.impl;
 
 import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.common.event.RefreshCacheEvent;
 import io.github.gms.common.util.Constants;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.SystemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -56,13 +53,6 @@ public class SystemServiceImpl implements SystemService {
 
 		long result = userRepository.countExistingAdmins();
 		return builder.status(result > 0 ? OK : "NEED_SETUP").build();
-	}
-
-	@Override
-	@EventListener
-	@CacheEvict(allEntries = true)
-	public void refreshSystemStatus(RefreshCacheEvent userChangedEvent) {
-		log.info("System status cache refreshed");
 	}
 
 	@Autowired(required = false)

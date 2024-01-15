@@ -4,11 +4,9 @@ package io.github.gms.secure.service.impl;
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.common.event.RefreshCacheEvent;
 import io.github.gms.secure.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -26,7 +24,6 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -111,14 +108,6 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 			verify(buildProperties).getTime();
 			verify(buildProperties).getVersion();
 		}
-	}
-	
-	@Test
-	void shouldDeleteCache() {
-		service.refreshSystemStatus(new RefreshCacheEvent(this));
-		
-		assertFalse(logAppender.list.isEmpty());
-		assertEquals("System status cache refreshed", logAppender.list.get(0).getFormattedMessage());
 	}
 	
 	public static Object[][] inputData() {
