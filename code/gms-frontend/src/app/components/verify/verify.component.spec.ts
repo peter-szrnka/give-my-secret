@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ReplaySubject, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -29,6 +29,8 @@ describe('VerifyComponent', () => {
     let sharedDataService : any;
     let splashScreenStateService : any;
     let mockWindow : any;
+    let mockLocation: any;
+    let activatedRoute : any = {};
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
@@ -40,7 +42,9 @@ describe('VerifyComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
                 { provide : AuthService, useValue : authService },
-                { provide : MatDialog, useValue : dialog }
+                { provide : MatDialog, useValue : dialog },
+                { provide : Location, useValue: mockLocation },
+                { provide : ActivatedRoute, useValue : activatedRoute }
             ]
         });
         fixture = TestBed.createComponent(VerifyComponent);
@@ -90,6 +94,17 @@ describe('VerifyComponent', () => {
         };
         authService = {
             verifyLogin : jest.fn().mockReturnValue(of(mockResponse))
+        };
+
+        mockLocation = {
+            path: jest.fn().mockReturnValue("/")
+        };
+
+        activatedRoute = {
+            snapshot : {
+                queryParams: {
+                }
+            }
         };
     });
 

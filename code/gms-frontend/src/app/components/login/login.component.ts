@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { NavigationExtras, Router } from "@angular/router";
+import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
@@ -19,12 +19,13 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 export class LoginComponent extends BaseLoginComponent {
 
     constructor(
+        protected override route: ActivatedRoute,
         protected override router: Router,
         private authService: AuthService,
         protected override sharedDataService: SharedDataService,
         protected override splashScreenStateService: SplashScreenStateService,
         protected override dialog: MatDialog) {
-            super(router, sharedDataService, dialog, splashScreenStateService)
+            super(route, router, sharedDataService, dialog, splashScreenStateService)
     }
 
     formModel: Login = {
@@ -49,6 +50,9 @@ export class LoginComponent extends BaseLoginComponent {
                     const navigationExtras: NavigationExtras = {
                         state: {
                           username: response.currentUser.username
+                        },
+                        queryParams: {
+                            previousUrl: this.route.snapshot.queryParams['previousUrl'] ?? ''
                         }
                       };
 

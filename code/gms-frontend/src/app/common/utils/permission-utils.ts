@@ -20,7 +20,7 @@ export function checkRights(user?: User, requireAdminRights?: boolean): boolean 
 }
 
 export function isSpecificUser(roles: string[], requiredRole: string): boolean {
-    return roles !== undefined && roles.filter(role => role === requiredRole).length > 0;
+    return roles.filter(role => role === requiredRole).length > 0;
 }
 
 export function roleCheck(currentUser: User, roleName: string): boolean {

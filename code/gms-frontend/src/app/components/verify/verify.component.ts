@@ -1,6 +1,6 @@
 import { Component, Inject } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
 import { AuthenticationPhase, LoginResponse, VerifyLogin } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
@@ -21,12 +21,13 @@ export class VerifyComponent extends BaseLoginComponent {
 
     constructor(
         @Inject(WINDOW_TOKEN) private window: Window,
+        protected override route: ActivatedRoute,
         protected override router: Router,
         private authService: AuthService,
         protected override sharedDataService: SharedDataService,
         protected override splashScreenStateService: SplashScreenStateService,
         protected override dialog: MatDialog) {
-            super(router, sharedDataService, dialog, splashScreenStateService);      
+            super(route, router, sharedDataService, dialog, splashScreenStateService);      
     }
 
     formModel: VerifyLogin = {
