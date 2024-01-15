@@ -44,7 +44,8 @@ const routeBuilder = (routePath: string, resolveKey: string, component: Type<any
     data: { 'roles': roles },
     resolve: { [resolveKey]: (snapshot: ActivatedRouteSnapshot) => inject(resolver).resolve(snapshot) },
     canActivate: [ROLE_GUARD],
-    runGuardsAndResolvers: 'always'
+    redirectTo: '',
+    runGuardsAndResolvers: 'always',
   };
 };
 
