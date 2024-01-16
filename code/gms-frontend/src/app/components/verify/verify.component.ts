@@ -61,7 +61,7 @@ export class VerifyComponent extends BaseLoginComponent {
             return;
         }
 
-        this.finalizeSuccessfulLogin();
+        this.finalizeSuccessfulLogin(response.currentUser);
     }
 
     private handleFailure(): void {

@@ -6,6 +6,9 @@ import { MatDialog } from "@angular/material/dialog";
 import { SplashScreenStateService } from "../../../service/splash-screen-service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SharedDataService } from "../../../service/shared-data-service";
+import { ROLE_GUARD, checker } from "../../../interceptor/role-guard";
+import { ROLE_ROUTE_MAP } from "../../../../app-routing.module";
+import { User } from "../../../../components/user/model/user.model";
 
 /**
  * @author Peter Szrnka
@@ -43,10 +46,12 @@ export abstract class BaseLoginComponent implements OnInit {
         this.showErrorModal();
     }
 
-    protected finalizeSuccessfulLogin() {
+    protected finalizeSuccessfulLogin(currentUser : User) {
         this.splashScreenStateService.stop();
         this.sharedDataService.refreshCurrentUserInfo();
-        const nextUrl = this.route.snapshot.queryParams['previousUrl'] ?? '';
-        void this.router.navigate([nextUrl]);
+        const nextUrl: string = this.route.snapshot.queryParams['previousUrl'] ?? '';
+        const expectedRoles = nextUrl ? ROLE_ROUTE_MAP[nextUrl.substring(1)] : [];
+        const canActivate = checker(expectedRoles, currentUser.roles ?? []);
+        void this.router.navigate([canActivate ? nextUrl : '']);
     }
 }

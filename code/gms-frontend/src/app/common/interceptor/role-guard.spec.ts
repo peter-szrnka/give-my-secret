@@ -28,6 +28,25 @@ describe('RoleGuard', () => {
           });
     };
 
+    it.each([
+        undefined,
+        { data : undefined },
+        { data : { roles: undefined } }
+    ])('should return false when no data provided', async (routeData: any) => {
+        // arrange
+        sharedData = {
+            getUserInfo : jest.fn().mockReturnValue(userData)
+        };
+
+        configureTestBed();
+ 
+        // act
+        const response = await TestBed.runInInjectionContext(async () => ROLE_GUARD(routeData));
+
+        // assert
+        expect(response).toBeFalsy();
+    });
+
     it('should return true', async () => {
         // arrange
         sharedData = {
