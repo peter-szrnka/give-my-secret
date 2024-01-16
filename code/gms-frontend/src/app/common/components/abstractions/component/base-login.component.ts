@@ -6,9 +6,9 @@ import { MatDialog } from "@angular/material/dialog";
 import { SplashScreenStateService } from "../../../service/splash-screen-service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SharedDataService } from "../../../service/shared-data-service";
-import { ROLE_GUARD, checker } from "../../../interceptor/role-guard";
-import { ROLE_ROUTE_MAP } from "../../../../app-routing.module";
+import { checker } from "../../../interceptor/role-guard";
 import { User } from "../../../../components/user/model/user.model";
+import { ROLE_ROUTE_MAP } from "../../../utils/route-utils";
 
 /**
  * @author Peter Szrnka

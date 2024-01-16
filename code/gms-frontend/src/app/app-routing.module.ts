@@ -32,29 +32,11 @@ import { UserListResolver } from './components/user/resolver/user-list.resolver'
 import { UserDetailComponent } from './components/user/user-detail.component';
 import { UserListComponent } from './components/user/user-list.component';
 import { VerifyComponent } from './components/verify/verify.component';
+import { ROLE_ROUTE_MAP } from './common/utils/route-utils';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
-const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];
-const ROLES_ADMIN = ['ROLE_ADMIN'];
 
-export const ROLE_ROUTE_MAP: any = {
-  'secret/list': ROLES_USER_AND_VIEWER,
-  'apikey/list': ROLES_USER_AND_VIEWER,
-  'keystore/list': ROLES_USER_AND_VIEWER,
-  'user/list': ROLES_ADMIN,
-  'event/list': ROLES_ADMIN,
-  'announcement/list': ROLES_ADMIN,
-  'system_property/list': ROLES_ADMIN,
-  'secret/:id': ROLES_USER_AND_VIEWER,
-  'apikey/:id': ROLES_USER_AND_VIEWER,
-  'keystore/:id': ROLES_USER_AND_VIEWER,
-  'user/:id': ROLES_ADMIN,
-  'event/:id': ROLES_ADMIN,
-  'announcement/:id': ROLES_ADMIN,
-  'system_property/:id': ROLES_ADMIN,
-};
-
-const routeBuilder = (routePath: string, resolveKey: string, component: Type<any>, resolver: Type<any>/*, roles = ROLES_USER_AND_VIEWER*/): Route => {
+const routeBuilder = (routePath: string, resolveKey: string, component: Type<any>, resolver: Type<any>): Route => {
   return {
     path: routePath,
     component: component,
@@ -65,12 +47,12 @@ const routeBuilder = (routePath: string, resolveKey: string, component: Type<any
   };
 };
 
-const listRouteBuilder = (scope: string, component: Type<any>, resolver: Type<any>/*, roles = ROLES_USER_AND_VIEWER*/): Route => {
-  return routeBuilder(scope + '/list', 'data', component, resolver/*, roles*/);
+const listRouteBuilder = (scope: string, component: Type<any>, resolver: Type<any>): Route => {
+  return routeBuilder(scope + '/list', 'data', component, resolver);
 };
 
-const detailRouteBuilder = (scope: string, component: Type<any>, resolver: Type<any>/*, roles = ROLES_USER_AND_VIEWER*/): Route => {
-  return routeBuilder(scope + '/:id', 'entity', component, resolver/*, roles*/);
+const detailRouteBuilder = (scope: string, component: Type<any>, resolver: Type<any>): Route => {
+  return routeBuilder(scope + '/:id', 'entity', component, resolver);
 };
 
 const routes: Routes = [
@@ -90,15 +72,17 @@ const routes: Routes = [
   { path: 'api-testing', component: ApiTestingComponent, data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD] },
 
   // Admin functions
-  listRouteBuilder('user', UserListComponent, UserListResolver/*, ROLES_ADMIN*/),
-  detailRouteBuilder('user', UserDetailComponent, UserDetailResolver/*, ROLES_ADMIN*/),
-  listRouteBuilder('event', EventListComponent, EventListResolver/*, ROLES_ADMIN*/),
-  listRouteBuilder('announcement', AnnouncementListComponent, AnnouncementListResolver/*, ROLES_ADMIN*/),
-  detailRouteBuilder('announcement', AnnouncementDetailComponent, AnnouncementDetailResolver/*, ROLES_ADMIN*/),
-  listRouteBuilder('system_property', SystemPropertyListComponent, SystemPropertyListResolver/*, ROLES_ADMIN*/),
+  listRouteBuilder('user', UserListComponent, UserListResolver),
+  detailRouteBuilder('user', UserDetailComponent, UserDetailResolver),
+  listRouteBuilder('event', EventListComponent, EventListResolver),
+  listRouteBuilder('announcement', AnnouncementListComponent, AnnouncementListResolver),
+  detailRouteBuilder('announcement', AnnouncementDetailComponent, AnnouncementDetailResolver),
+  listRouteBuilder('system_property', SystemPropertyListComponent, SystemPropertyListResolver),
 
   // Common functions
   { path: 'messages', component: MessageListComponent },
+  // All other unknown routes
+  {path: '**', redirectTo: ''},
 ];
 
 /**
