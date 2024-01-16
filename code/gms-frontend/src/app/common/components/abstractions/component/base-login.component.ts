@@ -4,8 +4,11 @@ import { DialogData } from "../../info-dialog/dialog-data.model";
 import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { SplashScreenStateService } from "../../../service/splash-screen-service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SharedDataService } from "../../../service/shared-data-service";
+import { checker } from "../../../interceptor/role-guard";
+import { User } from "../../../../components/user/model/user.model";
+import { ROLE_ROUTE_MAP } from "../../../utils/route-utils";
 
 /**
  * @author Peter Szrnka
@@ -14,6 +17,7 @@ import { SharedDataService } from "../../../service/shared-data-service";
 export abstract class BaseLoginComponent implements OnInit {
 
     constructor(
+        protected route: ActivatedRoute,
         protected router: Router,
         protected sharedDataService: SharedDataService,
         protected dialog: MatDialog,
@@ -42,9 +46,12 @@ export abstract class BaseLoginComponent implements OnInit {
         this.showErrorModal();
     }
 
-    protected finalizeSuccessfulLogin() {
+    protected finalizeSuccessfulLogin(currentUser : User) {
         this.splashScreenStateService.stop();
         this.sharedDataService.refreshCurrentUserInfo();
-        void this.router.navigate(['']);
+        const nextUrl: string = this.route.snapshot.queryParams['previousUrl'] ?? '';
+        const expectedRoles = nextUrl ? ROLE_ROUTE_MAP[nextUrl.substring(1)] : [];
+        const canActivate = checker(expectedRoles, currentUser.roles);
+        void this.router.navigate([canActivate ? nextUrl : '']);
     }
 }

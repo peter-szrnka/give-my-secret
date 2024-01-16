@@ -7,6 +7,7 @@ import { SystemReadyData } from "./common/model/system-ready.model";
 import { User } from "./components/user/model/user.model";
 import { SharedDataService } from "./common/service/shared-data-service";
 import { SplashScreenStateService } from "./common/service/splash-screen-service";
+import { Location } from "@angular/common";
 
 /**
  * @author Peter Szrnka
@@ -21,6 +22,7 @@ describe('AppComponent', () => {
     let mockSubject : ReplaySubject<User | undefined>;
     let mockSystemReadySubject : ReplaySubject<SystemReadyData>;
     let mockEvents: any[] = [];
+    let mockLocation: any;
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -29,7 +31,8 @@ describe('AppComponent', () => {
             providers: [
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
-                { provide : Router, useValue : router }
+                { provide : Router, useValue : router },
+                { provide : Location, useValue: mockLocation }
             ]
         });
 
@@ -70,6 +73,10 @@ describe('AppComponent', () => {
         splashScreenStateService = {
             start: jest.fn(),
             stop: jest.fn()
+        };
+
+        mockLocation = {
+            path: jest.fn().mockReturnValue("/")
         };
     });
 

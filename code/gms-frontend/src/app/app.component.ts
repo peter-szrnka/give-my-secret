@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
 import { User } from './components/user/model/user.model';
 import { SharedDataService } from './common/service/shared-data-service';
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') ?? 'true');
 
   constructor(
+    private location: Location,
     private router: Router, 
     public sharedDataService: SharedDataService, 
     private splashScreenStateService: SplashScreenStateService) {
@@ -46,7 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
 
       if (readyData.status !== 200 || (!this.currentUser && !this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
-        void this.router.navigate([LOGIN_CALLBACK_URL]);
+        void this.router.navigate([LOGIN_CALLBACK_URL], { queryParams: { previousUrl: this.location.path() } });
         return;
       }
 
@@ -74,11 +76,15 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   isNormalUser(): boolean {
-    return this.systemReady && this.currentUser !== undefined && roleCheck(this.currentUser, 'ROLE_USER');
+    return this.systemReady && this.isUserDefined() && roleCheck(this.currentUser!!, 'ROLE_USER');
   }
 
   isAdmin(): boolean {
-    return this.systemReady && this.currentUser !== undefined && roleCheck(this.currentUser, 'ROLE_ADMIN');
+    return this.systemReady && this.isUserDefined() && roleCheck(this.currentUser!!, 'ROLE_ADMIN');
+  }
+
+  private isUserDefined() {
+    return this.currentUser !== undefined && this.currentUser !== null;
   }
 
   private isNavigationEndInstance(routerEvent: RouterEvent): boolean {

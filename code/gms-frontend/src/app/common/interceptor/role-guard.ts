@@ -1,9 +1,9 @@
 import { inject } from "@angular/core";
-import { ActivatedRouteSnapshot, Router } from "@angular/router";
+import { ActivatedRouteSnapshot } from "@angular/router";
 import { User } from "../../components/user/model/user.model";
 import { SharedDataService } from "../service/shared-data-service";
 
-const checker = (arr: string[], target: string[]) => {
+export const checker = (arr: string[], target: string[]) => {
     let result = false;
     arr.forEach(arrElement => {
         target.forEach(targetElement => {
@@ -18,9 +18,9 @@ const checker = (arr: string[], target: string[]) => {
 
 /**
  * @author Peter Szrnka
+ * 
  */
-export const ROLE_GUARD = async (route: ActivatedRouteSnapshot, router: Router): Promise<boolean> => {
-    const roles = route.data["roles"] as string[];
+export const ROLE_GUARD = async (route: ActivatedRouteSnapshot): Promise<boolean> => {
     const service: SharedDataService = inject(SharedDataService);
     const currentUser: User | undefined = await service.getUserInfo();
 
@@ -28,12 +28,6 @@ export const ROLE_GUARD = async (route: ActivatedRouteSnapshot, router: Router):
         return Promise.resolve(false);
     }
 
-    const checkResult = checker(roles, currentUser.roles);
-
-    if (checkResult === false) {
-        router.navigate(['']);
-        return Promise.resolve(false);
-    }
-
-    return Promise.resolve(true);
+    const roles = route?.data?.["roles"] as string[] ?? [];
+    return Promise.resolve(checker(roles, currentUser.roles));
 };
