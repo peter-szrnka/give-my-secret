@@ -51,7 +51,7 @@ export abstract class BaseLoginComponent implements OnInit {
         this.sharedDataService.refreshCurrentUserInfo();
         const nextUrl: string = this.route.snapshot.queryParams['previousUrl'] ?? '';
         const expectedRoles = nextUrl ? ROLE_ROUTE_MAP[nextUrl.substring(1)] : [];
-        const canActivate = checker(expectedRoles, currentUser.roles ?? []);
+        const canActivate = checker(expectedRoles, currentUser.roles);
         void this.router.navigate([canActivate ? nextUrl : '']);
     }
 }

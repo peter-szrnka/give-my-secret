@@ -70,17 +70,14 @@ describe('LoginComponent', () => {
             stop : jest.fn()
         };
 
-        const mockCurrentUser: User = {
-            roles: []
-        };
-
-        const mockResponse: LoginResponse = {
-            currentUser: mockCurrentUser,
-            phase: AuthenticationPhase.COMPLETED
-        };
         authService = {
             login : jest.fn().mockImplementation(() => {
-                return of(mockResponse);
+                return of({
+                    currentUser:  {
+                        roles: []
+                    },
+                    phase: AuthenticationPhase.COMPLETED
+                });
             })
         };
 
@@ -96,15 +93,47 @@ describe('LoginComponent', () => {
         };
     });
 
-    it('Should create component and login with redirect', () => {
+    it.each([
+        [undefined, []],
+        [{
+            previousUrl: '/'
+        }, ['ROLE_USER']],
+        [{
+            previousUrl: '/secret/list'
+        }, []],
+        [{
+            previousUrl: '/users/list'
+        }, []],
+        [{
+            previousUrl: '/secret/list'
+        }, ['ROLE_ADMIN']],
+        [{
+            previousUrl: '/users/list'
+        }, ['ROLE_ADMIN']],
+        [{
+            previousUrl: '/secret/list'
+        }, ['ROLE_USER']],
+        [{
+            previousUrl: '/users/list'
+        }, ['ROLE_USER']]
+    ])('Should create component and login with redirect', (inputQueryParam: any, inputRoles: string[]) => {
         // arrange
         activatedRoute = {
             snapshot : {
-                queryParams: {
-                    previousUrl: '/users/list'
-                }
+                queryParams: inputQueryParam
             }
         };
+        authService = {
+            login : jest.fn().mockImplementation(() => {
+                return of({
+                    currentUser:  {
+                        roles: inputRoles
+                    },
+                    phase: AuthenticationPhase.COMPLETED
+                });
+            })
+        };
+
         configTestBed();
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
