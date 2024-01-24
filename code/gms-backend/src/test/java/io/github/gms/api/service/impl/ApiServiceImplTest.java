@@ -1,37 +1,29 @@
 package io.github.gms.api.service.impl;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.api.service.KeystoreValidatorService;
+import io.github.gms.api.service.SecretPreparationService;
 import io.github.gms.common.enums.SecretType;
-import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.dto.GetSecretRequestDto;
-import io.github.gms.secure.entity.ApiKeyEntity;
 import io.github.gms.secure.entity.SecretEntity;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.repository.ApiKeyRepository;
-import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
-import io.github.gms.secure.repository.KeystoreAliasRepository;
-import io.github.gms.secure.repository.KeystoreRepository;
-import io.github.gms.secure.repository.SecretRepository;
-import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.CryptoService;
-import io.github.gms.util.TestUtils;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.VALUE;
+import static io.github.gms.util.TestUtils.assertLogContains;
+import static io.github.gms.util.TestUtils.createMockSecret;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -40,36 +32,84 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
+ * Unit test of {@link ApiServiceImpl}
+ *
  * @author Peter Szrnka
  * @since 1.0
  */
 class ApiServiceImplTest extends AbstractUnitTest {
 
 	private static final GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
+	private ListAppender<ILoggingEvent> logAppender;
 
 	private CryptoService cryptoService;
-	private SecretRepository secretRepository;
+	/*private SecretRepository secretRepository;
 	private ApiKeyRepository apiKeyRepository;
 	private UserRepository userRepository;
 	private KeystoreRepository keystoreRepository;
 	private KeystoreAliasRepository keystoreAliasRepository;
-	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
+	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;*/
+	private SecretPreparationService secretPreparationService;
+	private KeystoreValidatorService keystoreValidatorService;
 	private ApiServiceImpl service;
 
 	@BeforeEach
 	void beforeEach() {
 		cryptoService = mock(CryptoService.class);
-		secretRepository = mock(SecretRepository.class);
+		secretPreparationService = mock(SecretPreparationService.class);
+		keystoreValidatorService = mock(KeystoreValidatorService.class);
+		/*secretRepository = mock(SecretRepository.class);
 		apiKeyRepository = mock(ApiKeyRepository.class);
 		userRepository = mock(UserRepository.class);
 		keystoreRepository = mock(KeystoreRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
-		apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);
-		service = new ApiServiceImpl(cryptoService, secretRepository, apiKeyRepository, userRepository, keystoreRepository,
-				keystoreAliasRepository, apiKeyRestrictionRepository);
+		apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);*/
+		service = new ApiServiceImpl(cryptoService, secretPreparationService, keystoreValidatorService/*secretRepository, apiKeyRepository, userRepository, keystoreRepository,
+				keystoreAliasRepository, apiKeyRestrictionRepository*/);
+
+		logAppender = new ListAppender<>();
+		logAppender.start();
+		((Logger) LoggerFactory.getLogger(ApiServiceImpl.class)).addAppender(logAppender);
 	}
 
-	@Test
+	@AfterEach
+	void tearDown() {
+		logAppender.list.clear();
+		logAppender.stop();
+	}
+
+	@ParameterizedTest
+	@MethodSource("inputData")
+	void shouldReturnValue(boolean returnDecrypted, SecretType type, String expectedValue) {
+		// arrange
+		when(secretPreparationService.getSecretEntity(eq(dto))).thenReturn(createMockSecret(expectedValue, returnDecrypted, type));
+
+		if (returnDecrypted) {
+			when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn(expectedValue);
+		}
+
+		// act
+		Map<String, String> response = service.getSecret(dto);
+
+		// assert
+		assertNotNull(response);
+
+		if (type == SecretType.SIMPLE_CREDENTIAL) {
+			assertEquals(expectedValue, response.get(VALUE));
+		} else if (returnDecrypted) {
+			assertEquals("u", response.get("username"));
+			assertEquals("p", response.get("password"));
+		} else {
+			assertEquals("encrypted", response.get(VALUE));
+		}
+
+		assertLogContains(logAppender, "Searching for secret=");
+		verify(secretPreparationService).getSecretEntity(eq(dto));
+		verify(keystoreValidatorService).validateSecretKeystore(any(SecretEntity.class));
+		verify(cryptoService, returnDecrypted ? times(1) : never()).decrypt(any(SecretEntity.class));
+	}
+
+	/*@Test
 	void shouldApiKeyMissing() {
 		// arrange
 		when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(null);
@@ -216,38 +256,13 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		if (returnDecrypted) {
 			verify(cryptoService).decrypt(any(SecretEntity.class));
 		}
-	}
+	}*/
 
 	public static Object[][] inputData() {
-		return new Object[][] { { true, SecretType.SIMPLE_CREDENTIAL, "decrypted" },
+		return new Object[][] {
+				{ true, SecretType.SIMPLE_CREDENTIAL, "decrypted" },
 				{ false, SecretType.SIMPLE_CREDENTIAL, "encrypted" },
 				{ true, SecretType.MULTIPLE_CREDENTIAL, "username:u;password:p" },
 				{ false, SecretType.MULTIPLE_CREDENTIAL, "encrypted" } };
-	}
-
-	private static SecretEntity createMockSecret(String value, boolean returnDecrypted, SecretType type) {
-		SecretEntity entity = new SecretEntity();
-		entity.setId(1L);
-		entity.setValue(value);
-		entity.setReturnDecrypted(returnDecrypted);
-		entity.setKeystoreAliasId(1L);
-		entity.setUserId(1L);
-		entity.setKeystoreAliasId(1L);
-		entity.setType(type);
-		return entity;
-	}
-
-	private static Optional<UserEntity> createMockUser() {
-		UserEntity entity = new UserEntity();
-		return Optional.of(entity);
-	}
-
-	private static ApiKeyEntity createApiKeyEntity() {
-		ApiKeyEntity mockApiKey = new ApiKeyEntity();
-		mockApiKey.setId(1L);
-		mockApiKey.setUserId(1L);
-		mockApiKey.setValue("apikey");
-
-		return mockApiKey;
 	}
 }
