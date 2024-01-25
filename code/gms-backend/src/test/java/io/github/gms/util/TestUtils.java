@@ -1,35 +1,10 @@
 package io.github.gms.util;
 
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.API_KEY_HEADER;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.ZonedDateTime;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.function.Executable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.GrantedAuthority;
-
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Sets;
-
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.AliasOperation;
@@ -84,6 +59,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.function.Executable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.ZonedDateTime;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.API_KEY_HEADER;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Szrnka
@@ -536,6 +534,18 @@ public class TestUtils {
 		entity.setApiKeyId(apiKeyId);
 		entity.setSecretId(1L);
 		entity.setUserId(1L);
+		return entity;
+	}
+
+	public static SecretEntity createMockSecret(String value, boolean returnDecrypted, SecretType type) {
+		SecretEntity entity = new SecretEntity();
+		entity.setId(1L);
+		entity.setValue(value);
+		entity.setReturnDecrypted(returnDecrypted);
+		entity.setKeystoreAliasId(1L);
+		entity.setUserId(1L);
+		entity.setKeystoreAliasId(1L);
+		entity.setType(type);
 		return entity;
 	}
 
