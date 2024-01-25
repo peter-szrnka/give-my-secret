@@ -7,7 +7,7 @@
       <div class="warning" *ngIf="loading === 'LOADED' && data.keystoreCount === 0">
         Please add a keystore!
       </div>
-      <div class="gms-sub-box">
+      <div class="gms-sub-box" style="vertical-align: top !important;">
         <mat-card class="gms-card-left">
           <mat-card-content>
             <span class="number-of-container">
@@ -22,19 +22,20 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <div class="gms-sub-box">
-        <mat-card class="gms-card-right"  *ngIf="data.announcements.resultList.length === 0">
+      <div class="gms-sub-box" style="vertical-align: top !important;">
+        <mat-card class="gms-card-right" *ngIf="data.announcements.resultList.length === 0">
           <mat-card-content>
             <div class="information">
               No announcements found!
             </div>
-        </mat-card-content>
-      </mat-card>
+          </mat-card-content>
+        </mat-card>
         <mat-card class="gms-card-right" *ngFor="let announcement of data.announcements.resultList">
-          
+
           <mat-card-content>
             <mat-card-title>
-              <mat-icon matListIcon>announcement</mat-icon> <span class="announcement-title">{{announcement.title}}</span>
+              <mat-icon matListIcon>announcement</mat-icon> <span
+                class="announcement-title">{{announcement.title}}</span>
             </mat-card-title>
             {{announcement.description}}
 
@@ -49,7 +50,7 @@
   </div>
   <div *ngIf="data.role === 'ROLE_ADMIN'">
     <div class="gms-box">
-      <div class="gms-sub-box">
+      <div class="gms-sub-box" style="vertical-align: top !important;">
         <mat-card class="gms-card-left">
           <mat-card-content>
             <mat-card-title>User management</mat-card-title>
@@ -62,16 +63,16 @@
             </p>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-raised-button color="primary" (click)="router.navigate(['/user/new'])">Create new user +</button>&nbsp;
+            <button mat-raised-button color="primary" (click)="router.navigate(['/user/new'])">Create new user
+              +</button>&nbsp;
             <button mat-raised-button color="primary" (click)="router.navigate(['/user/list'])">Show users</button>
           </mat-card-actions>
         </mat-card>
-      </div>
-      <div class="gms-sub-box">
-        <mat-card class="gms-card-right simple-margin-top">
+
+        <mat-card class="gms-card-left margin-top">
           <mat-card-content>
             <mat-card-title>Events</mat-card-title>
-          
+
             These are the latest 10 events.
 
             <table mat-table [dataSource]="eventDataSource" (load)="true">
@@ -106,7 +107,25 @@
             <button mat-raised-button color="primary" [routerLink]="'event/list'">View all</button>
           </mat-card-actions>
         </mat-card>
-        </div>
       </div>
+      <div class="gms-sub-box" style="vertical-align: top !important;">
+        <mat-card class="gms-card-right simple-margin-top">
+          <mat-card-content>
+            <mat-card-title>System announcements</mat-card-title>
+
+            You can find here the latest news regarding to Give My Secret application.<br/><br/>
+            <div *ngFor="let item of systemAnnouncementsData">
+              <b>{{item.title}}</b>
+              <p>
+                {{item.description}}
+                <br/>
+                <sub>{{item.created}}</sub>
+              </p>
+              
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
   </div>
 </div>

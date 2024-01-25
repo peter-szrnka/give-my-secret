@@ -7,6 +7,8 @@ import { User } from "../user/model/user.model";
 import { EMPTY_HOME_DATA, HomeData } from "./model/home-data.model";
 import { Observable, map, mergeMap, of } from "rxjs";
 import { HomeService } from "./service/home.service";
+import systemAnnouncements from "../../../assets/caas/system-announcements.json";
+import { SystemAnnouncement } from "./model/system-announcement.model";
 
 /**
  * @author Peter Szrnka
@@ -20,6 +22,7 @@ export class HomeComponent implements OnInit {
 
     eventColumns: string[] = ['id', 'userId', 'eventDate', 'operation', 'target'];
     eventDataSource: ArrayDataSource<Event>;
+    systemAnnouncementsData: SystemAnnouncement[] = systemAnnouncements;
     data: HomeData;
     loading: string = '';
 
@@ -30,6 +33,7 @@ export class HomeComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        console.info(this.systemAnnouncementsData);
         this.loading = 'LOADING';
         this.sharedData.userSubject$
             .pipe(mergeMap((user: User | undefined): Observable<HomeData> => this.processUser(user)))
