@@ -9,6 +9,7 @@ import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.dto.GetSecretRequestDto;
 import io.github.gms.secure.entity.ApiKeyEntity;
+import io.github.gms.secure.entity.SecretEntity;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.ApiKeyRepository;
 import io.github.gms.secure.repository.ApiKeyRestrictionRepository;
@@ -27,6 +28,7 @@ import java.util.Optional;
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static io.github.gms.util.TestUtils.createMockSecret;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -135,6 +137,52 @@ public class SecretPreparationServiceImplTest extends AbstractUnitTest {
         assertEquals("You are not allowed to use this API key for this secret!", exception.getMessage());
 
         assertLogContains(logAppender, "You are not allowed to use this API key for this secret!");
+        verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
+        verify(userRepository).findById(anyLong());
+        verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
+        verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
+    }
+
+    @Test
+    void shouldSucceedWithApiKeyRestrictions() {
+        // arrange
+        SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
+        when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+        when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+        when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
+        when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
+                TestUtils.createApiKeyRestrictionEntity(1L),
+                TestUtils.createApiKeyRestrictionEntity(2L),
+                TestUtils.createApiKeyRestrictionEntity(3L)
+        ));
+
+        // act
+        SecretEntity response = service.getSecretEntity(dto);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(mockSecretEntity, response);
+        verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
+        verify(userRepository).findById(anyLong());
+        verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
+        verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
+    }
+
+    @Test
+    void shouldSucceedWithoutApiKeyRestrictions() {
+        // arrange
+        SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
+        when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+        when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+        when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
+        when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of());
+
+        // act
+        SecretEntity response = service.getSecretEntity(dto);
+
+        //assert
+        assertNotNull(response);
+        assertEquals(mockSecretEntity, response);
         verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
         verify(userRepository).findById(anyLong());
         verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
