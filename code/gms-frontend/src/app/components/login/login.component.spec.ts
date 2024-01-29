@@ -11,7 +11,7 @@ import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/lo
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { User } from "../user/model/user.model";
+import { EMPTY_USER, User } from "../user/model/user.model";
 import { LoginComponent } from "./login.component";
 
 /**
@@ -203,6 +203,37 @@ describe('LoginComponent', () => {
         expect(splashScreenStateService.stop).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalledWith(['/verify'], { state: { username: 'test' }, queryParams: { previousUrl: '/users/list' } });
         expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalledTimes(0);
+    });
+
+    it('Should require MFA with redirect', () => {
+        // arrange
+        activatedRoute = {
+            snapshot : {
+                queryParams: {
+                    previousUrl: '/users/list'
+                }
+            }
+        };
+        const mockResponse: LoginResponse = {
+            currentUser: EMPTY_USER,
+            phase: AuthenticationPhase.BLOCKED
+        };
+        authService = {
+            login : jest.fn().mockImplementation(() => {
+                return of(mockResponse);
+            })
+        };
+        configTestBed();
+        component.formModel = { username: "user-1", credential : "myPassword1" };
+
+        // act
+        component.login();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
     it('Should require MFA', () => {

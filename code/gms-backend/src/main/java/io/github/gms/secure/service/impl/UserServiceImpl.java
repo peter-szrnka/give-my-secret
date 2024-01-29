@@ -9,6 +9,7 @@ import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.common.util.ConverterUtils;
@@ -25,6 +26,7 @@ import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.JwtClaimService;
+import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.secure.service.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -40,6 +42,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -64,14 +67,16 @@ public class UserServiceImpl implements UserService {
 	private final UserConverter converter;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtClaimService jwtClaimService;
+	private final SystemPropertyService systemPropertyService;
 
 	public UserServiceImpl(UserRepository repository, UserConverter converter,
-						   PasswordEncoder passwordEncoder, JwtClaimService jwtClaimService) {
+                           PasswordEncoder passwordEncoder, JwtClaimService jwtClaimService, SystemPropertyService systemPropertyService) {
 		this.repository = repository;
 		this.converter = converter;
 		this.passwordEncoder = passwordEncoder;
 		this.jwtClaimService = jwtClaimService;
-	}
+        this.systemPropertyService = systemPropertyService;
+    }
 	
 	@Override
 	@Transactional
@@ -181,6 +186,37 @@ public class UserServiceImpl implements UserService {
 			.build();
 	}
 
+	@Override
+	public void updateLoginAttempt(String username) {
+		UserEntity user = getByUsername(username);
+
+		if (EntityStatus.BLOCKED == user.getStatus()) {
+			log.info("User already blocked");
+			return;
+		}
+
+		Integer attemptsLimit = systemPropertyService.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
+		Integer failedAttempts = user.getFailedAttempts() + 1;
+		if (Objects.equals(attemptsLimit, failedAttempts)) {
+			user.setStatus(EntityStatus.BLOCKED);
+		}
+
+		user.setFailedAttempts(failedAttempts);
+		repository.save(user);
+	}
+
+	@Override
+	public void resetLoginAttempt(String username) {
+		UserEntity user = getByUsername(username);
+		user.setFailedAttempts(0);
+		repository.save(user);
+	}
+
+	@Override
+	public boolean isBlocked(String username) {
+		return EntityStatus.BLOCKED == getByUsername(username).getStatus();
+	}
+
 	private SaveEntityResponseDto saveUser(SaveUserRequestDto dto, boolean roleChangeEnabled) {
 		validateUserExistence(dto);
 
@@ -199,6 +235,10 @@ public class UserServiceImpl implements UserService {
 
 		entity = repository.save(entity);
 		return new SaveEntityResponseDto(entity.getId());
+	}
+
+	private UserEntity getByUsername(String username) {
+		return repository.findByUsername(username).orElseThrow(() -> new GmsException("User not found!"));
 	}
 	
 	private void validateUserExistence(SaveUserRequestDto dto) {

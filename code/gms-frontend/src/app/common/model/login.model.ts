@@ -14,6 +14,7 @@ export interface VerifyLogin {
 }
 
 export enum AuthenticationPhase {
+    BLOCKED = "BLOCKED",
     FAILED = "FAILED",
     MFA_REQUIRED = "MFA_REQUIRED",
     COMPLETED = "COMPLETED",

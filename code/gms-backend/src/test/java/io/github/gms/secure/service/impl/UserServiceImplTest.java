@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.exception.GmsException;
 import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.dto.ChangePasswordRequestDto;
@@ -17,6 +18,7 @@ import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.secure.repository.UserRepository;
 import io.github.gms.secure.service.JwtClaimService;
+import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -27,6 +29,7 @@ import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
@@ -39,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -66,6 +70,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	private UserConverter converter;
 	private PasswordEncoder passwordEncoder;
 	private JwtClaimService jwtClaimService;
+	private SystemPropertyService systemPropertyService;
 	private UserServiceImpl service;
 
 	@Override
@@ -76,7 +81,8 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		converter = mock(UserConverter.class);
 		passwordEncoder = mock(PasswordEncoder.class);
 		jwtClaimService = mock(JwtClaimService.class);
-		service = new UserServiceImpl(repository, converter, passwordEncoder, jwtClaimService);
+		systemPropertyService = mock(SystemPropertyService.class);
+		service = new UserServiceImpl(repository, converter, passwordEncoder, jwtClaimService, systemPropertyService);
 		((Logger) LoggerFactory.getLogger(UserServiceImpl.class)).addAppender(logAppender);
 	}
 
@@ -109,7 +115,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
+	@ValueSource(booleans = {true, false})
 	void shouldUpdateExistingUser(boolean admin) {
 		// arrange
 		MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), String.valueOf(admin));
@@ -138,7 +144,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveUserRequestDto(null)), "User already exists!");
 		verify(repository).findByUsernameOrEmail(anyString(), anyString());
 	}
-	
+
 	@Test
 	void shouldNotFindEditorUserById() {
 		// arrange
@@ -154,7 +160,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 				.anyMatch(log -> log.getFormattedMessage().contains("User not found")));
 		verify(repository).findById(1L);
 	}
-	
+
 	@Test
 	void shouldNotFindUserById() {
 		// arrange
@@ -167,7 +173,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("User not found!", exception.getMessage());
 		verify(repository).findById(2L);
 	}
-	
+
 	@Test
 	void shouldFindUserById() {
 		// arrange
@@ -181,7 +187,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).findById(2L);
 		verify(converter).toDto(any(UserEntity.class));
 	}
-	
+
 	@Test
 	void shouldReturnList() {
 		// arrange
@@ -199,7 +205,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(1, response.getResultList().size());
 		verify(converter).toDtoList(any());
 	}
-	
+
 	@Test
 	void shouldDelete() {
 		// arrange
@@ -212,9 +218,9 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).findById(1L);
 		verify(repository).deleteById(1L);
 	}
-	
+
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
+	@ValueSource(booleans = {true, false})
 	void shouldToggleStatus(boolean enabled) {
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		// arrange
@@ -229,7 +235,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 		assertEquals(enabled, argumentCaptor.getValue().getStatus() == EntityStatus.ACTIVE);
 	}
-	
+
 	@Test
 	void shouldNotToggleStatus() {
 		// arrange
@@ -242,20 +248,20 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("User not found!", exception.getMessage());
 		verify(repository, never()).save(any());
 	}
-	
+
 	@Test
 	void shouldReturnUserCount() {
 		// arrange
 		when(repository.countNormalUsers()).thenReturn(3L);
-		
+
 		// act
 		LongValueDto response = service.count();
-		
+
 		// assert
 		assertEquals(3L, response.getValue());
 		verify(repository).countNormalUsers();
 	}
-	
+
 	@Test
 	void shouldGetUsernameById() {
 		// arrange
@@ -270,33 +276,33 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).findById(2L);
 		verify(converter).toDto(any(UserEntity.class));
 	}
-	
+
 	@Test
 	void shouldNotSaveNewEmptyPassword() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(passwordEncoder.matches(isNull(), anyString())).thenReturn(false);
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
-		
+
 		// act & assert
 		TestUtils.assertGmsException(() -> service.changePassword(new ChangePasswordRequestDto()), "Old credential is not valid!");
 		verify(passwordEncoder).matches(isNull(), anyString());
 		MDC.clear();
 	}
-	
+
 	@Test
 	void shouldNotSaveNewInvalidPassword() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
-		
+
 		// act & assert
 		TestUtils.assertGmsException(() -> service.changePassword(new ChangePasswordRequestDto("MyOldPassword", "MyNewPassword")), "New credential is not valid! It must contain at least 1 lowercase, 1 uppercase and 1 numeric character.");
 		verify(passwordEncoder).matches(anyString(), anyString());
 		MDC.clear();
 	}
-	
+
 	@Test
 	void shouldSaveNewPassword() {
 		// arrange
@@ -304,14 +310,14 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 		when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 		when(passwordEncoder.encode(anyString())).thenReturn("MyEncodedPassword1!");
-		
+
 		// act & assert
 		assertDoesNotThrow(() -> service.changePassword(new ChangePasswordRequestDto("MyOldPassword", "MyNewEncodedPassword2!")));
-		
+
 		ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
 		verify(repository).save(userEntityCaptor.capture());
 		assertEquals("MyEncodedPassword1!", userEntityCaptor.getValue().getCredential());
-		
+
 		ArgumentCaptor<String> credentialCaptor = ArgumentCaptor.forClass(String.class);
 		verify(passwordEncoder).encode(credentialCaptor.capture());
 		verify(passwordEncoder).matches(anyString(), anyString());
@@ -342,7 +348,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
+	@ValueSource(booleans = {true, false})
 	void shouldToggleMfa(boolean value) {
 		// arrange
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
@@ -358,7 +364,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
+	@ValueSource(booleans = {true, false})
 	void shouldMfaActive(boolean value) {
 		// arrange
 		UserEntity entity = TestUtils.createUser();
@@ -406,4 +412,104 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		verify(jwtClaimService).getClaims(anyString());
 		verify(repository).findById(1L);
 	}
+
+	@Test
+	void shouldNotUpdateLoginAttemptWhenUserIsNotFound() {
+		// arrange
+		when(repository.findByUsername("user1")).thenReturn(Optional.empty());
+
+		// act
+		GmsException exception = assertThrows(GmsException.class, () -> service.updateLoginAttempt("user1"));
+
+		// assert
+		assertEquals("User not found!", exception.getMessage());
+	}
+
+	@Test
+	void shouldNotUpdateLoginAttemptWhenUserIsAlreadyBlocked() {
+		// arrange
+		UserEntity mockEntity = TestUtils.createUser();
+		mockEntity.setStatus(EntityStatus.BLOCKED);
+		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
+
+		// act
+		service.updateLoginAttempt("user1");
+
+		// assert
+		assertLogContains(logAppender, "User already blocked");
+		verify(systemPropertyService, never()).getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
+	}
+
+	@Test
+	void shouldUpdateLoginAttempt() {
+		// arrange
+		UserEntity mockEntity = TestUtils.createUser();
+		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
+		when(systemPropertyService.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(3);
+
+		// act
+		service.updateLoginAttempt("user1");
+
+		// assert
+		verify(systemPropertyService).getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
+		verify(repository).save(any(UserEntity.class));
+	}
+
+	@Test
+	void shouldUpdateLoginAttemptAndBlockUser() {
+		// arrange
+		UserEntity mockEntity = TestUtils.createUser();
+		mockEntity.setFailedAttempts(2);
+		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
+		when(systemPropertyService.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(3);
+
+		// act
+		service.updateLoginAttempt("user1");
+
+		// assert
+		verify(systemPropertyService).getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
+		ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
+		verify(repository).save(userEntityArgumentCaptor.capture());
+		assertEquals(EntityStatus.BLOCKED, userEntityArgumentCaptor.getValue().getStatus());
+	}
+
+	@Test
+	void shouldResetLoginAttempt() {
+		// arrange
+		UserEntity mockEntity = TestUtils.createUser();
+		mockEntity.setFailedAttempts(3);
+		mockEntity.setStatus(EntityStatus.BLOCKED);
+		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
+
+		// act
+		service.resetLoginAttempt("user1");
+
+		// assert
+		ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
+		verify(repository).save(userEntityArgumentCaptor.capture());
+		assertEquals(0, userEntityArgumentCaptor.getValue().getFailedAttempts());
+	}
+
+	@ParameterizedTest
+	@MethodSource("isBlockedTestData")
+	void isUserBlocked(EntityStatus inputStatus, boolean expectedResult) {
+		// arrange
+		UserEntity mockEntity = TestUtils.createUser();
+		mockEntity.setFailedAttempts(3);
+		mockEntity.setStatus(inputStatus);
+		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
+
+		// act
+		boolean response = service.isBlocked("user1");
+
+		// assert
+		assertEquals(expectedResult, response);
+	}
+
+	private static Object[][] isBlockedTestData() {
+		return new Object[][]{
+				{EntityStatus.BLOCKED, true},
+				{EntityStatus.ACTIVE, false}
+		};
+	};
 }

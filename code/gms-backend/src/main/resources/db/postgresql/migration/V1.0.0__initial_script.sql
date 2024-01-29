@@ -8,7 +8,8 @@ CREATE TABLE gms_user (
 	status VARCHAR(255) NOT NULL,
 	user_name VARCHAR(255) NOT NULL,
 	mfa_enabled INT NOT NULL DEFAULT 0,
-	mfa_secret VARCHAR(32) NOT NULL
+	mfa_secret VARCHAR(32) NOT NULL,
+	failed_attempts INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE gms_api_key (

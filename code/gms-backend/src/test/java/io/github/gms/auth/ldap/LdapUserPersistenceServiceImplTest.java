@@ -113,7 +113,7 @@ class LdapUserPersistenceServiceImplTest extends AbstractUnitTest {
 			ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
 			verify(repository).save(userEntityCaptor.capture());
 			UserEntity capturedUserEntity = userEntityCaptor.getValue();
-			assertEquals("UserEntity(id=3, name=name, username=username, email=a@b.com, status=ACTIVE, credential=test, creationDate=null, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", capturedUserEntity.toString());
+			assertEquals("UserEntity(id=3, name=name, username=username, email=a@b.com, status=ACTIVE, credential=test, creationDate=null, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", capturedUserEntity.toString());
 			TestUtils.assertLogContains(logAppender, "Credential has been updated for user=");
 		}
 	}
@@ -142,7 +142,7 @@ class LdapUserPersistenceServiceImplTest extends AbstractUnitTest {
 		verify(repository).save(userEntityCaptor.capture());
 		
 		UserEntity capturedUserEntity = userEntityCaptor.getValue();
-		assertEquals("UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=ACTIVE, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=true, mfaSecret=MFA_SECRET)", capturedUserEntity.toString());
+		assertEquals("UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=ACTIVE, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=true, mfaSecret=MFA_SECRET, failedAttempts=0)", capturedUserEntity.toString());
 		TestUtils.assertLogContains(logAppender, "User data has been saved into DB for user=");
 	}
 }

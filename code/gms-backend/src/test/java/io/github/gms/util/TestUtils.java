@@ -204,6 +204,7 @@ public class TestUtils {
 		user.setRoles("ROLE_USER");
 		user.setStatus(EntityStatus.ACTIVE);
 		user.setCredential(OLD_CREDENTIAL);
+		user.setFailedAttempts(0);
 		return user;
 	}
 

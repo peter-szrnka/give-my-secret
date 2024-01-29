@@ -22,4 +22,6 @@ public interface SystemPropertyService {
 	Long getLong(SystemProperty key);
 
 	boolean getBoolean(SystemProperty key);
+
+	Integer getInteger(SystemProperty key);
 }

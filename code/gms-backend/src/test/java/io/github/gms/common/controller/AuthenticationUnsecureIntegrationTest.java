@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AuthenticationUnsecureIntegrationTest extends AbstractIntegrationTest {
 
 	@Test
-	void shouldNotAutenticate() {
+	void shouldNotAuthenticate() {
 		
 		// act
 		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, "testFail");
@@ -40,7 +40,7 @@ class AuthenticationUnsecureIntegrationTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	void shouldAutenticate() {
+	void shouldAuthenticate() {
 		
 		// act
 		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, "test");

@@ -14,6 +14,7 @@ import io.github.gms.secure.converter.GenerateJwtRequestConverter;
 import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
+import io.github.gms.secure.service.UserService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	private UserConverter userConverter;
 	private UserAuthService userAuthService;
 	private CodeVerifier verifier;
+	private UserService userService;
 	private AuthenticationServiceImpl service;
 
 	@Override
@@ -70,15 +72,31 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		userConverter = mock(UserConverter.class);
 		userAuthService = mock(UserAuthService.class);
 		verifier = mock(CodeVerifier.class);
+		userService = mock(UserService.class);
 		service = new AuthenticationServiceImpl(authenticationManager, jwtService,
-				systemPropertyService, generateJwtRequestConverter, userConverter, userAuthService, verifier);
+				systemPropertyService, generateJwtRequestConverter, userConverter, userAuthService, verifier, userService);
 
 		((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
 	}
 
 	@Test
+	void shouldAuthenticateFailWhenUserIsBlocked() {
+		// arrange
+		when(userService.isBlocked("user")).thenReturn(true);
+
+		// act
+		AuthenticationResponse response = service.authenticate("user", "credential");
+
+		// assert
+		assertNotNull(response);
+		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
+		verify(userService).isBlocked("user");
+	}
+
+	@Test
 	void shouldAuthenticateFail() {
 		// arrange
+		when(userService.isBlocked("user")).thenReturn(false);
 		when(authenticationManager.authenticate(any())).thenThrow(IllegalArgumentException.class);
 
 		// act
@@ -88,12 +106,14 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
 		assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equalsIgnoreCase("Login failed")));
+		verify(userService).isBlocked("user");
 	}
 	
 	@ParameterizedTest
 	@MethodSource("nonMfaTestData")
 	void shouldAuthenticate(boolean systemLevelMfaEnabled, boolean userMfaEnabled) {
 		// arrange
+		when(userService.isBlocked("user")).thenReturn(false);
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setMfaEnabled(userMfaEnabled);
 		when(authenticationManager.authenticate(any()))
@@ -118,7 +138,9 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("ACCESS_JWT", response.getToken());
 		assertEquals("REFRESH_JWT", response.getRefreshToken());
 		assertEquals(AuthResponsePhase.COMPLETED, response.getPhase());
-		
+
+		verify(userService).isBlocked("user");
+		verify(userService).resetLoginAttempt("user");
 		verify(authenticationManager).authenticate(any());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
@@ -139,6 +161,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	@MethodSource("mfaTestData")
 	void shouldExpectMfa(boolean enableGlobalMfa, boolean enableMfa) {
 		// arrange
+		when(userService.isBlocked("user")).thenReturn(false);
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setMfaEnabled(true);
 		when(authenticationManager.authenticate(any()))
@@ -157,7 +180,8 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		assertNull(response.getToken());
 		assertNull(response.getRefreshToken());
 		assertEquals(AuthResponsePhase.MFA_REQUIRED, response.getPhase());
-		
+
+		verify(userService).isBlocked("user");
 		verify(authenticationManager).authenticate(any());
 		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(true));
 		verify(systemPropertyService).getBoolean(SystemProperty.ENABLE_GLOBAL_MFA);
@@ -167,6 +191,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldVerifyThrowsAnError() {
 		// arrange
+		when(userService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 
 		// act
@@ -175,11 +200,27 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
+		verify(userService).isBlocked("user1");
+	}
+
+	@Test
+	void shouldVerifyFailWhenUserIsBlocked() {
+		// arrange
+		when(userService.isBlocked("user1")).thenReturn(true);
+
+		// act
+		AuthenticationResponse response = service.verify(TestUtils.createLoginVerificationRequestDto());
+
+		// assert
+		assertNotNull(response);
+		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
+		verify(userService).isBlocked("user1");
 	}
 
 	@Test
 	void shouldVerifyFail() {
 		// arrange
+		when(userService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
@@ -191,11 +232,14 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
+		verify(userService).isBlocked("user1");
+		verify(userService).updateLoginAttempt("user1");
 	}
 
 	@Test
 	void shouldVerify() {
 		// arrange
+		when(userService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
@@ -218,7 +262,8 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(AuthResponsePhase.COMPLETED, response.getPhase());
 		assertEquals("ACCESS_JWT", response.getToken());
 		assertEquals("REFRESH_JWT", response.getRefreshToken());
-		
+
+		verify(userService).isBlocked("user1");
 		verify(userAuthService).loadUserByUsername(anyString());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
