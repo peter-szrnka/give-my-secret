@@ -15,6 +15,7 @@ import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.secure.service.UserService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 	private final UserConverter converter;
 	private final CodeVerifier verifier;
     @Setter
+	@Autowired
 	private UserService userService;
 
 	public AuthenticationServiceImpl(

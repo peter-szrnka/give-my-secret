@@ -1,25 +1,6 @@
 package io.github.gms.secure.converter.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.google.common.collect.Lists;
-
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
@@ -31,6 +12,23 @@ import io.github.gms.secure.dto.UserListDto;
 import io.github.gms.secure.entity.UserEntity;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -60,7 +58,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=null, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=null, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -81,7 +79,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", entity.toString());
+		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 	}
 
 	@Test
@@ -103,7 +101,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -122,7 +120,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=null, mfaEnabled=false, mfaSecret=null)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=null, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -141,7 +139,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
