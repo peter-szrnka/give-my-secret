@@ -13,9 +13,7 @@ import io.github.gms.secure.converter.UserConverter;
 import io.github.gms.secure.service.JwtService;
 import io.github.gms.secure.service.SystemPropertyService;
 import io.github.gms.secure.service.UserService;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,9 +32,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 	private final AuthenticationManager authenticationManager;
 	private final UserConverter converter;
 	private final CodeVerifier verifier;
-    @Setter
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
 
 	public AuthenticationServiceImpl(
             AuthenticationManager authenticationManager,
@@ -45,11 +41,13 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
             GenerateJwtRequestConverter generateJwtRequestConverter,
             UserConverter converter,
             UserAuthService userAuthService,
-            CodeVerifier verifier) {
+            CodeVerifier verifier,
+			UserService userService) {
 		super(jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
 		this.authenticationManager = authenticationManager;
 		this.converter = converter;
 		this.verifier = verifier;
+		this.userService = userService;
     }
 
 	@Override

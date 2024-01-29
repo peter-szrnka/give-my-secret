@@ -416,7 +416,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldNotUpdateLoginAttemptWhenUserIsNotFound() {
 		// arrange
-		when(repository.findByUsername(eq("user1"))).thenReturn(Optional.empty());
+		when(repository.findByUsername("user1")).thenReturn(Optional.empty());
 
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.updateLoginAttempt("user1"));
@@ -430,7 +430,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		UserEntity mockEntity = TestUtils.createUser();
 		mockEntity.setStatus(EntityStatus.BLOCKED);
-		when(repository.findByUsername(eq("user1"))).thenReturn(Optional.of(mockEntity));
+		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
 
 		// act
 		service.updateLoginAttempt("user1");
@@ -444,7 +444,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldUpdateLoginAttempt() {
 		// arrange
 		UserEntity mockEntity = TestUtils.createUser();
-		when(repository.findByUsername(eq("user1"))).thenReturn(Optional.of(mockEntity));
+		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
 		when(systemPropertyService.getInteger(eq(SystemProperty.FAILED_ATTEMPTS_LIMIT))).thenReturn(3);
 
 		// act
@@ -460,7 +460,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		UserEntity mockEntity = TestUtils.createUser();
 		mockEntity.setFailedAttempts(2);
-		when(repository.findByUsername(eq("user1"))).thenReturn(Optional.of(mockEntity));
+		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
 		when(systemPropertyService.getInteger(eq(SystemProperty.FAILED_ATTEMPTS_LIMIT))).thenReturn(3);
 
 		// act
@@ -479,7 +479,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		UserEntity mockEntity = TestUtils.createUser();
 		mockEntity.setFailedAttempts(3);
 		mockEntity.setStatus(EntityStatus.BLOCKED);
-		when(repository.findByUsername(eq("user1"))).thenReturn(Optional.of(mockEntity));
+		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
 
 		// act
 		service.resetLoginAttempt("user1");
@@ -497,7 +497,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		UserEntity mockEntity = TestUtils.createUser();
 		mockEntity.setFailedAttempts(3);
 		mockEntity.setStatus(inputStatus);
-		when(repository.findByUsername(eq("user1"))).thenReturn(Optional.of(mockEntity));
+		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
 
 		// act
 		boolean response = service.isBlocked("user1");
