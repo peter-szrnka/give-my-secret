@@ -1,5 +1,19 @@
 package io.github.gms.secure.converter.impl;
 
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.exception.GmsException;
+import io.github.gms.secure.dto.SystemPropertyDto;
+import io.github.gms.secure.dto.SystemPropertyListDto;
+import io.github.gms.secure.entity.SystemPropertyEntity;
+import org.junit.jupiter.api.Test;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -9,28 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.dto.SystemPropertyDto;
-import io.github.gms.secure.dto.SystemPropertyListDto;
-import io.github.gms.secure.entity.SystemPropertyEntity;
-
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 class SystemPropertyConverterImplTest extends AbstractUnitTest {
 
-	private Clock clock = mock(Clock.class);
+	private final Clock clock = mock(Clock.class);
 	private final SystemPropertyConverterImpl converter = new SystemPropertyConverterImpl(clock);
 
 	@Test
@@ -52,12 +51,12 @@ class SystemPropertyConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
-		assertEquals(9L, response.getTotalElements());
+		assertEquals(10L, response.getTotalElements());
 		assertEquals("Budapest", response.getResultList().stream()
 			.filter(property -> property.getKey().equals("ORGANIZATION_CITY"))
-			.map(item -> item.getValue()).findFirst().get());
+			.map(SystemPropertyDto::getValue).findFirst().get());
 		assertTrue(response.getResultList().stream().noneMatch(item -> item.getType() == null || item.getKey() == null || item.getValue() == null));
-		assertEquals(8L, response.getResultList().stream().filter((item) -> item.isFactoryValue()).count());
+		assertEquals(9L, response.getResultList().stream().filter((item) -> item.isFactoryValue()).count());
 		assertEquals(1L, response.getResultList().stream().filter((item) -> item.getLastModified() != null).count());
 	}
 	
