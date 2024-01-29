@@ -437,7 +437,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 		// assert
 		assertLogContains(logAppender, "User already blocked");
-		verify(systemPropertyService, never()).getInteger(eq(SystemProperty.FAILED_ATTEMPTS_LIMIT));
+		verify(systemPropertyService, never()).getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
 	}
 
 	@Test
@@ -445,13 +445,13 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		UserEntity mockEntity = TestUtils.createUser();
 		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
-		when(systemPropertyService.getInteger(eq(SystemProperty.FAILED_ATTEMPTS_LIMIT))).thenReturn(3);
+		when(systemPropertyService.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(3);
 
 		// act
 		service.updateLoginAttempt("user1");
 
 		// assert
-		verify(systemPropertyService).getInteger(eq(SystemProperty.FAILED_ATTEMPTS_LIMIT));
+		verify(systemPropertyService).getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
 		verify(repository).save(any(UserEntity.class));
 	}
 
@@ -461,13 +461,13 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		UserEntity mockEntity = TestUtils.createUser();
 		mockEntity.setFailedAttempts(2);
 		when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
-		when(systemPropertyService.getInteger(eq(SystemProperty.FAILED_ATTEMPTS_LIMIT))).thenReturn(3);
+		when(systemPropertyService.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(3);
 
 		// act
 		service.updateLoginAttempt("user1");
 
 		// assert
-		verify(systemPropertyService).getInteger(eq(SystemProperty.FAILED_ATTEMPTS_LIMIT));
+		verify(systemPropertyService).getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
 		ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
 		verify(repository).save(userEntityArgumentCaptor.capture());
 		assertEquals(EntityStatus.BLOCKED, userEntityArgumentCaptor.getValue().getStatus());

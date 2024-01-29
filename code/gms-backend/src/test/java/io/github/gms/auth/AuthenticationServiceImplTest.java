@@ -140,7 +140,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(AuthResponsePhase.COMPLETED, response.getPhase());
 
 		verify(userService).isBlocked("user");
-		verify(userService).resetLoginAttempt(eq("user"));
+		verify(userService).resetLoginAttempt("user");
 		verify(authenticationManager).authenticate(any());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
@@ -191,7 +191,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldVerifyThrowsAnError() {
 		// arrange
-		when(userService.isBlocked(eq("user1"))).thenReturn(false);
+		when(userService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 
 		// act
@@ -200,13 +200,13 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
-		verify(userService).isBlocked(eq("user1"));
+		verify(userService).isBlocked("user1");
 	}
 
 	@Test
 	void shouldVerifyFailWhenUserIsBlocked() {
 		// arrange
-		when(userService.isBlocked(eq("user1"))).thenReturn(true);
+		when(userService.isBlocked("user1")).thenReturn(true);
 
 		// act
 		AuthenticationResponse response = service.verify(TestUtils.createLoginVerificationRequestDto());
@@ -214,13 +214,13 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
-		verify(userService).isBlocked(eq("user1"));
+		verify(userService).isBlocked("user1");
 	}
 
 	@Test
 	void shouldVerifyFail() {
 		// arrange
-		when(userService.isBlocked(eq("user1"))).thenReturn(false);
+		when(userService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
@@ -232,14 +232,14 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
-		verify(userService).isBlocked(eq("user1"));
+		verify(userService).isBlocked("user1");
 		verify(userService).updateLoginAttempt(eq("user1"));
 	}
 
 	@Test
 	void shouldVerify() {
 		// arrange
-		when(userService.isBlocked(eq("user1"))).thenReturn(false);
+		when(userService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
@@ -263,7 +263,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("ACCESS_JWT", response.getToken());
 		assertEquals("REFRESH_JWT", response.getRefreshToken());
 
-		verify(userService).isBlocked(eq("user1"));
+		verify(userService).isBlocked("user1");
 		verify(userAuthService).loadUserByUsername(anyString());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
 		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
