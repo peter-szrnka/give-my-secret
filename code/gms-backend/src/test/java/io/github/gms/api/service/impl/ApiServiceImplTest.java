@@ -24,7 +24,6 @@ import static io.github.gms.util.TestUtils.createMockSecret;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -68,7 +67,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 	@MethodSource("inputData")
 	void shouldReturnValue(boolean returnDecrypted, SecretType type, String expectedValue) {
 		// arrange
-		when(secretPreparationService.getSecretEntity(eq(dto))).thenReturn(createMockSecret(expectedValue, returnDecrypted, type));
+		when(secretPreparationService.getSecretEntity(dto)).thenReturn(createMockSecret(expectedValue, returnDecrypted, type));
 
 		if (returnDecrypted) {
 			when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn(expectedValue);
@@ -90,7 +89,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		}
 
 		assertLogContains(logAppender, "Searching for secret=");
-		verify(secretPreparationService).getSecretEntity(eq(dto));
+		verify(secretPreparationService).getSecretEntity(dto);
 		verify(keystoreValidatorService).validateSecretKeystore(any(SecretEntity.class));
 		verify(cryptoService, returnDecrypted ? times(1) : never()).decrypt(any(SecretEntity.class));
 	}

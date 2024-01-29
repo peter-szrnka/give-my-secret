@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class SecretPreparationServiceImplTest extends AbstractUnitTest {
+class SecretPreparationServiceImplTest extends AbstractUnitTest {
 
     private static final GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
 

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class KeystoreValidatorServiceImplTest extends AbstractUnitTest {
+class KeystoreValidatorServiceImplTest extends AbstractUnitTest {
 
     private ListAppender<ILoggingEvent> logAppender;
     private KeystoreRepository keystoreRepository;
