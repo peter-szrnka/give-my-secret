@@ -233,7 +233,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
 		verify(userService).isBlocked("user1");
-		verify(userService).updateLoginAttempt(eq("user1"));
+		verify(userService).updateLoginAttempt("user1");
 	}
 
 	@Test
