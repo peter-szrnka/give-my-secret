@@ -73,8 +73,4 @@ public class GmsUserDetails implements UserDetails {
 	public boolean isEnabled() {
 		return enabled;
 	}
-
-	public boolean isMfaEnabled() {
-		return mfaEnabled;
-	}
 }

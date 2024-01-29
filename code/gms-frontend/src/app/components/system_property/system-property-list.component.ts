@@ -33,7 +33,8 @@ export const PROPERTY_TEXT_MAP: any = {
   'ORGANIZATION_NAME' : { text: 'Organization / Company name' },
   'ORGANIZATION_CITY' : { text: 'Location (city) of the organization' },
   'ENABLE_GLOBAL_MFA' : { text: 'Global MFA usage is enabled or not', valueSet: BOOL_VALUE_SET },
-	'ENABLE_MFA': { text: 'MFA usage is enabled or not for the users', valueSet: BOOL_VALUE_SET }
+	'ENABLE_MFA': { text: 'MFA usage is enabled or not for the users', valueSet: BOOL_VALUE_SET },
+  'FAILED_ATTEMPTS_LIMIT' : { text: 'Limit after users should be blocked' }
 };
 
 /**

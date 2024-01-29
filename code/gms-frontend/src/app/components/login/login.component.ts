@@ -58,6 +58,9 @@ export class LoginComponent extends BaseLoginComponent {
 
                     this.router.navigate(['/verify'], navigationExtras);
                     return;
+                } else if (response.phase === AuthenticationPhase.BLOCKED) {
+                    this.displayErrorModal();
+                    return;
                 }
 
                 this.finalizeSuccessfulLogin(response.currentUser);

@@ -150,6 +150,32 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 		verify(repository).getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 	}
 
+	@Test
+	void shouldGetIntegerValue() {
+		// arrange
+		when(repository.getValueByKey(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(Optional.of("2"));
+
+		// act
+		Integer response = service.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
+
+		// assert
+		assertEquals(2, response);
+		verify(repository).getValueByKey(SystemProperty.FAILED_ATTEMPTS_LIMIT);
+	}
+
+	@Test
+	void shouldGetDefaultIntegerValue() {
+		// arrange
+		when(repository.getValueByKey(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(Optional.empty());
+
+		// act
+		Integer response = service.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
+
+		// assert
+		assertEquals(3, response);
+		verify(repository).getValueByKey(SystemProperty.FAILED_ATTEMPTS_LIMIT);
+	}
+
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
 	void shouldGetBooleanValue(boolean value) {

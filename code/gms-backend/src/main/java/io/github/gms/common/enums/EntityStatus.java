@@ -7,5 +7,6 @@ package io.github.gms.common.enums;
 public enum EntityStatus {
 
 	ACTIVE,
+	BLOCKED,
 	DISABLED;
 }

@@ -22,7 +22,8 @@ public enum SystemProperty {
 	// MFA is mandatory for all users
 	ENABLE_GLOBAL_MFA(PropertyType.BOOLEAN, "false"),
 	// MFA is enabled for users to use
-	ENABLE_MFA(PropertyType.BOOLEAN, "false");
+	ENABLE_MFA(PropertyType.BOOLEAN, "false"),
+	FAILED_ATTEMPTS_LIMIT(PropertyType.INTEGER, "3");
 
 	private SystemProperty(PropertyType type, String defaultValue) {
 		this.type = type;

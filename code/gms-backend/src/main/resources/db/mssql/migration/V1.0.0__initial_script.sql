@@ -9,6 +9,7 @@ CREATE TABLE gms_user (
 	user_name VARCHAR(255) NOT NULL,
 	mfa_enabled INT NOT NULL DEFAULT 0,
     mfa_secret VARCHAR(32) NOT NULL,
+    failed_attempts INT NOT NULL DEFAULT 0,
 	PRIMARY KEY (id)
 );
 

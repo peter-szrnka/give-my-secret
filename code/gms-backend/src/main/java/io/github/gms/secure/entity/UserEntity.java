@@ -65,4 +65,7 @@ public class UserEntity extends AbstractGmsEntity {
 
 	@Column(name = "mfa_secret", nullable = true)
 	private String mfaSecret;
+
+	@Column(name = "failed_attempts")
+	private Integer failedAttempts = 0;
 }

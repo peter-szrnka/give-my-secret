@@ -77,4 +77,9 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
 	public boolean getBoolean(SystemProperty key) {
 		return Boolean.parseBoolean(get(key));
 	}
+
+	@Override
+	public Integer getInteger(SystemProperty key) {
+		return Integer.parseInt(get(key));
+	}
 }
