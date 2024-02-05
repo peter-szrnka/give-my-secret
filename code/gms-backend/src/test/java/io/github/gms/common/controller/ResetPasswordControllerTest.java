@@ -16,7 +16,7 @@ import static org.mockito.Mockito.mock;
  * @since 1.0
  */
 @ExtendWith(MockitoExtension.class)
-public class ResetPasswordControllerTest {
+class ResetPasswordControllerTest {
 
     @Test
     void shouldReturnOk() {

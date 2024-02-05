@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,7 +46,7 @@ class ResetPasswordServiceImplTest {
     void shouldThrowError() {
         // arrange
         ResetPasswordRequestDto dto = new ResetPasswordRequestDto("user");
-        when(userRepository.findByUsername(eq("user"))).thenReturn(Optional.empty());
+        when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.resetPassword(dto));
@@ -55,21 +54,21 @@ class ResetPasswordServiceImplTest {
         // assert
         assertNotNull(exception);
         assertEquals("User not found!", exception.getMessage());
-        verify(userRepository).findByUsername(eq("user"));
+        verify(userRepository).findByUsername("user");
     }
 
     @Test
     void shouldSendMessages() {
         // arrange
         ResetPasswordRequestDto dto = new ResetPasswordRequestDto("user");
-        when(userRepository.findByUsername(eq("user"))).thenReturn(Optional.of(TestUtils.createUser()));
+        when(userRepository.findByUsername("user")).thenReturn(Optional.of(TestUtils.createUser()));
         when(userRepository.getAllAdmins()).thenReturn(List.of(TestUtils.createUser()));
 
         // act
         assertDoesNotThrow(() -> service.resetPassword(dto));
 
         // assert
-        verify(userRepository).findByUsername(eq("user"));
+        verify(userRepository).findByUsername("user");
         verify(userRepository).getAllAdmins();
 
         ArgumentCaptor<MessageDto> messageDtoArgumentCaptor = ArgumentCaptor.forClass(MessageDto.class);

@@ -30,13 +30,10 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     public void resetPassword(ResetPasswordRequestDto dto) {
         UserEntity user = userRepository.findByUsername(dto.getUsername()).orElseThrow(() -> new GmsException("User not found!"));
 
-        userRepository.getAllAdmins().parallelStream().forEach(adminUser -> {
-            messageService.save(MessageDto.builder()
-                    .message(MESSAGE_TEMPLATE.formatted(dto.getUsername()))
-                    .userId(adminUser.getId())
-                    .actionPath("/user/" + user.getId())
-                    .build());
-        });
-
+        userRepository.getAllAdmins().parallelStream().forEach(adminUser -> messageService.save(MessageDto.builder()
+                .message(MESSAGE_TEMPLATE.formatted(dto.getUsername()))
+                .userId(adminUser.getId())
+                .actionPath("/user/" + user.getId())
+                .build()));
     }
 }
