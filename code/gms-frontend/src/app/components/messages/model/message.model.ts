@@ -6,4 +6,5 @@ export interface Message {
     message : string,
     creationDate? : Date,
     opened : boolean;
+    actionPath?: string;
 }

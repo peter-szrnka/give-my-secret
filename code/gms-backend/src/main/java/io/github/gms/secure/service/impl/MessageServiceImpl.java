@@ -42,6 +42,7 @@ public class MessageServiceImpl implements MessageService {
 				.opened(false)
 				.message(dto.getMessage())
 				.creationDate(ZonedDateTime.now(clock))
+				.actionPath(dto.getActionPath())
 				.build());
 		
 		return new SaveEntityResponseDto(entity.getId());

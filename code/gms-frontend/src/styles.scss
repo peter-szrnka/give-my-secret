@@ -75,3 +75,16 @@ body {
 .w-pointer {
     cursor: pointer;
 }
+
+.center-footer {
+    text-align: center;
+    margin: 10px 0 10px 0;
+}
+
+.center-footer > a:link {
+    text-decoration: none;
+}
+
+.center-footer > a:hover {
+    text-decoration: underline;
+}

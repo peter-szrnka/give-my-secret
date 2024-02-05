@@ -33,6 +33,7 @@ import { UserDetailComponent } from './components/user/user-detail.component';
 import { UserListComponent } from './components/user/user-list.component';
 import { VerifyComponent } from './components/verify/verify.component';
 import { ROLE_ROUTE_MAP } from './common/utils/route-utils';
+import { RequestPasswordResetComponent } from './components/password_reset/request-password-reset.component';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 
@@ -59,6 +60,7 @@ const routes: Routes = [
   { path: 'setup', component: SetupComponent },
   { path: 'login', component: LoginComponent },
   { path: 'verify', component: VerifyComponent },
+  { path: 'password_reset', component: RequestPasswordResetComponent },
 
   // Secured components
   { path: '', component: HomeComponent, pathMatch: 'full', data: { 'roles': ROLES_ALL } },

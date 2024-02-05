@@ -39,6 +39,8 @@ export class HeaderComponent implements OnInit {
 
             this.getAllUnread();
         });
+
+        this.getAllUnread();
     }
     
     logout() : void {

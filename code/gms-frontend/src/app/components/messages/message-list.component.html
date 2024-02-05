@@ -24,6 +24,9 @@
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element" [ngClass]="element.opened === false ? 'bold-text' : ''">
 
+            <button mat-icon-button color="primary" *ngIf="element.actionPath" [routerLink]="element.actionPath">
+              <mat-icon aria-hidden="false">arrow_forward</mat-icon>
+            </button>
             <button mat-icon-button color="primary" *ngIf="element.opened === false" (click)="markAsRead(element.id)">
               <mat-icon aria-hidden="false">done</mat-icon>
             </button>

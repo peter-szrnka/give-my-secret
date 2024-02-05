@@ -52,4 +52,7 @@ public class MessageEntity extends AbstractGmsEntity {
 	
 	@Column(name = "creation_date")
 	private ZonedDateTime creationDate;
+
+	@Column(name = "action_path")
+	private String actionPath;
 }

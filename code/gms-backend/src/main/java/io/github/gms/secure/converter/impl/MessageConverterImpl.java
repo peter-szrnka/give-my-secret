@@ -1,14 +1,13 @@
 package io.github.gms.secure.converter.impl;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
-
 import io.github.gms.secure.converter.MessageConverter;
 import io.github.gms.secure.dto.MessageDto;
 import io.github.gms.secure.dto.MessageListDto;
 import io.github.gms.secure.entity.MessageEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author Peter Szrnka
@@ -25,6 +24,7 @@ public class MessageConverterImpl implements MessageConverter {
 				.message(entity.getMessage())
 				.creationDate(entity.getCreationDate())
 				.opened(entity.isOpened())
+				.actionPath(entity.getActionPath())
 				.build();
 	}
 

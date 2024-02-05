@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.CACHE_USER;
@@ -25,6 +26,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	
 	@Query("SELECT COUNT(u) from UserEntity u where u.roles LIKE '%ADMIN%'")
 	long countExistingAdmins();
+
+	@Query("SELECT u from UserEntity u where u.roles LIKE '%ADMIN%'")
+	List<UserEntity> getAllAdmins();
 
 	Optional<UserEntity> findByUsernameOrEmail(String username, String email);
 

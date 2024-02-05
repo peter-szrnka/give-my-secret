@@ -80,7 +80,8 @@ CREATE TABLE gms_message (
 	user_id BIGINT NOT NULL,
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
 	message VARCHAR(255) NULL DEFAULT NULL,
-	opened SMALLINT NOT NULL DEFAULT 0
+	opened SMALLINT NOT NULL DEFAULT 0,
+	action_path VARCHAR(255) NULL DEFAULT NULL
 );
 
 CREATE TABLE gms_api_key_restriction (

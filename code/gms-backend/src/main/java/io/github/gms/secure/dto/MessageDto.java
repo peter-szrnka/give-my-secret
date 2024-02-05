@@ -28,6 +28,7 @@ public class MessageDto implements Serializable {
 	private Long userId;
 	private boolean opened;
 	private String message;
+	private String actionPath;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
 	private ZonedDateTime creationDate;
 }
