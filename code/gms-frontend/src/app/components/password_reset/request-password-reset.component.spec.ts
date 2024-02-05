@@ -4,11 +4,12 @@ import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { Router } from "@angular/router";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { RequestPasswordResetComponent } from "./request-password-reset.component";
 import { ResetPasswordRequestService } from "./service/request-password-reset.service";
+import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * @author Peter Szrnka
@@ -62,6 +63,23 @@ describe('RequestPasswordResetComponent', () => {
         };
     });
 
+    it('Should fail', () => {
+        // arrange
+        service = {
+            requestPasswordReset : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+        };
+        configTestBed();
+
+        // act
+        component.requestReset();
+
+        // assert
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(service.requestPasswordReset).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
+        expect(dialog.open).toHaveBeenCalled();
+    });
+
     it('Should request reset password', () => {
         // arrange
         configTestBed();
@@ -73,5 +91,6 @@ describe('RequestPasswordResetComponent', () => {
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(service.requestPasswordReset).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
+        expect(dialog.open).toHaveBeenCalled();
     });
 });
