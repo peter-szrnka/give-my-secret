@@ -23,14 +23,17 @@ export class RequestPasswordResetComponent {
 
     requestReset() : void {
         this.splashScreenStateService.start();
-        this.service.requestPasswordReset(this.username).subscribe(() => {
-            this.showSuccessModal();
-            this.splashScreenStateService.stop();
-            this.router.navigate(['/login']);
-        }, (err) => {
-            this.splashScreenStateService.stop();
-            console.error(err);
-            this.showErrorModal();
+        this.service.requestPasswordReset(this.username).subscribe({
+            next: () => {
+                this.showSuccessModal();
+                this.splashScreenStateService.stop();
+                this.router.navigate(['/login']);
+            },
+            error: (err) => {
+                this.splashScreenStateService.stop();
+                console.error(err);
+                this.showErrorModal();
+            },
         });
     }
 
