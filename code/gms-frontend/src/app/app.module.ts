@@ -32,6 +32,7 @@ import { PipesModule } from './common/components/pipes/pipes.module';
 import { SystemPropertyModule } from './components/system_property/system-property-module';
 import { NavMenuModule } from './components/menu/nav-menu.module';
 import { VerifyModule } from './components/verify/verify-module';
+import { RequestPasswordResetModule } from './components/password_reset/request-password-reset.module';
 
 /**
  * @author Peter Szrnka
@@ -61,6 +62,7 @@ import { VerifyModule } from './components/verify/verify-module';
     HomeModule,
     SetupModule,
     LoginModule,
+    RequestPasswordResetModule,
     HeaderModule,
     ServiceModule,
     KeystoreModule,

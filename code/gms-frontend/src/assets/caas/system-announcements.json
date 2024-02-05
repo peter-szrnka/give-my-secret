@@ -1,5 +1,10 @@
 [
     {
+        "id" : 3,
+        "title" : "Password reset feature",
+        "description" : "From this version blocked/disabled users can request password reset from administrators.",
+        "created" : "2024-02-05"
+    }, {
         "id" : 2,
         "title" : "User block feature",
         "description" : "Users can be blocked after X failed attempts if they cannot provide their credentials properly. Only administrators can unblock them. There is a task in the GMS backlog on GitHub to implement a feature to let the users request unlock their account.",

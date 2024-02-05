@@ -1,26 +1,24 @@
 package io.github.gms.secure.converter.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.google.common.collect.Lists;
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.secure.dto.MessageDto;
+import io.github.gms.secure.dto.MessageListDto;
+import io.github.gms.secure.entity.MessageEntity;
+import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-
-import com.google.common.collect.Lists;
-
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.secure.dto.MessageDto;
-import io.github.gms.secure.dto.MessageListDto;
-import io.github.gms.secure.entity.MessageEntity;
-import io.github.gms.util.TestUtils;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -50,6 +48,6 @@ class MessageConverterImplTest extends AbstractUnitTest {
 		assertEquals(1L, resultList.getTotalElements());
 
 		MessageDto dto = resultList.getResultList().get(0);
-		assertEquals("MessageDto(id=1, userId=1, opened=true, message=test message, creationDate=2023-06-29T00:00Z)", dto.toString());
+		assertEquals("MessageDto(id=1, userId=1, opened=true, message=test message, actionPath=null, creationDate=2023-06-29T00:00Z)", dto.toString());
 	}
 }

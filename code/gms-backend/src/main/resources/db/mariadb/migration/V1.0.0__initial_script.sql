@@ -96,6 +96,7 @@ CREATE TABLE gms_message (
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	message VARCHAR(255) NULL DEFAULT NULL,
 	opened TINYINT(1) NOT NULL DEFAULT 0,
+	action_path VARCHAR(255) NULL DEFAULT NULL,
 	PRIMARY KEY (id) USING BTREE
 )
 COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;

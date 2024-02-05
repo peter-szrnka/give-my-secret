@@ -4,15 +4,15 @@ import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { ReplaySubject, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { EMPTY_USER, User } from "../user/model/user.model";
+import { EMPTY_USER } from "../user/model/user.model";
 import { LoginComponent } from "./login.component";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 
 /**
  * @author Peter Szrnka
@@ -32,7 +32,7 @@ describe('LoginComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule ],
+            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule ],
             declarations : [LoginComponent],
             providers: [
                 { provide : Router, useValue: router },
@@ -42,7 +42,8 @@ describe('LoginComponent', () => {
                 { provide : MatDialog, useValue : dialog },
                 { provide : Location, useValue: mockLocation },
                 { provide : ActivatedRoute, useValue : activatedRoute }
-            ]
+            ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ]
         });
 
         fixture = TestBed.createComponent(LoginComponent);

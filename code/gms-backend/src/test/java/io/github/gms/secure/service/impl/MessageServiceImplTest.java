@@ -71,7 +71,7 @@ class MessageServiceImplTest extends AbstractUnitTest {
 		verify(repository).save(messageEntityCaptor.capture());
 		
 		MessageEntity capturedEntity = messageEntityCaptor.getValue();
-		assertEquals("MessageEntity(id=null, userId=null, message=test message, opened=false, creationDate=2023-06-29T00:00Z)", capturedEntity.toString());
+		assertEquals("MessageEntity(id=null, userId=null, message=test message, opened=false, creationDate=2023-06-29T00:00Z, actionPath=null)", capturedEntity.toString());
 	}
 	
 	@Test
@@ -115,7 +115,7 @@ class MessageServiceImplTest extends AbstractUnitTest {
 		long count = service.getUnreadMessagesCount();
 		
 		// assert
-		assertEquals(2l, count);
+		assertEquals(2L, count);
 		verify(repository).countAllUnreadByUserId(1L);
 		
 		MDC.clear();
