@@ -26,7 +26,7 @@ describe("ResetPasswordRequestService", () => {
 
     it('Should reset password', () => {
         // arrange
-        const expectedUrl = environment.baseUrl + "secure/apikey";
+        const expectedUrl = environment.baseUrl + "reset_password";
         const mockResponse : IEntitySaveResponseDto = {};
 
         //act
