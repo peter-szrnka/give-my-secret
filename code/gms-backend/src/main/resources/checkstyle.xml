@@ -25,7 +25,7 @@
 		</module>
 		<module name="JavadocMethod">
 			<property name="severity" value="error" />
-			<property name="scope" value="public" />
+			<property name="accessModifiers" value="public" />
 			<property name="allowMissingParamTags" value="true" />
 		</module>
 		<module name="JavadocType">
