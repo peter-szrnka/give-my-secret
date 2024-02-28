@@ -1,6 +1,6 @@
 package io.github.gms.common.model;
 
-import io.github.gms.secure.entity.KeystoreAliasEntity;
+import io.github.gms.functions.keystore.KeystoreAliasEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

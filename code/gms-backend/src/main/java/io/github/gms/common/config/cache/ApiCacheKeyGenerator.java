@@ -1,6 +1,6 @@
 package io.github.gms.common.config.cache;
 
-import io.github.gms.secure.dto.GetSecretRequestDto;
+import io.github.gms.functions.secret.GetSecretRequestDto;
 import org.springframework.cache.interceptor.KeyGenerator;
 
 import java.lang.reflect.Method;

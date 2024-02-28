@@ -1,6 +1,6 @@
 package io.github.gms.common.util;
 
-import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.common.dto.PagingDto;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

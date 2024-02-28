@@ -10,9 +10,9 @@ import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.model.GenerateJwtRequest;
-import io.github.gms.secure.converter.GenerateJwtRequestConverter;
-import io.github.gms.secure.service.JwtService;
-import io.github.gms.secure.service.SystemPropertyService;
+import io.github.gms.common.converter.GenerateJwtRequestConverter;
+import io.github.gms.common.service.JwtService;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 
 /**
  * @author Peter Szrnka

@@ -1,7 +1,7 @@
 package io.github.gms.common.controller;
 
-import io.github.gms.secure.dto.UserInfoDto;
-import io.github.gms.secure.service.UserService;
+import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.functions.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

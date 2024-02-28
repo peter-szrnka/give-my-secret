@@ -1,7 +1,7 @@
 package io.github.gms.auth.model;
 
 import io.github.gms.auth.types.AuthResponsePhase;
-import io.github.gms.secure.dto.UserInfoDto;
+import io.github.gms.common.dto.UserInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

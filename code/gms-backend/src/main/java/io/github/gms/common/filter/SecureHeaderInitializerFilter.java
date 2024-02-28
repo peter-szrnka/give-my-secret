@@ -8,7 +8,7 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
-import io.github.gms.secure.service.SystemPropertyService;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

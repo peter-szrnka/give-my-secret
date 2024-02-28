@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
 
 /**

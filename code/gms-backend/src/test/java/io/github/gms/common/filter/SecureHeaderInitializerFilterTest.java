@@ -10,7 +10,7 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
-import io.github.gms.secure.service.SystemPropertyService;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

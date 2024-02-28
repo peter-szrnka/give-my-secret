@@ -1,10 +1,11 @@
 package io.github.gms.common.service.impl;
 
-import io.github.gms.common.dto.ResetPasswordRequestDto;
-import io.github.gms.common.exception.GmsException;
-import io.github.gms.secure.dto.MessageDto;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.secure.service.MessageService;
+import io.github.gms.functions.resetpassword.ResetPasswordRequestDto;
+import io.github.gms.common.types.GmsException;
+import io.github.gms.functions.message.MessageDto;
+import io.github.gms.functions.resetpassword.ResetPasswordServiceImpl;
+import io.github.gms.functions.user.UserRepository;
+import io.github.gms.functions.message.MessageService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

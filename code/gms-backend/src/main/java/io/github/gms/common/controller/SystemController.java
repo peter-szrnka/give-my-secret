@@ -1,7 +1,7 @@
 package io.github.gms.common.controller;
 
 import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.secure.service.SystemService;
+import io.github.gms.functions.system.SystemService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

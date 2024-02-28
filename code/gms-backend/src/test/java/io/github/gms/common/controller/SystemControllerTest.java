@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.secure.service.SystemService;
+import io.github.gms.functions.system.SystemService;
 
 /**
  * @author Peter Szrnka

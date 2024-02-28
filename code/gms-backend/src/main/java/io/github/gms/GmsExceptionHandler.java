@@ -3,7 +3,7 @@ package io.github.gms;
 import com.google.common.base.Throwables;
 import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.types.GmsException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
