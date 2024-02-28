@@ -29,7 +29,7 @@ import java.time.Clock;
 @EnableScheduling
 @EnableAsync
 @ComponentScan(basePackages = "io.github.gms")
-@EnableJpaRepositories(basePackages = "io.github.gms.secure.repository")
+@EnableJpaRepositories(basePackages = "io.github.gms")
 public class ApplicationConfig implements WebMvcConfigurer {
 
 	@Bean("secretRotationExecutor")

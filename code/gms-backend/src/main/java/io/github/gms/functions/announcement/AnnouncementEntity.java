@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.io.Serial;
 import java.time.ZonedDateTime;
@@ -24,7 +23,6 @@ import static io.github.gms.common.util.Constants.ID;
 @Entity
 @Table(name = "gms_announcement")
 @EqualsAndHashCode(callSuper = false)
-@ConditionalOnProperty(name = "config.x", havingValue = "true") // FIXME
 public class AnnouncementEntity extends AbstractGmsEntity {
 
 	@Serial
