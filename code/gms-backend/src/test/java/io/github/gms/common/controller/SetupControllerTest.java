@@ -17,9 +17,9 @@ import org.slf4j.MDC;
 
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.dto.SaveUserRequestDto;
-import io.github.gms.secure.service.UserService;
+import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.functions.user.SaveUserRequestDto;
+import io.github.gms.functions.user.UserService;
 
 /**
  * Unit test of {@link SetupController}

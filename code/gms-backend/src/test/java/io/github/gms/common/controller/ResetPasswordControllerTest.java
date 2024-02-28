@@ -1,7 +1,7 @@
 package io.github.gms.common.controller;
 
-import io.github.gms.common.dto.ResetPasswordRequestDto;
-import io.github.gms.common.service.ResetPasswordService;
+import io.github.gms.functions.resetpassword.ResetPasswordRequestDto;
+import io.github.gms.functions.resetpassword.ResetPasswordService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

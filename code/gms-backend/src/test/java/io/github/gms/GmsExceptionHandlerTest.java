@@ -2,7 +2,7 @@ package io.github.gms;
 
 import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.exception.GmsException;
+import io.github.gms.common.types.GmsException;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

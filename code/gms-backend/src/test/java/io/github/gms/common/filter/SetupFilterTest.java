@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.secure.service.SystemService;
+import io.github.gms.functions.system.SystemService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import io.github.gms.secure.dto.UserInfoDto;
-import io.github.gms.secure.service.UserService;
+import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.functions.user.UserService;
 import io.github.gms.util.TestUtils;
 import jakarta.servlet.http.HttpServletRequest;
 

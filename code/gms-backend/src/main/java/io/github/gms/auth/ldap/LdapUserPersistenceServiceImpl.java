@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.secure.entity.UserEntity;
-import io.github.gms.secure.repository.UserRepository;
+import io.github.gms.functions.user.UserEntity;
+import io.github.gms.functions.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**

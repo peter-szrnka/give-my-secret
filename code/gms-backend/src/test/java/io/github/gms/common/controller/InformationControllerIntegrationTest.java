@@ -2,7 +2,7 @@ package io.github.gms.common.controller;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.common.enums.UserRole;
-import io.github.gms.secure.dto.UserInfoDto;
+import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.util.DemoData;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

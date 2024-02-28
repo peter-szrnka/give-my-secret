@@ -14,11 +14,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.secure.repository.ApiKeyRepository;
-import io.github.gms.secure.repository.KeystoreRepository;
-import io.github.gms.secure.repository.SecretRepository;
-import io.github.gms.secure.repository.UserRepository;
-import io.github.gms.secure.service.JwtService;
+import io.github.gms.functions.apikey.ApiKeyRepository;
+import io.github.gms.functions.keystore.KeystoreRepository;
+import io.github.gms.functions.secret.SecretRepository;
+import io.github.gms.functions.user.UserRepository;
+import io.github.gms.common.service.JwtService;
 import io.github.gms.util.TestUtils;
 
 /**

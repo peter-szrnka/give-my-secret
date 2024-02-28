@@ -2,9 +2,9 @@ package io.github.gms.common.controller;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.secure.dto.SaveEntityResponseDto;
-import io.github.gms.secure.dto.SaveUserRequestDto;
-import io.github.gms.secure.service.SystemService;
+import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.functions.user.SaveUserRequestDto;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;

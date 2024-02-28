@@ -28,8 +28,8 @@ import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
-import io.github.gms.secure.dto.UserInfoDto;
-import io.github.gms.secure.service.SystemPropertyService;
+import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import jakarta.servlet.http.HttpServletRequest;
 

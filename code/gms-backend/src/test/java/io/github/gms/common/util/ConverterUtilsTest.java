@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.secure.dto.PagingDto;
+import io.github.gms.common.dto.PagingDto;
 
 /**
  * @author Peter Szrnka
