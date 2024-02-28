@@ -1,33 +1,26 @@
 package io.github.gms.functions.keystore;
 
-import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import io.github.gms.functions.keystore.KeystoreServiceImpl;
+import ch.qos.logback.classic.Logger;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.dto.IdNamePairDto;
+import io.github.gms.common.dto.IdNamePairListDto;
+import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.enums.AliasOperation;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.KeyStoreValueType;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.model.EnabledAlgorithm;
+import io.github.gms.common.model.EntityChangeEvent;
+import io.github.gms.common.model.EntityChangeEvent.EntityChangeType;
+import io.github.gms.common.service.CryptoService;
+import io.github.gms.common.types.GmsException;
+import io.github.gms.functions.secret.GetSecureValueDto;
+import io.github.gms.util.DemoData;
+import io.github.gms.util.TestUtils;
+import io.github.gms.util.TestUtils.ValueHolder;
+import lombok.SneakyThrows;
 import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.AfterEach;
@@ -46,38 +39,32 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.AliasOperation;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.KeyStoreValueType;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.model.EntityChangeEvent;
-import io.github.gms.common.model.EntityChangeEvent.EntityChangeType;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.functions.keystore.KeystoreConverter;
-import io.github.gms.functions.keystore.DownloadFileResponseDto;
-import io.github.gms.functions.secret.GetSecureValueDto;
-import io.github.gms.common.dto.IdNamePairDto;
-import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.functions.keystore.KeystoreAliasDto;
-import io.github.gms.functions.keystore.KeystoreDto;
-import io.github.gms.functions.keystore.KeystoreListDto;
-import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.keystore.SaveKeystoreRequestDto;
-import io.github.gms.functions.keystore.KeystoreEntity;
-import io.github.gms.common.model.EnabledAlgorithm;
-import io.github.gms.functions.keystore.KeystoreAliasRepository;
-import io.github.gms.functions.keystore.KeystoreRepository;
-import io.github.gms.common.service.CryptoService;
-import io.github.gms.functions.keystore.KeystoreFileService;
-import io.github.gms.util.DemoData;
-import io.github.gms.util.TestUtils;
-import io.github.gms.util.TestUtils.ValueHolder;
-import lombok.SneakyThrows;
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -167,10 +154,14 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         }
     }
 
-    @Test
     @SneakyThrows
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "hack/../../root/etc/password",
+            "/root/etc/password"
+    })
     @SuppressWarnings("unchecked")
-    void shouldNotSaveNewEntityCausedByVulnerableKeystoreFile() {
+    void shouldNotSaveNewEntityCausedByVulnerableKeystoreFile(String mockValue) {
         try (MockedStatic<Files> mockedStaticFiles = mockStatic(Files.class)) {
             mockedStaticFiles.when(() -> Files.readAllBytes(any(Path.class)))
                     .thenThrow(new RuntimeException("Test failure"));
@@ -178,7 +169,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
             // arrange
             MultipartFile multiPart = mock(MultipartFile.class);
-            when(multiPart.getOriginalFilename()).thenReturn("hack/../../root/etc/password");
+            when(multiPart.getOriginalFilename()).thenReturn(mockValue);
 
             SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
             dtoInput.setId(null);

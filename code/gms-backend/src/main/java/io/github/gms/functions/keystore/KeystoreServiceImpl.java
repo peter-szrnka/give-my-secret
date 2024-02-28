@@ -380,7 +380,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	private void validatePath(String path) {
-		if (path.contains("../")) {
+		if (path.startsWith("/") || path.contains("../")) {
 			throw new GmsException("Could not upload file!");
 		}
 	}
