@@ -1,5 +1,24 @@
 package io.github.gms.job;
 
+import ch.qos.logback.classic.Logger;
+import com.google.common.collect.Lists;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.functions.secret.SecretEntity;
+import io.github.gms.functions.secret.SecretRepository;
+import io.github.gms.functions.secret.SecretRotationService;
+import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.slf4j.LoggerFactory;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,35 +29,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-
-import io.github.gms.job.SecretRotationJob;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
-
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.RotationPeriod;
-import io.github.gms.functions.secret.SecretEntity;
-import io.github.gms.functions.secret.SecretRepository;
-import io.github.gms.functions.secret.SecretRotationService;
-import io.github.gms.util.TestUtils;
-
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
-	private Clock clock;
 	private SecretRepository secretRepository;
 	private SecretRotationService service;
 	private SecretRotationJob job;
@@ -47,7 +43,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	@BeforeEach
 	public void setup() {
 		super.setup();
-		clock = mock(Clock.class);
+		Clock clock = mock(Clock.class);
 		secretRepository = mock(SecretRepository.class);
 		service = mock(SecretRotationService.class);
 		job = new SecretRotationJob(clock, secretRepository, service);
