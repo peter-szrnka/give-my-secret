@@ -6,7 +6,6 @@ import io.github.gms.common.types.GmsException;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
@@ -32,7 +31,7 @@ import static org.mockito.Mockito.mockStatic;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Disabled
+//@Disabled
 @ExtendWith(MockitoExtension.class)
 class GmsExceptionHandlerTest {
 

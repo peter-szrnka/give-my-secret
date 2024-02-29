@@ -6,6 +6,7 @@ import io.github.gms.functions.user.UserEntity;
 import io.github.gms.common.model.EnabledAlgorithm;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,6 +46,7 @@ import static io.github.gms.common.util.MdcUtils.getUserId;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 @Service
 public class KeystoreFileServiceImpl implements KeystoreFileService {
 
@@ -117,8 +120,13 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 	}
 
 	private boolean deleteTempKeystoreFile(Path path) {
-		return path.toFile().delete();
-	}
+        try {
+            return Files.deleteIfExists(path);
+        } catch (IOException e) {
+			log.error("Temporary keystore file({}) cannot be deleted!", path, e);
+            return false;
+        }
+    }
 
 	private Path getFileNameIfNotExists(Path path) {
 		return repository.findByFileName(path.toFile().getName()) != null ? null : path;

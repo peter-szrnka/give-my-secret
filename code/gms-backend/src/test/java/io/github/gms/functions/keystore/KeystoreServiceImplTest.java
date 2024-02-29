@@ -141,6 +141,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
             when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
             when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
+            when(keystoreFileService.generate(any(SaveKeystoreRequestDto.class))).thenReturn("filename.jks");
 
             // act
             GmsException exception = assertThrows(GmsException.class, () -> service.save(model, null));
@@ -206,6 +207,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
         when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
         when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
+        when(keystoreFileService.generate(any(SaveKeystoreRequestDto.class))).thenReturn("filename.jks");
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, null));
