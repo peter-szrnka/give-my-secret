@@ -120,12 +120,7 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 	}
 
 	private boolean deleteTempKeystoreFile(Path path) {
-        try {
-            return Files.deleteIfExists(path);
-        } catch (IOException e) {
-			log.error("Temporary keystore file({}) cannot be deleted!", path, e);
-            return false;
-        }
+		return path.toFile().delete();
     }
 
 	private Path getFileNameIfNotExists(Path path) {

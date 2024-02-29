@@ -13,6 +13,7 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
@@ -23,7 +24,7 @@ import java.time.ZonedDateTime;
  */
 @Slf4j
 @ControllerAdvice
-public class GmsExceptionHandler {
+public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private final Clock clock;
 
