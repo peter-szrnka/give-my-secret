@@ -8,6 +8,7 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.keystore.KeystoreRepository;
+import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -60,9 +61,10 @@ class KeystoreValidatorServiceImplTest extends AbstractUnitTest {
     void shouldKeystoreAliasMissing() {
         // arrange
         when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
+        SecretEntity secretEntity = TestUtils.createSecretEntity();
 
         // assert
-        GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.validateSecretKeystore(TestUtils.createSecretEntity()));
+        GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.validateSecretKeystore(secretEntity));
         assertEquals("Keystore alias is not available!", exception.getMessage());
 
         assertLogContains(logAppender, "Keystore alias not found");
@@ -74,9 +76,10 @@ class KeystoreValidatorServiceImplTest extends AbstractUnitTest {
         // arrange
         when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.empty());
+        SecretEntity secretEntity = TestUtils.createSecretEntity();
 
         // assert
-        GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.validateSecretKeystore(TestUtils.createSecretEntity()));
+        GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.validateSecretKeystore(secretEntity));
         assertEquals("Invalid keystore!", exception.getMessage());
 
         assertLogContains(logAppender, "Keystore is not active");
@@ -89,9 +92,10 @@ class KeystoreValidatorServiceImplTest extends AbstractUnitTest {
         // arrange
         when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+        SecretEntity secretEntity = TestUtils.createSecretEntity();
 
         // act
-        assertDoesNotThrow(() -> service.validateSecretKeystore(TestUtils.createSecretEntity()));
+        assertDoesNotThrow(() -> service.validateSecretKeystore(secretEntity));
 
         // assert
         verify(keystoreAliasRepository).findById(anyLong());

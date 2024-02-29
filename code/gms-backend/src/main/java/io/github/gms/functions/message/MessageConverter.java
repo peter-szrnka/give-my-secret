@@ -1,8 +1,5 @@
 package io.github.gms.functions.message;
 
-import io.github.gms.functions.message.MessageDto;
-import io.github.gms.functions.message.MessageListDto;
-import io.github.gms.functions.message.MessageEntity;
 import org.springframework.data.domain.Page;
 
 /**

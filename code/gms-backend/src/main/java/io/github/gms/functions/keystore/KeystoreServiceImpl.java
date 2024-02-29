@@ -1,19 +1,19 @@
 package io.github.gms.functions.keystore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.gms.common.dto.IdNamePairListDto;
+import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.model.EntityChangeEvent;
 import io.github.gms.common.model.EntityChangeEvent.EntityChangeType;
+import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.secret.GetSecureValueDto;
-import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.common.service.CryptoService;
 import jakarta.transaction.Transactional;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,9 @@ import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 import static io.github.gms.common.util.Constants.KEYSTORE_ID;
 import static io.github.gms.common.util.Constants.SLASH;
 import static io.github.gms.common.util.Constants.USER_ID;
+import static io.github.gms.common.util.FileUtils.validatePath;
 import static io.github.gms.common.util.MdcUtils.getUserId;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Peter Szrnka
@@ -280,7 +282,9 @@ public class KeystoreServiceImpl implements KeystoreService {
 			return;
 		}
 
-		Files.delete(Paths.get(keystoreTempPath + filename));
+        String tempFile = keystoreTempPath + filename;
+        validatePath(tempFile);
+		Files.delete(Paths.get(tempFile));
 	}
 
 	private SaveKeystoreRequestDto parseInput(String model) {
@@ -344,7 +348,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private byte[] getFileContent(KeystoreEntity entity, MultipartFile file, SaveKeystoreRequestDto dto) {
 		try {
 			if (file != null) {
-				validatePath(file.getOriginalFilename());
+				validatePath(requireNonNull(file.getOriginalFilename()));
 				return file.getBytes();
 			}
 
@@ -357,6 +361,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 				entity.setFileName(filename);
 			}
 
+            validatePath(filename);
 			Path keystoreFile = new File(folder + filename).toPath();
 
 			if (!Files.exists(keystoreFile)) {
@@ -377,11 +382,5 @@ public class KeystoreServiceImpl implements KeystoreService {
 		metadata.put(USER_ID, getUserId());
 		metadata.put(KEYSTORE_ID, keystoreId);
 		return metadata;
-	}
-
-	private void validatePath(String path) {
-		if (path.startsWith("/") || path.contains("../")) {
-			throw new GmsException("Could not upload file!");
-		}
 	}
 }

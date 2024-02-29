@@ -37,6 +37,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static io.github.gms.common.util.FileUtils.validatePath;
 import static io.github.gms.common.util.MdcUtils.getUserId;
 
 /**
@@ -104,6 +105,7 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 			}
 
 			String newKeystoreName = UUID.randomUUID() + "." + dto.getType().getFileExtension();
+			validatePath(newKeystoreName);
 			FileOutputStream fos = new FileOutputStream(keystoreTempPath + newKeystoreName, false);
 			ks.store(fos, password);
 			fos.close();
