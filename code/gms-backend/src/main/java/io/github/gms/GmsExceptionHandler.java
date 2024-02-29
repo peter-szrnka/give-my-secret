@@ -12,7 +12,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.Clock;
@@ -33,23 +32,23 @@ public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(GmsException.class)
-	public ResponseEntity<ErrorResponseDto> handleGmsException(GmsException ex, WebRequest request) {
+	public ResponseEntity<ErrorResponseDto> handleGmsException(GmsException ex) {
 		log.error("GmsException handled", ex);
 		return getResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)
-	public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+	public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException ex) {
 		return getResponse(ex, HttpStatus.FORBIDDEN);
 	}
 
 	@ExceptionHandler(MissingRequestHeaderException.class)
-	public ResponseEntity<ErrorResponseDto> handleMissingRequestHeaderException(MissingRequestHeaderException ex, WebRequest request) {
+	public ResponseEntity<ErrorResponseDto> handleMissingRequestHeaderException(MissingRequestHeaderException ex) {
 		return getResponse(ex, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponseDto> handleOtherException(Exception ex, WebRequest request) {
+	public ResponseEntity<ErrorResponseDto> handleOtherException(Exception ex) {
 		log.error("Exception handled", ex);
 		return getResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
 	}

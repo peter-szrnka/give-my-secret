@@ -60,7 +60,7 @@ class GmsExceptionHandlerTest {
         try (MockedStatic<ZonedDateTime> mockedZonedDateTime = mockStatic(ZonedDateTime.class)) {
             mockedZonedDateTime.when(() -> ZonedDateTime.now(clock)).thenReturn(zonedDateTime);
             // act
-            ResponseEntity<ErrorResponseDto> response = handler.handleGmsException(new GmsException("Oops!"), null);
+            ResponseEntity<ErrorResponseDto> response = handler.handleGmsException(new GmsException("Oops!"));
 
             // assert
             assertNotNull(response);
@@ -77,7 +77,7 @@ class GmsExceptionHandlerTest {
         try (MockedStatic<ZonedDateTime> mockedZonedDateTime = mockStatic(ZonedDateTime.class)) {
             mockedZonedDateTime.when(() -> ZonedDateTime.now(clock)).thenReturn(zonedDateTime);
             // act
-            ResponseEntity<ErrorResponseDto> response = handler.handleAccessDeniedException(new AccessDeniedException("Oops!"), null);
+            ResponseEntity<ErrorResponseDto> response = handler.handleAccessDeniedException(new AccessDeniedException("Oops!"));
 
             // assert
             assertNotNull(response);
@@ -94,7 +94,7 @@ class GmsExceptionHandlerTest {
         try (MockedStatic<ZonedDateTime> mockedZonedDateTime = mockStatic(ZonedDateTime.class)) {
             mockedZonedDateTime.when(() -> ZonedDateTime.now(clock)).thenReturn(zonedDateTime);
             // act
-            ResponseEntity<ErrorResponseDto> response = handler.handleOtherException(new RuntimeException("Oops!"), null);
+            ResponseEntity<ErrorResponseDto> response = handler.handleOtherException(new RuntimeException("Oops!"));
 
             // assert
             assertNotNull(response);
@@ -115,7 +115,7 @@ class GmsExceptionHandlerTest {
             MethodParameter mockMethodParameter = new MethodParameter(mockMethod, -1, 2);
 
             // act
-            ResponseEntity<ErrorResponseDto> response = handler.handleMissingRequestHeaderException(new MissingRequestHeaderException("x-api-key", mockMethodParameter), null);
+            ResponseEntity<ErrorResponseDto> response = handler.handleMissingRequestHeaderException(new MissingRequestHeaderException("x-api-key", mockMethodParameter));
 
             // assert
             assertNotNull(response);
