@@ -104,11 +104,10 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         keystoreFileService = mock(KeystoreFileService.class);
         fileService = mock(FileService.class);
         service = new KeystoreServiceImpl(cryptoService, repository, aliasRepository, converter, objectMapper,
-                applicationEventPublisher, keystoreFileService);
+                applicationEventPublisher, keystoreFileService, fileService);
 
         ((Logger) LoggerFactory.getLogger(KeystoreServiceImpl.class)).addAppender(logAppender);
 
-        service.setFileService(fileService);
         service.setKeystorePath("unit-test-output/");
         service.setKeystoreTempPath("temp-output/");
 
@@ -167,7 +166,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
             "hack/../../root/etc/password",
             "/root/etc/password"
     })
-    public void shouldNotSaveNewEntityCausedByVulnerableKeystoreFile(String mockValue) {
+    void shouldNotSaveNewEntityCausedByVulnerableKeystoreFile(String mockValue) {
         // arrange
         MultipartFile multiPart = mock(MultipartFile.class);
         when(multiPart.getOriginalFilename()).thenReturn(mockValue);

@@ -28,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -103,10 +103,10 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 		Path p4 = initMockPath("file3.txt", false);
 
         when(fileService.list(any(Path.class))).thenReturn(Stream.of(p1, p2, p3, p4));
-		when(fileService.delete(eq(p1))).thenReturn(true);
-		when(fileService.delete(eq(p2))).thenReturn(false);
-		when(fileService.delete(eq(p3))).thenReturn(true);
-		when(fileService.delete(eq(p4))).thenThrow(new IOException("Oops!"));
+		when(fileService.delete(p1)).thenReturn(true);
+		when(fileService.delete(p2)).thenReturn(false);
+		when(fileService.delete(p3)).thenReturn(true);
+		when(fileService.delete(p4)).thenThrow(new IOException("Oops!"));
 		when(repository.findByFileName("file1.txt")).thenReturn("file1.txt");
 		when(repository.findByFileName("file2.txt")).thenReturn(null);
 		when(repository.findByFileName("file3.txt")).thenReturn(null);
@@ -116,6 +116,12 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 
 		// assert
         assertEquals(1L, response);
+
+		verify(fileService).list(any(Path.class));
+		verify(fileService, times(2)).delete(any(Path.class));
+		verify(repository).findByFileName("file1.txt");
+		verify(repository).findByFileName("file2.txt");
+		verify(repository).findByFileName("file3.txt");
 	}
 
 	@Test
@@ -128,7 +134,6 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 		when(path1.toFile()).thenReturn(mockFile1);
 
         when(fileService.list(any(Path.class))).thenThrow(new IOException("ERROR!"));
-		when(fileService.delete(eq(path1))).thenReturn(true);
 
         when(repository.findByFileName("file1.txt")).thenReturn(null);
 
@@ -137,30 +142,8 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 
         // assert
         assertEquals("ERROR!", Throwables.getRootCause(response).getMessage());
+		verify(fileService).list(any(Path.class));
 	}
-
-	/*@Test
-	@SneakyThrows
-	void shouldDeleteTempFilesFail() {
-		Path path1 = mock(Path.class);
-		File mockFile1 = mock(File.class);
-		when(mockFile1.isDirectory()).thenReturn(false);
-		when(mockFile1.getName()).thenReturn("file1.txt");
-		when(path1.toFile()).thenReturn(mockFile1);
-
-		try (MockedStatic<Files> mockedStatic = mockStatic(Files.class)) {
-			mockedStatic.when(() -> Files.list(any(Path.class))).thenReturn(Stream.of(path1));
-			mockedStatic.when(() -> Files.deleteIfExists(eq(path1))).thenThrow(new IOException("Oops!"));
-
-			when(repository.findByFileName("file1.txt")).thenReturn(null);
-
-			// act
-			long response = service.deleteTempKeystoreFiles();
-
-			// assert
-			assertEquals(0L, response);
-		}
-	}*/
 
 	private Path initMockPath(String fileName, boolean isDirectory) {
 		Path path1 = mock(Path.class);

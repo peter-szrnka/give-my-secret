@@ -18,7 +18,6 @@ import io.github.gms.functions.secret.GetSecureValueDto;
 import jakarta.transaction.Transactional;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -63,9 +62,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private final ObjectMapper objectMapper;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final KeystoreFileService keystoreFileService;
-	@Setter
-	@Autowired
-	private FileService fileService;
+	private final FileService fileService;
 	@Setter
 	@Value("${config.location.keystore.path}")
 	private String keystorePath;
@@ -80,7 +77,8 @@ public class KeystoreServiceImpl implements KeystoreService {
 			KeystoreConverter converter,
 			ObjectMapper objectMapper,
 			ApplicationEventPublisher applicationEventPublisher,
-			KeystoreFileService keystoreFileService
+			KeystoreFileService keystoreFileService,
+			FileService fileService
 	) {
 		this.cryptoService = cryptoService;
 		this.repository = repository;
@@ -89,6 +87,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		this.objectMapper = objectMapper;
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.keystoreFileService = keystoreFileService;
+		this.fileService = fileService;
 	}
 
 	@Override
