@@ -3,10 +3,6 @@ package io.github.gms.functions.systemproperty;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.functions.systemproperty.SystemPropertyConverterImpl;
-import io.github.gms.functions.systemproperty.SystemPropertyDto;
-import io.github.gms.functions.systemproperty.SystemPropertyListDto;
-import io.github.gms.functions.systemproperty.SystemPropertyEntity;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
@@ -52,7 +48,7 @@ class SystemPropertyConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
-		assertEquals(10L, response.getTotalElements());
+		assertEquals(SystemProperty.values().length, response.getTotalElements());
 		assertEquals("Budapest", response.getResultList().stream()
 			.filter(property -> property.getKey().equals("ORGANIZATION_CITY"))
 			.map(SystemPropertyDto::getValue).findFirst().get());
