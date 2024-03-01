@@ -26,13 +26,11 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
 	@Autowired
 	private KeystoreAliasRepository keystoreAliasRepository;
 
-	@Test
+    @Test
 	void testGetSecret() {
-
 		// arrange
 		apiKeyRepository.save(TestUtils.createApiKey(DemoData.API_KEY_3_ID, DemoData.API_KEY_CREDENTIAL3));
 		keystoreAliasRepository.save(TestUtils.createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS3_ID, DemoData.KEYSTORE_ID));
-		//keystoreRepository.save(TestUtils.createKeystoreEntity(DemoData.KEYSTORE3_ID, "test"));
 		secretRepository.save(
 				TestUtils.createSecretEntity(DemoData.SECRET_ENTITY3_ID, DemoData.KEYSTORE_ALIAS3_ID, DemoData.SECRET_ID3));
 		
@@ -40,12 +38,36 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoData.API_KEY_CREDENTIAL3));
 		ResponseEntity<Map> response = executeHttpGet("/api/secret/" + DemoData.SECRET_ID3, requestEntity, Map.class);
 
-		// Assert
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(DemoData.ENCRYPTED_VALUE, response.getBody().get("value"));
-		
 		secretRepository.deleteById(DemoData.SECRET_ENTITY3_ID);
 		apiKeyRepository.deleteById(DemoData.API_KEY_3_ID);
 		keystoreAliasRepository.deleteById(DemoData.KEYSTORE_ALIAS3_ID);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(DemoData.ENCRYPTED_VALUE, response.getBody().get("value"));
+	}
+
+	@Test
+	void shouldReturnHttp400WhenHeaderIsMissing() {
+		// act
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(null));
+		ResponseEntity<String> response = executeHttpGet("/api/secret/" + DemoData.SECRET_ID3, requestEntity, String.class);
+
+		// Assert
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}
+
+	@Test
+	void shouldReturnHttp500WhenApiKeyIsInvalid() {
+		// arrange
+		apiKeyRepository.save(TestUtils.createApiKey(DemoData.API_KEY_3_ID, DemoData.API_KEY_CREDENTIAL3));
+
+		// act
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoData.API_KEY_CREDENTIAL3));
+		ResponseEntity<String> response = executeHttpGet("/api/secret/fake-key", requestEntity, String.class);
+
+		apiKeyRepository.deleteById(DemoData.API_KEY_3_ID);
+		// Assert
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 	}
 }

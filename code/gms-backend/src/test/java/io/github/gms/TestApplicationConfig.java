@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Peter Szrnka
@@ -23,5 +24,13 @@ public class TestApplicationConfig {
 			DemoDataManagerService service = ctx.getBean(DemoDataManagerService.class);
 			service.initTestData();
 		};
+	}
+
+	// Default RestTemplate instance for integration tests
+	@Bean("testRestTemplate")
+	public RestTemplate testRestTemplate() {
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new GmsResponseErrorHandler());
+		return restTemplate;
 	}
 }
