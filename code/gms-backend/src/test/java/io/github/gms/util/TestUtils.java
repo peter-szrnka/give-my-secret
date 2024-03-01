@@ -66,6 +66,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.util.StringUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -105,7 +106,10 @@ public class TestUtils {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set(API_KEY_HEADER, apiKey);
+
+		if (StringUtils.hasText(apiKey)) {
+			headers.set(API_KEY_HEADER, apiKey);
+		}
 
 		return headers;
 	}

@@ -1,34 +1,28 @@
 package io.github.gms.job;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-
-import io.github.gms.job.EventMaintenanceJob;
+import ch.qos.logback.classic.Logger;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.enums.TimeUnit;
+import io.github.gms.functions.event.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.TimeUnit;
-import io.github.gms.functions.event.EventRepository;
-import io.github.gms.util.TestUtils;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -36,8 +30,7 @@ import io.github.gms.util.TestUtils;
  */
 class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 
-	private Clock clock;
-	private EventRepository eventRepository;
+    private EventRepository eventRepository;
 	private EventMaintenanceJob job;
 	
 	@Override
@@ -45,7 +38,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	public void setup() {
 		super.setup();
 		// init
-		clock = mock(Clock.class);
+        Clock clock = mock(Clock.class);
 		eventRepository = mock(EventRepository.class);
 		job = new EventMaintenanceJob(clock, eventRepository, "1;d");
 		((Logger) LoggerFactory.getLogger(EventMaintenanceJob.class)).addAppender(logAppender);
@@ -57,17 +50,16 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldNotProcess() {
 		// arrange
-		when(eventRepository.findAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(Lists.newArrayList());
+		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
 		
 		// act
 		job.execute();
 		
 		// assert
 		assertTrue(logAppender.list.isEmpty());
-		verify(eventRepository).deleteAll(anyList());
 
 		ArgumentCaptor<ZonedDateTime> dateCArgumentCaptor = ArgumentCaptor.forClass(ZonedDateTime.class);
-		verify(eventRepository).findAllEventDateOlderThan(dateCArgumentCaptor.capture());
+		verify(eventRepository).deleteAllEventDateOlderThan(dateCArgumentCaptor.capture());
 		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
 	}
 
@@ -76,23 +68,22 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		// arrange
 		MockedStatic<TimeUnit> mockedTimeUnit = mockStatic(TimeUnit.class);
 		mockedTimeUnit.when(() -> TimeUnit.getByCode("d")).thenReturn(TimeUnit.DAY);
-		when(eventRepository.findAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(Lists.newArrayList(TestUtils.createEventEntity()));
+		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
 		
 		// act
 		job.execute();
 		
 		// assert
 		assertFalse(logAppender.list.isEmpty());
-		assertEquals("1 event(s) deleted", logAppender.list.get(0).getFormattedMessage());
-		verify(eventRepository).findAllEventDateOlderThan(any(ZonedDateTime.class));
-		verify(eventRepository).deleteAll(anyList());
+		assertEquals("1 event(s) deleted", logAppender.list.getFirst().getFormattedMessage());
+		verify(eventRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
 
 		ArgumentCaptor<String> codeArgumentCaptor = ArgumentCaptor.forClass(String.class);
 		mockedTimeUnit.verify(() -> TimeUnit.getByCode(codeArgumentCaptor.capture()));
 		assertEquals("d", codeArgumentCaptor.getValue());
 
 		ArgumentCaptor<ZonedDateTime> dateCArgumentCaptor = ArgumentCaptor.forClass(ZonedDateTime.class);
-		verify(eventRepository).findAllEventDateOlderThan(dateCArgumentCaptor.capture());
+		verify(eventRepository).deleteAllEventDateOlderThan(dateCArgumentCaptor.capture());
 		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
 		mockedTimeUnit.close();
 	}

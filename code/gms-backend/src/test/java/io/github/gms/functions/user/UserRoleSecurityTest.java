@@ -1,22 +1,16 @@
 package io.github.gms.functions.user;
 
 import io.github.gms.abstraction.AbstractUserRoleSecurityTest;
-import io.github.gms.functions.user.ChangePasswordRequestDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.user.SaveUserRequestDto;
-import io.github.gms.functions.user.UserDto;
-import io.github.gms.functions.user.UserListDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Peter Szrnka
@@ -25,66 +19,37 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag(TAG_SECURITY_TEST)
 class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
+    public UserRoleSecurityTest() {
+        super("/user");
+    }
+
     @Test
     void testSaveFailWithHttp403() {
         gmsUser = null;
         jwt = null;
-        HttpEntity<SaveUserRequestDto> requestEntity = new HttpEntity<>(TestUtils.createSaveUserRequestDto(), TestUtils.getHttpHeaders(jwt));
-
-        // assert
-        HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-                executeHttpPost("/secure/user", requestEntity, SaveEntityResponseDto.class));
-
-        assertTrue(exception.getMessage().startsWith("403"));
+        shouldSaveFailWith403(TestUtils.createSaveUserRequestDto());
     }
 
     @Test
     void testGetByIdFailWithHttp403() {
         gmsUser = null;
         jwt = null;
-        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-
-        // assert
-        HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-                executeHttpGet("/secure/user/" + DemoData.USER_1_ID, requestEntity, UserDto.class));
-
-        assertTrue(exception.getMessage().startsWith("403"));
+        shouldGetByIdFailWith403(UserDto.class, DemoData.USER_1_ID);
     }
 
     @Test
     void testListFailWithHttp403() {
-        PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-        HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-
-        // assert
-        HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-                executeHttpPost("/secure/user/list", requestEntity, UserListDto.class));
-
-        assertTrue(exception.getMessage().startsWith("403"));
+        shouldListFailWith403(UserListDto.class);
     }
 
     @Test
     void testDeleteFailWithHttp403() {
-        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-
-        // assert
-        HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-                executeHttpDelete("/secure/user/" + DemoData.USER_1_ID, requestEntity,
-                        String.class));
-
-        assertTrue(exception.getMessage().startsWith("403"));
+        shouldDeleteFailWith403(DemoData.USER_1_ID);
     }
 
     @Test
     void testToggleStatusFailWithHttp403() {
-        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-
-        // assert
-        HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-                executeHttpPost("/secure/user/" + DemoData.USER_1_ID + "?enabled=true", requestEntity,
-                        String.class));
-
-        assertTrue(exception.getMessage().startsWith("403"));
+        shouldToggleFailWith403(DemoData.USER_1_ID);
     }
 
     @Test
@@ -94,25 +59,24 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
         ChangePasswordRequestDto request = new ChangePasswordRequestDto();
         HttpEntity<ChangePasswordRequestDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 
-        // assert
-        HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-                executeHttpPost("/secure/user/change_credential", requestEntity,
-                        Void.class));
+        // act
+        ResponseEntity<Void> response = executeHttpPost(urlPrefix + "/change_credential", requestEntity, Void.class);
 
-        assertTrue(exception.getMessage().startsWith("403"));
+        // assert
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test
     void testGetQrCodeFailWithHttp403() {
         gmsUser = null;
         jwt = null;
-        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));
+
+        // act
+        ResponseEntity<byte[]> response = executeHttpGet(urlPrefix + "/mfa_qr_code", requestEntity, byte[].class);
 
         // assert
-        HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-                executeHttpGet("/secure/user/mfa_qr_code", requestEntity, byte[].class));
-
-        assertTrue(exception.getMessage().startsWith("403"));
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test
@@ -121,24 +85,23 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
         jwt = null;
         HttpEntity<Boolean> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-        // assert
-        HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-                executeHttpPost("/secure/user/toggle_mfa?enabled=true", requestEntity,
-                        Void.class));
+        // act
+        ResponseEntity<Void> response = executeHttpPost(urlPrefix + "/toggle_mfa?enabled=true", requestEntity, Void.class);
 
-        assertTrue(exception.getMessage().startsWith("403"));
+        // assert
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test
     void testIsMfaActiveFailWithHttp403() {
         gmsUser = null;
         jwt = null;
-        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));
+
+        // act
+        ResponseEntity<String> response = executeHttpGet(urlPrefix + "/mfa_active", requestEntity, String.class);
 
         // assert
-        HttpClientErrorException.Forbidden exception = assertThrows(HttpClientErrorException.Forbidden.class, () ->
-                executeHttpGet("/secure/user/mfa_active", requestEntity, Boolean.class));
-
-        assertTrue(exception.getMessage().startsWith("403"));
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 }

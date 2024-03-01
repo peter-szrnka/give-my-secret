@@ -1,9 +1,15 @@
 package io.github.gms.abstraction;
 
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
-
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.service.JwtService;
+import io.github.gms.functions.apikey.ApiKeyRepository;
+import io.github.gms.functions.keystore.KeystoreRepository;
+import io.github.gms.functions.secret.SecretRepository;
+import io.github.gms.functions.user.UserRepository;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -13,13 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.functions.apikey.ApiKeyRepository;
-import io.github.gms.functions.keystore.KeystoreRepository;
-import io.github.gms.functions.secret.SecretRepository;
-import io.github.gms.functions.user.UserRepository;
-import io.github.gms.common.service.JwtService;
-import io.github.gms.util.TestUtils;
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
 
 /**
  * @author Peter Szrnka
@@ -33,6 +33,7 @@ public abstract class AbstractIntegrationTest {
 	protected int port;
 
 	@Autowired
+	@Qualifier("testRestTemplate")
 	protected RestTemplate rest;
 
 	@Autowired

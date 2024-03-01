@@ -1,11 +1,8 @@
 package io.github.gms.job;
 
 import ch.qos.logback.classic.Logger;
-import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.job.MessageCleanupJob;
 import io.github.gms.functions.message.MessageRepository;
-import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
@@ -17,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,29 +41,27 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldNotProcess() {
 		// arrange
-		when(messageRepository.findAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(Lists.newArrayList());
+		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
 		
 		// act
 		job.execute();
 		
 		// assert
 		assertTrue(logAppender.list.isEmpty());
-		verify(messageRepository).findAllEventDateOlderThan(any(ZonedDateTime.class));
-		verify(messageRepository).deleteAll(anyList());
+		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
 	}
 	
 	@Test
 	void shouldProcess() {
 		// arrange
-		when(messageRepository.findAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(Lists.newArrayList(TestUtils.createMessageEntity()));
+		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
 		
 		// act
 		job.execute();
 		
 		// assert
 		assertFalse(logAppender.list.isEmpty());
-		assertEquals("1 message(s) deleted", logAppender.list.get(0).getFormattedMessage());
-		verify(messageRepository).findAllEventDateOlderThan(any(ZonedDateTime.class));
-		verify(messageRepository).deleteAll(anyList());
+		assertEquals("1 message(s) deleted", logAppender.list.getFirst().getFormattedMessage());
+		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
 	}
 }

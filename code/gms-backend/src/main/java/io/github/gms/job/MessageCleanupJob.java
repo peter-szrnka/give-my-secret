@@ -1,7 +1,6 @@
 package io.github.gms.job;
 
 import io.github.gms.common.abstraction.AbstractLimitBasedJob;
-import io.github.gms.functions.message.MessageEntity;
 import io.github.gms.functions.message.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
-import java.util.List;
 
 /**
  * @author Peter Szrnka
@@ -32,11 +30,10 @@ public class MessageCleanupJob extends AbstractLimitBasedJob {
 	
 	@Scheduled(cron = "0 0 * * * ?")
 	public void execute() {
-		List<MessageEntity> resultList = messageRepository.findAllEventDateOlderThan(processConfig(oldMessageLimit));
-		messageRepository.deleteAll(resultList);
-		
-		if (!resultList.isEmpty()) {
-			log.info("{} message(s) deleted", resultList.size());
+		int resultList = messageRepository.deleteAllEventDateOlderThan(processConfig(oldMessageLimit));
+
+		if (resultList > 0) {
+			log.info("{} message(s) deleted", resultList);
 		}
 	}
 }

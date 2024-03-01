@@ -18,6 +18,10 @@ import java.util.Map;
  */
 public abstract class AbstractAdminRoleSecurityTest extends AbstractSecurityTest {
 
+	public AbstractAdminRoleSecurityTest(String urlPrefix) {
+		super(urlPrefix);
+	}
+
 	@Override
 	@BeforeEach
 	public void setup() {

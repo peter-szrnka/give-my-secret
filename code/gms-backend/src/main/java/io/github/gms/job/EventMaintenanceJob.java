@@ -1,7 +1,6 @@
 package io.github.gms.job;
 
 import io.github.gms.common.abstraction.AbstractLimitBasedJob;
-import io.github.gms.functions.event.EventEntity;
 import io.github.gms.functions.event.EventRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
-import java.util.List;
 
 /**
  * @author Peter Szrnka
@@ -32,11 +30,10 @@ public class EventMaintenanceJob extends AbstractLimitBasedJob {
 
 	@Scheduled(cron = "0 15 * * * ?")
 	public void execute() {
-		List<EventEntity> resultList = eventRepository.findAllEventDateOlderThan(processConfig(oldEventLimit));
-		eventRepository.deleteAll(resultList);
-		
-		if (!resultList.isEmpty()) {
-			log.info("{} event(s) deleted", resultList.size());
+		int result = eventRepository.deleteAllEventDateOlderThan(processConfig(oldEventLimit));
+
+		if (result > 0) {
+			log.info("{} event(s) deleted", result);
 		}
 	}
 }
