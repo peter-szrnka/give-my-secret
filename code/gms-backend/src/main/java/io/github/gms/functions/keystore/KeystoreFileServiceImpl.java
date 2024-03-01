@@ -1,11 +1,12 @@
 package io.github.gms.functions.keystore;
 
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.functions.user.UserEntity;
 import io.github.gms.common.model.EnabledAlgorithm;
-import io.github.gms.functions.user.UserRepository;
+import io.github.gms.common.service.FileService;
+import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
+import io.github.gms.functions.user.UserEntity;
+import io.github.gms.functions.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyPair;
@@ -62,19 +62,22 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 	private final UserRepository userRepository;
 	private final String keystoreTempPath;
 	private final SystemPropertyService systemPropertyService;
+    private final FileService fileService;
 
 	public KeystoreFileServiceImpl(KeystoreRepository repository, UserRepository userRepository,
 								   @Value("${config.location.keystoreTemp.path}") String keystoreTempPath,
-								   SystemPropertyService systemPropertyService) {
+								   SystemPropertyService systemPropertyService,
+                                   FileService fileService) {
 		this.repository = repository;
 		this.userRepository = userRepository;
 		this.keystoreTempPath = keystoreTempPath;
 		this.systemPropertyService = systemPropertyService;
+        this.fileService = fileService;
 	}
 
 	@Override
 	public long deleteTempKeystoreFiles()  {
-		try (Stream<Path> fileList = Files.list(Paths.get(keystoreTempPath)).parallel()) {
+		try (Stream<Path> fileList = fileService.list(Paths.get(keystoreTempPath)).parallel()) {
 			return fileList.filter(path -> !path.toFile().isDirectory())
 					.map(this::getFileNameIfNotExists)
 					.filter(Objects::nonNull)
@@ -121,7 +124,7 @@ public class KeystoreFileServiceImpl implements KeystoreFileService {
 
 	private boolean deleteTempKeystoreFile(Path path) {
 		try {
-			return Files.deleteIfExists(path);
+			return fileService.delete(path);
 		} catch (IOException e) {
 			return false;
 		}

@@ -4,6 +4,7 @@ import com.google.common.base.Throwables;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.functions.user.UserRepository;
@@ -12,14 +13,12 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.slf4j.MDC;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -32,7 +31,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +45,7 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 	private UserRepository userRepository;
 	private KeystoreFileServiceImpl service;
 	private SystemPropertyService systemPropertyService;
+    private FileService fileService;
 
 	@BeforeEach
 	void beforeEach() {
@@ -56,7 +55,8 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 		repository = mock(KeystoreRepository.class);
 		userRepository = mock(UserRepository.class);
 		systemPropertyService = mock(SystemPropertyService.class);
-		service = new KeystoreFileServiceImpl(repository, userRepository, "./temp-output/", systemPropertyService);
+        fileService = mock(FileService.class);
+		service = new KeystoreFileServiceImpl(repository, userRepository, "./temp-output/", systemPropertyService, fileService);
 	}
 
 	@AfterEach
@@ -96,51 +96,50 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldNotDeleteTempFiles() {
-		Path p1 = initMockPath("t/", true, false);
-		Path p2 = initMockPath("file1.txt", false, false);
-		Path p3 = initMockPath("file2.txt", false, false);
-		Path p4 = initMockPath("file3.txt", false, true);
+	void shouldDeleteSomeTempFiles() {
+		Path p1 = initMockPath("t/", true);
+		Path p2 = initMockPath("file1.txt", false);
+		Path p3 = initMockPath("file2.txt", false);
+		Path p4 = initMockPath("file3.txt", false);
 
-		try (MockedStatic<Files> mockedStatic = mockStatic(Files.class)) {
-			mockedStatic.when(() -> Files.list(any(Path.class))).thenReturn(Stream.of(p1, p2, p3, p4));
+        when(fileService.list(any(Path.class))).thenReturn(Stream.of(p1, p2, p3, p4));
+		when(fileService.delete(eq(p1))).thenReturn(true);
+		when(fileService.delete(eq(p2))).thenReturn(false);
+		when(fileService.delete(eq(p3))).thenReturn(true);
+		when(fileService.delete(eq(p4))).thenThrow(new IOException("Oops!"));
+		when(repository.findByFileName("file1.txt")).thenReturn("file1.txt");
+		when(repository.findByFileName("file2.txt")).thenReturn(null);
+		when(repository.findByFileName("file3.txt")).thenReturn(null);
 
-			when(repository.findByFileName("file1.txt")).thenReturn("file1.txt");
-			when(repository.findByFileName("file2.txt")).thenReturn(null);
-			when(repository.findByFileName("file3.txt")).thenReturn(null);
+		// act
+        long response = service.deleteTempKeystoreFiles();
 
-			// act
-			GmsException response = assertThrows(GmsException.class, () -> service.deleteTempKeystoreFiles());
-
-			// assert
-			assertEquals("ERROR!", Throwables.getRootCause(response).getMessage());
-		}
+		// assert
+        assertEquals(1L, response);
 	}
 
 	@Test
 	@SneakyThrows
-	void shouldDeleteTempFiles() {
+	void shouldDeleteTempFilesFail() {
 		Path path1 = mock(Path.class);
 		File mockFile1 = mock(File.class);
 		when(mockFile1.isDirectory()).thenReturn(false);
 		when(mockFile1.getName()).thenReturn("file1.txt");
 		when(path1.toFile()).thenReturn(mockFile1);
 
-		try (MockedStatic<Files> mockedStatic = mockStatic(Files.class)) {
-			mockedStatic.when(() -> Files.list(any(Path.class))).thenReturn(Stream.of(path1));
-			mockedStatic.when(() -> Files.deleteIfExists(eq(path1))).thenReturn(true);
+        when(fileService.list(any(Path.class))).thenThrow(new IOException("ERROR!"));
+		when(fileService.delete(eq(path1))).thenReturn(true);
 
-			when(repository.findByFileName("file1.txt")).thenReturn(null);
+        when(repository.findByFileName("file1.txt")).thenReturn(null);
 
-			// act
-			long response = service.deleteTempKeystoreFiles();
+        // act
+        GmsException response = assertThrows(GmsException.class, () -> service.deleteTempKeystoreFiles());
 
-			// assert
-			assertEquals(1L, response);
-		}
+        // assert
+        assertEquals("ERROR!", Throwables.getRootCause(response).getMessage());
 	}
 
-	@Test
+	/*@Test
 	@SneakyThrows
 	void shouldDeleteTempFilesFail() {
 		Path path1 = mock(Path.class);
@@ -161,9 +160,9 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 			// assert
 			assertEquals(0L, response);
 		}
-	}
+	}*/
 
-	private Path initMockPath(String fileName, boolean isDirectory, boolean throwError) {
+	private Path initMockPath(String fileName, boolean isDirectory) {
 		Path path1 = mock(Path.class);
 		File mockFile1 = mock(File.class);
 		when(mockFile1.isDirectory()).thenReturn(isDirectory);
@@ -172,11 +171,7 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 			when(mockFile1.getName()).thenReturn(fileName);
 		}
 
-		if (throwError) {
-			when(mockFile1.delete()).thenThrow(new RuntimeException("ERROR!"));
-		}
 		when(path1.toFile()).thenReturn(mockFile1);
-
 		return path1;
 	}
 }

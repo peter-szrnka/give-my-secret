@@ -1,10 +1,10 @@
 package io.github.gms.functions.keystore;
 
-import com.google.common.io.Files;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.common.model.KeystorePair;
-import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.common.model.GetKeystore;
+import io.github.gms.common.model.KeystorePair;
+import io.github.gms.common.service.FileService;
+import io.github.gms.common.types.GmsException;
+import io.github.gms.functions.secret.SecretEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +27,16 @@ public class KeystoreDataServiceImpl implements KeystoreDataService {
 
 	private final KeystoreRepository keystoreRepository;
 	private final KeystoreAliasRepository keystoreAliasRepository;
+	private final FileService fileService;
 	private final String keystorePath;
 
 	public KeystoreDataServiceImpl(KeystoreRepository keystoreRepository,
 								   KeystoreAliasRepository keystoreAliasRepository,
+								   FileService fileService,
 								   @Value("${config.location.keystore.path}") String keystorePath) {
 		this.keystoreRepository = keystoreRepository;
 		this.keystoreAliasRepository = keystoreAliasRepository;
+		this.fileService = fileService;
 		this.keystorePath = keystorePath;
 	}
 
@@ -57,7 +60,7 @@ public class KeystoreDataServiceImpl implements KeystoreDataService {
 
 		File keystoreFile = new File(request.getKeystorePath());
 		KeyStore keystore = KeyStore.getInstance(keystoreEntity.getType().name());
-		keystore.load(new ByteArrayInputStream(Files.toByteArray(keystoreFile)),
+		keystore.load(new ByteArrayInputStream(fileService.toByteArray(keystoreFile)),
 				keystoreEntity.getCredential().toCharArray());
 
 		return keystore;

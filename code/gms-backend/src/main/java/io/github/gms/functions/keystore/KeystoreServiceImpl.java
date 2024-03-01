@@ -11,12 +11,14 @@ import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.model.EntityChangeEvent;
 import io.github.gms.common.model.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.service.CryptoService;
+import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.secret.GetSecureValueDto;
 import jakarta.transaction.Transactional;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -28,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -62,6 +63,9 @@ public class KeystoreServiceImpl implements KeystoreService {
 	private final ObjectMapper objectMapper;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final KeystoreFileService keystoreFileService;
+	@Setter
+	@Autowired
+	private FileService fileService;
 	@Setter
 	@Value("${config.location.keystore.path}")
 	private String keystorePath;
@@ -160,7 +164,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 		try {
 			log.info("Keystore file={} will be removed", keystoreFile.toPath());
-			Files.delete(keystoreFile.toPath());
+			fileService.delete(keystoreFile.toPath());
 			publishEvent(initMetaData(id), EntityChangeType.KEYSTORE_DELETED);
 		} catch (IOException e) {
 			log.error("Keystore file cannot be deleted", e);
@@ -215,7 +219,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		KeystoreEntity entity = getKeystore(keystoreId);
 
 		try {
-			return new DownloadFileResponseDto(entity.getFileName(), Files.readAllBytes(Paths.get(getUserFolder() + entity.getFileName())));
+			return new DownloadFileResponseDto(entity.getFileName(), fileService.readAllBytes(Paths.get(getUserFolder() + entity.getFileName())));
 		} catch (Exception e) {
 			throw new GmsException(e);
 		}
@@ -227,11 +231,11 @@ public class KeystoreServiceImpl implements KeystoreService {
 			validatePath(newFileName);
 			Path newFilePath = Paths.get(newFileName);
 
-			if (Files.exists(newFilePath)) {
+			if (fileService.exists(newFilePath)) {
 				throw new GmsException("File name must be unique!");
 			}
 
-			Files.createDirectories(Paths.get(getUserFolder()));
+			fileService.createDirectories(Paths.get(getUserFolder()));
 			File keystoreFile = new File(newFileName);
 
 			FileOutputStream outputStream = new FileOutputStream(keystoreFile);
@@ -284,7 +288,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 
         String tempFile = keystoreTempPath + filename;
         validatePath(tempFile);
-		Files.delete(Paths.get(tempFile));
+		fileService.delete(Paths.get(tempFile));
 	}
 
 	private SaveKeystoreRequestDto parseInput(String model) {
@@ -364,11 +368,11 @@ public class KeystoreServiceImpl implements KeystoreService {
             validatePath(filename);
 			Path keystoreFile = new File(folder + filename).toPath();
 
-			if (!Files.exists(keystoreFile)) {
+			if (!fileService.exists(keystoreFile)) {
 				throw new GmsException("Keystore file does not exist!");
 			}
 
-			return Files.readAllBytes(keystoreFile);
+			return fileService.readAllBytes(keystoreFile);
 		} catch (GmsException e) {
 			throw e;
 		} catch (Exception e) {

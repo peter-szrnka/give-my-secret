@@ -2,12 +2,10 @@ package io.github.gms.functions.keystore;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.types.GmsException;
 import io.github.gms.common.model.KeystorePair;
-import io.github.gms.functions.keystore.KeystoreDataServiceImpl;
+import io.github.gms.common.service.FileService;
+import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.secret.SecretEntity;
-import io.github.gms.functions.keystore.KeystoreAliasRepository;
-import io.github.gms.functions.keystore.KeystoreRepository;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
 import org.jboss.logging.MDC;
@@ -16,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.MockedStatic;
 
+import java.io.File;
 import java.security.KeyStore;
 import java.util.Optional;
 
@@ -39,6 +38,7 @@ class KeystoreDataServiceImplTest extends AbstractLoggingUnitTest {
 	private KeystoreRepository keystoreRepository;
 	private KeystoreAliasRepository keystoreAliasRepository;
 	private KeystoreDataServiceImpl service;
+	private FileService fileService;
 
 	@Override
 	@BeforeEach
@@ -48,7 +48,8 @@ class KeystoreDataServiceImplTest extends AbstractLoggingUnitTest {
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		keystoreRepository = mock(KeystoreRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
-		service = new KeystoreDataServiceImpl(keystoreRepository, keystoreAliasRepository, "src/test/resources/");
+		fileService = mock(FileService.class);
+		service = new KeystoreDataServiceImpl(keystoreRepository, keystoreAliasRepository, fileService, "src/test/resources/");
 	}
 	
 	@Test
@@ -91,6 +92,7 @@ class KeystoreDataServiceImplTest extends AbstractLoggingUnitTest {
 			SecretEntity entity = TestUtils.createSecretEntity();
 			when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 			when(keystoreRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createJKSKeystoreEntity()));
+			when(fileService.toByteArray(any(File.class))).thenReturn("data".getBytes());
 			KeyStore mockKeyStore = mock(KeyStore.class);
 			keyStoreMockedStatic.when(() -> KeyStore.getInstance(anyString())).thenReturn(mockKeyStore);
 
