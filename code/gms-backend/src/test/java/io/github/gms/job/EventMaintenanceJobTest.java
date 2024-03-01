@@ -2,8 +2,10 @@ package io.github.gms.job;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.TimeUnit;
 import io.github.gms.functions.event.EventRepository;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -32,6 +34,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 
     private EventRepository eventRepository;
 	private EventMaintenanceJob job;
+	private SystemPropertyService systemPropertyService;
 	
 	@Override
 	@BeforeEach
@@ -40,7 +43,8 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		// init
         Clock clock = mock(Clock.class);
 		eventRepository = mock(EventRepository.class);
-		job = new EventMaintenanceJob(clock, eventRepository, "1;d");
+		systemPropertyService = mock(SystemPropertyService.class);
+		job = new EventMaintenanceJob(clock, eventRepository, systemPropertyService);
 		((Logger) LoggerFactory.getLogger(EventMaintenanceJob.class)).addAppender(logAppender);
 		
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
@@ -50,6 +54,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldNotProcess() {
 		// arrange
+		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
 		
 		// act
@@ -61,11 +66,13 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		ArgumentCaptor<ZonedDateTime> dateCArgumentCaptor = ArgumentCaptor.forClass(ZonedDateTime.class);
 		verify(eventRepository).deleteAllEventDateOlderThan(dateCArgumentCaptor.capture());
 		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
+		verify(systemPropertyService).get(SystemProperty.JOB_OLD_EVENT_LIMIT);
 	}
 
 	@Test
 	void shouldProcess() {
 		// arrange
+		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
 		MockedStatic<TimeUnit> mockedTimeUnit = mockStatic(TimeUnit.class);
 		mockedTimeUnit.when(() -> TimeUnit.getByCode("d")).thenReturn(TimeUnit.DAY);
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
@@ -86,5 +93,6 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		verify(eventRepository).deleteAllEventDateOlderThan(dateCArgumentCaptor.capture());
 		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
 		mockedTimeUnit.close();
+		verify(systemPropertyService).get(SystemProperty.JOB_OLD_EVENT_LIMIT);
 	}
 }

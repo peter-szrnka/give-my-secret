@@ -1,6 +1,7 @@
 package io.github.gms.functions.systemproperty;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.gms.common.enums.PropertyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ import static io.github.gms.common.util.Constants.DATE_FORMAT;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SystemPropertyDto implements Serializable {
 
 	@Serial
