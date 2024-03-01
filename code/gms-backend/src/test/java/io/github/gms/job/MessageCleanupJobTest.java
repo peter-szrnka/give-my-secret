@@ -2,7 +2,9 @@ package io.github.gms.job;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.message.MessageRepository;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 
 	private MessageRepository messageRepository;
 	private MessageCleanupJob job;
+	private SystemPropertyService systemPropertyService;
 	
 	@Override
 	@BeforeEach
@@ -33,7 +36,8 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		super.setup();
 		Clock clock = mock(Clock.class);
 		messageRepository = mock(MessageRepository.class);
-		job = new MessageCleanupJob(clock, messageRepository, "1;d");
+		systemPropertyService = mock(SystemPropertyService.class);
+		job = new MessageCleanupJob(clock, messageRepository, systemPropertyService);
 		((Logger) LoggerFactory.getLogger(MessageCleanupJob.class)).addAppender(logAppender);
 		setupClock(clock);
 	}
@@ -42,6 +46,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 	void shouldNotProcess() {
 		// arrange
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
+		when(systemPropertyService.get(SystemProperty.JOB_OLD_MESSAGE_LIMIT)).thenReturn("1;d");
 		
 		// act
 		job.execute();
@@ -49,12 +54,14 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		// assert
 		assertTrue(logAppender.list.isEmpty());
 		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
+		verify(systemPropertyService).get(SystemProperty.JOB_OLD_MESSAGE_LIMIT);
 	}
 	
 	@Test
 	void shouldProcess() {
 		// arrange
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
+		when(systemPropertyService.get(SystemProperty.JOB_OLD_MESSAGE_LIMIT)).thenReturn("1;d");
 		
 		// act
 		job.execute();
@@ -63,5 +70,6 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		assertFalse(logAppender.list.isEmpty());
 		assertEquals("1 message(s) deleted", logAppender.list.getFirst().getFormattedMessage());
 		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
+		verify(systemPropertyService).get(SystemProperty.JOB_OLD_MESSAGE_LIMIT);
 	}
 }

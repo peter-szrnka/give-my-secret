@@ -1,6 +1,8 @@
 package io.github.gms.common.abstraction;
 
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.TimeUnit;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
@@ -12,12 +14,15 @@ import java.time.ZonedDateTime;
 public abstract class AbstractLimitBasedJob {
 
 	protected final Clock clock;
+	private final SystemPropertyService systemPropertyService;
 
-	protected AbstractLimitBasedJob(Clock clock) {
+	protected AbstractLimitBasedJob(Clock clock, SystemPropertyService systemPropertyService) {
 		this.clock = clock;
+		this.systemPropertyService = systemPropertyService;
 	}
 	
-	protected ZonedDateTime processConfig(String oldEventLimitValue) {
+	protected ZonedDateTime processConfig(SystemProperty limitProperty) {
+		String oldEventLimitValue = systemPropertyService.get(limitProperty);
 		String[] values = oldEventLimitValue.split(";");
 		TimeUnit timeUnit = TimeUnit.getByCode(values[1]);
 		return ZonedDateTime.now(clock).minus(Long.parseLong(values[0]), timeUnit.getUnit());

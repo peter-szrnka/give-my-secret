@@ -93,24 +93,6 @@ describe('SystemPropertyListComponent', () => {
         };
     });
 
-    it.each([
-        ['LONG', 'number'],
-        ['STRING', 'text'],
-      ])('Should return input type for %i', (input, expected) => {
-        configureTestBed();
-
-        component.onFetch({ pageSize : 1});
-        // act
-        const response = component.getInputType(input);
-        const textDescription: string = component.getTextDescription('ACCESS_JWT_EXPIRATION_TIME_SECONDS');
-
-        // assert
-        expect(response).toEqual(expected);
-        expect(component).toBeTruthy();
-        expect(component.sharedData.getUserInfo).toHaveBeenCalled();
-        expect(textDescription).toEqual('Access JWT expiration time in seconds');
-    });
-
     it('Should handle resolver error', () => {
         activatedRoute = class {
             data : Data = throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"}))
@@ -161,13 +143,10 @@ describe('SystemPropertyListComponent', () => {
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
 
         // act
-        const valueSet : string[] = component.getValueSet('REFRESH_JWT_ALGORITHM');
-        const valueSetUnknown : string[] = component.getValueSet('UNKNOWN');
+        component.onFetch({ pageSize: 10 });
         component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         // assert
-        expect(valueSet).toEqual(PROPERTY_TEXT_MAP['REFRESH_JWT_ALGORITHM'].valueSet);
-        expect(valueSetUnknown).toEqual([]);
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(router.navigate).toBeCalledWith(['/system_property/list']);

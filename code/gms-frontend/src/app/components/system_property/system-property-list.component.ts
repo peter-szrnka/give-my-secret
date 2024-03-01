@@ -22,19 +22,37 @@ const TYPE_MAP : any = {
   'BOOLEAN': 'boolean',
 }
 
+const TIME_UNITS : any = [
+  { 'key' : 'm', value : 'minute' },
+  { 'key' : 'd', value : 'day' },
+  { 'key' : 'M', value : 'month' },
+  { 'key' : 'y', value : 'year' },
+  { 'key' : 'w', value : 'week' }
+];
+
 const BOOL_VALUE_SET : string[] = ['true','false'];
 
 export const PROPERTY_TEXT_MAP: any = {
-  'ACCESS_JWT_EXPIRATION_TIME_SECONDS': { text: 'Access JWT expiration time in seconds' },
-  'ACCESS_JWT_ALGORITHM': { text: 'Access JWT Algorithom', valueSet: ALGORITHM_SET },
-  'REFRESH_JWT_EXPIRATION_TIME_SECONDS': { text: 'Refresh JWT expiration time in seconds' },
-  'REFRESH_JWT_ALGORITHM': { text: 'Refresh JWT Algorithom', valueSet: ALGORITHM_SET },
-  'OLD_EVENT_TIME_LIMIT_DAYS': { text: 'Limit of old events deletion in days' },
-  'ORGANIZATION_NAME' : { text: 'Organization / Company name' },
-  'ORGANIZATION_CITY' : { text: 'Location (city) of the organization' },
-  'ENABLE_GLOBAL_MFA' : { text: 'Global MFA usage is enabled or not', valueSet: BOOL_VALUE_SET },
-	'ENABLE_MFA': { text: 'MFA usage is enabled or not for the users', valueSet: BOOL_VALUE_SET },
-  'FAILED_ATTEMPTS_LIMIT' : { text: 'Limit after users should be blocked' }
+  'ACCESS_JWT_EXPIRATION_TIME_SECONDS': { text: 'Access JWT expiration time in seconds', displayMode: 'text' },
+  'ACCESS_JWT_ALGORITHM': { text: 'Access JWT Algorithom', valueSet: ALGORITHM_SET, displayMode: 'list' },
+  'REFRESH_JWT_EXPIRATION_TIME_SECONDS': { text: 'Refresh JWT expiration time in seconds', displayMode: 'text' },
+  'REFRESH_JWT_ALGORITHM': { text: 'Refresh JWT Algorithom', valueSet: ALGORITHM_SET, displayMode: 'list' },
+  'OLD_EVENT_TIME_LIMIT_DAYS': { text: 'Limit of old events deletion in days', displayMode: 'text' },
+  'ORGANIZATION_NAME' : { text: 'Organization / Company name', displayMode: 'text' },
+  'ORGANIZATION_CITY' : { text: 'Location (city) of the organization', displayMode: 'text' },
+  'ENABLE_GLOBAL_MFA' : { text: 'Global MFA usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
+	'ENABLE_MFA': { text: 'MFA usage is enabled or not for the users', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
+  'FAILED_ATTEMPTS_LIMIT' : { text: 'Limit after users should be blocked', displayMode: 'text' },
+  'JOB_OLD_EVENT_LIMIT' : { text: 'Limit of deletion of the old events', hint: 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"', displayMode: 'text' },
+  'JOB_OLD_MESSAGE_LIMIT' : { text: 'Limit of deletion of the old messages', hint: 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"', displayMode: 'text' }
+};
+
+interface SystemPropertyElement extends SystemProperty {
+  textDescription: string;
+  mode?: string;
+  inputType?: string;
+  hint?: string;
+  displayMode: string;
 };
 
 /**
@@ -47,8 +65,9 @@ export const PROPERTY_TEXT_MAP: any = {
 })
 export class SystemPropertyListComponent {
   columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];
+  timeUnits: any[] = TIME_UNITS;
 
-  public datasource: ArrayDataSource<SystemProperty>;
+  public datasource: ArrayDataSource<SystemPropertyElement>;
   protected count = 0;
 
   public tableConfig = {
@@ -80,8 +99,22 @@ export class SystemPropertyListComponent {
       .pipe(catchError(async () => this.initDefaultDataTable()))
       .subscribe((response: any) => {
         this.count = response.data.totalElements;
-        this.datasource = new ArrayDataSource<SystemProperty>(response.data.resultList);
+        this.datasource = new ArrayDataSource<SystemPropertyElement>(this.convertToElements(response.data.resultList));
       });
+  }
+
+  private convertToElements(resultList: SystemProperty[]): readonly SystemPropertyElement[] {
+    return resultList.map((property: SystemProperty) => {
+      return {
+        ...property,
+        textDescription: PROPERTY_TEXT_MAP[property.key].text,
+        valueSet: PROPERTY_TEXT_MAP[property.key].valueSet || [],
+        mode: undefined,
+        inputType: TYPE_MAP[property.type],
+        hint: PROPERTY_TEXT_MAP[property.key].hint || undefined,
+        displayMode: PROPERTY_TEXT_MAP[property.key].displayMode
+      };
+    }) as SystemPropertyElement[];
   }
 
   public onFetch(event : any) {
@@ -89,23 +122,7 @@ export class SystemPropertyListComponent {
     this.fetchData();
   }
 
-  public getTextDescription(key: string): string {
-    return PROPERTY_TEXT_MAP[key].text;
-  }
-
-  public getInputType(type : string) : string {
-    return TYPE_MAP[type];
-  }
-
-  public getValueSet(key: string): string[] {
-    try {
-      return PROPERTY_TEXT_MAP[key].valueSet;
-    } catch(e) {
-      return [];
-    }
-  }
-
-  public save(element: any) {
+  public save(element: SystemProperty) {
     element.mode = undefined;
     element.valueSet = undefined;
     this.service.save(element).subscribe({
@@ -148,6 +165,6 @@ export class SystemPropertyListComponent {
   }
 
   private initDefaultDataTable() {
-    this.datasource = new ArrayDataSource<SystemProperty>([]);
+    this.datasource = new ArrayDataSource<SystemPropertyElement>([]);
   }
 }
