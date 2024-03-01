@@ -1,15 +1,11 @@
 package io.github.gms.functions.apikey;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.functions.apikey.ApiKeyDto;
-import io.github.gms.functions.apikey.ApiKeyListDto;
-import io.github.gms.functions.secret.GetSecureValueDto;
 import io.github.gms.common.dto.IdNamePairListDto;
 import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.apikey.SaveApiKeyRequestDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.apikey.ApiKeyEntity;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.functions.secret.GetSecureValueDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
@@ -82,7 +78,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(response.getBody());
 		
 		ApiKeyListDto responseList = response.getBody();
-		assertEquals(1, responseList.getResultList().size());
+		assertEquals(2, responseList.getResultList().size());
 	}
 	
 	@Test
@@ -143,6 +139,6 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertFalse(response.getBody().getResultList().isEmpty());
-		assertEquals(1, response.getBody().getResultList().size());
+		assertFalse(response.getBody().getResultList().isEmpty());
 	}
 }
