@@ -68,7 +68,7 @@ public class SecretEntity extends AbstractGmsEntity {
 	@Column(name = "last_rotated")
 	private ZonedDateTime lastRotated;
 	
-	@Column(name = "rotation_period", nullable = true)
+	@Column(name = "rotation_period")
 	@Enumerated(EnumType.STRING)
 	private RotationPeriod rotationPeriod;
 	

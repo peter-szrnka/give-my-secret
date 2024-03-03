@@ -28,7 +28,7 @@ public enum SystemProperty {
 	JOB_OLD_MESSAGE_LIMIT(PropertyType.STRING, "90;d"),
 	JOB_OLD_EVENT_LIMIT(PropertyType.STRING, "1;d");
 
-	private SystemProperty(PropertyType type, String defaultValue) {
+	SystemProperty(PropertyType type, String defaultValue) {
 		this.type = type;
 		this.defaultValue = defaultValue;
 	}

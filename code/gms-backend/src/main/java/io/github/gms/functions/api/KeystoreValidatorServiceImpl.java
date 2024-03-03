@@ -1,12 +1,11 @@
 package io.github.gms.functions.api;
 
-import io.github.gms.functions.api.KeystoreValidatorService;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.keystore.KeystoreAliasEntity;
-import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.keystore.KeystoreRepository;
+import io.github.gms.functions.secret.SecretEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

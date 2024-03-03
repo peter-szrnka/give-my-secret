@@ -1,8 +1,5 @@
 package io.github.gms.functions.event;
 
-import io.github.gms.functions.event.EventDto;
-import io.github.gms.functions.event.EventListDto;
-import io.github.gms.functions.event.EventEntity;
 import org.springframework.data.domain.Page;
 
 /**

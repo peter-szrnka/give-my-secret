@@ -22,6 +22,7 @@ import java.time.Duration;
 
 import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.CACHE_USER;
+import static io.github.gms.common.util.Constants.CACHE_SYSTEM_PROPERTY;
 
 
 /**
@@ -33,14 +34,11 @@ import static io.github.gms.common.util.Constants.CACHE_USER;
 @ConditionalOnProperty(name = "config.cache.redis.enabled", havingValue = "true")
 public class RedisCacheConfig {
 
-    @Value("${config.cache.redis.host}")
-    private String host;
-
-    @Value("${config.cache.redis.port}")
-    private Integer port;
-
     @Bean
-    public LettuceConnectionFactory lettuceConnectionFactory() {
+    public LettuceConnectionFactory lettuceConnectionFactory(
+            @Value("${config.cache.redis.host}") String host,
+            @Value("${config.cache.redis.port}") Integer port
+    ) {
         return new LettuceConnectionFactory(host, port);
     }
 
@@ -58,36 +56,18 @@ public class RedisCacheConfig {
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         return RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(connectionFactory)
-                .withCacheConfiguration(CACHE_USER,
-                        RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(10)) // TTL set to 10 minutes
-                )
-                .withCacheConfiguration("systemPropertyCache",
-                        RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(10)) // TTL set to 10 minutes
-                )
-                .withCacheConfiguration(CACHE_API,
-                        RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(10)) // TTL set to 10 minutes
-                )
+                .withCacheConfiguration(CACHE_USER, default10MinuteCacheConfig())
+                .withCacheConfiguration(CACHE_SYSTEM_PROPERTY, default10MinuteCacheConfig())
+                .withCacheConfiguration(CACHE_API, default10MinuteCacheConfig())
                 .build();
     }
 
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return (builder) -> builder
-                .withCacheConfiguration(CACHE_USER,
-                        RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(10)) // TTL set to 10 minutes
-                )
-                .withCacheConfiguration("systemPropertyCache",
-                        RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(10)) // TTL set to 10 minutes
-                )
-                .withCacheConfiguration(CACHE_API,
-                        RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(5)) // TTL set to 5 minutes
-                );
+                .withCacheConfiguration(CACHE_USER, default10MinuteCacheConfig())
+                .withCacheConfiguration(CACHE_SYSTEM_PROPERTY, default10MinuteCacheConfig())
+                .withCacheConfiguration(CACHE_API, default5MinuteCacheConfig());
     }
 
     @Bean
@@ -99,5 +79,13 @@ public class RedisCacheConfig {
     @Bean("apiCacheKeyGenerator")
     public KeyGenerator apiCacheKeyGenerator() {
         return new ApiCacheKeyGenerator();
+    }
+
+    private static RedisCacheConfiguration default5MinuteCacheConfig() {
+        return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5));
+    }
+
+    private static RedisCacheConfiguration default10MinuteCacheConfig() {
+        return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10));
     }
 }

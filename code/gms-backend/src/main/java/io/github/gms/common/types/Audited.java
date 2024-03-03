@@ -15,5 +15,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Audited {
 
-	public EventOperation operation();
+	EventOperation operation();
 }

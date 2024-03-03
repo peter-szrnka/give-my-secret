@@ -6,6 +6,7 @@ import lombok.Getter;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Getter
 public enum JwtConfigType {
 
 	ACCESS_JWT(SystemProperty.ACCESS_JWT_ALGORITHM, SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS),
@@ -16,8 +17,6 @@ public enum JwtConfigType {
 		this.expirationSecondsProperty = expirationSecondsProperty;
 	}
 	
-	@Getter
-	private SystemProperty algorithmProperty;
-	@Getter
-	private SystemProperty expirationSecondsProperty;
+	private final SystemProperty algorithmProperty;
+	private final SystemProperty expirationSecondsProperty;
 }

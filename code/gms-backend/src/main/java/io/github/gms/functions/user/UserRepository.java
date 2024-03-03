@@ -20,8 +20,6 @@ import static io.github.gms.common.util.Constants.USER_ID;
 @Repository
 @CacheConfig(cacheNames = CACHE_USER)
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-
-	Optional<UserEntity> findByUsernameAndCredential(String username, String credential);
 	
 	@Query("SELECT COUNT(u) from UserEntity u where u.roles LIKE '%ADMIN%'")
 	long countExistingAdmins();

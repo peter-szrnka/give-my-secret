@@ -1,9 +1,7 @@
 package io.github.gms.auth.ldap;
 
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
-
-import java.util.List;
-
+import io.github.gms.auth.UserAuthService;
+import io.github.gms.auth.model.GmsUserDetails;
 import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.query.LdapQueryBuilder;
@@ -11,8 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.github.gms.auth.UserAuthService;
-import io.github.gms.auth.model.GmsUserDetails;
+import java.util.List;
+
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
 
 /**
  * @author Peter Szrnka
@@ -39,6 +38,6 @@ public class LdapUserAuthServiceImpl implements UserAuthService {
 			throw new UsernameNotFoundException("User not found!");
 		}
 
-		return ldapUserPersistenceService.saveUserIfRequired(username, result.get(0));
+		return ldapUserPersistenceService.saveUserIfRequired(username, result.getFirst());
 	}
 }

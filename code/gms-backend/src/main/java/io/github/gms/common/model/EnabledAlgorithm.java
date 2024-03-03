@@ -6,6 +6,7 @@ import lombok.Getter;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Getter
 public enum EnabledAlgorithm {
     SHA1WITHRSA("SHA1WITHRSA"),
     SHA224WITHRSA("SHA224WITHRSA"),
@@ -24,7 +25,6 @@ public enum EnabledAlgorithm {
         this.displayName = displayName;
     }
 
-    @Getter
     private final String displayName;
 
     public static EnabledAlgorithm getByName(String name) {

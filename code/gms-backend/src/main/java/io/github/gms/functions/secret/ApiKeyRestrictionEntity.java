@@ -38,6 +38,6 @@ public class ApiKeyRestrictionEntity extends AbstractGmsEntity {
 	@Column(name = "api_key_id")
 	private Long apiKeyId;
 
-	@Column(name = "secret_id", nullable = true)
+	@Column(name = "secret_id")
 	private Long secretId;
 }

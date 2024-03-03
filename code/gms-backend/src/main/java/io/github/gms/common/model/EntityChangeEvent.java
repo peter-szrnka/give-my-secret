@@ -27,6 +27,7 @@ public class EntityChangeEvent extends ApplicationEvent {
 		this.type = type;
 	}
 
+	@Getter
 	public enum EntityChangeType {
 		KEYSTORE_DISABLED("keystore disabled"),
 		KEYSTORE_DELETED("keystore deleted"),
@@ -36,7 +37,6 @@ public class EntityChangeEvent extends ApplicationEvent {
 			this.displayName = displayName;
 		}
 
-		@Getter
 		private final String displayName;
 	}
 }

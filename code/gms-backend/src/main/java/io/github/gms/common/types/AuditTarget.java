@@ -15,5 +15,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface AuditTarget {
 
-	public EventTarget value();
+	EventTarget value();
 }

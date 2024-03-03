@@ -18,12 +18,12 @@ public enum MdcParameter {
 	private final String displayName;
 	private final boolean input;
 
-	private MdcParameter(String displayName) {
+	MdcParameter(String displayName) {
 		this.displayName = displayName;
 		this.input = true;
 	}
 	
-	private MdcParameter(String displayName, boolean input) {
+	MdcParameter(String displayName, boolean input) {
 		this.displayName = displayName;
 		this.input = input;
 	}
