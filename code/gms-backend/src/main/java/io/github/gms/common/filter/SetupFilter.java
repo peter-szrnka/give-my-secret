@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -19,13 +20,10 @@ import static io.github.gms.common.util.Constants.OK;
  * @since 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class SetupFilter extends OncePerRequestFilter {
 
 	private final SystemService service;
-
-	public SetupFilter(SystemService service) {
-		this.service = service;
-	}
 
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)

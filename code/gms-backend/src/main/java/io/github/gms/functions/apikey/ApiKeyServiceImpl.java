@@ -9,6 +9,7 @@ import io.github.gms.common.dto.IdNamePairListDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,16 +26,12 @@ import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 @CacheConfig(cacheNames = { CACHE_API })
 public class ApiKeyServiceImpl implements ApiKeyService {
 
 	private final ApiKeyRepository repository;
 	private final ApiKeyConverter converter;
-
-	public ApiKeyServiceImpl(ApiKeyRepository repository, ApiKeyConverter converter) {
-		this.repository = repository;
-		this.converter = converter;
-	}
 
 	@Override
 	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)

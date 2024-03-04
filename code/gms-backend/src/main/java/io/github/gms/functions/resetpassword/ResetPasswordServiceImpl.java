@@ -5,6 +5,7 @@ import io.github.gms.functions.message.MessageDto;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.functions.message.MessageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,17 +13,13 @@ import org.springframework.stereotype.Service;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     private static final String MESSAGE_TEMPLATE = "Password reset requested by user '%s'";
 
     private final MessageService messageService;
     private final UserRepository userRepository;
-
-    public ResetPasswordServiceImpl(MessageService messageService, UserRepository userRepository) {
-        this.messageService = messageService;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public void resetPassword(ResetPasswordRequestDto dto) {

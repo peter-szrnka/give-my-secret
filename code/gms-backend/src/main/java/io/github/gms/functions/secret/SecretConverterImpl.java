@@ -1,28 +1,25 @@
 package io.github.gms.functions.secret;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import io.github.gms.common.enums.EntityStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import io.github.gms.common.enums.EntityStatus;
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class SecretConverterImpl implements SecretConverter {
 
 	private final Clock clock;
-
-	public SecretConverterImpl(Clock clock) {
-		this.clock = clock;
-	}
 
 	@Override
 	public SecretEntity toEntity(SecretEntity entity, SaveSecretRequestDto dto) {

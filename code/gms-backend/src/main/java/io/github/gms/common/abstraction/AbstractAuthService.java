@@ -1,40 +1,31 @@
 package io.github.gms.common.abstraction;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import io.github.gms.auth.UserAuthService;
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.converter.GenerateJwtRequestConverter;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.model.GenerateJwtRequest;
-import io.github.gms.common.converter.GenerateJwtRequestConverter;
 import io.github.gms.common.service.JwtService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
+@RequiredArgsConstructor
 public abstract class AbstractAuthService {
 
 	protected final JwtService jwtService;
 	protected final SystemPropertyService systemPropertyService;
 	protected final GenerateJwtRequestConverter generateJwtRequestConverter;
 	protected final UserAuthService userAuthService;
-
-    protected AbstractAuthService(
-			JwtService jwtService,
-			SystemPropertyService systemPropertyService,
-			GenerateJwtRequestConverter generateJwtRequestConverter,
-			UserAuthService userAuthService) {
-		this.jwtService = jwtService;
-		this.systemPropertyService = systemPropertyService;
-		this.generateJwtRequestConverter = generateJwtRequestConverter;
-		this.userAuthService = userAuthService;
-	}
 	
 	protected Map<JwtConfigType, String> getAuthenticationDetails(GmsUserDetails user) {
 		Map<JwtConfigType, GenerateJwtRequest> input = Map.of(

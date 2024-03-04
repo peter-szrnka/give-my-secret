@@ -11,6 +11,7 @@ import io.github.gms.functions.keystore.KeystoreAliasEntity;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.keystore.KeystoreRepository;
 import io.github.gms.common.service.CryptoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ import static io.github.gms.common.util.MdcUtils.getUserId;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 @CacheConfig(cacheNames = { CACHE_API })
 public class SecretServiceImpl implements SecretService {
 
@@ -44,21 +46,6 @@ public class SecretServiceImpl implements SecretService {
 	private final SecretRepository repository;
 	private final SecretConverter converter;
 	private final ApiKeyRestrictionRepository apiKeyRestrictionRepository;
-
-	public SecretServiceImpl(
-			CryptoService cryptoService,
-			KeystoreRepository keystoreRepository,
-			KeystoreAliasRepository keystoreAliasRepository,
-			SecretRepository repository,
-			SecretConverter converter,
-			ApiKeyRestrictionRepository apiKeyRestrictionRepository) {
-		this.cryptoService = cryptoService;
-		this.keystoreRepository = keystoreRepository;
-		this.keystoreAliasRepository = keystoreAliasRepository;
-		this.repository = repository;
-		this.converter = converter;
-		this.apiKeyRestrictionRepository = apiKeyRestrictionRepository;
-	}
 
 	@Override
 	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)

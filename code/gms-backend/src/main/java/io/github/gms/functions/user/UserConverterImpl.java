@@ -1,36 +1,31 @@
 package io.github.gms.functions.user;
 
+import com.google.common.collect.Sets;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.UserRole;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.data.domain.Page;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
-import com.google.common.collect.Sets;
-
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.dto.UserInfoDto;
-
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class UserConverterImpl implements UserConverter {
 
 	private final Clock clock;
 	private final PasswordEncoder passwordEncoder;
-
-	public UserConverterImpl(Clock clock, PasswordEncoder passwordEncoder) {
-		this.clock = clock;
-		this.passwordEncoder = passwordEncoder;
-	}
 
 	@Override
 	public UserEntity toNewEntity(SaveUserRequestDto dto, boolean roleChangeEnabled) {

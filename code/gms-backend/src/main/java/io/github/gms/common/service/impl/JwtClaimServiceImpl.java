@@ -1,5 +1,6 @@
 package io.github.gms.common.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import io.github.gms.common.enums.SystemProperty;
@@ -13,15 +14,11 @@ import io.jsonwebtoken.Claims;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 public class JwtClaimServiceImpl implements JwtClaimService {
 
     private final JwtService jwtService;
     private final SystemPropertyService systemPropertyService;
-
-    public JwtClaimServiceImpl(JwtService jwtService, SystemPropertyService systemPropertyService) {
-        this.jwtService = jwtService;
-        this.systemPropertyService = systemPropertyService;
-    }
 
     @Override
     public Claims getClaims(String jwtToken) {

@@ -23,6 +23,7 @@ import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.cache.annotation.CacheConfig;
@@ -50,6 +51,7 @@ import static io.github.gms.common.util.Constants.CACHE_USER;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @CacheConfig(cacheNames = { CACHE_USER, CACHE_API })
 public class UserServiceImpl implements UserService {
 	
@@ -60,15 +62,6 @@ public class UserServiceImpl implements UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtClaimService jwtClaimService;
 	private final SystemPropertyService systemPropertyService;
-
-	public UserServiceImpl(UserRepository repository, UserConverter converter,
-                           PasswordEncoder passwordEncoder, JwtClaimService jwtClaimService, SystemPropertyService systemPropertyService) {
-		this.repository = repository;
-		this.converter = converter;
-		this.passwordEncoder = passwordEncoder;
-		this.jwtClaimService = jwtClaimService;
-        this.systemPropertyService = systemPropertyService;
-    }
 	
 	@Override
 	@Transactional

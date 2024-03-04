@@ -1,37 +1,30 @@
 package io.github.gms.functions.event;
 
-import static io.github.gms.common.util.MdcUtils.getUserId;
+import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.model.UserEvent;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.functions.user.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
 
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
-
-import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.model.UserEvent;
-import io.github.gms.functions.user.UserRepository;
+import static io.github.gms.common.util.MdcUtils.getUserId;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
 	private final Clock clock;
 	private final EventRepository repository;
 	private final UserRepository userRepository;
 	private final EventConverter converter;
-
-	public EventServiceImpl(Clock clock, EventRepository repository,
-							UserRepository userRepository, EventConverter converter) {
-		this.clock = clock;
-		this.repository = repository;
-		this.userRepository = userRepository;
-		this.converter = converter;
-	}
 
 	@Override
 	public void saveUserEvent(UserEvent event) {
