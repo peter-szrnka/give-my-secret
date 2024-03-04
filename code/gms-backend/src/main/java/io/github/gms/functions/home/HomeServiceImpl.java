@@ -9,6 +9,7 @@ import io.github.gms.functions.event.EventService;
 import io.github.gms.functions.keystore.KeystoreService;
 import io.github.gms.functions.secret.SecretService;
 import io.github.gms.functions.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 public class HomeServiceImpl implements HomeService {
 
     private final AnnouncementService announcementService;
@@ -24,22 +26,6 @@ public class HomeServiceImpl implements HomeService {
     private final KeystoreService keystoreService;
     private final SecretService secretService;
     private final UserService userService;
-
-    public HomeServiceImpl(
-            AnnouncementService announcementService,
-            ApiKeyService apiKeyService,
-            EventService eventService,
-            KeystoreService keystoreService,
-            SecretService secretService,
-            UserService userService
-    ) {
-        this.announcementService = announcementService;
-        this.apiKeyService = apiKeyService;
-        this.eventService = eventService;
-        this.keystoreService = keystoreService;
-        this.secretService = secretService;
-        this.userService = userService;
-    }
 
     @Override
     public HomeDataResponseDto getHomeData() {

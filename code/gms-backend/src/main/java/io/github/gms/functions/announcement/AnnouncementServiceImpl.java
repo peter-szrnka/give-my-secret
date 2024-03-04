@@ -1,38 +1,33 @@
 package io.github.gms.functions.announcement;
 
-import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-
-import java.time.Clock;
-import java.time.ZonedDateTime;
-
+import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.functions.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.user.UserService;
+import java.time.Clock;
+import java.time.ZonedDateTime;
+
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 public class AnnouncementServiceImpl implements AnnouncementService {
 
 	private final Clock clock;
 	private final AnnouncementRepository repository;
 	private final UserService userService;
-
-	public AnnouncementServiceImpl(Clock clock, AnnouncementRepository repository, UserService userService) {
-		this.clock = clock;
-		this.repository = repository;
-		this.userService = userService;
-	}
 
 	@Override
 	public SaveEntityResponseDto save(SaveAnnouncementDto dto) {

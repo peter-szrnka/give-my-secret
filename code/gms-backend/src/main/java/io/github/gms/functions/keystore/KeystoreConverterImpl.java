@@ -1,26 +1,24 @@
 package io.github.gms.functions.keystore;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class KeystoreConverterImpl implements KeystoreConverter {
 
 	private final Clock clock;
-
-	public KeystoreConverterImpl(Clock clock) {
-		this.clock = clock;
-	}
 
 	@Override
 	public KeystoreEntity toNewEntity(SaveKeystoreRequestDto dto, MultipartFile file) {

@@ -7,6 +7,7 @@ import io.github.gms.functions.keystore.SaveKeystoreRequestDto;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.common.service.CryptoService;
 import io.github.gms.functions.keystore.KeystoreDataService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -32,13 +33,10 @@ import java.util.Base64;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CryptoServiceImpl implements CryptoService {
 
 	private final KeystoreDataService keystoreDataService;
-
-	public CryptoServiceImpl(KeystoreDataService keystoreDataService) {
-		this.keystoreDataService = keystoreDataService;
-	}
 
 	@Override
 	public void validateKeyStoreFile(SaveKeystoreRequestDto dto, byte[] fileContent) {

@@ -5,6 +5,7 @@ import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
 import io.github.gms.common.dto.PagingDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,15 +24,12 @@ import static io.github.gms.common.util.Constants.ROLE_ADMIN;
  * @since 1.0
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/secure/system_property")
 @AuditTarget(EventTarget.SYSTEM_PROPERTY)
 public class SystemPropertyController {
 
 	private final SystemPropertyService service;
-
-	public SystemPropertyController(SystemPropertyService service) {
-		this.service = service;
-	}
 
 	@PostMapping
 	@PreAuthorize(ROLE_ADMIN)

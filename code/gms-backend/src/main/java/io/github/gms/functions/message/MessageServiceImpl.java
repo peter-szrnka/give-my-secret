@@ -4,6 +4,7 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,12 @@ import java.time.ZonedDateTime;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
 
 	private final Clock clock;
 	private final MessageRepository repository;
 	private final MessageConverter converter;
-
-	public MessageServiceImpl(Clock clock, MessageRepository repository, MessageConverter converter) {
-		this.clock = clock;
-		this.repository = repository;
-		this.converter = converter;
-	}
 
 	@Override
 	public SaveEntityResponseDto save(MessageDto dto) {

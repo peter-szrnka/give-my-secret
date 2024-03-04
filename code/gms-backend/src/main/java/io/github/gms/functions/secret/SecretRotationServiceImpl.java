@@ -3,6 +3,7 @@ package io.github.gms.functions.secret;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.service.CryptoService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,12 @@ import java.time.ZonedDateTime;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SecretRotationServiceImpl implements SecretRotationService {
 
 	private final Clock clock;
 	private final SecretRepository secretRepository;
 	private final CryptoService cryptoService;
-
-	public SecretRotationServiceImpl(Clock clock, SecretRepository secretRepository, CryptoService cryptoService) {
-		this.clock = clock;
-		this.secretRepository = secretRepository;
-		this.cryptoService = cryptoService;
-	}
 
 	@Override
 	@Async("secretRotationExecutor")

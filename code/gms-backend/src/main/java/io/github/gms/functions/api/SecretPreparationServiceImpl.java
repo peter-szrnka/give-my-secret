@@ -10,6 +10,7 @@ import io.github.gms.functions.secret.GetSecretRequestDto;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,23 +22,12 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SecretPreparationServiceImpl implements SecretPreparationService {
     private final SecretRepository secretRepository;
     private final ApiKeyRepository apiKeyRepository;
     private final UserRepository userRepository;
     private final ApiKeyRestrictionRepository apiKeyRestrictionRepository;
-
-    public SecretPreparationServiceImpl(
-            SecretRepository secretRepository,
-            ApiKeyRepository apiKeyRepository,
-            UserRepository userRepository,
-            ApiKeyRestrictionRepository apiKeyRestrictionRepository
-    ) {
-        this.secretRepository = secretRepository;
-        this.apiKeyRepository = apiKeyRepository;
-        this.userRepository = userRepository;
-        this.apiKeyRestrictionRepository = apiKeyRestrictionRepository;
-    }
 
     @Override
     public SecretEntity getSecretEntity(GetSecretRequestDto dto) {

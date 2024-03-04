@@ -4,6 +4,7 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.dto.PagingDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,16 +18,12 @@ import java.util.Collections;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 @CacheConfig(cacheNames = "systemPropertyCache")
 public class SystemPropertyServiceImpl implements SystemPropertyService {
 
 	private final SystemPropertyConverter converter;
 	private final SystemPropertyRepository repository;
-
-	public SystemPropertyServiceImpl(SystemPropertyConverter converter, SystemPropertyRepository repository) {
-		this.converter = converter;
-		this.repository = repository;
-	}
 
 	@Override
 	@CacheEvict(allEntries = true)

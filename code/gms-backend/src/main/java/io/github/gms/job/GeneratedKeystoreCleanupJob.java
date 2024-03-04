@@ -1,6 +1,7 @@
 package io.github.gms.job;
 
 import io.github.gms.functions.keystore.KeystoreFileService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,14 +13,11 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 @ConditionalOnProperty(value = "config.job.generatedKeystoreCleanup.enabled", havingValue = "true", matchIfMissing = true)
 public class GeneratedKeystoreCleanupJob {
 
     private final KeystoreFileService service;
-
-    public GeneratedKeystoreCleanupJob(KeystoreFileService service) {
-        this.service = service;
-    }
 
     @Scheduled(cron = "0 45 * * * ?")
     public void execute() {

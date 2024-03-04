@@ -2,15 +2,16 @@ package io.github.gms.common.controller;
 
 
 import com.google.common.collect.Sets;
+import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
-import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.functions.user.SaveUserRequestDto;
 import io.github.gms.functions.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,15 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 1.0
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/setup")
 @AuditTarget(EventTarget.ADMIN_USER)
 public class SetupController {
 
 	private final UserService userService;
-
-	public SetupController(UserService userService) {
-		this.userService = userService;
-	}
 
 	@PostMapping("/user")
 	@Audited(operation = EventOperation.SETUP)

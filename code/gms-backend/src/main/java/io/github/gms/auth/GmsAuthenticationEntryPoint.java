@@ -1,9 +1,11 @@
 package io.github.gms.auth;
 
-import java.io.IOException;
-import java.time.Clock;
-import java.time.ZonedDateTime;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.gms.common.dto.ErrorResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -11,12 +13,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.github.gms.common.dto.ErrorResponseDto;
-import io.github.gms.common.enums.MdcParameter;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.Clock;
+import java.time.ZonedDateTime;
 
 /**
  * Simple {@link AuthenticationEntryPoint} implementation.
@@ -25,15 +24,11 @@ import jakarta.servlet.http.HttpServletResponse;
  * @since 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class GmsAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
 	private final ObjectMapper objectMapper;
 	private final Clock clock;
-
-    public GmsAuthenticationEntryPoint(ObjectMapper objectMapper, Clock clock) {
-        this.objectMapper = objectMapper;
-        this.clock = clock;
-    }
 
     @Override
     public void commence(HttpServletRequest httpServletRequest,

@@ -4,6 +4,7 @@ import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
 import io.github.gms.common.model.UserEvent;
 import io.github.gms.functions.event.EventService;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -19,13 +20,10 @@ import java.lang.reflect.Method;
  */
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class EventPublisherAspect {
 
 	private final EventService service;
-
-	public EventPublisherAspect(EventService service) {
-		this.service = service;
-	}
 
 	@Pointcut("execution(* *.*(..))")
 	public void allMethod() {

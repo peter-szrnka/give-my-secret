@@ -6,6 +6,7 @@ import io.github.gms.functions.keystore.KeystoreAliasEntity;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.keystore.KeystoreRepository;
 import io.github.gms.functions.secret.SecretEntity;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +16,11 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class KeystoreValidatorServiceImpl implements KeystoreValidatorService {
 
     private final KeystoreRepository keystoreRepository;
     private final KeystoreAliasRepository keystoreAliasRepository;
-
-    public KeystoreValidatorServiceImpl(
-            KeystoreRepository keystoreRepository,
-            KeystoreAliasRepository keystoreAliasRepository
-    ) {
-        this.keystoreRepository = keystoreRepository;
-        this.keystoreAliasRepository = keystoreAliasRepository;
-    }
 
     @Override
     public void validateSecretKeystore(SecretEntity secretEntity) {

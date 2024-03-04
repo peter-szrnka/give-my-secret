@@ -4,6 +4,7 @@ import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.secret.SecretRotationService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,20 +21,14 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 @ConditionalOnProperty(value = "config.job.secretRotation.enabled", havingValue = "true", matchIfMissing = true)
 public class SecretRotationJob {
 	
 	private static final long DELAY_SECONDS = 55L;
-
 	private final Clock clock;
 	private final SecretRepository secretRepository;
 	private final SecretRotationService service;
-
-	public SecretRotationJob(Clock clock, SecretRepository secretRepository, SecretRotationService service) {
-		this.clock = clock;
-		this.secretRepository = secretRepository;
-		this.service = service;
-	}
 
 	@Scheduled(cron = "0 * * * * ?")
 	public void execute() {

@@ -3,6 +3,7 @@ package io.github.gms.common.abstraction;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.TimeUnit;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
+import lombok.RequiredArgsConstructor;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
@@ -11,15 +12,11 @@ import java.time.ZonedDateTime;
  * @author Peter Szrnka
  * @since 1.0
  */
+@RequiredArgsConstructor
 public abstract class AbstractLimitBasedJob {
 
 	protected final Clock clock;
 	private final SystemPropertyService systemPropertyService;
-
-	protected AbstractLimitBasedJob(Clock clock, SystemPropertyService systemPropertyService) {
-		this.clock = clock;
-		this.systemPropertyService = systemPropertyService;
-	}
 	
 	protected ZonedDateTime processConfig(SystemProperty limitProperty) {
 		String oldEventLimitValue = systemPropertyService.get(limitProperty);

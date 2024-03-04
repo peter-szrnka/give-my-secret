@@ -2,6 +2,7 @@ package io.github.gms.auth.ldap;
 
 import io.github.gms.auth.UserAuthService;
 import io.github.gms.auth.model.GmsUserDetails;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.query.LdapQueryBuilder;
@@ -18,16 +19,12 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 @Profile(value = { CONFIG_AUTH_TYPE_LDAP })
 public class LdapUserAuthServiceImpl implements UserAuthService {
 
 	private final LdapTemplate ldapTemplate;
 	private final LdapUserPersistenceService ldapUserPersistenceService;
-
-	public LdapUserAuthServiceImpl(LdapTemplate ldapTemplate, LdapUserPersistenceService ldapUserPersistenceService) {
-		this.ldapTemplate = ldapTemplate;
-		this.ldapUserPersistenceService = ldapUserPersistenceService;
-	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

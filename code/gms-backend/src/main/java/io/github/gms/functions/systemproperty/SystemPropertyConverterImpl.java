@@ -2,6 +2,7 @@ package io.github.gms.functions.systemproperty;
 
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.types.GmsException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -17,13 +18,10 @@ import java.util.stream.Stream;
  * @since 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class SystemPropertyConverterImpl implements SystemPropertyConverter {
 	
 	private final Clock clock;
-	
-	public SystemPropertyConverterImpl(Clock clock) {
-		this.clock = clock;
-	}
 
 	@Override
 	public SystemPropertyListDto toDtoList(List<SystemPropertyEntity> resultList) {

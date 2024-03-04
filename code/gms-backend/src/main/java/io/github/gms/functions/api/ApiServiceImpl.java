@@ -4,6 +4,7 @@ import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.service.CryptoService;
 import io.github.gms.functions.secret.GetSecretRequestDto;
 import io.github.gms.functions.secret.SecretEntity;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,22 +22,13 @@ import static io.github.gms.common.util.Constants.VALUE;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @CacheConfig(cacheNames = "apiCache", keyGenerator = "apiCacheKeyGenerator")
 public class ApiServiceImpl implements ApiService {
 
     private final CryptoService cryptoService;
     private final SecretPreparationService secretPreparationService;
     private final KeystoreValidatorService keystoreValidatorService;
-
-    public ApiServiceImpl(
-            CryptoService cryptoService,
-            SecretPreparationService secretPreparationService,
-            KeystoreValidatorService keystoreValidatorService
-    ) {
-        this.cryptoService = cryptoService;
-        this.secretPreparationService = secretPreparationService;
-        this.keystoreValidatorService = keystoreValidatorService;
-    }
 
     @Override
     @Cacheable

@@ -6,6 +6,7 @@ import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.common.service.EventProcessorService;
 import io.github.gms.functions.message.MessageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import static io.github.gms.common.util.Constants.USER_ID;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 public class EventProcessorServiceImpl implements EventProcessorService {
 	
 	static final String REASON_PREFIX = "Some of your secrets have been disabled. Reason: ";
@@ -28,13 +30,6 @@ public class EventProcessorServiceImpl implements EventProcessorService {
 	private final MessageService messageService;
 	private final SecretRepository secretRepository;
 	private final KeystoreAliasRepository keystoreAliasRepository;
-
-	public EventProcessorServiceImpl(MessageService messageService, SecretRepository secretRepository,
-									 KeystoreAliasRepository keystoreAliasRepository) {
-		this.messageService = messageService;
-		this.secretRepository = secretRepository;
-		this.keystoreAliasRepository = keystoreAliasRepository;
-	}
 
 	@Override
 	@Transactional
