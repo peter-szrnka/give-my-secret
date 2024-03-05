@@ -1,0 +1,1 @@
+docker compose --env-file env-postgresql-with-zipkin.txt -p give-my-secret up -d
