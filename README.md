@@ -22,7 +22,7 @@ Give My Secret is available as a Docker image, you can easily pull it from GitHu
 
 To start a new container, you have to set up a bunch of environment properties. I recommend to not start the configuration from scratch, if you open the "**[batch-files](batch-files)**" sub folder, you can find many ready-to-go configurations for all available database providers written in Docker Compose format.
 
-# Supported databases & authentication
+# Supported
 
 ## Protocol
 
@@ -40,7 +40,7 @@ For further information & sample configurations, please check the sub folders un
 
 ## Caching
 
-2 types of cache provided:
+2 types of caches are provided:
 
 - Built-in cache
 - Redis
@@ -69,6 +69,9 @@ Currently only AES encryption is supported.  In the future this will be configur
 | PostgreSql  | :white_check_mark: | :white_check_mark: |
 | MySql       | :white_check_mark: | :white_check_mark: |
 | MsSql       | :white_check_mark: | :white_check_mark: |
+
+## Observation
+- Zipkin
 
 # Code samples
 
