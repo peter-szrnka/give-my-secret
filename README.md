@@ -72,6 +72,7 @@ Currently only AES encryption is supported.  In the future this will be configur
 
 ## Observation
 - Zipkin
+- Prometheus (with Grafana)
 
 # Code samples
 
