@@ -1,21 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<property resource="application.properties" />
-	
-	<!--<springProperty scope="context" name="maxHistory" source="config.logback.maxhistory"
-		defaultValue="7"/>
-	<springProperty scope="context" name="clearHistoryOnStart" source="config.logback.clearHistoryOnStart"
-		defaultValue="true"/>-->
+    <property resource="application.properties"/>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>TIMESTAMP=%d{yyyy-MM-dd HH:mm:ss.SSS} CORRELATION_ID=%X{correlationId} %-5level %logger{36}.%M - %msg%n</pattern>
-        </encoder>
-    </appender>
+    <springProperty scope="context" name="logType" source="config.log.type" defaultValue="console"/>
+    <springProperty scope="context" name="logstashUrl" source="config.logstash.url" defaultValue=""/>
+    <springProperty scope="context" name="logFolder" source="config.log.folder" defaultValue=""/>
+    <springProperty scope="context" name="archivedLogFolder" source="config.log.archived.folder" defaultValue=""/>
+
+    <if condition='property("logType").equals("console")'>
+        <then>
+            <appender name="appender" class="ch.qos.logback.core.ConsoleAppender">
+                <encoder>
+                    <pattern>TIMESTAMP=%d{yyyy-MM-dd HH:mm:ss.SSS} CORRELATION_ID=%X{correlationId} %-5level %logger{36}.%M - %msg%n</pattern>
+                </encoder>
+            </appender>
+        </then>
+    </if>
+    <if condition='property("logType").equals("logstash")'>
+        <then>
+            <appender name="appender" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <destination>127.0.0.1/9600</destination>
+                <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+            </appender>
+        </then>
+    </if>
+    <if condition='property("logType").equals("file")'>
+        <then>
+            <appender name="appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${logFolder}/app.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <fileNamePattern>${logFolder}/gms.%d{yyyy-MM-dd}.log</fileNamePattern>
+                </rollingPolicy>
+                <encoder>
+                    <pattern>TIMESTAMP=%d{yyyy-MM-dd HH:mm:ss.SSS} CORRELATION_ID=%X{correlationId} %-5level %logger{36}.%M - %msg%n</pattern>
+                </encoder>
+            </appender>
+        </then>
+    </if>
 
     <root level="INFO">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="appender" />
     </root>
 
 </configuration>

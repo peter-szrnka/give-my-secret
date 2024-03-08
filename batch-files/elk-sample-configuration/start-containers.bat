@@ -1,0 +1,1 @@
+docker-compose -f elk-docker-compose-official.yml up -d
