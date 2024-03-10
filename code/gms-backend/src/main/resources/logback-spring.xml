@@ -20,8 +20,8 @@
     <if condition='property("logType").equals("logstash")'>
         <then>
             <appender name="appender" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-                <destination>127.0.0.1/9600</destination>
-                <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+                <destination>${logstashUrl}</destination>
+                <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
             </appender>
         </then>
     </if>

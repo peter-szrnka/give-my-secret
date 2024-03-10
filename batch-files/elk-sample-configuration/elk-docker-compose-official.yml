@@ -1,5 +1,4 @@
 version: "3.7"
-#version: "2.2"
 
 services:
   setup:
@@ -22,9 +21,9 @@ services:
           echo "Creating certs";
           echo -ne \
           "instances:\n"\
-          "  - name: es01\n"\
+          "  - name: elasticsearch\n"\
           "    dns:\n"\
-          "      - es01\n"\
+          "      - elasticsearch\n"\
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
@@ -37,11 +36,11 @@ services:
         find . -type d -exec chmod 750 \{\} \;;
         find . -type f -exec chmod 640 \{\} \;;
         echo "Waiting for Elasticsearch availability";
-        until curl -s --cacert config/certs/ca/ca.crt https://es01:9200 | grep -q "missing authentication credentials"; do echo "...wait for ElasticSearch for another 30 seconds..."; sleep 30; done;
+        until curl -s --cacert config/certs/ca/ca.crt http://elasticsearch:9200 | grep -q "missing authentication credentials"; do echo "...wait for ElasticSearch for another 30 seconds..."; sleep 30; done;
         echo "Setting root password";
-        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://es01:9200/_security/user/elastic/_password -d "{\"password\":\"${ELASTIC_PASSWORD}\"}" | grep -q "^{}"; do echo "...wait for root credential change for another 10 seconds..."; sleep 10; done;
+        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" http://elasticsearch:9200/_security/user/elastic/_password -d "{\"password\":\"${ELASTIC_PASSWORD}\"}" | grep -q "^{}"; do echo "...wait for root credential change for another 10 seconds..."; sleep 10; done;
         echo "Setting kibana_system password";
-        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"${ELASTIC_PASSWORD}\"}" | grep -q "^{}"; do echo "...wait for kibana_system credential change for another 10 seconds...";  sleep 10; done;
+        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" http://elasticsearch:9200/_security/user/kibana_system/_password -d "{\"password\":\"${ELASTIC_PASSWORD}\"}" | grep -q "^{}"; do echo "...wait for kibana_system credential change for another 10 seconds...";  sleep 10; done;
         echo "All done!";
       '
     healthcheck:
@@ -50,7 +49,7 @@ services:
       timeout: 5s
       retries: 120
 
-  es01:
+  elasticsearch:
     depends_on:
       setup:
         condition: service_healthy
@@ -62,13 +61,13 @@ services:
     ports:
       - ${ES_PORT}:9200
     environment:
-      - node.name=es01
+      - node.name=elasticsearch
       - cluster.name=${CLUSTER_NAME}
-      - cluster.initial_master_nodes=es01
+      - cluster.initial_master_nodes=elasticsearch
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - bootstrap.memory_lock=true
       - xpack.security.enabled=true
-      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.enabled=false
       - xpack.security.http.ssl.key=certs/es01/es01.key
       - xpack.security.http.ssl.certificate=certs/es01/es01.crt
       - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
@@ -76,7 +75,7 @@ services:
       - xpack.security.transport.ssl.key=certs/es01/es01.key
       - xpack.security.transport.ssl.certificate=certs/es01/es01.crt
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.verification_mode=none
       - xpack.license.self_generated.type=${LICENSE}
     mem_limit: ${MEM_LIMIT}
     ulimits:
@@ -87,26 +86,34 @@ services:
       test:
         [
           "CMD-SHELL",
-          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+          "curl -s --cacert config/certs/ca/ca.crt http://localhost:9200 | grep -q 'missing authentication credentials'",
         ]
       interval: 10s
       timeout: 10s
       retries: 120
   logstash:
     depends_on:
-      es01:
+      elasticsearch:
         condition: service_healthy
     image: docker.elastic.co/logstash/logstash:8.12.2
     container_name: logstash
     ports:
+      - "5000:5000"
+      - "5044:5044"
       - "9600:9600"
     volumes:
       - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logstash.conf:/usr/share/logstash/conf/logstash.conf
+      - ./logstash.conf:/usr/share/logstash/conf.d/logstash.conf
+      - ./logstash.conf:/usr/share/logstash/conf/pipeline/logstash.conf
+      - ./mounted-data/certs:/usr/share/logstash/config/certs
     environment:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - xpack.monitoring.elasticsearch.username=elastic
+      - xpack.monitoring.elasticsearch.password=${ELASTIC_PASSWORD}
   kibana:
     depends_on:
-      es01:
+      elasticsearch:
         condition: service_healthy
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     volumes:
@@ -116,7 +123,7 @@ services:
       - ${KIBANA_PORT}:5601
     environment:
       - SERVERNAME=kibana
-      - ELASTICSEARCH_HOSTS=https://es01:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
