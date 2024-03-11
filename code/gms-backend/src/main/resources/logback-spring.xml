@@ -2,21 +2,18 @@
 <configuration>
 
     <property resource="application.properties"/>
-
     <springProperty scope="context" name="logType" source="config.log.type" defaultValue="console"/>
     <springProperty scope="context" name="logstashUrl" source="config.logstash.url" defaultValue=""/>
     <springProperty scope="context" name="logFolder" source="config.log.folder" defaultValue=""/>
     <springProperty scope="context" name="archivedLogFolder" source="config.log.archived.folder" defaultValue=""/>
+    <springProperty scope="context" name="serviceName" source="spring.application.name" defaultValue="gms"/>
+    <contextName>${serviceName}</contextName>
 
-    <if condition='property("logType").equals("console")'>
-        <then>
-            <appender name="appender" class="ch.qos.logback.core.ConsoleAppender">
-                <encoder>
-                    <pattern>TIMESTAMP=%d{yyyy-MM-dd HH:mm:ss.SSS} CORRELATION_ID=%X{correlationId} %-5level %logger{36}.%M - %msg%n</pattern>
-                </encoder>
-            </appender>
-        </then>
-    </if>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>TIMESTAMP=%d{yyyy-MM-dd HH:mm:ss.SSS} CORRELATION_ID=%X{correlationId} %-5level %logger{36}.%M - %msg%n</pattern>
+        </encoder>
+    </appender>
     <if condition='property("logType").equals("logstash")'>
         <then>
             <appender name="appender" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
@@ -40,6 +37,7 @@
     </if>
 
     <root level="INFO">
+        <appender-ref ref="console" />
         <appender-ref ref="appender" />
     </root>
 
