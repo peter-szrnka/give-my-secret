@@ -36,9 +36,18 @@
         </then>
     </if>
 
-    <root level="INFO">
-        <appender-ref ref="console" />
-        <appender-ref ref="appender" />
-    </root>
+    <if condition='property("logType").equals("logstash") || property("logType").equals("file")'>
+        <then>
+            <root level="INFO">
+                <appender-ref ref="console" />
+                <appender-ref ref="appender" />
+            </root>
+        </then>
+        <else>
+            <root level="INFO">
+                <appender-ref ref="console" />
+            </root>
+        </else>
+    </if>
 
 </configuration>
