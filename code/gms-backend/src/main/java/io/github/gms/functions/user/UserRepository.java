@@ -37,4 +37,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	@Cacheable
 	@Query("SELECT u.username from UserEntity u where u.id = :userId")
 	String getUsernameById(@Param(USER_ID) Long userId);
+
+	@Query("SELECT u.id from UserEntity u where u.username = :username")
+	Optional<Long> getIdByUsername(@Param("username") String username);
 }

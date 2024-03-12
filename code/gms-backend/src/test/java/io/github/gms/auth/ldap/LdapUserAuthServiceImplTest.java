@@ -34,15 +34,15 @@ import io.github.gms.util.TestUtils;
 class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 
 	private LdapTemplate ldapTemplate;
-	private LdapUserPersistenceService ldapUserPersistenceService;
+	private LdapSyncService ldapSyncService;
 	private LdapUserAuthServiceImpl service;
 
 	@BeforeEach
 	public void setup() {
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 		ldapTemplate = mock(LdapTemplate.class);
-		ldapUserPersistenceService = mock(LdapUserPersistenceService.class);
-		service = new LdapUserAuthServiceImpl(ldapTemplate, ldapUserPersistenceService);
+		ldapSyncService = mock(LdapSyncService.class);
+		service = new LdapUserAuthServiceImpl(ldapTemplate, ldapSyncService);
 	}
 
 	@Test
@@ -79,7 +79,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		// arrange
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(mockUser));
-		when(ldapUserPersistenceService.saveUserIfRequired(anyString(), eq(mockUser))).thenReturn(mockUser);
+		when(ldapSyncService.saveUserIfRequired(anyString(), eq(mockUser))).thenReturn(mockUser);
 
 		// act
 		UserDetails response = service.loadUserByUsername("test");
@@ -88,6 +88,6 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		assertNotNull(response);
 		assertEquals(DemoData.USERNAME1, response.getUsername());
 		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));
-		verify(ldapUserPersistenceService).saveUserIfRequired(anyString(), eq(mockUser));
+		verify(ldapSyncService).saveUserIfRequired(anyString(), eq(mockUser));
 	}
 }

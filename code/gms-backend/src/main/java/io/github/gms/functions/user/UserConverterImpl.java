@@ -7,6 +7,7 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -99,5 +100,11 @@ public class UserConverterImpl implements UserConverter {
 		dto.setRoles(Sets.newHashSet(user.getAuthorities().stream().map(authority -> UserRole.getByName(authority.getAuthority())).collect(Collectors.toSet())));
 
 		return dto;
+	}
+
+	@Override
+	public UserDetails addIdToUserDetails(GmsUserDetails foundUser, Long id) {
+		foundUser.setUserId(id);
+		return foundUser;
 	}
 }

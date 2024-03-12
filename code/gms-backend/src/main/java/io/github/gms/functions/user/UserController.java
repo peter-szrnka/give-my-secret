@@ -1,5 +1,6 @@
 package io.github.gms.functions.user;
 
+import io.github.gms.auth.ldap.LdapSyncService;
 import io.github.gms.common.abstraction.AbstractController;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
@@ -37,8 +38,11 @@ import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
 @AuditTarget(EventTarget.USER)
 public class UserController extends AbstractController<UserService> {
 
-	public UserController(UserService service) {
+	private final LdapSyncService ldapSyncService;
+
+	public UserController(UserService service, LdapSyncService ldapSyncService) {
 		super(service);
+		this.ldapSyncService = ldapSyncService;
 	}
 	
 	@PostMapping
@@ -105,5 +109,12 @@ public class UserController extends AbstractController<UserService> {
 	@PreAuthorize(ALL_ROLE)
 	public ResponseEntity<Boolean> isMfaActive() {
 		return new ResponseEntity<>(service.isMfaActive(), HttpStatus.OK);
+	}
+
+	@GetMapping("/sync")
+	@PreAuthorize(ROLE_ADMIN)
+	public ResponseEntity<Boolean> synchronizeUsers() {
+		ldapSyncService.synchronizeUsers();
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

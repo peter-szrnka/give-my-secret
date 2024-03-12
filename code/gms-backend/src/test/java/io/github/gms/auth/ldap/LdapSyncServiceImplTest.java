@@ -31,17 +31,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link LdapUserPersistenceServiceImpl}
+ * Unit test of {@link LdapSyncServiceImpl}
  * 
  * @author Peter Szrnka
  * @since 1.0
  */
-class LdapUserPersistenceServiceImplTest extends AbstractUnitTest {
+class LdapSyncServiceImplTest extends AbstractUnitTest {
     
     private ListAppender<ILoggingEvent> logAppender;
     private Clock clock;
 	private UserRepository repository;
-    private LdapUserPersistenceServiceImpl service;
+    private LdapSyncServiceImpl service;
 
     @BeforeEach
 	void beforeEach() {
@@ -50,8 +50,8 @@ class LdapUserPersistenceServiceImplTest extends AbstractUnitTest {
 
 		clock = mock(Clock.class);
 		repository = mock(UserRepository.class);
-		service = new LdapUserPersistenceServiceImpl(clock, repository, false);
-		((Logger) LoggerFactory.getLogger(LdapUserPersistenceServiceImpl.class)).addAppender(logAppender);
+		service = new LdapSyncServiceImpl(clock, repository, false);
+		((Logger) LoggerFactory.getLogger(LdapSyncServiceImpl.class)).addAppender(logAppender);
 	}
 
     @AfterEach
@@ -75,7 +75,7 @@ class LdapUserPersistenceServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldNotUpdateCredentialsWhenMatching() {
 		// arrange
-		service = new LdapUserPersistenceServiceImpl(clock, repository, true);
+		service = new LdapSyncServiceImpl(clock, repository, true);
 
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setCredential("test-credential");
@@ -97,7 +97,7 @@ class LdapUserPersistenceServiceImplTest extends AbstractUnitTest {
 	@ValueSource(booleans = { true, false })
 	void shouldUpdateCredentials(boolean storeLdapCredential) {
 		// arrange
-		service = new LdapUserPersistenceServiceImpl(clock, repository, storeLdapCredential);
+		service = new LdapSyncServiceImpl(clock, repository, storeLdapCredential);
 		UserEntity testMockUser = TestUtils.createUser();
 		testMockUser.setId(3L);
 		when(repository.findByUsername("test")).thenReturn(Optional.of(testMockUser));

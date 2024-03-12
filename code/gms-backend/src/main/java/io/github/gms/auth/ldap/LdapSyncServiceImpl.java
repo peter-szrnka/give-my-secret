@@ -8,6 +8,7 @@ import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.query.LdapQueryBuilder;
@@ -19,8 +20,11 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.CACHE_USER;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
 import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 
 /**
  * @author Peter Szrnka
@@ -29,30 +33,38 @@ import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
 @Slf4j
 @Service
 @Profile(value = { CONFIG_AUTH_TYPE_LDAP })
-public class LdapUserPersistenceServiceImpl implements LdapUserPersistenceService {
+public class LdapSyncServiceImpl implements LdapSyncService {
 
     private final Clock clock;
 	private final LdapTemplate ldapTemplate;
     private final UserRepository repository;
     private final boolean storeLdapCredential;
+	private final String authType;
 
-    public LdapUserPersistenceServiceImpl(
+    public LdapSyncServiceImpl(
 			Clock clock,
 			LdapTemplate ldapTemplate,
 			UserRepository repository,
-			@Value("${config.store.ldap.credential:false}") boolean storeLdapCredential
+			@Value("${config.store.ldap.credential:false}") boolean storeLdapCredential,
+			@Value("${config.auth.type}") String authType
 	) {
         this.clock = clock;
 		this.ldapTemplate = ldapTemplate;
         this.repository = repository;
         this.storeLdapCredential = storeLdapCredential;
+		this.authType = authType;
     }
 
 	@Override
+	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
 	public void synchronizeUsers() {
-		List<GmsUserDetails> result = ldapTemplate.search(LdapQueryBuilder.query(),
+		if (!SELECTED_AUTH_LDAP.equals(authType)) {
+			return;
+		}
+		List<GmsUserDetails> result = ldapTemplate.search(LdapQueryBuilder.query().where("uid").like("*"),
 				new LDAPAttributesMapper());
 
+		// TODO Handle users missing from LDAP -> Block or delete?
 		result.forEach(this::saveOrUpdateUser);
 	}
 
