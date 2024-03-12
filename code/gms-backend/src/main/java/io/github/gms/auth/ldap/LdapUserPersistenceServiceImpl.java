@@ -1,22 +1,26 @@
 package io.github.gms.auth.ldap;
 
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
-import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
-
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Service;
-
+import dev.samstevens.totp.secret.DefaultSecretGenerator;
+import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.query.LdapQueryBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
+
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
+import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
 
 /**
  * @author Peter Szrnka
@@ -28,48 +32,52 @@ import lombok.extern.slf4j.Slf4j;
 public class LdapUserPersistenceServiceImpl implements LdapUserPersistenceService {
 
     private final Clock clock;
+	private final LdapTemplate ldapTemplate;
     private final UserRepository repository;
     private final boolean storeLdapCredential;
 
-    public LdapUserPersistenceServiceImpl(Clock clock, UserRepository repository, @Value("${config.store.ldap.credential:false}") boolean storeLdapCredential) {
+    public LdapUserPersistenceServiceImpl(
+			Clock clock,
+			LdapTemplate ldapTemplate,
+			UserRepository repository,
+			@Value("${config.store.ldap.credential:false}") boolean storeLdapCredential
+	) {
         this.clock = clock;
+		this.ldapTemplate = ldapTemplate;
         this.repository = repository;
         this.storeLdapCredential = storeLdapCredential;
     }
 
-    @Override
-    public GmsUserDetails saveUserIfRequired(String username, GmsUserDetails foundUser) {
-        repository.findByUsername(username).ifPresentOrElse(userEntity -> saveExistingUser(foundUser, userEntity),
-				() -> saveNewUser(foundUser));
+	@Override
+	public void synchronizeUsers() {
+		List<GmsUserDetails> result = ldapTemplate.search(LdapQueryBuilder.query(),
+				new LDAPAttributesMapper());
 
-        return foundUser;
-    }
-
-    private void saveExistingUser(GmsUserDetails foundUser, UserEntity userEntity) {
-		foundUser.setUserId(userEntity.getId());
-
-		if (storeLdapCredential && !userEntity.getCredential().equals(foundUser.getCredential())) {
-			userEntity.setCredential(getCredential(foundUser));
-			repository.save(userEntity);
-			log.info("Credential has been updated for user={}", foundUser.getUsername());
-		}
+		result.forEach(this::saveOrUpdateUser);
 	}
 
-    private void saveNewUser(GmsUserDetails foundUser) {
-		UserEntity userEntity = new UserEntity();
-		userEntity.setStatus(EntityStatus.ACTIVE);
-		userEntity.setName(foundUser.getName());
-		userEntity.setUsername(foundUser.getUsername());
-		userEntity.setCredential(getCredential(foundUser));
-		userEntity.setCreationDate(ZonedDateTime.now(clock));
-		userEntity.setEmail(foundUser.getEmail());
-		userEntity.setRoles(foundUser.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-				.collect(Collectors.joining(",")));
-		userEntity.setMfaEnabled(foundUser.isMfaEnabled());
-		userEntity.setMfaSecret(foundUser.getMfaSecret());
-		userEntity = repository.save(userEntity);
+    private void saveOrUpdateUser(GmsUserDetails foundUser) {
+        repository.findByUsername(foundUser.getUsername()).ifPresentOrElse(userEntity -> saveUser(foundUser, userEntity), () ->
+				saveUser(foundUser, null));
+    }
 
-		foundUser.setUserId(userEntity.getId());
+	private void saveUser(GmsUserDetails foundUser, UserEntity userEntity) {
+		UserEntity entity = userEntity == null ? new UserEntity() : userEntity;
+
+		entity.setStatus(EntityStatus.ACTIVE);
+		entity.setName(foundUser.getName());
+		entity.setUsername(foundUser.getUsername());
+		entity.setCredential(getCredential(foundUser));
+		entity.setCreationDate(ZonedDateTime.now(clock));
+		entity.setEmail(foundUser.getEmail());
+		entity.setRoles(foundUser.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+				.collect(Collectors.joining(",")));
+		entity.setMfaEnabled(foundUser.isMfaEnabled());
+		SecretGenerator secretGenerator = new DefaultSecretGenerator();
+		entity.setMfaSecret(secretGenerator.generate());
+		entity = repository.save(entity);
+
+		foundUser.setUserId(entity.getId());
 		log.info("User data has been saved into DB for user={}", foundUser.getUsername());
 	}
 

@@ -13,19 +13,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.info.BuildProperties;
-import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 
 import static io.github.gms.common.util.Constants.OK;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,7 +35,6 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 
 	private Clock clock;
 	private UserRepository userRepository;
-	private Environment env;
 	private BuildProperties buildProperties;
 	private SystemServiceImpl service;
 
@@ -51,21 +46,20 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 
 		clock = mock(Clock.class);
 		userRepository = mock(UserRepository.class, Mockito.RETURNS_SMART_NULLS);
-		env = mock(Environment.class, Mockito.RETURNS_SMART_NULLS);
 		buildProperties = mock(BuildProperties.class);
 
-		service = new SystemServiceImpl(userRepository, clock, env);
+		service = new SystemServiceImpl(userRepository, clock, "db");
 		service.setBuildProperties(buildProperties);
 	}
 	
 	@ParameterizedTest
 	@ValueSource(strings = { "NEED_SETUP", OK })
 	void shouldReturnSystemStatus(String mockResponse) {
+		service = new SystemServiceImpl(userRepository, clock, "db");
 		// arrange
 		when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
 		when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 
-		when(env.getProperty(eq(SELECTED_AUTH), anyString())).thenReturn("db");
 		when(userRepository.countExistingAdmins()).thenReturn(OK.equals(mockResponse) ? 1L : 0L);
 		
 		// act
@@ -81,7 +75,7 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@MethodSource("inputData")
 	void shouldReturnOkWithDifferentAuthMethod(String selectedAuth, boolean hasBuildProperties, String expectedVersion) {
-		when(env.getProperty(eq(SELECTED_AUTH), anyString())).thenReturn(selectedAuth);
+		service = new SystemServiceImpl(userRepository, clock, selectedAuth);
 
 		if (hasBuildProperties) {
 			when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));

@@ -39,6 +39,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
   selectableRoles = ALL_ROLES;
   eventList : Event[] = [];
   public datasource : ArrayDataSource<Event>;
+  editEnabled: boolean = true;
 
   public tableConfig = {
     pageSize : 20
@@ -54,6 +55,12 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
     protected override splashScreenStateService: SplashScreenStateService) {
     super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);
   }
+
+  override async ngOnInit(): Promise<void> {
+    super.ngOnInit();
+
+    this.sharedData.authModeSubject$.subscribe(authMode => this.editEnabled = authMode === 'db');
+}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override dataLoadingCallback(data: UserData) {

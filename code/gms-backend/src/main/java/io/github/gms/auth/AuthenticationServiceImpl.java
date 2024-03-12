@@ -53,15 +53,15 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 	@Override
 	public AuthenticationResponse authenticate(String username, String credential) {
 		try {
-			if (userService.isBlocked(username)) {
+			Authentication authenticate = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
+			GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
+
+			if (!user.getAccountNonLocked()) {
 				return AuthenticationResponse.builder()
 						.phase(AuthResponsePhase.BLOCKED)
 						.build();
 			}
-
-			Authentication authenticate = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
-			GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
 
 			if (isMfaEnabled(user)) {
 				return AuthenticationResponse.builder()
@@ -71,7 +71,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 			} 
 
 			Map<JwtConfigType, String> authenticationDetails = getAuthenticationDetails(user);
-			userService.resetLoginAttempt(username);
+			//userService.resetLoginAttempt(username);
 
 			return AuthenticationResponse.builder()
 				.currentUser(converter.toUserInfoDto(user, false))
@@ -80,7 +80,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 				.phase(AuthResponsePhase.COMPLETED)
 				.build();
 		} catch (Exception ex) {
-			userService.updateLoginAttempt(username);
+			//userService.updateLoginAttempt(username);
 			log.warn("Login failed", ex);
 			return new AuthenticationResponse();
 		}

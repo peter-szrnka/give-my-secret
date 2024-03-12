@@ -35,6 +35,7 @@ public class LdapUserAuthServiceImpl implements UserAuthService {
 			throw new UsernameNotFoundException("User not found!");
 		}
 
-		return ldapUserPersistenceService.saveUserIfRequired(username, result.getFirst());
+		return result.getFirst();
+				//ldapUserPersistenceService.saveUserIfRequired(username, result.getFirst());
 	}
 }

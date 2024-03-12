@@ -32,6 +32,24 @@ m-name: gmsRole
 m-description: Give My Secret user roles.
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
 
+dn: m-oid=1.9.8.5.8.19.22.11.4, ou=attributetypes, cn=gms-schema, ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.9.8.5.8.19.22.11.4
+m-name: gmsStatus
+m-description: Give My Secret user status.
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+
+dn: m-oid=1.9.8.5.8.19.22.11.5, ou=attributetypes, cn=gms-schema, ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.9.8.5.8.19.22.11.5
+m-name: gmsMfaEnabled
+m-description: Give My Secret is MFA enabled attribute.
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+
 dn: ou=comparators, cn=gms-schema, ou=schema
 objectclass: organizationalUnit
 objectclass: top
@@ -82,6 +100,8 @@ m-supObjectClass: inetOrgPerson
 m-may: gmsRole
 m-may: gmsPassword
 m-may: email
+m-may: gmsStatus
+m-may: gmsMfaEnabled
 
 dn: ou=syntaxcheckers, cn=gms-schema, ou=schema
 objectclass: organizationalUnit

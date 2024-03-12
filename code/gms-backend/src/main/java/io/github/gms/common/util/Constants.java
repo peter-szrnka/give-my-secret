@@ -37,6 +37,7 @@ public final class Constants {
 	public static final String LDAP_PROPERTY_ROLE = "gmsRole";
 	public static final String LDAP_PROPERTY_EMAIL = "email";
 	public static final String LDAP_PROPERTY_MFA_ENABLED = "gmsMfaEnabled";
+	public static final String LDAP_PROPERTY_STATUS = "gmsStatus";
 	public static final String PASSWORD_ENCODER = "passwordEncoder";
 	
 	// Environment properties

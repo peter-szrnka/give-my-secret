@@ -63,7 +63,7 @@ public class UserEntity extends AbstractGmsEntity {
 	@Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
 	private boolean mfaEnabled;
 
-	@Column(name = "mfa_secret", nullable = true)
+	@Column(name = "mfa_secret")
 	private String mfaSecret;
 
 	@Column(name = "failed_attempts")

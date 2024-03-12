@@ -5,8 +5,8 @@ import io.github.gms.common.util.Constants;
 import io.github.gms.functions.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.BuildProperties;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -14,8 +14,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static io.github.gms.common.util.Constants.OK;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 
 /**
@@ -28,25 +26,24 @@ public class SystemServiceImpl implements SystemService {
 
 	private final UserRepository userRepository;
 	private final Clock clock;
-	private final Environment env;
+	private final String authType;
 	// It will be set with setter injection
 	private BuildProperties buildProperties;
 
-	public SystemServiceImpl(UserRepository userRepository, Clock clock, Environment env) {
+	public SystemServiceImpl(UserRepository userRepository, Clock clock, @Value("config.auth.type") String authType) {
 		this.userRepository = userRepository;
 		this.clock = clock;
-		this.env = env;
+		this.authType = authType;
 	}
 
 	@Override
 	public SystemStatusDto getSystemStatus() {
 		SystemStatusDto.SystemStatusDtoBuilder builder = SystemStatusDto.builder();
-		String auth = env.getProperty(SELECTED_AUTH, SELECTED_AUTH_DB);
-		builder.authMode(auth);
+		builder.authMode(authType);
 		builder.version(getVersion());
 		builder.built(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
 
-		if (SELECTED_AUTH_LDAP.equals(auth)) {
+		if (SELECTED_AUTH_LDAP.equals(authType)) {
 			return builder.status(OK).build();
 		}
 

@@ -11,25 +11,25 @@
                         form.
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label>Full name</mat-label>
-                            <input matInput name="name" required [(ngModel)]="data.name">
+                            <input matInput name="name" required [(ngModel)]="data.name" [disabled]="editEnabled === false">
                         </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label>User name</mat-label>
-                            <input matInput name="userName" autocomplete="off" required [(ngModel)]="data.username">
+                            <input matInput name="userName" autocomplete="off" required [(ngModel)]="data.username" [disabled]="editEnabled === false">
                         </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label>Email</mat-label>
                             <input matInput type="email" autocomplete="off" name="email" [email]="true" required
-                                [(ngModel)]="data.email">
+                                [(ngModel)]="data.email" [disabled]="editEnabled === false">
                         </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label>Credential</mat-label>
                             <input type="password" matInput autocomplete="new-password" name="credential" required="{{!data.id}}"
-                                [(ngModel)]="data.credential">
+                                [(ngModel)]="data.credential" [disabled]="editEnabled === false">
                         </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label>Status</mat-label>
-                            <mat-select [(ngModel)]="data.status" name="status" required>
+                            <mat-select [(ngModel)]="data.status" name="status" required [disabled]="editEnabled === false">
                                 <mat-option [value]="'ACTIVE'">ACTIVE</mat-option>
                                 <mat-option [value]="'BLOCKED'">BLOCKED</mat-option>
                                 <mat-option [value]="'DISABLED'">DISABLED</mat-option>
@@ -37,7 +37,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label>Allowed roles</mat-label>
-                            <mat-chip-grid #chipList aria-label="Role selection">
+                            <mat-chip-grid #chipList aria-label="Role selection" [disabled]="editEnabled === false">
                                 <mat-chip *ngFor="let role of data.roles" (removed)="remove(role)">
                                     {{role}}
                                     <button matChipRemove>
@@ -49,14 +49,14 @@
                                     (matChipInputTokenEnd)="add($event)">
                             </mat-chip-grid>
                             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                                <mat-option *ngFor="let role of selectableRoles" [value]="role">
+                                <mat-option *ngFor="let role of selectableRoles" [value]="role" matChipRemove="false">
                                     {{role}}
                                 </mat-option>
                             </mat-autocomplete>
                         </mat-form-field>
                     </mat-card-content>
                     <mat-card-actions>
-                        <button [disabled]="form.status ==='INVALID'" mat-raised-button color="primary"
+                        <button [disabled]="form.status ==='INVALID' || editEnabled === false" mat-raised-button color="primary"
                             (click)="save()">Save</button>
                     </mat-card-actions>
                 </mat-card>
