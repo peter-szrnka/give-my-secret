@@ -26,7 +26,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -98,7 +97,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 		} else {
 			when(converter.toEntity(any(GmsUserDetails.class), any(UserEntity.class))).thenReturn(mockEntity);
 		}
-		when(repository.save(eq(mockEntity))).thenReturn(mockEntity);
+		when(repository.save(mockEntity)).thenReturn(mockEntity);
 		when(repository.getAllUserNames()).thenReturn(List.of(mockUser.getUsername(), nonExistingUser.getUsername()));
 
 		// act
@@ -128,7 +127,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(mockUser));
 		when(repository.findByUsername("username1")).thenReturn(Optional.empty());
 		when(converter.toEntity(any(GmsUserDetails.class), isNull())).thenReturn(mockEntity);
-		when(repository.save(eq(mockEntity))).thenReturn(mockEntity);
+		when(repository.save(mockEntity)).thenReturn(mockEntity);
 		when(repository.getAllUserNames()).thenReturn(List.of());
 
 		// act
@@ -139,6 +138,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 		assertEquals(1, response.getFirst());
 		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));
 		verify(repository).findByUsername("username1");
+		verify(repository).save(mockEntity);
 		verify(converter).toEntity(any(GmsUserDetails.class), isNull());
 	}
 
