@@ -1,6 +1,7 @@
 package io.github.gms.auth.ldap;
 
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import org.springframework.ldap.core.AttributesMapper;
 
@@ -35,6 +36,7 @@ public class LDAPAttributesMapper implements AttributesMapper<GmsUserDetails> {
 				.authorities(getAttributeCollection(attributes))
 				.mfaEnabled("true".equals(getAttribute(attributes, LDAP_PROPERTY_MFA_ENABLED)))
 				.accountNonLocked("ACTIVE".equals(getAttribute(attributes, LDAP_PROPERTY_STATUS)))
+				.status(EntityStatus.getByName(getAttribute(attributes, LDAP_PROPERTY_STATUS)))
 				.build();
 	}
 	

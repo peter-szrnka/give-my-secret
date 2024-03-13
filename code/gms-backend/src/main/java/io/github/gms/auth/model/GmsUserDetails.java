@@ -1,5 +1,6 @@
 package io.github.gms.auth.model;
 
+import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,7 @@ public class GmsUserDetails implements UserDetails {
 	private Boolean enabled = true;
 	private boolean mfaEnabled;
 	private String mfaSecret;
+	private EntityStatus status;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

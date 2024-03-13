@@ -70,7 +70,7 @@ public class LdapSyncServiceImpl implements LdapSyncService {
 	}
 
 	private void blockUser(String username, AtomicInteger deletedCounter) {
-		repository.blockUser(username);
+		repository.markUserAsDeleted(username);
 		deletedCounter.incrementAndGet();
 	}
 

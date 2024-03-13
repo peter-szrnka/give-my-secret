@@ -43,11 +43,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	@Query("SELECT u.id from UserEntity u where u.username = :username")
 	Optional<Long> getIdByUsername(@Param("username") String username);
 
-	@Query("SELECT u.username from UserEntity u")
+	@Query("SELECT u.username from UserEntity u where u.status!='TO_BE_DELETED'")
 	List<String> getAllUserNames();
 
 	@Modifying
 	@Transactional
-	@Query("UPDATE UserEntity u set u.status='BLOCKED' where u.username = :username")
-	void blockUser(@Param("username") String username);
+	@Query("UPDATE UserEntity u set u.status='TO_BE_DELETED' where u.username = :username and u.status!='TO_BE_DELETED'")
+	void markUserAsDeleted(@Param("username") String username);
 }

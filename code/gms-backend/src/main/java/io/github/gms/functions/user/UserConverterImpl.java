@@ -121,7 +121,7 @@ public class UserConverterImpl implements UserConverter {
 	public UserEntity toEntity(GmsUserDetails foundUser, UserEntity existingEntity) {
 		UserEntity entity = existingEntity == null ? new UserEntity() : existingEntity;
 
-		entity.setStatus(EntityStatus.ACTIVE);
+		entity.setStatus(foundUser.getStatus());
 		entity.setName(foundUser.getName());
 		entity.setUsername(foundUser.getUsername());
 		entity.setCredential(getCredential(foundUser));
