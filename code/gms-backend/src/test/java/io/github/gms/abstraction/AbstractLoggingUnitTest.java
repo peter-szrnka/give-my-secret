@@ -24,7 +24,7 @@ public abstract class AbstractLoggingUnitTest extends AbstractUnitTest {
 	}
 	
 	@AfterEach
-	public void teardown() {
+	public void tearDown() {
 		MDC.remove(MdcParameter.USER_ID.getDisplayName());
 		logAppender.list.clear();
 		logAppender.stop();

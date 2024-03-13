@@ -486,6 +486,19 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(0, userEntityArgumentCaptor.getValue().getFailedAttempts());
 	}
 
+	@Test
+	void shouldSkipResetLoginAttempt() {
+		// arrange
+		when(repository.findByUsername("user1")).thenReturn(Optional.empty());
+
+		// act
+		service.resetLoginAttempt("user1");
+
+		// assert
+		verify(repository, never()).save(any(UserEntity.class));
+		verify(repository).findByUsername("user1");
+	}
+
 	@ParameterizedTest
 	@MethodSource("isBlockedTestData")
 	void isUserBlocked(EntityStatus inputStatus, boolean expectedResult) {

@@ -6,7 +6,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { Data, ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { Observable, of } from "rxjs";
+import { Observable, ReplaySubject, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { FORM_GROUP_MOCK } from "../../common/form-helper.spec";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
@@ -32,6 +32,7 @@ describe('UserDetailComponent', () => {
     let sharedDataService : any;
     let activatedRoute : any = {};
     let formBuilder : any;
+    let authModeSubject: ReplaySubject<string>;
     let splashScreenStateService: any = {};
 
     const configureTestBed = () => {
@@ -57,12 +58,13 @@ describe('UserDetailComponent', () => {
     };
 
     beforeEach(() => {
+        authModeSubject = new ReplaySubject<string>();
         router = {
 
         };
         sharedDataService = {
             refreshCurrentUserInfo: jest.fn(),
-            authModeSubject$: jest.fn().mockReturnValue(of("db"))
+            authModeSubject$: authModeSubject
         };
 
         dialog = {
@@ -163,6 +165,7 @@ describe('UserDetailComponent', () => {
         configureTestBed();
 
         // act
+        authModeSubject.next("db");
         component.add({ value : "ROLE_VIEWER", chipInput : chipInputMock } as MatChipInputEvent);
         component.remove("ROLE_VIEWER");
         component.remove("FAKE_ROLE");

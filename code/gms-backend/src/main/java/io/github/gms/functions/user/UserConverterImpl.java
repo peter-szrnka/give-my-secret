@@ -12,7 +12,6 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -113,7 +112,7 @@ public class UserConverterImpl implements UserConverter {
 	}
 
 	@Override
-	public UserDetails addIdToUserDetails(GmsUserDetails foundUser, Long id) {
+	public GmsUserDetails addIdToUserDetails(GmsUserDetails foundUser, Long id) {
 		foundUser.setUserId(id);
 		return foundUser;
 	}

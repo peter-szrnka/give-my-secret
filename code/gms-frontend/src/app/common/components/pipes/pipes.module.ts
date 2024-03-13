@@ -1,5 +1,5 @@
 
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { MomentPipe } from "./date-formatter.pipe";
@@ -17,6 +17,6 @@ import { NavButtonVisibilityPipe } from "./nav-button-visibility.pipe";
     exports : [
       MomentPipe, NavButtonVisibilityPipe
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
   })
   export class PipesModule { }

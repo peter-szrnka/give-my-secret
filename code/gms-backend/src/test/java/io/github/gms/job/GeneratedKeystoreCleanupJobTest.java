@@ -2,13 +2,12 @@ package io.github.gms.job;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.job.GeneratedKeystoreCleanupJob;
 import io.github.gms.functions.keystore.KeystoreFileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -19,7 +18,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class GeneratedKeystoreCleanupJobTest  extends AbstractLoggingUnitTest  {
+class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
 
     private KeystoreFileService service;
     private GeneratedKeystoreCleanupJob job;
@@ -59,7 +58,7 @@ class GeneratedKeystoreCleanupJobTest  extends AbstractLoggingUnitTest  {
 
         // assert
         assertFalse(logAppender.list.isEmpty());
-        assertEquals("1 temporary keystore(s) deleted", logAppender.list.get(0).getFormattedMessage());
+        assertLogContains(logAppender, "1 temporary keystore(s) deleted");
         verify(service).deleteTempKeystoreFiles();
     }
 }
