@@ -1,17 +1,12 @@
 package io.github.gms.auth.ldap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.functions.user.UserConverter;
+import io.github.gms.functions.user.UserRepository;
+import io.github.gms.util.DemoData;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
@@ -21,11 +16,16 @@ import org.springframework.ldap.query.LdapQuery;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.util.DemoData;
-import io.github.gms.util.TestUtils;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -34,15 +34,17 @@ import io.github.gms.util.TestUtils;
 class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 
 	private LdapTemplate ldapTemplate;
-	private LdapSyncService ldapSyncService;
+	private UserRepository userRepository;
+	private UserConverter userConverter;
 	private LdapUserAuthServiceImpl service;
 
 	@BeforeEach
 	public void setup() {
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 		ldapTemplate = mock(LdapTemplate.class);
-		ldapSyncService = mock(LdapSyncService.class);
-		service = new LdapUserAuthServiceImpl(ldapTemplate, ldapSyncService);
+		userRepository = mock(UserRepository.class);
+		userConverter = mock(UserConverter.class);
+		service = new LdapUserAuthServiceImpl(ldapTemplate, userRepository, userConverter);
 	}
 
 	@Test
@@ -79,7 +81,8 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		// arrange
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(mockUser));
-		when(ldapSyncService.saveUserIfRequired(anyString(), eq(mockUser))).thenReturn(mockUser);
+		when(userConverter.addIdToUserDetails(mockUser, DemoData.USER_1_ID)).thenReturn(mockUser);
+		when(userRepository.getIdByUsername("test")).thenReturn(Optional.of(DemoData.USER_1_ID));
 
 		// act
 		UserDetails response = service.loadUserByUsername("test");
@@ -88,6 +91,6 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		assertNotNull(response);
 		assertEquals(DemoData.USERNAME1, response.getUsername());
 		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));
-		verify(ldapSyncService).saveUserIfRequired(anyString(), eq(mockUser));
+		verify(userConverter).addIdToUserDetails(mockUser, DemoData.USER_1_ID);
 	}
 }

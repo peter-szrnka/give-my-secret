@@ -1,9 +1,7 @@
 package io.github.gms.auth.ldap;
 
-import dev.samstevens.totp.secret.DefaultSecretGenerator;
-import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.functions.user.UserConverter;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,18 +10,14 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.query.LdapQueryBuilder;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.CACHE_USER;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
-import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 
 /**
@@ -35,66 +29,52 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 @Profile(value = { CONFIG_AUTH_TYPE_LDAP })
 public class LdapSyncServiceImpl implements LdapSyncService {
 
-    private final Clock clock;
 	private final LdapTemplate ldapTemplate;
     private final UserRepository repository;
-    private final boolean storeLdapCredential;
+	private final UserConverter converter;
 	private final String authType;
 
     public LdapSyncServiceImpl(
-			Clock clock,
 			LdapTemplate ldapTemplate,
 			UserRepository repository,
-			@Value("${config.store.ldap.credential:false}") boolean storeLdapCredential,
+			UserConverter converter,
 			@Value("${config.auth.type}") String authType
 	) {
-        this.clock = clock;
 		this.ldapTemplate = ldapTemplate;
         this.repository = repository;
-        this.storeLdapCredential = storeLdapCredential;
+		this.converter = converter;
 		this.authType = authType;
     }
 
 	@Override
 	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
-	public void synchronizeUsers() {
+	public int synchronizeUsers() {
 		if (!SELECTED_AUTH_LDAP.equals(authType)) {
-			return;
+			return 0;
 		}
+
 		List<GmsUserDetails> result = ldapTemplate.search(LdapQueryBuilder.query().where("uid").like("*"),
 				new LDAPAttributesMapper());
 
+		AtomicInteger counter = new AtomicInteger(0);
+		result.forEach(item -> saveOrUpdateUser(item, counter));
+
 		// TODO Handle users missing from LDAP -> Block or delete?
-		result.forEach(this::saveOrUpdateUser);
+
+		return counter.get();
 	}
 
-    private void saveOrUpdateUser(GmsUserDetails foundUser) {
-        repository.findByUsername(foundUser.getUsername()).ifPresentOrElse(userEntity -> saveUser(foundUser, userEntity), () ->
+    private void saveOrUpdateUser(GmsUserDetails foundUser, AtomicInteger counter) {
+        repository.findByUsername(foundUser.getUsername()).ifPresentOrElse(existingEntity -> saveUser(foundUser, existingEntity), () ->
 				saveUser(foundUser, null));
+		counter.incrementAndGet();
     }
 
-	private void saveUser(GmsUserDetails foundUser, UserEntity userEntity) {
-		UserEntity entity = userEntity == null ? new UserEntity() : userEntity;
-
-		entity.setStatus(EntityStatus.ACTIVE);
-		entity.setName(foundUser.getName());
-		entity.setUsername(foundUser.getUsername());
-		entity.setCredential(getCredential(foundUser));
-		entity.setCreationDate(ZonedDateTime.now(clock));
-		entity.setEmail(foundUser.getEmail());
-		entity.setRoles(foundUser.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-				.collect(Collectors.joining(",")));
-		entity.setMfaEnabled(foundUser.isMfaEnabled());
-		SecretGenerator secretGenerator = new DefaultSecretGenerator();
-		entity.setMfaSecret(secretGenerator.generate());
+	private void saveUser(GmsUserDetails foundUser, UserEntity existingEntity) {
+		UserEntity entity = converter.toEntity(foundUser, existingEntity);
 		entity = repository.save(entity);
 
 		foundUser.setUserId(entity.getId());
 		log.info("User data has been saved into DB for user={}", foundUser.getUsername());
-	}
-
-    private String getCredential(GmsUserDetails foundUser) {
-		return storeLdapCredential ? foundUser.getCredential().replace(LDAP_CRYPT_PREFIX, "")
-				: "*PROVIDED_BY_LDAP*";
 	}
 }

@@ -53,6 +53,12 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 	@Override
 	public AuthenticationResponse authenticate(String username, String credential) {
 		try {
+			if (userService.isBlocked(username)) {
+				return AuthenticationResponse.builder()
+						.phase(AuthResponsePhase.BLOCKED)
+						.build();
+			}
+
 			Authentication authenticate = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
 			GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();

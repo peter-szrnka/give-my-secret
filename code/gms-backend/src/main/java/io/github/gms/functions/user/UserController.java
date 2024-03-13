@@ -113,7 +113,7 @@ public class UserController extends AbstractController<UserService> {
 
 	@GetMapping("/sync")
 	@PreAuthorize(ROLE_ADMIN)
-	public ResponseEntity<Boolean> synchronizeUsers() {
+	public ResponseEntity<Void> synchronizeUsers() {
 		ldapSyncService.synchronizeUsers();
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

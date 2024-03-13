@@ -1,30 +1,24 @@
 package io.github.gms.functions.user;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import dev.samstevens.totp.exceptions.QrGenerationException;
 import io.github.gms.abstraction.AbstractClientControllerTest;
-import io.github.gms.functions.user.UserController;
+import io.github.gms.auth.ldap.LdapSyncService;
+import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.util.TestUtils;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 
-import dev.samstevens.totp.exceptions.QrGenerationException;
-import io.github.gms.functions.user.ChangePasswordRequestDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.user.SaveUserRequestDto;
-import io.github.gms.functions.user.UserDto;
-import io.github.gms.functions.user.UserListDto;
-import io.github.gms.functions.user.UserService;
-import io.github.gms.util.TestUtils;
-import lombok.SneakyThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test of {@link UserController}
@@ -33,10 +27,13 @@ import lombok.SneakyThrows;
  */
 class UserControllerTest extends AbstractClientControllerTest<UserService, UserController> {
 
+    private LdapSyncService ldapSyncService;
+
     @BeforeEach
     void setupTest() {
-        service = Mockito.mock(UserService.class);
-        controller = new UserController(service);
+        service = mock(UserService.class);
+        ldapSyncService = mock(LdapSyncService.class);
+        controller = new UserController(service, ldapSyncService);
     }
 
     @Test
@@ -186,5 +183,17 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
         assertEquals(200, response.getStatusCode().value());
         assertEquals(true, response.getBody());
         verify(service).isMfaActive();
+    }
+
+    @Test
+    void shouldSyncUsers() {
+
+        // act
+        ResponseEntity<Void> response = controller.synchronizeUsers();
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        verify(ldapSyncService).synchronizeUsers();
     }
 }

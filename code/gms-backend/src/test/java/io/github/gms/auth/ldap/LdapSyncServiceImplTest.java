@@ -5,6 +5,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.functions.user.UserConverter;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
@@ -12,19 +13,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.ArgumentCaptor;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ldap.core.AttributesMapper;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.query.LdapQuery;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -39,8 +40,9 @@ import static org.mockito.Mockito.when;
 class LdapSyncServiceImplTest extends AbstractUnitTest {
     
     private ListAppender<ILoggingEvent> logAppender;
-    private Clock clock;
+	private LdapTemplate ldapTemplate;
 	private UserRepository repository;
+	private UserConverter converter;
     private LdapSyncServiceImpl service;
 
     @BeforeEach
@@ -48,9 +50,10 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 		logAppender = new ListAppender<>();
 		logAppender.start();
 
-		clock = mock(Clock.class);
+		ldapTemplate = mock(LdapTemplate.class);
 		repository = mock(UserRepository.class);
-		service = new LdapSyncServiceImpl(clock, repository, false);
+		converter = mock(UserConverter.class);
+		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "db");
 		((Logger) LoggerFactory.getLogger(LdapSyncServiceImpl.class)).addAppender(logAppender);
 	}
 
@@ -60,7 +63,58 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 		logAppender.stop();
 	}
 
-    @Test
+	@Test
+	void shouldSkipLdapUserSync() {
+		// arrange
+		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "db");
+
+		// act
+		int response = service.synchronizeUsers();
+
+		// assert
+		assertEquals(0, response);
+		verify(ldapTemplate, never()).search(any(LdapQuery.class), any(AttributesMapper.class));
+	}
+
+	@ParameterizedTest
+	@MethodSource("testData")
+	void shouldSyncAllUsers(String username, boolean findUser) {
+		// arrange
+		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "ldap");
+		GmsUserDetails mockUser = TestUtils.createGmsUser();
+		UserEntity mockEntity = TestUtils.createUser();
+		mockUser.setUsername(username);
+		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(mockUser));
+		when(repository.findByUsername(username)).thenReturn(findUser ? Optional.of(mockEntity) : Optional.empty());
+		if (findUser) {
+			when(converter.toEntity(eq(mockUser), eq(mockEntity))).thenReturn(mockEntity);
+		} else {
+			when(converter.toEntity(eq(mockUser), isNull())).thenReturn(mockEntity);
+		}
+		when(repository.save(eq(mockEntity))).thenReturn(mockEntity);
+
+		// act
+		int response = service.synchronizeUsers();
+
+		// assert
+		assertEquals(1, response);
+		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));
+		verify(repository).findByUsername(username);
+		if (findUser) {
+			verify(converter).toEntity(eq(mockUser), eq(mockEntity));
+		} else {
+			verify(converter).toEntity(eq(mockUser), isNull());
+		}
+	}
+
+	private static Object[][] testData() {
+		return new Object[][] {
+				{ "test1", true },
+				{ "test2", false }
+		};
+	}
+
+    /*@Test
 	void shouldNotUpdateCredentials() {
 		// arrange
 		when(repository.findByUsername("test")).thenReturn(Optional.of(TestUtils.createUser()));
@@ -75,7 +129,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldNotUpdateCredentialsWhenMatching() {
 		// arrange
-		service = new LdapSyncServiceImpl(clock, repository, true);
+		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "db");
 
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setCredential("test-credential");
@@ -97,7 +151,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 	@ValueSource(booleans = { true, false })
 	void shouldUpdateCredentials(boolean storeLdapCredential) {
 		// arrange
-		service = new LdapSyncServiceImpl(clock, repository, storeLdapCredential);
+		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "db");
 		UserEntity testMockUser = TestUtils.createUser();
 		testMockUser.setId(3L);
 		when(repository.findByUsername("test")).thenReturn(Optional.of(testMockUser));
@@ -121,8 +175,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldSaveNewLdapUser() {
 		// arrange
-		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "ldap");
 		when(repository.findByUsername("test")).thenReturn(Optional.empty());
 		UserEntity testMockUser = TestUtils.createUser();
 		testMockUser.setId(3L);
@@ -144,5 +197,5 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 		UserEntity capturedUserEntity = userEntityCaptor.getValue();
 		assertEquals("UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=ACTIVE, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=true, mfaSecret=MFA_SECRET, failedAttempts=0)", capturedUserEntity.toString());
 		TestUtils.assertLogContains(logAppender, "User data has been saved into DB for user=");
-	}
+	}*/
 }

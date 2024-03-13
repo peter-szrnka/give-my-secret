@@ -6,5 +6,5 @@ package io.github.gms.auth.ldap;
  */
 public interface LdapSyncService {
 
-    void synchronizeUsers();
+    int synchronizeUsers();
 }

@@ -2,23 +2,15 @@ package io.github.gms.functions.user;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.functions.user.UserServiceImpl;
-import io.github.gms.functions.user.UserConverter;
-import io.github.gms.functions.user.ChangePasswordRequestDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.user.SaveUserRequestDto;
-import io.github.gms.functions.user.UserDto;
 import io.github.gms.common.dto.UserInfoDto;
-import io.github.gms.functions.user.UserListDto;
-import io.github.gms.functions.user.UserEntity;
-import io.github.gms.functions.user.UserRepository;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.service.JwtClaimService;
+import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
@@ -44,6 +36,7 @@ import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.util.TestUtils.assertLogContains;
+import static io.github.gms.util.TestUtils.assertLogMissing;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -420,10 +413,12 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		when(repository.findByUsername("user1")).thenReturn(Optional.empty());
 
 		// act
-		GmsException exception = assertThrows(GmsException.class, () -> service.updateLoginAttempt("user1"));
+		service.updateLoginAttempt("user1");
 
 		// assert
-		assertEquals("User not found!", exception.getMessage());
+		verify(repository).findByUsername("user1");
+		assertLogMissing(logAppender, "User already blocked");
+		verify(repository, never()).save(any(UserEntity.class));
 	}
 
 	@Test
