@@ -61,7 +61,8 @@ describe('UserDetailComponent', () => {
 
         };
         sharedDataService = {
-            refreshCurrentUserInfo: jest.fn()
+            refreshCurrentUserInfo: jest.fn(),
+            authModeSubject$: jest.fn().mockReturnValue(of("db"))
         };
 
         dialog = {
