@@ -15,6 +15,7 @@ import javax.naming.directory.Attributes;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_CN;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_CREDENTIAL;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_EMAIL;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_MFA_ENABLED;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_ROLE;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_STATUS;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_UID;
@@ -43,6 +44,7 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 		mockAttribute(input, LDAP_PROPERTY_UID, "My User", true);
 		mockAttribute(input, LDAP_PROPERTY_CREDENTIAL, "Secret1!", true);
 		mockAttribute(input, LDAP_PROPERTY_EMAIL, "my.email@email.com", false);
+		mockAttribute(input, LDAP_PROPERTY_MFA_ENABLED, "false", true);
 		mockAttribute(input, LDAP_PROPERTY_STATUS, "ACTIVE", true);
 		mockAttributeCollection(input, returnRoles);
 
