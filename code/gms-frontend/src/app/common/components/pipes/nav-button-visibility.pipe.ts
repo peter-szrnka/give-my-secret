@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import moment from "moment";
 import { ButtonConfig } from "../nav-back/button-config";
 
 /**
