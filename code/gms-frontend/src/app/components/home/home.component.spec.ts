@@ -46,7 +46,8 @@ describe('HomeComponent', () => {
             check : jest.fn(),
             userSubject$: mockSubject,
             getUserInfo : jest.fn(),
-            clearData : jest.fn()
+            clearData : jest.fn(),
+            authModeSubject$: jest.fn().mockReturnValue(of("db"))
         };
 
         homeService = {

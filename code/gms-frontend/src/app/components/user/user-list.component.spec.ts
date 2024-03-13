@@ -45,7 +45,8 @@ describe('UserListComponent', () => {
     beforeEach(async () => {
         sharedDataService = {
             getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            refreshCurrentUserInfo: jest.fn(),
+            authModeSubject$: jest.fn().mockReturnValue(of("db"))
         };
 
         dialog = {

@@ -30,7 +30,7 @@ public class SystemServiceImpl implements SystemService {
 	// It will be set with setter injection
 	private BuildProperties buildProperties;
 
-	public SystemServiceImpl(UserRepository userRepository, Clock clock, @Value("config.auth.type") String authType) {
+	public SystemServiceImpl(UserRepository userRepository, Clock clock, @Value("${config.auth.type}") String authType) {
 		this.userRepository = userRepository;
 		this.clock = clock;
 		this.authType = authType;

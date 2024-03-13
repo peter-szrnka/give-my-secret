@@ -29,6 +29,8 @@ class SystemStatusIntegrationTest extends AbstractIntegrationTest {
 		ResponseEntity<SystemStatusDto> response = executeHttpGet("/system/status", requestEntity, SystemStatusDto.class);
 		
 		// assert
+		assertNotNull(response);
+		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(OK, response.getBody().getStatus());
 		assertNotNull(response.getBody().getVersion());

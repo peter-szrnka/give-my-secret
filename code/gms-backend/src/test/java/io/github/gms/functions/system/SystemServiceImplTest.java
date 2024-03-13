@@ -49,13 +49,13 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 		buildProperties = mock(BuildProperties.class);
 
 		service = new SystemServiceImpl(userRepository, clock, "db");
-		service.setBuildProperties(buildProperties);
 	}
 	
 	@ParameterizedTest
 	@ValueSource(strings = { "NEED_SETUP", OK })
 	void shouldReturnSystemStatus(String mockResponse) {
 		service = new SystemServiceImpl(userRepository, clock, "db");
+		service.setBuildProperties(buildProperties);
 		// arrange
 		when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
 		when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
@@ -76,6 +76,7 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 	@MethodSource("inputData")
 	void shouldReturnOkWithDifferentAuthMethod(String selectedAuth, boolean hasBuildProperties, String expectedVersion) {
 		service = new SystemServiceImpl(userRepository, clock, selectedAuth);
+		service.setBuildProperties(buildProperties);
 
 		if (hasBuildProperties) {
 			when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
