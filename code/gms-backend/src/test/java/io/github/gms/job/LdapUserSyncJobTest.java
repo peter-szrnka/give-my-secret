@@ -4,8 +4,10 @@ import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.ldap.LdapSyncService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.util.Pair;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -34,17 +36,19 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
         ((Logger) LoggerFactory.getLogger(LdapUserSyncJob.class)).addAppender(logAppender);
     }
 
-    @Test
-    void shouldProcess() {
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2})
+    void shouldProcess(int deletedUserCount) {
         // arrange
-        when(service.synchronizeUsers()).thenReturn(2);
+        when(service.synchronizeUsers()).thenReturn(Pair.of(2, deletedUserCount));
 
         // act
         job.execute();
 
         // assert
         assertFalse(logAppender.list.isEmpty());
-        assertLogContains(logAppender, "2 users(s) synchronized");
+        assertLogContains(logAppender, "2 users(s) synchronized and 1 of them ha" + (deletedUserCount == 1 ? "s" : "ve")
+                + " been removed from the database.");
         verify(service).synchronizeUsers();
     }
 }

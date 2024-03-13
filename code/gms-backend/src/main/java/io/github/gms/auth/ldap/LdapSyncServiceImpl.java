@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.util.Pair;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.stereotype.Service;
@@ -48,9 +49,9 @@ public class LdapSyncServiceImpl implements LdapSyncService {
 
 	@Override
 	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
-	public int synchronizeUsers() {
+	public Pair<Integer, Integer> synchronizeUsers() {
 		if (!SELECTED_AUTH_LDAP.equals(authType)) {
-			return 0;
+			return Pair.of(0, 0);
 		}
 
 		List<GmsUserDetails> result = ldapTemplate.search(LdapQueryBuilder.query().where("uid").like("*"),
@@ -59,9 +60,18 @@ public class LdapSyncServiceImpl implements LdapSyncService {
 		AtomicInteger counter = new AtomicInteger(0);
 		result.forEach(item -> saveOrUpdateUser(item, counter));
 
-		// TODO Handle users missing from LDAP -> Block or delete?
+		AtomicInteger deletedCounter = new AtomicInteger(0);
+		List<String> usernamesFromLdap = result.stream().map(GmsUserDetails::getUsername).toList();
+		repository.getAllUserNames().stream()
+				.filter(username -> !usernamesFromLdap.contains(username))
+				.forEach(username -> blockUser(username, deletedCounter));
 
-		return counter.get();
+		return Pair.of(counter.get(), deletedCounter.get());
+	}
+
+	private void blockUser(String username, AtomicInteger deletedCounter) {
+		repository.blockUser(username);
+		deletedCounter.incrementAndGet();
 	}
 
     private void saveOrUpdateUser(GmsUserDetails foundUser, AtomicInteger counter) {

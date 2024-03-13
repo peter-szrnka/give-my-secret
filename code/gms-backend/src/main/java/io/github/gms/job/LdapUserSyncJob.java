@@ -4,6 +4,7 @@ import io.github.gms.auth.ldap.LdapSyncService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 
 @Slf4j
@@ -15,7 +16,8 @@ public class LdapUserSyncJob {
 
     @Scheduled(cron = "0 /10 * * * ?")
     public void execute() {
-        int result = service.synchronizeUsers();
-        log.info("{} users(s) synchronized", result);
+        Pair<Integer, Integer> result = service.synchronizeUsers();
+        log.info("{} users(s) synchronized and {} of them {} been removed from the database.",
+                result.getFirst(), result.getSecond(), result.getSecond() > 1 ? "have" : "has");
     }
 }

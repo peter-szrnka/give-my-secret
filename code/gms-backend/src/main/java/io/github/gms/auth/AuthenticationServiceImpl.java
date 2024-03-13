@@ -63,7 +63,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
 			GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
 
-			if (!user.getAccountNonLocked()) { // User locked in LDAP
+			if (Boolean.FALSE.equals(user.getAccountNonLocked())) { // User locked in LDAP
 				return AuthenticationResponse.builder()
 						.phase(AuthResponsePhase.BLOCKED)
 						.build();
@@ -103,7 +103,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 
 			GmsUserDetails userDetails = (GmsUserDetails) userAuthService.loadUserByUsername(dto.getUsername());
 
-			if (!userDetails.getAccountNonLocked()) { // User locked in LDAP
+			if (Boolean.FALSE.equals(userDetails.getAccountNonLocked())) { // User locked in LDAP
 				return AuthenticationResponse.builder()
 						.phase(AuthResponsePhase.BLOCKED)
 						.build();
