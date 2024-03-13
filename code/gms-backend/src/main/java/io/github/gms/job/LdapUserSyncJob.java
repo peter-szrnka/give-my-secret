@@ -17,7 +17,7 @@ public class LdapUserSyncJob {
     @Scheduled(cron = "0 /10 * * * ?")
     public void execute() {
         Pair<Integer, Integer> result = service.synchronizeUsers();
-        log.info("{} users(s) synchronized and {} of them {} been removed from the database.",
+        log.info("{} user(s) synchronized and {} of them {} been removed from the database.",
                 result.getFirst(), result.getSecond(), result.getSecond() > 1 ? "have" : "has");
     }
 }
