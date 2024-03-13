@@ -94,6 +94,24 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
+	void shouldAuthenticateFailWhenUserIsLockedInLdap() {
+		// arrange
+		GmsUserDetails userDetails = TestUtils.createGmsUser();
+		userDetails.setAccountNonLocked(false);
+		when(userService.isBlocked("user")).thenReturn(false);
+		when(authenticationManager.authenticate(any()))
+				.thenReturn(new TestingAuthenticationToken(userDetails, "cred", List.of(new SimpleGrantedAuthority("ROLE_USER"))));
+
+		// act
+		AuthenticationResponse response = service.authenticate("user", "credential");
+
+		// assert
+		assertNotNull(response);
+		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
+		verify(userService).isBlocked("user");
+	}
+
+	@Test
 	void shouldAuthenticateFail() {
 		// arrange
 		when(userService.isBlocked("user")).thenReturn(false);
@@ -207,6 +225,23 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldVerifyFailWhenUserIsBlocked() {
 		// arrange
 		when(userService.isBlocked("user1")).thenReturn(true);
+
+		// act
+		AuthenticationResponse response = service.verify(TestUtils.createLoginVerificationRequestDto());
+
+		// assert
+		assertNotNull(response);
+		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
+		verify(userService).isBlocked("user1");
+	}
+
+	@Test
+	void shouldVerifyFailWhenUserIsLockedInLdap() {
+		// arrange
+		GmsUserDetails userDetails = TestUtils.createGmsUser();
+		userDetails.setAccountNonLocked(false);
+		when(userService.isBlocked("user1")).thenReturn(false);
+		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 
 		// act
 		AuthenticationResponse response = service.verify(TestUtils.createLoginVerificationRequestDto());

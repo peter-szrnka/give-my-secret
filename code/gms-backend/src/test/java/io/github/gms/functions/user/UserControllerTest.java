@@ -10,6 +10,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.ResponseEntity;
 
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +35,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     void setupTest() {
         service = mock(UserService.class);
         ldapSyncService = mock(LdapSyncService.class);
-        controller = new UserController(service, ldapSyncService);
+        controller = new UserController(service, ldapSyncService, "db");
     }
 
     @Test
@@ -149,6 +151,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
         // assert
         assertNotNull(response);
+        assertNotNull(response.getBody());
         assertEquals(200, response.getStatusCode().value());
         assertEquals("QR-url", new String(response.getBody()));
         verify(service).getMfaQrCode();
@@ -185,15 +188,25 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
         verify(service).isMfaActive();
     }
 
-    @Test
-    void shouldSyncUsers() {
+    @ParameterizedTest
+    @MethodSource("inputData")
+    void shouldSyncUsers(String authType, int expectedReturnCode) {
+        // arrange
+        controller = new UserController(service, ldapSyncService, authType);
 
         // act
         ResponseEntity<Void> response = controller.synchronizeUsers();
 
         // assert
         assertNotNull(response);
-        assertEquals(200, response.getStatusCode().value());
-        verify(ldapSyncService).synchronizeUsers();
+        assertEquals(expectedReturnCode, response.getStatusCode().value());
+        verify(ldapSyncService, times(expectedReturnCode==200 ? 1 : 0)).synchronizeUsers();
+    }
+
+    private static Object[][] inputData() {
+        return new Object[][] {
+                {"db", 404},
+                {"ldap", 200}
+        };
     }
 }

@@ -53,7 +53,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 	@Override
 	public AuthenticationResponse authenticate(String username, String credential) {
 		try {
-			if (userService.isBlocked(username)) {
+			if (userService.isBlocked(username)) { // User locked in DB
 				return AuthenticationResponse.builder()
 						.phase(AuthResponsePhase.BLOCKED)
 						.build();
@@ -63,7 +63,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
 			GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
 
-			if (!user.getAccountNonLocked()) {
+			if (!user.getAccountNonLocked()) { // User locked in LDAP
 				return AuthenticationResponse.builder()
 						.phase(AuthResponsePhase.BLOCKED)
 						.build();
@@ -77,7 +77,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 			} 
 
 			Map<JwtConfigType, String> authenticationDetails = getAuthenticationDetails(user);
-			//userService.resetLoginAttempt(username);
+			userService.resetLoginAttempt(username);
 
 			return AuthenticationResponse.builder()
 				.currentUser(converter.toUserInfoDto(user, false))
@@ -86,7 +86,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 				.phase(AuthResponsePhase.COMPLETED)
 				.build();
 		} catch (Exception ex) {
-			//userService.updateLoginAttempt(username);
+			userService.updateLoginAttempt(username);
 			log.warn("Login failed", ex);
 			return new AuthenticationResponse();
 		}
@@ -102,6 +102,12 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
             }
 
 			GmsUserDetails userDetails = (GmsUserDetails) userAuthService.loadUserByUsername(dto.getUsername());
+
+			if (!userDetails.getAccountNonLocked()) { // User locked in LDAP
+				return AuthenticationResponse.builder()
+						.phase(AuthResponsePhase.BLOCKED)
+						.build();
+			}
 
 			if (!verifier.isValidCode(userDetails.getMfaSecret(), dto.getVerificationCode())) {
 				userService.updateLoginAttempt(dto.getUsername());
