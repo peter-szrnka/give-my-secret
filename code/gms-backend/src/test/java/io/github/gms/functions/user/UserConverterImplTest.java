@@ -230,4 +230,22 @@ class UserConverterImplTest extends AbstractUnitTest {
 		assertNotNull(response);
 		assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
 	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
+	void shouldConvertUserDetailsWithExistingUser(boolean storeLdapCredential) {
+		// arrange
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		converter.setStoreLdapCredential(storeLdapCredential);
+		GmsUserDetails testUser = TestUtils.createGmsUser();
+		UserEntity existingEntity = TestUtils.createUser();
+
+		// act
+		UserEntity response = converter.toEntity(testUser, existingEntity);
+
+		// assert
+		assertNotNull(response);
+		assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
+	}
 }

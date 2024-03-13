@@ -1,22 +1,21 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormBuilder, FormsModule } from "@angular/forms";
-import { MatChipInputEvent } from "@angular/material/chips";
+import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { Data, ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, ReplaySubject, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { FORM_GROUP_MOCK } from "../../common/form-helper.spec";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { UserData } from "./model/user-data.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { Event } from "../event/model/event.model";
+import { EventService } from "../event/service/event-service";
+import { UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
-import { EventService } from "../event/service/event-service";
-import { Event } from "../event/model/event.model";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { MatChipInputEvent } from "@angular/material/chips";
 
 /**
  * @author Peter Szrnka
@@ -31,7 +30,6 @@ describe('UserDetailComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
-    let formBuilder : any;
     let authModeSubject: ReplaySubject<string>;
     let splashScreenStateService: any = {};
 
@@ -46,11 +44,10 @@ describe('UserDetailComponent', () => {
                 { provide : UserService, useValue : serviceMock },
                 { provide : MatDialog, useValue : dialog },
                 { provide : ActivatedRoute, useClass : activatedRoute },
-                { provide : FormBuilder, useValue : formBuilder },
                 { provide : EventService, useValue : eventServiceMock },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService }
             ]
-        });
+        }).compileComponents();
 
         fixture = TestBed.createComponent(UserDetailComponent);
         component = fixture.componentInstance;
@@ -96,8 +93,6 @@ describe('UserDetailComponent', () => {
             start: jest.fn(),
             stop: jest.fn()
         };
-
-        formBuilder = FORM_GROUP_MOCK;
     });
 
     it('should save new entity', () => {
@@ -131,6 +126,7 @@ describe('UserDetailComponent', () => {
         configureTestBed();
 
         // act
+        authModeSubject.next("db");
         component.add({ value : "ROLE_VIEWER", chipInput : chipInputMock } as MatChipInputEvent);
         component.remove("ROLE_VIEWER");
         component.remove("FAKE_ROLE");

@@ -34,7 +34,6 @@ export class HomeComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        console.info(this.systemAnnouncementsData);
         this.loading = 'LOADING';
         this.sharedData.userSubject$
             .pipe(mergeMap((user: User | undefined): Observable<HomeData> => this.processUser(user)))

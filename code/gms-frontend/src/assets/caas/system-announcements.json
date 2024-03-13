@@ -2,7 +2,7 @@
     {
         "id" : 4,
         "title" : "Improvements in LDAP mode",
-        "description" : "Major improvements and bugfixes done in the LDAP mode to remove any concerns.",
+        "description" : "Major improvements and bugfixes done in the LDAP mode to remove any concerns. However, currently user edition in LDAP mode is not supported.",
         "created" : "2024-03-12"
     }, {
         "id" : 3,

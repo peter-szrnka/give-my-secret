@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { MomentPipe } from "./date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "./nav-button-visibility.pipe";
+import { CommonModule } from "@angular/common";
 
 /**
  * @author Peter Szrnka
@@ -12,7 +13,7 @@ import { NavButtonVisibilityPipe } from "./nav-button-visibility.pipe";
     declarations: [ MomentPipe, NavButtonVisibilityPipe ],
     imports: [
         FormsModule,
-        BrowserModule,
+        CommonModule,
     ],
     exports : [
       MomentPipe, NavButtonVisibilityPipe
