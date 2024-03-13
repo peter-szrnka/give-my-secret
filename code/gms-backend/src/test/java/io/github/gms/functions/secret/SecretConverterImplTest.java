@@ -11,7 +11,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import io.github.gms.functions.secret.SecretConverterImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,11 +24,6 @@ import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SecretType;
-import io.github.gms.functions.secret.SaveSecretRequestDto;
-import io.github.gms.functions.secret.SecretDto;
-import io.github.gms.functions.secret.SecretListDto;
-import io.github.gms.functions.secret.ApiKeyRestrictionEntity;
-import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.util.TestUtils;
 
 /**

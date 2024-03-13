@@ -2,19 +2,27 @@ package io.github.gms.functions.api;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.MdcUtils;
 import io.github.gms.functions.apikey.ApiKeyEntity;
 import io.github.gms.functions.apikey.ApiKeyRepository;
+import io.github.gms.functions.iprestriction.IpRestrictionPattern;
+import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.secret.ApiKeyRestrictionEntity;
 import io.github.gms.functions.secret.ApiKeyRestrictionRepository;
 import io.github.gms.functions.secret.GetSecretRequestDto;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.user.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static io.github.gms.common.util.HttpUtils.getClientIpAddress;
 
 /**
  * @author Peter Szrnka
@@ -28,6 +36,8 @@ public class SecretPreparationServiceImpl implements SecretPreparationService {
     private final ApiKeyRepository apiKeyRepository;
     private final UserRepository userRepository;
     private final ApiKeyRestrictionRepository apiKeyRestrictionRepository;
+    private final IpRestrictionService ipRestrictionService;
+    private final HttpServletRequest httpServletRequest;
 
     @Override
     public SecretEntity getSecretEntity(GetSecretRequestDto dto) {
@@ -39,6 +49,21 @@ public class SecretPreparationServiceImpl implements SecretPreparationService {
         SecretEntity secretEntity = secretRepository.findByUserIdAndSecretIdAndStatus(apiKeyEntity.getUserId(),
                 dto.getSecretId(), EntityStatus.ACTIVE).orElseThrow(() -> {
             log.warn("Secret not found"); return new GmsException("Secret is not available!"); });
+
+        // Ip Restriction
+        List<IpRestrictionPattern> patterns = ipRestrictionService.getIpRestrictionsBySecret(MdcUtils.getUserId(), secretEntity.getId());
+
+        String ipAddress = getClientIpAddress(httpServletRequest);
+        log.info("Client IP address: {}", ipAddress);
+        patterns.forEach(pattern -> {
+            Pattern p = Pattern.compile(pattern.getIpPattern());
+            Matcher matcher = p.matcher(ipAddress);
+            if (!pattern.isAllow() && matcher.matches()) {
+                throw new GmsException("You are not allowed to get this secret from your IP address!");
+            } else if(!matcher.matches()) {
+                throw new GmsException("You are not allowed to get this secret from your IP address!");
+            }
+        });
 
         List<ApiKeyRestrictionEntity> restrictions = apiKeyRestrictionRepository
                 .findAllByUserIdAndSecretId(apiKeyEntity.getUserId(), secretEntity.getId());

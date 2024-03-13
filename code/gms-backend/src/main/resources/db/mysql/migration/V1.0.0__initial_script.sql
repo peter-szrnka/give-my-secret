@@ -7,7 +7,7 @@ CREATE TABLE gms_user (
 	roles VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	status VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	user_name VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
-	mfa_enabled INT NOT NULL DEFAULT 0,
+	mfa_enabled TINYINT NOT NULL DEFAULT 0,
     mfa_secret VARCHAR(32) NOT NULL COLLATE 'utf8mb4_general_ci',
     failed_attempts INT NOT NULL DEFAULT 0,
 	PRIMARY KEY (id) USING BTREE
@@ -68,8 +68,8 @@ CREATE TABLE gms_secret (
 	keystore_alias_id BIGINT NOT NULL,
 	last_rotated TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	last_updated TIMESTAMP NOT NULL DEFAULT current_timestamp(),
-	return_decrypted INT NOT NULL DEFAULT 1,
-	rotation_enabled INT NOT NULL DEFAULT 1,
+	return_decrypted TINYINT NOT NULL DEFAULT 1,
+	rotation_enabled TINYINT NOT NULL DEFAULT 1,
 	rotation_period VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	secret_id VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	status VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
@@ -119,6 +119,19 @@ CREATE TABLE gms_system_property (
 )
 COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
+CREATE TABLE gms_ip_restriction (
+	id BIGINT NOT NULL AUTO_INCREMENT,
+	user_id BIGINT NOT NULL,
+	secret_id VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	ip_pattern VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	allow TINYINT NOT NULL DEFAULT 0,
+	status VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+	last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+	PRIMARY KEY (id) USING BTREE
+)
+COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
+
 CREATE INDEX idx_gms_user ON gms_user(id);
 CREATE INDEX idx_gms_api_key ON gms_api_key(id);
 CREATE INDEX idx_gms_event ON gms_event(id);
@@ -129,6 +142,7 @@ CREATE INDEX idx_gms_announcement ON gms_announcement(id);
 CREATE INDEX idx_gms_message ON gms_message(id);
 CREATE INDEX idx_gms_api_kr ON gms_api_key_restriction(id);
 CREATE INDEX idx_gms_sys_prop ON gms_system_property(id);
+CREATE INDEX idx_gms_ip_restr ON gms_ip_restriction(id);
 
 CREATE UNIQUE INDEX idx_unq_gms_user ON gms_user(id);
 CREATE UNIQUE INDEX idx_unq_gms_api_key ON gms_api_key(id);
@@ -140,3 +154,4 @@ CREATE UNIQUE INDEX id_unq_gms_announcement ON gms_announcement(id);
 CREATE UNIQUE INDEX idx_unq_gms_message ON gms_message(id);
 CREATE UNIQUE INDEX idx_unq_gms_api_kr ON gms_api_key_restriction(id);
 CREATE UNIQUE INDEX idx_unq_gms_sys_prop ON gms_system_property(id);
+CREATE UNIQUE INDEX idx_unq_gms_ip_restr ON gms_ip_restriction(id);
