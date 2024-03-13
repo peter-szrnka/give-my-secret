@@ -135,7 +135,7 @@ describe("SecretService", () => {
       const expectedUrl = environment.baseUrl + "secure/user/1?enabled=true";
 
       // act
-      service.toggle(1, true).subscribe((res) => expect(res).toBeCalled());
+      service.toggle(1, true).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -148,7 +148,7 @@ describe("SecretService", () => {
       const expectedUrl = environment.baseUrl + "secure/user/toggle_mfa?enabled=" + input;
 
       // act
-      service.toggleMfa(input).subscribe((res) => expect(res).toBeCalled());
+      service.toggleMfa(input).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -161,7 +161,20 @@ describe("SecretService", () => {
       const expectedUrl = environment.baseUrl + "secure/user/mfa_active";
 
       // act
-      service.isMfaActive().subscribe((res) => expect(res).toBeCalled());
+      service.isMfaActive().subscribe((res) => expect(res).toHaveBeenCalled());
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('GET');
+      httpMock.verify();
+    });
+
+    it('should sync LDAP users', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/user/sync_ldap_users";
+
+      // act
+      service.manualLdapUserSync().subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);

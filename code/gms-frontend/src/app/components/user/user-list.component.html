@@ -2,6 +2,7 @@
   <h2>Users</h2>
 
   <nav-back [buttonConfig]="[{url:'/user/new', label:'Create new user +', primary : true, visibilityCondition: editEnabled === true }]"></nav-back>
+  <button mat-raised-button color="primary" *ngIf="editEnabled === false" (click)="manualLdapUserSync()">Synchronize users with LDAP</button>
 
   <div class="information" *ngIf="editEnabled === false">
     Users are managed in LDAP

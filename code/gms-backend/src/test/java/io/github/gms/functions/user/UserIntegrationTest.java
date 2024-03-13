@@ -1,14 +1,10 @@
 package io.github.gms.functions.user;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.functions.apikey.ApiKeyDto;
-import io.github.gms.functions.user.ChangePasswordRequestDto;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.user.SaveUserRequestDto;
-import io.github.gms.functions.user.UserListDto;
-import io.github.gms.functions.user.UserEntity;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.functions.apikey.ApiKeyDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -153,5 +149,21 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		
 		UserEntity entity = userRepository.getReferenceById(DemoData.USER_1_ID);
 		assertNotNull(entity);
+	}
+
+	@Test
+	@Transactional
+	void testIsMfaActive() {
+		// arrange
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+
+		// act
+		ResponseEntity<Boolean> response = executeHttpGet("/mfa_active", requestEntity, Boolean.class);
+
+		// Assert
+		assertNotNull(response);
+		assertNotNull(response.getBody());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertFalse(response.getBody());
 	}
 }
