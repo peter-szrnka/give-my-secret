@@ -119,8 +119,9 @@ public class UserController extends AbstractController<UserService> {
 		return new ResponseEntity<>(service.isMfaActive(), HttpStatus.OK);
 	}
 
-	@GetMapping("/sync")
+	@GetMapping("/sync_ldap_users")
 	@PreAuthorize(ROLE_ADMIN)
+	@Audited(operation = EventOperation.SYNC_LDAP_USERS_MANUALLY)
 	public ResponseEntity<Void> synchronizeUsers() {
 		if (!SELECTED_AUTH_LDAP.equals(authType)) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

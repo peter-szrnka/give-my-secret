@@ -9,6 +9,7 @@ import { User } from "./model/user.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { UserService } from "./service/user-service";
 import { UserListComponent } from "./user-list.component";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -24,6 +25,7 @@ describe('UserListComponent', () => {
     let sharedDataService : any;
     let activatedRoute : any = {};
     let router : any;
+    let splashScreenService: any;
     let authModeSubject: ReplaySubject<string>;
     // Fixtures
     let fixture : ComponentFixture<UserListComponent>;
@@ -38,7 +40,8 @@ describe('UserListComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : UserService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
-                { provide : ActivatedRoute, useClass : activatedRoute }
+                { provide : ActivatedRoute, useClass : activatedRoute },
+                { provide : SplashScreenStateService, useValue: splashScreenService }
             ]
         });
     };
@@ -49,6 +52,11 @@ describe('UserListComponent', () => {
             getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
             refreshCurrentUserInfo: jest.fn(),
             authModeSubject$: authModeSubject
+        };
+
+        splashScreenService = {
+            start: jest.fn(),
+            stop: jest.fn()
         };
 
         dialog = {
@@ -75,7 +83,8 @@ describe('UserListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK"))
+            delete : jest.fn().mockReturnValue(of("OK")),
+            manualLdapUserSync: jest.fn().mockReturnValue(of("OK"))
         };
 
         router = {
@@ -147,8 +156,28 @@ describe('UserListComponent', () => {
         jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
+        component.manualLdapUserSync();
 
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+        expect(service.manualLdapUserSync).toHaveBeenCalledTimes(0);
+    });
+
+    it('Should sync LDAP users manually', async () => {
+        configureTestBed();
+        fixture = TestBed.createComponent(UserListComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+        authModeSubject.next("ldap");
+        expect(component).toBeTruthy();
+
+        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+
+        component.manualLdapUserSync();
+
+        expect(component.dialog.open).toHaveBeenCalled();
+        expect(component.router.navigate).toHaveBeenCalled();
+        expect(splashScreenService.start).toHaveBeenCalled();
+        expect(splashScreenService.stop).toHaveBeenCalled();
     });
 });
