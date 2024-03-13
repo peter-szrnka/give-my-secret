@@ -21,6 +21,7 @@ describe('HomeComponent', () => {
     let homeService : any;
     let mockHomeData: HomeData;
     let mockSubject : ReplaySubject<User | undefined>;
+    let authModeSubject: ReplaySubject<string>;
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
@@ -40,13 +41,16 @@ describe('HomeComponent', () => {
 
     beforeEach(() => {
         mockSubject = new ReplaySubject<User | undefined>();
+        authModeSubject = new ReplaySubject<string>();
+
 
         sharedData = {
             init : jest.fn(),
             check : jest.fn(),
             userSubject$: mockSubject,
             getUserInfo : jest.fn(),
-            clearData : jest.fn()
+            clearData : jest.fn(),
+            authModeSubject$: authModeSubject
         };
 
         homeService = {
@@ -79,6 +83,7 @@ describe('HomeComponent', () => {
         homeService.getData = jest.fn().mockReturnValue(of(mockHomeData))
         configTestBed();
         mockSubject.next(currentUser);
+        authModeSubject.next("db");
 
         // assert
         expect(component).toBeTruthy();
@@ -88,6 +93,7 @@ describe('HomeComponent', () => {
     it('should not load component for unknown user', () => {
         configTestBed();
         mockSubject.next(undefined);
+        authModeSubject.next("db");
 
         // assert
         expect(component).toBeTruthy();

@@ -3,18 +3,15 @@ package io.github.gms.functions.user;
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
-import io.github.gms.functions.user.UserConverterImpl;
-import io.github.gms.functions.user.SaveUserRequestDto;
-import io.github.gms.functions.user.UserDto;
-import io.github.gms.common.dto.UserInfoDto;
-import io.github.gms.functions.user.UserListDto;
-import io.github.gms.functions.user.UserEntity;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -201,5 +198,54 @@ class UserConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(dto);
 		assertEquals("UserInfoDto(id=null, name=null, username=username1, email=null, roles=[])", dto.toString());
+	}
+
+	@Test
+	void shouldAddIdToUserDetails() {
+		// arrange
+		GmsUserDetails testUser = TestUtils.createGmsUser();
+		testUser.setUserId(null);
+
+		// act
+		GmsUserDetails response = converter.addIdToUserDetails(testUser, 1L);
+
+		// assert
+		assertNotNull(response);
+		assertEquals(1L, response.getUserId());
+	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
+	void shouldConvertUserDetailsWithNewUser(boolean storeLdapCredential) {
+		// arrange
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		converter.setStoreLdapCredential(storeLdapCredential);
+		GmsUserDetails testUser = TestUtils.createGmsUser();
+
+		// act
+		UserEntity response = converter.toEntity(testUser, null);
+
+		// assert
+		assertNotNull(response);
+		assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
+	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
+	void shouldConvertUserDetailsWithExistingUser(boolean storeLdapCredential) {
+		// arrange
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		converter.setStoreLdapCredential(storeLdapCredential);
+		GmsUserDetails testUser = TestUtils.createGmsUser();
+		UserEntity existingEntity = TestUtils.createUser();
+
+		// act
+		UserEntity response = converter.toEntity(testUser, existingEntity);
+
+		// assert
+		assertNotNull(response);
+		assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
 	}
 }

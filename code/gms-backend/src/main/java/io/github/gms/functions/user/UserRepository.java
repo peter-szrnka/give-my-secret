@@ -3,9 +3,11 @@ package io.github.gms.functions.user;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,4 +39,15 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	@Cacheable
 	@Query("SELECT u.username from UserEntity u where u.id = :userId")
 	String getUsernameById(@Param(USER_ID) Long userId);
+
+	@Query("SELECT u.id from UserEntity u where u.username = :username")
+	Optional<Long> getIdByUsername(@Param("username") String username);
+
+	@Query("SELECT u.username from UserEntity u where u.status!='TO_BE_DELETED'")
+	List<String> getAllUserNames();
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE UserEntity u set u.status='TO_BE_DELETED' where u.username = :username and u.status!='TO_BE_DELETED'")
+	void markUserAsDeleted(@Param("username") String username);
 }

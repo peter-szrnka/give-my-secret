@@ -1,7 +1,11 @@
 <div>
   <h2>Users</h2>
 
-  <nav-back [buttonConfig]="[{url:'/user/new', label:'Create new user +', primary : true}]"></nav-back>
+  <nav-back [buttonConfig]="[{url:'/user/new', label:'Create new user +', primary : true, visibilityCondition: editEnabled === true }]"></nav-back>
+
+  <div class="information" *ngIf="editEnabled === false">
+    Users are managed in LDAP
+  </div>
 
   <mat-card class="simple-margin-top">
     <mat-card-content>
@@ -41,10 +45,13 @@
               <ng-container matColumnDef="operations">
                 <th mat-header-cell *matHeaderCellDef>Operations</th>
                 <td mat-cell *matCellDef="let element">&nbsp;
-                  <button mat-icon-button color="primary" class="show-large" [routerLink]="['/user/' + element.id]">
+                  <button *ngIf="editEnabled === false" mat-icon-button color="primary" class="show-large" [routerLink]="['/user/' + element.id]">
+                    <mat-icon aria-hidden="false">arrow_right_alt</mat-icon>
+                  </button>
+                  <button *ngIf="editEnabled === true" mat-icon-button color="primary" class="show-large" [routerLink]="['/user/' + element.id]">
                     <mat-icon aria-hidden="false">edit</mat-icon>
                   </button>
-                  <button *ngIf="element.id !== 1" mat-icon-button color="warn" class="show-large" (click)="promptDelete(element.id)">
+                  <button *ngIf="element.id !== 1 && editEnabled === true" mat-icon-button color="warn" class="show-large" (click)="promptDelete(element.id)">
                     <mat-icon aria-hidden="false">delete</mat-icon>
                   </button>
                     <button mat-icon-button class="show-small" [matMenuTriggerFor]="menu" aria-label="Operations menu">

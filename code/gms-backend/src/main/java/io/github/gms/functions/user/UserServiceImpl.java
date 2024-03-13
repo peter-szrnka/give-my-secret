@@ -7,18 +7,18 @@ import dev.samstevens.totp.qr.QrGenerator;
 import dev.samstevens.totp.qr.ZxingPngQrGenerator;
 import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.common.util.MdcUtils;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.service.JwtClaimService;
+import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.common.util.MdcUtils;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
 			.label(entity.getEmail())
 			.secret(entity.getMfaSecret())
 			.issuer("Give My Secret")
-			.algorithm(HashingAlgorithm.SHA1) // More on this below
+			.algorithm(HashingAlgorithm.SHA1)
 			.digits(6)
 			.period(30)
 			.build();
@@ -175,6 +175,10 @@ public class UserServiceImpl implements UserService {
 	public void updateLoginAttempt(String username) {
 		UserEntity user = getByUsername(username);
 
+		if (user == null) {
+			return;
+		}
+
 		if (EntityStatus.BLOCKED == user.getStatus()) {
 			log.info("User already blocked");
 			return;
@@ -193,13 +197,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void resetLoginAttempt(String username) {
 		UserEntity user = getByUsername(username);
+
+		if (user == null) {
+			return;
+		}
+
 		user.setFailedAttempts(0);
 		repository.save(user);
 	}
 
 	@Override
 	public boolean isBlocked(String username) {
-		return EntityStatus.BLOCKED == getByUsername(username).getStatus();
+		UserEntity user = getByUsername(username);
+		return user != null && EntityStatus.BLOCKED == user.getStatus();
 	}
 
 	private SaveEntityResponseDto saveUser(SaveUserRequestDto dto, boolean roleChangeEnabled) {
@@ -223,7 +233,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private UserEntity getByUsername(String username) {
-		return repository.findByUsername(username).orElseThrow(() -> new GmsException("User not found!"));
+		return repository.findByUsername(username).orElse(null);
 	}
 	
 	private void validateUserExistence(SaveUserRequestDto dto) {

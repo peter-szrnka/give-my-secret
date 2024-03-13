@@ -1,12 +1,15 @@
 package io.github.gms.functions.user;
 
+import io.github.gms.auth.ldap.LdapSyncService;
 import io.github.gms.common.abstraction.AbstractController;
+import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +30,7 @@ import static io.github.gms.common.util.Constants.PATH_LIST;
 import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 
 /**
  * @author Peter Szrnka
@@ -37,8 +41,16 @@ import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
 @AuditTarget(EventTarget.USER)
 public class UserController extends AbstractController<UserService> {
 
-	public UserController(UserService service) {
+	private final LdapSyncService ldapSyncService;
+	private final String authType;
+
+	public UserController(
+			UserService service,
+			@Autowired(required = false) LdapSyncService ldapSyncService,
+			@Value("${config.auth.type}") String authType) {
 		super(service);
+		this.ldapSyncService = ldapSyncService;
+		this.authType = authType;
 	}
 	
 	@PostMapping
@@ -105,5 +117,16 @@ public class UserController extends AbstractController<UserService> {
 	@PreAuthorize(ALL_ROLE)
 	public ResponseEntity<Boolean> isMfaActive() {
 		return new ResponseEntity<>(service.isMfaActive(), HttpStatus.OK);
+	}
+
+	@GetMapping("/sync")
+	@PreAuthorize(ROLE_ADMIN)
+	public ResponseEntity<Void> synchronizeUsers() {
+		if (!SELECTED_AUTH_LDAP.equals(authType)) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		ldapSyncService.synchronizeUsers();
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

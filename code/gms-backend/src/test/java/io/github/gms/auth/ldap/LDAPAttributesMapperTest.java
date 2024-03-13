@@ -1,27 +1,29 @@
 package io.github.gms.auth.ldap;
 
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.UserRole;
+import lombok.SneakyThrows;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_CN;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_CREDENTIAL;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_EMAIL;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_MFA_ENABLED;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_ROLE;
+import static io.github.gms.common.util.Constants.LDAP_PROPERTY_STATUS;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_UID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.UserRole;
-import lombok.SneakyThrows;
 
 /**
  * @author Peter Szrnka
@@ -42,6 +44,8 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 		mockAttribute(input, LDAP_PROPERTY_UID, "My User", true);
 		mockAttribute(input, LDAP_PROPERTY_CREDENTIAL, "Secret1!", true);
 		mockAttribute(input, LDAP_PROPERTY_EMAIL, "my.email@email.com", false);
+		mockAttribute(input, LDAP_PROPERTY_MFA_ENABLED, "false", true);
+		mockAttribute(input, LDAP_PROPERTY_STATUS, "ACTIVE", true);
 		mockAttributeCollection(input, returnRoles);
 
 		// act
@@ -53,6 +57,7 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 		assertEquals("user1", response.getName());
 		assertEquals("My User", response.getUsername());
 		assertEquals("Secret1!", response.getCredential());
+		assertEquals(EntityStatus.ACTIVE, response.getStatus());
 		assertTrue(response.getEmail().isEmpty());
 	}
 

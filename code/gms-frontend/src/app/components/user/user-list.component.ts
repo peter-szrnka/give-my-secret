@@ -18,6 +18,7 @@ import { BaseListComponent } from "../../common/components/abstractions/componen
 export class UserListComponent extends BaseListComponent<UserData, UserService> {
 
     userColumns: string[] = [ 'id','username', 'email' , 'status', 'roles', 'creationDate', 'operations' ];
+    editEnabled: boolean = true;
 
     constructor(
       override router : Router,
@@ -26,6 +27,12 @@ export class UserListComponent extends BaseListComponent<UserData, UserService> 
       public override dialog: MatDialog,
       override activatedRoute: ActivatedRoute) {
         super(router, sharedData, service, dialog, activatedRoute);
+    }
+
+    override async ngOnInit(): Promise<void> {
+        super.ngOnInit();
+
+        this.sharedData.authModeSubject$.subscribe(authMode => this.editEnabled = authMode === 'db');
     }
 
     getPageConfig(): PageConfig {

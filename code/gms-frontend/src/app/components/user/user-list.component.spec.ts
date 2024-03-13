@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { MatTableModule } from "@angular/material/table";
 import { ActivatedRoute, Data, Router } from "@angular/router";
-import { of, throwError } from "rxjs";
+import { ReplaySubject, of, throwError } from "rxjs";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { User } from "./model/user.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -24,6 +24,7 @@ describe('UserListComponent', () => {
     let sharedDataService : any;
     let activatedRoute : any = {};
     let router : any;
+    let authModeSubject: ReplaySubject<string>;
     // Fixtures
     let fixture : ComponentFixture<UserListComponent>;
 
@@ -43,9 +44,11 @@ describe('UserListComponent', () => {
     };
 
     beforeEach(async () => {
+        authModeSubject = new ReplaySubject<string>();
         sharedDataService = {
             getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            refreshCurrentUserInfo: jest.fn(),
+            authModeSubject$: authModeSubject
         };
 
         dialog = {
@@ -85,6 +88,7 @@ describe('UserListComponent', () => {
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        authModeSubject.next("db");
 
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
@@ -96,6 +100,7 @@ describe('UserListComponent', () => {
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        authModeSubject.next("db");
 
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
@@ -107,6 +112,7 @@ describe('UserListComponent', () => {
         component = fixture.componentInstance;
         jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         fixture.detectChanges();
+        authModeSubject.next("db");
 
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
@@ -117,6 +123,7 @@ describe('UserListComponent', () => {
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        authModeSubject.next("db");
 
         expect(component).toBeTruthy();
 
@@ -133,6 +140,7 @@ describe('UserListComponent', () => {
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        authModeSubject.next("db");
 
         expect(component).toBeTruthy();
 

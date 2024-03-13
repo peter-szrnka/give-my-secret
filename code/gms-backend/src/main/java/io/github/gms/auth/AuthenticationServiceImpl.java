@@ -53,7 +53,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 	@Override
 	public AuthenticationResponse authenticate(String username, String credential) {
 		try {
-			if (userService.isBlocked(username)) {
+			if (userService.isBlocked(username)) { // User locked in DB
 				return AuthenticationResponse.builder()
 						.phase(AuthResponsePhase.BLOCKED)
 						.build();
@@ -62,6 +62,12 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 			Authentication authenticate = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(username, credential));
 			GmsUserDetails user = (GmsUserDetails) authenticate.getPrincipal();
+
+			if (Boolean.FALSE.equals(user.getAccountNonLocked())) { // User locked in LDAP
+				return AuthenticationResponse.builder()
+						.phase(AuthResponsePhase.BLOCKED)
+						.build();
+			}
 
 			if (isMfaEnabled(user)) {
 				return AuthenticationResponse.builder()
@@ -96,6 +102,12 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
             }
 
 			GmsUserDetails userDetails = (GmsUserDetails) userAuthService.loadUserByUsername(dto.getUsername());
+
+			if (Boolean.FALSE.equals(userDetails.getAccountNonLocked())) { // User locked in LDAP
+				return AuthenticationResponse.builder()
+						.phase(AuthResponsePhase.BLOCKED)
+						.build();
+			}
 
 			if (!verifier.isValidCode(userDetails.getMfaSecret(), dto.getVerificationCode())) {
 				userService.updateLoginAttempt(dto.getUsername());

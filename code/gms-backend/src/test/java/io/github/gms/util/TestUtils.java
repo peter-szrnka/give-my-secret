@@ -558,6 +558,10 @@ public class TestUtils {
 		assertTrue(appender.list.stream().anyMatch(event -> event.getFormattedMessage().contains(expectedMessage)));
 	}
 
+	public static void assertLogMissing(ListAppender<ILoggingEvent> appender, String expectedMessage) {
+		assertTrue(appender.list.stream().noneMatch(event -> event.getFormattedMessage().contains(expectedMessage)));
+	}
+
 	public static <T extends Exception> void assertException(Class<T> cls, Executable executable,
 			String expectedMessage) {
 		try {

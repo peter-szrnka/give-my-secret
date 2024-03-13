@@ -25,6 +25,7 @@ export class HomeComponent implements OnInit {
     systemAnnouncementsData: SystemAnnouncement[] = systemAnnouncements;
     data: HomeData;
     loading: string = '';
+    editEnabled: boolean = false;
 
     constructor(
         public router: Router,
@@ -33,7 +34,6 @@ export class HomeComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        console.info(this.systemAnnouncementsData);
         this.loading = 'LOADING';
         this.sharedData.userSubject$
             .pipe(mergeMap((user: User | undefined): Observable<HomeData> => this.processUser(user)))
@@ -45,6 +45,7 @@ export class HomeComponent implements OnInit {
                 this.eventDataSource = new ArrayDataSource<Event>(this.data.events.resultList);
                 this.loading = 'LOADED';
             });
+        this.sharedData.authModeSubject$.subscribe(authMode => this.editEnabled = authMode === 'db');
     }
 
     private processUser(user: User | undefined): Observable<HomeData> {
