@@ -19,10 +19,10 @@ import java.time.ZonedDateTime;
 
 import static io.github.gms.common.util.Constants.ID;
 
-///**
-// * @author Peter Szrnka
-// * @since 1.0
-// */
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Data
 @Entity
 @Builder

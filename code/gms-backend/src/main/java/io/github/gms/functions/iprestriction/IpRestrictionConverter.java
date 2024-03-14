@@ -15,4 +15,6 @@ public interface IpRestrictionConverter {
     List<IpRestrictionPattern> toModelList(List<IpRestrictionEntity> entities);
 
     IpRestrictionEntity toEntity(IpRestrictionDto dto);
+
+    IpRestrictionDto toDto(IpRestrictionEntity entity);
 }

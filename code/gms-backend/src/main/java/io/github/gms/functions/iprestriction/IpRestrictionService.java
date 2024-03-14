@@ -1,5 +1,8 @@
 package io.github.gms.functions.iprestriction;
 
+import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
+
 import java.util.List;
 
 /**
@@ -7,6 +10,14 @@ import java.util.List;
  * @since 1.0
  */
 public interface IpRestrictionService {
+
+    SaveEntityResponseDto save(IpRestrictionDto dto);
+
+    IpRestrictionListDto list(PagingDto dto);
+
+    IpRestrictionDto getById(Long id);
+
+    void delete(Long id);
 
     void updateIpRestrictionsForSecret(Long secretId, List<IpRestrictionDto> ipRestrictions);
 

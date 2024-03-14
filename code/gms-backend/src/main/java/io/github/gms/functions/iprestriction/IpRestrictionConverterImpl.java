@@ -22,7 +22,7 @@ public class IpRestrictionConverterImpl implements IpRestrictionConverter {
     @Override
     public List<IpRestrictionDto> toDtoList(List<IpRestrictionEntity> results) {
         return results.stream()
-                        .map(IpRestrictionConverterImpl::toDto)
+                        .map(this::toDto)
                         .toList();
     }
 
@@ -52,7 +52,8 @@ public class IpRestrictionConverterImpl implements IpRestrictionConverter {
         return entity;
     }
 
-    private static IpRestrictionDto toDto(IpRestrictionEntity entity) {
+    @Override
+    public IpRestrictionDto toDto(IpRestrictionEntity entity) {
         return IpRestrictionDto.builder()
                 .id(entity.getId())
                 .allow(entity.isAllow())
