@@ -1,5 +1,6 @@
 package io.github.gms.functions.iprestriction;
 
+import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.common.util.MdcUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

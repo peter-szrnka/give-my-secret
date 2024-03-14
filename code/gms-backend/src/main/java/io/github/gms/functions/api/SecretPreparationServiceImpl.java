@@ -5,7 +5,7 @@ import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.HttpUtils;
 import io.github.gms.functions.apikey.ApiKeyEntity;
 import io.github.gms.functions.apikey.ApiKeyRepository;
-import io.github.gms.functions.iprestriction.IpRestrictionPattern;
+import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.secret.ApiKeyRestrictionEntity;
 import io.github.gms.functions.secret.ApiKeyRestrictionRepository;

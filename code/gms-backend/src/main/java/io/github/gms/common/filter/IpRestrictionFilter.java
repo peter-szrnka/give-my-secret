@@ -1,6 +1,6 @@
 package io.github.gms.common.filter;
 
-import io.github.gms.functions.iprestriction.IpRestrictionPattern;
+import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

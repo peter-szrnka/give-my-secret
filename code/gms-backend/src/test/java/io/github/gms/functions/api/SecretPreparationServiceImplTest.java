@@ -6,6 +6,7 @@ import ch.qos.logback.core.read.ListAppender;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.SecretType;
+import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.HttpUtils;
 import io.github.gms.functions.apikey.ApiKeyEntity;
@@ -145,7 +146,7 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
             ));
             when(ipRestrictionService.getIpRestrictionsBySecret(anyLong())).thenReturn(emptyList());
             httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
-                    .thenReturn("0:0:0:0:0:0:0:1");
+                    .thenReturn("127.0.0.1");
 
             // assert
             GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
@@ -176,7 +177,7 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
             ));
             when(ipRestrictionService.getIpRestrictionsBySecret(anyLong())).thenReturn(emptyList());
             httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
-                    .thenReturn("0:0:0:0:0:0:0:1");
+                    .thenReturn("127.0.0.1");
 
             // act
             SecretEntity response = service.getSecretEntity(dto);
@@ -204,6 +205,35 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
             when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of());
             when(ipRestrictionService.getIpRestrictionsBySecret(anyLong())).thenReturn(emptyList());
             httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
+                    .thenReturn("127.0.0.1");
+
+            // act
+            SecretEntity response = service.getSecretEntity(dto);
+
+            //assert
+            assertNotNull(response);
+            assertEquals(mockSecretEntity, response);
+            verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
+            verify(userRepository).findById(anyLong());
+            verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
+            verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
+            verify(ipRestrictionService).getIpRestrictionsBySecret(anyLong());
+            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
+        }
+    }
+
+    @Test
+    void shouldProceedWithWhitelistedIp() {
+        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
+            // arrange
+            SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
+            when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+            when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+            when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
+            when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of());
+            when(ipRestrictionService.getIpRestrictionsBySecret(anyLong()))
+                    .thenReturn(List.of(IpRestrictionPattern.builder().ipPattern(".*").allow(true).build()));
+            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
                     .thenReturn("0:0:0:0:0:0:0:1");
 
             // act
@@ -216,6 +246,33 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
             verify(userRepository).findById(anyLong());
             verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
             verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
+            verify(ipRestrictionService).getIpRestrictionsBySecret(anyLong());
+            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
+        }
+    }
+
+    @Test
+    void shouldFailWhenIpIsRestricted() {
+        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
+            // arrange
+            SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
+            when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+            when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+            when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
+            when(ipRestrictionService.getIpRestrictionsBySecret(anyLong()))
+                    .thenReturn(List.of(IpRestrictionPattern.builder().ipPattern("(192.168.0)[0-9]{1,3}").allow(true).build()));
+            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
+                    .thenReturn("127.0.0.1");
+
+            // act
+            GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
+
+            //assert
+            assertEquals("You are not allowed to get this secret from your IP address!", exception.getMessage());
+            assertLogContains(logAppender, "Client IP address: 127.0.0.1");
+            verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
+            verify(userRepository).findById(anyLong());
+            verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
             verify(ipRestrictionService).getIpRestrictionsBySecret(anyLong());
             httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
         }

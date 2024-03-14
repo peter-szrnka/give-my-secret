@@ -24,6 +24,8 @@ import io.github.gms.functions.announcement.AnnouncementDto;
 import io.github.gms.functions.announcement.AnnouncementListDto;
 import io.github.gms.functions.apikey.ApiKeyDto;
 import io.github.gms.functions.apikey.ApiKeyListDto;
+import io.github.gms.functions.iprestriction.IpRestrictionDto;
+import io.github.gms.functions.iprestriction.IpRestrictionEntity;
 import io.github.gms.functions.user.ChangePasswordRequestDto;
 import io.github.gms.functions.event.EventDto;
 import io.github.gms.functions.event.EventListDto;
@@ -389,6 +391,25 @@ public class TestUtils {
 
 	public static KeystoreAliasEntity createKeystoreAliasEntity() {
 		return createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS_ID, DemoData.KEYSTORE_ID);
+	}
+
+	public static IpRestrictionEntity createIpRestriction() {
+		IpRestrictionEntity entity = new IpRestrictionEntity();
+		entity.setId(1L);
+		entity.setAllow(true);
+		entity.setIpPattern(".*");
+		entity.setSecretId(1L);
+		entity.setUserId(1L);
+		return entity;
+	}
+
+	public static IpRestrictionDto createIpRestrictionDto() {
+		IpRestrictionDto dto = new IpRestrictionDto();
+		dto.setId(1L);
+		dto.setAllow(true);
+		dto.setIpPattern(".*");
+		dto.setSecretId(1L);
+		return dto;
 	}
 
 	@Data

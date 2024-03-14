@@ -1,7 +1,6 @@
 package io.github.gms.functions.iprestriction;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.github.gms.common.enums.EntityStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +24,6 @@ public class IpRestrictionDto {
     private Long secretId;
     private String ipPattern;
     private boolean allow;
-    private EntityStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
     private ZonedDateTime creationDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
