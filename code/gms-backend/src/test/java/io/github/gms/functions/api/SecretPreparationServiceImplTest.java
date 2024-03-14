@@ -24,6 +24,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 import org.slf4j.LoggerFactory;
 
@@ -251,8 +253,9 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
         }
     }
 
-    @Test
-    void shouldFailWhenIpIsRestricted() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true,false})
+    void shouldFailWhenIpIsRestricted(boolean allow) {
         try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
             // arrange
             SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
@@ -260,7 +263,7 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
             when(userRepository.findById(anyLong())).thenReturn(createMockUser());
             when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
             when(ipRestrictionService.getIpRestrictionsBySecret(anyLong()))
-                    .thenReturn(List.of(IpRestrictionPattern.builder().ipPattern("(192.168.0)[0-9]{1,3}").allow(true).build()));
+                    .thenReturn(List.of(IpRestrictionPattern.builder().ipPattern("(192.168.0)[0-9]{1,3}").allow(allow).build()));
             httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
                     .thenReturn("127.0.0.1");
 
