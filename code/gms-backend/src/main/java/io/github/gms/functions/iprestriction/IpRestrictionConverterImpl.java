@@ -42,6 +42,7 @@ public class IpRestrictionConverterImpl implements IpRestrictionConverter {
             entity.setCreationDate(ZonedDateTime.now(clock));
         }
 
+        entity.setGlobal(dto.isGlobal());
         entity.setAllow(dto.isAllow());
         entity.setIpPattern(dto.getIpPattern());
         entity.setSecretId(dto.getSecretId());
@@ -59,6 +60,7 @@ public class IpRestrictionConverterImpl implements IpRestrictionConverter {
                 .secretId(entity.getSecretId())
                 .creationDate(entity.getCreationDate())
                 .lastModified(entity.getLastModified())
+                .global(entity.isGlobal())
                 .build();
     }
 

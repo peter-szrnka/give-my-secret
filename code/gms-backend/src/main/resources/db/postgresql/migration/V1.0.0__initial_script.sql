@@ -101,9 +101,10 @@ CREATE TABLE gms_system_property (
 CREATE TABLE gms_ip_restriction (
 	id SERIAL PRIMARY KEY,
 	user_id BIGINT NULL DEFAULT NULL,
-	secret_id BIGINT NOT NULL,
+	secret_id BIGINT NULL DEFAULT NULL,
 	ip_pattern VARCHAR(255) NULL DEFAULT NULL,
 	allow SMALLINT NOT NULL DEFAULT 0,
+	global SMALLINT NOT NULL DEFAULT 0,
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
 	last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp
 );

@@ -126,6 +126,7 @@ CREATE TABLE gms_ip_restriction (
 	secret_id BIGINT NOT NULL,
 	ip_pattern VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	allow TINYINT(1) NOT NULL DEFAULT 0,
+	global TINYINT(1) NOT NULL DEFAULT 0,
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	PRIMARY KEY (id) USING BTREE

@@ -24,6 +24,7 @@ public class IpRestrictionDto {
     private Long secretId;
     private String ipPattern;
     private boolean allow;
+    private boolean global;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
     private ZonedDateTime creationDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)

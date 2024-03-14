@@ -1,7 +1,5 @@
 package io.github.gms.functions.iprestriction;
 
-import io.github.gms.common.model.IpRestrictionPattern;
-
 import java.util.List;
 
 /**
@@ -14,5 +12,7 @@ public interface IpRestrictionService {
 
     List<IpRestrictionDto> getAllBySecretId(Long secretId);
 
-    List<IpRestrictionPattern> getIpRestrictionsBySecret(Long secretId);
+    void checkIpRestrictionsBySecret(Long secretId);
+
+    void checkGlobalIpRestrictions();
 }

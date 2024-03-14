@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class SecretValueProviderServiceImplTest extends AbstractLoggingUnitTest {
+class SecretValueProviderServiceImplTest extends AbstractLoggingUnitTest {
 
     private KeystoreValidatorService keystoreValidatorService;
     private CryptoService cryptoService;

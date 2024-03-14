@@ -8,8 +8,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.time.ZonedDateTime;
@@ -22,6 +25,9 @@ import static io.github.gms.common.util.Constants.ID;
 // */
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "gms_ip_restriction")
 @EqualsAndHashCode(callSuper = false)
 public class IpRestrictionEntity extends AbstractGmsEntity {
@@ -46,6 +52,10 @@ public class IpRestrictionEntity extends AbstractGmsEntity {
     @Column(name = "allow")
     @Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
     private boolean allow;
+
+    @Column(name = "global")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
+    private boolean global;
 
     @Column(name = "creation_date")
     private ZonedDateTime creationDate;

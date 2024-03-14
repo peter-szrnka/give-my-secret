@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class IpRestrictionConverterImplTest extends AbstractUnitTest {
+class IpRestrictionConverterImplTest extends AbstractUnitTest {
 
     private Clock clock;
     private IpRestrictionConverterImpl converter;

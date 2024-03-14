@@ -1,6 +1,7 @@
 package io.github.gms.functions.iprestriction;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +12,9 @@ import java.util.List;
  */
 @Repository
 public interface IpRestrictionRepository extends JpaRepository<IpRestrictionEntity, Long> {
+
+    @Query("select i from IpRestrictionEntity i where i.global=true")
+    List<IpRestrictionEntity> findAllGlobal();
 
     List<IpRestrictionEntity> findAllBySecretId(Long secretId);
 }

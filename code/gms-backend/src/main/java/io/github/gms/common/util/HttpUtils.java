@@ -10,8 +10,10 @@ import java.util.List;
  */
 public class HttpUtils {
 
+    public static final String IP_WHITELISTED_LOCALHOST = "0:0:0:0:0:0:0:1";
+
     public static final List<String> WHITELISTED_ADDRESSES = List.of(
-            "0:0:0:0:0:0:0:1"
+            IP_WHITELISTED_LOCALHOST
     );
     private static final List<String> IP_HEADERS = List.of(
             "X-Forwarded-For",
