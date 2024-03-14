@@ -56,8 +56,8 @@ public class SecretPreparationServiceImpl implements SecretPreparationService {
         String ipAddress = getClientIpAddress(httpServletRequest);
         log.info("Client IP address: {}", ipAddress);
 
-        boolean ipIsNotAllowed = patterns.stream().filter(IpRestrictionPattern::isAllow).noneMatch(pattern -> ipAddressMatches(pattern, ipAddress));
-        boolean ipIsBlocked = patterns.stream().filter(p -> !p.isAllow()).anyMatch(pattern -> ipAddressMatches(pattern, ipAddress));
+        boolean ipIsNotAllowed = !patterns.isEmpty() && patterns.stream().filter(IpRestrictionPattern::isAllow).noneMatch(pattern -> ipAddressMatches(pattern, ipAddress));
+        boolean ipIsBlocked = !patterns.isEmpty() && patterns.stream().filter(p -> !p.isAllow()).anyMatch(pattern -> ipAddressMatches(pattern, ipAddress));
 
         if (!HttpUtils.WHITELISTED_ADDRESSES.contains(ipAddress) && (ipIsNotAllowed || ipIsBlocked)) {
             throw new GmsException("You are not allowed to get this secret from your IP address!");

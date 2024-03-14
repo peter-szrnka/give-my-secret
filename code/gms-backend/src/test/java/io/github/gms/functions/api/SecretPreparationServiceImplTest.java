@@ -7,19 +7,23 @@ import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.functions.secret.GetSecretRequestDto;
+import io.github.gms.common.util.HttpUtils;
 import io.github.gms.functions.apikey.ApiKeyEntity;
-import io.github.gms.functions.secret.SecretEntity;
-import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.apikey.ApiKeyRepository;
+import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.secret.ApiKeyRestrictionRepository;
+import io.github.gms.functions.secret.GetSecretRequestDto;
+import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
+import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
@@ -27,6 +31,7 @@ import java.util.Optional;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static io.github.gms.util.TestUtils.createMockSecret;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +39,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,6 +60,8 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
     private ApiKeyRepository apiKeyRepository;
     private UserRepository userRepository;
     private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
+    private IpRestrictionService ipRestrictionService;
+    private HttpServletRequest httpServletRequest;
 
     private SecretPreparationServiceImpl service;
 
@@ -63,7 +71,10 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
 		apiKeyRepository = mock(ApiKeyRepository.class);
 		userRepository = mock(UserRepository.class);
 		apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);
-        service = new SecretPreparationServiceImpl(secretRepository, apiKeyRepository, userRepository, apiKeyRestrictionRepository);
+        ipRestrictionService = mock(IpRestrictionService.class);
+        httpServletRequest = mock(HttpServletRequest.class);
+        service = new SecretPreparationServiceImpl(secretRepository, apiKeyRepository, userRepository, apiKeyRestrictionRepository,
+                ipRestrictionService, httpServletRequest);
 
         logAppender = new ListAppender<>();
         logAppender.start();
@@ -123,70 +134,91 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
 
     @Test
     void shouldFailBecauseOfApiKeyRestriction() {
-        // arrange
-        when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
-        when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-        when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL))));
-        when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
-                TestUtils.createApiKeyRestrictionEntity(2L),
-                TestUtils.createApiKeyRestrictionEntity(3L)
-        ));
+        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
+            // arrange
+            when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+            when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+            when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL))));
+            when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
+                    TestUtils.createApiKeyRestrictionEntity(2L),
+                    TestUtils.createApiKeyRestrictionEntity(3L)
+            ));
+            when(ipRestrictionService.getIpRestrictionsBySecret(anyLong())).thenReturn(emptyList());
+            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
+                    .thenReturn("0:0:0:0:0:0:0:1");
 
-        // assert
-        GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
-        assertEquals("You are not allowed to use this API key for this secret!", exception.getMessage());
+            // assert
+            GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
+            assertEquals("You are not allowed to use this API key for this secret!", exception.getMessage());
 
-        assertLogContains(logAppender, "You are not allowed to use this API key for this secret!");
-        verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
-        verify(userRepository).findById(anyLong());
-        verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
-        verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
+            assertLogContains(logAppender, "You are not allowed to use this API key for this secret!");
+            verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
+            verify(userRepository).findById(anyLong());
+            verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
+            verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
+            verify(ipRestrictionService).getIpRestrictionsBySecret(anyLong());
+            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
+        }
     }
 
     @Test
     void shouldSucceedWithApiKeyRestrictions() {
-        // arrange
-        SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
-        when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
-        when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-        when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
-        when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
-                TestUtils.createApiKeyRestrictionEntity(1L),
-                TestUtils.createApiKeyRestrictionEntity(2L),
-                TestUtils.createApiKeyRestrictionEntity(3L)
-        ));
+        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
+            // arrange
+            SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
+            when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+            when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+            when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
+            when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of(
+                    TestUtils.createApiKeyRestrictionEntity(1L),
+                    TestUtils.createApiKeyRestrictionEntity(2L),
+                    TestUtils.createApiKeyRestrictionEntity(3L)
+            ));
+            when(ipRestrictionService.getIpRestrictionsBySecret(anyLong())).thenReturn(emptyList());
+            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
+                    .thenReturn("0:0:0:0:0:0:0:1");
 
-        // act
-        SecretEntity response = service.getSecretEntity(dto);
+            // act
+            SecretEntity response = service.getSecretEntity(dto);
 
-        // assert
-        assertNotNull(response);
-        assertEquals(mockSecretEntity, response);
-        verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
-        verify(userRepository).findById(anyLong());
-        verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
-        verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
+            // assert
+            assertNotNull(response);
+            assertEquals(mockSecretEntity, response);
+            verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
+            verify(userRepository).findById(anyLong());
+            verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
+            verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
+            verify(ipRestrictionService).getIpRestrictionsBySecret(anyLong());
+            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
+        }
     }
 
     @Test
     void shouldSucceedWithoutApiKeyRestrictions() {
-        // arrange
-        SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
-        when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
-        when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-        when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
-        when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of());
+        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
+            // arrange
+            SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
+            when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+            when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+            when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
+            when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of());
+            when(ipRestrictionService.getIpRestrictionsBySecret(anyLong())).thenReturn(emptyList());
+            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
+                    .thenReturn("0:0:0:0:0:0:0:1");
 
-        // act
-        SecretEntity response = service.getSecretEntity(dto);
+            // act
+            SecretEntity response = service.getSecretEntity(dto);
 
-        //assert
-        assertNotNull(response);
-        assertEquals(mockSecretEntity, response);
-        verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
-        verify(userRepository).findById(anyLong());
-        verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
-        verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
+            //assert
+            assertNotNull(response);
+            assertEquals(mockSecretEntity, response);
+            verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
+            verify(userRepository).findById(anyLong());
+            verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
+            verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
+            verify(ipRestrictionService).getIpRestrictionsBySecret(anyLong());
+            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
+        }
     }
 
     private static Optional<UserEntity> createMockUser() {

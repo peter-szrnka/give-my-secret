@@ -1,28 +1,25 @@
 package io.github.gms.functions.secret;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+import ch.qos.logback.classic.Logger;
+import com.google.common.collect.Sets;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.SecretType;
+import io.github.gms.common.service.CryptoService;
+import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.MdcUtils;
+import io.github.gms.functions.iprestriction.IpRestrictionService;
+import io.github.gms.functions.keystore.KeystoreAliasEntity;
+import io.github.gms.functions.keystore.KeystoreAliasRepository;
+import io.github.gms.functions.keystore.KeystoreEntity;
+import io.github.gms.functions.keystore.KeystoreRepository;
+import io.github.gms.util.DemoData;
+import io.github.gms.util.TestUtils;
+import lombok.SneakyThrows;
 import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,26 +34,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import com.google.common.collect.Sets;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.SecretType;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.MdcUtils;
-import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.keystore.KeystoreAliasEntity;
-import io.github.gms.functions.keystore.KeystoreEntity;
-import io.github.gms.functions.keystore.KeystoreAliasRepository;
-import io.github.gms.functions.keystore.KeystoreRepository;
-import io.github.gms.common.service.CryptoService;
-import io.github.gms.util.DemoData;
-import io.github.gms.util.TestUtils;
-import lombok.SneakyThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -70,6 +68,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	private SecretRepository repository;
 	private SecretConverter converter;
 	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
+	private IpRestrictionService ipRestrictionService;
 	private SecretServiceImpl service;
 
 	@Override
@@ -82,8 +81,9 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		repository = mock(SecretRepository.class);
 		converter = mock(SecretConverter.class);
 		apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);
+		ipRestrictionService = mock(IpRestrictionService.class);
 		service = new SecretServiceImpl(cryptoService, keystoreRepository, keystoreAliasRepository, repository,
-				converter, apiKeyRestrictionRepository);
+				converter, apiKeyRestrictionRepository, ipRestrictionService);
 		((Logger) LoggerFactory.getLogger(SecretServiceImpl.class)).addAppender(logAppender);
 
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
@@ -482,7 +482,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertEquals(SecretServiceImpl.WRONG_ENTITY, exception.getMessage());
 		verify(repository).findById(1L);
-		verify(converter, never()).toDto(any(), anyList());
+		verify(converter, never()).toDto(any());
 	}
 
 	@ParameterizedTest
@@ -492,7 +492,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
 		mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(4L);
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createSecretEntity()));
-		when(converter.toDto(any(), anyList())).thenReturn(new SecretDto());
+		when(converter.toDto(any())).thenReturn(new SecretDto());
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(aliasEntity);
 
 		List<ApiKeyRestrictionEntity> mockRestrictionEntities = List.of(TestUtils.createApiKeyRestrictionEntity(1L));
@@ -507,7 +507,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 			assertEquals(DemoData.KEYSTORE_ID, response.getKeystoreId());
 		}
 		verify(repository).findById(1L);
-		verify(converter).toDto(any(), eq(mockRestrictionEntities));
+		verify(converter).toDto(any());
 		verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(4L, 1L);
 		mockedMdcUtils.close();
 	}
