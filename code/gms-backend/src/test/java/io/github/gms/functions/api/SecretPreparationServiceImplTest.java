@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
 import org.slf4j.LoggerFactory;
 
@@ -254,8 +254,8 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {true,false})
-    void shouldFailWhenIpIsRestricted(boolean allow) {
+    @MethodSource("restrictionInputData")
+    void shouldFailWhenIpIsRestricted(boolean allow, String ipPattern, String ipAddress) {
         try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
             // arrange
             SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
@@ -263,22 +263,29 @@ class SecretPreparationServiceImplTest extends AbstractUnitTest {
             when(userRepository.findById(anyLong())).thenReturn(createMockUser());
             when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
             when(ipRestrictionService.getIpRestrictionsBySecret(anyLong()))
-                    .thenReturn(List.of(IpRestrictionPattern.builder().ipPattern("(192.168.0)[0-9]{1,3}").allow(allow).build()));
+                    .thenReturn(List.of(IpRestrictionPattern.builder().ipPattern(ipPattern).allow(allow).build()));
             httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
-                    .thenReturn("127.0.0.1");
+                    .thenReturn(ipAddress);
 
             // act
             GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
 
             //assert
             assertEquals("You are not allowed to get this secret from your IP address!", exception.getMessage());
-            assertLogContains(logAppender, "Client IP address: 127.0.0.1");
+            assertLogContains(logAppender, "Client IP address: " + ipAddress);
             verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
             verify(userRepository).findById(anyLong());
             verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
             verify(ipRestrictionService).getIpRestrictionsBySecret(anyLong());
             httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
         }
+    }
+
+    private static Object[][] restrictionInputData() {
+        return new Object[][] {
+                { true, "(192.168.0)[0-9]{1,3}", "127.0.0.1" },
+                { false, "(192.168.0)[0-9]{1,3}", "192.168.0.2" }
+        };
     }
 
     private static Optional<UserEntity> createMockUser() {
