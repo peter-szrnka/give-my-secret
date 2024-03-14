@@ -1,21 +1,16 @@
 package io.github.gms.functions.iprestriction;
 
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.ConverterUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 /**
  * @author Peter Szrnka
@@ -27,52 +22,41 @@ import java.util.List;
 @CacheConfig(cacheNames = "ipRestrictionCache")
 public class IpRestrictionServiceImpl implements IpRestrictionService {
 
-    private final Clock clock;
     private final IpRestrictionRepository repository;
     private final IpRestrictionConverter converter;
 
     @Override
-    public SaveEntityResponseDto save(SaveIpRestrictionDto dto) {
-        Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-        IpRestrictionEntity entity = new IpRestrictionEntity();
+    public void updateIpRestrictionsForSecret(Long secretId, List<IpRestrictionDto> ipRestrictions) {
+        ipRestrictions.forEach(ipRestriction -> ipRestriction.setSecretId(secretId));
 
-        if (dto.getId() != null) {
-            entity.setId(dto.getId());
-        } else {
-            entity.setCreationDate(ZonedDateTime.now(clock));
-        }
+        Set<Long> existingEntityIds = getAllBySecretId(secretId)
+                .stream()
+                .map(IpRestrictionDto::getId)
+                .collect(toSet());
+        Set<Long> newIds = ipRestrictions.stream()
+                .map(IpRestrictionDto::getId)
+                .filter(Objects::nonNull)
+                .collect(toSet());
 
-        entity.setAllow(dto.isAllow());
-        entity.setStatus(dto.getStatus());
-        entity.setIpPattern(dto.getIpPattern());
-        entity.setSecretId(dto.getSecretId());
-        entity.setUserId(userId);
-        entity.setLastModified(ZonedDateTime.now(clock));
+        // Save each entity
+        ipRestrictions.forEach(dto -> repository.save(converter.toEntity(dto)));
 
-        entity = repository.save(entity);
-        return new SaveEntityResponseDto(entity.getId());
+        // Remove old entities
+        repository.deleteAllById(existingEntityIds.stream().filter(id -> !newIds.contains(id)).collect(toSet()));
     }
 
     @Override
-    public IpRestrictionDto getById(Long id) {
-        IpRestrictionEntity entity = repository.findById(id).orElseThrow(() -> new GmsException("Entity not found!"));
-        return converter.toDto(entity);
-    }
-
-    @Override
-    public IpRestrictionListDto list(PagingDto dto) {
-        Page<IpRestrictionEntity> results = repository.findAll(ConverterUtils.createPageable(dto));
-        return converter.toDtoList(results);
-    }
-
-    @Override
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public List<IpRestrictionDto> getAllBySecretId(Long secretId) {
+        return converter.toDtoList(findAll(secretId));
     }
 
     @Override
     @Cacheable
-    public List<IpRestrictionPattern> getIpRestrictionsBySecret(Long userId, Long secretId) {
-        return repository.getAllPatternData(userId, secretId);
+    public List<IpRestrictionPattern> getIpRestrictionsBySecret(Long secretId) {
+        return converter.toModelList(findAll(secretId));
+    }
+
+    private List<IpRestrictionEntity> findAll(Long secretId) {
+        return repository.findAllBySecretId(secretId);
     }
 }

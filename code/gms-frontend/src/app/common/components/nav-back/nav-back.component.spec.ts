@@ -16,13 +16,14 @@ describe('NavBackComponent', () => {
 
     beforeEach(() => {
        TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, NavBackComponent, PipesModule ],
+            imports : [RouterTestingModule, AngularMaterialModule, PipesModule ],
+            declarations : [NavBackComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA]
         });
 
         fixture = TestBed.createComponent(NavBackComponent);
         component = fixture.componentInstance;
-        fixture.autoDetectChanges();
+        fixture.detectChanges();
     });
 
     it('Should create component', () => {
@@ -30,7 +31,7 @@ describe('NavBackComponent', () => {
 
         component.backToHome = true;
         component.buttonConfig = [
-            { label : "Button1", primary : false, url : "http://localhost:8080/", visibilityCondition: true },
+            { label : "Button1", primary : false, url : "http://localhost:8080/" },
             { label : "Button2", primary : false, url : "http://localhost:8080/", visibilityCondition: true },
             { label : "Button3", primary : false, url : "http://localhost:8080/", visibilityCondition: false }
         ];

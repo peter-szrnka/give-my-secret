@@ -6,8 +6,6 @@ import ch.qos.logback.core.read.ListAppender;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.functions.secret.GetSecretRequestDto;
-import io.github.gms.functions.secret.SecretEntity;
-import io.github.gms.common.service.CryptoService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,10 +19,7 @@ import static io.github.gms.util.TestUtils.assertLogContains;
 import static io.github.gms.util.TestUtils.createMockSecret;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,17 +33,19 @@ class ApiServiceImplTest extends AbstractUnitTest {
 
 	private static final GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
 	private ListAppender<ILoggingEvent> logAppender;
-	private CryptoService cryptoService;
+	//private CryptoService cryptoService;
 	private SecretPreparationService secretPreparationService;
-	private KeystoreValidatorService keystoreValidatorService;
+	//private KeystoreValidatorService keystoreValidatorService;
+	private SecretValueProviderService secretValueProviderService;
 	private ApiServiceImpl service;
 
 	@BeforeEach
 	void beforeEach() {
-		cryptoService = mock(CryptoService.class);
+		//cryptoService = mock(CryptoService.class);
 		secretPreparationService = mock(SecretPreparationService.class);
-		keystoreValidatorService = mock(KeystoreValidatorService.class);
-		service = new ApiServiceImpl(cryptoService, secretPreparationService, keystoreValidatorService);
+		//keystoreValidatorService = mock(KeystoreValidatorService.class);
+		secretValueProviderService = mock(SecretValueProviderService.class);
+		service = new ApiServiceImpl(secretPreparationService, secretValueProviderService);
 
 		logAppender = new ListAppender<>();
 		logAppender.start();
@@ -68,7 +65,7 @@ class ApiServiceImplTest extends AbstractUnitTest {
 		when(secretPreparationService.getSecretEntity(dto)).thenReturn(createMockSecret(expectedValue, returnDecrypted, type));
 
 		if (returnDecrypted) {
-			when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn(expectedValue);
+			//when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn(expectedValue);
 		}
 
 		// act
@@ -88,8 +85,8 @@ class ApiServiceImplTest extends AbstractUnitTest {
 
 		assertLogContains(logAppender, "Searching for secret=");
 		verify(secretPreparationService).getSecretEntity(dto);
-		verify(keystoreValidatorService).validateSecretKeystore(any(SecretEntity.class));
-		verify(cryptoService, returnDecrypted ? times(1) : never()).decrypt(any(SecretEntity.class));
+		//verify(keystoreValidatorService).validateSecretKeystore(any(SecretEntity.class));
+		//verify(cryptoService, returnDecrypted ? times(1) : never()).decrypt(any(SecretEntity.class));
 	}
 
 	public static Object[][] inputData() {

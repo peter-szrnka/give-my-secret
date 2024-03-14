@@ -10,6 +10,9 @@ import java.util.List;
  */
 public class HttpUtils {
 
+    public static final List<String> WHITELISTED_ADDRESSES = List.of(
+            "0:0:0:0:0:0:0:1"
+    );
     private static final List<String> IP_HEADERS = List.of(
             "X-Forwarded-For",
             "HTTP_FORWARDED",
@@ -29,6 +32,7 @@ public class HttpUtils {
     public static String getClientIpAddress(HttpServletRequest request) {
         return IP_HEADERS.stream()
                 .filter(header -> request.getHeader(header) != null && !request.getHeader(header).isEmpty())
+                .map(request::getHeader)
                 .findFirst().orElse(request.getRemoteAddr());
     }
 }

@@ -1,12 +1,9 @@
 package io.github.gms.functions.iprestriction;
 
 import io.github.gms.common.abstraction.AbstractGmsEntity;
-import io.github.gms.common.enums.EntityStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,16 +40,12 @@ public class IpRestrictionEntity extends AbstractGmsEntity {
     @Column(name = "secret_id")
     private Long secretId;
 
-    @Column(name = "ip_pattern")
+    @Column(name = "ip_pattern", nullable = false)
     private String ipPattern;
 
     @Column(name = "allow")
     @Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
     private boolean allow;
-
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private EntityStatus status;
 
     @Column(name = "creation_date")
     private ZonedDateTime creationDate;

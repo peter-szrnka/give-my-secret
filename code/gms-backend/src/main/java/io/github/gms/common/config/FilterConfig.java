@@ -19,4 +19,12 @@ public class FilterConfig {
 	    registrationBean.addUrlPatterns("/setup/*");
 	    return registrationBean;
 	}
+
+	/*@Bean
+	public FilterRegistrationBean<IpRestrictionFilter> ipRestrictionFilterBean(IpRestrictionFilter ipRestrictionFilter) {
+		FilterRegistrationBean<IpRestrictionFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(ipRestrictionFilter);
+		registrationBean.addUrlPatterns("/api/secret/*");
+		return registrationBean;
+	}*/
 }

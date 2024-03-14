@@ -122,10 +122,9 @@ COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 CREATE TABLE gms_ip_restriction (
 	id BIGINT NOT NULL AUTO_INCREMENT,
 	user_id BIGINT NOT NULL,
-	secret_id VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	secret_id BIGINT NOT NULL,
 	ip_pattern VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	allow TINYINT NOT NULL DEFAULT 0,
-	status VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	last_modified TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	PRIMARY KEY (id) USING BTREE

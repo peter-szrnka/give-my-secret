@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
 import static io.github.gms.common.util.Constants.CACHE_USER;
 
 /**
@@ -31,7 +32,7 @@ public class CacheConfig implements CachingConfigurer {
 				CACHE_USER,
 				"systemPropertyCache",
 				CACHE_API,
-				"ipRestrictionCache");
+				CACHE_IP_RESTRICTION);
 		manager.setAllowNullValues(false);
 		return manager;
     }

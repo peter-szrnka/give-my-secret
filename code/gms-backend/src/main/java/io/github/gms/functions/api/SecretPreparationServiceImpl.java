@@ -2,7 +2,7 @@ package io.github.gms.functions.api;
 
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.MdcUtils;
+import io.github.gms.common.util.HttpUtils;
 import io.github.gms.functions.apikey.ApiKeyEntity;
 import io.github.gms.functions.apikey.ApiKeyRepository;
 import io.github.gms.functions.iprestriction.IpRestrictionPattern;
@@ -51,20 +51,19 @@ public class SecretPreparationServiceImpl implements SecretPreparationService {
             log.warn("Secret not found"); return new GmsException("Secret is not available!"); });
 
         // Ip Restriction
-        List<IpRestrictionPattern> patterns = ipRestrictionService.getIpRestrictionsBySecret(MdcUtils.getUserId(), secretEntity.getId());
+        List<IpRestrictionPattern> patterns = ipRestrictionService.getIpRestrictionsBySecret(secretEntity.getId());
 
         String ipAddress = getClientIpAddress(httpServletRequest);
         log.info("Client IP address: {}", ipAddress);
-        patterns.forEach(pattern -> {
-            Pattern p = Pattern.compile(pattern.getIpPattern());
-            Matcher matcher = p.matcher(ipAddress);
-            if (!pattern.isAllow() && matcher.matches()) {
-                throw new GmsException("You are not allowed to get this secret from your IP address!");
-            } else if(!matcher.matches()) {
-                throw new GmsException("You are not allowed to get this secret from your IP address!");
-            }
-        });
 
+        boolean ipIsNotAllowed = patterns.stream().filter(IpRestrictionPattern::isAllow).noneMatch(pattern -> ipAddressMatches(pattern, ipAddress));
+        boolean ipIsBlocked = patterns.stream().filter(p -> !p.isAllow()).anyMatch(pattern -> ipAddressMatches(pattern, ipAddress));
+
+        if (!HttpUtils.WHITELISTED_ADDRESSES.contains(ipAddress) && (ipIsNotAllowed || ipIsBlocked)) {
+            throw new GmsException("You are not allowed to get this secret from your IP address!");
+        }
+
+        // API key restriction
         List<ApiKeyRestrictionEntity> restrictions = apiKeyRestrictionRepository
                 .findAllByUserIdAndSecretId(apiKeyEntity.getUserId(), secretEntity.getId());
 
@@ -89,5 +88,11 @@ public class SecretPreparationServiceImpl implements SecretPreparationService {
             log.warn("User not found");
             throw new GmsException("User not found!");
         });
+    }
+
+    private static boolean ipAddressMatches(IpRestrictionPattern pattern, String ipAddress) {
+        Pattern p = Pattern.compile(pattern.getIpPattern());
+        Matcher matcher = p.matcher(ipAddress);
+        return matcher.matches();
     }
 }

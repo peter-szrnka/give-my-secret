@@ -11,6 +11,6 @@ import { ButtonConfig } from "../nav-back/button-config";
   export class NavButtonVisibilityPipe implements PipeTransform {
   
     transform(value: ButtonConfig[]): any {
-          return value.filter(item => item.visibilityCondition === true);
+          return value.filter(item => item.visibilityCondition ?? true);
       }
   }

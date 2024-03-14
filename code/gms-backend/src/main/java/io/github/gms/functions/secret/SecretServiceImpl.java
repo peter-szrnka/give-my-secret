@@ -8,6 +8,8 @@ import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.functions.iprestriction.IpRestrictionDto;
+import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.keystore.KeystoreAliasEntity;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.keystore.KeystoreRepository;
@@ -16,6 +18,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -25,7 +28,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
 import static io.github.gms.common.util.MdcUtils.getUserId;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * @author Peter Szrnka
@@ -46,9 +51,11 @@ public class SecretServiceImpl implements SecretService {
 	private final SecretRepository repository;
 	private final SecretConverter converter;
 	private final ApiKeyRestrictionRepository apiKeyRestrictionRepository;
+	private final IpRestrictionService ipRestrictionService;
 
 	@Override
-	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
+	@Transactional
+	@CacheEvict(cacheNames = { CACHE_API, CACHE_IP_RESTRICTION }, allEntries = true)
 	public SaveEntityResponseDto save(SaveSecretRequestDto dto) {
 		SecretEntity entity;
 		dto.setUserId(getUserId());
@@ -71,6 +78,7 @@ public class SecretServiceImpl implements SecretService {
 		entity = repository.save(entity);
 
 		updateApiRestrictions(entity, dto.getApiKeyRestrictions());
+		updateIpRestrictions(entity, dto.getIpRestrictions());
 		return new SaveEntityResponseDto(entity.getId());
 	}
 
@@ -78,9 +86,12 @@ public class SecretServiceImpl implements SecretService {
 	public SecretDto getById(Long id) {
 		SecretEntity entity = repository.findById(id).orElseThrow(() -> new GmsException(WRONG_ENTITY));
 		
-		List<ApiKeyRestrictionEntity> result = apiKeyRestrictionRepository.findAllByUserIdAndSecretId(getUserId(), entity.getId());
+		List<ApiKeyRestrictionEntity> apiKeyRestrictions = apiKeyRestrictionRepository.findAllByUserIdAndSecretId(getUserId(), entity.getId());
+		List<IpRestrictionDto> ipRestrictions = ipRestrictionService.getAllBySecretId(entity.getId());
 		
-		SecretDto response = converter.toDto(entity, result);
+		SecretDto response = converter.toDto(entity);
+		response.setApiKeyRestrictions(apiKeyRestrictions.stream().map(ApiKeyRestrictionEntity::getApiKeyId).collect(Collectors.toSet()));
+		response.setIpRestrictions(ipRestrictions);
 		
 		// Let's add the keystore ID
 		keystoreAliasRepository.findById(entity.getKeystoreAliasId())
@@ -128,7 +139,7 @@ public class SecretServiceImpl implements SecretService {
 		Set<Long> existingEntities = apiKeyRestrictionRepository
 				.findAllByUserIdAndSecretId(entity.getUserId(), entity.getId()).stream()
 				.map(ApiKeyRestrictionEntity::getApiKeyId)
-				.collect(Collectors.toSet());
+				.collect(toSet());
 		
 		// Add new entities
 		apiKeys.stream().filter(apiKey -> !existingEntities.contains(apiKey)).forEach(apiKey -> {
@@ -143,6 +154,10 @@ public class SecretServiceImpl implements SecretService {
 		existingEntities.stream()
 			.filter(existingEntityId -> !apiKeys.contains(existingEntityId))
 			.forEach(existingEntityId -> apiKeyRestrictionRepository.deleteByUserIdAndSecretIdAndApiKeyId(entity.getUserId(), entity.getId(), existingEntityId));
+	}
+
+	private void updateIpRestrictions(SecretEntity entity, List<IpRestrictionDto> ipRestrictions) {
+		ipRestrictionService.updateIpRestrictionsForSecret(entity.getId(), ipRestrictions);
 	}
 
 	private void validateKeystore(SaveSecretRequestDto dto) {
@@ -181,7 +196,7 @@ public class SecretServiceImpl implements SecretService {
 		}
 	}
 	
-	private boolean itemsNotValid(String value) {
+	private static boolean itemsNotValid(String value) {
 		return Stream.of(value.split(";")).anyMatch(item -> !item.contains(":") || item.split(":").length != 2);
 	}
 }
