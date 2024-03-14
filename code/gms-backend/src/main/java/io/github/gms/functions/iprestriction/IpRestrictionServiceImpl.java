@@ -79,8 +79,12 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
         String ipAddress = getClientIpAddress(httpServletRequest);
         log.info("Client IP address: {}", ipAddress);
 
-        boolean ipIsNotAllowed = !patterns.isEmpty() && patterns.stream().anyMatch(p -> p.isAllow() && !ipAddressMatches(p, ipAddress));
-        boolean ipIsBlocked = !patterns.isEmpty() && patterns.stream().anyMatch(p -> !p.isAllow() && ipAddressMatches(p, ipAddress));
+        if (patterns.isEmpty()) {
+            return;
+        }
+
+        boolean ipIsNotAllowed = patterns.stream().anyMatch(p -> p.isAllow() && !ipAddressMatches(p, ipAddress));
+        boolean ipIsBlocked = patterns.stream().anyMatch(p -> !p.isAllow() && ipAddressMatches(p, ipAddress));
 
         if (!HttpUtils.WHITELISTED_ADDRESSES.contains(ipAddress) && (ipIsNotAllowed || ipIsBlocked)) {
             throw new GmsException("You are not allowed to get this secret from your IP address!");

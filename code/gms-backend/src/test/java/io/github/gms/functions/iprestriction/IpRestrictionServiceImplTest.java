@@ -152,6 +152,33 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         }
     }
 
+    @ParameterizedTest
+    @MethodSource("positiveRestrictionInputData")
+    void shouldNotFailWhenIpIsNotRestricted(boolean allow, String ipPattern, String ipAddress) {
+        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
+            // arrange
+            List<IpRestrictionEntity> mockEntities = List.of();
+            when(repository.findAllBySecretId(1L)).thenReturn(mockEntities);
+            when(converter.toModelList(anyList())).thenReturn(List.of(
+                    IpRestrictionPattern.builder()
+                            .ipPattern(ipPattern)
+                            .allow(allow)
+                            .build()
+            ));
+            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
+                    .thenReturn(ipAddress);
+
+            // act
+            service.checkIpRestrictionsBySecret(1L);
+
+            // assert
+            assertLogContains(logAppender, "Client IP address: " + ipAddress);
+            verify(repository).findAllBySecretId(1L);
+            verify(converter).toModelList(anyList());
+            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
+        }
+    }
+
     @Test
     void shouldNotFailWhenIpIsWhitelisted() {
         try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
@@ -206,7 +233,14 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     private static Object[][] restrictionInputData() {
         return new Object[][]{
                 {true, "(192.168.0.)[0-9]{1,3}", "127.0.0.1"},
-                {false, "(192.168.0.)[0-9]{1,3}", "192.168.0.2"}
+                {false, "(192.168.0.)[0-9]{1,3}", "192.168.0.2"},
+        };
+    }
+
+    private static Object[][] positiveRestrictionInputData() {
+        return new Object[][]{
+                {false, "(192.168.0.)[0-9]{1,3}", "127.0.0.1"},
+                {true, "(192.168.0.)[0-9]{1,3}", "192.168.0.2"}
         };
     }
 }
