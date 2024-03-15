@@ -6,7 +6,6 @@ import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.HttpUtils;
-import io.github.gms.common.util.MdcUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +20,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
 import static io.github.gms.common.util.HttpUtils.getClientIpAddress;
 import static java.util.stream.Collectors.toSet;
 
@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toSet;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "ipRestrictionCache")
+@CacheConfig(cacheNames = CACHE_IP_RESTRICTION)
 public class IpRestrictionServiceImpl implements IpRestrictionService {
 
     private final IpRestrictionRepository repository;
@@ -40,13 +40,13 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
 
     @Override
     public SaveEntityResponseDto save(IpRestrictionDto dto) {
-        // TODO Create another DTO
         if (dto.getId() != null && !dto.isGlobal()) {
             throw new GmsException("Only global IP restrictions allowed to save with this service!");
         }
 
         IpRestrictionEntity entity = converter.toEntity(dto);
-        entity.setUserId(MdcUtils.getUserId());
+        entity.setSecretId(null);
+        entity.setUserId(null);
         entity.setGlobal(true);
         entity = repository.save(entity);
         return new SaveEntityResponseDto(entity.getId());
@@ -55,24 +55,27 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
     @Override
     public IpRestrictionListDto list(PagingDto dto) {
         Page<IpRestrictionEntity> results = repository.findAllGlobal(ConverterUtils.createPageable(dto));
-        return IpRestrictionListDto.builder()
-                .resultList(results.toList().stream()
-                        .map(converter::toDto)
-                        .toList())
-                .totalElements(results.getTotalElements())
-                .build();
+        return converter.toDtoList(results);
     }
 
     @Override
     public IpRestrictionDto getById(Long id) {
-        // TODO Check it is really a global IP restriction
-        return converter.toDto(repository.findGlobalById(id));
+        return converter.toDto(findAndValidateEntity(id));
     }
 
     @Override
     public void delete(Long id) {
-        // TODO Check it is really a global IP restriction
-        repository.deleteById(id);
+        repository.delete(findAndValidateEntity(id));
+    }
+
+    private IpRestrictionEntity findAndValidateEntity(Long id) {
+        IpRestrictionEntity entity = repository.findById(id).orElseThrow(() -> new GmsException("Entity not found!"));
+
+        if (!entity.isGlobal()) {
+            throw new GmsException("Invalid request, the given resource is not a global IP restriction!");
+        }
+
+        return entity;
     }
 
     @Override

@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -102,6 +104,27 @@ class IpRestrictionConverterImplTest extends AbstractUnitTest {
             verify(clock, times(expectedTimes)).getZone();
             utilsMockedStatic.verify(MdcUtils::getUserId);
         }
+    }
+
+    @Test
+    void checkToListDto() {
+        // arrange
+        when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+        IpRestrictionEntity ipRestrictionEntity = TestUtils.createIpRestriction();
+        ipRestrictionEntity.setCreationDate(ZonedDateTime.now(clock));
+        Page<IpRestrictionEntity> entityList = new PageImpl<>(List.of(ipRestrictionEntity));
+
+        // act
+        IpRestrictionListDto resultList = converter.toDtoList(entityList);
+
+        // assert
+        assertNotNull(resultList);
+        IpRestrictionDto entity = resultList.getResultList().getFirst();
+        assertEquals(1L, entity.getId());
+        assertEquals("2023-06-29T00:00Z", entity.getCreationDate().toString());
+        verify(clock).instant();
+        verify(clock).getZone();
     }
 
     private static Object[] testData() {

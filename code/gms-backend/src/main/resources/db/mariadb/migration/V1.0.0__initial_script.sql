@@ -124,6 +124,7 @@ CREATE TABLE gms_ip_restriction (
 	id BIGINT NOT NULL AUTO_INCREMENT,
 	user_id BIGINT NOT NULL,
 	secret_id BIGINT NOT NULL,
+	status VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	ip_pattern VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	allow TINYINT(1) NOT NULL DEFAULT 0,
 	global TINYINT(1) NOT NULL DEFAULT 0,

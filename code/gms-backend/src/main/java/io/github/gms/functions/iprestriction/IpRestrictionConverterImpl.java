@@ -3,6 +3,7 @@ package io.github.gms.functions.iprestriction;
 import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.common.util.MdcUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -47,6 +48,7 @@ public class IpRestrictionConverterImpl implements IpRestrictionConverter {
         entity.setIpPattern(dto.getIpPattern());
         entity.setSecretId(dto.getSecretId());
         entity.setUserId(MdcUtils.getUserId());
+        entity.setStatus(dto.getStatus());
         entity.setLastModified(ZonedDateTime.now(clock));
 
         return entity;
@@ -59,9 +61,20 @@ public class IpRestrictionConverterImpl implements IpRestrictionConverter {
                 .allow(entity.isAllow())
                 .ipPattern(entity.getIpPattern())
                 .secretId(entity.getSecretId())
+                .status(entity.getStatus())
                 .creationDate(entity.getCreationDate())
                 .lastModified(entity.getLastModified())
                 .global(entity.isGlobal())
+                .build();
+    }
+
+    @Override
+    public IpRestrictionListDto toDtoList(Page<IpRestrictionEntity> results) {
+        return IpRestrictionListDto.builder()
+                .resultList(results.toList().stream()
+                        .map(this::toDto)
+                        .toList())
+                .totalElements(results.getTotalElements())
                 .build();
     }
 

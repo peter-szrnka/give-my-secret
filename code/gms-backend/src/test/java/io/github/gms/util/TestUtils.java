@@ -400,6 +400,7 @@ public class TestUtils {
 		entity.setIpPattern(".*");
 		entity.setSecretId(1L);
 		entity.setUserId(1L);
+		entity.setGlobal(false);
 		return entity;
 	}
 

@@ -1,6 +1,7 @@
 package io.github.gms.functions.iprestriction;
 
 import io.github.gms.common.model.IpRestrictionPattern;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface IpRestrictionConverter {
     IpRestrictionEntity toEntity(IpRestrictionDto dto);
 
     IpRestrictionDto toDto(IpRestrictionEntity entity);
+
+    IpRestrictionListDto toDtoList(Page<IpRestrictionEntity> results);
 }
