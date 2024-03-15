@@ -26,6 +26,7 @@ import io.github.gms.functions.apikey.ApiKeyDto;
 import io.github.gms.functions.apikey.ApiKeyListDto;
 import io.github.gms.functions.iprestriction.IpRestrictionDto;
 import io.github.gms.functions.iprestriction.IpRestrictionEntity;
+import io.github.gms.functions.iprestriction.IpRestrictionListDto;
 import io.github.gms.functions.user.ChangePasswordRequestDto;
 import io.github.gms.functions.event.EventDto;
 import io.github.gms.functions.event.EventListDto;
@@ -413,7 +414,14 @@ public class TestUtils {
 		return dto;
 	}
 
-	@Data
+    public static IpRestrictionListDto createIpRestrictionListDto() {
+		return IpRestrictionListDto.builder()
+				.totalElements(1)
+				.resultList(List.of(createIpRestrictionDto()))
+				.build();
+    }
+
+    @Data
 	@AllArgsConstructor
 	public static class ValueHolder {
 		KeyStoreValueType valueType;

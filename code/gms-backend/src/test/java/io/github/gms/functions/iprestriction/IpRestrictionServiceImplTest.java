@@ -67,9 +67,12 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void shouldSaveFail() {
+        // arrange
+        IpRestrictionDto dto = IpRestrictionDto.builder().id(1L).global(false).build();
+
         // act
         GmsException exception = assertThrows(GmsException.class,
-                () -> service.save(IpRestrictionDto.builder().id(1L).global(false).build()));
+                () -> service.save(dto));
 
         // assert
         assertNotNull(exception);
