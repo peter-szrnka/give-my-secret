@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class IpRestrictionControllerTest {
+class IpRestrictionControllerTest {
 
     private IpRestrictionController controller;
     private IpRestrictionService service;

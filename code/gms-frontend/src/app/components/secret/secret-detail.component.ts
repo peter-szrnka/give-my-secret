@@ -16,7 +16,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { IpRestriction } from "./model/ip-restriction.model";
+import { IpRestriction } from "../ip_restriction/model/ip-restriction.model";
 
 interface KeyValuePair {
     key: string,

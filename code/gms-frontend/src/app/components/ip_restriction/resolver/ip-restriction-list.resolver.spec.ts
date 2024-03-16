@@ -4,15 +4,14 @@ import { TestBed } from "@angular/core/testing";
 import { of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
-import { ApiKey } from "../model/apikey.model";
-import { ApiKeyService } from "../service/apikey-service";
-import { ApiKeyListResolver } from "./apikey-list.resolver";
-
+import { IpRestrictionListResolver } from "./ip-restriction-list.resolver";
+import { IpRestrictionService } from "../service/ip-restriction.service";
+import { IpRestriction } from "../model/ip-restriction.model";
 /**
  * @author Peter Szrnka
  */
-describe('ApiKeyListResolver', () => {
-    let resolver: ApiKeyListResolver;
+describe('IpRestrictionListResolver', () => {
+    let resolver: IpRestrictionListResolver;
     let activatedRouteSnapshot: any;
     let splashScreenStateService: any;
     let service: any;
@@ -23,21 +22,20 @@ describe('ApiKeyListResolver', () => {
             // add this to imports array
             imports: [HttpClientTestingModule],
             providers: [
-                ApiKeyListResolver,
-                //{ provide: ActivatedRouteSnapshot, activatedRouteSnapshot },
+                IpRestrictionListResolver,
                 { provide: SplashScreenStateService, useValue: splashScreenStateService },
-                { provide: ApiKeyService, useValue: service },
+                { provide: IpRestrictionService, useValue: service },
                 { provide: SharedDataService, useValue: sharedData }
             ]
         }).compileComponents();
 
-        resolver = TestBed.inject(ApiKeyListResolver)
+        resolver = TestBed.inject(IpRestrictionListResolver)
     };
 
-    const mockResponse: ApiKey[] = [{
+    const mockResponse: IpRestriction[] = [{
         id: 1,
-        name: "apiKey",
-        description: "description"
+        ipPattern: '.*',
+        allow: true
     }];
 
     beforeEach(async () => {
