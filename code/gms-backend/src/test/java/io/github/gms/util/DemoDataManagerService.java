@@ -6,6 +6,8 @@ import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.functions.announcement.AnnouncementEntity;
 import io.github.gms.functions.apikey.ApiKeyEntity;
+import io.github.gms.functions.iprestriction.IpRestrictionEntity;
+import io.github.gms.functions.iprestriction.IpRestrictionRepository;
 import io.github.gms.functions.keystore.KeystoreAliasEntity;
 import io.github.gms.functions.keystore.KeystoreEntity;
 import io.github.gms.functions.message.MessageEntity;
@@ -70,6 +72,8 @@ public class DemoDataManagerService {
 	@Autowired
 	private MessageRepository messageRepository;
 	@Autowired
+	private IpRestrictionRepository ipRestrictionRepository;
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	public void initTestData() {
@@ -98,9 +102,24 @@ public class DemoDataManagerService {
 		
 		// Message
 		messageRepository.save(createMessage());
+
+		// IP Restrictions
+		ipRestrictionRepository.save(createGlobalIpRestriction());
 		
 		// End
 		log.info("Test data's have been configured!");
+	}
+
+	private IpRestrictionEntity createGlobalIpRestriction() {
+		return IpRestrictionEntity.builder()
+				.id(1L)
+				.global(true)
+				.allow(true)
+				.ipPattern("(192.168.0.)[0-9]{1,3}")
+				.creationDate(ZonedDateTime.now().minusDays(1L))
+				.lastModified(ZonedDateTime.now())
+				.status(EntityStatus.ACTIVE)
+				.build();
 	}
 
 	public static ApiKeyEntity createApiKey(Long userId, Long apiKeyId, String value) {

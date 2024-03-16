@@ -414,6 +414,16 @@ public class TestUtils {
 		return dto;
 	}
 
+	public static IpRestrictionDto createIpRestrictionDto(boolean global) {
+		IpRestrictionDto dto = new IpRestrictionDto();
+		dto.setId(1L);
+		dto.setAllow(true);
+		dto.setIpPattern(".*");
+		dto.setSecretId(1L);
+		dto.setGlobal(global);
+		return dto;
+	}
+
     public static IpRestrictionListDto createIpRestrictionListDto() {
 		return IpRestrictionListDto.builder()
 				.totalElements(1)
