@@ -2,6 +2,7 @@ package io.github.gms.functions.iprestriction;
 
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
@@ -48,6 +49,7 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
         entity.setSecretId(null);
         entity.setUserId(null);
         entity.setGlobal(true);
+        entity.setStatus(EntityStatus.ACTIVE);
         entity = repository.save(entity);
         return new SaveEntityResponseDto(entity.getId());
     }

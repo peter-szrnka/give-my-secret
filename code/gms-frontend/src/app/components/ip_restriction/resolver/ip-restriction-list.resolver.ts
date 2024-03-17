@@ -22,6 +22,6 @@ export class IpRestrictionListResolver extends ListResolver<IpRestriction, IpRes
     }
 
     override getOrderProperty(): string {
-        return "creationDate";
+        return "id";
     }
 }
