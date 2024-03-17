@@ -11,13 +11,14 @@ import { IpRestrictionService } from "./service/ip-restriction.service";
 import { IpRestrictionListResolver } from "./resolver/ip-restriction-list.resolver";
 import { IpRestrictionDetailResolver } from "./resolver/ip-restriction-detail.resolver";
 import { IpRestrictionListComponent } from "./ip-restriction-list.component";
+import { IprestrictionDetailComponent } from "./ip-restriction-detail.component";
 
 /**
  * @author Peter Szrnka
  */
 @NgModule({
     declarations: [
-      IpRestrictionListComponent
+      IpRestrictionListComponent, IprestrictionDetailComponent
      ],
     imports: [
         AngularMaterialModule,
