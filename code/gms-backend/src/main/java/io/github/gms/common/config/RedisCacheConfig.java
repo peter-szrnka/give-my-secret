@@ -16,13 +16,12 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 
 import java.time.Duration;
 
 import static io.github.gms.common.util.Constants.CACHE_API;
-import static io.github.gms.common.util.Constants.CACHE_USER;
 import static io.github.gms.common.util.Constants.CACHE_SYSTEM_PROPERTY;
+import static io.github.gms.common.util.Constants.CACHE_USER;
 
 
 /**
@@ -47,7 +46,6 @@ public class RedisCacheConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
-        template.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
         template.setEnableDefaultSerializer(true);
         return template;
     }

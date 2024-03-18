@@ -2,6 +2,7 @@ package io.github.gms.common.filter;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
+import io.github.gms.functions.iprestriction.IpRestrictionValidator;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,10 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -23,13 +25,15 @@ import static org.mockito.Mockito.verify;
 class IpRestrictionFilterTest extends AbstractUnitTest {
 
     private IpRestrictionService ipRestrictionService;
+    private IpRestrictionValidator validator;
     private IpRestrictionFilter filter;
 
     @BeforeEach
     void setup() {
         // init
         ipRestrictionService = mock(IpRestrictionService.class);
-        filter = new IpRestrictionFilter(ipRestrictionService);
+        validator = mock(IpRestrictionValidator.class);
+        filter = new IpRestrictionFilter(ipRestrictionService, validator);
     }
 
     @Test
@@ -52,7 +56,7 @@ class IpRestrictionFilterTest extends AbstractUnitTest {
     @SneakyThrows
     void shouldHandleError() {
         // arrange
-        doThrow(new IllegalArgumentException()).when(ipRestrictionService).checkGlobalIpRestrictions();
+        when(validator.isIpAddressBlocked(anyList())).thenReturn(true);
 
         // act
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -63,8 +67,8 @@ class IpRestrictionFilterTest extends AbstractUnitTest {
         filter.doFilterInternal(request, response, filterChain);
 
         // assert
-        verify(ipRestrictionService).checkGlobalIpRestrictions();
-        verify(response).sendError(HttpStatus.FORBIDDEN.value());
+        verify(validator).isIpAddressBlocked(anyList());
+        verify(response).sendError(HttpStatus.FORBIDDEN.value(), "You are not allowed to get this secret from your IP address!");
         verify(filterChain, never()).doFilter(any(), any());
     }
 }

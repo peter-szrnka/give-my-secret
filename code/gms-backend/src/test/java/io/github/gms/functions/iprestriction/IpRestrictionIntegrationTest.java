@@ -8,6 +8,8 @@ import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,6 +104,26 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/" + newUserId, requestEntity,
 				String.class);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertNull(response.getBody());
+	}
+
+	@Transactional
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	void testToggleStatus(boolean enabled) {
+		// act
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<String> response = executeHttpPost("/1?enabled="+ enabled, requestEntity,
+				String.class);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertNull(response.getBody());
+
+		executeHttpPost("/1?enabled="+ !enabled, requestEntity,String.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

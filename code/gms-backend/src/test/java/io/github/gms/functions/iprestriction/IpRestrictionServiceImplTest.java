@@ -4,20 +4,17 @@ import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.HttpUtils;
 import io.github.gms.util.TestUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.MockedStatic;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,17 +24,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static io.github.gms.common.util.HttpUtils.IP_WHITELISTED_LOCALHOST;
-import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,7 +44,6 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     private IpRestrictionRepository repository;
     private IpRestrictionConverter converter;
-    private HttpServletRequest httpServletRequest;
     private IpRestrictionServiceImpl service;
 
     @Override
@@ -59,8 +52,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         super.setup();
         repository = mock(IpRestrictionRepository.class);
         converter = mock(IpRestrictionConverter.class);
-        httpServletRequest = mock(HttpServletRequest.class);
-        service = new IpRestrictionServiceImpl(repository, converter, httpServletRequest);
+        service = new IpRestrictionServiceImpl(repository, converter);
 
         ((Logger) LoggerFactory.getLogger(IpRestrictionServiceImpl.class)).addAppender(logAppender);
     }
@@ -231,152 +223,66 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         verify(converter).toDtoList(anyList());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"127.0.0.1", "0:0:0:0:0:0:0:1"})
-    void shouldCheckIpRestrictionsBySecretWithoutRules(String ipAddress) {
-        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
-            // arrange
-            List<IpRestrictionEntity> mockEntities = List.of();
-            when(repository.findAllBySecretId(1L)).thenReturn(mockEntities);
-            when(converter.toModelList(anyList())).thenReturn(List.of());
-            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
-                    .thenReturn(ipAddress);
+    @Test
+    void shouldCheckIpRestrictionsBySecret() {
+        // arrange
+        List<IpRestrictionEntity> mockEntities = List.of();
+        when(repository.findAllBySecretId(1L)).thenReturn(mockEntities);
+        when(converter.toModelList(anyList())).thenReturn(List.of());
 
-            // act
-            service.checkIpRestrictionsBySecret(1L);
+        // act
+        List<IpRestrictionPattern> response = service.checkIpRestrictionsBySecret(1L);
 
-            // assert
-            verify(repository).findAllBySecretId(1L);
-            verify(converter).toModelList(anyList());
-            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("restrictionInputData")
-    void shouldFailWhenIpIsRestricted(boolean allow, String ipPattern, String ipAddress) {
-        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
-            // arrange
-            List<IpRestrictionEntity> mockEntities = List.of();
-            when(repository.findAllBySecretId(1L)).thenReturn(mockEntities);
-            when(converter.toModelList(anyList())).thenReturn(List.of(
-                    IpRestrictionPattern.builder()
-                            .ipPattern(ipPattern)
-                            .allow(allow)
-                            .build()
-            ));
-            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
-                    .thenReturn(ipAddress);
-
-            // act
-            Exception exception = Assertions.assertThrows(GmsException.class, () -> service.checkIpRestrictionsBySecret(1L));
-
-            // assert
-            assertEquals("You are not allowed to get this secret from your IP address!", exception.getMessage());
-            assertLogContains(logAppender, "Client IP address: " + ipAddress);
-            verify(repository).findAllBySecretId(1L);
-            verify(converter).toModelList(anyList());
-            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("positiveRestrictionInputData")
-    void shouldNotFailWhenIpIsNotRestricted(boolean allow, String ipPattern, String ipAddress) {
-        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
-            // arrange
-            List<IpRestrictionEntity> mockEntities = List.of();
-            when(repository.findAllBySecretId(1L)).thenReturn(mockEntities);
-            when(converter.toModelList(anyList())).thenReturn(List.of(
-                    IpRestrictionPattern.builder()
-                            .ipPattern(ipPattern)
-                            .allow(allow)
-                            .build()
-            ));
-            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
-                    .thenReturn(ipAddress);
-
-            // act
-            service.checkIpRestrictionsBySecret(1L);
-
-            // assert
-            assertLogContains(logAppender, "Client IP address: " + ipAddress);
-            verify(repository).findAllBySecretId(1L);
-            verify(converter).toModelList(anyList());
-            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
-        }
+        // assert
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+        verify(repository).findAllBySecretId(1L);
+        verify(converter).toModelList(anyList());
     }
 
     @Test
-    void shouldNotFailWhenIpIsWhitelisted() {
-        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
-            // arrange
-            List<IpRestrictionEntity> mockEntities = List.of();
-            when(repository.findAllBySecretId(1L)).thenReturn(mockEntities);
-            when(converter.toModelList(anyList())).thenReturn(List.of(
-                    IpRestrictionPattern.builder()
-                            .ipPattern("(192.168.0.)[0-9]{1,3}")
-                            .allow(true)
-                            .build(),
-                    IpRestrictionPattern.builder()
-                            .ipPattern("(127.0.0.)[0-9]{1,3}")
-                            .allow(false)
-                            .build()
-            ));
-            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
-                    .thenReturn(IP_WHITELISTED_LOCALHOST);
+    void shouldCheckGlobalIpRestrictions() {
+        // arrange
+        List<IpRestrictionEntity> mockEntities = List.of();
+        when(repository.findAllGlobal()).thenReturn(mockEntities);
+        when(converter.toModelList(anyList())).thenReturn(List.of());
 
-            // act
-            service.checkIpRestrictionsBySecret(1L);
+        // act
+        List<IpRestrictionPattern> response = service.checkGlobalIpRestrictions();
 
-            // assert
-            assertLogContains(logAppender, "Client IP address: " + IP_WHITELISTED_LOCALHOST);
-            verify(repository).findAllBySecretId(1L);
-            verify(converter).toModelList(anyList());
-            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
-        }
+        // assert
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+        verify(repository).findAllGlobal();
+        verify(converter).toModelList(anyList());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"127.0.0.1", "0:0:0:0:0:0:0:1"})
-    void shouldCheckGlobalIpRestrictionsBySecretWithoutRules(String ipAddress) {
-        try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
-            // arrange
-            List<IpRestrictionEntity> mockEntities = List.of();
-            when(repository.findAllGlobal()).thenReturn(mockEntities);
-            when(converter.toModelList(anyList())).thenReturn(List.of());
-            httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
-                    .thenReturn(ipAddress);
+    @ValueSource(booleans = {true, false})
+    void shouldToggleStatus(boolean enabled) {
+        // arrange
+        IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
+        mockEntity.setGlobal(true);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(mockEntity));
 
-            // act
-            service.checkGlobalIpRestrictions();
+        // act
+        service.toggleStatus(1L, enabled);
 
-            // assert
-            verify(repository).findAllGlobal();
-            verify(converter).toModelList(anyList());
-            httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
-        }
+        // assert
+        verify(repository).save(any());
+        verify(repository).findById(anyLong());
+
+        ArgumentCaptor<IpRestrictionEntity> argumentCaptor = ArgumentCaptor.forClass(IpRestrictionEntity.class);
+        verify(repository).save(argumentCaptor.capture());
+
+        assertEquals(enabled, argumentCaptor.getValue().getStatus() == EntityStatus.ACTIVE);
     }
 
     private static Object[][] saveInputData() {
         return new Object[][]{
-                { null, false },
-                { 1L, true },
-                { null, true }
-        };
-    }
-
-    private static Object[][] restrictionInputData() {
-        return new Object[][]{
-                {true, "(192.168.0.)[0-9]{1,3}", "127.0.0.1"},
-                {false, "(192.168.0.)[0-9]{1,3}", "192.168.0.2"},
-        };
-    }
-
-    private static Object[][] positiveRestrictionInputData() {
-        return new Object[][]{
-                {false, "(192.168.0.)[0-9]{1,3}", "127.0.0.1"},
-                {true, "(192.168.0.)[0-9]{1,3}", "192.168.0.2"}
+                {null, false},
+                {1L, true},
+                {null, true}
         };
     }
 }

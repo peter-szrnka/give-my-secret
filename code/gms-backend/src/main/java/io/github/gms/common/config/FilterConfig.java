@@ -25,7 +25,9 @@ public class FilterConfig {
 	public FilterRegistrationBean<IpRestrictionFilter> ipRestrictionFilterBean(IpRestrictionFilter ipRestrictionFilter) {
 		FilterRegistrationBean<IpRestrictionFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(ipRestrictionFilter);
+		registrationBean.setName("ipRestrictionFilter");
 		registrationBean.addUrlPatterns("/api/secret/*");
+		registrationBean.setOrder(1);
 		return registrationBean;
 	}
 }

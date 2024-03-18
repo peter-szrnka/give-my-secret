@@ -8,6 +8,7 @@ import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.apikey.ApiKeyEntity;
 import io.github.gms.functions.apikey.ApiKeyRepository;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
+import io.github.gms.functions.iprestriction.IpRestrictionValidator;
 import io.github.gms.functions.secret.ApiKeyRestrictionRepository;
 import io.github.gms.functions.secret.GetSecretRequestDto;
 import io.github.gms.functions.secret.SecretEntity;
@@ -51,6 +52,7 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
     private UserRepository userRepository;
     private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
     private IpRestrictionService ipRestrictionService;
+    private IpRestrictionValidator ipRestrictionValidator;
 
     private SecretPreparationServiceImpl service;
 
@@ -63,8 +65,9 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
         userRepository = mock(UserRepository.class);
         apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);
         ipRestrictionService = mock(IpRestrictionService.class);
+        ipRestrictionValidator = mock(IpRestrictionValidator.class);
         service = new SecretPreparationServiceImpl(secretRepository, apiKeyRepository, userRepository, apiKeyRestrictionRepository,
-                ipRestrictionService);
+                ipRestrictionService, ipRestrictionValidator);
         ((Logger) LoggerFactory.getLogger(SecretPreparationServiceImpl.class)).addAppender(logAppender);
     }
 

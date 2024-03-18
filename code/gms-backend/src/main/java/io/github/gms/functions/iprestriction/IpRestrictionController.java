@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ID;
+import static io.github.gms.common.util.Constants.PATH_ENABLED;
 import static io.github.gms.common.util.Constants.PATH_LIST;
 import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN;
@@ -60,6 +62,14 @@ public class IpRestrictionController {
     @Audited(operation = EventOperation.DELETE)
     public ResponseEntity<String> delete(@PathVariable(ID) Long id) {
         service.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(PATH_VARIABLE_ID)
+    @PreAuthorize(ROLE_ADMIN)
+    @Audited(operation = EventOperation.TOGGLE_STATUS)
+    public ResponseEntity<String> toggle(@PathVariable(ID) Long id, @RequestParam(PATH_ENABLED) boolean enabled) {
+        service.toggleStatus(id, enabled);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

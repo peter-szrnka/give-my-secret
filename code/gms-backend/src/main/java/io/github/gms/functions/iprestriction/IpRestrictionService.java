@@ -2,6 +2,7 @@ package io.github.gms.functions.iprestriction;
 
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.model.IpRestrictionPattern;
 
 import java.util.List;
 
@@ -23,7 +24,9 @@ public interface IpRestrictionService {
 
     List<IpRestrictionDto> getAllBySecretId(Long secretId);
 
-    void checkIpRestrictionsBySecret(Long secretId);
+    List<IpRestrictionPattern> checkIpRestrictionsBySecret(Long secretId);
 
-    void checkGlobalIpRestrictions();
+    List<IpRestrictionPattern> checkGlobalIpRestrictions();
+
+    void toggleStatus(Long id, boolean enabled);
 }
