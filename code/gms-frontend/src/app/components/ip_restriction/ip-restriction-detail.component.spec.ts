@@ -117,7 +117,7 @@ describe('IprestrictionDetailComponent', () => {
         expect(dialog.open).toHaveBeenCalledTimes(1);
     });
 
-    it('Should save api key', () => {
+    it('Should save IP restriction', () => {
         configureTestBed();
 
         // act
@@ -125,6 +125,6 @@ describe('IprestrictionDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "API key has been saved!", type: "information" } as DialogData });
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "IP restriction has been saved!", type: "information" } as DialogData });
     });
 });

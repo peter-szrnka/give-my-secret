@@ -32,7 +32,7 @@
         <ng-container matColumnDef="operations">
           <th mat-header-cell *matHeaderCellDef>Operations</th>
           <td mat-cell *matCellDef="let element">&nbsp;
-            <button mat-icon-button color="primary" class="show-large" [routerLink]="'/apikey/' + element.id">
+            <button mat-icon-button color="primary" class="show-large" [routerLink]="'/ip_restriction/' + element.id">
               <mat-icon aria-hidden="false">edit</mat-icon>
             </button>
             <button mat-icon-button color="warn" class="show-large" (click)="promptDelete(element.id)">
