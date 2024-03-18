@@ -1,6 +1,7 @@
 package io.github.gms.common.filter;
 
 import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.model.IpRestrictionPatterns;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.iprestriction.IpRestrictionValidator;
 import jakarta.servlet.FilterChain;
@@ -10,6 +11,8 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -39,6 +42,9 @@ class IpRestrictionFilterTest extends AbstractUnitTest {
     @Test
     @SneakyThrows
     void shouldRun() {
+        // arrange
+        when(ipRestrictionService.checkGlobalIpRestrictions()).thenReturn(new IpRestrictionPatterns(List.of()));
+
         // act
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -56,6 +62,7 @@ class IpRestrictionFilterTest extends AbstractUnitTest {
     @SneakyThrows
     void shouldHandleError() {
         // arrange
+        when(ipRestrictionService.checkGlobalIpRestrictions()).thenReturn(new IpRestrictionPatterns(List.of()));
         when(validator.isIpAddressBlocked(anyList())).thenReturn(true);
 
         // act

@@ -153,6 +153,10 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
                 TestUtils.createApiKeyRestrictionEntity(2L),
                 TestUtils.createApiKeyRestrictionEntity(3L)
         ));
+        when(ipRestrictionService.checkIpRestrictionsBySecret(anyLong())).thenReturn(
+                new IpRestrictionPatterns(List.of(IpRestrictionPattern.builder().allow(false).ipPattern(".*").build())));
+        when(ipRestrictionValidator.isIpAddressBlocked(anyList())).thenReturn(false);
+
 
         // assert
         GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
@@ -164,6 +168,7 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
         verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
         verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
         verify(ipRestrictionService).checkIpRestrictionsBySecret(anyLong());
+        verify(ipRestrictionValidator).isIpAddressBlocked(anyList());
     }
 
     @Test
@@ -178,6 +183,9 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
                 TestUtils.createApiKeyRestrictionEntity(2L),
                 TestUtils.createApiKeyRestrictionEntity(3L)
         ));
+        when(ipRestrictionService.checkIpRestrictionsBySecret(anyLong())).thenReturn(
+                new IpRestrictionPatterns(List.of(IpRestrictionPattern.builder().allow(false).ipPattern(".*").build())));
+        when(ipRestrictionValidator.isIpAddressBlocked(anyList())).thenReturn(false);
 
         // act
         SecretEntity response = service.getSecretEntity(dto);
@@ -190,6 +198,7 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
         verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
         verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
         verify(ipRestrictionService).checkIpRestrictionsBySecret(anyLong());
+        verify(ipRestrictionValidator).isIpAddressBlocked(anyList());
     }
 
     @Test
@@ -200,6 +209,9 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
         when(userRepository.findById(anyLong())).thenReturn(createMockUser());
         when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
         when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of());
+        when(ipRestrictionService.checkIpRestrictionsBySecret(anyLong())).thenReturn(
+                new IpRestrictionPatterns(List.of(IpRestrictionPattern.builder().allow(false).ipPattern(".*").build())));
+        when(ipRestrictionValidator.isIpAddressBlocked(anyList())).thenReturn(false);
 
         // act
         SecretEntity response = service.getSecretEntity(dto);
@@ -212,51 +224,8 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
         verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
         verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
         verify(ipRestrictionService).checkIpRestrictionsBySecret(anyLong());
+        verify(ipRestrictionValidator).isIpAddressBlocked(anyList());
     }
-
-    /*@Test
-    void shouldProceedWithWhitelistedIp() {
-        // arrange
-        SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
-        when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
-        when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-        when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
-        when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of());
-
-        // act
-        SecretEntity response = service.getSecretEntity(dto);
-
-        //assert
-        assertNotNull(response);
-        assertEquals(mockSecretEntity, response);
-        verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
-        verify(userRepository).findById(anyLong());
-        verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
-        verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(anyLong(), anyLong());
-        verify(ipRestrictionService).checkIpRestrictionsBySecret(anyLong());
-    }*/
-
-    /*@ParameterizedTest
-    @MethodSource("restrictionInputData")
-    void shouldFailWhenIpIsRestricted(boolean allow, String ipPattern, String ipAddress) {
-
-        // arrange
-        SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
-        when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
-        when(userRepository.findById(anyLong())).thenReturn(createMockUser());
-        when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(mockSecretEntity)));
-
-        // act
-        GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
-
-        //assert
-        assertEquals("You are not allowed to get this secret from your IP address!", exception.getMessage());
-        assertLogContains(logAppender, "Client IP address: " + ipAddress);
-        verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
-        verify(userRepository).findById(anyLong());
-        verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
-        verify(ipRestrictionService).checkIpRestrictionsBySecret(anyLong());
-    }*/
 
     private static Optional<UserEntity> createMockUser() {
         UserEntity entity = new UserEntity();
