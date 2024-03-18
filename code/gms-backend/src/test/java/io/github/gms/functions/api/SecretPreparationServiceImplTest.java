@@ -5,6 +5,7 @@ import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.model.IpRestrictionPattern;
+import io.github.gms.common.model.IpRestrictionPatterns;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.apikey.ApiKeyEntity;
 import io.github.gms.functions.apikey.ApiKeyRepository;
@@ -127,7 +128,8 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
         when(userRepository.findById(anyLong())).thenReturn(createMockUser());
         when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL))));
-        when(ipRestrictionService.checkIpRestrictionsBySecret(anyLong())).thenReturn(List.of(IpRestrictionPattern.builder().allow(false).ipPattern(".*").build()));
+        when(ipRestrictionService.checkIpRestrictionsBySecret(anyLong())).thenReturn(
+                new IpRestrictionPatterns(List.of(IpRestrictionPattern.builder().allow(false).ipPattern(".*").build())));
         when(ipRestrictionValidator.isIpAddressBlocked(anyList())).thenReturn(true);
 
         // assert

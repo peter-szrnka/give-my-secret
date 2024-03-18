@@ -3,6 +3,7 @@ package io.github.gms.functions.iprestriction;
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.model.IpRestrictionPattern;
+import io.github.gms.common.model.IpRestrictionPatterns;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -74,11 +76,13 @@ class IpRestrictionConverterImplTest extends AbstractUnitTest {
         List<IpRestrictionEntity> entityList = Lists.newArrayList(ipRestrictionEntity);
 
         // act
-        List<IpRestrictionPattern> resultList = converter.toModelList(entityList);
+        IpRestrictionPatterns resultList = converter.toModel(entityList);
 
         // assert
         assertNotNull(resultList);
-        IpRestrictionPattern dto = resultList.getFirst();
+        assertNotNull(resultList.getItems());
+        assertFalse(resultList.getItems().isEmpty());
+        IpRestrictionPattern dto = resultList.getItems().getFirst();
         assertEquals(".*", dto.getIpPattern());
         verify(clock).instant();
         verify(clock).getZone();

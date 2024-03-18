@@ -1,6 +1,7 @@
 package io.github.gms.functions.iprestriction;
 
 import io.github.gms.common.model.IpRestrictionPattern;
+import io.github.gms.common.model.IpRestrictionPatterns;
 import io.github.gms.common.util.MdcUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,8 +29,8 @@ public class IpRestrictionConverterImpl implements IpRestrictionConverter {
     }
 
     @Override
-    public List<IpRestrictionPattern> toModelList(List<IpRestrictionEntity> entities) {
-        return entities.stream().map(IpRestrictionConverterImpl::toModel).toList();
+    public IpRestrictionPatterns toModel(List<IpRestrictionEntity> entities) {
+        return new IpRestrictionPatterns(entities.stream().map(IpRestrictionConverterImpl::toModel).toList());
     }
 
     @Override

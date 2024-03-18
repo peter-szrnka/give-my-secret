@@ -3,7 +3,7 @@ package io.github.gms.functions.iprestriction;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.model.IpRestrictionPattern;
+import io.github.gms.common.model.IpRestrictionPatterns;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
 import lombok.RequiredArgsConstructor;
@@ -95,14 +95,14 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
 
     @Override
     @Cacheable(cacheNames = CACHE_IP_RESTRICTION)
-    public List<IpRestrictionPattern> checkIpRestrictionsBySecret(Long secretId) {
-        return converter.toModelList(findAll(secretId));
+    public IpRestrictionPatterns checkIpRestrictionsBySecret(Long secretId) {
+        return converter.toModel(findAll(secretId));
     }
 
     @Override
     @Cacheable(cacheNames = CACHE_GLOBAL_IP_RESTRICTION)
-    public List<IpRestrictionPattern> checkGlobalIpRestrictions() {
-        return converter.toModelList(repository.findAllGlobal());
+    public IpRestrictionPatterns checkGlobalIpRestrictions() {
+        return converter.toModel(repository.findAllGlobal());
     }
 
     @Override

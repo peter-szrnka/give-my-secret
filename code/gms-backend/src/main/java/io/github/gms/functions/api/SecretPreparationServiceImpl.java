@@ -1,7 +1,7 @@
 package io.github.gms.functions.api;
 
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.model.IpRestrictionPattern;
+import io.github.gms.common.model.IpRestrictionPatterns;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.apikey.ApiKeyEntity;
 import io.github.gms.functions.apikey.ApiKeyRepository;
@@ -46,8 +46,8 @@ public class SecretPreparationServiceImpl implements SecretPreparationService {
             log.warn("Secret not found"); return new GmsException("Secret is not available!"); });
 
         // Ip Restriction
-        List<IpRestrictionPattern> patterns = ipRestrictionService.checkIpRestrictionsBySecret(secretEntity.getId());
-        if (ipRestrictionValidator.isIpAddressBlocked(patterns)) {
+        IpRestrictionPatterns patterns = ipRestrictionService.checkIpRestrictionsBySecret(secretEntity.getId());
+        if (ipRestrictionValidator.isIpAddressBlocked(patterns.getItems())) {
             throw new GmsException("You are not allowed to get this secret from your IP address!");
         }
 

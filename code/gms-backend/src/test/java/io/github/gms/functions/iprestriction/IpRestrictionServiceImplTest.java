@@ -5,7 +5,7 @@ import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.model.IpRestrictionPattern;
+import io.github.gms.common.model.IpRestrictionPatterns;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
@@ -228,16 +228,17 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         // arrange
         List<IpRestrictionEntity> mockEntities = List.of();
         when(repository.findAllBySecretId(1L)).thenReturn(mockEntities);
-        when(converter.toModelList(anyList())).thenReturn(List.of());
+        when(converter.toModel(anyList())).thenReturn(new IpRestrictionPatterns(List.of()));
 
         // act
-        List<IpRestrictionPattern> response = service.checkIpRestrictionsBySecret(1L);
+        IpRestrictionPatterns response = service.checkIpRestrictionsBySecret(1L);
 
         // assert
         assertNotNull(response);
-        assertTrue(response.isEmpty());
+        assertNotNull(response.getItems());
+        assertTrue(response.getItems().isEmpty());
         verify(repository).findAllBySecretId(1L);
-        verify(converter).toModelList(anyList());
+        verify(converter).toModel(anyList());
     }
 
     @Test
@@ -245,16 +246,17 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         // arrange
         List<IpRestrictionEntity> mockEntities = List.of();
         when(repository.findAllGlobal()).thenReturn(mockEntities);
-        when(converter.toModelList(anyList())).thenReturn(List.of());
+        when(converter.toModel(anyList())).thenReturn(new IpRestrictionPatterns(List.of()));
 
         // act
-        List<IpRestrictionPattern> response = service.checkGlobalIpRestrictions();
+        IpRestrictionPatterns response = service.checkGlobalIpRestrictions();
 
         // assert
         assertNotNull(response);
-        assertTrue(response.isEmpty());
+        assertNotNull(response.getItems());
+        assertTrue(response.getItems().isEmpty());
         verify(repository).findAllGlobal();
-        verify(converter).toModelList(anyList());
+        verify(converter).toModel(anyList());
     }
 
     @ParameterizedTest

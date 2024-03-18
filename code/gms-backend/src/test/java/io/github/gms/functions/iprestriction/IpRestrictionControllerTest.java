@@ -5,6 +5,8 @@ import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 
@@ -90,5 +92,20 @@ class IpRestrictionControllerTest {
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).delete(1L);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = { true, false })
+    void shouldToggleStatus(boolean status) {
+        // arrange
+        doNothing().when(service).toggleStatus(1L, status);
+
+        // act
+        ResponseEntity<String> response = controller.toggle(1L, status);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        verify(service).toggleStatus(1L, status);
     }
 }
