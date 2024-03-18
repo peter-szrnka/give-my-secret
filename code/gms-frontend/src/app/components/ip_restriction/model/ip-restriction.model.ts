@@ -15,7 +15,7 @@ export interface IpRestriction {
 
 export const PAGE_CONFIG_IP_RESTRICTION : PageConfig = {
     scope: "ipRestriction",
-    label: "IP Restriction"
+    label: "IP restriction"
 };
 
 export const EMPTY_IP_RESTRICTION : IpRestriction = {
