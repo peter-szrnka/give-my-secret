@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.SecretType;
+import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.apikey.ApiKeyEntity;
 import io.github.gms.functions.apikey.ApiKeyRepository;
@@ -29,6 +30,7 @@ import static io.github.gms.util.TestUtils.createMockSecret;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -117,6 +119,26 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
         verify(userRepository).findById(anyLong());
         verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
         verify(ipRestrictionService, never()).checkIpRestrictionsBySecret(anyLong());
+    }
+
+    @Test
+    void shouldFailBecauseOfIpRestriction() {
+        // arrange
+        when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
+        when(userRepository.findById(anyLong())).thenReturn(createMockUser());
+        when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL))));
+        when(ipRestrictionService.checkIpRestrictionsBySecret(anyLong())).thenReturn(List.of(IpRestrictionPattern.builder().allow(false).ipPattern(".*").build()));
+        when(ipRestrictionValidator.isIpAddressBlocked(anyList())).thenReturn(true);
+
+        // assert
+        GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
+        assertEquals("You are not allowed to get this secret from your IP address!", exception.getMessage());
+
+        verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
+        verify(userRepository).findById(anyLong());
+        verify(secretRepository).findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE));
+        verify(ipRestrictionService).checkIpRestrictionsBySecret(anyLong());
+        verify(ipRestrictionValidator).isIpAddressBlocked(anyList());
     }
 
     @Test

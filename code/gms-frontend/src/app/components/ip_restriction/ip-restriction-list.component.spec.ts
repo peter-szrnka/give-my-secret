@@ -8,7 +8,6 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { ClipboardService } from "../../common/service/clipboard-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { IpRestrictionListComponent } from "./ip-restriction-list.component";
@@ -28,7 +27,6 @@ describe('IpRestrictionListComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
-    let clipboardService : any;
     // Fixtures
     let fixture : ComponentFixture<IpRestrictionListComponent>;
 
@@ -42,8 +40,7 @@ describe('IpRestrictionListComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : IpRestrictionService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
-                { provide : ActivatedRoute, useClass : activatedRoute },
-                { provide : ClipboardService, useValue : clipboardService}
+                { provide : ActivatedRoute, useClass : activatedRoute }
             ]
         });
 
@@ -88,10 +85,6 @@ describe('IpRestrictionListComponent', () => {
         service = {
             delete : jest.fn().mockReturnValue(of("OK")),
             toggle : jest.fn().mockReturnValue(of("OK"))
-        };
-
-        clipboardService = {
-            copyValue : jest.fn()
         };
     });
 

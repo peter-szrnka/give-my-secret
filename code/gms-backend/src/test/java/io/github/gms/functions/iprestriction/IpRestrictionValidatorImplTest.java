@@ -25,7 +25,7 @@ import static org.mockito.Mockito.mockStatic;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class IpRestrictionValidatorImplTest extends AbstractLoggingUnitTest {
+class IpRestrictionValidatorImplTest extends AbstractLoggingUnitTest {
 
     private HttpServletRequest httpServletRequest;
     private IpRestrictionValidatorImpl validator;
@@ -106,7 +106,8 @@ public class IpRestrictionValidatorImplTest extends AbstractLoggingUnitTest {
     private static Object[][] positiveRestrictionInputData() {
         return new Object[][]{
                 {false, "(192.168.0.)[0-9]{1,3}", "127.0.0.1"},
-                {true, "(192.168.0.)[0-9]{1,3}", "192.168.0.2"}
+                {true, "(192.168.0.)[0-9]{1,3}", "192.168.0.2"},
+                {false, "(192.168.0.)[0-9]{1,3}", "0:0:0:0:0:0:0:1"}
         };
     }
 }

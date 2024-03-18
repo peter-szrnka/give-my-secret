@@ -3,7 +3,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
 import { PageConfig } from "../../common/model/common.model";
-import { ClipboardService } from "../../common/service/clipboard-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { IpRestriction, PAGE_CONFIG_IP_RESTRICTION } from "./model/ip-restriction.model";
 import { IpRestrictionService } from "./service/ip-restriction.service";
