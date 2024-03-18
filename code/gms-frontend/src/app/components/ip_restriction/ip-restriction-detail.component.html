@@ -14,7 +14,7 @@
                     <input matInput name="name" required [(ngModel)]="data.ipPattern">
                 </mat-form-field>
 
-                <mat-form-field appearance="fill" class="half-width-right">
+                <mat-form-field appearance="fill" class="full-width">
                     <mat-label>Allowed/blocked</mat-label>
                     <mat-select required [(ngModel)]="data.allow" name="allow">
                         <mat-option [value]="true">true</mat-option>
@@ -33,6 +33,11 @@
                 <mat-form-field appearance="fill" class="full-width" *ngIf="data?.id !== undefined">
                     <mat-label>Creation date</mat-label>
                     <input disabled="true" matInput value="{{data.creationDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width" *ngIf="data?.id !== undefined">
+                    <mat-label>Last modified</mat-label>
+                    <input disabled="true" matInput value="{{data.lastModified | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}">
                 </mat-form-field>
 
                 <button [disabled]="form.status ==='INVALID'" mat-button color="primary" (click)="save()">Save</button>

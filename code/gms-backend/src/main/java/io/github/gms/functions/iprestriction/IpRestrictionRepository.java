@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface IpRestrictionRepository extends JpaRepository<IpRestrictionEntity, Long> {
 
-    @Query("select i from IpRestrictionEntity i where i.global=true")
+    @Query("select i from IpRestrictionEntity i where i.global=true and i.status='ACTIVE'")
     List<IpRestrictionEntity> findAllGlobal();
 
     @Query("select i from IpRestrictionEntity i where i.global=true")
