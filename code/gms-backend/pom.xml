@@ -70,17 +70,17 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>6.1.4</version>
+			<version>6.1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>6.1.4</version>
+			<version>6.1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>6.2.2</version>
+			<version>6.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -242,12 +242,12 @@
 		<dependency>
 		    <groupId>org.bouncycastle</groupId>
 		    <artifactId>bcprov-jdk18on</artifactId>
-		    <version>1.76</version>
+		    <version>1.77</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.bouncycastle</groupId>
 		    <artifactId>bcpkix-jdk18on</artifactId>
-		    <version>1.76</version>
+		    <version>1.77</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -304,6 +304,12 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id/>
+			<url>https://repo.maven.apache.org/maven2/</url>
+		</repository>
+	</repositories>
 	<profiles>
 		<profile>
 			<id>default</id>
