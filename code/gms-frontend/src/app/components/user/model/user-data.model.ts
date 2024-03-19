@@ -1,9 +1,10 @@
+import { BaseDetail } from "../../../common/model/base-detail.model";
 import { PageConfig } from "../../../common/model/common.model";
 
 /**
  * @author Peter Szrnka
  */
-export interface UserData {
+export interface UserData extends BaseDetail {
     username? : string,
     name? : string,
     email? : string,

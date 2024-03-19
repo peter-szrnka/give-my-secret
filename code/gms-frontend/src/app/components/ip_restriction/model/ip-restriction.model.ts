@@ -1,9 +1,10 @@
+import { BaseDetail } from "../../../common/model/base-detail.model";
 import { PageConfig } from "../../../common/model/common.model";
 
 /**
  * @author Peter Szrnka
  */
-export interface IpRestriction {
+export interface IpRestriction extends BaseDetail {
     id?: number,
     secretId?: number,
     status?: string,

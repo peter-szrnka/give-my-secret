@@ -1,5 +1,5 @@
 import { ActivatedRouteSnapshot } from "@angular/router";
-import { catchError } from "rxjs";
+import { catchError, of } from "rxjs";
 import { Observable } from "rxjs/internal/Observable";
 import { BaseList } from "../../../model/base-list";
 import { SharedDataService } from "../../../service/shared-data-service";
@@ -27,6 +27,6 @@ export abstract class ListResolver<T, L extends BaseList<T>, S extends ServiceBa
             property : this.getOrderProperty(),
             page : snapshot.queryParams['page'] ?? 0,
             size: JSON.parse(localStorage.getItem(this.getPageConfig().scope + "_pageSize") ?? '25')
-        }).pipe(catchError(() => this.sharedData.clearDataAndReturn([])), (data) => data);
+        }).pipe(catchError((err) => of({ totalElements: 0, resultList: [], error: err.error.message }) as Observable<any>));
     }
 }
