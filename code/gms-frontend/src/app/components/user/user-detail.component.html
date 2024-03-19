@@ -2,7 +2,8 @@
 
     <nav-back [buttonConfig]="[{url:'/user/list', label:'Back to user list', primary : true}]"></nav-back>
 
-    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+    <div class="warning" *ngIf="error"><b>System error:</b> {{error}}</div>
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" *ngIf="!error">
         <mat-tab label="User data">
             <form #form="ngForm" autocomplete="off">
                 <mat-card class="with-margin-top">
