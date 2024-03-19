@@ -52,7 +52,7 @@ import static io.github.gms.common.util.Constants.CACHE_USER;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = { CACHE_USER, CACHE_API })
+@CacheConfig(cacheNames = { CACHE_USER })
 public class UserServiceImpl implements UserService {
 	
 	private static final String CREDENTIAL_REGEX = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,255}$";
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@Cacheable
+	@Cacheable(cacheNames = CACHE_USER)
 	public String getUsernameById(Long id) {
 		return getById(id).getUsername();
 	}

@@ -51,12 +51,6 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 		// assert
 		assertEquals(HttpStatus.OK, saveResponse.getStatusCode());
 		assertNotNull(saveResponse.getBody());
-		Long newUserId = saveResponse.getBody().getEntityId();
-		
-		// cleanup
-		/*HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		executeHttpDelete("/" + newUserId, requestEntity,
-				String.class);*/
 	}
 	
 	@Test

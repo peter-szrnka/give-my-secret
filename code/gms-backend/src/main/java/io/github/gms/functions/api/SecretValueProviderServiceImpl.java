@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.CACHE_API_GENERATOR;
 import static io.github.gms.common.util.Constants.VALUE;
 
 /**
@@ -22,7 +24,7 @@ import static io.github.gms.common.util.Constants.VALUE;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "apiCache", keyGenerator = "apiCacheKeyGenerator")
+@CacheConfig(cacheNames = CACHE_API, keyGenerator = CACHE_API_GENERATOR)
 public class SecretValueProviderServiceImpl implements SecretValueProviderService {
 
     private final KeystoreValidatorService keystoreValidatorService;

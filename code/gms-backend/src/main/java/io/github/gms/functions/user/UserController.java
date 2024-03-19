@@ -1,7 +1,7 @@
 package io.github.gms.functions.user;
 
 import io.github.gms.auth.ldap.LdapSyncService;
-import io.github.gms.common.abstraction.AbstractController;
+import io.github.gms.common.abstraction.AbstractAdminController;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EventOperation;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +38,7 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 @RestController
 @RequestMapping("/secure/user")
 @AuditTarget(EventTarget.USER)
-public class UserController extends AbstractController<UserService> {
+public class UserController extends AbstractAdminController<UserService> {
 
 	private final LdapSyncService ldapSyncService;
 	private final String authType;
@@ -70,22 +69,6 @@ public class UserController extends AbstractController<UserService> {
 	@PreAuthorize(ROLE_ADMIN)
 	public UserListDto list(@RequestBody PagingDto dto) {
 		return service.list(dto);
-	}
-	
-	@DeleteMapping(PATH_VARIABLE_ID)
-	@PreAuthorize(ROLE_ADMIN)
-	@Audited(operation = EventOperation.DELETE)
-	public ResponseEntity<String> delete(@PathVariable(ID) Long id) {
-		service.delete(id);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	@PostMapping(PATH_VARIABLE_ID)
-	@PreAuthorize(ROLE_ADMIN)
-	@Audited(operation = EventOperation.TOGGLE_STATUS)
-	public ResponseEntity<String> toggle(@PathVariable(ID) Long id, @RequestParam(PATH_ENABLED) boolean enabled) {
-		service.toggleStatus(id, enabled);
-		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@PostMapping("/change_credential")

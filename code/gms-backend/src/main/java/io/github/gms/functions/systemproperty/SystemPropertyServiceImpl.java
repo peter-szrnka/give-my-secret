@@ -13,13 +13,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+import static io.github.gms.common.util.Constants.CACHE_SYSTEM_PROPERTY;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "systemPropertyCache")
+@CacheConfig(cacheNames = CACHE_SYSTEM_PROPERTY)
 public class SystemPropertyServiceImpl implements SystemPropertyService {
 
 	private final SystemPropertyConverter converter;

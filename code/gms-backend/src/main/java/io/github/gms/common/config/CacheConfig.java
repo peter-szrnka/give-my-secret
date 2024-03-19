@@ -13,8 +13,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.CACHE_API_GENERATOR;
 import static io.github.gms.common.util.Constants.CACHE_GLOBAL_IP_RESTRICTION;
 import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
+import static io.github.gms.common.util.Constants.CACHE_SYSTEM_PROPERTY;
 import static io.github.gms.common.util.Constants.CACHE_USER;
 
 /**
@@ -31,7 +33,7 @@ public class CacheConfig implements CachingConfigurer {
     public CacheManager cacheManager() {
 		ConcurrentMapCacheManager manager = new ConcurrentMapCacheManager(
 				CACHE_USER,
-				"systemPropertyCache",
+				CACHE_SYSTEM_PROPERTY,
 				CACHE_API,
 				CACHE_GLOBAL_IP_RESTRICTION,
 				CACHE_IP_RESTRICTION);
@@ -46,7 +48,7 @@ public class CacheConfig implements CachingConfigurer {
         return new SimpleKeyGenerator();
     }
 	
-	@Bean("apiCacheKeyGenerator")
+	@Bean(CACHE_API_GENERATOR)
     public KeyGenerator apiCacheKeyGenerator() {
         return new ApiCacheKeyGenerator();
     }

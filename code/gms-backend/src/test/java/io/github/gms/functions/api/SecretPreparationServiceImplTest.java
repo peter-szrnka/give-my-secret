@@ -228,8 +228,7 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     private static Optional<UserEntity> createMockUser() {
-        UserEntity entity = new UserEntity();
-        return Optional.of(entity);
+        return Optional.of(new UserEntity());
     }
 
     private static ApiKeyEntity createApiKeyEntity() {

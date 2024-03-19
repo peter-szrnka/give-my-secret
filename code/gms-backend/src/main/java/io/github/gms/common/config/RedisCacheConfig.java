@@ -21,6 +21,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.time.Duration;
 
 import static io.github.gms.common.util.Constants.CACHE_API;
+import static io.github.gms.common.util.Constants.CACHE_API_GENERATOR;
 import static io.github.gms.common.util.Constants.CACHE_GLOBAL_IP_RESTRICTION;
 import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
 import static io.github.gms.common.util.Constants.CACHE_SYSTEM_PROPERTY;
@@ -83,7 +84,7 @@ public class RedisCacheConfig {
         return new SimpleKeyGenerator();
     }
 
-    @Bean("apiCacheKeyGenerator")
+    @Bean(CACHE_API_GENERATOR)
     public KeyGenerator apiCacheKeyGenerator() {
         return new ApiCacheKeyGenerator();
     }
