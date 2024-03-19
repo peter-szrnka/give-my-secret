@@ -304,12 +304,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id/>
-			<url>https://repo.maven.apache.org/maven2/</url>
-		</repository>
-	</repositories>
 	<profiles>
 		<profile>
 			<id>default</id>
