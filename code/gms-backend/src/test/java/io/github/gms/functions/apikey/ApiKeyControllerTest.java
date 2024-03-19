@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
  * Unit test of {@link ApiKeyController}
  * 
  * @author Peter Szrnka
+ * @since 1.0
  */
 class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, ApiKeyController> {
 

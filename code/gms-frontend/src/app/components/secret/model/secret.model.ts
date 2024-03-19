@@ -1,4 +1,5 @@
 import { PageConfig } from "../../../common/model/common.model"
+import { IpRestriction } from "../../ip_restriction/model/ip-restriction.model";
 
 /**
  * @author Peter Szrnka
@@ -17,7 +18,8 @@ export interface Secret {
     rotationPeriod: string,
     rotationEnabled? : boolean,
     returnDecrypted? : boolean,
-    apiKeyRestrictions : number[]
+    apiKeyRestrictions : number[],
+    ipRestrictions? : IpRestriction[]
 }
 
 export const EMPTY_SECRET : Secret = {

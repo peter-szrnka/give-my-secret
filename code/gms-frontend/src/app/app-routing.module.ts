@@ -34,6 +34,10 @@ import { UserListComponent } from './components/user/user-list.component';
 import { VerifyComponent } from './components/verify/verify.component';
 import { ROLE_ROUTE_MAP } from './common/utils/route-utils';
 import { RequestPasswordResetComponent } from './components/password_reset/request-password-reset.component';
+import { IpRestrictionListComponent } from './components/ip_restriction/ip-restriction-list.component';
+import { IpRestrictionListResolver } from './components/ip_restriction/resolver/ip-restriction-list.resolver';
+import { IpRestrictionDetailResolver } from './components/ip_restriction/resolver/ip-restriction-detail.resolver';
+import { IprestrictionDetailComponent } from './components/ip_restriction/ip-restriction-detail.component';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 
@@ -80,6 +84,8 @@ const routes: Routes = [
   listRouteBuilder('announcement', AnnouncementListComponent, AnnouncementListResolver),
   detailRouteBuilder('announcement', AnnouncementDetailComponent, AnnouncementDetailResolver),
   listRouteBuilder('system_property', SystemPropertyListComponent, SystemPropertyListResolver),
+  listRouteBuilder('ip_restriction', IpRestrictionListComponent, IpRestrictionListResolver),
+  detailRouteBuilder('ip_restriction', IprestrictionDetailComponent, IpRestrictionDetailResolver),
 
   // Common functions
   { path: 'messages', component: MessageListComponent },

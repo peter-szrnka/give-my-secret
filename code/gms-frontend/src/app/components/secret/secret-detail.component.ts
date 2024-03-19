@@ -16,10 +16,11 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { IpRestriction } from "../ip_restriction/model/ip-restriction.model";
 
 interface KeyValuePair {
-    key : string,
-    value : string;
+    key: string,
+    value: string;
 }
 
 /**
@@ -35,16 +36,19 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     rotationPeriods: string[] = [
         'MINUTES', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'
     ];
-    displayedColumns: string[] = ['key','value', 'operations'];
+    displayedColumns: string[] = ['key', 'value', 'operations'];
+    displayedIpRestrictionColumns: string[] = ['ipPattern', 'allow', 'operations'];
 
-    public datasource : ArrayDataSource<KeyValuePair>;
-    multipleCredential : KeyValuePair[] = [];
+    public ipRestrictionsDatasource: ArrayDataSource<IpRestriction>;
+    public datasource: ArrayDataSource<KeyValuePair>;
+    multipleCredential: KeyValuePair[] = [];
     filteredKeystoreOptions$: Observable<IdNamePair[]>;
     filteredKeystoreAliasOptions$: Observable<IdNamePair[]>;
     filteredApiKeyOptions$: Observable<IdNamePair[]>;
     selectableApiKeys: IdNamePair[] = [];
     selectedApiKeys: IdNamePair[] = [];
     allApiKeys: IdNamePair[] = [];
+    ipRestrictions: IpRestriction[] = [];
 
     formData = {
         unmaskedValue: undefined,
@@ -88,6 +92,8 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
 
     override dataLoadingCallback(data: Secret): void {
         this.onKeystoreNameChanged(data.keystoreId);
+        this.ipRestrictions = this.data.ipRestrictions || [];
+        this.refreshIpRestrictions();
 
         if (data.type !== 'MULTIPLE_CREDENTIAL') {
             return;
@@ -95,11 +101,13 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
 
         this.multipleCredential = this.parseValue(data.value);
         this.refreshTable();
+
     }
 
     save() {
         this.splashScreenStateService.start();
         this.data.apiKeyRestrictions = this.formData.allApiKeysAllowed ? [] : this.selectedApiKeys.map(apiKey => apiKey.id);
+        this.addMissingDataToIpRestrictions();
         this.transformMultipleCredentials();
         this.validateForm();
         this.cleanOptionalFields();
@@ -149,60 +157,14 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         this.filteredKeystoreAliasOptions$ = this.keystoreService.getAllKeystoreAliases(selectedId);
     }
 
-    addNewMultipleCredential() : void {
-        this.multipleCredential.push({ key: "", value: ""});
+    addNewMultipleCredential(): void {
+        this.multipleCredential.push({ key: "", value: "" });
         this.refreshTable();
     }
 
-    deleteMultipleCredential(index : number) {
+    deleteMultipleCredential(index: number) {
         this.multipleCredential.splice(index, 1);
         this.refreshTable();
-    }
-
-    private refreshTable() {
-        this.datasource = new ArrayDataSource<KeyValuePair>(this.multipleCredential);
-    }
-    
-    private parseValue(data : string) : KeyValuePair[]  {
-        if (!data) {
-            return [];
-        }
-
-        return data.split(";").map(kvp => {
-            const splitData = kvp.split(":");
-            return { key: splitData[0], value: splitData[1] };
-        });
-    }
-
-    private transformMultipleCredentials() {
-        if (this.data.type !== 'MULTIPLE_CREDENTIAL') {
-            return;
-        }
-
-        this.data.value = this.multipleCredential.map(item => item.key + ":" + item.value).join(";");
-    }
-
-    private validateForm() {
-        if ((this.data.keystoreAliasId === undefined)) {
-            throw Error("Please select a keystore alias!");
-        }
-    }
-
-    private cleanOptionalFields() {
-        this.data.creationDate = undefined;
-        this.data.lastRotated = undefined;
-        this.data.lastUpdated = undefined;
-    }
-
-    private refreshSelectableRoles(): void {
-        this.selectableApiKeys = this.allApiKeys;
-        this.selectableApiKeys = this.selectableApiKeys.filter((item) => {
-            return !this.selectedApiKeys.map(apiKey => apiKey.id).includes(item.id);
-        });
-    }
-
-    private getIndex(value: number) {
-        return this.selectedApiKeys.map(apiKey => apiKey.id).indexOf(value);
     }
 
     selected(event: MatAutocompleteSelectedEvent): void {
@@ -243,5 +205,70 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
 
         this.selectedApiKeys.splice(index, 1);
         this.refreshSelectableRoles();
+    }
+
+    addNewIpRestriction() {
+        this.ipRestrictions.push({ allow: true, ipPattern: '' });
+        this.refreshIpRestrictions();
+    }
+
+    deleteIpRestriction(index : number) {
+        this.ipRestrictions?.splice(index, 1);
+        this.refreshIpRestrictions();
+    }
+
+    private refreshTable() {
+        this.datasource = new ArrayDataSource<KeyValuePair>(this.multipleCredential);
+    }
+
+    private refreshIpRestrictions() {
+        this.ipRestrictionsDatasource = new ArrayDataSource<IpRestriction>(this.ipRestrictions);
+    }
+
+    private parseValue(data: string): KeyValuePair[] {
+        if (!data) {
+            return [];
+        }
+
+        return data.split(";").map(kvp => {
+            const splitData = kvp.split(":");
+            return { key: splitData[0], value: splitData[1] };
+        });
+    }
+
+    private transformMultipleCredentials() {
+        if (this.data.type !== 'MULTIPLE_CREDENTIAL') {
+            return;
+        }
+
+        this.data.value = this.multipleCredential.map(item => item.key + ":" + item.value).join(";");
+    }
+
+    private validateForm() {
+        if ((this.data.keystoreAliasId === undefined)) {
+            throw Error("Please select a keystore alias!");
+        }
+    }
+
+    private cleanOptionalFields() {
+        this.data.creationDate = undefined;
+        this.data.lastRotated = undefined;
+        this.data.lastUpdated = undefined;
+    }
+
+    private refreshSelectableRoles(): void {
+        this.selectableApiKeys = this.allApiKeys;
+        this.selectableApiKeys = this.selectableApiKeys.filter((item) => {
+            return !this.selectedApiKeys.map(apiKey => apiKey.id).includes(item.id);
+        });
+    }
+
+    private getIndex(value: number) {
+        return this.selectedApiKeys.map(apiKey => apiKey.id).indexOf(value);
+    }
+    
+    private addMissingDataToIpRestrictions(): void {
+        this.data.ipRestrictions = this.ipRestrictions;
+        this.data.ipRestrictions?.forEach(item => item.secretId = this.data.id);
     }
 }

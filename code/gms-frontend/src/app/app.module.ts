@@ -33,6 +33,7 @@ import { SystemPropertyModule } from './components/system_property/system-proper
 import { NavMenuModule } from './components/menu/nav-menu.module';
 import { VerifyModule } from './components/verify/verify-module';
 import { RequestPasswordResetModule } from './components/password_reset/request-password-reset.module';
+import { IpRestrictionModule } from './components/ip_restriction/ip-restriction-module';
 
 /**
  * @author Peter Szrnka
@@ -76,7 +77,7 @@ import { RequestPasswordResetModule } from './components/password_reset/request-
     ApiTestingModule,
     SystemPropertyModule,
     VerifyModule,
-    PipesModule
+    IpRestrictionModule
   ],
   providers: [ 
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

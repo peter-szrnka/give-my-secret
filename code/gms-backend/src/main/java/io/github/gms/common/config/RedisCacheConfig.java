@@ -16,13 +16,16 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
 import static io.github.gms.common.util.Constants.CACHE_API;
-import static io.github.gms.common.util.Constants.CACHE_USER;
+import static io.github.gms.common.util.Constants.CACHE_API_GENERATOR;
+import static io.github.gms.common.util.Constants.CACHE_GLOBAL_IP_RESTRICTION;
+import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
 import static io.github.gms.common.util.Constants.CACHE_SYSTEM_PROPERTY;
+import static io.github.gms.common.util.Constants.CACHE_USER;
 
 
 /**
@@ -47,8 +50,9 @@ public class RedisCacheConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
-        template.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
-        template.setEnableDefaultSerializer(true);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
+        template.afterPropertiesSet();
         return template;
     }
 
@@ -56,18 +60,22 @@ public class RedisCacheConfig {
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         return RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(connectionFactory)
-                .withCacheConfiguration(CACHE_USER, default10MinuteCacheConfig())
-                .withCacheConfiguration(CACHE_SYSTEM_PROPERTY, default10MinuteCacheConfig())
-                .withCacheConfiguration(CACHE_API, default10MinuteCacheConfig())
+                .withCacheConfiguration(CACHE_USER, minutesCacheConfig(10))
+                .withCacheConfiguration(CACHE_SYSTEM_PROPERTY, minutesCacheConfig(10))
+                .withCacheConfiguration(CACHE_API, minutesCacheConfig(10))
+                .withCacheConfiguration(CACHE_GLOBAL_IP_RESTRICTION, minutesCacheConfig(10))
+                .withCacheConfiguration(CACHE_IP_RESTRICTION, minutesCacheConfig(10))
                 .build();
     }
 
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return (builder) -> builder
-                .withCacheConfiguration(CACHE_USER, default10MinuteCacheConfig())
-                .withCacheConfiguration(CACHE_SYSTEM_PROPERTY, default10MinuteCacheConfig())
-                .withCacheConfiguration(CACHE_API, default5MinuteCacheConfig());
+                .withCacheConfiguration(CACHE_USER, minutesCacheConfig(10))
+                .withCacheConfiguration(CACHE_SYSTEM_PROPERTY, minutesCacheConfig(10))
+                .withCacheConfiguration(CACHE_API, minutesCacheConfig(5))
+                .withCacheConfiguration(CACHE_GLOBAL_IP_RESTRICTION, minutesCacheConfig(10))
+                .withCacheConfiguration(CACHE_IP_RESTRICTION, minutesCacheConfig(10));
     }
 
     @Bean
@@ -76,16 +84,14 @@ public class RedisCacheConfig {
         return new SimpleKeyGenerator();
     }
 
-    @Bean("apiCacheKeyGenerator")
+    @Bean(CACHE_API_GENERATOR)
     public KeyGenerator apiCacheKeyGenerator() {
         return new ApiCacheKeyGenerator();
     }
 
-    private static RedisCacheConfiguration default5MinuteCacheConfig() {
-        return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5));
-    }
-
-    private static RedisCacheConfiguration default10MinuteCacheConfig() {
-        return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10));
+    private static RedisCacheConfiguration minutesCacheConfig(int minutes) {
+        return RedisCacheConfiguration
+                .defaultCacheConfig(Thread.currentThread().getContextClassLoader())
+                .entryTtl(Duration.ofMinutes(minutes));
     }
 }

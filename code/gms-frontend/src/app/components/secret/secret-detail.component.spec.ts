@@ -240,11 +240,13 @@ describe('SecretDetailComponent', () => {
         component.remove(idPair2);
         component.remove(idPair1);
         component.formData.allApiKeysAllowed = true;
+        component.addNewIpRestriction();
+        component.deleteIpRestriction(0);
         component.save();
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Secret has been saved!", type: "information" } as DialogData });
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Secret has been saved!", type: "information" } as DialogData });
     });
 
     it('Should show secret value for username and password', () => {
@@ -307,7 +309,7 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Unexpected error occurred: OOPS!", type: "warning" } as DialogData });
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Unexpected error occurred: OOPS!", type: "warning" } as DialogData });
     });
 
     it('Should not rotate secret | unknown error', () => {
@@ -319,7 +321,7 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Unexpected error occurred: OOPS!", type: "warning" } as DialogData });
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Unexpected error occurred: OOPS!", type: "warning" } as DialogData });
     });
     
     it('Should rotate secret', () => {

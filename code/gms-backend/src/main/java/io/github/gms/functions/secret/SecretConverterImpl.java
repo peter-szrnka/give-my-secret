@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Peter Szrnka
@@ -65,7 +64,7 @@ public class SecretConverterImpl implements SecretConverter {
 	}
 
 	@Override
-	public SecretDto toDto(SecretEntity entity, List<ApiKeyRestrictionEntity> apiKeyRestrictions) {
+	public SecretDto toDto(SecretEntity entity) {
 		SecretDto dto = new SecretDto();
 		dto.setId(entity.getId());
 		dto.setSecretId(entity.getSecretId());
@@ -79,17 +78,12 @@ public class SecretConverterImpl implements SecretConverter {
 		dto.setRotationEnabled(entity.isRotationEnabled());
 		dto.setStatus(entity.getStatus());
 		dto.setType(entity.getType());
-		
-		if (apiKeyRestrictions != null) {
-			dto.setApiKeyRestrictions(apiKeyRestrictions.stream().map(ApiKeyRestrictionEntity::getApiKeyId).collect(Collectors.toSet()));
-		}
-
 		return dto;
 	}
 
 	@Override
 	public SecretListDto toDtoList(Page<SecretEntity> resultList) {
-		List<SecretDto> results = resultList.toList().stream().map(result -> toDto(result, null)).toList();
+		List<SecretDto> results = resultList.toList().stream().map(this::toDto).toList();
 		return SecretListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
 	}
 }

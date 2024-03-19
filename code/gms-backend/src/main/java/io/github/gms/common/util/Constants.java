@@ -53,8 +53,11 @@ public final class Constants {
 	
 	// Cache
 	public static final String CACHE_API = "apiCache";
+	public static final String CACHE_API_GENERATOR = "apiCacheKeyGenerator";
 	public static final String CACHE_USER = "userCache";
 	public static final String CACHE_SYSTEM_PROPERTY = "systemPropertyCache";
+	public static final String CACHE_IP_RESTRICTION = "ipRestrictionCache";
+	public static final String CACHE_GLOBAL_IP_RESTRICTION = "globalIpRestrictionCache";
 	
 	// Formats
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";

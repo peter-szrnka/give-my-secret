@@ -1,17 +1,11 @@
 package io.github.gms.functions.secret;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.List;
-
-import io.github.gms.functions.secret.SecretConverterImpl;
+import com.google.common.collect.Lists;
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.common.enums.SecretType;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,18 +13,15 @@ import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
-import com.google.common.collect.Lists;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.RotationPeriod;
-import io.github.gms.common.enums.SecretType;
-import io.github.gms.functions.secret.SaveSecretRequestDto;
-import io.github.gms.functions.secret.SecretDto;
-import io.github.gms.functions.secret.SecretListDto;
-import io.github.gms.functions.secret.ApiKeyRestrictionEntity;
-import io.github.gms.functions.secret.SecretEntity;
-import io.github.gms.util.TestUtils;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -140,7 +131,8 @@ class SecretConverterImplTest extends AbstractUnitTest {
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
-		assertEquals("SecretDto(id=1, userId=1, keystoreId=null, keystoreAliasId=1, secretId=secret, status=ACTIVE, type=SIMPLE_CREDENTIAL, creationDate=2023-06-29T00:00Z, lastUpdated=null, lastRotated=2023-06-29T00:00Z, rotationPeriod=YEARLY, returnDecrypted=true, rotationEnabled=true, apiKeyRestrictions=null)", resultList.getResultList().get(0).toString());
+		assertEquals("SecretDto(id=1, userId=1, keystoreId=null, keystoreAliasId=1, secretId=secret, status=ACTIVE, type=SIMPLE_CREDENTIAL, creationDate=2023-06-29T00:00Z, lastUpdated=null, lastRotated=2023-06-29T00:00Z, rotationPeriod=YEARLY, returnDecrypted=true, rotationEnabled=true, apiKeyRestrictions=null, ipRestrictions=null)",
+				resultList.getResultList().getFirst().toString());
 	}
 	
 	@Test
@@ -156,10 +148,13 @@ class SecretConverterImplTest extends AbstractUnitTest {
 		apiKeyRestrictionEntity1.setApiKeyId(1L);
 		
 		// act
-		SecretDto response = converter.toDto(entity, List.of(apiKeyRestrictionEntity1));
+		SecretDto response = converter.toDto(entity);
 		
 		// assert
 		assertNotNull(response);
-		assertEquals("SecretDto(id=1, userId=1, keystoreId=null, keystoreAliasId=1, secretId=secret, status=ACTIVE, type=SIMPLE_CREDENTIAL, creationDate=2023-06-29T00:00Z, lastUpdated=2023-06-29T00:00Z, lastRotated=2023-06-29T00:00Z, rotationPeriod=YEARLY, returnDecrypted=false, rotationEnabled=false, apiKeyRestrictions=[1])", response.toString());
+		assertEquals("SecretDto(id=1, userId=1, keystoreId=null, keystoreAliasId=1, secretId=secret, " +
+				"status=ACTIVE, type=SIMPLE_CREDENTIAL, creationDate=2023-06-29T00:00Z, lastUpdated=2023-06-29T00:00Z, " +
+				"lastRotated=2023-06-29T00:00Z, rotationPeriod=YEARLY, returnDecrypted=false, rotationEnabled=false, " +
+				"apiKeyRestrictions=null, ipRestrictions=null)", response.toString());
 	}
 }

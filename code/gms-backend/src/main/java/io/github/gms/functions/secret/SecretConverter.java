@@ -2,8 +2,6 @@ package io.github.gms.functions.secret;
 
 import io.github.gms.common.abstraction.GmsConverter;
 
-import java.util.List;
-
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -14,5 +12,5 @@ public interface SecretConverter extends GmsConverter<SecretListDto, SecretEntit
 
 	SecretEntity toNewEntity(SaveSecretRequestDto dto);
 
-	SecretDto toDto(SecretEntity entity, List<ApiKeyRestrictionEntity> result);
+	SecretDto toDto(SecretEntity entity);
 }

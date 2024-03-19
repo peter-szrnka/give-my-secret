@@ -1,5 +1,12 @@
 package io.github.gms.functions.systemproperty;
 
+import io.github.gms.common.dto.PagingDto;
+import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.http.ResponseEntity;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -7,22 +14,11 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.github.gms.functions.systemproperty.SystemPropertyController;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
-
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.systemproperty.SystemPropertyDto;
-import io.github.gms.functions.systemproperty.SystemPropertyListDto;
-import io.github.gms.functions.systemproperty.SystemPropertyService;
-import io.github.gms.util.TestUtils;
-
 /**
  * Unit test of {@link SystemPropertyController}
  * 
  * @author Peter Szrnka
+ * @version 1.0
  */
 class SystemPropertyControllerTest {
 

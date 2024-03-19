@@ -1,5 +1,6 @@
 package io.github.gms.common.config;
 
+import io.github.gms.common.filter.IpRestrictionFilter;
 import io.github.gms.common.filter.SetupFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -18,5 +19,15 @@ public class FilterConfig {
 	    registrationBean.setFilter(systemFilter);
 	    registrationBean.addUrlPatterns("/setup/*");
 	    return registrationBean;
+	}
+
+	@Bean
+	public FilterRegistrationBean<IpRestrictionFilter> ipRestrictionFilterBean(IpRestrictionFilter ipRestrictionFilter) {
+		FilterRegistrationBean<IpRestrictionFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(ipRestrictionFilter);
+		registrationBean.setName("ipRestrictionFilter");
+		registrationBean.addUrlPatterns("/api/secret/*");
+		registrationBean.setOrder(1);
+		return registrationBean;
 	}
 }

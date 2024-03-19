@@ -1,6 +1,6 @@
 package io.github.gms.common.config.cache;
 
-import io.github.gms.functions.secret.GetSecretRequestDto;
+import io.github.gms.functions.secret.SecretEntity;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.lang.NonNull;
 
@@ -14,7 +14,7 @@ public class ApiCacheKeyGenerator implements KeyGenerator {
 
 	@Override
 	public @NonNull Object generate(@NonNull Object target, @NonNull Method method, Object... params) {
-		GetSecretRequestDto request = (GetSecretRequestDto) params[0];
-		return request.getApiKey() + "_" + request.getSecretId();
+		SecretEntity request = (SecretEntity) params[0];
+		return request.getSecretId();
 	}
 }

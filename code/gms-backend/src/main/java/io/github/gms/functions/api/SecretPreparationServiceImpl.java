@@ -1,9 +1,12 @@
 package io.github.gms.functions.api;
 
 import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.model.IpRestrictionPatterns;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.apikey.ApiKeyEntity;
 import io.github.gms.functions.apikey.ApiKeyRepository;
+import io.github.gms.functions.iprestriction.IpRestrictionService;
+import io.github.gms.functions.iprestriction.IpRestrictionValidator;
 import io.github.gms.functions.secret.ApiKeyRestrictionEntity;
 import io.github.gms.functions.secret.ApiKeyRestrictionRepository;
 import io.github.gms.functions.secret.GetSecretRequestDto;
@@ -28,6 +31,8 @@ public class SecretPreparationServiceImpl implements SecretPreparationService {
     private final ApiKeyRepository apiKeyRepository;
     private final UserRepository userRepository;
     private final ApiKeyRestrictionRepository apiKeyRestrictionRepository;
+    private final IpRestrictionService ipRestrictionService;
+    private final IpRestrictionValidator ipRestrictionValidator;
 
     @Override
     public SecretEntity getSecretEntity(GetSecretRequestDto dto) {
@@ -40,6 +45,13 @@ public class SecretPreparationServiceImpl implements SecretPreparationService {
                 dto.getSecretId(), EntityStatus.ACTIVE).orElseThrow(() -> {
             log.warn("Secret not found"); return new GmsException("Secret is not available!"); });
 
+        // Ip Restriction
+        IpRestrictionPatterns patterns = ipRestrictionService.checkIpRestrictionsBySecret(secretEntity.getId());
+        if (ipRestrictionValidator.isIpAddressBlocked(patterns.getItems())) {
+            throw new GmsException("You are not allowed to get this secret from your IP address!");
+        }
+
+        // API key restriction
         List<ApiKeyRestrictionEntity> restrictions = apiKeyRestrictionRepository
                 .findAllByUserIdAndSecretId(apiKeyEntity.getUserId(), secretEntity.getId());
 

@@ -28,6 +28,10 @@
           <mat-icon matListIcon>settings</mat-icon>
           <h3 matLine *ngIf="showTexts"> System properties </h3>
         </mat-list-item>
+        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'ip_restriction/list'" (click)="handleClick()" *ngIf="isAdmin()">
+          <mat-icon matListIcon>http</mat-icon>
+          <h3 matLine *ngIf="showTexts"> IP restrictions </h3>
+        </mat-list-item>
         <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'announcement/list'" (click)="handleClick()" *ngIf="isAdmin()">
           <mat-icon matListIcon>announcement</mat-icon>
           <h3 matLine *ngIf="showTexts"> Announcements </h3>

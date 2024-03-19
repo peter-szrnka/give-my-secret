@@ -7,6 +7,7 @@ package io.github.gms.common.enums;
 public enum EventTarget {
 
 	ANNOUNCEMENT,
+	IP_RESTRICTION,
 	API_KEY,
 	SECRET,
 	KEYSTORE,
