@@ -6,9 +6,10 @@ import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { HomeComponent } from "./home.component";
 import { HomeService } from "./service/home.service";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { ReplaySubject, of } from "rxjs";
+import { ReplaySubject, of, throwError } from "rxjs";
 import { User } from "../user/model/user.model";
 import { HomeData } from "./model/home-data.model";
+import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * @author Peter Szrnka
@@ -88,6 +89,22 @@ describe('HomeComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(component.eventDataSource).toBeDefined();
+    });
+
+    it('should handle unknown error', () => {
+        const currentUser = {
+            roles : ["ROLE_ADMIN"],
+            username : "test1",
+            id : 1
+        };
+        homeService.getData = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+        configTestBed();
+        mockSubject.next(currentUser);
+        authModeSubject.next("db");
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.error).toEqual('OOPS!');
     });
 
     it('should not load component for unknown user', () => {

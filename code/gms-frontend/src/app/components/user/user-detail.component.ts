@@ -1,18 +1,19 @@
-import { Component, ElementRef, ViewChild } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ArrayDataSource } from "@angular/cdk/collections";
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { Component, ElementRef, ViewChild } from "@angular/core";
+import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from "@angular/material/dialog";
-import { UserData, PAGE_CONFIG_USER } from "./model/user-data.model";
-import { UserService } from "./service/user-service";
-import { SharedDataService } from "../../common/service/shared-data-service";
-import { PageConfig } from "../../common/model/common.model";
-import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
+import { ActivatedRoute, Router } from "@angular/router";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
-import { EventService } from "../event/service/event-service";
-import { Event } from "../event/model/event.model";
-import { ArrayDataSource } from "@angular/cdk/collections";
+import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
+import { PageConfig } from "../../common/model/common.model";
+import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { Event } from "../event/model/event.model";
+import { EventService } from "../event/service/event-service";
+import { PAGE_CONFIG_USER, UserData } from "./model/user-data.model";
+import { UserService } from "./service/user-service";
 
 const EVENT_LIST_FILTER = {
   direction: "DESC",
@@ -60,7 +61,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
     super.ngOnInit();
 
     this.sharedData.authModeSubject$.subscribe(authMode => this.editEnabled = authMode === 'db');
-}
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override dataLoadingCallback(data: UserData) {
@@ -76,10 +77,6 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
     });
   }
 
-  public getCount() : number {
-    return this.eventList.length;
-  }
-
   private refreshSelectableRoles(): void {
     this.selectableRoles = ALL_ROLES;
     this.selectableRoles = this.selectableRoles.filter((item) => {
@@ -91,14 +88,9 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
     return PAGE_CONFIG_USER;
   }
 
-  private getIndex(value: string) {
-    return this.data.roles.indexOf(value);
-  }
-
   selected(event: MatAutocompleteSelectedEvent): void {
-    const index = this.getIndex(event.option.viewValue);
-
-    if (index && index >= 0) {
+    if (this.data.roles.length === 1) {
+      this.showTooManyElementsDialog();
       return;
     }
 
@@ -108,14 +100,12 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
   }
 
   add(event: MatChipInputEvent): void {
-    const value = event.value.trim();
-    const index = this.getIndex(value);
-
-    if (!index || index < 0) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      event.chipInput.clear();
+    if (this.data.roles.length === 1) {
+      this.showTooManyElementsDialog();
       return;
     }
+
+    const value = event.value.trim();
 
     if (value) {
       this.data.roles.push(value);
@@ -132,5 +122,9 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
     }
 
     this.refreshSelectableRoles();
+  }
+
+  private showTooManyElementsDialog() {
+    this.dialog.open(InfoDialog, { data: { text: "Only one role can be added to the user!", type : 'warning' },});
   }
 }

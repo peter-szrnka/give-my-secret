@@ -1,3 +1,4 @@
+<div class="warning" *ngIf="error"><b>System error:</b> {{error}}</div>
 <div *ngIf="data !== undefined && loading !== ''">
   <div *ngIf="data.role === 'ROLE_USER'">
     <div class="gms-box">

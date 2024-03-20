@@ -49,9 +49,13 @@ export abstract class BaseLoginComponent implements OnInit {
     protected finalizeSuccessfulLogin(currentUser : User) {
         this.splashScreenStateService.stop();
         this.sharedDataService.refreshCurrentUserInfo();
-        const nextUrl: string = this.route.snapshot.queryParams['previousUrl'] ?? '';
+        const nextUrl: string = this.getPreviousUrl();
         const expectedRoles = nextUrl ? ROLE_ROUTE_MAP[nextUrl.substring(1)] : [];
         const canActivate = checker(expectedRoles, currentUser.roles);
         void this.router.navigate([canActivate ? nextUrl : '']);
+    }
+
+    private getPreviousUrl() {
+        return (this.route.snapshot.queryParams['previousUrl'] && this.route.snapshot.queryParams['previousUrl'] !== '') ? this.route.snapshot.queryParams['previousUrl'] : '';
     }
 }

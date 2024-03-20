@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import { Component, OnDestroy, OnInit, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
-import { User } from './components/user/model/user.model';
+import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
-import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { roleCheck } from './common/utils/permission-utils';
+import { EMPTY_USER, User } from './components/user/model/user.model';
 
 const LOGIN_CALLBACK_URL = '/login';
 
@@ -23,6 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   currentUser: User | undefined;
   systemReady: boolean;
   showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') ?? 'true');
+  isAdmin: boolean;
 
   constructor(
     private location: Location,
@@ -36,24 +37,31 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.events.pipe(takeUntil(this.unsubscribe))
       .subscribe((routerEvent) => this.checkRouterEvent(routerEvent as RouterEvent));
 
-    combineLatest([
-      this.sharedDataService.systemReadySubject$,
-      this.sharedDataService.userSubject$
-    ]).subscribe(([readyData, user]) => {
-      this.currentUser = user;
+      combineLatest([
+        this.sharedDataService.systemReadySubject$,
+        this.sharedDataService.userSubject$
+      ]).subscribe(([readyData, user]) => {
+        if (readyData.status !== 200) {
+          void this.router.navigate([LOGIN_CALLBACK_URL], { queryParams: { previousUrl: this.location.path() } });
+          return;
+        }
 
-      if (!readyData.ready && ['ldap'].indexOf(readyData.authMode) < 0) {
-        void this.router.navigate(['/setup']);
-        return;
-      }
+        if (!readyData.ready && ['ldap'].indexOf(readyData.authMode) < 0) {
+          void this.router.navigate(['/setup']);
+          return;
+        }
+  
+        this.systemReady = readyData.ready;
 
-      if (readyData.status !== 200 || (!this.currentUser && !this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
-        void this.router.navigate([LOGIN_CALLBACK_URL], { queryParams: { previousUrl: this.location.path() } });
-        return;
-      }
+        if ((!user || !user.roles) && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
+          this.sharedDataService.clearData();
+          void this.router.navigate([LOGIN_CALLBACK_URL], { queryParams: { previousUrl: this.location.path() } });
+          return;
+        }
 
-      this.systemReady = readyData.ready;
-    });
+        this.currentUser = user;
+        this.isAdmin = this.systemReady && this.currentUser !== undefined && roleCheck(this.currentUser, 'ROLE_ADMIN');
+      });  
 
     this.sharedDataService.check();
   }
@@ -73,18 +81,6 @@ export class AppComponent implements OnInit, OnDestroy {
   toggleTextMenuVisibility() : void {
     this.showTexts = !this.showTexts;
     localStorage.setItem('showTextsInSidevNav', this.showTexts)
-  }
-
-  isNormalUser(): boolean {
-    return this.systemReady && this.isUserDefined() && roleCheck(this.currentUser!!, 'ROLE_USER');
-  }
-
-  isAdmin(): boolean {
-    return this.systemReady && this.isUserDefined() && roleCheck(this.currentUser!!, 'ROLE_ADMIN');
-  }
-
-  private isUserDefined() {
-    return this.currentUser !== undefined && this.currentUser !== null;
   }
 
   private isNavigationEndInstance(routerEvent: RouterEvent): boolean {

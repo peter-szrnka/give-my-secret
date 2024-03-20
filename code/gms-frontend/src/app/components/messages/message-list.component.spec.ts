@@ -2,12 +2,13 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/compiler";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterTestingModule } from "@angular/router/testing";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
 import { MessageListComponent } from "./message-list.component";
+import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * @author Peter Szrnka
@@ -58,5 +59,14 @@ describe('MessageListComponent', () => {
         expect(component).toBeTruthy();
         expect(response).toEqual(2);
         expect(service.list).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle unknown error', () => {
+        service.list = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+        configureTestBed();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.error).toEqual('OOPS!');
     });
 });

@@ -2,7 +2,8 @@
 
     <nav-back [buttonConfig]="[{url:'/announcement/list', label:'Back to list', primary : true}]"></nav-back>
 
-    <form #form="ngForm">
+    <div class="warning" *ngIf="error"><b>System error:</b> {{error}}</div>
+    <form #form="ngForm" *ngIf="!error">
         <mat-card class="with-margin-top">
             <mat-card-content>
 

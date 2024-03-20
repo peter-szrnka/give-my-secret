@@ -127,15 +127,14 @@ describe('UserDetailComponent', () => {
 
         // act
         authModeSubject.next("db");
-        component.add({ value : "ROLE_VIEWER", chipInput : chipInputMock } as MatChipInputEvent);
-        component.remove("ROLE_VIEWER");
-        component.remove("FAKE_ROLE");
-        
-        component.selected(matAutocompleteSelectedEvent);
-        component.add({ value : "ROLE_ADMIN", chipInput : chipInputMock } as MatChipInputEvent);
+        component.remove("ROLE_USER");
+
+        component.add({ value : "  ROLE_ADMIN  ", chipInput : chipInputMock } as MatChipInputEvent);
         component.selected(matAutocompleteSelectedEvent);
         component.remove("ROLE_ADMIN");
-        component.remove("FAKE_ROLE");
+        
+        component.selected(matAutocompleteSelectedEvent);
+        component.remove("ROLE_ADMIN");
 
         component.add({ value : ' ', chipInput : chipInputMock } as MatChipInputEvent);
 
@@ -143,7 +142,7 @@ describe('UserDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(component.getCount()).toEqual(0);
+        expect(dialog.open).toHaveBeenCalled();
     });
 
     it('should save details', () => {
@@ -162,15 +161,15 @@ describe('UserDetailComponent', () => {
 
         // act
         authModeSubject.next("db");
-        component.add({ value : "ROLE_VIEWER", chipInput : chipInputMock } as MatChipInputEvent);
-        component.remove("ROLE_VIEWER");
-        component.remove("FAKE_ROLE");
-        
-        component.selected(matAutocompleteSelectedEvent);
+        component.remove("ROLE_USER");
+
         component.add({ value : "ROLE_ADMIN", chipInput : chipInputMock } as MatChipInputEvent);
+        component.add({ value : "ROLE_USER", chipInput : chipInputMock } as MatChipInputEvent);
         component.selected(matAutocompleteSelectedEvent);
         component.remove("ROLE_ADMIN");
-        component.remove("FAKE_ROLE");
+        
+        component.selected(matAutocompleteSelectedEvent);
+        component.remove("ROLE_ADMIN");
 
         component.add({ value : ' ', chipInput : chipInputMock } as MatChipInputEvent);
 
@@ -178,6 +177,6 @@ describe('UserDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(component.getCount()).toEqual(1);
+        expect(dialog.open).toHaveBeenCalled();
     });
 });

@@ -5,7 +5,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { Event } from "../event/model/event.model";
 import { User } from "../user/model/user.model";
 import { EMPTY_HOME_DATA, HomeData } from "./model/home-data.model";
-import { Observable, map, mergeMap, of } from "rxjs";
+import { Observable, catchError, map, mergeMap, of } from "rxjs";
 import { HomeService } from "./service/home.service";
 import systemAnnouncements from "../../../assets/caas/system-announcements.json";
 import { SystemAnnouncement } from "./model/system-announcement.model";
@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit {
     data: HomeData;
     loading: string = '';
     editEnabled: boolean = false;
+    error?: string;
 
     constructor(
         public router: Router,
@@ -37,6 +38,7 @@ export class HomeComponent implements OnInit {
         this.loading = 'LOADING';
         this.sharedData.userSubject$
             .pipe(mergeMap((user: User | undefined): Observable<HomeData> => this.processUser(user)))
+            .pipe(catchError((err) => of({ ...EMPTY_HOME_DATA, error: err.error.message })))
             .subscribe((homeData: HomeData) => {
                 this.data = {
                     ...EMPTY_HOME_DATA,
@@ -44,6 +46,7 @@ export class HomeComponent implements OnInit {
                 };
                 this.eventDataSource = new ArrayDataSource<Event>(this.data.events.resultList);
                 this.loading = 'LOADED';
+                this.error = homeData.error;
             });
         this.sharedData.authModeSubject$.subscribe(authMode => this.editEnabled = authMode === 'db');
     }
