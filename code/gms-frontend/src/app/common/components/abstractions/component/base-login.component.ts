@@ -48,7 +48,7 @@ export abstract class BaseLoginComponent implements OnInit {
 
     protected finalizeSuccessfulLogin(currentUser : User) {
         this.splashScreenStateService.stop();
-        this.sharedDataService.refreshCurrentUserInfo();
+        this.sharedDataService.userSubject$.next(currentUser);
         const nextUrl: string = this.getPreviousUrl();
         const expectedRoles = nextUrl ? ROLE_ROUTE_MAP[nextUrl.substring(1)] : [];
         const canActivate = checker(expectedRoles, currentUser.roles);
