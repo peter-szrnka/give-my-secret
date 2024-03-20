@@ -18,10 +18,6 @@ export class NavMenuComponent {
     constructor(private sharedDataService : SharedDataService) {
     }
 
-    isAdmin(): boolean {
-        return this.admin;
-    }
-
     handleClick() : void {
         this.sharedDataService.showLargeMenuEvent.emit(false);
     }

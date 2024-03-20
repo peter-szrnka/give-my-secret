@@ -108,7 +108,7 @@ describe('AppComponent', () => {
 
     it.each([
         [true], [false]
-    ])('User is a normal user', (showTexts : boolean) => {
+    ])('User is a normal user with nav setting=%s', (showTexts : boolean) => {
         localStorage.setItem('showTextsInSidevNav', showTexts.toString());
         currentUser = {
             roles : ["ROLE_USER"],
@@ -130,8 +130,8 @@ describe('AppComponent', () => {
 
     it('System is not ready', () => {
         configureTestBed();
-        mockSubject.next(undefined);
         mockSystemReadySubject.next({ ready: false, status: 200, authMode : 'db' });
+        mockSubject.next(undefined);
         fixture.autoDetectChanges();
 
         // act & assert
