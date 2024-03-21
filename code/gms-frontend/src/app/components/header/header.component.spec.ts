@@ -85,6 +85,7 @@ describe('HeaderComponent', () => {
         component = fixture.componentInstance;
         mockSubject.next(currentUser);
         fixture.detectChanges();
+        component.ngOnDestroy();
     });
 
     it('should toggle menu', () => {

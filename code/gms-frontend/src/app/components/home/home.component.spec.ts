@@ -115,5 +115,7 @@ describe('HomeComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(component.eventDataSource).toBeDefined();
+
+        component.ngOnDestroy();
     });
 });
