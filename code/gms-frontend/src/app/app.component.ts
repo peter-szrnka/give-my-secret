@@ -52,7 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
       this.sharedDataService.userSubject$.subscribe(user => {
-        if ((!user || !user.roles) && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
+        if ((!user?.roles) && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
           this.navigateToLogin();
           return;
         }

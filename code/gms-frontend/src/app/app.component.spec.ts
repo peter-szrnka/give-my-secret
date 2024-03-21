@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
-import { EMPTY, Observable, of, ReplaySubject } from "rxjs";
+import { Observable, of, ReplaySubject } from "rxjs";
 import { AppComponent } from "./app.component";
 import { SystemReadyData } from "./common/model/system-ready.model";
 import { User } from "./components/user/model/user.model";
