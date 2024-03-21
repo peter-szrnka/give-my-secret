@@ -22,6 +22,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     isProd : boolean = environment.production;
     showLargeMenu : boolean = false;
     unreadSubscription: Subscription;
+    userSubscription: Subscription;
 
     constructor(
         public router: Router, 
@@ -31,12 +32,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.unreadSubscription.unsubscribe();
+        this.userSubscription.unsubscribe();
     }
 
     ngOnInit(): void {
         this.sharedDataService.showLargeMenuEvent.subscribe((result : boolean) => this.showLargeMenu = result);
         this.sharedDataService.messageCountUpdateEvent.subscribe(() => this.getAllUnread());
-        this.sharedDataService.userSubject$.asObservable().subscribe(user => this.currentUser = user);
+        this.userSubscription = this.sharedDataService.userSubject$.subscribe(user => this.currentUser = user);
         this.router.events.pipe(filter(event => (event instanceof NavigationEnd))).subscribe((event) => {
             if (this.currentUser === undefined || (event as NavigationEnd).url !== "/") {
                 return;
