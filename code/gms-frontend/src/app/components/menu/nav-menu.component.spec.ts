@@ -44,7 +44,7 @@ describe('NavMenuComponent', () => {
         component.toggleTextMenuVisibility();
 
         // assert
-        expect(component.isAdmin()).toBeFalsy();
+        expect(component.admin).toBeFalsy();
         expect(mockShowLargeMenuEvent.emit).toHaveBeenCalledWith(false);
         expect(component.showTexts).toBeTruthy();
         expect(localStorage.getItem('showTextsInSidevNav')).toEqual('true');

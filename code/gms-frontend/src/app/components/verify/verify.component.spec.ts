@@ -162,7 +162,6 @@ describe('VerifyComponent', () => {
         expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
     });
 

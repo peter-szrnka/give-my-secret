@@ -144,9 +144,8 @@ describe('LoginComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
+        expect(authService.login).toHaveBeenCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
-        expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalled();
         expect(component.showPassword).toBeTruthy();
     });
 
@@ -167,9 +166,8 @@ describe('LoginComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
+        expect(authService.login).toHaveBeenCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
-        expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalled();
         expect(component.showPassword).toBeTruthy();
     });
 
@@ -199,7 +197,7 @@ describe('LoginComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
+        expect(authService.login).toHaveBeenCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalledWith(['/verify'], { state: { username: 'test' }, queryParams: { previousUrl: '/users/list' } });
@@ -232,7 +230,7 @@ describe('LoginComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
+        expect(authService.login).toHaveBeenCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
@@ -256,7 +254,7 @@ describe('LoginComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
+        expect(authService.login).toHaveBeenCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalledWith(['/verify'], { state: { username: 'test' }, queryParams: { previousUrl: '' } });
@@ -276,9 +274,9 @@ describe('LoginComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(authService.login).toBeCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
+        expect(authService.login).toHaveBeenCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(sharedDataService.refreshCurrentUserInfo).toBeCalledTimes(0);
+        expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalledTimes(0);
     });
 });

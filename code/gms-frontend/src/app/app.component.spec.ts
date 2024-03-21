@@ -131,7 +131,6 @@ describe('AppComponent', () => {
     it('System is not ready', () => {
         configureTestBed();
         mockSystemReadySubject.next({ ready: false, status: 200, authMode : 'db' });
-        mockSubject.next(undefined);
         fixture.autoDetectChanges();
 
         // act & assert
@@ -141,13 +140,7 @@ describe('AppComponent', () => {
     });
 
     it('Unexpected error during ready data query', () => {
-        currentUser = {
-            roles : ["ROLE_USER"],
-            username : "test1",
-            id : 1
-        };
         configureTestBed();
-        mockSubject.next(currentUser);
         mockSystemReadySubject.next({ ready: true, status: 500, authMode : 'db' });
         fixture.autoDetectChanges();
 
