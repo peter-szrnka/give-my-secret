@@ -101,20 +101,6 @@ describe("ApiKeyService", () => {
       httpMock.verify();
     });
 
-    it('Should return count', () => {
-      // arrange
-      const expectedUrl = environment.baseUrl + "secure/apikey/count";
-
-      // act
-      service.count().subscribe((res) => expect(res).toBe(2));
-
-      // assert
-      const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('GET');
-      req.flush(2);
-      httpMock.verify();
-    });
-
     it('Should return all api key names', () => {
       // arrange
       const expectedUrl = environment.baseUrl + "secure/apikey/list_names";

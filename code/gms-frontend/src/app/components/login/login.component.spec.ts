@@ -10,7 +10,7 @@ import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/lo
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { EMPTY_USER } from "../user/model/user.model";
+import { EMPTY_USER, User } from "../user/model/user.model";
 import { LoginComponent } from "./login.component";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 
@@ -59,7 +59,8 @@ describe('LoginComponent', () => {
         mockSubject = new ReplaySubject<any>();
         sharedDataService = {
             refreshCurrentUserInfo : jest.fn(),
-            userSubject$ : mockSubject
+            userSubject$ : mockSubject,
+            systemReady: true
         };
 
         dialog = {
@@ -136,6 +137,7 @@ describe('LoginComponent', () => {
         };
 
         configTestBed();
+        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -158,6 +160,7 @@ describe('LoginComponent', () => {
             }
         };
         configTestBed();
+        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -169,6 +172,43 @@ describe('LoginComponent', () => {
         expect(authService.login).toHaveBeenCalledWith({ username: "user-1", credential : "myPassword1" } as Login);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(component.showPassword).toBeTruthy();
+    });
+
+    it('Should redirect to main page', () => {
+        // arrange
+        activatedRoute = {
+            snapshot : {
+                queryParams: {
+                }
+            }
+        };
+        configTestBed();
+
+        // act
+        mockSubject.next({ id: 1, username: 'test', roles: ['ROLE_USER'] } as User);
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(router.navigate).toHaveBeenCalled();
+    });
+
+    it('Should not redirect to main page when system is not ready', () => {
+        // arrange
+        activatedRoute = {
+            snapshot : {
+                queryParams: {
+                }
+            }
+        };
+        configTestBed();
+
+        // act
+        mockSubject.next(undefined);
+        sharedDataService.systemReady = false;
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(router.navigate).toHaveBeenCalledTimes(0);
     });
 
     it('Should require MFA with redirect', () => {
@@ -223,6 +263,7 @@ describe('LoginComponent', () => {
             })
         };
         configTestBed();
+        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -247,6 +288,7 @@ describe('LoginComponent', () => {
             })
         };
         configTestBed();
+        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -267,6 +309,7 @@ describe('LoginComponent', () => {
         };
 
         configTestBed();
+        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act

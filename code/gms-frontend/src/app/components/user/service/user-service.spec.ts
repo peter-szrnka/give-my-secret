@@ -96,20 +96,6 @@ describe("SecretService", () => {
       httpMock.verify();
     });
 
-    it('should return count', () => {
-      // arrange
-      const expectedUrl = environment.baseUrl + "secure/user/count";
-
-      // act
-      service.count().subscribe((res) => expect(res).toBe(2));
-
-      // assert
-      const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('GET');
-      req.flush(2);
-      httpMock.verify();
-    });
-
     it('should change credentials', () => {
       // arrange
       const expectedUrl = environment.baseUrl + "secure/user/change_credential";
