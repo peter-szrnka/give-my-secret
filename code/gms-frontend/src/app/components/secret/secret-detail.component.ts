@@ -17,6 +17,7 @@ import { getErrorMessage } from "../../common/utils/error-utils";
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { IpRestriction } from "../ip_restriction/model/ip-restriction.model";
+import { ButtonConfig } from "../../common/components/nav-back/button-config";
 
 interface KeyValuePair {
     key: string,
@@ -32,6 +33,10 @@ interface KeyValuePair {
     styleUrls: ['./secret-detail.component.scss']
 })
 export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretService> {
+
+    buttonConfig: ButtonConfig[] = [
+        { primary: true, url: '/secret/list', label: 'Back to list' }
+    ];
 
     rotationPeriods: string[] = [
         'MINUTES', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'

@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
-import { EMPTY, Observable, of, ReplaySubject } from "rxjs";
+import { Observable, of, ReplaySubject } from "rxjs";
 import { AppComponent } from "./app.component";
 import { SystemReadyData } from "./common/model/system-ready.model";
 import { User } from "./components/user/model/user.model";
@@ -50,6 +50,7 @@ describe('AppComponent', () => {
         ];
         router = {
             navigate : jest.fn().mockReturnValue(of(true)),
+            url: '',
             events: new Observable(observer => {
                 mockEvents.forEach(event => observer.next(event));
                 observer.complete();
@@ -66,8 +67,7 @@ describe('AppComponent', () => {
             authMode : 'db',
             systemReadySubject$ : mockSystemReadySubject,
             getUserInfo : jest.fn(),
-            clearData : jest.fn(),
-            clearDataAndReturn : jest.fn().mockReturnValue(of(EMPTY))
+            clearData : jest.fn()
         };
 
         splashScreenStateService = {
@@ -78,11 +78,14 @@ describe('AppComponent', () => {
         mockLocation = {
             path: jest.fn().mockReturnValue("/")
         };
+
+        localStorage.clear();
     });
 
     it('Should create component', () => {
         configureTestBed();
         expect(component).toBeTruthy();
+        component.toggleTextMenuVisibility();
         component.ngOnDestroy();
     });
 
@@ -92,20 +95,20 @@ describe('AppComponent', () => {
             username : "test1",
             id : 1
         };
-        configureTestBed();
+        router.url = '/user/list';
         mockSubject.next(currentUser);
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        configureTestBed();
         
         // act & assert
-        expect(component.isNormalUser()).toEqual(false);
-        expect(component.isAdmin()).toEqual(true);
+        expect(component.isAdmin).toEqual(true);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
     it.each([
         [true], [false]
-    ])('User is a normal user', (showTexts : boolean) => {
+    ])('User is a normal user with nav setting=%s', (showTexts : boolean) => {
         localStorage.setItem('showTextsInSidevNav', showTexts.toString());
         currentUser = {
             roles : ["ROLE_USER"],
@@ -118,36 +121,40 @@ describe('AppComponent', () => {
         component.toggleTextMenuVisibility();
 
         // act & assert
-        expect(component.isNormalUser()).toEqual(true);
-        expect(component.isAdmin()).toEqual(false);
+        expect(component.isAdmin).toEqual(false);
         expect(component.showTexts).toEqual(!showTexts);
         localStorage.removeItem('showTextsInSidevNav');
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
-    it('No roles provided', () => {
-        currentUser = {
-            username : "test1",
-            id : 1
-        };
+    it('System is not ready', () => {
         configureTestBed();
-        mockSubject.next(currentUser);
-        router.url = '/api_key/list';
-        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
-        fixture.detectChanges();
+        mockSystemReadySubject.next({ ready: false, status: 200, authMode : 'db' });
+        fixture.autoDetectChanges();
 
         // act & assert
-        expect(router.navigate).toHaveBeenCalledTimes(0);
+        expect(router.navigate).toHaveBeenCalledTimes(1);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
+    });
+
+    it('Unexpected error during ready data query', () => {
+        configureTestBed();
+        mockSystemReadySubject.next({ ready: true, status: 500, authMode : 'db' });
+        fixture.autoDetectChanges();
+
+        // act & assert
+        expect(router.navigate).toHaveBeenCalledTimes(1);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
     it('No available user', () => {
         sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
-        configureTestBed();
-        mockSubject.next(undefined);
         router.url = '/api_key/list';
+        configureTestBed();
+        mockSubject.next(undefined); 
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
         fixture.detectChanges();
 

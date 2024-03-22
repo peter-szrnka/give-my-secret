@@ -8,14 +8,16 @@ import { getErrorMessage } from "../../../utils/error-utils";
 import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { SaveServiceBase } from "../service/save-service-base";
 import { SplashScreenStateService } from "../../../service/splash-screen-service";
+import { BaseDetail } from "../../../model/base-detail.model";
 
 /**
  * @author Peter Szrnka
  */
 @Directive()
-export abstract class BaseSaveableDetailComponent<T, S extends SaveServiceBase<T, BaseList<T>>> implements OnInit {
+export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extends SaveServiceBase<T, BaseList<T>>> implements OnInit {
 
     data : T;
+    public error? : string;
 
     constructor(
         protected router : Router,
@@ -56,6 +58,7 @@ export abstract class BaseSaveableDetailComponent<T, S extends SaveServiceBase<T
     private fetchData() {
         this.activatedRoute.data.subscribe((response : any) => {
             this.data = response['entity'];
+            this.error = this.data.error;
             this.dataLoadingCallback(this.data);
         });
     }

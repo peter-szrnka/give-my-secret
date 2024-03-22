@@ -1,7 +1,8 @@
 <div class="with-margin-top">
     <nav-back [buttonConfig]="buttonConfig"></nav-back>
 
-    <form #form="ngForm">
+    <div class="warning" *ngIf="error"><b>System error:</b> {{error}}</div>
+    <form #form="ngForm" *ngIf="!error">
         <mat-card class="with-margin-top">
             <mat-card-content>
                 <mat-form-field appearance="fill" class="full-width" *ngIf="data?.id !== undefined">

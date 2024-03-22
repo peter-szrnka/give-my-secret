@@ -1,24 +1,30 @@
-<div *ngIf="data !== undefined && loading !== ''">
+<div class="warning" *ngIf="pageStatus === 2"><b>System error:</b> {{error}}</div>
+
+<div *ngIf="pageStatus === 0">
+  <mat-spinner style="margin:0 auto;"  mode="indeterminate"></mat-spinner>
+</div>
+
+<div *ngIf="data !== undefined && pageStatus === 1">
   <div *ngIf="data.role === 'ROLE_USER'">
     <div class="gms-box">
-      <div class="warning" *ngIf="loading === 'LOADED' && data.apiKeyCount === 0">
-        Please add an API key!
-      </div>
-      <div class="warning" *ngIf="loading === 'LOADED' && data.keystoreCount === 0">
-        Please add a keystore!
-      </div>
       <div class="gms-sub-box" style="vertical-align: top !important;">
         <mat-card class="gms-card-left">
           <mat-card-content>
             <span class="number-of-container">
-              <mat-icon matListIcon>security</mat-icon> <span class="stat-item">API keys: {{data.apiKeyCount}}</span>
+              <mat-icon matListIcon>security</mat-icon> <span class="stat-item">API keys: <b>{{data.apiKeyCount}}</b></span>
             </span>
             <span class="number-of-container">
-              <mat-icon matListIcon>widgets</mat-icon> <span class="stat-item">Keystores: {{data.keystoreCount}}</span>
+              <mat-icon matListIcon>widgets</mat-icon> <span class="stat-item">Keystores: <b>{{data.keystoreCount}}</b></span>
             </span>
             <span class="number-of-container">
-              <mat-icon matListIcon>key</mat-icon> <span class="stat-item">Secrets: {{data.secretCount}}</span>
+              <mat-icon matListIcon>key</mat-icon> <span class="stat-item">Secrets: <b>{{data.secretCount}}</b></span>
             </span>
+            <hr/>
+            <button mat-raised-button color="primary" (click)="router.navigate(['/apikey/new'])">Create a new API key...</button>
+            &nbsp;
+            <button mat-raised-button color="primary" (click)="router.navigate(['/keystore/new'])">Create a new keystore...</button>
+            &nbsp;
+            <button mat-raised-button color="primary" (click)="router.navigate(['/secret/new'])">Create a new secret...</button>
           </mat-card-content>
         </mat-card>
       </div>
@@ -55,16 +61,15 @@
           <mat-card-content>
             <mat-card-title>User management</mat-card-title>
             <mat-card-subtitle>Manage your users</mat-card-subtitle>
-            <div class="warning" *ngIf="loading === 'LOADED' && data.userCount === 0">
+            <div class="warning" *ngIf="data.userCount === 0">
               <b>Warning:</b> No user registered yet!
             </div>
-            <p *ngIf="loading === 'LOADED' && data.userCount > 0">
+            <p *ngIf="data.userCount > 0">
               Number of users: <b>{{data.userCount}}</b><br />
             </p>
           </mat-card-content>
           <mat-card-actions>
-            <button *ngIf="editEnabled === true" mat-raised-button color="primary" (click)="router.navigate(['/user/new'])">Create new user
-              +</button>&nbsp;
+            <button *ngIf="editEnabled === true" mat-raised-button color="primary" (click)="router.navigate(['/user/new'])">Create new user +</button>&nbsp;
             <button mat-raised-button color="primary" (click)="router.navigate(['/user/list'])">Show users</button>
           </mat-card-actions>
         </mat-card>
@@ -121,7 +126,6 @@
                 <br/>
                 <sub>{{item.created}}</sub>
               </p>
-              
             </div>
           </mat-card-content>
         </mat-card>

@@ -1,10 +1,11 @@
+import { BaseDetail } from "../../../common/model/base-detail.model";
 import { PageConfig } from "../../../common/model/common.model";
 import { KeystoreAlias } from "./keystore-alias.model";
 
 /**
  * @author Peter Szrnka
  */
-export interface Keystore {
+export interface Keystore extends BaseDetail {
     id? : number,
     userId? : number,
     name? : string,

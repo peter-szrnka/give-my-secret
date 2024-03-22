@@ -1,9 +1,10 @@
+import { BaseDetail } from "../../../common/model/base-detail.model";
 import { PageConfig } from "../../../common/model/common.model";
 
 /**
  * @author Peter Szrnka
  */
-export interface Announcement {
+export interface Announcement extends BaseDetail {
     id? : number;
     title : string;
     description : string;

@@ -1,10 +1,11 @@
+import { BaseDetail } from "../../../common/model/base-detail.model";
 import { AnnouncementList } from "../../announcement/model/annoucement-list.model";
 import { EventList } from "../../event/model/event-list.model";
 
 /**
  * @author Peter Szrnka
  */
-export interface HomeData {
+export interface HomeData extends BaseDetail {
    announcementCount : number,
    apiKeyCount : number,
    keystoreCount : number,

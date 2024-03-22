@@ -7,14 +7,16 @@ import { ServiceBase } from "../service/service-base";
 import { SharedDataService } from "../../../service/shared-data-service";
 import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { SplashScreenStateService } from "../../../service/splash-screen-service";
+import { BaseDetail } from "../../../model/base-detail.model";
 
 /**
  * @author Peter Szrnka
  */
 @Directive()
-export abstract class BaseDetailComponent<T, S extends ServiceBase<T, BaseList<T>>> implements OnInit {
+export abstract class BaseDetailComponent<T extends BaseDetail, S extends ServiceBase<T, BaseList<T>>> implements OnInit {
 
   data: T;
+  public error? : string;
 
   constructor(
     protected router: Router,
@@ -36,6 +38,7 @@ export abstract class BaseDetailComponent<T, S extends ServiceBase<T, BaseList<T
   private fetchData() {
     this.activatedRoute.data.subscribe((response: any) => {
       this.data = response['entity'];
+      this.error = this.data.error;
       this.dataLoadingCallback(this.data);
     });
   }

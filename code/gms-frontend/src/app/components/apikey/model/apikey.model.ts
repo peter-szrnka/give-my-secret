@@ -1,9 +1,10 @@
+import { BaseDetail } from "../../../common/model/base-detail.model";
 import { PageConfig } from "../../../common/model/common.model";
 
 /**
  * @author Peter Szrnka
  */
-export interface ApiKey {
+export interface ApiKey extends BaseDetail {
     id? : number,
     userId? : number,
     name? : string,

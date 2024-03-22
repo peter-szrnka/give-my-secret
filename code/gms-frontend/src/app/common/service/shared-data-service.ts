@@ -73,10 +73,9 @@ export class SharedDataService {
                 this.authModeSubject$.next(response.authMode);
                 this.authMode = response.authMode;
                 this.systemReadySubject$.next({ ready : this.systemReady, status: 200, authMode : response.authMode });
+                this.refreshCurrentUserInfo();
             });
         }
-
-        this.refreshCurrentUserInfo();
     }
 
     async getUserInfo(): Promise<User | undefined> {

@@ -1,22 +1,22 @@
 package io.github.gms.auth.db;
 
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.springframework.context.annotation.Profile;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-
 import io.github.gms.auth.UserAuthService;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
+import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 /**
  * @author Peter Szrnka
@@ -36,7 +36,7 @@ public class DbUserAuthServiceImpl implements UserAuthService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserEntity user = repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
-		Set<UserRole> authorities = Stream.of(user.getRoles().split(";")).map(UserRole::valueOf).collect(Collectors.toSet());
+		Set<UserRole> authorities = Stream.of(tokenizeToStringArray(user.getRoles(), ";")).map(UserRole::valueOf).collect(Collectors.toSet());
 		return GmsUserDetails.builder()
 				.userId(user.getId())
 				.username(user.getUsername())

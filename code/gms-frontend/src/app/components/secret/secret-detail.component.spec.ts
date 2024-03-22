@@ -212,6 +212,9 @@ describe('SecretDetailComponent', () => {
         // act
         component.add({ value : idPair2.id, chipInput : { clear : jest.fn() } } as any);
         component.add({ value : '3', chipInput : { clear : jest.fn() } } as any);
+        component.ipRestrictions = [
+            { allow: true, ipPattern: '(192.168.0.)[0-9]{1,3}' }
+        ];
         component.selected({
             option : {
                 value : 1,

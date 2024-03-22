@@ -1,8 +1,8 @@
 <div>
-  <header class="header" *ngIf="currentUser !== undefined && currentUser !== null"></header>
+  <header class="header" *ngIf="currentUser !== undefined"></header>
   <mat-sidenav-container class="home-root-container" autosize>
-      <mat-sidenav class="side-menu" #sidenav mode="side" [opened]="currentUser !== undefined && currentUser !== null">
-        <nav-menu [admin]="isAdmin()" [showTexts]="showTexts" [enableBottomToggle]="true"></nav-menu>
+      <mat-sidenav class="side-menu" #sidenav mode="side" [opened]="currentUser !== undefined">
+        <nav-menu [admin]="isAdmin" [showTexts]="showTexts" [enableBottomToggle]="true"></nav-menu>
       </mat-sidenav>
       <mat-sidenav-content class="sidenav-content">
           <router-outlet></router-outlet>

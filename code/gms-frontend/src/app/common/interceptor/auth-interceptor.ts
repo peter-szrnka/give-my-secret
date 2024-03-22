@@ -21,13 +21,8 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     private handleAuthError(err: HttpErrorResponse): Observable<any> {
-        if (err.status === 0) {
+        if (err.status === 0 || err.status === 401 || err.status === 403) {
             this.sharedData.clearData();
-            this.sharedData.logout();
-            return of(err.message);
-        }
-
-        if (err.status >= 300 && err.status < 500) {
             this.sharedData.logout();
             return of(err.message);
         }

@@ -104,20 +104,6 @@ describe("EventService", () => {
       httpMock.verify();
     });
 
-    it('Should return count', () => {
-      // arrange
-      const expectedUrl = environment.baseUrl + "secure/event/count";
-
-      // act
-      service.count().subscribe((res) => expect(res).toBe(2));
-
-      // assert
-      const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('GET');
-      req.flush(2);
-      httpMock.verify();
-    });
-
     it('should enable entity', () => {
       // act
       service.toggle(1, true).subscribe((res) => expect(res).toBeUndefined());

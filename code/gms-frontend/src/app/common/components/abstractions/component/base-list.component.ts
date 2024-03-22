@@ -19,6 +19,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
 
   protected loading = true;
   public datasource: ArrayDataSource<T>;
+  public error? : string;
 
   public tableConfig = {
     count: 0,
@@ -63,6 +64,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
       .subscribe((response: any) => {
         this.tableConfig.count = response.data.totalElements;
         this.datasource = new ArrayDataSource<T>(response.data.resultList);
+        this.error = response.data.error;
         this.loading = false;
       });
   }
@@ -83,7 +85,6 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
   }
 
   protected reloadPage(): void {
-    console.info("reloadPage", '/' + this.getPageConfig().scope + "/list");
     void this.router.navigate(['/' + this.getPageConfig().scope + "/list"], { queryParams: { "page": this.tableConfig.pageIndex } });
   }
 

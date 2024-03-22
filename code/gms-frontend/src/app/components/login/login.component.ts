@@ -1,12 +1,13 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
-import { catchError } from "rxjs";
+import { Subscription, catchError } from "rxjs";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { User } from "../user/model/user.model";
 
 /**
  * @author Peter Szrnka
@@ -16,7 +17,14 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
-export class LoginComponent extends BaseLoginComponent {
+export class LoginComponent extends BaseLoginComponent implements OnDestroy {
+
+    formModel: Login = {
+        username: undefined,
+        credential: undefined
+    };
+    showPassword: boolean = false;
+    userSubscription: Subscription;
 
     constructor(
         protected override route: ActivatedRoute,
@@ -28,11 +36,21 @@ export class LoginComponent extends BaseLoginComponent {
             super(route, router, sharedDataService, dialog, splashScreenStateService)
     }
 
-    formModel: Login = {
-        username: undefined,
-        credential: undefined
-    };
-    showPassword: boolean = false;
+    override ngOnInit(): void {
+        super.ngOnInit();
+        this.userSubscription = this.sharedDataService.userSubject$.subscribe((user: User | undefined) => {
+            if (!user || !this.sharedDataService.systemReady) {
+                return;
+            }
+
+            this.router.navigate(['']);
+        });
+
+    }
+
+    ngOnDestroy(): void {
+        this.userSubscription.unsubscribe();
+    }
 
     login(): void {
         this.splashScreenStateService.start();

@@ -3,7 +3,8 @@
 
   <nav-back></nav-back>
 
-  <mat-card class="simple-margin-top">
+  <div class="warning" *ngIf="error"><b>System error:</b> {{error}}</div>
+  <mat-card class="simple-margin-top" *ngIf="!error">
     <mat-card-content>
       <table mat-table [dataSource]="datasource" class="width100-and-margin-top">
         <tr mat-header-row *matHeaderRowDef="userColumns"></tr>
