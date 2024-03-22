@@ -64,7 +64,6 @@
             "localHttps" : {
               "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,
@@ -78,7 +77,6 @@
             "development": {
               "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -90,13 +88,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "gms-frontend:build:production"
+              "buildTarget": "gms-frontend:build:production"
             },
             "development": {
-              "browserTarget": "gms-frontend:build:development"
+              "buildTarget": "gms-frontend:build:development"
             },
             "localHttps": {
-              "browserTarget": "gms-frontend:build:localHttps"
+              "buildTarget": "gms-frontend:build:localHttps"
             }
           },
           "defaultConfiguration": "development"
@@ -104,7 +102,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "gms-frontend:build"
+            "buildTarget": "gms-frontend:build"
           }
         }
       }
