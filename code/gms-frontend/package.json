@@ -37,7 +37,7 @@
     "rxjs": "7.5.7",
     "ts-jest": "^29.1.2",
     "tslib": "^2.6.2",
-    "webpack-dev-middleware": ">=6.1.2",
+    "webpack-dev-middleware": "7.1.1",
     "zone.js": "^0.14.4"
   },
   "devDependencies": {
@@ -62,7 +62,7 @@
     "jest-html-reporter": "3.10.2",
     "jest-junit": "16.0.0",
     "jest-preset-angular": "^14.0.3",
-    "webpack-dev-middleware": ">=6.1.2",
+    "webpack-dev-middleware": "7.1.1",
     "typescript": "^5.2.2"
   },
   "author": {
