@@ -61,6 +61,15 @@ The following authenticator applications are supported:
 
 Currently only AES encryption is supported.  In the future this will be configured by an environment property.
 
+## Logging
+- Console
+- File
+- Logstash (in ELK stack)
+
+## Observation
+- Zipkin
+- Prometheus (with Grafana)
+
 ## Support matrix
 
 | DB provider |      Db auth       |     ldap auth      |
@@ -69,10 +78,6 @@ Currently only AES encryption is supported.  In the future this will be configur
 | PostgreSql  | :white_check_mark: | :white_check_mark: |
 | MySql       | :white_check_mark: | :white_check_mark: |
 | MsSql       | :white_check_mark: | :white_check_mark: |
-
-## Observation
-- Zipkin
-- Prometheus (with Grafana)
 
 # Code samples
 
