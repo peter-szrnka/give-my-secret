@@ -46,13 +46,13 @@ public class SsoSecurityConfig extends BaseSecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequest ->
                         authorizeHttpRequest
                                 .requestMatchers(FILTER_URL).permitAll()
-                                //.requestMatchers("/unauthenticated", "/oauth2/**", "/login/**").permitAll()
+                                .requestMatchers("/unauthenticated", "/oauth2/**", "/login/**").permitAll()
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
-                //.logout(logout ->
-                 //       logout.logoutSuccessUrl("http://localhost:7000/realms/gms-client/protocol/openid-connect/logout?redirect_uri=http://localhost:4200/"))
+                .logout(logout ->
+                        logout.logoutSuccessUrl("http://localhost:7000/realms/gms-webapp/protocol/openid-connect/logout?redirect_uri=http://localhost:8080/"))
         ;
 
         return http.build();
