@@ -14,6 +14,7 @@ import io.github.gms.common.service.JwtService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.functions.user.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,7 +41,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
             SystemPropertyService systemPropertyService,
             GenerateJwtRequestConverter generateJwtRequestConverter,
             UserConverter converter,
-            UserAuthService userAuthService,
+            @Autowired(required = false) UserAuthService userAuthService,
             CodeVerifier verifier,
 			UserService userService) {
 		super(jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);

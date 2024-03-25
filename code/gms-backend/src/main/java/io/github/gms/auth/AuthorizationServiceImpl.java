@@ -13,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,7 +38,7 @@ public class AuthorizationServiceImpl extends AbstractAuthService implements Aut
 			JwtService jwtService,
             SystemPropertyService systemPropertyService, 
 			GenerateJwtRequestConverter generateJwtRequestConverter,
-            UserAuthService userAuthService) {
+            @Autowired(required = false) UserAuthService userAuthService) {
         super(jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
     }
 

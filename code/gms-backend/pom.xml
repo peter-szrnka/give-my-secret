@@ -15,7 +15,7 @@
 		<spring-boot.version>3.2.3</spring-boot.version>
 		<guava.version>32.1.3-jre</guava.version>
 		<maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
-		<flyway.version>10.6.0</flyway.version>
+		<flyway.version>9.22.3</flyway.version>
 		<!-- Testing & code quality -->
 		<jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
 		<skip.jacoco-check-execution>false</skip.jacoco-check-execution>
@@ -109,6 +109,10 @@
 					<artifactId>spring-security-core</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
