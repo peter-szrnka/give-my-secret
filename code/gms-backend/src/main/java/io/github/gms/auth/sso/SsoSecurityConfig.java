@@ -34,13 +34,13 @@ public class SsoSecurityConfig extends BaseSecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> Customizer.withDefaults())
-                //.oauth2ResourceServer((oauth2) -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtConverter());
-                .oauth2Client(client -> Customizer.withDefaults())
-                .oauth2Login(login -> login.tokenEndpoint(e -> Customizer.withDefaults()).userInfoEndpoint(e -> Customizer.withDefaults()))
+                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+                //.oauth2Client(client -> Customizer.withDefaults())
+                //.oauth2Login(login -> login.tokenEndpoint(e -> Customizer.withDefaults()).userInfoEndpoint(e -> Customizer.withDefaults()))
         ;
 
         http
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http
                 .authorizeHttpRequests(authorizeHttpRequest ->
@@ -51,8 +51,8 @@ public class SsoSecurityConfig extends BaseSecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .logout(logout ->
-                        logout.logoutSuccessUrl("http://localhost:7000/realms/gms-webapp/protocol/openid-connect/logout?redirect_uri=http://localhost:8080/"))
+                //.logout(logout ->
+                //        logout.logoutSuccessUrl("http://localhost:7000/realms/gms-webapp/protocol/openid-connect/logout?redirect_uri=http://localhost:8080/"))
         ;
 
         return http.build();
