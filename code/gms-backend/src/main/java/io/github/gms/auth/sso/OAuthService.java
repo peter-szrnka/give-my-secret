@@ -1,6 +1,6 @@
 package io.github.gms.auth.sso;
 
-import io.github.gms.auth.dto.AuthenticateRequestDto;
+import org.springframework.util.MultiValueMap;
 
 /**
  * @author Peter Szrnka
@@ -8,5 +8,5 @@ import io.github.gms.auth.dto.AuthenticateRequestDto;
  */
 public interface OAuthService {
 
-    void authenticate(AuthenticateRequestDto dto);
+    <T> T callEndpoint(String url, MultiValueMap<String, String> requestBody, Class<T> responseClass);
 }

@@ -76,6 +76,8 @@ public class LoginController {
 	@PostMapping(LOGOUT_PATH)
 	public ResponseEntity<Void> logout() {
 		HttpHeaders headers = new HttpHeaders();
+
+		service.logout();
 		
 		headers.add(SET_COOKIE, CookieUtils.createCookie(ACCESS_JWT_TOKEN, null, 0, secure).toString());
 		headers.add(SET_COOKIE, CookieUtils.createCookie(REFRESH_JWT_TOKEN, null, 0, secure).toString());

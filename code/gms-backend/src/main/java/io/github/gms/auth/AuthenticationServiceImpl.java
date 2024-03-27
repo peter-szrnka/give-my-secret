@@ -9,12 +9,14 @@ import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.converter.GenerateJwtRequestConverter;
+import io.github.gms.common.util.MdcUtils;
 import io.github.gms.functions.user.UserConverter;
 import io.github.gms.common.service.JwtService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.functions.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,12 +24,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Slf4j
 @Service
+@Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
 public class AuthenticationServiceImpl extends AbstractAuthService implements AuthenticationService {
 
 	private final AuthenticationManager authenticationManager;
@@ -131,7 +136,12 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 		}
 	}
 
-    private boolean isMfaEnabled(GmsUserDetails userDetails) {
+	@Override
+	public void logout() {
+		log.info("User({}) logged out", MdcUtils.getUserId());
+	}
+
+	private boolean isMfaEnabled(GmsUserDetails userDetails) {
 		return systemPropertyService.getBoolean(SystemProperty.ENABLE_GLOBAL_MFA) || 
 			(systemPropertyService.getBoolean(SystemProperty.ENABLE_MFA) && userDetails.isMfaEnabled());
 	}

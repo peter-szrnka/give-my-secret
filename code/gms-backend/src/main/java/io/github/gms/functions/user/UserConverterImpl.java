@@ -4,20 +4,24 @@ import com.google.common.collect.Sets;
 import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,7 +36,8 @@ import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
 public class UserConverterImpl implements UserConverter {
 
 	private final Clock clock;
-	private final PasswordEncoder passwordEncoder;
+	@Setter
+	@Autowired(required = false) private PasswordEncoder passwordEncoder;
 	@Setter
 	@Value("${config.store.ldap.credential:false}")
 	private boolean storeLdapCredential;
@@ -133,6 +138,19 @@ public class UserConverterImpl implements UserConverter {
 		SecretGenerator secretGenerator = new DefaultSecretGenerator();
 		entity.setMfaSecret(secretGenerator.generate());
 		return entity;
+	}
+
+	@Override
+	public UserDetails toUserDetails(IntrospectResponse response) {
+		return GmsUserDetails.builder()
+				.username(response.getUsername())
+				.email(response.getEmail())
+				.name(response.getName())
+				.status("true".equals(response.getActive()) ? EntityStatus.ACTIVE : EntityStatus.DISABLED)
+				.authorities(response.getRealmAccess().getRoles().stream().map(UserRole::getByName)
+						.filter(Objects::nonNull)
+						.collect(Collectors.toSet()))
+				.build();
 	}
 
 	private String getCredential(GmsUserDetails foundUser) {

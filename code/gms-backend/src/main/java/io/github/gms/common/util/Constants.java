@@ -28,7 +28,8 @@ public final class Constants {
 	// Properties
 	public static final String CONFIG_AUTH_TYPE_DB = "db";
 	public static final String CONFIG_AUTH_TYPE_LDAP = "ldap";
-	public static final String CONFIG_AUTH_TYPE_KEYCLOAK_SSO = "keycloak_sso";
+	public static final String CONFIG_AUTH_TYPE_KEYCLOAK_SSO = "keycloak-sso";
+	public static final String CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO = "!keycloak-sso";
 	public static final String CONFIG_LDAP_PASSWORD_ENCODER = "config.ldap.passwordencoder";
 	
 	// LDAP

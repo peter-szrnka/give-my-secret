@@ -12,4 +12,6 @@ public interface AuthenticationService {
 	AuthenticationResponse authenticate(String username, String credential);
 
 	AuthenticationResponse verify(LoginVerificationRequestDto dto);
+
+	void logout();
 }
