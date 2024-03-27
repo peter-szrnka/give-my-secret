@@ -47,8 +47,8 @@ export class SharedDataService {
             return;
         }
 
-        //void this.router.navigate(['/login']);
-        //this.authService.logout().subscribe(() => this.clearData());
+        void this.router.navigate(['/login']);
+        this.authService.logout().subscribe(() => this.clearData());
     }
 
     /**

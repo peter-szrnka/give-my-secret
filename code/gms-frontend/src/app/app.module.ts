@@ -34,7 +34,6 @@ import { NavMenuModule } from './components/menu/nav-menu.module';
 import { VerifyModule } from './components/verify/verify-module';
 import { RequestPasswordResetModule } from './components/password_reset/request-password-reset.module';
 import { IpRestrictionModule } from './components/ip_restriction/ip-restriction-module';
-import { OAuthModule } from 'angular-oauth2-oidc';
 
 /**
  * @author Peter Szrnka
@@ -56,12 +55,6 @@ import { OAuthModule } from 'angular-oauth2-oidc';
       registrationStrategy: 'registerWhenStable:30000'
     }),
     BrowserAnimationsModule,
-    OAuthModule.forRoot({
-      resourceServer: {
-        allowedUrls: ['http://localhost:8080/', 'https://localhost:8443/'],
-        sendAccessToken: true
-    }
-    }),
     PipesModule,
     GmsComponentsModule,
     

@@ -37,8 +37,11 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         requestBody.add("password", credential);
         requestBody.add("client_id", keycloakSettings.getClientId());
         requestBody.add("client_secret", keycloakSettings.getClientSecret());
+        requestBody.add("scope", "profile email");
 
         Map<String, String> response = oAuthService.callEndpoint(keycloakSettings.getKeycloakTokenUrl(), requestBody, Map.class);
+
+        // TODO Call oauth endpoint to retrieve current user data
 
         return AuthenticationResponse.builder()
                 .phase(AuthResponsePhase.COMPLETED)

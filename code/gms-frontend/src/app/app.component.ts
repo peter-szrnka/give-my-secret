@@ -6,8 +6,6 @@ import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
 import { roleCheck } from './common/utils/permission-utils';
 import { User } from './components/user/model/user.model';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { authCodeFlowConfig } from './oauth.config';
 
 const LOGIN_CALLBACK_URL = '/login';
 
@@ -28,7 +26,6 @@ export class AppComponent implements OnInit, OnDestroy {
   isAdmin: boolean;
 
   constructor(
-    private oauthService: OAuthService,
     private location: Location,
     private router: Router, 
     public sharedDataService: SharedDataService, 
@@ -36,9 +33,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.oauthService.initCodeFlow();
-    this.oauthService.configure(authCodeFlowConfig);
-    //this.oauthService.loadDiscoveryDocumentAndTryLogin();
     this.splashScreenStateService.start();
     this.router.events.pipe(takeUntil(this.unsubscribe))
       .subscribe((routerEvent) => this.checkRouterEvent(routerEvent as RouterEvent));
@@ -81,7 +75,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private navigateToLogin(): void {
     // FIXME previousUrl temporary disabled!
-    //void this.router.navigate([LOGIN_CALLBACK_URL]/*, { queryParams: { previousUrl: this.location.path() } }*/);
+    void this.router.navigate([LOGIN_CALLBACK_URL]/*, { queryParams: { previousUrl: this.location.path() } }*/);
   }
 
   private checkRouterEvent(routerEvent: RouterEvent): void {
