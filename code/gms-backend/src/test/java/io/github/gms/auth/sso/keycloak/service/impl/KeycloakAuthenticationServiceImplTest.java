@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class KeycloakAuthenticationServiceImplTest {
+class KeycloakAuthenticationServiceImplTest {
 
     private static final String MOCK_ACCESS_TOKEN = "accessToken";
     private static final String MOCK_REFRESH_TOKEN = "refreshToken";

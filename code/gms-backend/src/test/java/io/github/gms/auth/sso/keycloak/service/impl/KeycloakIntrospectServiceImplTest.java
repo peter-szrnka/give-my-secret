@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class KeycloakIntrospectServiceImplTest {
+class KeycloakIntrospectServiceImplTest {
 
     private OAuthService oAuthService;
     private KeycloakSettings keycloakSettings;

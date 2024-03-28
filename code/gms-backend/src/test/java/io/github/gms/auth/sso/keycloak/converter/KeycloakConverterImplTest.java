@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class KeycloakConverterImplTest {
+class KeycloakConverterImplTest {
 
     private final KeycloakConverterImpl converter = new KeycloakConverterImpl();
 
