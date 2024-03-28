@@ -29,12 +29,11 @@ import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 public class KeycloakUserInfoServiceImpl implements UserInfoService {
 
     private final KeycloakIntrospectService keycloakIntrospectService;
-    private final HttpServletRequest httpServletRequest;
 
     @Override
     public UserInfoDto getUserInfo(HttpServletRequest request) {
-        Cookie accessJwtCookie = WebUtils.getCookie(httpServletRequest, ACCESS_JWT_TOKEN);
-        Cookie refreshJwtCookie = WebUtils.getCookie(httpServletRequest, REFRESH_JWT_TOKEN);
+        Cookie accessJwtCookie = WebUtils.getCookie(request, ACCESS_JWT_TOKEN);
+        Cookie refreshJwtCookie = WebUtils.getCookie(request, REFRESH_JWT_TOKEN);
 
         if (accessJwtCookie == null || refreshJwtCookie == null) {
             return UserInfoDto.builder().build();
