@@ -13,13 +13,11 @@ import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.service.JwtClaimService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
-import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -61,7 +58,7 @@ public class UserServiceImpl implements UserService {
 	private final UserConverter converter;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtClaimService jwtClaimService;
-	private final SystemPropertyService systemPropertyService;
+	//private final SystemPropertyService systemPropertyService;
 	
 	@Override
 	@Transactional
@@ -171,7 +168,7 @@ public class UserServiceImpl implements UserService {
 			.build();
 	}
 
-	@Override
+	/*@Override
 	public void updateLoginAttempt(String username) {
 		UserEntity user = getByUsername(username);
 
@@ -192,9 +189,9 @@ public class UserServiceImpl implements UserService {
 
 		user.setFailedAttempts(failedAttempts);
 		repository.save(user);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public void resetLoginAttempt(String username) {
 		UserEntity user = getByUsername(username);
 
@@ -204,13 +201,13 @@ public class UserServiceImpl implements UserService {
 
 		user.setFailedAttempts(0);
 		repository.save(user);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public boolean isBlocked(String username) {
 		UserEntity user = getByUsername(username);
 		return user != null && EntityStatus.BLOCKED == user.getStatus();
-	}
+	}*/
 
 	private SaveEntityResponseDto saveUser(SaveUserRequestDto dto, boolean roleChangeEnabled) {
 		validateUserExistence(dto);
@@ -232,9 +229,9 @@ public class UserServiceImpl implements UserService {
 		return new SaveEntityResponseDto(entity.getId());
 	}
 
-	private UserEntity getByUsername(String username) {
+	/*private UserEntity getByUsername(String username) {
 		return repository.findByUsername(username).orElse(null);
-	}
+	}*/
 	
 	private void validateUserExistence(SaveUserRequestDto dto) {
 		if (dto.getId() != null) {

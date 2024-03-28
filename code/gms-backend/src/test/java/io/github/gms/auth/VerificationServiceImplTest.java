@@ -10,7 +10,7 @@ import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.functions.user.UserConverter;
-import io.github.gms.functions.user.UserService;
+import io.github.gms.functions.user.UserLoginAttemptManagerService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
     private UserAuthService userAuthService;
     private UserConverter userConverter;
     private CodeVerifier verifier;
-    private UserService userService;
+    private UserLoginAttemptManagerService userLoginAttemptManagerService;
     private TokenGeneratorService tokenGeneratorService;
     private VerificationServiceImpl service;
 
@@ -49,9 +49,9 @@ public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
         tokenGeneratorService = mock(TokenGeneratorService.class);
         userAuthService = mock(UserAuthService.class);
         verifier = mock(CodeVerifier.class);
-        userService = mock(UserService.class);
+        userLoginAttemptManagerService = mock(UserLoginAttemptManagerService.class);
         userConverter = mock(UserConverter.class);
-        service = new VerificationServiceImpl(userAuthService, userConverter, verifier, userService, tokenGeneratorService);
+        service = new VerificationServiceImpl(userAuthService, userConverter, verifier, userLoginAttemptManagerService, tokenGeneratorService);
 
         ((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
     }
@@ -59,7 +59,7 @@ public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
     @Test
 	void shouldVerifyThrowsAnError() {
 		// arrange
-		when(userService.isBlocked("user1")).thenReturn(false);
+		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 
 		// act
@@ -68,13 +68,13 @@ public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
-		verify(userService).isBlocked("user1");
+		verify(userLoginAttemptManagerService).isBlocked("user1");
 	}
 
 	@Test
 	void shouldVerifyFailWhenUserIsBlocked() {
 		// arrange
-		when(userService.isBlocked("user1")).thenReturn(true);
+		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(true);
 
 		// act
 		AuthenticationResponse response = service.verify(TestUtils.createLoginVerificationRequestDto());
@@ -82,7 +82,7 @@ public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
-		verify(userService).isBlocked("user1");
+		verify(userLoginAttemptManagerService).isBlocked("user1");
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
 		// arrange
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setAccountNonLocked(false);
-		when(userService.isBlocked("user1")).thenReturn(false);
+		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 
 		// act
@@ -99,13 +99,13 @@ public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
-		verify(userService).isBlocked("user1");
+		verify(userLoginAttemptManagerService).isBlocked("user1");
 	}
 
 	@Test
 	void shouldVerifyFail() {
 		// arrange
-		when(userService.isBlocked("user1")).thenReturn(false);
+		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
@@ -117,14 +117,14 @@ public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
-		verify(userService).isBlocked("user1");
-		verify(userService).updateLoginAttempt("user1");
+		verify(userLoginAttemptManagerService).isBlocked("user1");
+		verify(userLoginAttemptManagerService).updateLoginAttempt("user1");
 	}
 
 	@Test
 	void shouldVerify() {
 		// arrange
-		when(userService.isBlocked("user1")).thenReturn(false);
+		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
@@ -145,7 +145,7 @@ public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals("ACCESS_JWT", response.getToken());
 		assertEquals("REFRESH_JWT", response.getRefreshToken());
 
-		verify(userService).isBlocked("user1");
+		verify(userLoginAttemptManagerService).isBlocked("user1");
 		verify(userAuthService).loadUserByUsername(anyString());
 		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(false));
         verify(tokenGeneratorService).getAuthenticationDetails(any(GmsUserDetails.class));

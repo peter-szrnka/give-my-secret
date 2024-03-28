@@ -8,7 +8,7 @@ import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.functions.user.UserConverter;
-import io.github.gms.functions.user.UserService;
+import io.github.gms.functions.user.UserLoginAttemptManagerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -29,13 +29,13 @@ public class VerificationServiceImpl implements VerificationService {
     private final UserAuthService userAuthService;
     private final UserConverter converter;
     private final CodeVerifier verifier;
-    private final UserService userService;
+    private final UserLoginAttemptManagerService userLoginAttemptManagerService;
     private final TokenGeneratorService tokenGeneratorService;
 
     @Override
     public AuthenticationResponse verify(LoginVerificationRequestDto dto) {
         try {
-            if (userService.isBlocked(dto.getUsername())) {
+            if (userLoginAttemptManagerService.isBlocked(dto.getUsername())) {
                 return AuthenticationResponse.builder()
                         .phase(AuthResponsePhase.BLOCKED)
                         .build();
@@ -50,7 +50,7 @@ public class VerificationServiceImpl implements VerificationService {
             }
 
             if (!verifier.isValidCode(userDetails.getMfaSecret(), dto.getVerificationCode())) {
-                userService.updateLoginAttempt(dto.getUsername());
+                userLoginAttemptManagerService.updateLoginAttempt(dto.getUsername());
                 return AuthenticationResponse.builder().phase(AuthResponsePhase.FAILED).build();
             }
 

@@ -8,7 +8,7 @@ import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.functions.user.UserConverter;
-import io.github.gms.functions.user.UserService;
+import io.github.gms.functions.user.UserLoginAttemptManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -35,12 +35,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final SystemPropertyService systemPropertyService;
 	private final AuthenticationManager authenticationManager;
 	private final UserConverter converter;
-	private final UserService userService;
+	private final UserLoginAttemptManagerService userLoginAttemptManagerService;
 
 	@Override
 	public AuthenticationResponse authenticate(String username, String credential) {
 		try {
-			if (userService.isBlocked(username)) { // User locked in DB
+			if (userLoginAttemptManagerService.isBlocked(username)) { // User locked in DB
 				return AuthenticationResponse.builder()
 						.phase(AuthResponsePhase.BLOCKED)
 						.build();
@@ -64,7 +64,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			} 
 
 			Map<JwtConfigType, String> authenticationDetails = tokenGeneratorService.getAuthenticationDetails(user);
-			userService.resetLoginAttempt(username);
+			userLoginAttemptManagerService.resetLoginAttempt(username);
 
 			return AuthenticationResponse.builder()
 				.currentUser(converter.toUserInfoDto(user, false))
@@ -73,7 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				.phase(AuthResponsePhase.COMPLETED)
 				.build();
 		} catch (Exception ex) {
-			userService.updateLoginAttempt(username);
+			userLoginAttemptManagerService.updateLoginAttempt(username);
 			log.warn("Login failed", ex);
 			return new AuthenticationResponse();
 		}

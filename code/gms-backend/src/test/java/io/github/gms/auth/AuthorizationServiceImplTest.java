@@ -3,11 +3,10 @@ package io.github.gms.auth;
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthorizationResponse;
+import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.auth.service.TokenGeneratorService;
-import io.github.gms.common.converter.GenerateJwtRequestConverter;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.model.GenerateJwtRequest;
 import io.github.gms.common.service.JwtService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.util.TestUtils;
@@ -16,7 +15,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,9 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,7 +46,6 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 	private JwtService jwtService;
 	private UserAuthService userAuthService;
 	private SystemPropertyService systemPropertyService;
-	private GenerateJwtRequestConverter generateJwtRequestConverter;
 	private AuthorizationServiceImpl service;
 
 	@Override
@@ -63,7 +58,6 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		jwtService = mock(JwtService.class);
 		userAuthService = mock(UserAuthService.class);
 		systemPropertyService = mock(SystemPropertyService.class);
-		generateJwtRequestConverter = mock(GenerateJwtRequestConverter.class);
 		service = new AuthorizationServiceImpl(jwtService, tokenGeneratorService, systemPropertyService, userAuthService);
 
 		((Logger) LoggerFactory.getLogger(AuthorizationServiceImpl.class)).addAppender(logAppender);
@@ -168,13 +162,8 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 		when(claims.get(anyString(), any())).thenReturn(userDetails.getUsername());
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
-		
-		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap()))
-			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of("k1", "v1", "k2", "v2", "k3", "v3")).expirationDateInSeconds(900L).build());
-		when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap()))
-			.thenReturn(GenerateJwtRequest.builder().algorithm("HS512").claims(Map.of()).expirationDateInSeconds(900L).build());
-		
-		when(jwtService.generateJwts(anyMap())).thenReturn(Map.of(
+
+		when(tokenGeneratorService.getAuthenticationDetails(any(GmsUserDetails.class))).thenReturn(Map.of(
 				JwtConfigType.ACCESS_JWT, "ACCESS_JWT",
 				JwtConfigType.REFRESH_JWT, "REFRESH_JWT"
 				));
@@ -199,14 +188,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 
 		verify(jwtService).parseJwt(anyString(), anyString());
 		verify(systemPropertyService).get(SystemProperty.ACCESS_JWT_ALGORITHM);
-		
-		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.ACCESS_JWT), anyString(), anyMap());
-		verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), anyString(), anyMap());
 
-		ArgumentCaptor<Map<JwtConfigType, GenerateJwtRequest>> mapCaptor = ArgumentCaptor.forClass(Map.class);
-		verify(jwtService).generateJwts(mapCaptor.capture());
-
-		Map<JwtConfigType, GenerateJwtRequest> capturedMap = mapCaptor.getValue();
-		assertEquals(3, capturedMap.get(JwtConfigType.ACCESS_JWT).getClaims().size());
+		verify(tokenGeneratorService).getAuthenticationDetails(any(GmsUserDetails.class));
 	}
 }
