@@ -42,8 +42,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 	void beforeEach() {
 		clock = mock(Clock.class);
 		passwordEncoder = mock(PasswordEncoder.class);
-		converter = new UserConverterImpl(clock);
-		converter.setPasswordEncoder(passwordEncoder);
+		converter = new UserConverterImpl(clock, passwordEncoder);
 	}
 
 	@Test

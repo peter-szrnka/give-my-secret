@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  */
 @ExtendWith(MockitoExtension.class)
-public class VerificationControllerTest {
+class VerificationControllerTest {
 
     private VerificationService service;
     private SystemPropertyService systemPropertyService;

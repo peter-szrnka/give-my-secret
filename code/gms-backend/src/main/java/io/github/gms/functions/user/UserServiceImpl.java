@@ -168,47 +168,6 @@ public class UserServiceImpl implements UserService {
 			.build();
 	}
 
-	/*@Override
-	public void updateLoginAttempt(String username) {
-		UserEntity user = getByUsername(username);
-
-		if (user == null) {
-			return;
-		}
-
-		if (EntityStatus.BLOCKED == user.getStatus()) {
-			log.info("User already blocked");
-			return;
-		}
-
-		Integer attemptsLimit = systemPropertyService.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
-		Integer failedAttempts = user.getFailedAttempts() + 1;
-		if (Objects.equals(attemptsLimit, failedAttempts)) {
-			user.setStatus(EntityStatus.BLOCKED);
-		}
-
-		user.setFailedAttempts(failedAttempts);
-		repository.save(user);
-	}*/
-
-	/*@Override
-	public void resetLoginAttempt(String username) {
-		UserEntity user = getByUsername(username);
-
-		if (user == null) {
-			return;
-		}
-
-		user.setFailedAttempts(0);
-		repository.save(user);
-	}*/
-
-	/*@Override
-	public boolean isBlocked(String username) {
-		UserEntity user = getByUsername(username);
-		return user != null && EntityStatus.BLOCKED == user.getStatus();
-	}*/
-
 	private SaveEntityResponseDto saveUser(SaveUserRequestDto dto, boolean roleChangeEnabled) {
 		validateUserExistence(dto);
 
@@ -228,10 +187,6 @@ public class UserServiceImpl implements UserService {
 		entity = repository.save(entity);
 		return new SaveEntityResponseDto(entity.getId());
 	}
-
-	/*private UserEntity getByUsername(String username) {
-		return repository.findByUsername(username).orElse(null);
-	}*/
 	
 	private void validateUserExistence(SaveUserRequestDto dto) {
 		if (dto.getId() != null) {

@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
+class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
 
     private UserRepository repository;
     private SystemPropertyService systemPropertyService;

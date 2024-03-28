@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
+class VerificationServiceImplTest extends AbstractLoggingUnitTest {
 
     private UserAuthService userAuthService;
     private UserConverter userConverter;
@@ -42,7 +42,7 @@ public class VerificationServiceImplTest extends AbstractLoggingUnitTest {
 
     @Override
     @BeforeEach
-    public void setup() {
+	public void setup() {
         super.setup();
 
         // init

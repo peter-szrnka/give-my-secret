@@ -9,8 +9,8 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
 import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
 
 /**
@@ -30,11 +31,11 @@ import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
  */
 @Component
 @RequiredArgsConstructor
+@Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
 public class UserConverterImpl implements UserConverter {
 
 	private final Clock clock;
-	@Setter
-	@Autowired(required = false) private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 	@Setter
 	@Value("${config.store.ldap.credential:false}")
 	private boolean storeLdapCredential;

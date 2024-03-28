@@ -10,7 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static io.github.gms.common.util.Constants.CLIENT_ID;
+import static io.github.gms.common.util.Constants.CLIENT_SECRET;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
+import static io.github.gms.common.util.Constants.REFRESH_TOKEN;
+import static io.github.gms.common.util.Constants.TOKEN;
 
 /**
  * @author Peter Szrnka
@@ -27,10 +31,10 @@ public class KeycloakIntrospectServiceImpl implements KeycloakIntrospectService 
     @Override
     public IntrospectResponse getUserDetails(String accessToken, String refreshToken) {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("client_id", keycloakSettings.getClientId());
-        requestBody.add("client_secret", keycloakSettings.getClientSecret());
-        requestBody.add("token", accessToken);
-        requestBody.add("refresh_token", refreshToken);
+        requestBody.add(CLIENT_ID, keycloakSettings.getClientId());
+        requestBody.add(CLIENT_SECRET, keycloakSettings.getClientSecret());
+        requestBody.add(TOKEN, accessToken);
+        requestBody.add(REFRESH_TOKEN, refreshToken);
 
         return oAuthService.callEndpoint(keycloakSettings.getIntrospectUrl(), requestBody, IntrospectResponse.class);
     }

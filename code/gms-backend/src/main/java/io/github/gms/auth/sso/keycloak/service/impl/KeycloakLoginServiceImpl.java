@@ -1,8 +1,8 @@
 package io.github.gms.auth.sso.keycloak.service.impl;
 
-import io.github.gms.auth.sso.keycloak.service.OAuthService;
 import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
 import io.github.gms.auth.sso.keycloak.service.KeycloakLoginService;
+import io.github.gms.auth.sso.keycloak.service.OAuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,17 @@ import org.springframework.web.util.WebUtils;
 import java.util.Map;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.AUDIENCE;
+import static io.github.gms.common.util.Constants.CLIENT_ID;
+import static io.github.gms.common.util.Constants.CLIENT_SECRET;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
+import static io.github.gms.common.util.Constants.CREDENTIAL;
+import static io.github.gms.common.util.Constants.GRANT_TYPE;
 import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.REFRESH_TOKEN;
+import static io.github.gms.common.util.Constants.SCOPE;
+import static io.github.gms.common.util.Constants.TOKEN;
+import static io.github.gms.common.util.Constants.USERNAME;
 
 /**
  * @author Peter Szrnka
@@ -34,13 +43,13 @@ public class KeycloakLoginServiceImpl implements KeycloakLoginService {
     @Override
     public Map<String, String> login(String username, String credential) {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("grant_type", "password");
-        requestBody.add("audience", keycloakSettings.getRealm());
-        requestBody.add("username", username);
-        requestBody.add("password", credential);
-        requestBody.add("client_id", keycloakSettings.getClientId());
-        requestBody.add("client_secret", keycloakSettings.getClientSecret());
-        requestBody.add("scope", "profile email");
+        requestBody.add(GRANT_TYPE, CREDENTIAL);
+        requestBody.add(AUDIENCE, keycloakSettings.getRealm());
+        requestBody.add(USERNAME, username);
+        requestBody.add(CREDENTIAL, credential);
+        requestBody.add(CLIENT_ID, keycloakSettings.getClientId());
+        requestBody.add(CLIENT_SECRET, keycloakSettings.getClientSecret());
+        requestBody.add(SCOPE, "profile email");
 
         return oAuthService.callEndpoint(keycloakSettings.getKeycloakTokenUrl(), requestBody, Map.class);
     }
@@ -55,10 +64,10 @@ public class KeycloakLoginServiceImpl implements KeycloakLoginService {
             return;
         }
 
-        requestBody.add("client_id", keycloakSettings.getClientId());
-        requestBody.add("client_secret", keycloakSettings.getClientSecret());
-        requestBody.add("token", accessJwtCookie.getValue());
-        requestBody.add("refresh_token", refreshJwtCookie.getValue());
+        requestBody.add(CLIENT_ID, keycloakSettings.getClientId());
+        requestBody.add(CLIENT_SECRET, keycloakSettings.getClientSecret());
+        requestBody.add(TOKEN, accessJwtCookie.getValue());
+        requestBody.add(REFRESH_TOKEN, refreshJwtCookie.getValue());
         oAuthService.callEndpoint(keycloakSettings.getLogoutUrl(), requestBody, Void.class);
     }
 }

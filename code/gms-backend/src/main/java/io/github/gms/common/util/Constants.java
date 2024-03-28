@@ -5,7 +5,8 @@ package io.github.gms.common.util;
  * @since 1.0
  */
 public final class Constants {
-	
+
+
 	private Constants() {}
 	
 	public static final String SLASH = "/";
@@ -70,4 +71,15 @@ public final class Constants {
 	public static final String PATH_LIST_NAMES = "/list_names";
 	public static final String PATH_ENABLED = "enabled";
 	public static final String ID = "id";
+
+	public static final String GRANT_TYPE = "grant_type";
+	public static final String AUDIENCE = "audience";
+	public static final String USERNAME = "username";
+	public static final String CREDENTIAL = "password";
+	public static final String SCOPE = "scope";
+	public static final String CLIENT_ID = "client_id";
+	public static final String CLIENT_SECRET = "client_secret";
+	public static final String TOKEN = "token";
+	public static final String ACCESS_TOKEN = "access_token";
+	public static final String REFRESH_TOKEN = "refresh_token";
 }

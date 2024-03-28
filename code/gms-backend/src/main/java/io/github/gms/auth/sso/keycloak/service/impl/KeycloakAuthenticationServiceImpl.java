@@ -7,6 +7,7 @@ import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
 import io.github.gms.auth.sso.keycloak.service.KeycloakIntrospectService;
 import io.github.gms.auth.sso.keycloak.service.KeycloakLoginService;
 import io.github.gms.auth.types.AuthResponsePhase;
+import io.github.gms.common.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -35,13 +36,13 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
 
         // Get user data
         IntrospectResponse introspectResponse =
-                keycloakIntrospectService.getUserDetails(response.get("access_token"), response.get("refresh_token"));
+                keycloakIntrospectService.getUserDetails(response.get(Constants.ACCESS_TOKEN), response.get(Constants.REFRESH_TOKEN));
 
         return AuthenticationResponse.builder()
                 .currentUser(converter.toUserInfoDto(introspectResponse))
                 .phase(AuthResponsePhase.COMPLETED)
-                .token(response.get("access_token"))
-                .refreshToken(response.get("refresh_token"))
+                .token(response.get(Constants.ACCESS_TOKEN))
+                .refreshToken(response.get(Constants.REFRESH_TOKEN))
                 .build();
     }
 
