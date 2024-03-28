@@ -42,7 +42,7 @@ public class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitT
         repository = mock(UserRepository.class);
         systemPropertyService = mock(SystemPropertyService.class);
         service = new UserLoginAttemptManagerServiceImpl(repository, systemPropertyService);
-        ((Logger) LoggerFactory.getLogger(UserServiceImpl.class)).addAppender(logAppender);
+        ((Logger) LoggerFactory.getLogger(UserLoginAttemptManagerServiceImpl.class)).addAppender(logAppender);
     }
 
     @Test
