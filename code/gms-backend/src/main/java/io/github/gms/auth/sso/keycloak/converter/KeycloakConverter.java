@@ -1,12 +1,12 @@
 package io.github.gms.auth.sso.keycloak.converter;
 
+import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
 import io.github.gms.common.dto.UserInfoDto;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public interface KeycloakConverter {
 
-    UserDetails toUserDetails(IntrospectResponse response);
+    GmsUserDetails toUserDetails(IntrospectResponse response);
 
-    UserInfoDto toUserInfoDto(IntrospectResponse introspectResponse);
+    UserInfoDto toUserInfoDto(IntrospectResponse response);
 }
