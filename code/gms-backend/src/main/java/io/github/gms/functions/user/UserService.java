@@ -28,10 +28,4 @@ public interface UserService extends AbstractCrudService<SaveUserRequestDto, Sav
     boolean isMfaActive();
 
 	UserInfoDto getUserInfo(HttpServletRequest request);
-
-	//void updateLoginAttempt(String username);
-
-	//void resetLoginAttempt(String username);
-
-	//boolean isBlocked(String username);
 }

@@ -32,18 +32,22 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
     @Override
     public AuthenticationResponse authenticate(String username, String credential) {
         // Login with Keycloak
-        Map<String, String> response = keycloakLoginService.login(username, credential);
+        try {
+            Map<String, String> response = keycloakLoginService.login(username, credential);
 
-        // Get user data
-        IntrospectResponse introspectResponse =
-                keycloakIntrospectService.getUserDetails(response.get(Constants.ACCESS_TOKEN), response.get(Constants.REFRESH_TOKEN));
+            // Get user data
+            IntrospectResponse introspectResponse =
+                    keycloakIntrospectService.getUserDetails(response.get(Constants.ACCESS_TOKEN), response.get(Constants.REFRESH_TOKEN));
 
-        return AuthenticationResponse.builder()
-                .currentUser(converter.toUserInfoDto(introspectResponse))
-                .phase(AuthResponsePhase.COMPLETED)
-                .token(response.get(Constants.ACCESS_TOKEN))
-                .refreshToken(response.get(Constants.REFRESH_TOKEN))
-                .build();
+            return AuthenticationResponse.builder()
+                    .currentUser(converter.toUserInfoDto(introspectResponse))
+                    .phase(AuthResponsePhase.COMPLETED)
+                    .token(response.get(Constants.ACCESS_TOKEN))
+                    .refreshToken(response.get(Constants.REFRESH_TOKEN))
+                    .build();
+        } catch (Exception e) {
+            return AuthenticationResponse.builder().build();
+        }
     }
 
     @Override

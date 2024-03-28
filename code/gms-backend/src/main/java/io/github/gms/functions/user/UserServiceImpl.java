@@ -58,7 +58,6 @@ public class UserServiceImpl implements UserService {
 	private final UserConverter converter;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtClaimService jwtClaimService;
-	//private final SystemPropertyService systemPropertyService;
 	
 	@Override
 	@Transactional
