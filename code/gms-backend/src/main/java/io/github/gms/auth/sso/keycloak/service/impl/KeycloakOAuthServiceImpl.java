@@ -1,6 +1,6 @@
-package io.github.gms.auth.sso.keycloak;
+package io.github.gms.auth.sso.keycloak.service.impl;
 
-import io.github.gms.auth.sso.OAuthService;
+import io.github.gms.auth.sso.keycloak.service.OAuthService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

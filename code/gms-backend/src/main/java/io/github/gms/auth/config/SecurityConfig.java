@@ -1,30 +1,27 @@
 package io.github.gms.auth.config;
 
-import dev.samstevens.totp.code.CodeGenerator;
-import dev.samstevens.totp.code.CodeVerifier;
-import dev.samstevens.totp.code.DefaultCodeGenerator;
-import dev.samstevens.totp.code.DefaultCodeVerifier;
-import dev.samstevens.totp.time.SystemTimeProvider;
-import dev.samstevens.totp.time.TimeProvider;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
-import static io.github.gms.common.util.Constants.PASSWORD_ENCODER;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-@DependsOn(PASSWORD_ENCODER)
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 @Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
 public class SecurityConfig extends AbstractSecurityConfig {
 
-	@Bean
-	public CodeVerifier codeVerifier() {
-		TimeProvider timeProvider = new SystemTimeProvider();
-		CodeGenerator codeGenerator = new DefaultCodeGenerator();
-		return new DefaultCodeVerifier(codeGenerator, timeProvider);
-	}
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
 }

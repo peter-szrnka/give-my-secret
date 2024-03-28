@@ -48,7 +48,7 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
         // assert
         assertFalse(logAppender.list.isEmpty());
         assertLogContains(logAppender, "2 user(s) synchronized and " + deletedUserCount + " of them ha" + (deletedUserCount == 1 ? "s" : "ve")
-                + " been removed from the database.");
+                + " been marked as deletable.");
         verify(service).synchronizeUsers();
     }
 }

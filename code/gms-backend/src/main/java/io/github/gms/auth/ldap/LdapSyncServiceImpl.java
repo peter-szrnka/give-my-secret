@@ -60,13 +60,13 @@ public class LdapSyncServiceImpl implements LdapSyncService {
 		AtomicInteger counter = new AtomicInteger(0);
 		result.forEach(item -> saveOrUpdateUser(item, counter));
 
-		AtomicInteger deletedCounter = new AtomicInteger(0);
+		AtomicInteger toBeDeletedCounter = new AtomicInteger(0);
 		List<String> usernamesFromLdap = result.stream().map(GmsUserDetails::getUsername).toList();
 		repository.getAllUserNames().stream()
 				.filter(username -> !usernamesFromLdap.contains(username))
-				.forEach(username -> blockUser(username, deletedCounter));
+				.forEach(username -> blockUser(username, toBeDeletedCounter));
 
-		return Pair.of(counter.get(), deletedCounter.get());
+		return Pair.of(counter.get(), toBeDeletedCounter.get());
 	}
 
 	private void blockUser(String username, AtomicInteger deletedCounter) {

@@ -1,4 +1,4 @@
-package io.github.gms.auth.sso;
+package io.github.gms.auth.sso.keycloak.service;
 
 import org.springframework.util.MultiValueMap;
 

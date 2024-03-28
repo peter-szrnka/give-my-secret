@@ -5,8 +5,6 @@ import io.github.gms.auth.dto.AuthenticateRequestDto;
 import io.github.gms.auth.dto.AuthenticateResponseDto;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.types.AuthResponsePhase;
-import io.github.gms.common.dto.LoginVerificationRequestDto;
-import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
@@ -24,7 +22,6 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -134,47 +131,6 @@ class LoginControllerTest {
 
         verify(systemPropertyService, never()).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		verify(systemPropertyService, never()).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
-    }
-
-    @Test
-    void shouldVerify() {
-        // arrange
-        LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
-        UserInfoDto userInfoDto = TestUtils.createUserInfoDto();
-        AuthenticationResponse mockResponse = new AuthenticationResponse();
-        mockResponse.setCurrentUser(userInfoDto);
-        mockResponse.setPhase(AuthResponsePhase.COMPLETED);
-        when(service.verify(dto)).thenReturn(mockResponse);
-
-        // act
-        ResponseEntity<AuthenticateResponseDto> response = controller.verify(dto);
-
-        // assert
-        assertNotNull(response);
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(userInfoDto, Objects.requireNonNull(response.getBody()).getCurrentUser());
-        assertEquals(AuthResponsePhase.COMPLETED, response.getBody().getPhase());
-        verify(service).verify(dto);
-    }
-
-    @Test
-    void shouldVerifyFail() {
-        // arrange
-        LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
-        UserInfoDto userInfoDto = TestUtils.createUserInfoDto();
-        AuthenticationResponse mockResponse = new AuthenticationResponse();
-        mockResponse.setCurrentUser(userInfoDto);
-        mockResponse.setPhase(AuthResponsePhase.FAILED);
-        when(service.verify(dto)).thenReturn(mockResponse);
-
-        // act
-        ResponseEntity<AuthenticateResponseDto> response = controller.verify(dto);
-
-        // assert
-        assertNotNull(response);
-        assertEquals(401, response.getStatusCode().value());
-        assertNull(response.getBody());
-        verify(service).verify(dto);
     }
 
     @Test

@@ -1,20 +1,22 @@
-package io.github.gms.auth.sso.keycloak;
+package io.github.gms.auth.sso.keycloak.service.impl;
 
-import io.github.gms.auth.AuthenticationService;
-import io.github.gms.auth.model.AuthenticationResponse;
-import io.github.gms.auth.sso.OAuthService;
+import io.github.gms.auth.sso.keycloak.service.OAuthService;
 import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
-import io.github.gms.auth.types.AuthResponsePhase;
-import io.github.gms.common.dto.LoginVerificationRequestDto;
+import io.github.gms.auth.sso.keycloak.service.KeycloakLoginService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.WebUtils;
 
 import java.util.Map;
 
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
+import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 
 /**
  * @author Peter Szrnka
@@ -23,13 +25,14 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
 @Service
 @RequiredArgsConstructor
 @Profile(value = { CONFIG_AUTH_TYPE_KEYCLOAK_SSO })
-public class KeycloakAuthenticationServiceImpl implements AuthenticationService {
+public class KeycloakLoginServiceImpl implements KeycloakLoginService {
 
     private final OAuthService oAuthService;
+    private final HttpServletRequest httpServletRequest;
     private final KeycloakSettings keycloakSettings;
 
     @Override
-    public AuthenticationResponse authenticate(String username, String credential) {
+    public Map<String, String> login(String username, String credential) {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("grant_type", "password");
         requestBody.add("audience", keycloakSettings.getRealm());
@@ -39,27 +42,23 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         requestBody.add("client_secret", keycloakSettings.getClientSecret());
         requestBody.add("scope", "profile email");
 
-        Map<String, String> response = oAuthService.callEndpoint(keycloakSettings.getKeycloakTokenUrl(), requestBody, Map.class);
-
-        // TODO Call oauth endpoint to retrieve current user data
-
-        return AuthenticationResponse.builder()
-                .phase(AuthResponsePhase.COMPLETED)
-                .token(response.get("access_token"))
-                .refreshToken(response.get("refresh_token"))
-                .build();
-    }
-
-    @Override
-    public AuthenticationResponse verify(LoginVerificationRequestDto dto) {
-        return null;
+        return oAuthService.callEndpoint(keycloakSettings.getKeycloakTokenUrl(), requestBody, Map.class);
     }
 
     @Override
     public void logout() {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        Cookie accessJwtCookie = WebUtils.getCookie(httpServletRequest, ACCESS_JWT_TOKEN);
+        Cookie refreshJwtCookie = WebUtils.getCookie(httpServletRequest, REFRESH_JWT_TOKEN);
+
+        if (accessJwtCookie == null || refreshJwtCookie == null) {
+            return;
+        }
+
         requestBody.add("client_id", keycloakSettings.getClientId());
         requestBody.add("client_secret", keycloakSettings.getClientSecret());
+        requestBody.add("token", accessJwtCookie.getValue());
+        requestBody.add("refresh_token", refreshJwtCookie.getValue());
         oAuthService.callEndpoint(keycloakSettings.getLogoutUrl(), requestBody, Void.class);
     }
 }

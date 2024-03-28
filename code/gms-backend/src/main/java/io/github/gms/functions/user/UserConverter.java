@@ -1,10 +1,8 @@
 package io.github.gms.functions.user;
 
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
 import io.github.gms.common.abstraction.GmsConverter;
 import io.github.gms.common.dto.UserInfoDto;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * @author Peter Szrnka
@@ -23,6 +21,4 @@ public interface UserConverter extends GmsConverter<UserListDto, UserEntity> {
 	GmsUserDetails addIdToUserDetails(GmsUserDetails first, Long id);
 
 	UserEntity toEntity(GmsUserDetails foundUser, UserEntity existingEntity);
-
-    UserDetails toUserDetails(IntrospectResponse response);
 }

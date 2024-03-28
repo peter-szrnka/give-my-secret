@@ -2,8 +2,7 @@ package io.github.gms.auth;
 
 import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.abstraction.AbstractAuthService;
-import io.github.gms.common.converter.GenerateJwtRequestConverter;
+import io.github.gms.auth.service.TokenGeneratorService;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.service.JwtService;
@@ -11,9 +10,9 @@ import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -34,16 +33,14 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Profile(value = { CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO })
-public class AuthorizationServiceImpl extends AbstractAuthService implements AuthorizationService {
+public class AuthorizationServiceImpl implements AuthorizationService {
 
-    AuthorizationServiceImpl(
-			JwtService jwtService,
-            SystemPropertyService systemPropertyService, 
-			GenerateJwtRequestConverter generateJwtRequestConverter,
-            @Autowired(required = false) UserAuthService userAuthService) {
-        super(jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
-    }
+	private final JwtService jwtService;
+	private final TokenGeneratorService tokenGeneratorService;
+	private final SystemPropertyService systemPropertyService;
+	private final UserAuthService userAuthService;
 
     @Override
 	public AuthorizationResponse authorize(HttpServletRequest request) {
@@ -90,7 +87,7 @@ public class AuthorizationServiceImpl extends AbstractAuthService implements Aut
 
 			return AuthorizationResponse.builder()
 					.authentication(authentication)
-					.jwtPair(getAuthenticationDetails(userDetails))
+					.jwtPair(tokenGeneratorService.getAuthenticationDetails(userDetails))
 					.build();
 		} catch (Exception e) {
 			log.warn("Authorization failed: {}", e.getMessage());

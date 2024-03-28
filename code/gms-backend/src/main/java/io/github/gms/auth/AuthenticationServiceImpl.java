@@ -1,21 +1,16 @@
 package io.github.gms.auth;
 
-import dev.samstevens.totp.code.CodeVerifier;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.auth.service.TokenGeneratorService;
 import io.github.gms.auth.types.AuthResponsePhase;
-import io.github.gms.common.abstraction.AbstractAuthService;
-import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.converter.GenerateJwtRequestConverter;
-import io.github.gms.common.util.MdcUtils;
-import io.github.gms.functions.user.UserConverter;
-import io.github.gms.common.service.JwtService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
+import io.github.gms.functions.user.UserConverter;
 import io.github.gms.functions.user.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,29 +27,15 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
-public class AuthenticationServiceImpl extends AbstractAuthService implements AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
+	private final TokenGeneratorService tokenGeneratorService;
+	private final SystemPropertyService systemPropertyService;
 	private final AuthenticationManager authenticationManager;
 	private final UserConverter converter;
-	private final CodeVerifier verifier;
 	private final UserService userService;
-
-	public AuthenticationServiceImpl(
-            AuthenticationManager authenticationManager,
-            JwtService jwtService,
-            SystemPropertyService systemPropertyService,
-            GenerateJwtRequestConverter generateJwtRequestConverter,
-            UserConverter converter,
-            @Autowired(required = false) UserAuthService userAuthService,
-            CodeVerifier verifier,
-			UserService userService) {
-		super(jwtService, systemPropertyService, generateJwtRequestConverter, userAuthService);
-		this.authenticationManager = authenticationManager;
-		this.converter = converter;
-		this.verifier = verifier;
-		this.userService = userService;
-    }
 
 	@Override
 	public AuthenticationResponse authenticate(String username, String credential) {
@@ -82,7 +63,7 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 				.build(); 
 			} 
 
-			Map<JwtConfigType, String> authenticationDetails = getAuthenticationDetails(user);
+			Map<JwtConfigType, String> authenticationDetails = tokenGeneratorService.getAuthenticationDetails(user);
 			userService.resetLoginAttempt(username);
 
 			return AuthenticationResponse.builder()
@@ -99,46 +80,8 @@ public class AuthenticationServiceImpl extends AbstractAuthService implements Au
 	}
 
 	@Override
-	public AuthenticationResponse verify(LoginVerificationRequestDto dto) {
-		try {
-            if (userService.isBlocked(dto.getUsername())) {
-                return AuthenticationResponse.builder()
-                        .phase(AuthResponsePhase.BLOCKED)
-                        .build();
-            }
-
-			GmsUserDetails userDetails = (GmsUserDetails) userAuthService.loadUserByUsername(dto.getUsername());
-
-			if (Boolean.FALSE.equals(userDetails.getAccountNonLocked())) { // User locked in LDAP
-				return AuthenticationResponse.builder()
-						.phase(AuthResponsePhase.BLOCKED)
-						.build();
-			}
-
-			if (!verifier.isValidCode(userDetails.getMfaSecret(), dto.getVerificationCode())) {
-				userService.updateLoginAttempt(dto.getUsername());
-				return AuthenticationResponse.builder().phase(AuthResponsePhase.FAILED).build();
-			}
-
-			Map<JwtConfigType, String> authenticationDetails = getAuthenticationDetails(userDetails);
-
-			// Verify codes
-			return AuthenticationResponse.builder()
-				.currentUser(converter.toUserInfoDto(userDetails, false))
-				.phase(AuthResponsePhase.COMPLETED)
-				.token(authenticationDetails.get(JwtConfigType.ACCESS_JWT))
-				.refreshToken(authenticationDetails.get(JwtConfigType.REFRESH_JWT))
-				.build();
-		} catch (Exception e) {
-			return AuthenticationResponse.builder()
-				.phase(AuthResponsePhase.FAILED)
-				.build();
-		}
-	}
-
-	@Override
 	public void logout() {
-		log.info("User({}) logged out", MdcUtils.getUserId());
+		log.info("User logged out");
 	}
 
 	private boolean isMfaEnabled(GmsUserDetails userDetails) {

@@ -1,12 +1,11 @@
-package io.github.gms.auth.sso.keycloak;
+package io.github.gms.auth.sso.keycloak.service.impl;
 
 import io.github.gms.auth.AuthorizationService;
 import io.github.gms.auth.model.AuthorizationResponse;
-import io.github.gms.auth.sso.OAuthService;
-import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
+import io.github.gms.auth.sso.keycloak.converter.KeycloakConverter;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
+import io.github.gms.auth.sso.keycloak.service.KeycloakIntrospectService;
 import io.github.gms.common.enums.JwtConfigType;
-import io.github.gms.functions.user.UserConverter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.WebUtils;
 
 import java.util.Map;
@@ -35,10 +32,8 @@ import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 @Profile(value = { CONFIG_AUTH_TYPE_KEYCLOAK_SSO })
 public class KeycloakAuthorizationServiceImpl implements AuthorizationService {
 
-    //private final UserAuthService userAuthService;
-    private final OAuthService oAuthService;
-    private final UserConverter userConverter;
-    private final KeycloakSettings keycloakSettings;
+    private final KeycloakConverter converter;
+    private final KeycloakIntrospectService keycloakIntrospectService;
 
     @Override
     public AuthorizationResponse authorize(HttpServletRequest request) {
@@ -49,16 +44,8 @@ public class KeycloakAuthorizationServiceImpl implements AuthorizationService {
             return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();
         }
 
-        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("client_id", keycloakSettings.getClientId());
-        requestBody.add("client_secret", keycloakSettings.getClientSecret());
-        requestBody.add("token", accessJwtCookie.getValue());
-        requestBody.add("refresh_token", refreshJwtCookie.getValue());
-
-        IntrospectResponse response = oAuthService.callEndpoint(keycloakSettings.getIntrospectUrl(), requestBody, IntrospectResponse.class);
-
-        UserDetails userDetails = userConverter.toUserDetails(response);
-        //GmsUserDetails userDetails = (GmsUserDetails) userAuthService.loadUserByUsername("test");
+        IntrospectResponse response = keycloakIntrospectService.getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
+        UserDetails userDetails = converter.toUserDetails(response);
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
