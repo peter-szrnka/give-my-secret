@@ -24,6 +24,7 @@ import static io.github.gms.common.util.Constants.GRANT_TYPE;
 import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.REFRESH_TOKEN;
 import static io.github.gms.common.util.Constants.SCOPE;
+import static io.github.gms.common.util.Constants.SCOPE_GMS;
 import static io.github.gms.common.util.Constants.TOKEN;
 import static io.github.gms.common.util.Constants.USERNAME;
 
@@ -49,7 +50,7 @@ public class KeycloakLoginServiceImpl implements KeycloakLoginService {
         requestBody.add(CREDENTIAL, credential);
         requestBody.add(CLIENT_ID, keycloakSettings.getClientId());
         requestBody.add(CLIENT_SECRET, keycloakSettings.getClientSecret());
-        requestBody.add(SCOPE, "profile email");
+        requestBody.add(SCOPE, SCOPE_GMS);
 
         return oAuthService.callEndpoint(keycloakSettings.getKeycloakTokenUrl(), requestBody, Map.class);
     }

@@ -3,6 +3,7 @@ package io.github.gms.auth.sso.keycloak.service.impl;
 import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
 import io.github.gms.auth.sso.keycloak.service.OAuthService;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -42,14 +43,14 @@ class KeycloakIntrospectServiceImplTest {
         // arrange
         when(keycloakSettings.getClientId()).thenReturn("clientId");
         when(keycloakSettings.getClientSecret()).thenReturn("clientSecret");
-        when(keycloakSettings.getIntrospectUrl()).thenReturn("http://localhost:8080");
+        when(keycloakSettings.getIntrospectUrl()).thenReturn(TestUtils.LOCALHOST_8080);
 
         IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder()
                 .email("email@email")
                 .name("name")
                 .active("true")
                 .build();
-        when(oAuthService.callEndpoint(eq("http://localhost:8080"), any(MultiValueMap.class), eq(IntrospectResponse.class)))
+        when(oAuthService.callEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(IntrospectResponse.class)))
                 .thenReturn(mockIntrospectResponse);
 
         // act
@@ -61,7 +62,7 @@ class KeycloakIntrospectServiceImplTest {
         verify(keycloakSettings).getClientSecret();
         verify(keycloakSettings).getIntrospectUrl();
         ArgumentCaptor<MultiValueMap<String, String>> argumentCaptor = ArgumentCaptor.forClass(MultiValueMap.class);
-        verify(oAuthService).callEndpoint(eq("http://localhost:8080"), argumentCaptor.capture(), eq(IntrospectResponse.class));
+        verify(oAuthService).callEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(IntrospectResponse.class));
 
         MultiValueMap<String, String> captured = argumentCaptor.getValue();
         assertEquals("clientId", captured.get(CLIENT_ID).getFirst());

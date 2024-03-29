@@ -9,6 +9,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
 
@@ -40,11 +42,12 @@ class KeycloakUserInfoServiceImplTest {
         service = new KeycloakUserInfoServiceImpl(keycloakIntrospectService);
     }
 
-    @Test
-    void shouldReturnEmptyInfo() {
+    @ParameterizedTest
+    @MethodSource("emptyInputData")
+    void shouldReturnEmptyInfo(Cookie[] cookies) {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {});
+        when(httpServletRequest.getCookies()).thenReturn(cookies);
 
         // act
         UserInfoDto response = service.getUserInfo(httpServletRequest);
@@ -63,7 +66,7 @@ class KeycloakUserInfoServiceImplTest {
     void shouldReturnUserInfo() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {
+        when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
                 new Cookie(REFRESH_JWT_TOKEN, "refresh")
         });
@@ -87,5 +90,13 @@ class KeycloakUserInfoServiceImplTest {
         assertEquals(UserRole.ROLE_USER, response.getRoles().iterator().next());
         verify(httpServletRequest, times(2)).getCookies();
         verify(keycloakIntrospectService).getUserDetails("access", "refresh");
+    }
+
+    private static Object[] emptyInputData() {
+        return new Object[]{
+                new Cookie[]{},
+                new Cookie[]{ new Cookie(ACCESS_JWT_TOKEN, "access") },
+                new Cookie[]{ new Cookie(REFRESH_JWT_TOKEN, "refresh") }
+        };
     }
 }

@@ -97,6 +97,9 @@ public class TestUtils {
 	public static final String NEW_CREDENTIAL = "MyComplexPassword1!";
 	public static final String EMAIL = "email@email.com";
 	public static final String USERNAME = "username";
+	public static final String MOCK_ACCESS_TOKEN = "accessToken";
+	public static final String MOCK_REFRESH_TOKEN = "refreshToken";
+	public static final String LOCALHOST_8080 = "http://localhost:8080";
 
 	public static ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();

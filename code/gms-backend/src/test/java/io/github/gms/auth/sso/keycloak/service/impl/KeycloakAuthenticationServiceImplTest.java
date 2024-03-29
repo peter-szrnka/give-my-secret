@@ -16,6 +16,8 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.Map;
 
+import static io.github.gms.util.TestUtils.MOCK_ACCESS_TOKEN;
+import static io.github.gms.util.TestUtils.MOCK_REFRESH_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,8 +32,6 @@ import static org.mockito.Mockito.when;
  */
 class KeycloakAuthenticationServiceImplTest {
 
-    private static final String MOCK_ACCESS_TOKEN = "accessToken";
-    private static final String MOCK_REFRESH_TOKEN = "refreshToken";
     private KeycloakLoginService keycloakLoginService;
     private KeycloakIntrospectService keycloakIntrospectService;
     private KeycloakConverter converter;
