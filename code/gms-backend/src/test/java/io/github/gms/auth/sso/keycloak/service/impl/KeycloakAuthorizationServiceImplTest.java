@@ -18,8 +18,8 @@ import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -66,7 +66,7 @@ class KeycloakAuthorizationServiceImplTest {
         IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder().build();
         when(keycloakIntrospectService.getUserDetails("access", "refresh"))
                 .thenReturn(mockIntrospectResponse);
-        when(converter.toUserDetails(eq(mockIntrospectResponse))).thenReturn(TestUtils.createGmsAdminUser());
+        when(converter.toUserDetails(mockIntrospectResponse)).thenReturn(TestUtils.createGmsAdminUser());
 
         // act
         AuthorizationResponse response = service.authorize(httpServletRequest);
@@ -75,6 +75,7 @@ class KeycloakAuthorizationServiceImplTest {
         assertNotNull(response);
         assertNotNull(response.getAuthentication());
         assertEquals(HttpStatus.OK, response.getResponseStatus());
+        verify(converter).toUserDetails(mockIntrospectResponse);
     }
 
     private static Object[] emptyInputData() {

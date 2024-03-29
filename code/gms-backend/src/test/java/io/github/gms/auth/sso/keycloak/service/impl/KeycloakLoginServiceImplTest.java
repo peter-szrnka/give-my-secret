@@ -126,7 +126,6 @@ class KeycloakLoginServiceImplTest {
     @MethodSource("emptyInputData")
     void shouldReturnEmptyInfo(Input input) {
         // arrange
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(input.getCookies());
         when(keycloakSettings.getClientId()).thenReturn("clientId");
         when(keycloakSettings.getClientSecret()).thenReturn("clientSecret");
