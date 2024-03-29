@@ -1,13 +1,12 @@
 package io.github.gms.auth.sso.keycloak.service.impl;
 
+import io.github.gms.auth.sso.keycloak.Input;
 import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
 import io.github.gms.auth.sso.keycloak.service.OAuthService;
 import io.github.gms.common.util.Constants;
 import io.github.gms.util.TestUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -141,12 +140,6 @@ class KeycloakLoginServiceImplTest {
         verify(keycloakSettings, never()).getClientSecret();
         verify(keycloakSettings, never()).getLogoutUrl();
         verify(oAuthService, never()).callEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(Void.class));
-    }
-
-    @Getter
-    @AllArgsConstructor
-    private static class Input {
-        private Cookie[] cookies;
     }
 
     private static Object[] emptyInputData() {

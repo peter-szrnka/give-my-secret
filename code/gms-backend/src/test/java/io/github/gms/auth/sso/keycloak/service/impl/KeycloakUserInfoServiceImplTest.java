@@ -1,5 +1,6 @@
 package io.github.gms.auth.sso.keycloak.service.impl;
 
+import io.github.gms.auth.sso.keycloak.Input;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
 import io.github.gms.auth.sso.keycloak.model.RealmAccess;
 import io.github.gms.auth.sso.keycloak.service.KeycloakIntrospectService;
@@ -44,10 +45,10 @@ class KeycloakUserInfoServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("emptyInputData")
-    void shouldReturnEmptyInfo(Cookie[] cookies) {
+    void shouldReturnEmptyInfo(Input input) {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        when(httpServletRequest.getCookies()).thenReturn(cookies);
+        when(httpServletRequest.getCookies()).thenReturn(input.getCookies());
 
         // act
         UserInfoDto response = service.getUserInfo(httpServletRequest);
@@ -94,9 +95,9 @@ class KeycloakUserInfoServiceImplTest {
 
     private static Object[] emptyInputData() {
         return new Object[]{
-                new Cookie[]{},
-                new Cookie[]{ new Cookie(ACCESS_JWT_TOKEN, "access") },
-                new Cookie[]{ new Cookie(REFRESH_JWT_TOKEN, "refresh") }
+                new Input(new Cookie[]{}),
+                new Input(new Cookie[]{ new Cookie(ACCESS_JWT_TOKEN, "access") }),
+                new Input(new Cookie[]{ new Cookie(REFRESH_JWT_TOKEN, "refresh") })
         };
     }
 }
