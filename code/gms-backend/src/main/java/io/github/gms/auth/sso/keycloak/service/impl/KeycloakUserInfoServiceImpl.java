@@ -41,6 +41,7 @@ public class KeycloakUserInfoServiceImpl implements UserInfoService {
 
         IntrospectResponse response = keycloakIntrospectService.getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
         return UserInfoDto.builder()
+                // TODO Id
                 .email(response.getEmail())
                 .name(response.getName())
                 .username(response.getUsername())

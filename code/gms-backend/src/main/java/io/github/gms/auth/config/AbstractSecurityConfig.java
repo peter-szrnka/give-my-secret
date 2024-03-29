@@ -3,6 +3,7 @@ package io.github.gms.auth.config;
 import io.github.gms.common.filter.SecureHeaderInitializerFilter;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
@@ -33,7 +34,7 @@ public abstract class AbstractSecurityConfig {
                                            AuthenticationEntryPoint authenticationEntryPoint,
                                            SecureHeaderInitializerFilter secureHeaderInitializerFilter) throws Exception {
         http
-                //.cors(cors -> Customizer.withDefaults())
+                .cors(cors -> Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

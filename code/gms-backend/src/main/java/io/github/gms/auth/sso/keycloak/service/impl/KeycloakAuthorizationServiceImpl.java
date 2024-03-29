@@ -7,9 +7,12 @@ import io.github.gms.auth.sso.keycloak.converter.KeycloakConverter;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
 import io.github.gms.auth.sso.keycloak.service.KeycloakIntrospectService;
 import io.github.gms.common.enums.JwtConfigType;
+import io.github.gms.functions.user.UserEntity;
+import io.github.gms.functions.user.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
@@ -34,6 +38,8 @@ public class KeycloakAuthorizationServiceImpl implements AuthorizationService {
 
     private final KeycloakConverter converter;
     private final KeycloakIntrospectService keycloakIntrospectService;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public AuthorizationResponse authorize(HttpServletRequest request) {
@@ -46,6 +52,14 @@ public class KeycloakAuthorizationServiceImpl implements AuthorizationService {
 
         IntrospectResponse response = keycloakIntrospectService.getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
         GmsUserDetails userDetails = converter.toUserDetails(response);
+
+        Optional<UserEntity> userResult = userRepository.findByUsername(userDetails.getUsername());
+
+        if (userResult.isEmpty()) {
+            return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();
+        }
+
+        userDetails.setUserId(userResult.get().getId());
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

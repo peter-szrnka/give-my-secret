@@ -30,7 +30,7 @@ export class SettingsSummaryComponent implements OnInit {
     newCredential1: undefined,
     newCredential2: undefined
   };
-  passwordEnabled = true;
+  authMode = '';
   mfaEnabled = false;
   showQrCode = false;
 
@@ -41,7 +41,7 @@ export class SettingsSummaryComponent implements OnInit {
     private splashScreenService : SplashScreenStateService) { }
 
   ngOnInit(): void {
-    this.sharedData.authModeSubject$.subscribe(authMode => this.passwordEnabled = authMode === 'db');
+    this.sharedData.authModeSubject$.subscribe(authMode => this.authMode = authMode);
     this.userService.isMfaActive().subscribe(response => this.mfaEnabled = response);
   }
 

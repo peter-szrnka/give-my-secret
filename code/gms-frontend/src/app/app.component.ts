@@ -39,7 +39,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
       this.sharedDataService.systemReadySubject$.subscribe(readyData => {
         if (readyData.status !== 200) {
-          this.navigateToLogin();
+          //this.navigateToLogin();
           return;
         }
 
@@ -52,13 +52,13 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
       this.sharedDataService.userSubject$.subscribe(user => {
+        this.currentUser = user;
+        this.isAdmin = this.currentUser!! && roleCheck(this.currentUser, 'ROLE_ADMIN');
+
         if ((!user?.roles) && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
           this.navigateToLogin();
           return;
         }
-
-        this.currentUser = user;
-        this.isAdmin = this.currentUser!! && roleCheck(this.currentUser, 'ROLE_ADMIN');
       });
 
     this.sharedDataService.check();
@@ -74,6 +74,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private navigateToLogin(): void {
+    console.info("navigateToLogin");
     // FIXME previousUrl temporary disabled!
     void this.router.navigate([LOGIN_CALLBACK_URL]/*, { queryParams: { previousUrl: this.location.path() } }*/);
   }

@@ -10,7 +10,6 @@ import io.github.gms.common.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
 import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
 
 /**
@@ -31,7 +29,6 @@ import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
  */
 @Component
 @RequiredArgsConstructor
-@Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
 public class UserConverterImpl implements UserConverter {
 
 	private final Clock clock;

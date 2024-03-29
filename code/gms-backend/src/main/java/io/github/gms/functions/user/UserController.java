@@ -1,6 +1,5 @@
 package io.github.gms.functions.user;
 
-import io.github.gms.auth.ldap.LdapSyncService;
 import io.github.gms.common.abstraction.AbstractAdminController;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
@@ -8,8 +7,7 @@ import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,13 +21,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ALL_ROLE;
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
 import static io.github.gms.common.util.Constants.ID;
 import static io.github.gms.common.util.Constants.PATH_ENABLED;
 import static io.github.gms.common.util.Constants.PATH_LIST;
 import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN;
 import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 
 /**
  * @author Peter Szrnka
@@ -38,18 +37,11 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
 @RestController
 @RequestMapping("/secure/user")
 @AuditTarget(EventTarget.USER)
+@Profile(value = { CONFIG_AUTH_TYPE_DB, CONFIG_AUTH_TYPE_KEYCLOAK_SSO })
 public class UserController extends AbstractAdminController<UserService> {
 
-	private final LdapSyncService ldapSyncService;
-	private final String authType;
-
-	public UserController(
-			UserService service,
-			@Autowired(required = false) LdapSyncService ldapSyncService,
-			@Value("${config.auth.type}") String authType) {
+	public UserController(UserService service) {
 		super(service);
-		this.ldapSyncService = ldapSyncService;
-		this.authType = authType;
 	}
 	
 	@PostMapping
@@ -100,17 +92,5 @@ public class UserController extends AbstractAdminController<UserService> {
 	@PreAuthorize(ALL_ROLE)
 	public ResponseEntity<Boolean> isMfaActive() {
 		return new ResponseEntity<>(service.isMfaActive(), HttpStatus.OK);
-	}
-
-	@GetMapping("/sync_ldap_users")
-	@PreAuthorize(ROLE_ADMIN)
-	@Audited(operation = EventOperation.SYNC_LDAP_USERS_MANUALLY)
-	public ResponseEntity<Void> synchronizeUsers() {
-		if (!SELECTED_AUTH_LDAP.equals(authType)) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-
-		ldapSyncService.synchronizeUsers();
-		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

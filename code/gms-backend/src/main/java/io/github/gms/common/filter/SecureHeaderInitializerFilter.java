@@ -3,6 +3,7 @@ package io.github.gms.common.filter;
 import com.google.common.collect.Sets;
 import io.github.gms.auth.AuthorizationService;
 import io.github.gms.auth.model.AuthorizationResponse;
+import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
@@ -71,7 +72,9 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 			response.sendError(authenticationResponse.getResponseStatus().value(), authenticationResponse.getErrorMessage());
 			return;
 		}
-		
+
+		GmsUserDetails userDetails = (GmsUserDetails) authenticationResponse.getAuthentication().getPrincipal();
+		MDC.put(MdcParameter.USER_ID.getDisplayName(), String.valueOf(userDetails.getUserId()));
 		String accessCookie = CookieUtils.createCookie(Constants.ACCESS_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.ACCESS_JWT),
 				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS), secure).toString();
 		String refreshCookie = CookieUtils.createCookie(Constants.REFRESH_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.REFRESH_JWT),
