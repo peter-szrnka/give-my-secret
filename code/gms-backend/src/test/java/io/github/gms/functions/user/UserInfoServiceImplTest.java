@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -66,8 +65,8 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("jwt", "value") });
         Claims mockClaims = mock(Claims.class);
-        when(mockClaims.get(eq(Constants.USER_ID), eq(Long.class))).thenReturn(1L);
-        when(jwtClaimService.getClaims(eq("value"))).thenReturn(mockClaims);
+        when(mockClaims.get(Constants.USER_ID, Long.class)).thenReturn(1L);
+        when(jwtClaimService.getClaims("value")).thenReturn(mockClaims);
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.getUserInfo(request));
@@ -84,8 +83,8 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("jwt", "value") });
         Claims mockClaims = mock(Claims.class);
-        when(mockClaims.get(eq(Constants.USER_ID), eq(Long.class))).thenReturn(1L);
-        when(jwtClaimService.getClaims(eq("value"))).thenReturn(mockClaims);
+        when(mockClaims.get(Constants.USER_ID, Long.class)).thenReturn(1L);
+        when(jwtClaimService.getClaims("value")).thenReturn(mockClaims);
         when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
 
         // act

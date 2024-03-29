@@ -19,7 +19,6 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -49,7 +48,7 @@ class KeycloakAuthenticationServiceImplTest {
     @Test
     void shouldLoginFail() {
         // arrange
-        when(keycloakLoginService.login(eq(DemoData.USERNAME1), eq(DemoData.CREDENTIAL_TEST)))
+        when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenThrow(new RuntimeException("Oops!"));
 
         // act
@@ -58,14 +57,14 @@ class KeycloakAuthenticationServiceImplTest {
         // assert
         assertNotNull(response);
         assertEquals(AuthResponsePhase.FAILED, response.getPhase());
-        verify(keycloakLoginService).login(eq(DemoData.USERNAME1), eq(DemoData.CREDENTIAL_TEST));
+        verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
         verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
     }
 
     @Test
     void shouldLoginSucceed() {
         // arrange
-        when(keycloakLoginService.login(eq(DemoData.USERNAME1), eq(DemoData.CREDENTIAL_TEST)))
+        when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(Map.of(
                         Constants.ACCESS_TOKEN, MOCK_ACCESS_TOKEN,
                         Constants.REFRESH_TOKEN, MOCK_REFRESH_TOKEN
@@ -77,7 +76,7 @@ class KeycloakAuthenticationServiceImplTest {
                 .name("name")
                 .active("true")
                 .build();
-        when(keycloakIntrospectService.getUserDetails(eq(MOCK_ACCESS_TOKEN), eq(MOCK_REFRESH_TOKEN)))
+        when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
                 .thenReturn(mockIntrospectResponse);
 
         // act
@@ -88,11 +87,11 @@ class KeycloakAuthenticationServiceImplTest {
         assertEquals(AuthResponsePhase.COMPLETED, response.getPhase());
         assertEquals(MOCK_ACCESS_TOKEN, response.getToken());
         assertEquals(MOCK_REFRESH_TOKEN, response.getRefreshToken());
-        verify(keycloakLoginService).login(eq(DemoData.USERNAME1), eq(DemoData.CREDENTIAL_TEST));
+        verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
         ArgumentCaptor<IntrospectResponse> introspectResponseArgumentCaptor = ArgumentCaptor.forClass(IntrospectResponse.class);
         verify(converter).toUserInfoDto(introspectResponseArgumentCaptor.capture());
         assertEquals(mockIntrospectResponse, introspectResponseArgumentCaptor.getValue());
-        verify(keycloakIntrospectService).getUserDetails(eq(MOCK_ACCESS_TOKEN), eq(MOCK_REFRESH_TOKEN));
+        verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
     }
 
     @Test

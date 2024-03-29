@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -29,7 +28,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class KeycloakUserInfoServiceImplTest {
+class KeycloakUserInfoServiceImplTest {
 
     private KeycloakIntrospectService keycloakIntrospectService;
     private KeycloakUserInfoServiceImpl service;
@@ -57,7 +56,7 @@ public class KeycloakUserInfoServiceImplTest {
         assertNull(response.getUsername());
         assertTrue(response.getRoles().isEmpty());
         verify(httpServletRequest, times(2)).getCookies();
-        verify(keycloakIntrospectService, never()).getUserDetails(eq("access"), eq("refresh"));
+        verify(keycloakIntrospectService, never()).getUserDetails("access", "refresh");
     }
 
     @Test
@@ -68,7 +67,7 @@ public class KeycloakUserInfoServiceImplTest {
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
                 new Cookie(REFRESH_JWT_TOKEN, "refresh")
         });
-        when(keycloakIntrospectService.getUserDetails(eq("access"), eq("refresh")))
+        when(keycloakIntrospectService.getUserDetails("access", "refresh"))
                 .thenReturn(IntrospectResponse.builder()
                         .name("My Name")
                         .username("user1")
@@ -87,6 +86,6 @@ public class KeycloakUserInfoServiceImplTest {
         assertEquals("user1", response.getUsername());
         assertEquals(UserRole.ROLE_USER, response.getRoles().iterator().next());
         verify(httpServletRequest, times(2)).getCookies();
-        verify(keycloakIntrospectService).getUserDetails(eq("access"), eq("refresh"));
+        verify(keycloakIntrospectService).getUserDetails("access", "refresh");
     }
 }
