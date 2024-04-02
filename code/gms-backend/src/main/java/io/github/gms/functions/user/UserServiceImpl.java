@@ -5,7 +5,6 @@ import dev.samstevens.totp.exceptions.QrGenerationException;
 import dev.samstevens.totp.qr.QrData;
 import dev.samstevens.totp.qr.QrGenerator;
 import dev.samstevens.totp.qr.ZxingPngQrGenerator;
-import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.PagingDto;
@@ -55,6 +54,7 @@ public class UserServiceImpl implements UserService {
 	private final UserConverter converter;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtClaimService jwtClaimService;
+	private final SecretGenerator secretGenerator;
 	
 	@Override
 	@Transactional
@@ -173,7 +173,6 @@ public class UserServiceImpl implements UserService {
 			entity = converter.toNewEntity(dto, roleChangeEnabled);
 
 			// Generate an MFA secret for the user
-			SecretGenerator secretGenerator = new DefaultSecretGenerator();
 			entity.setMfaSecret(secretGenerator.generate());
 		} else {
 			entity = converter.toEntity(repository.findById(dto.getId())

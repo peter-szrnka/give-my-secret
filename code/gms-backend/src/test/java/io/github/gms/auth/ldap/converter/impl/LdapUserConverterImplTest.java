@@ -1,5 +1,6 @@
 package io.github.gms.auth.ldap.converter.impl;
 
+import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.functions.user.UserEntity;
@@ -16,6 +17,7 @@ import java.time.ZoneOffset;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -25,12 +27,14 @@ import static org.mockito.Mockito.when;
 class LdapUserConverterImplTest extends AbstractUnitTest {
 
     private Clock clock;
+    private SecretGenerator secretGenerator;
     private LdapUserConverterImpl converter;
 
     @BeforeEach
     void beforeEach() {
         clock = mock(Clock.class);
-        converter = new LdapUserConverterImpl(clock);
+        secretGenerator = mock(SecretGenerator.class);
+        converter = new LdapUserConverterImpl(clock, secretGenerator);
     }
 
     @ParameterizedTest
@@ -41,13 +45,16 @@ class LdapUserConverterImplTest extends AbstractUnitTest {
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         converter.setStoreLdapCredential(storeLdapCredential);
         GmsUserDetails testUser = TestUtils.createGmsUser();
+        when(secretGenerator.generate()).thenReturn("secret!");
 
         // act
         UserEntity response = converter.toEntity(testUser, null);
 
         // assert
         assertNotNull(response);
+        assertEquals("secret!", response.getMfaSecret());
         assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
+        verify(secretGenerator).generate();
     }
 
     @ParameterizedTest
@@ -59,12 +66,15 @@ class LdapUserConverterImplTest extends AbstractUnitTest {
         converter.setStoreLdapCredential(storeLdapCredential);
         GmsUserDetails testUser = TestUtils.createGmsUser();
         UserEntity existingEntity = TestUtils.createUser();
+        when(secretGenerator.generate()).thenReturn("secret!");
 
         // act
         UserEntity response = converter.toEntity(testUser, existingEntity);
 
         // assert
         assertNotNull(response);
+        assertEquals("secret!", response.getMfaSecret());
         assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
+        verify(secretGenerator).generate();
     }
 }

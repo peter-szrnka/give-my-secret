@@ -1,6 +1,7 @@
 package io.github.gms.functions.user;
 
 import ch.qos.logback.classic.Logger;
+import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.PagingDto;
@@ -59,6 +60,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	private UserConverter converter;
 	private PasswordEncoder passwordEncoder;
 	private JwtClaimService jwtClaimService;
+	private SecretGenerator secretGenerator;
 
 	private UserServiceImpl service;
 
@@ -70,7 +72,8 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		converter = mock(UserConverter.class);
 		passwordEncoder = mock(PasswordEncoder.class);
 		jwtClaimService = mock(JwtClaimService.class);
-		service = new UserServiceImpl(repository, converter, passwordEncoder, jwtClaimService);
+		secretGenerator = mock(SecretGenerator.class);
+		service = new UserServiceImpl(repository, converter, passwordEncoder, jwtClaimService, secretGenerator);
 		((Logger) LoggerFactory.getLogger(UserServiceImpl.class)).addAppender(logAppender);
 	}
 
@@ -78,6 +81,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldSaveAdminUser() {
 		// arrange
 		when(converter.toNewEntity(any(SaveUserRequestDto.class), anyBoolean())).thenReturn(TestUtils.createUser());
+		when(secretGenerator.generate()).thenReturn("secret!");
 		when(repository.save(any(UserEntity.class))).thenReturn(TestUtils.createUser());
 
 		// act
@@ -90,7 +94,8 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		verify(converter).toNewEntity(any(SaveUserRequestDto.class), eq(true));
 		ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
 		verify(repository).save(userEntityArgumentCaptor.capture());
-		assertNotNull(userEntityArgumentCaptor.getValue().getMfaSecret());
+		assertEquals("secret!", userEntityArgumentCaptor.getValue().getMfaSecret());
+		verify(secretGenerator).generate();
 	}
 
 	@Test

@@ -1,6 +1,5 @@
 package io.github.gms.auth.ldap.converter.impl;
 
-import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.auth.ldap.converter.LdapUserConverter;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -28,6 +27,7 @@ import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
 public class LdapUserConverterImpl extends AbstractUserConverter implements LdapUserConverter {
 
     private final Clock clock;
+    private final SecretGenerator secretGenerator;
     @Setter
     @Value("${config.store.ldap.credential:false}")
     private boolean storeLdapCredential;
@@ -44,7 +44,6 @@ public class LdapUserConverterImpl extends AbstractUserConverter implements Ldap
         entity.setEmail(foundUser.getEmail());
         entity.setRole(getFirstRole(foundUser.getAuthorities()));
         entity.setMfaEnabled(foundUser.isMfaEnabled());
-        SecretGenerator secretGenerator = new DefaultSecretGenerator();
         entity.setMfaSecret(secretGenerator.generate());
         return entity;
     }

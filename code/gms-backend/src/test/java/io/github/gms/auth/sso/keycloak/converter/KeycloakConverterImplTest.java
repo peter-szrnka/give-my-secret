@@ -1,5 +1,6 @@
 package io.github.gms.auth.sso.keycloak.converter;
 
+import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
 import io.github.gms.auth.sso.keycloak.model.RealmAccess;
@@ -28,6 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -38,13 +41,15 @@ class KeycloakConverterImplTest {
     private static final ZonedDateTime zonedDateTime =
             ZonedDateTime.ofInstant(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());
 
-    Clock clock;
+    private Clock clock;
+    private SecretGenerator secretGenerator;
     private KeycloakConverterImpl converter;
 
     @BeforeEach
     void setup() {
         clock = mock(Clock.class);
-        converter = new KeycloakConverterImpl(clock);
+        secretGenerator = mock(SecretGenerator.class);
+        converter = new KeycloakConverterImpl(clock, secretGenerator);
     }
 
     @ParameterizedTest
@@ -90,6 +95,7 @@ class KeycloakConverterImplTest {
             UserEntity mockEntity = TestUtils.createAdminUser();
             mockEntity.setId(null);
             UserInfoDto mockUserInfoDto = TestUtils.createUserInfoDto();
+            when(secretGenerator.generate()).thenReturn("secret!");
 
             // act
             UserEntity response = converter.toNewEntity(mockEntity, mockUserInfoDto);
@@ -98,13 +104,14 @@ class KeycloakConverterImplTest {
             assertNotNull(response);
             assertNull(response.getCredential());
             assertNull(response.getId());
-            assertNotNull(response.getMfaSecret());
+            assertEquals("secret!", response.getMfaSecret());
             assertEquals("a@b.com", response.getEmail());
             assertEquals(ROLE_USER, response.getRole());
             assertEquals("name", response.getName());
             assertEquals("user", response.getUsername());
             assertEquals(EntityStatus.ACTIVE, response.getStatus());
             mockedZonedDateTime.verify(() -> ZonedDateTime.now(clock));
+            verify(secretGenerator).generate();
         }
     }
 

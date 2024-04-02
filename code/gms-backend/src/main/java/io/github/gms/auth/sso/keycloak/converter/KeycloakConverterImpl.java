@@ -1,6 +1,5 @@
 package io.github.gms.auth.sso.keycloak.converter;
 
-import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
@@ -25,6 +24,7 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
 public class KeycloakConverterImpl implements KeycloakConverter {
 
     private final Clock clock;
+    private final SecretGenerator secretGenerator;
 
     @Override
     public GmsUserDetails toUserDetails(IntrospectResponse response) {
@@ -55,7 +55,6 @@ public class KeycloakConverterImpl implements KeycloakConverter {
             entity.setEmail(dto.getEmail());
             entity.setRole(dto.getRole());
             entity.setCreationDate(ZonedDateTime.now(clock));
-            SecretGenerator secretGenerator = new DefaultSecretGenerator();
             entity.setMfaSecret(secretGenerator.generate());
         }
 
