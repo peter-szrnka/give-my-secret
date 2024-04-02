@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static io.github.gms.common.util.Constants.OK;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 
 /**
  * @author Peter Szrnka
@@ -43,7 +43,7 @@ public class SystemServiceImpl implements SystemService {
 		builder.version(getVersion());
 		builder.built(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
 
-		if (SELECTED_AUTH_LDAP.equals(authType)) {
+		if (!SELECTED_AUTH_DB.equals(authType)) {
 			return builder.status(OK).build();
 		}
 

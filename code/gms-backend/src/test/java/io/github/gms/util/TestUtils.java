@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Sets;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
+import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.EventOperation;
@@ -18,45 +19,44 @@ import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.types.GmsException;
 import io.github.gms.common.model.GenerateJwtRequest;
+import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.announcement.AnnouncementDto;
+import io.github.gms.functions.announcement.AnnouncementEntity;
 import io.github.gms.functions.announcement.AnnouncementListDto;
+import io.github.gms.functions.announcement.SaveAnnouncementDto;
 import io.github.gms.functions.apikey.ApiKeyDto;
+import io.github.gms.functions.apikey.ApiKeyEntity;
 import io.github.gms.functions.apikey.ApiKeyListDto;
+import io.github.gms.functions.apikey.SaveApiKeyRequestDto;
+import io.github.gms.functions.event.EventDto;
+import io.github.gms.functions.event.EventEntity;
+import io.github.gms.functions.event.EventListDto;
 import io.github.gms.functions.iprestriction.IpRestrictionDto;
 import io.github.gms.functions.iprestriction.IpRestrictionEntity;
 import io.github.gms.functions.iprestriction.IpRestrictionListDto;
-import io.github.gms.functions.user.ChangePasswordRequestDto;
-import io.github.gms.functions.event.EventDto;
-import io.github.gms.functions.event.EventListDto;
 import io.github.gms.functions.keystore.KeystoreAliasDto;
+import io.github.gms.functions.keystore.KeystoreAliasEntity;
 import io.github.gms.functions.keystore.KeystoreDto;
+import io.github.gms.functions.keystore.KeystoreEntity;
 import io.github.gms.functions.keystore.KeystoreListDto;
-import io.github.gms.functions.message.MessageDto;
-import io.github.gms.functions.message.MessageListDto;
-import io.github.gms.functions.announcement.SaveAnnouncementDto;
-import io.github.gms.functions.apikey.SaveApiKeyRequestDto;
 import io.github.gms.functions.keystore.SaveKeystoreRequestDto;
+import io.github.gms.functions.message.MessageDto;
+import io.github.gms.functions.message.MessageEntity;
+import io.github.gms.functions.message.MessageListDto;
+import io.github.gms.functions.secret.ApiKeyRestrictionEntity;
 import io.github.gms.functions.secret.SaveSecretRequestDto;
-import io.github.gms.functions.user.SaveUserRequestDto;
 import io.github.gms.functions.secret.SecretDto;
+import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretListDto;
 import io.github.gms.functions.systemproperty.SystemPropertyDto;
-import io.github.gms.functions.systemproperty.SystemPropertyListDto;
-import io.github.gms.functions.user.UserDto;
-import io.github.gms.common.dto.UserInfoDto;
-import io.github.gms.functions.user.UserListDto;
-import io.github.gms.functions.announcement.AnnouncementEntity;
-import io.github.gms.functions.apikey.ApiKeyEntity;
-import io.github.gms.functions.secret.ApiKeyRestrictionEntity;
-import io.github.gms.functions.event.EventEntity;
-import io.github.gms.functions.keystore.KeystoreAliasEntity;
-import io.github.gms.functions.keystore.KeystoreEntity;
-import io.github.gms.functions.message.MessageEntity;
-import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.systemproperty.SystemPropertyEntity;
+import io.github.gms.functions.systemproperty.SystemPropertyListDto;
+import io.github.gms.functions.user.ChangePasswordRequestDto;
+import io.github.gms.functions.user.SaveUserRequestDto;
+import io.github.gms.functions.user.UserDto;
 import io.github.gms.functions.user.UserEntity;
+import io.github.gms.functions.user.UserListDto;
 import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -64,8 +64,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.function.Executable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
@@ -82,6 +80,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.github.gms.common.enums.UserRole.ROLE_ADMIN;
+import static io.github.gms.common.enums.UserRole.ROLE_USER;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.API_KEY_HEADER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -158,7 +158,7 @@ public class TestUtils {
 				.userId(DemoData.USER_1_ID)
 				.name(DemoData.USERNAME1)
 				.username(DemoData.USERNAME1)
-				.authorities(Sets.newHashSet(UserRole.ROLE_USER))
+				.authorities(Sets.newHashSet(ROLE_USER))
 				.mfaSecret("MFA_SECRET")
 				.build();
 	}
@@ -170,7 +170,7 @@ public class TestUtils {
 				.credential(DemoData.CREDENTIAL_TEST)
 				.userId(DemoData.USER_1_ID)
 				.username(DemoData.USERNAME1)
-				.authorities(Sets.newHashSet(UserRole.ROLE_USER))
+				.authorities(Sets.newHashSet(ROLE_USER))
 				.build();
 	}
 
@@ -180,7 +180,7 @@ public class TestUtils {
 				.credential(DemoData.CREDENTIAL_TEST)
 				.userId(DemoData.USER_2_ID)
 				.username(DemoData.USERNAME2)
-				.authorities(Sets.newHashSet(UserRole.ROLE_ADMIN))
+				.authorities(Sets.newHashSet(ROLE_ADMIN))
 				.build();
 	}
 
@@ -211,7 +211,7 @@ public class TestUtils {
 		user.setUsername(USERNAME);
 		user.setName("name");
 		user.setEmail("a@b.com");
-		user.setRoles("ROLE_USER");
+		user.setRole(ROLE_USER);
 		user.setStatus(EntityStatus.ACTIVE);
 		user.setCredential(OLD_CREDENTIAL);
 		user.setFailedAttempts(0);
@@ -223,7 +223,7 @@ public class TestUtils {
 		user.setId(1L);
 		user.setUsername(USERNAME);
 		user.setName("name");
-		user.setRoles("ROLE_ADMIN");
+		user.setRole(ROLE_ADMIN);
 		user.setStatus(EntityStatus.ACTIVE);
 		return user;
 	}
@@ -235,7 +235,7 @@ public class TestUtils {
 		user.setCredential(NEW_CREDENTIAL);
 		user.setEmail("test@email.hu");
 		user.setName("name");
-		user.setRoles("ROLE_USER");
+		user.setRole(ROLE_USER);
 		user.setStatus(status);
 		return user;
 	}
@@ -448,7 +448,7 @@ public class TestUtils {
 		dto.setUsername(username);
 		dto.setName("name");
 		dto.setEmail(email);
-		dto.setRoles(Sets.newHashSet(UserRole.ROLE_USER));
+		dto.setRole(ROLE_USER);
 		dto.setCredential(DemoData.CREDENTIAL_TEST);
 		dto.setStatus(EntityStatus.ACTIVE);
 		return dto;
@@ -478,7 +478,7 @@ public class TestUtils {
 		user.setId(1L);
 		user.setUsername(USERNAME);
 		user.setName("name");
-		user.setRoles(Sets.newHashSet(UserRole.ROLE_USER));
+		user.setRole(ROLE_USER);
 		user.setStatus(EntityStatus.ACTIVE);
 		return user;
 	}
@@ -534,16 +534,6 @@ public class TestUtils {
 					log.info("file = " + file.getName());
 					file.delete();
 				});
-	}
-
-	public static Page<AnnouncementEntity> createAnnouncementEntityList() {
-		AnnouncementEntity entity1 = new AnnouncementEntity();
-		entity1.setId(1L);
-		entity1.setAuthorId(1L);
-		entity1.setTitle("Maintenance at 2022-01-01");
-		entity1.setDescription("Test");
-		entity1.setAnnouncementDate(ZonedDateTime.now().minusDays(1));
-		return new PageImpl<>(Lists.newArrayList(entity1));
 	}
 
 	public static AnnouncementEntity createAnnouncementEntity(Long id) {
@@ -640,7 +630,7 @@ public class TestUtils {
 		return createJwtAdminRequest(GmsUserDetails.builder()
 				.userId(DemoData.USER_1_ID)
 				.username(DemoData.USERNAME1)
-				.authorities(Set.of(UserRole.ROLE_ADMIN))
+				.authorities(Set.of(ROLE_ADMIN))
 				.build());
 	}
 
@@ -748,7 +738,7 @@ public class TestUtils {
 		dto.setId(1L);
 		dto.setUsername("user");
 		dto.setName("name");
-		dto.setRoles(Set.of(UserRole.ROLE_USER));
+		dto.setRole(ROLE_USER);
 		dto.setEmail("a@b.com");
         return dto;
     }

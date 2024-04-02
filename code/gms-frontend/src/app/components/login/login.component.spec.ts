@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
@@ -12,7 +13,6 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { EMPTY_USER, User } from "../user/model/user.model";
 import { LoginComponent } from "./login.component";
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 
 /**
  * @author Peter Szrnka
@@ -76,7 +76,7 @@ describe('LoginComponent', () => {
             login : jest.fn().mockImplementation(() => {
                 return of({
                     currentUser:  {
-                        roles: []
+                        role: "ROLE_USER"
                     },
                     phase: AuthenticationPhase.COMPLETED
                 });
@@ -96,29 +96,23 @@ describe('LoginComponent', () => {
     });
 
     it.each([
-        [undefined, []],
+        [undefined, "ROLE_USER"],
         [{
             previousUrl: '/'
-        }, ['ROLE_USER']],
+        }, 'ROLE_USER'],
         [{
             previousUrl: '/secret/list'
-        }, []],
+        }, 'ROLE_ADMIN'],
         [{
             previousUrl: '/users/list'
-        }, []],
+        }, 'ROLE_ADMIN'],
         [{
             previousUrl: '/secret/list'
-        }, ['ROLE_ADMIN']],
+        }, 'ROLE_USER'],
         [{
             previousUrl: '/users/list'
-        }, ['ROLE_ADMIN']],
-        [{
-            previousUrl: '/secret/list'
-        }, ['ROLE_USER']],
-        [{
-            previousUrl: '/users/list'
-        }, ['ROLE_USER']]
-    ])('Should create component and login with redirect', (inputQueryParam: any, inputRoles: string[]) => {
+        }, 'ROLE_USER']
+    ])('Should create component and login with redirect', (inputQueryParam: any, inputRole: string) => {
         // arrange
         activatedRoute = {
             snapshot : {
@@ -129,7 +123,7 @@ describe('LoginComponent', () => {
             login : jest.fn().mockImplementation(() => {
                 return of({
                     currentUser:  {
-                        roles: inputRoles
+                        role: inputRole
                     },
                     phase: AuthenticationPhase.COMPLETED
                 });
@@ -174,7 +168,7 @@ describe('LoginComponent', () => {
         expect(component.showPassword).toBeTruthy();
     });
 
-    it('Should redirect to main page', () => {
+    it.each(['ROLE_USER', 'ROLE_ADMIN'])('Should redirect to main page', (inputRole: string) => {
         // arrange
         activatedRoute = {
             snapshot : {
@@ -185,7 +179,7 @@ describe('LoginComponent', () => {
         configTestBed();
 
         // act
-        mockSubject.next({ id: 1, username: 'test', roles: ['ROLE_USER'] } as User);
+        mockSubject.next({ id: 1, username: 'test', role: inputRole } as User);
 
         // assert
         expect(component).toBeTruthy();
@@ -221,7 +215,7 @@ describe('LoginComponent', () => {
             }
         };
         const mockResponse: LoginResponse = {
-            currentUser: { username: 'test', roles: [] },
+            currentUser: { username: 'test', role: 'ROLE_USER' },
             phase: AuthenticationPhase.MFA_REQUIRED
         };
         authService = {
@@ -279,7 +273,7 @@ describe('LoginComponent', () => {
     it('Should require MFA', () => {
         // arrange
         const mockResponse: LoginResponse = {
-            currentUser: { username: 'test', roles: [] },
+            currentUser: { username: 'test', role: 'ROLE_USER' },
             phase: AuthenticationPhase.MFA_REQUIRED
         };
         authService = {

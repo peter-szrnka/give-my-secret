@@ -4,8 +4,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.auth.ldap.converter.LdapUserConverter;
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.functions.user.UserConverter;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
@@ -43,7 +43,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
     private ListAppender<ILoggingEvent> logAppender;
 	private LdapTemplate ldapTemplate;
 	private UserRepository repository;
-	private UserConverter converter;
+	private LdapUserConverter converter;
     private LdapSyncServiceImpl service;
 
     @BeforeEach
@@ -53,7 +53,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 
 		ldapTemplate = mock(LdapTemplate.class);
 		repository = mock(UserRepository.class);
-		converter = mock(UserConverter.class);
+		converter = mock(LdapUserConverter.class);
 		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "db");
 		((Logger) LoggerFactory.getLogger(LdapSyncServiceImpl.class)).addAppender(logAppender);
 	}

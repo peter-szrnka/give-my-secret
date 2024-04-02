@@ -20,7 +20,7 @@ describe('UserListResolver', () => {
     const mockResponse: UserData[] = [{
         id: 1,
         status: "ACTIVE",
-        roles: []
+        role: 'ROLE_USER'
     }];
 
     const configureTestBed = () => {

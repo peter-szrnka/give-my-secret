@@ -20,7 +20,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 export class UserListComponent extends BaseListComponent<UserData, UserService> {
 
     userColumns: string[] = ['id', 'username', 'email', 'status', 'roles', 'creationDate', 'operations'];
-    editEnabled: boolean = true;
+    authMode: string;
 
     constructor(
         override router: Router,
@@ -35,7 +35,7 @@ export class UserListComponent extends BaseListComponent<UserData, UserService> 
     override async ngOnInit(): Promise<void> {
         super.ngOnInit();
 
-        this.sharedData.authModeSubject$.subscribe(authMode => this.editEnabled = authMode === 'db');
+        this.sharedData.authModeSubject$.subscribe(authMode => this.authMode = authMode);
     }
 
     getPageConfig(): PageConfig {
@@ -43,7 +43,7 @@ export class UserListComponent extends BaseListComponent<UserData, UserService> 
     }
 
     manualLdapUserSync() {
-        if (this.editEnabled === true) {
+        if (this.authMode !== 'ldap') {
             return;
         }
 

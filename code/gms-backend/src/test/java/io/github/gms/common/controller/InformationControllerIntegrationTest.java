@@ -1,8 +1,8 @@
 package io.github.gms.common.controller;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
-import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.common.enums.UserRole;
 import io.github.gms.util.DemoData;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -10,8 +10,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Set;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
@@ -53,6 +51,6 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest {
         assertEquals("a@b.hu", result.getEmail());
         assertEquals(DemoData.USERNAME1, result.getName());
         assertEquals(DemoData.USERNAME1, result.getUsername());
-        assertEquals(Set.of(UserRole.ROLE_USER), result.getRoles());
+        assertEquals(UserRole.ROLE_USER, result.getRole());
 	}
 }

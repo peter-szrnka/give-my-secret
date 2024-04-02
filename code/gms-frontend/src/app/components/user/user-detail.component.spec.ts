@@ -15,7 +15,6 @@ import { EventService } from "../event/service/event-service";
 import { UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
-import { MatChipInputEvent } from "@angular/material/chips";
 
 /**
  * @author Peter Szrnka
@@ -73,7 +72,7 @@ describe('UserDetailComponent', () => {
                 entity : {
                     id : 1,
                     name : "Test User",
-                    roles : [ "ROLE_USER" ],
+                    role : "ROLE_USER",
                     email : "test.email@mail.com",
                     status : "ACTIVE",
                     username : "user.name"
@@ -97,16 +96,6 @@ describe('UserDetailComponent', () => {
 
     it('should save new entity', () => {
         // arrange
-        const chipInputMock : any = {
-            clear : jest.fn()
-        };
-
-        const matAutocompleteSelectedEvent : any = {
-            option : {
-                viewValue : "ROLE_ADMIN"
-            }
-        };
-
         eventServiceMock = {
             listByUserId : jest.fn().mockReturnValue(of(undefined))
         };
@@ -115,7 +104,7 @@ describe('UserDetailComponent', () => {
             data : Data = of({
                 entity : {
                     name : "Test User",
-                    roles : [ "ROLE_USER" ],
+                    role : "ROLE_USER" ,
                     email : "test.email@mail.com",
                     status : "ACTIVE",
                     username : "user.name"
@@ -127,17 +116,6 @@ describe('UserDetailComponent', () => {
 
         // act
         authModeSubject.next("db");
-        component.remove("ROLE_USER");
-
-        component.add({ value : "  ROLE_ADMIN  ", chipInput : chipInputMock } as MatChipInputEvent);
-        component.selected(matAutocompleteSelectedEvent);
-        component.remove("ROLE_ADMIN");
-        
-        component.selected(matAutocompleteSelectedEvent);
-        component.remove("ROLE_ADMIN");
-
-        component.add({ value : ' ', chipInput : chipInputMock } as MatChipInputEvent);
-
         component.save();
 
         // assert
@@ -147,32 +125,10 @@ describe('UserDetailComponent', () => {
 
     it('should save details', () => {
         // arrange
-        const chipInputMock : any = {
-            clear : jest.fn()
-        };
-
-        const matAutocompleteSelectedEvent : any = {
-            option : {
-                viewValue : "ROLE_ADMIN"
-            }
-        };
-
         configureTestBed();
 
         // act
         authModeSubject.next("db");
-        component.remove("ROLE_USER");
-
-        component.add({ value : "ROLE_ADMIN", chipInput : chipInputMock } as MatChipInputEvent);
-        component.add({ value : "ROLE_USER", chipInput : chipInputMock } as MatChipInputEvent);
-        component.selected(matAutocompleteSelectedEvent);
-        component.remove("ROLE_ADMIN");
-        
-        component.selected(matAutocompleteSelectedEvent);
-        component.remove("ROLE_ADMIN");
-
-        component.add({ value : ' ', chipInput : chipInputMock } as MatChipInputEvent);
-
         component.save();
 
         // assert

@@ -8,6 +8,7 @@ import io.github.gms.auth.sso.keycloak.service.KeycloakLoginService;
 import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.util.Constants;
+import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,7 @@ class KeycloakAuthenticationServiceImplTest {
     private KeycloakLoginService keycloakLoginService;
     private KeycloakIntrospectService keycloakIntrospectService;
     private KeycloakConverter converter;
+    private UserRepository userRepository;
     private KeycloakAuthenticationServiceImpl service;
 
     @BeforeEach
@@ -42,7 +44,8 @@ class KeycloakAuthenticationServiceImplTest {
         keycloakLoginService = mock(KeycloakLoginService.class);
         keycloakIntrospectService = mock(KeycloakIntrospectService.class);
         converter = mock(KeycloakConverter.class);
-        service = new KeycloakAuthenticationServiceImpl(keycloakLoginService, keycloakIntrospectService, converter);
+        userRepository = mock(UserRepository.class);
+        service = new KeycloakAuthenticationServiceImpl(keycloakLoginService, keycloakIntrospectService, converter, userRepository);
     }
 
     @Test

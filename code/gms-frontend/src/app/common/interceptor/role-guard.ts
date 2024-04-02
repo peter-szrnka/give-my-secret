@@ -3,17 +3,8 @@ import { ActivatedRouteSnapshot } from "@angular/router";
 import { User } from "../../components/user/model/user.model";
 import { SharedDataService } from "../service/shared-data-service";
 
-export const checker = (arr: string[], target: string[]) => {
-    let result = false;
-    arr.forEach(arrElement => {
-        target.forEach(targetElement => {
-            if (arrElement === targetElement) {
-                result = true;
-            }
-        });
-    });
-
-    return result;
+export const checker = (arr: string[], target: string) => {
+    return arr.filter(arrElement => arrElement === target).length === 1;
 };
 
 /**
@@ -29,5 +20,5 @@ export const ROLE_GUARD = async (route: ActivatedRouteSnapshot): Promise<boolean
     }
 
     const roles = route?.data?.["roles"] as string[] ?? [];
-    return Promise.resolve(checker(roles, currentUser.roles));
+    return Promise.resolve(checker(roles, currentUser.role));
 };

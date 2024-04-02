@@ -1,12 +1,8 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, ElementRef, ViewChild } from "@angular/core";
-import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
-import { MatChipInputEvent } from '@angular/material/chips';
+import { Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
-import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { PageConfig } from "../../common/model/common.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
@@ -33,9 +29,6 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
 
   userColumns: string[] = [ 'id', 'operation', 'target', 'eventDate' ];
 
-  readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  @ViewChild('roleInput') roleInput: ElementRef<HTMLInputElement>;
-  addOnBlur = true;
   auto = true;
   selectableRoles = ALL_ROLES;
   eventList : Event[] = [];
@@ -65,7 +58,6 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override dataLoadingCallback(data: UserData) {
-    this.refreshSelectableRoles();
 
     if (data.id === undefined) {
       return;
@@ -77,54 +69,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
     });
   }
 
-  private refreshSelectableRoles(): void {
-    this.selectableRoles = ALL_ROLES;
-    this.selectableRoles = this.selectableRoles.filter((item) => {
-      return !this.data.roles.includes(item);
-    });
-  }
-
   getPageConfig(): PageConfig {
     return PAGE_CONFIG_USER;
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    if (this.data.roles.length === 1) {
-      this.showTooManyElementsDialog();
-      return;
-    }
-
-    this.data.roles.push(event.option.viewValue);
-    this.roleInput.nativeElement.value = '';
-    this.refreshSelectableRoles();
-  }
-
-  add(event: MatChipInputEvent): void {
-    if (this.data.roles.length === 1) {
-      this.showTooManyElementsDialog();
-      return;
-    }
-
-    const value = event.value.trim();
-
-    if (value) {
-      this.data.roles.push(value);
-    }
-
-    this.refreshSelectableRoles();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    event.chipInput.clear();
-  }
-
-  remove(role: string): void {
-    if (this.data.roles.includes(role)) {
-      this.data.roles.splice(this.data.roles.indexOf(role), 1);
-    }
-
-    this.refreshSelectableRoles();
-  }
-
-  private showTooManyElementsDialog() {
-    this.dialog.open(InfoDialog, { data: { text: "Only one role can be added to the user!", type : 'warning' },});
   }
 }

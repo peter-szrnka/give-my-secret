@@ -95,7 +95,7 @@ describe('SharedDataService', () => {
   it.each([
     [
       {
-        roles: ["ROLE_ADMIN"],
+        role: 'ROLE_ADMIN',
         userName: "test1",
         userId: 1
       }
@@ -208,12 +208,16 @@ describe('SharedDataService', () => {
 
   it('should log out', () => {
     // act & assert
+    router.url = "/test";
     configureTestBed();
     mockSubject.next(currentUser);
+
+    // act
     service.logout();
 
+    // assert
     expect(authService.logout).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/login']);
+    expect(router.navigate).toHaveBeenCalledTimes(0);
   });
 
   it('should not log out again', () => {

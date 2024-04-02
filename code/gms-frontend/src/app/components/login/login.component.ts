@@ -39,11 +39,11 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     override ngOnInit(): void {
         super.ngOnInit();
         this.userSubscription = this.sharedDataService.userSubject$.subscribe((user: User | undefined) => {
-            if (!user || !user.roles || !this.sharedDataService.systemReady) {
+            if (!user || !this.sharedDataService.systemReady) {
                 return;
             }
 
-            //this.router.navigate(['']);
+            this.router.navigate(['']);
         });
 
     }

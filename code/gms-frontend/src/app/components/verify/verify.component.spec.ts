@@ -85,7 +85,7 @@ describe('VerifyComponent', () => {
         };
 
         const mockCurrentUser: User = {
-            roles: []
+            role: 'ROLE_USER'
         };
 
         const mockResponse: LoginResponse = {
@@ -142,7 +142,7 @@ describe('VerifyComponent', () => {
 
     it('Should MFA verification succeed', async () => {
         // arrange
-        const mockUser: User = { username: 'test', roles: [] };
+        const mockUser: User = { username: 'test', role: 'ROLE_USER' };
         const mockResponse: LoginResponse = {
             currentUser: mockUser,
             phase: AuthenticationPhase.COMPLETED
@@ -168,7 +168,7 @@ describe('VerifyComponent', () => {
     it('Should MFA verification fail', async () => {
         // arrange
         const mockResponse: LoginResponse = {
-            currentUser: { username: 'test', roles: [] },
+            currentUser: { username: 'test', role: 'ROLE_USER' },
             phase: AuthenticationPhase.FAILED
         };
         authService = {

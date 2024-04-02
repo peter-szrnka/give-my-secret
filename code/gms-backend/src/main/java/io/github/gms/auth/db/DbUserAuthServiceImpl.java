@@ -12,11 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
-import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 /**
  * @author Peter Szrnka
@@ -36,7 +33,7 @@ public class DbUserAuthServiceImpl implements UserAuthService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserEntity user = repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
-		Set<UserRole> authorities = Stream.of(tokenizeToStringArray(user.getRoles(), ";")).map(UserRole::valueOf).collect(Collectors.toSet());
+		Set<UserRole> authorities = Set.of(user.getRole());
 		return GmsUserDetails.builder()
 				.userId(user.getId())
 				.username(user.getUsername())

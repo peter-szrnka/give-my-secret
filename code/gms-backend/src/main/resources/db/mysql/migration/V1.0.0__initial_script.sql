@@ -4,7 +4,7 @@ CREATE TABLE gms_user (
 	credential VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	email VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	name VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
-	roles VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	role VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	status VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	user_name VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	mfa_enabled TINYINT NOT NULL DEFAULT 0,

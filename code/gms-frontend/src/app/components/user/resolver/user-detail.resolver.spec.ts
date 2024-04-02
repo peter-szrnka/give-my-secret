@@ -19,7 +19,7 @@ describe('UserDetailResolver', () => {
     let sharedData: any;
 
     const mockResponse: UserData = {
-        roles: []
+        role: 'ROLE_USER'
     };
 
     beforeEach(async () => {

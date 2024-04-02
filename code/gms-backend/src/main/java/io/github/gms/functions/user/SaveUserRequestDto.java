@@ -9,8 +9,6 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 import static io.github.gms.common.util.Constants.DATE_FORMAT;
 
@@ -33,5 +31,5 @@ public class SaveUserRequestDto implements Serializable {
 	private String credential;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
 	private ZonedDateTime creationDate;
-	private Set<UserRole> roles = new HashSet<>();
+	private UserRole role;
 }

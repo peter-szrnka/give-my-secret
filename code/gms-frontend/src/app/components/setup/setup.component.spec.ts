@@ -80,7 +80,7 @@ describe('SetupComponent', () => {
         component.userData = {
             username : "admin",
             credential : "testPassword",
-            roles : []
+            role: 'ROLE_ADMIN'
         };
 
         // act
@@ -102,7 +102,7 @@ describe('SetupComponent', () => {
         component.userData = {
             username : "admin",
             credential : "testPassword",
-            roles : []
+            role: 'ROLE_ADMIN'
         };
 
         // act
@@ -121,7 +121,7 @@ describe('SetupComponent', () => {
         component.userData = {
             username : "admin",
             credential : "testPassword",
-            roles : []
+            role: 'ROLE_ADMIN'
         };
 
         // act

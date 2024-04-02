@@ -4,9 +4,9 @@
 export interface User {
     id? : number,
     username? : string,
-    roles : string[]
+    role : string
 }
 
 export const EMPTY_USER : User = {
-    roles : []
+    role: 'EMPTY'
 };

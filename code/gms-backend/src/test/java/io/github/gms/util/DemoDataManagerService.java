@@ -4,6 +4,7 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeystoreType;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SecretType;
+import io.github.gms.common.enums.UserRole;
 import io.github.gms.functions.announcement.AnnouncementEntity;
 import io.github.gms.functions.apikey.ApiKeyEntity;
 import io.github.gms.functions.iprestriction.IpRestrictionEntity;
@@ -142,7 +143,7 @@ public class DemoDataManagerService {
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setUsername(userId);
 		entity.setCredential(passwordEncoder.encode(CREDENTIAL_TEST));
-		entity.setRoles(role);
+		entity.setRole(UserRole.getByName(role));
 		entity.setName(userId);
 		entity.setEmail("a@b.hu");
 		

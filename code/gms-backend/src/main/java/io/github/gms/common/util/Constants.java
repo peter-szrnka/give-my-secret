@@ -47,6 +47,7 @@ public final class Constants {
 	public static final String SELECTED_AUTH = "SELECTED_AUTH";
 	public static final String SELECTED_AUTH_DB = "db";
 	public static final String SELECTED_AUTH_LDAP = "ldap";
+	public static final String SELECTED_AUTH_SSO = "sso";
 	
 	// Headers
 	public static final String ACCESS_JWT_TOKEN = "jwt";

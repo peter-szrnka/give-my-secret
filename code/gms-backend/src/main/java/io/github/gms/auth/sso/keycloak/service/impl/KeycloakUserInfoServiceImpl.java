@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
@@ -45,9 +44,9 @@ public class KeycloakUserInfoServiceImpl implements UserInfoService {
                 .email(response.getEmail())
                 .name(response.getName())
                 .username(response.getUsername())
-                .roles(response.getRealmAccess().getRoles().stream().map(UserRole::getByName)
+                .role(response.getRealmAccess().getRoles().stream().map(UserRole::getByName)
                         .filter(Objects::nonNull)
-                        .collect(Collectors.toSet()))
+                        .toList().getFirst())
                 .build();
     }
 }

@@ -39,7 +39,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
       this.sharedDataService.systemReadySubject$.subscribe(readyData => {
         if (readyData.status !== 200) {
-          //this.navigateToLogin();
           return;
         }
 
@@ -53,9 +52,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
       this.sharedDataService.userSubject$.subscribe(user => {
         this.currentUser = user;
-        this.isAdmin = this.currentUser!! && roleCheck(this.currentUser, 'ROLE_ADMIN');
+        this.isAdmin = !this.currentUser ? false : roleCheck(this.currentUser, 'ROLE_ADMIN');
 
-        if ((!user?.roles) && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
+        if (!user && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
           this.navigateToLogin();
           return;
         }

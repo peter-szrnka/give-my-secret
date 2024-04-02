@@ -2,7 +2,6 @@ package io.github.gms.functions.user;
 
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.service.JwtClaimService;
 import io.github.gms.common.types.GmsException;
 import io.jsonwebtoken.Claims;
@@ -13,9 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
-
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
@@ -48,7 +44,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 			.id(entity.getId())
 			.name(entity.getName())
 			.username(entity.getUsername())
-			.roles(Stream.of(entity.getRoles().split(";")).map(UserRole::getByName).collect(Collectors.toSet()))
+			.role(entity.getRole())
 			.email(entity.getEmail())
 			.build();
 	}

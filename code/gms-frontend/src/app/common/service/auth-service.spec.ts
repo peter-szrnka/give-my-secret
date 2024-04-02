@@ -32,7 +32,7 @@ describe('AuthService', () => {
         const expectedUrl = environment.baseUrl + "authenticate";
         const mockResponse: LoginResponse  = {
           currentUser: {
-            roles: ["ROLE_USER"]
+            role: "ROLE_USER"
           },
           phase: AuthenticationPhase.COMPLETED
         };
@@ -53,7 +53,7 @@ describe('AuthService', () => {
       const expectedUrl = environment.baseUrl + "verify";
       const mockResponse: LoginResponse  = {
         currentUser: {
-          roles: ["ROLE_USER"]
+          role: "ROLE_USER"
         },
         phase: AuthenticationPhase.COMPLETED
       };

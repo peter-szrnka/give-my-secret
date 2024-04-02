@@ -20,7 +20,6 @@ import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -58,7 +57,7 @@ class KeycloakUserInfoServiceImplTest {
         assertNull(response.getEmail());
         assertNull(response.getName());
         assertNull(response.getUsername());
-        assertTrue(response.getRoles().isEmpty());
+        assertNull(response.getRole());
         verify(httpServletRequest, times(2)).getCookies();
         verify(keycloakIntrospectService, never()).getUserDetails("access", "refresh");
     }
@@ -88,7 +87,7 @@ class KeycloakUserInfoServiceImplTest {
         assertEquals("email@email", response.getEmail());
         assertEquals("My Name", response.getName());
         assertEquals("user1", response.getUsername());
-        assertEquals(UserRole.ROLE_USER, response.getRoles().iterator().next());
+        assertEquals(UserRole.ROLE_USER, response.getRole());
         verify(httpServletRequest, times(2)).getCookies();
         verify(keycloakIntrospectService).getUserDetails("access", "refresh");
     }
