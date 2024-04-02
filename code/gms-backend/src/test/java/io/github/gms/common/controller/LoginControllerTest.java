@@ -143,8 +143,8 @@ class LoginControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(1, response.getHeaders().size());
         assertTrue(Objects.requireNonNull(response.getHeaders().get("Set-Cookie"))
-                .stream().anyMatch(item -> item.equals("jwt=; Path=/; HttpOnly; SameSite=Lax")));
+                .stream().anyMatch(item -> item.equals("jwt=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax")));
         assertTrue(Objects.requireNonNull(response.getHeaders().get("Set-Cookie"))
-                .stream().anyMatch(item -> item.equals("refreshJwt=; Path=/; HttpOnly; SameSite=Lax")));
+                .stream().anyMatch(item -> item.equals("refreshJwt=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax")));
     }
 }

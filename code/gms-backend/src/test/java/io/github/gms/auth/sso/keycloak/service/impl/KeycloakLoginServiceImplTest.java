@@ -4,7 +4,6 @@ import io.github.gms.auth.sso.keycloak.Input;
 import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
 import io.github.gms.auth.sso.keycloak.model.LoginResponse;
 import io.github.gms.auth.sso.keycloak.service.OAuthService;
-import io.github.gms.common.util.Constants;
 import io.github.gms.util.TestUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,8 +13,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.util.MultiValueMap;
-
-import java.util.Map;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.AUDIENCE;
@@ -68,12 +65,8 @@ class KeycloakLoginServiceImplTest {
         when(keycloakSettings.getKeycloakTokenUrl()).thenReturn(TestUtils.LOCALHOST_8080);
         when(keycloakSettings.getClientId()).thenReturn("clientId");
         when(keycloakSettings.getClientSecret()).thenReturn("clientSecret");
-        Map<String, String> mockMap = Map.of(
-                Constants.ACCESS_TOKEN, MOCK_ACCESS_TOKEN,
-                Constants.REFRESH_TOKEN, MOCK_REFRESH_TOKEN
-        );
-        when(oAuthService.callEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(Map.class)))
-                .thenReturn(mockMap);
+        when(oAuthService.callEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(LoginResponse.class)))
+                .thenReturn(LoginResponse.builder().accessToken(MOCK_ACCESS_TOKEN).refreshToken(MOCK_REFRESH_TOKEN).build());
 
         // act
         LoginResponse response = service.login(USERNAME1, CREDENTIAL_TEST);
@@ -83,7 +76,7 @@ class KeycloakLoginServiceImplTest {
         assertEquals(MOCK_ACCESS_TOKEN, response.getAccessToken());
         assertEquals(MOCK_REFRESH_TOKEN, response.getRefreshToken());
         ArgumentCaptor<MultiValueMap<String, String>> argumentCaptor = ArgumentCaptor.forClass(MultiValueMap.class);
-        verify(oAuthService).callEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(Map.class));
+        verify(oAuthService).callEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(LoginResponse.class));
         verify(keycloakSettings).getRealm();
         verify(keycloakSettings).getKeycloakTokenUrl();
         verify(keycloakSettings).getClientId();
