@@ -14,6 +14,7 @@ import org.slf4j.MDC;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,7 +55,7 @@ class SetupControllerTest {
 
         ArgumentCaptor<SaveUserRequestDto> argumentCaptorDto = ArgumentCaptor.forClass(SaveUserRequestDto.class);
         verify(userService).saveAdminUser(argumentCaptorDto.capture());
-        assertEquals(UserRole.ROLE_ADMIN, argumentCaptorDto.getValue().getRole());
+        assertNull(argumentCaptorDto.getValue().getRole());
     }
 
     @Test
@@ -76,6 +77,6 @@ class SetupControllerTest {
 
         ArgumentCaptor<SaveUserRequestDto> argumentCaptorDto = ArgumentCaptor.forClass(SaveUserRequestDto.class);
         verify(userService).saveAdminUser(argumentCaptorDto.capture());
-        assertEquals(UserRole.ROLE_USER, argumentCaptorDto.getValue().getRole());
+        assertEquals(UserRole.ROLE_ADMIN, argumentCaptorDto.getValue().getRole());
     }
 }

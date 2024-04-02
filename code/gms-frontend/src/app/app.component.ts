@@ -56,7 +56,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
         if (!user && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
           this.navigateToLogin();
-          return;
         }
       });
 
