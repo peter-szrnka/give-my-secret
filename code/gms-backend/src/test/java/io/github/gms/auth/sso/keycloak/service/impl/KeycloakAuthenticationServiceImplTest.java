@@ -17,12 +17,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static io.github.gms.util.TestUtils.MOCK_ACCESS_TOKEN;
 import static io.github.gms.util.TestUtils.MOCK_REFRESH_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -67,7 +69,7 @@ class KeycloakAuthenticationServiceImplTest {
     }
 
     @Test
-    void shouldLoginSucceed() {
+    void shouldLoginSucceedWhenUserNotFound() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(Map.of(
@@ -86,6 +88,7 @@ class KeycloakAuthenticationServiceImplTest {
         UserEntity userEntity = TestUtils.createUser();
         when(converter.toNewEntity(any(UserEntity.class), eq(mockUserInfo))).thenReturn(userEntity);
         when(userRepository.save(userEntity)).thenReturn(userEntity);
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
         // act
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
@@ -100,6 +103,46 @@ class KeycloakAuthenticationServiceImplTest {
         verify(converter).toUserInfoDto(introspectResponseArgumentCaptor.capture());
         assertEquals(mockIntrospectResponse, introspectResponseArgumentCaptor.getValue());
         verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
+        verify(userRepository).save(userEntity);
+        verify(converter).toNewEntity(any(UserEntity.class), eq(mockUserInfo));
+    }
+
+    @Test
+    void shouldLoginSucceedWhenUserFound() {
+        // arrange
+        when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
+                .thenReturn(Map.of(
+                        Constants.ACCESS_TOKEN, MOCK_ACCESS_TOKEN,
+                        Constants.REFRESH_TOKEN, MOCK_REFRESH_TOKEN
+                ));
+        UserInfoDto mockUserInfo = TestUtils.createUserInfoDto();
+        when(converter.toUserInfoDto(any(IntrospectResponse.class))).thenReturn(mockUserInfo);
+        IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder()
+                .email("email@email")
+                .name("name")
+                .active("true")
+                .build();
+        when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
+                .thenReturn(mockIntrospectResponse);
+        UserEntity userEntity = TestUtils.createUser();
+        when(userRepository.save(userEntity)).thenReturn(userEntity);
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(userEntity));
+
+        // act
+        AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(AuthResponsePhase.COMPLETED, response.getPhase());
+        assertEquals(MOCK_ACCESS_TOKEN, response.getToken());
+        assertEquals(MOCK_REFRESH_TOKEN, response.getRefreshToken());
+        verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+        ArgumentCaptor<IntrospectResponse> introspectResponseArgumentCaptor = ArgumentCaptor.forClass(IntrospectResponse.class);
+        verify(converter).toUserInfoDto(introspectResponseArgumentCaptor.capture());
+        assertEquals(mockIntrospectResponse, introspectResponseArgumentCaptor.getValue());
+        verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
+        verify(userRepository, never()).save(userEntity);
+        verify(converter, never()).toNewEntity(any(UserEntity.class), eq(mockUserInfo));
     }
 
     @Test
@@ -109,5 +152,9 @@ class KeycloakAuthenticationServiceImplTest {
 
         // assert
         verify(keycloakLoginService).logout();
+    }
+
+    private static Object[] loginInputData() {
+        return new Object[] { null, 1L };
     }
 }

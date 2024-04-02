@@ -63,6 +63,31 @@ class KeycloakAuthorizationServiceImplTest {
     }
 
     @Test
+    void shouldNotReturnInfoWhenUserIsMissing() {
+        // arrange
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
+                new Cookie(ACCESS_JWT_TOKEN, "access"),
+                new Cookie(REFRESH_JWT_TOKEN, "refresh")
+        });
+        IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder().build();
+        when(keycloakIntrospectService.getUserDetails("access", "refresh"))
+                .thenReturn(mockIntrospectResponse);
+        GmsUserDetails mockUser = TestUtils.createGmsAdminUser();
+        when(converter.toUserDetails(mockIntrospectResponse)).thenReturn(mockUser);
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+
+        // act
+        AuthorizationResponse response = service.authorize(httpServletRequest);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
+        assertEquals("Access denied!", response.getErrorMessage());
+        verify(converter).toUserDetails(mockIntrospectResponse);
+    }
+
+    @Test
     void shouldReturnInfo() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);

@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class LdapUserConverterImplTest extends AbstractUnitTest {
+class LdapUserConverterImplTest extends AbstractUnitTest {
 
     private Clock clock;
     private LdapUserConverterImpl converter;

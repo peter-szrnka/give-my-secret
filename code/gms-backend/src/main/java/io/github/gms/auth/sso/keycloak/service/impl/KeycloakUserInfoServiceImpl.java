@@ -5,6 +5,7 @@ import io.github.gms.auth.sso.keycloak.service.KeycloakIntrospectService;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.functions.user.UserInfoService;
+import io.github.gms.functions.user.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 public class KeycloakUserInfoServiceImpl implements UserInfoService {
 
     private final KeycloakIntrospectService keycloakIntrospectService;
+    private final UserRepository userRepository;
 
     @Override
     public UserInfoDto getUserInfo(HttpServletRequest request) {
@@ -39,8 +41,14 @@ public class KeycloakUserInfoServiceImpl implements UserInfoService {
         }
 
         IntrospectResponse response = keycloakIntrospectService.getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
+        Long userId = userRepository.getIdByUsername(response.getUsername()).orElse(-1L);
+
+        if (userId.equals(-1L)) {
+            return null;
+        }
+
         return UserInfoDto.builder()
-                // TODO Id
+                .id(userId)
                 .email(response.getEmail())
                 .name(response.getName())
                 .username(response.getUsername())

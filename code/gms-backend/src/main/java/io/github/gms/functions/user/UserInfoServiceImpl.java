@@ -3,7 +3,6 @@ package io.github.gms.functions.user;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.service.JwtClaimService;
-import io.github.gms.common.types.GmsException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,6 +39,11 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 		Claims claims = jwtClaimService.getClaims(jwtTokenCookie.getValue());
 		UserEntity entity = validateAndReturnUser(claims.get(MdcParameter.USER_ID.getDisplayName(), Long.class));
+
+		if (entity == null) {
+			return null;
+		}
+
 		return UserInfoDto.builder()
 			.id(entity.getId())
 			.name(entity.getName())
@@ -50,9 +54,6 @@ public class UserInfoServiceImpl implements UserInfoService {
 	}
 
 	private UserEntity validateAndReturnUser(Long userId) {
-		return repository.findById(userId).orElseThrow(() -> {
-			log.warn("User not found");
-            return new GmsException("User not found!");
-		});
+		return repository.findById(userId).orElse(null);
 	}
 }

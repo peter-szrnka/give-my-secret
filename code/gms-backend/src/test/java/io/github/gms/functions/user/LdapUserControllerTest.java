@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
  *
  * @author Peter Szrnka
  */
-public class LdapUserControllerTest {
+class LdapUserControllerTest {
 
     private LdapSyncService ldapSyncService;
     private LdapUserController controller;

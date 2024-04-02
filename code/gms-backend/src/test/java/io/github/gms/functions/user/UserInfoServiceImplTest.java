@@ -4,7 +4,6 @@ import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.service.JwtClaimService;
-import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.Constants;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
@@ -16,10 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -69,11 +66,10 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
         when(jwtClaimService.getClaims("value")).thenReturn(mockClaims);
 
         // act
-        GmsException exception = assertThrows(GmsException.class, () -> service.getUserInfo(request));
+        UserInfoDto response = service.getUserInfo(request);
 
         // assert
-        assertNotNull(exception);
-        assertEquals("User not found!", exception.getMessage());
+        assertNull(response);
         verify(repository).findById(anyLong());
     }
 
