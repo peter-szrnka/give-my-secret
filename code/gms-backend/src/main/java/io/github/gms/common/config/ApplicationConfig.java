@@ -10,6 +10,7 @@ import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
+import io.github.gms.common.interceptor.HttpClientInterceptor;
 import org.springframework.boot.jackson.JsonComponentModule;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -62,7 +65,10 @@ public class ApplicationConfig implements WebMvcConfigurer {
 
 	@Bean
 	RestTemplate restTemplate() {
-		return new RestTemplateBuilder().build();
+		return new RestTemplateBuilder()
+				.requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
+				.additionalInterceptors(new HttpClientInterceptor())
+				.build();
 	}
 	
 	@Bean

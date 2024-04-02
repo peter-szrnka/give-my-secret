@@ -1,6 +1,7 @@
 package io.github.gms.auth.sso.keycloak.service.impl;
 
 import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
+import io.github.gms.auth.sso.keycloak.model.LoginResponse;
 import io.github.gms.auth.sso.keycloak.service.KeycloakLoginService;
 import io.github.gms.auth.sso.keycloak.service.OAuthService;
 import jakarta.servlet.http.Cookie;
@@ -11,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.WebUtils;
-
-import java.util.Map;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.AUDIENCE;
@@ -42,7 +41,7 @@ public class KeycloakLoginServiceImpl implements KeycloakLoginService {
     private final KeycloakSettings keycloakSettings;
 
     @Override
-    public Map<String, String> login(String username, String credential) {
+    public LoginResponse login(String username, String credential) {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add(GRANT_TYPE, CREDENTIAL);
         requestBody.add(AUDIENCE, keycloakSettings.getRealm());
@@ -52,7 +51,7 @@ public class KeycloakLoginServiceImpl implements KeycloakLoginService {
         requestBody.add(CLIENT_SECRET, keycloakSettings.getClientSecret());
         requestBody.add(SCOPE, SCOPE_GMS);
 
-        return oAuthService.callEndpoint(keycloakSettings.getKeycloakTokenUrl(), requestBody, Map.class);
+        return oAuthService.callEndpoint(keycloakSettings.getKeycloakTokenUrl(), requestBody, LoginResponse.class);
     }
 
     @Override

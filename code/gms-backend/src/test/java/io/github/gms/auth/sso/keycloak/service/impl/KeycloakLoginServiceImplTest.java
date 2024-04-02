@@ -2,6 +2,7 @@ package io.github.gms.auth.sso.keycloak.service.impl;
 
 import io.github.gms.auth.sso.keycloak.Input;
 import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
+import io.github.gms.auth.sso.keycloak.model.LoginResponse;
 import io.github.gms.auth.sso.keycloak.service.OAuthService;
 import io.github.gms.common.util.Constants;
 import io.github.gms.util.TestUtils;
@@ -75,12 +76,12 @@ class KeycloakLoginServiceImplTest {
                 .thenReturn(mockMap);
 
         // act
-        Map<String, String> response = service.login(USERNAME1, CREDENTIAL_TEST);
+        LoginResponse response = service.login(USERNAME1, CREDENTIAL_TEST);
 
         // assert
         assertNotNull(response);
-        assertEquals(MOCK_ACCESS_TOKEN, response.get(Constants.ACCESS_TOKEN));
-        assertEquals(MOCK_REFRESH_TOKEN, response.get(Constants.REFRESH_TOKEN));
+        assertEquals(MOCK_ACCESS_TOKEN, response.getAccessToken());
+        assertEquals(MOCK_REFRESH_TOKEN, response.getRefreshToken());
         ArgumentCaptor<MultiValueMap<String, String>> argumentCaptor = ArgumentCaptor.forClass(MultiValueMap.class);
         verify(oAuthService).callEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(Map.class));
         verify(keycloakSettings).getRealm();

@@ -7,12 +7,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IntrospectResponse {
+public class IntrospectResponse implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 6099923075106178108L;
 
     @JsonAlias("username")
     private String username;

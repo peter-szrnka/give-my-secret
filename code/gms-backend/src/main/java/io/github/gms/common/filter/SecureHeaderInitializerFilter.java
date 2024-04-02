@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
@@ -37,7 +36,6 @@ import java.util.regex.Pattern;
  * @since 1.0
  */
 @Component
-@Profile("!sso")
 public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 	
 	private static final Set<String> IGNORED_URLS = Sets.newHashSet("/secure/.*");

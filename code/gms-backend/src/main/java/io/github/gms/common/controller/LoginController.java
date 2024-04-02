@@ -46,7 +46,15 @@ public class LoginController extends AbstractLoginController {
 		AuthenticationResponse authenticateResult = authenticationService.authenticate(dto.getUsername(), dto.getCredential());
 
 		if (AuthResponsePhase.FAILED == authenticateResult.getPhase()) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(SET_COOKIE, CookieUtils.createCookie(ACCESS_JWT_TOKEN, null, 0, secure).toString());
+			headers.add(SET_COOKIE, CookieUtils.createCookie(REFRESH_JWT_TOKEN, null, 0, secure).toString());
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).headers(headers).body(null);
+		} else if (AuthResponsePhase.ALREADY_LOGGED_IN == authenticateResult.getPhase()) {
+			return ResponseEntity.status(HttpStatus.OK).body(AuthenticateResponseDto.builder()
+					.currentUser(authenticateResult.getCurrentUser())
+					.phase(authenticateResult.getPhase())
+					.build());
 		}
 
 		return ResponseEntity.ok().headers(addHeaders(authenticateResult))
@@ -62,8 +70,8 @@ public class LoginController extends AbstractLoginController {
 
 		authenticationService.logout();
 		
-		headers.add(SET_COOKIE, CookieUtils.createCookie(ACCESS_JWT_TOKEN, "", -1, secure).toString());
-		headers.add(SET_COOKIE, CookieUtils.createCookie(REFRESH_JWT_TOKEN, "", -1, secure).toString());
+		headers.add(SET_COOKIE, CookieUtils.createCookie(ACCESS_JWT_TOKEN, null, 0, secure).toString());
+		headers.add(SET_COOKIE, CookieUtils.createCookie(REFRESH_JWT_TOKEN, null, 0, secure).toString());
 
 		return ResponseEntity.ok().headers(headers).build();
 	}

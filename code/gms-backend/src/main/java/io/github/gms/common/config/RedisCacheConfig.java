@@ -1,6 +1,7 @@
 package io.github.gms.common.config;
 
 import io.github.gms.common.config.cache.ApiCacheKeyGenerator;
+import io.github.gms.common.config.cache.KeycloakSsoKeyGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -24,6 +25,8 @@ import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.CACHE_API_GENERATOR;
 import static io.github.gms.common.util.Constants.CACHE_GLOBAL_IP_RESTRICTION;
 import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
+import static io.github.gms.common.util.Constants.CACHE_KEYCLOAK_SSO_GENERATOR;
+import static io.github.gms.common.util.Constants.CACHE_SSO_USER;
 import static io.github.gms.common.util.Constants.CACHE_SYSTEM_PROPERTY;
 import static io.github.gms.common.util.Constants.CACHE_USER;
 
@@ -57,7 +60,7 @@ public class RedisCacheConfig {
     }
 
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+    public CacheManager cacheManager(RedisConnectionFactory connectionFactory, RedisCacheManagerBuilderCustomizer customizer) {
         return RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(connectionFactory)
                 .withCacheConfiguration(CACHE_USER, minutesCacheConfig(10))
@@ -65,17 +68,13 @@ public class RedisCacheConfig {
                 .withCacheConfiguration(CACHE_API, minutesCacheConfig(10))
                 .withCacheConfiguration(CACHE_GLOBAL_IP_RESTRICTION, minutesCacheConfig(10))
                 .withCacheConfiguration(CACHE_IP_RESTRICTION, minutesCacheConfig(10))
+                .withCacheConfiguration(CACHE_SSO_USER, minutesCacheConfig(5))
                 .build();
     }
 
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
-        return (builder) -> builder
-                .withCacheConfiguration(CACHE_USER, minutesCacheConfig(10))
-                .withCacheConfiguration(CACHE_SYSTEM_PROPERTY, minutesCacheConfig(10))
-                .withCacheConfiguration(CACHE_API, minutesCacheConfig(5))
-                .withCacheConfiguration(CACHE_GLOBAL_IP_RESTRICTION, minutesCacheConfig(10))
-                .withCacheConfiguration(CACHE_IP_RESTRICTION, minutesCacheConfig(10));
+        return RedisCacheManager.RedisCacheManagerBuilder::cacheDefaults;
     }
 
     @Bean
@@ -87,6 +86,11 @@ public class RedisCacheConfig {
     @Bean(CACHE_API_GENERATOR)
     public KeyGenerator apiCacheKeyGenerator() {
         return new ApiCacheKeyGenerator();
+    }
+
+    @Bean(CACHE_KEYCLOAK_SSO_GENERATOR)
+    public KeyGenerator keycloakSsoKeyGenerator() {
+        return new KeycloakSsoKeyGenerator();
     }
 
     private static RedisCacheConfiguration minutesCacheConfig(int minutes) {

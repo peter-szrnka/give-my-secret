@@ -1,6 +1,7 @@
 package io.github.gms.common.config;
 
 import io.github.gms.common.config.cache.ApiCacheKeyGenerator;
+import io.github.gms.common.config.cache.KeycloakSsoKeyGenerator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurer;
@@ -16,6 +17,8 @@ import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.CACHE_API_GENERATOR;
 import static io.github.gms.common.util.Constants.CACHE_GLOBAL_IP_RESTRICTION;
 import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
+import static io.github.gms.common.util.Constants.CACHE_KEYCLOAK_SSO_GENERATOR;
+import static io.github.gms.common.util.Constants.CACHE_SSO_USER;
 import static io.github.gms.common.util.Constants.CACHE_SYSTEM_PROPERTY;
 import static io.github.gms.common.util.Constants.CACHE_USER;
 
@@ -36,7 +39,8 @@ public class CacheConfig implements CachingConfigurer {
 				CACHE_SYSTEM_PROPERTY,
 				CACHE_API,
 				CACHE_GLOBAL_IP_RESTRICTION,
-				CACHE_IP_RESTRICTION);
+				CACHE_IP_RESTRICTION,
+				CACHE_SSO_USER);
 		manager.setAllowNullValues(false);
 		return manager;
     }
@@ -52,4 +56,9 @@ public class CacheConfig implements CachingConfigurer {
     public KeyGenerator apiCacheKeyGenerator() {
         return new ApiCacheKeyGenerator();
     }
+
+	@Bean(CACHE_KEYCLOAK_SSO_GENERATOR)
+	public KeyGenerator keycloakSsoKeyGenerator() {
+		return new KeycloakSsoKeyGenerator();
+	}
 }

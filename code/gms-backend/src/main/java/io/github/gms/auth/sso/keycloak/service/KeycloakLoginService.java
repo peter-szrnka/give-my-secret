@@ -1,6 +1,6 @@
 package io.github.gms.auth.sso.keycloak.service;
 
-import java.util.Map;
+import io.github.gms.auth.sso.keycloak.model.LoginResponse;
 
 /**
  * @author Peter Szrnka
@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public interface KeycloakLoginService {
 
-    Map<String, String> login(String username, String credential);
+    LoginResponse login(String username, String credential);
 
     void logout();
 }

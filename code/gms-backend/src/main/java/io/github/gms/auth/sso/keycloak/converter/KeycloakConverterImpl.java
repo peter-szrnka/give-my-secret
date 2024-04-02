@@ -57,6 +57,7 @@ public class KeycloakConverterImpl implements KeycloakConverter {
             entity.setCreationDate(ZonedDateTime.now(clock));
             entity.setMfaSecret(secretGenerator.generate());
         }
+        // TODO Handle existing entities
 
         return entity;
     }
