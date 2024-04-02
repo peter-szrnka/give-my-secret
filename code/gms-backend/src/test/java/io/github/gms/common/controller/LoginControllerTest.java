@@ -99,7 +99,7 @@ class LoginControllerTest {
         assertEquals(1, response.getHeaders().size());
         assertTrue(Objects.requireNonNull(response.getHeaders().get("Set-Cookie")).stream().anyMatch(item -> item.equals("mock-cookie1")));
         assertTrue(Objects.requireNonNull(response.getHeaders().get("Set-Cookie")).stream().anyMatch(item -> item.equals("mock-cookie2")));
-        assertEquals("AuthenticateResponseDto(currentUser=UserInfoDto(id=1, name=name, username=user, email=a@b.com, roles=[ROLE_USER]), phase=COMPLETED)",
+        assertEquals("AuthenticateResponseDto(currentUser=UserInfoDto(id=1, name=name, username=user, email=a@b.com, role=KeystoreIntegrationTestROLE_USER), phase=COMPLETED)",
                 Objects.requireNonNull(response.getBody()).toString());
 
         verify(systemPropertyService).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);

@@ -110,7 +110,6 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 		return new Object[][] {
 			{SELECTED_AUTH_LDAP, false, "DevRuntime" },
 			{SELECTED_AUTH_SSO, true, "DevRuntime" },
-			{SELECTED_AUTH_DB, true, "1.0.0" },
 			{SELECTED_AUTH_DB, true, "1.0.0" }
 		};
 	}
