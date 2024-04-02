@@ -12,7 +12,6 @@ import io.github.gms.functions.user.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,8 +37,7 @@ public class KeycloakAuthorizationServiceImpl implements AuthorizationService {
 
     private final KeycloakConverter converter;
     private final KeycloakIntrospectService keycloakIntrospectService;
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public AuthorizationResponse authorize(HttpServletRequest request) {

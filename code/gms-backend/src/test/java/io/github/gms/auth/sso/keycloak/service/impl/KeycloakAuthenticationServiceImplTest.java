@@ -8,6 +8,7 @@ import io.github.gms.auth.sso.keycloak.service.KeycloakLoginService;
 import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.util.Constants;
+import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
@@ -22,6 +23,7 @@ import static io.github.gms.util.TestUtils.MOCK_REFRESH_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -81,6 +83,9 @@ class KeycloakAuthenticationServiceImplTest {
                 .build();
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
                 .thenReturn(mockIntrospectResponse);
+        UserEntity userEntity = TestUtils.createUser();
+        when(converter.toNewEntity(any(UserEntity.class), eq(mockUserInfo))).thenReturn(userEntity);
+        when(userRepository.save(userEntity)).thenReturn(userEntity);
 
         // act
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);

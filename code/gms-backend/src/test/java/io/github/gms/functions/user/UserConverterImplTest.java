@@ -55,7 +55,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=null, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=null, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -76,7 +76,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
+		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 	}
 
 	@Test
@@ -98,7 +98,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -117,7 +117,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=null, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, role=null, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -136,7 +136,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -157,7 +157,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
 
-		UserDto dto = resultList.getResultList().get(0);
+		UserDto dto = resultList.getResultList().getFirst();
 		assertEquals(1L, dto.getId());
 		assertEquals("name", dto.getName());
 		assertEquals(TestUtils.USERNAME, dto.getUsername());
@@ -194,7 +194,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(dto);
-		assertEquals("UserInfoDto(id=null, name=null, username=username1, email=null, roles=[])", dto.toString());
+		assertEquals("UserInfoDto(id=null, name=null, username=username1, email=null, role=null)", dto.toString());
 	}
 
 	@Test

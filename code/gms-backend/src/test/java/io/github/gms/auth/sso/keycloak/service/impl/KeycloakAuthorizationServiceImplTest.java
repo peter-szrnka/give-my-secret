@@ -1,10 +1,12 @@
 package io.github.gms.auth.sso.keycloak.service.impl;
 
 import io.github.gms.auth.model.AuthorizationResponse;
+import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.auth.sso.keycloak.Input;
 import io.github.gms.auth.sso.keycloak.converter.KeycloakConverter;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
 import io.github.gms.auth.sso.keycloak.service.KeycloakIntrospectService;
+import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,10 +16,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 
+import java.util.Optional;
+
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,13 +35,15 @@ class KeycloakAuthorizationServiceImplTest {
 
     private KeycloakConverter converter;
     private KeycloakIntrospectService keycloakIntrospectService;
+    private UserRepository userRepository;
     private KeycloakAuthorizationServiceImpl service;
 
     @BeforeEach
     public void setup() {
         converter = mock(KeycloakConverter.class);
         keycloakIntrospectService = mock(KeycloakIntrospectService.class);
-        service = new KeycloakAuthorizationServiceImpl(converter, keycloakIntrospectService);
+        userRepository = mock(UserRepository.class);
+        service = new KeycloakAuthorizationServiceImpl(converter, keycloakIntrospectService, userRepository);
     }
 
     @ParameterizedTest
@@ -66,7 +73,9 @@ class KeycloakAuthorizationServiceImplTest {
         IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder().build();
         when(keycloakIntrospectService.getUserDetails("access", "refresh"))
                 .thenReturn(mockIntrospectResponse);
-        when(converter.toUserDetails(mockIntrospectResponse)).thenReturn(TestUtils.createGmsAdminUser());
+        GmsUserDetails mockUser = TestUtils.createGmsAdminUser();
+        when(converter.toUserDetails(mockIntrospectResponse)).thenReturn(mockUser);
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(TestUtils.createAdminUser()));
 
         // act
         AuthorizationResponse response = service.authorize(httpServletRequest);
