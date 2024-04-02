@@ -62,8 +62,8 @@ public class LoginController extends AbstractLoginController {
 
 		authenticationService.logout();
 		
-		headers.add(SET_COOKIE, CookieUtils.createCookie(ACCESS_JWT_TOKEN, null, 0, secure).toString());
-		headers.add(SET_COOKIE, CookieUtils.createCookie(REFRESH_JWT_TOKEN, null, 0, secure).toString());
+		headers.add(SET_COOKIE, CookieUtils.createCookie(ACCESS_JWT_TOKEN, "", -1, secure).toString());
+		headers.add(SET_COOKIE, CookieUtils.createCookie(REFRESH_JWT_TOKEN, "", -1, secure).toString());
 
 		return ResponseEntity.ok().headers(headers).build();
 	}
