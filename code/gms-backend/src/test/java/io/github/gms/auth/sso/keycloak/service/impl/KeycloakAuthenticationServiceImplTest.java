@@ -158,11 +158,6 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     void shouldLoginFailedWhenResponseBodyMissing() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
-                .thenReturn(ResponseEntity.ok(LoginResponse.builder()
-                        .accessToken(MOCK_ACCESS_TOKEN)
-                        .refreshToken(MOCK_REFRESH_TOKEN)
-                        .build()));
-        when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
                 .thenReturn(ResponseEntity.ok().build());
 
         // act
@@ -172,7 +167,6 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         assertNotNull(response);
         assertEquals(AuthResponsePhase.FAILED, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
-        verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
     }
 
     @Test
