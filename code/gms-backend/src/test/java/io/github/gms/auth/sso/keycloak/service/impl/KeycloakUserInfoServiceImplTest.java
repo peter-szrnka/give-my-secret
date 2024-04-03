@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,13 +75,13 @@ class KeycloakUserInfoServiceImplTest {
                 new Cookie(REFRESH_JWT_TOKEN, "refresh")
         });
         when(keycloakIntrospectService.getUserDetails("access", "refresh"))
-                .thenReturn(IntrospectResponse.builder()
+                .thenReturn(ResponseEntity.ok(IntrospectResponse.builder()
                         .name("My Name")
                         .username("user1")
                         .active("active")
                         .email("email@email")
                         .realmAccess(RealmAccess.builder().roles(List.of("ROLE_USER")).build())
-                        .build());
+                        .build()));
         when(userRepository.getIdByUsername("user1")).thenReturn(Optional.empty());
 
         // act
@@ -102,13 +103,13 @@ class KeycloakUserInfoServiceImplTest {
                 new Cookie(REFRESH_JWT_TOKEN, "refresh")
         });
         when(keycloakIntrospectService.getUserDetails("access", "refresh"))
-                .thenReturn(IntrospectResponse.builder()
+                .thenReturn(ResponseEntity.ok(IntrospectResponse.builder()
                         .name("My Name")
                         .username("user1")
                         .active("active")
                         .email("email@email")
                         .realmAccess(RealmAccess.builder().roles(List.of("ROLE_USER")).build())
-                        .build());
+                        .build()));
         when(userRepository.getIdByUsername("user1")).thenReturn(Optional.of(1L));
 
         // act
