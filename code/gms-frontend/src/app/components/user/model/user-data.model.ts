@@ -17,7 +17,7 @@ export interface UserData extends BaseDetail {
 
 export const EMPTY_USER_DATA : UserData = {
     credential: undefined,
-    role: ''
+    role: 'ROLE_USER'
 };
 
 export const PAGE_CONFIG_USER : PageConfig = {

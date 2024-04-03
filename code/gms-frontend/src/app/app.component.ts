@@ -48,18 +48,27 @@ export class AppComponent implements OnInit, OnDestroy {
         }
   
         this.systemReady = readyData.ready;
-      });
 
-      this.sharedDataService.userSubject$.subscribe(user => {
-        this.currentUser = user;
-        this.isAdmin = !this.currentUser ? false : roleCheck(this.currentUser, 'ROLE_ADMIN');
-
-        if (!user && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
-          this.navigateToLogin();
-        }
+        this.processUserSubject();
       });
 
     this.sharedDataService.check();
+  }
+
+  private processUserSubject() : void {
+    this.sharedDataService.userSubject$.asObservable().subscribe(user => {
+      this.currentUser = user;
+      this.isAdmin = !this.currentUser ? false : roleCheck(this.currentUser, 'ROLE_ADMIN');
+
+      if (!this.currentUser && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
+        this.navigateToLogin();
+        return;
+      }
+
+      if (this.currentUser && this.router.url.startsWith(LOGIN_CALLBACK_URL)) {
+        this.router.navigate(['']);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -72,7 +81,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private navigateToLogin(): void {
-    console.info("navigateToLogin");
     // FIXME previousUrl temporary disabled!
     void this.router.navigate([LOGIN_CALLBACK_URL]/*, { queryParams: { previousUrl: this.location.path() } }*/);
   }

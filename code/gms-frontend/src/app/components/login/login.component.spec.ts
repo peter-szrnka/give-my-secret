@@ -5,13 +5,13 @@ import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ReplaySubject, of, throwError } from "rxjs";
+import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { EMPTY_USER, User } from "../user/model/user.model";
+import { EMPTY_USER } from "../user/model/user.model";
 import { LoginComponent } from "./login.component";
 
 /**
@@ -20,7 +20,6 @@ import { LoginComponent } from "./login.component";
 describe('LoginComponent', () => {
     let component : LoginComponent;
     let fixture : ComponentFixture<LoginComponent>;
-    let mockSubject : ReplaySubject<any>;
     // Injected services
     let router : any;
     let authService : any;
@@ -56,10 +55,8 @@ describe('LoginComponent', () => {
             navigate : jest.fn().mockReturnValue(of(true))
         };
 
-        mockSubject = new ReplaySubject<any>();
         sharedDataService = {
             refreshCurrentUserInfo : jest.fn(),
-            userSubject$ : mockSubject,
             systemReady: true
         };
 
@@ -131,7 +128,6 @@ describe('LoginComponent', () => {
         };
 
         configTestBed();
-        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -154,7 +150,6 @@ describe('LoginComponent', () => {
             }
         };
         configTestBed();
-        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -168,24 +163,6 @@ describe('LoginComponent', () => {
         expect(component.showPassword).toBeTruthy();
     });
 
-    it.each(['ROLE_USER', 'ROLE_ADMIN'])('Should redirect to main page', (inputRole: string) => {
-        // arrange
-        activatedRoute = {
-            snapshot : {
-                queryParams: {
-                }
-            }
-        };
-        configTestBed();
-
-        // act
-        mockSubject.next({ id: 1, username: 'test', role: inputRole } as User);
-
-        // assert
-        expect(component).toBeTruthy();
-        expect(router.navigate).toHaveBeenCalled();
-    });
-
     it('Should not redirect to main page when system is not ready', () => {
         // arrange
         activatedRoute = {
@@ -197,7 +174,6 @@ describe('LoginComponent', () => {
         configTestBed();
 
         // act
-        mockSubject.next(undefined);
         sharedDataService.systemReady = false;
 
         // assert
@@ -257,7 +233,6 @@ describe('LoginComponent', () => {
             })
         };
         configTestBed();
-        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -282,7 +257,6 @@ describe('LoginComponent', () => {
             })
         };
         configTestBed();
-        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -303,7 +277,6 @@ describe('LoginComponent', () => {
         };
 
         configTestBed();
-        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act

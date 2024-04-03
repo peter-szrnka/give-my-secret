@@ -29,9 +29,8 @@ export class RequestPasswordResetComponent {
                 this.splashScreenStateService.stop();
                 this.router.navigate(['/login']);
             },
-            error: (err) => {
+            error: () => {
                 this.splashScreenStateService.stop();
-                console.error(err);
                 this.showErrorModal();
             },
         });

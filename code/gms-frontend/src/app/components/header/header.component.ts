@@ -53,6 +53,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     logout() : void {
         this.currentUser = undefined;
         this.sharedDataService.logout();
+        this.userSubscription.unsubscribe();
+        this.unreadSubscription.unsubscribe();
     }
 
     toggleMenu() : void {

@@ -36,7 +36,7 @@ describe('AuthInterceptor', () => {
         interceptor.intercept(req, handler).subscribe();
 
         // assert
-        expect(sharedData.logout).toBeCalledTimes(0);
+        expect(sharedData.clearData).toHaveBeenCalledTimes(0);
     });
 
     it('should not proceed because of 0', () => {
@@ -48,7 +48,6 @@ describe('AuthInterceptor', () => {
 
         // assert
         expect(sharedData.clearData).toHaveBeenCalled();
-        expect(sharedData.logout).toHaveBeenCalled();
     });
 
     it('should not proceed because of 401', () => {
@@ -59,7 +58,7 @@ describe('AuthInterceptor', () => {
         interceptor.intercept(req, handler).subscribe();
 
         // assert
-        expect(sharedData.logout).toHaveBeenCalledTimes(1);
+        expect(sharedData.clearData).toHaveBeenCalled();
     });
 
     it('should not proceed because of 403', () => {
@@ -70,7 +69,7 @@ describe('AuthInterceptor', () => {
         interceptor.intercept(req, handler).subscribe();
 
         // assert
-        expect(sharedData.logout).toBeCalledTimes(1);
+        expect(sharedData.clearData).toHaveBeenCalled();
     });
 
     it('should not proceed because of 500', () => {
@@ -81,7 +80,7 @@ describe('AuthInterceptor', () => {
         interceptor.intercept(req, handler).subscribe();
 
         // assert
-        expect(sharedData.logout).toBeCalledTimes(0);
+        expect(sharedData.clearData).toHaveBeenCalledTimes(0);
     });
 
     function createHandler(errorMessage : string, statusCode : number) : any {

@@ -171,7 +171,24 @@ describe('AppComponent', () => {
         fixture.detectChanges();
 
         // act & assert
-        expect(router.navigate).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledTimes(0);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
+    });
+
+    it('Should navigate to main page', () => {
+        currentUser = {
+            role : "ROLE_ADMIN",
+            username : "test1",
+            id : 1
+        };
+        router.url = '/login';
+        mockSubject.next(currentUser);
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        configureTestBed();
+        
+        // act & assert
+        expect(component.isAdmin).toEqual(true);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });

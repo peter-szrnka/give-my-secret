@@ -66,7 +66,6 @@ export class HomeComponent implements OnInit, OnDestroy {
             });
         this.userSubscription = this.sharedData.userSubject$
             .subscribe((user: User | undefined) => {
-                console.info("user", user);
                 this.data = {
                     ...EMPTY_HOME_DATA,
                     ...this.data

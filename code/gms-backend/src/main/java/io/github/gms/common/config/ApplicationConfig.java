@@ -10,7 +10,8 @@ import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
-import io.github.gms.common.interceptor.HttpClientInterceptor;
+import io.github.gms.common.interceptor.HttpClientResponseLoggingInterceptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jackson.JsonComponentModule;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -64,10 +65,10 @@ public class ApplicationConfig implements WebMvcConfigurer {
 	}
 
 	@Bean
-	RestTemplate restTemplate() {
+	RestTemplate restTemplate(@Value("${config.logging.httpClient.enabled}") boolean httpClientLoggingEnabled) {
 		return new RestTemplateBuilder()
 				.requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
-				.additionalInterceptors(new HttpClientInterceptor())
+				.additionalInterceptors(new HttpClientResponseLoggingInterceptor(httpClientLoggingEnabled))
 				.build();
 	}
 	
