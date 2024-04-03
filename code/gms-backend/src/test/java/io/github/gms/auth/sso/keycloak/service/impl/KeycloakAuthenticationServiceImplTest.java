@@ -1,5 +1,7 @@
 package io.github.gms.auth.sso.keycloak.service.impl;
 
+import ch.qos.logback.classic.Logger;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.sso.keycloak.converter.KeycloakConverter;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 import static io.github.gms.util.TestUtils.MOCK_ACCESS_TOKEN;
 import static io.github.gms.util.TestUtils.MOCK_REFRESH_TOKEN;
+import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,7 +48,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class KeycloakAuthenticationServiceImplTest {
+class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     private KeycloakLoginService keycloakLoginService;
     private KeycloakIntrospectService keycloakIntrospectService;
@@ -53,14 +57,17 @@ class KeycloakAuthenticationServiceImplTest {
     private HttpServletRequest httpServletRequest;
     private KeycloakAuthenticationServiceImpl service;
 
+    @Override
     @BeforeEach
     public void setup() {
+        super.setup();
         keycloakLoginService = mock(KeycloakLoginService.class);
         keycloakIntrospectService = mock(KeycloakIntrospectService.class);
         converter = mock(KeycloakConverter.class);
         userRepository = mock(UserRepository.class);
         httpServletRequest = mock(HttpServletRequest.class);
         service = new KeycloakAuthenticationServiceImpl(keycloakLoginService, keycloakIntrospectService, converter, userRepository, httpServletRequest);
+        ((Logger) LoggerFactory.getLogger(KeycloakAuthenticationServiceImpl.class)).addAppender(logAppender);
     }
 
     @Test
@@ -106,6 +113,45 @@ class KeycloakAuthenticationServiceImplTest {
         assertEquals(AuthResponsePhase.FAILED, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
         verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
+    }
+
+    @Test
+    void shouldLoginFailWhenResponseIsNot2xx() {
+        // arrange
+        when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
+                .thenReturn(ResponseEntity.badRequest().build());
+
+        // act
+        AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(AuthResponsePhase.FAILED, response.getPhase());
+        verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+        verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
+        verify(keycloakIntrospectService, never()).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
+        assertLogContains(logAppender, "Login failed! Status code=400");
+    }
+
+    @Test
+    void shouldLoginSucceedWhenIntrospectFailed() {
+        // arrange
+        when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
+                .thenReturn(ResponseEntity.ok(LoginResponse.builder()
+                        .accessToken(MOCK_ACCESS_TOKEN)
+                        .refreshToken(MOCK_REFRESH_TOKEN)
+                        .build()));
+        when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
+                .thenReturn(ResponseEntity.badRequest().build());
+
+        // act
+        AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(AuthResponsePhase.FAILED, response.getPhase());
+        verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+        verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
     }
 
     @Test
@@ -174,7 +220,6 @@ class KeycloakAuthenticationServiceImplTest {
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
                 .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
         UserEntity userEntity = TestUtils.createUser();
-        when(userRepository.save(userEntity)).thenReturn(userEntity);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(userEntity));
 
         // act

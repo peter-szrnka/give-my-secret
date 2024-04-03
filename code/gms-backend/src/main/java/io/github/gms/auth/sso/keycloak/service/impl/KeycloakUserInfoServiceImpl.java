@@ -42,11 +42,11 @@ public class KeycloakUserInfoServiceImpl implements UserInfoService {
         }
 
         ResponseEntity<IntrospectResponse> response = keycloakIntrospectService.getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
-        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+        IntrospectResponse payload = response.getBody();
+        if (!response.getStatusCode().is2xxSuccessful() || payload == null) {
             return null;
         }
 
-        IntrospectResponse payload = response.getBody();
         Long userId = userRepository.getIdByUsername(payload.getUsername()).orElse(-1L);
 
         if (userId.equals(-1L)) {

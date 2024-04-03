@@ -50,11 +50,6 @@ public class LoginController extends AbstractLoginController {
 			headers.add(SET_COOKIE, CookieUtils.createCookie(ACCESS_JWT_TOKEN, null, 0, secure).toString());
 			headers.add(SET_COOKIE, CookieUtils.createCookie(REFRESH_JWT_TOKEN, null, 0, secure).toString());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).headers(headers).body(null);
-		} else if (AuthResponsePhase.ALREADY_LOGGED_IN == authenticateResult.getPhase()) {
-			return ResponseEntity.status(HttpStatus.OK).body(AuthenticateResponseDto.builder()
-					.currentUser(authenticateResult.getCurrentUser())
-					.phase(authenticateResult.getPhase())
-					.build());
 		}
 
 		return ResponseEntity.ok().headers(addHeaders(authenticateResult))

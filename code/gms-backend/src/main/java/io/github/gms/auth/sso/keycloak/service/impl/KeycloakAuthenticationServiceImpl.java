@@ -58,16 +58,9 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         // Login with Keycloak
         try {
             ResponseEntity<LoginResponse> response = keycloakLoginService.login(username, credential);
-
-            if (!response.getStatusCode().is2xxSuccessful()) {
-                log.warn("Login failed! Status code={}", response.getStatusCode());
-                return AuthenticationResponse.builder()
-                        .build();
-            }
-
             LoginResponse payload = response.getBody();
-
-            if (payload == null) {
+            if (!response.getStatusCode().is2xxSuccessful() || payload == null) {
+                log.warn("Login failed! Status code={}", response.getStatusCode());
                 return AuthenticationResponse.builder()
                         .build();
             }
@@ -116,6 +109,7 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         IntrospectResponse payload = response.getBody();
 
         if (!"true".equals(payload.getActive())) {
+            // TODO Handle this case, might need MFA
             return null;
         }
 
