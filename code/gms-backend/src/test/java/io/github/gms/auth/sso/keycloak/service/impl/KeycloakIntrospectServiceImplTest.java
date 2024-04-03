@@ -51,7 +51,7 @@ class KeycloakIntrospectServiceImplTest {
                 .name("name")
                 .active("true")
                 .build();
-        when(oAuthService.callEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(IntrospectResponse.class)))
+        when(oAuthService.callPostEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(IntrospectResponse.class)))
                 .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
 
         // act
@@ -63,7 +63,7 @@ class KeycloakIntrospectServiceImplTest {
         verify(keycloakSettings).getClientSecret();
         verify(keycloakSettings).getIntrospectUrl();
         ArgumentCaptor<MultiValueMap<String, String>> argumentCaptor = ArgumentCaptor.forClass(MultiValueMap.class);
-        verify(oAuthService).callEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(IntrospectResponse.class));
+        verify(oAuthService).callPostEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(IntrospectResponse.class));
 
         MultiValueMap<String, String> captured = argumentCaptor.getValue();
         assertEquals("clientId", captured.get(CLIENT_ID).getFirst());

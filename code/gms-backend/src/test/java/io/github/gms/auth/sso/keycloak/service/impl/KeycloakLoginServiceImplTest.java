@@ -66,7 +66,7 @@ class KeycloakLoginServiceImplTest {
         when(keycloakSettings.getKeycloakTokenUrl()).thenReturn(TestUtils.LOCALHOST_8080);
         when(keycloakSettings.getClientId()).thenReturn("clientId");
         when(keycloakSettings.getClientSecret()).thenReturn("clientSecret");
-        when(oAuthService.callEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(LoginResponse.class)))
+        when(oAuthService.callPostEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(LoginResponse.class)))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder().accessToken(MOCK_ACCESS_TOKEN).refreshToken(MOCK_REFRESH_TOKEN).build()));
 
         // act
@@ -79,7 +79,7 @@ class KeycloakLoginServiceImplTest {
         assertEquals(MOCK_ACCESS_TOKEN, payload.getAccessToken());
         assertEquals(MOCK_REFRESH_TOKEN, payload.getRefreshToken());
         ArgumentCaptor<MultiValueMap<String, String>> argumentCaptor = ArgumentCaptor.forClass(MultiValueMap.class);
-        verify(oAuthService).callEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(LoginResponse.class));
+        verify(oAuthService).callPostEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(LoginResponse.class));
         verify(keycloakSettings).getRealm();
         verify(keycloakSettings).getKeycloakTokenUrl();
         verify(keycloakSettings).getClientId();
@@ -113,7 +113,7 @@ class KeycloakLoginServiceImplTest {
         verify(keycloakSettings).getClientSecret();
         verify(keycloakSettings).getLogoutUrl();
         ArgumentCaptor<MultiValueMap<String, String>> argumentCaptor = ArgumentCaptor.forClass(MultiValueMap.class);
-        verify(oAuthService).callEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(Void.class));
+        verify(oAuthService).callPostEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(Void.class));
         MultiValueMap<String, String> captured = argumentCaptor.getValue();
         assertEquals("clientId", captured.get(CLIENT_ID).getFirst());
         assertEquals("clientSecret", captured.get(CLIENT_SECRET).getFirst());
@@ -135,7 +135,7 @@ class KeycloakLoginServiceImplTest {
         verify(keycloakSettings, never()).getClientId();
         verify(keycloakSettings, never()).getClientSecret();
         verify(keycloakSettings, never()).getLogoutUrl();
-        verify(oAuthService, never()).callEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(Void.class));
+        verify(oAuthService, never()).callPostEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(Void.class));
     }
 
     private static Object[] emptyInputData() {

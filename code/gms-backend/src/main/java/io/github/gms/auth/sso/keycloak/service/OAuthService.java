@@ -9,5 +9,5 @@ import org.springframework.util.MultiValueMap;
  */
 public interface OAuthService {
 
-    <T> ResponseEntity<T> callEndpoint(String url, MultiValueMap<String, String> requestBody, Class<T> responseClass);
+    <T> ResponseEntity<T> callPostEndpoint(String url, MultiValueMap<String, String> requestBody, Class<T> responseClass);
 }

@@ -57,7 +57,7 @@ public class KeycloakLoginServiceImpl implements KeycloakLoginService {
         requestBody.add(CLIENT_SECRET, keycloakSettings.getClientSecret());
         requestBody.add(SCOPE, SCOPE_GMS);
 
-        return oAuthService.callEndpoint(keycloakSettings.getKeycloakTokenUrl(), requestBody, LoginResponse.class);
+        return oAuthService.callPostEndpoint(keycloakSettings.getKeycloakTokenUrl(), requestBody, LoginResponse.class);
     }
 
     @Override
@@ -75,6 +75,6 @@ public class KeycloakLoginServiceImpl implements KeycloakLoginService {
         requestBody.add(CLIENT_SECRET, keycloakSettings.getClientSecret());
         requestBody.add(TOKEN, accessJwtCookie.getValue());
         requestBody.add(REFRESH_TOKEN, refreshJwtCookie.getValue());
-        oAuthService.callEndpoint(keycloakSettings.getLogoutUrl(), requestBody, Void.class);
+        oAuthService.callPostEndpoint(keycloakSettings.getLogoutUrl(), requestBody, Void.class);
     }
 }

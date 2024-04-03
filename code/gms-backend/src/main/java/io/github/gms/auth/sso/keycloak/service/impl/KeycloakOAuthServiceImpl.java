@@ -27,7 +27,7 @@ public class KeycloakOAuthServiceImpl implements OAuthService {
     }
 
     @Override
-    public <T> ResponseEntity<T> callEndpoint(String url, MultiValueMap<String, String> requestBody, Class<T> responseClass) {
+    public <T> ResponseEntity<T> callPostEndpoint(String url, MultiValueMap<String, String> requestBody, Class<T> responseClass) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 

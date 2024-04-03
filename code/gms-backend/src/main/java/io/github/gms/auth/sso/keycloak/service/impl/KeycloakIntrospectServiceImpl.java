@@ -45,6 +45,6 @@ public class KeycloakIntrospectServiceImpl implements KeycloakIntrospectService 
         requestBody.add(TOKEN, accessToken);
         requestBody.add(REFRESH_TOKEN, refreshToken);
 
-        return oAuthService.callEndpoint(keycloakSettings.getIntrospectUrl(), requestBody, IntrospectResponse.class);
+        return oAuthService.callPostEndpoint(keycloakSettings.getIntrospectUrl(), requestBody, IntrospectResponse.class);
     }
 }
