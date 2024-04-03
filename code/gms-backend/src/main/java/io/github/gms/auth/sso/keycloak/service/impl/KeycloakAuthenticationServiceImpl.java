@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
@@ -56,10 +57,23 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
 
         // Login with Keycloak
         try {
-            LoginResponse response = keycloakLoginService.login(username, credential);
+            ResponseEntity<LoginResponse> response = keycloakLoginService.login(username, credential);
+
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                log.warn("Login failed! Status code={}", response.getStatusCode());
+                return AuthenticationResponse.builder()
+                        .build();
+            }
+
+            LoginResponse payload = response.getBody();
+
+            if (payload == null) {
+                return AuthenticationResponse.builder()
+                        .build();
+            }
 
             // Get user data
-            UserInfoDto userInfoDto = getUserDetails(response.getAccessToken(), response.getRefreshToken());
+            UserInfoDto userInfoDto = getUserDetails(payload.getAccessToken(), payload.getRefreshToken());
 
             if (userInfoDto == null) {
                 return AuthenticationResponse.builder().build();
@@ -70,8 +84,8 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
             return AuthenticationResponse.builder()
                     .currentUser(userInfoDto)
                     .phase(AuthResponsePhase.COMPLETED)
-                    .token(response.getAccessToken())
-                    .refreshToken(response.getRefreshToken())
+                    .token(payload.getAccessToken())
+                    .refreshToken(payload.getRefreshToken())
                     .build();
         } catch (Exception e) {
             log.error("Unexpected error occurred during authentication!", e);
@@ -92,13 +106,20 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
     }
 
     private UserInfoDto getUserDetails(String accessToken, String refreshToken) {
-        IntrospectResponse introspectResponse = keycloakIntrospectService.getUserDetails(accessToken, refreshToken);
+        ResponseEntity<IntrospectResponse> response = keycloakIntrospectService.getUserDetails(accessToken, refreshToken);
 
-        if (!"true".equals(introspectResponse.getActive())) {
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            log.warn("Retrieving user details failed! Status code={}", response.getStatusCode());
             return null;
         }
 
-        return converter.toUserInfoDto(introspectResponse);
+        IntrospectResponse payload = response.getBody();
+
+        if (!"true".equals(payload.getActive())) {
+            return null;
+        }
+
+        return converter.toUserInfoDto(payload);
     }
 
     @Override

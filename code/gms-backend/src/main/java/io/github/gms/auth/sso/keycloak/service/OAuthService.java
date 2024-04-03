@@ -1,5 +1,6 @@
 package io.github.gms.auth.sso.keycloak.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
 /**
@@ -8,5 +9,5 @@ import org.springframework.util.MultiValueMap;
  */
 public interface OAuthService {
 
-    <T> T callEndpoint(String url, MultiValueMap<String, String> requestBody, Class<T> responseClass);
+    <T> ResponseEntity<T> callEndpoint(String url, MultiValueMap<String, String> requestBody, Class<T> responseClass);
 }

@@ -50,11 +50,12 @@ public class KeycloakOAuthServiceImplTest extends AbstractUnitTest {
                 .thenReturn(mockResponseEntity);
 
         // act
-        String response = service.callEndpoint(URL, requestBody, String.class);
+        ResponseEntity<String> response = service.callEndpoint(URL, requestBody, String.class);
 
         // assert
         assertNotNull(response);
-        assertEquals("ok", response);
+        assertNotNull(response.getBody());
+        assertEquals("ok", response.getBody());
         verify(restTemplate).postForEntity(eq(URL), any(HttpEntity.class), eq(String.class));
     }
 }

@@ -7,7 +7,10 @@ import io.github.gms.auth.sso.keycloak.service.OAuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -15,6 +18,8 @@ import org.springframework.web.util.WebUtils;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.AUDIENCE;
+import static io.github.gms.common.util.Constants.CACHE_KEYCLOAK_SSO_GENERATOR;
+import static io.github.gms.common.util.Constants.CACHE_SSO_USER;
 import static io.github.gms.common.util.Constants.CLIENT_ID;
 import static io.github.gms.common.util.Constants.CLIENT_SECRET;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
@@ -34,6 +39,7 @@ import static io.github.gms.common.util.Constants.USERNAME;
 @Service
 @RequiredArgsConstructor
 @Profile(value = { CONFIG_AUTH_TYPE_KEYCLOAK_SSO })
+@CacheConfig(cacheNames = { CACHE_SSO_USER }, keyGenerator = CACHE_KEYCLOAK_SSO_GENERATOR)
 public class KeycloakLoginServiceImpl implements KeycloakLoginService {
 
     private final OAuthService oAuthService;
@@ -41,7 +47,7 @@ public class KeycloakLoginServiceImpl implements KeycloakLoginService {
     private final KeycloakSettings keycloakSettings;
 
     @Override
-    public LoginResponse login(String username, String credential) {
+    public ResponseEntity<LoginResponse> login(String username, String credential) {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add(GRANT_TYPE, CREDENTIAL);
         requestBody.add(AUDIENCE, keycloakSettings.getRealm());
@@ -55,6 +61,7 @@ public class KeycloakLoginServiceImpl implements KeycloakLoginService {
     }
 
     @Override
+    @CacheEvict
     public void logout() {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         Cookie accessJwtCookie = WebUtils.getCookie(httpServletRequest, ACCESS_JWT_TOKEN);

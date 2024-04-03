@@ -10,6 +10,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
@@ -40,8 +41,13 @@ public class KeycloakUserInfoServiceImpl implements UserInfoService {
             return UserInfoDto.builder().build();
         }
 
-        IntrospectResponse response = keycloakIntrospectService.getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
-        Long userId = userRepository.getIdByUsername(response.getUsername()).orElse(-1L);
+        ResponseEntity<IntrospectResponse> response = keycloakIntrospectService.getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            return null;
+        }
+
+        IntrospectResponse payload = response.getBody();
+        Long userId = userRepository.getIdByUsername(payload.getUsername()).orElse(-1L);
 
         if (userId.equals(-1L)) {
             return null;
@@ -49,10 +55,10 @@ public class KeycloakUserInfoServiceImpl implements UserInfoService {
 
         return UserInfoDto.builder()
                 .id(userId)
-                .email(response.getEmail())
-                .name(response.getName())
-                .username(response.getUsername())
-                .role(response.getRealmAccess().getRoles().stream().map(UserRole::getByName)
+                .email(payload.getEmail())
+                .name(payload.getName())
+                .username(payload.getUsername())
+                .role(payload.getRealmAccess().getRoles().stream().map(UserRole::getByName)
                         .filter(Objects::nonNull)
                         .toList().getFirst())
                 .build();

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -37,7 +38,7 @@ public class KeycloakIntrospectServiceImpl implements KeycloakIntrospectService 
 
     @Override
     @Cacheable
-    public IntrospectResponse getUserDetails(String accessToken, String refreshToken) {
+    public ResponseEntity<IntrospectResponse> getUserDetails(String accessToken, String refreshToken) {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add(CLIENT_ID, keycloakSettings.getClientId());
         requestBody.add(CLIENT_SECRET, keycloakSettings.getClientSecret());

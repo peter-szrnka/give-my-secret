@@ -27,13 +27,11 @@ public class KeycloakOAuthServiceImpl implements OAuthService {
     }
 
     @Override
-    public <T> T callEndpoint(String url, MultiValueMap<String, String> requestBody, Class<T> responseClass) {
+    public <T> ResponseEntity<T> callEndpoint(String url, MultiValueMap<String, String> requestBody, Class<T> responseClass) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
-        ResponseEntity<T> response = restTemplate.postForEntity(url, requestEntity, responseClass);
-
-        return response.getBody();
+        return restTemplate.postForEntity(url, requestEntity, responseClass);
     }
 }

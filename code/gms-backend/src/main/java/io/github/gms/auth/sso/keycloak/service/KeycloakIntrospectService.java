@@ -1,6 +1,7 @@
 package io.github.gms.auth.sso.keycloak.service;
 
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
+import org.springframework.http.ResponseEntity;
 
 /**
  * @author Peter Szrnka
@@ -8,5 +9,5 @@ import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
  */
 public interface KeycloakIntrospectService {
 
-    IntrospectResponse getUserDetails(String accessToken, String refreshToken);
+    ResponseEntity<IntrospectResponse> getUserDetails(String accessToken, String refreshToken);
 }

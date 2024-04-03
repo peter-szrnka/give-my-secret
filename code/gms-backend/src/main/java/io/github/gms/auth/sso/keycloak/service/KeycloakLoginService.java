@@ -1,6 +1,7 @@
 package io.github.gms.auth.sso.keycloak.service;
 
 import io.github.gms.auth.sso.keycloak.model.LoginResponse;
+import org.springframework.http.ResponseEntity;
 
 /**
  * @author Peter Szrnka
@@ -8,7 +9,7 @@ import io.github.gms.auth.sso.keycloak.model.LoginResponse;
  */
 public interface KeycloakLoginService {
 
-    LoginResponse login(String username, String credential);
+    ResponseEntity<LoginResponse> login(String username, String credential);
 
     void logout();
 }

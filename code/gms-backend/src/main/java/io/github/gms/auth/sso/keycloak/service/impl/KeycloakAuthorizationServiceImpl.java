@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
@@ -48,9 +49,12 @@ public class KeycloakAuthorizationServiceImpl implements AuthorizationService {
             return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();
         }
 
-        IntrospectResponse response = keycloakIntrospectService.getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
-        GmsUserDetails userDetails = converter.toUserDetails(response);
+        ResponseEntity<IntrospectResponse> response = keycloakIntrospectService.getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).build();
+        }
 
+        GmsUserDetails userDetails = converter.toUserDetails(response.getBody());
         Optional<UserEntity> userResult = userRepository.findByUsername(userDetails.getUsername());
 
         if (userResult.isEmpty()) {

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
@@ -66,15 +67,17 @@ class KeycloakLoginServiceImplTest {
         when(keycloakSettings.getClientId()).thenReturn("clientId");
         when(keycloakSettings.getClientSecret()).thenReturn("clientSecret");
         when(oAuthService.callEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(LoginResponse.class)))
-                .thenReturn(LoginResponse.builder().accessToken(MOCK_ACCESS_TOKEN).refreshToken(MOCK_REFRESH_TOKEN).build());
+                .thenReturn(ResponseEntity.ok(LoginResponse.builder().accessToken(MOCK_ACCESS_TOKEN).refreshToken(MOCK_REFRESH_TOKEN).build()));
 
         // act
-        LoginResponse response = service.login(USERNAME1, CREDENTIAL_TEST);
+        ResponseEntity<LoginResponse> response = service.login(USERNAME1, CREDENTIAL_TEST);
 
         // assert
         assertNotNull(response);
-        assertEquals(MOCK_ACCESS_TOKEN, response.getAccessToken());
-        assertEquals(MOCK_REFRESH_TOKEN, response.getRefreshToken());
+        assertNotNull(response.getBody());
+        LoginResponse payload = response.getBody();
+        assertEquals(MOCK_ACCESS_TOKEN, payload.getAccessToken());
+        assertEquals(MOCK_REFRESH_TOKEN, payload.getRefreshToken());
         ArgumentCaptor<MultiValueMap<String, String>> argumentCaptor = ArgumentCaptor.forClass(MultiValueMap.class);
         verify(oAuthService).callEndpoint(eq(TestUtils.LOCALHOST_8080), argumentCaptor.capture(), eq(LoginResponse.class));
         verify(keycloakSettings).getRealm();

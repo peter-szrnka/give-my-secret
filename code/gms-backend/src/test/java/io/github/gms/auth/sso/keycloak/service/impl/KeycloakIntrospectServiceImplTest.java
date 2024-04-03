@@ -7,6 +7,7 @@ import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
 import static io.github.gms.common.util.Constants.CLIENT_ID;
@@ -51,10 +52,10 @@ class KeycloakIntrospectServiceImplTest {
                 .active("true")
                 .build();
         when(oAuthService.callEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(IntrospectResponse.class)))
-                .thenReturn(mockIntrospectResponse);
+                .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
 
         // act
-        IntrospectResponse response = service.getUserDetails("accessToken", "refreshToken");
+        ResponseEntity<IntrospectResponse> response = service.getUserDetails("accessToken", "refreshToken");
 
         // assert
         assertNotNull(response);
