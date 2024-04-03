@@ -109,7 +109,7 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         IntrospectResponse payload = response.getBody();
 
         if (!"true".equals(payload.getActive())) {
-            // TODO Handle this case, might need MFA
+            // TODO Handle this case, might need to query required user actions via admin REST API
             return null;
         }
 

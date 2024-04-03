@@ -6,8 +6,7 @@ package io.github.gms.common.util;
  */
 public final class Constants {
 
-
-	private Constants() {}
+    private Constants() {}
 	
 	public static final String SLASH = "/";
 	public static final String OK = "OK";
@@ -44,7 +43,6 @@ public final class Constants {
 	public static final String PASSWORD_ENCODER = "passwordEncoder";
 	
 	// Environment properties
-	public static final String SELECTED_AUTH = "SELECTED_AUTH";
 	public static final String SELECTED_AUTH_DB = "db";
 	public static final String SELECTED_AUTH_LDAP = "ldap";
 	public static final String SELECTED_AUTH_SSO = "sso";
@@ -84,6 +82,7 @@ public final class Constants {
 	public static final String CLIENT_ID = "client_id";
 	public static final String CLIENT_SECRET = "client_secret";
 	public static final String TOKEN = "token";
-	public static final String ACCESS_TOKEN = "access_token";
 	public static final String REFRESH_TOKEN = "refresh_token";
+
+	public static final String ACCESS_DENIED = "Access denied!";
 }

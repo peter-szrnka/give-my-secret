@@ -7,6 +7,7 @@ import io.github.gms.auth.sso.keycloak.converter.KeycloakConverter;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
 import io.github.gms.auth.sso.keycloak.service.KeycloakIntrospectService;
 import io.github.gms.common.enums.JwtConfigType;
+import io.github.gms.common.util.Constants;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import jakarta.servlet.http.Cookie;
@@ -46,19 +47,19 @@ public class KeycloakAuthorizationServiceImpl implements AuthorizationService {
         Cookie refreshJwtCookie = WebUtils.getCookie(request, REFRESH_JWT_TOKEN);
 
         if (accessJwtCookie == null || refreshJwtCookie == null) {
-            return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();
+            return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage(Constants.ACCESS_DENIED).build();
         }
 
         ResponseEntity<IntrospectResponse> response = keycloakIntrospectService.getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-            return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).build();
+            return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage(Constants.ACCESS_DENIED).build();
         }
 
         GmsUserDetails userDetails = converter.toUserDetails(response.getBody());
         Optional<UserEntity> userResult = userRepository.findByUsername(userDetails.getUsername());
 
         if (userResult.isEmpty()) {
-            return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage("Access denied!").build();
+            return AuthorizationResponse.builder().responseStatus(HttpStatus.FORBIDDEN).errorMessage(Constants.ACCESS_DENIED).build();
         }
 
         userDetails.setUserId(userResult.get().getId());

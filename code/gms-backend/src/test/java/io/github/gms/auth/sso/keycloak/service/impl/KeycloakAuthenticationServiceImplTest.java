@@ -134,7 +134,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldLoginSucceedWhenIntrospectFailed() {
+    void shouldLoginFailedWhenIntrospectFailed() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder()
@@ -151,6 +151,30 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         assertNotNull(response);
         assertEquals(AuthResponsePhase.FAILED, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+        verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
+    }
+
+    @Test
+    void shouldLoginFailedWhenIntrospectReturnsInactive() {
+        // arrange
+        when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
+                .thenReturn(ResponseEntity.ok(LoginResponse.builder()
+                        .accessToken(MOCK_ACCESS_TOKEN)
+                        .refreshToken(MOCK_REFRESH_TOKEN)
+                        .build()));
+        IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder().active("false")
+                .build();
+        when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
+                .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
+
+        // act
+        AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(AuthResponsePhase.FAILED, response.getPhase());
+        verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+        verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
         verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
     }
 
