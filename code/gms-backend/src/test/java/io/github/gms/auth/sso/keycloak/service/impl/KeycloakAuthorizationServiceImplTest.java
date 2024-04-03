@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
@@ -72,7 +73,7 @@ class KeycloakAuthorizationServiceImplTest {
         });
         IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder().build();
         when(keycloakIntrospectService.getUserDetails("access", "refresh"))
-                .thenReturn(mockIntrospectResponse);
+                .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
         GmsUserDetails mockUser = TestUtils.createGmsAdminUser();
         when(converter.toUserDetails(mockIntrospectResponse)).thenReturn(mockUser);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
@@ -97,7 +98,7 @@ class KeycloakAuthorizationServiceImplTest {
         });
         IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder().build();
         when(keycloakIntrospectService.getUserDetails("access", "refresh"))
-                .thenReturn(mockIntrospectResponse);
+                .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
         GmsUserDetails mockUser = TestUtils.createGmsAdminUser();
         when(converter.toUserDetails(mockIntrospectResponse)).thenReturn(mockUser);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(TestUtils.createAdminUser()));

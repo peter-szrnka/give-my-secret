@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,7 @@ class KeycloakAuthenticationServiceImplTest {
                 .active("true")
                 .build();
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
-                .thenReturn(mockIntrospectResponse);
+                .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
 
         // act
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
@@ -111,10 +112,10 @@ class KeycloakAuthenticationServiceImplTest {
     void shouldLoginSucceedWhenUserNotFound() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
-                .thenReturn(LoginResponse.builder()
+                .thenReturn(ResponseEntity.ok(LoginResponse.builder()
                         .accessToken(MOCK_ACCESS_TOKEN)
                         .refreshToken(MOCK_REFRESH_TOKEN)
-                        .build());
+                        .build()));
         UserInfoDto mockUserInfo = TestUtils.createUserInfoDto();
         when(converter.toUserInfoDto(any(IntrospectResponse.class))).thenReturn(mockUserInfo);
         IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder()
@@ -123,7 +124,7 @@ class KeycloakAuthenticationServiceImplTest {
                 .active("true")
                 .build();
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
-                .thenReturn(mockIntrospectResponse);
+                .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
         UserEntity userEntity = TestUtils.createUser();
         when(converter.toNewEntity(any(UserEntity.class), eq(mockUserInfo))).thenReturn(userEntity);
         when(userRepository.save(userEntity)).thenReturn(userEntity);
@@ -159,10 +160,10 @@ class KeycloakAuthenticationServiceImplTest {
         // arrange
         when(httpServletRequest.getCookies()).thenReturn(cookies.toArray(new Cookie[]{}));
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
-                .thenReturn(LoginResponse.builder()
+                .thenReturn(ResponseEntity.ok(LoginResponse.builder()
                         .accessToken(MOCK_ACCESS_TOKEN)
                         .refreshToken(MOCK_REFRESH_TOKEN)
-                        .build());
+                        .build()));
         UserInfoDto mockUserInfo = TestUtils.createUserInfoDto();
         when(converter.toUserInfoDto(any(IntrospectResponse.class))).thenReturn(mockUserInfo);
         IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder()
@@ -171,7 +172,7 @@ class KeycloakAuthenticationServiceImplTest {
                 .active("true")
                 .build();
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
-                .thenReturn(mockIntrospectResponse);
+                .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
         UserEntity userEntity = TestUtils.createUser();
         when(userRepository.save(userEntity)).thenReturn(userEntity);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(userEntity));
