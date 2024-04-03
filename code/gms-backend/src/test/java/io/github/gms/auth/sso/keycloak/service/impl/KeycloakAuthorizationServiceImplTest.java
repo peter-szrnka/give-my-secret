@@ -85,6 +85,27 @@ class KeycloakAuthorizationServiceImplTest {
     }
 
     @Test
+    void shouldNotReturnInfoWhenResponseBodyIsEmpty() {
+        // arrange
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
+                new Cookie(ACCESS_JWT_TOKEN, "access"),
+                new Cookie(REFRESH_JWT_TOKEN, "refresh")
+        });
+        when(keycloakIntrospectService.getUserDetails("access", "refresh"))
+                .thenReturn(ResponseEntity.ok().build());
+
+        // act
+        AuthorizationResponse response = service.authorize(httpServletRequest);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
+        assertEquals("Access denied!", response.getErrorMessage());
+        verify(keycloakIntrospectService).getUserDetails("access", "refresh");
+    }
+
+    @Test
     void shouldNotReturnInfoWhenUserIsMissing() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);

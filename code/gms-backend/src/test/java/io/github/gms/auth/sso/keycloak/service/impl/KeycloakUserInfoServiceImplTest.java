@@ -67,6 +67,27 @@ class KeycloakUserInfoServiceImplTest {
     }
 
     @Test
+    void shouldNotFoundUserWhenResponseBodyMissing() {
+        // arrange
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
+                new Cookie(ACCESS_JWT_TOKEN, "access"),
+                new Cookie(REFRESH_JWT_TOKEN, "refresh")
+        });
+        when(keycloakIntrospectService.getUserDetails("access", "refresh"))
+                .thenReturn(ResponseEntity.ok().build());
+
+        // act
+        UserInfoDto response = service.getUserInfo(httpServletRequest);
+
+        // assert
+        assertNull(response);
+        verify(httpServletRequest, times(2)).getCookies();
+        verify(keycloakIntrospectService).getUserDetails("access", "refresh");
+        verify(userRepository, never()).getIdByUsername("user1");
+    }
+
+    @Test
     void shouldNotFoundUserWhenIntrospectFailed() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
