@@ -66,6 +66,7 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.StringUtils;
 
@@ -432,6 +433,10 @@ public class TestUtils {
 				.totalElements(1)
 				.resultList(List.of(createIpRestrictionDto()))
 				.build();
+    }
+
+    public static ResponseCookie createResponseCookie(String cookieName) {
+		return ResponseCookie.from(cookieName).value(null).build();
     }
 
     @Data

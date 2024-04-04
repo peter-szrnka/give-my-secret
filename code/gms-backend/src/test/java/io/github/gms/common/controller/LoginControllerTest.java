@@ -20,10 +20,13 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Objects;
 
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
@@ -51,18 +54,24 @@ class LoginControllerTest {
 
     @Test
     void shouldLoginFail() {
-        // arrange
-        AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
-        AuthenticationResponse mockResponse = new AuthenticationResponse();
-        mockResponse.setPhase(AuthResponsePhase.FAILED);
-        when(service.authenticate("user", "pass")).thenReturn(mockResponse);
+        try (MockedStatic<CookieUtils> cookieUtilsMockedStatic = mockStatic(CookieUtils.class)) {
+            // arrange
+            AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
+            AuthenticationResponse mockResponse = new AuthenticationResponse();
+            mockResponse.setPhase(AuthResponsePhase.FAILED);
+            when(service.authenticate("user", "pass")).thenReturn(mockResponse);
+            cookieUtilsMockedStatic.when(() -> CookieUtils.createCookie(eq(ACCESS_JWT_TOKEN), isNull(), eq(0L), eq(false)))
+                    .thenReturn(TestUtils.createResponseCookie(ACCESS_JWT_TOKEN));
+            cookieUtilsMockedStatic.when(() -> CookieUtils.createCookie(eq(REFRESH_JWT_TOKEN), isNull(), eq(0L), eq(false)))
+                    .thenReturn(TestUtils.createResponseCookie(REFRESH_JWT_TOKEN));
 
-        // act
-        ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto);
+            // act
+            ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto);
 
-        // assert
-        assertNotNull(response);
-        assertEquals(401, response.getStatusCode().value());
+            // assert
+            assertNotNull(response);
+            assertEquals(401, response.getStatusCode().value());
+        }
     }
 
     @Test
@@ -99,7 +108,7 @@ class LoginControllerTest {
         assertEquals(1, response.getHeaders().size());
         assertTrue(Objects.requireNonNull(response.getHeaders().get("Set-Cookie")).stream().anyMatch(item -> item.equals("mock-cookie1")));
         assertTrue(Objects.requireNonNull(response.getHeaders().get("Set-Cookie")).stream().anyMatch(item -> item.equals("mock-cookie2")));
-        assertEquals("AuthenticateResponseDto(currentUser=UserInfoDto(id=1, name=name, username=user, email=a@b.com, role=ROLE_USER), phase=COMPLETED)",
+        assertEquals("AuthenticateResponseDto(currentUser=UserInfoDto(id=1, name=name, username=user, email=a@b.com, role=ROLE_USER, status=ACTIVE, failedAttempts=null), phase=COMPLETED)",
                 Objects.requireNonNull(response.getBody()).toString());
 
         verify(systemPropertyService).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
