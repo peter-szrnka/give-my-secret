@@ -119,14 +119,15 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     void shouldLoginFailWhenResponseIsNot2xx() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
-                .thenReturn(ResponseEntity.badRequest().build());
+                .thenReturn(ResponseEntity.status(400).body(LoginResponse.builder()
+                        .error("error").errorDescription("Account disabled").build()));
 
         // act
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
         // assert
         assertNotNull(response);
-        assertEquals(AuthResponsePhase.FAILED, response.getPhase());
+        assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
         verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
         verify(keycloakIntrospectService, never()).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
@@ -233,7 +234,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
                 .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
         UserEntity userEntity = TestUtils.createUser();
-        when(converter.toNewEntity(any(UserEntity.class), eq(mockUserInfo))).thenReturn(userEntity);
+        when(converter.toEntity(any(UserEntity.class), eq(mockUserInfo))).thenReturn(userEntity);
         when(userRepository.save(userEntity)).thenReturn(userEntity);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
@@ -251,7 +252,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         assertEquals(mockIntrospectResponse, introspectResponseArgumentCaptor.getValue());
         verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
         verify(userRepository).save(userEntity);
-        verify(converter).toNewEntity(any(UserEntity.class), eq(mockUserInfo));
+        verify(converter).toEntity(any(UserEntity.class), eq(mockUserInfo));
     }
 
     @ParameterizedTest
@@ -282,6 +283,8 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
                 .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
         UserEntity userEntity = TestUtils.createUser();
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(userEntity));
+        when(converter.toEntity(any(UserEntity.class), eq(mockUserInfo))).thenReturn(userEntity);
+        when(userRepository.save(userEntity)).thenReturn(userEntity);
 
         // act
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
@@ -296,8 +299,8 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         verify(converter).toUserInfoDto(introspectResponseArgumentCaptor.capture());
         assertEquals(mockIntrospectResponse, introspectResponseArgumentCaptor.getValue());
         verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
-        verify(userRepository, never()).save(userEntity);
-        verify(converter, never()).toNewEntity(any(UserEntity.class), eq(mockUserInfo));
+        verify(userRepository).save(userEntity);
+        verify(converter).toEntity(any(UserEntity.class), eq(mockUserInfo));
     }
 
     @Test

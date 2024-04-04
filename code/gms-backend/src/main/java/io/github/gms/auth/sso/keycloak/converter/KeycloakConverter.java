@@ -11,5 +11,5 @@ public interface KeycloakConverter {
 
     UserInfoDto toUserInfoDto(IntrospectResponse response);
 
-    UserEntity toNewEntity(UserEntity entity, UserInfoDto dto);
+    UserEntity toEntity(UserEntity entity, UserInfoDto dto);
 }

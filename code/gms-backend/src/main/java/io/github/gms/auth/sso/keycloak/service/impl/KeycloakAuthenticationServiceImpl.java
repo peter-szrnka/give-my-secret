@@ -17,9 +17,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
+import static io.github.gms.auth.types.AuthResponsePhase.BLOCKED;
+import static io.github.gms.auth.types.AuthResponsePhase.COMPLETED;
+import static io.github.gms.auth.types.AuthResponsePhase.FAILED;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
 import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
@@ -47,6 +51,10 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
 
         if (accessJwtCookie != null && refreshJwtCookie != null) {
             UserInfoDto userInfoDto = getUserDetails(accessJwtCookie.getValue(), refreshJwtCookie.getValue());
+
+            // Remove unnecessary properties
+            removeNonPublicAttributes(userInfoDto);
+
             return AuthenticationResponse.builder()
                     .currentUser(userInfoDto)
                     .phase(AuthResponsePhase.ALREADY_LOGGED_IN)
@@ -59,9 +67,16 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         try {
             ResponseEntity<LoginResponse> response = keycloakLoginService.login(username, credential);
             LoginResponse payload = response.getBody();
-            if (!response.getStatusCode().is2xxSuccessful() || payload == null) {
+
+            if (payload == null) {
+                log.warn("Response body missing!");
+                return AuthenticationResponse.builder().build();
+            }
+
+            if (!response.getStatusCode().is2xxSuccessful()) {
                 log.warn("Login failed! Status code={}", response.getStatusCode());
                 return AuthenticationResponse.builder()
+                        .phase(getPhaseByResponse(payload))
                         .build();
             }
 
@@ -72,11 +87,11 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
                 return AuthenticationResponse.builder().build();
             }
 
-            addUserId(userInfoDto);
+            refreshUserData(userInfoDto);
 
             return AuthenticationResponse.builder()
                     .currentUser(userInfoDto)
-                    .phase(AuthResponsePhase.COMPLETED)
+                    .phase(COMPLETED)
                     .token(payload.getAccessToken())
                     .refreshToken(payload.getRefreshToken())
                     .build();
@@ -86,27 +101,39 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         }
     }
 
-    private void addUserId(UserInfoDto userInfoDto) {
+    @Override
+    public void logout() {
+        keycloakLoginService.logout();
+    }
+
+    private void refreshUserData(UserInfoDto userInfoDto) {
         UserEntity entity = userRepository.findByUsername(userInfoDto.getUsername())
                 .orElse(new UserEntity());
 
-        if (entity.getId() == null) {
-            entity = userRepository.save(converter.toNewEntity(entity, userInfoDto));
-        }
-        // TODO Handle existing entities
-
+        entity = userRepository.save(converter.toEntity(entity, userInfoDto));
         userInfoDto.setId(entity.getId());
+
+        // Remove unnecessary properties
+        removeNonPublicAttributes(userInfoDto);
+    }
+
+    private void removeNonPublicAttributes(@Nullable UserInfoDto userInfoDto) {
+        if (userInfoDto == null) {
+            return;
+        }
+
+        userInfoDto.setStatus(null);
+        userInfoDto.setFailedAttempts(null);
     }
 
     private UserInfoDto getUserDetails(String accessToken, String refreshToken) {
         ResponseEntity<IntrospectResponse> response = keycloakIntrospectService.getUserDetails(accessToken, refreshToken);
+        IntrospectResponse payload = response.getBody();
 
-        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+        if (!response.getStatusCode().is2xxSuccessful() || payload == null) {
             log.warn("Retrieving user details failed! Status code={}", response.getStatusCode());
             return null;
         }
-
-        IntrospectResponse payload = response.getBody();
 
         if (!"true".equals(payload.getActive())) {
             // TODO Handle this case, might need to query required user actions via admin REST API
@@ -116,8 +143,7 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         return converter.toUserInfoDto(payload);
     }
 
-    @Override
-    public void logout() {
-        keycloakLoginService.logout();
+    private static AuthResponsePhase getPhaseByResponse(LoginResponse response) {
+        return "Account disabled".equals(response.getErrorDescription()) ? BLOCKED : FAILED;
     }
 }

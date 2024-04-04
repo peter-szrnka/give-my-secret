@@ -30,4 +30,6 @@ public class IntrospectResponse implements Serializable {
     private String active;
     @JsonAlias("realm_access")
     private RealmAccess realmAccess;
+    @JsonAlias("failed_attempts")
+    private Integer failedAttempts;
 }

@@ -18,4 +18,9 @@ public class LoginResponse {
     private String accessToken;
     @JsonAlias("refresh_token")
     private String refreshToken;
+
+    @JsonAlias("error")
+    private String error;
+    @JsonAlias("error_description")
+    private String errorDescription;
 }

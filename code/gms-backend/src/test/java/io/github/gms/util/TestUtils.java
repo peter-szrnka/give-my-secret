@@ -740,6 +740,7 @@ public class TestUtils {
 		dto.setName("name");
 		dto.setRole(ROLE_USER);
 		dto.setEmail("a@b.com");
+		dto.setStatus(EntityStatus.ACTIVE);
         return dto;
     }
 

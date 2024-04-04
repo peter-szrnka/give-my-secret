@@ -32,7 +32,7 @@ public class KeycloakConverterImpl implements KeycloakConverter {
                 .username(response.getUsername())
                 .email(response.getEmail())
                 .name(response.getName())
-                .status("true".equals(response.getActive()) ? EntityStatus.ACTIVE : EntityStatus.DISABLED)
+                .status(getStatus(response))
                 .authorities(Set.of(getRoles(response)))
                 .build();
     }
@@ -44,21 +44,25 @@ public class KeycloakConverterImpl implements KeycloakConverter {
                 .username(response.getUsername())
                 .email(response.getEmail())
                 .role(getRoles(response))
+                .status(getStatus(response))
+                .failedAttempts(response.getFailedAttempts())
                 .build();
     }
 
-    public UserEntity toNewEntity(UserEntity entity, UserInfoDto dto) {
+    public UserEntity toEntity(UserEntity entity, UserInfoDto dto) {
         if (entity.getId() == null) {
-            entity.setName(dto.getName());
-            entity.setUsername(dto.getUsername());
             entity.setStatus(EntityStatus.ACTIVE);
-            entity.setEmail(dto.getEmail());
-            entity.setRole(dto.getRole());
             entity.setCreationDate(ZonedDateTime.now(clock));
             entity.setMfaSecret(secretGenerator.generate());
+        } else {
+            entity.setStatus(dto.getStatus());
         }
-        // TODO Handle existing entities
 
+        entity.setName(dto.getName());
+        entity.setUsername(dto.getUsername());
+        entity.setEmail(dto.getEmail());
+        entity.setRole(dto.getRole());
+        entity.setFailedAttempts(dto.getFailedAttempts());
         return entity;
     }
 
@@ -66,5 +70,9 @@ public class KeycloakConverterImpl implements KeycloakConverter {
         return response.getRealmAccess().getRoles().stream().map(UserRole::getByName)
                 .filter(Objects::nonNull)
                 .toList().getFirst();
+    }
+
+    private static EntityStatus getStatus(IntrospectResponse response) {
+        return "true".equals(response.getActive()) ? EntityStatus.ACTIVE : EntityStatus.DISABLED;
     }
 }

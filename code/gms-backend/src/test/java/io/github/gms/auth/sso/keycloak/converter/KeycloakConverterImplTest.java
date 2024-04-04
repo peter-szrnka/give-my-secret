@@ -21,9 +21,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static io.github.gms.common.enums.UserRole.ROLE_ADMIN;
 import static io.github.gms.common.enums.UserRole.ROLE_USER;
-import static io.github.gms.util.TestUtils.USERNAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -98,7 +96,7 @@ class KeycloakConverterImplTest {
             when(secretGenerator.generate()).thenReturn("secret!");
 
             // act
-            UserEntity response = converter.toNewEntity(mockEntity, mockUserInfoDto);
+            UserEntity response = converter.toEntity(mockEntity, mockUserInfoDto);
 
             // assert
             assertNotNull(response);
@@ -122,15 +120,15 @@ class KeycloakConverterImplTest {
         UserInfoDto mockUserInfoDto = TestUtils.createUserInfoDto();
 
         // act
-        UserEntity response = converter.toNewEntity(mockEntity, mockUserInfoDto);
+        UserEntity response = converter.toEntity(mockEntity, mockUserInfoDto);
 
         // assert
         assertNotNull(response);
         assertNotNull(response.getId());
-        assertNull(response.getEmail());
-        assertEquals(ROLE_ADMIN, response.getRole());
+        assertEquals("a@b.com", response.getEmail());
+        assertEquals(ROLE_USER, response.getRole());
         assertEquals("name", response.getName());
-        assertEquals(USERNAME, response.getUsername());
+        assertEquals("user", response.getUsername());
         assertEquals(EntityStatus.ACTIVE, response.getStatus());
     }
 
