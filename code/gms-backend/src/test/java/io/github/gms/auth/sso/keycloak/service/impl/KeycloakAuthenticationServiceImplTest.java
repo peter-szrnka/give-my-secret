@@ -71,6 +71,29 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
+    void shouldLoginSkippedWhenIntrospectFailed() {
+        // arrange
+        when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {
+                new Cookie(ACCESS_JWT_TOKEN, MOCK_ACCESS_TOKEN),
+                new Cookie(REFRESH_JWT_TOKEN, MOCK_REFRESH_TOKEN)
+        });
+        UserInfoDto mockUserInfo = TestUtils.createUserInfoDto();
+        when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
+                .thenReturn(ResponseEntity.badRequest().build());
+
+        // act
+        AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(AuthResponsePhase.ALREADY_LOGGED_IN, response.getPhase());
+        verify(keycloakLoginService, never()).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+        verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
+        verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
+        verify(httpServletRequest, times(2)).getCookies();
+    }
+
+    @Test
     void shouldLoginSkipped() {
         // arrange
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {
