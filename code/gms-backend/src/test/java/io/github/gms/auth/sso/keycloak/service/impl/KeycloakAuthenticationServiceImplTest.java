@@ -137,23 +137,31 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
     }
 
-    @Test
-    void shouldLoginFailWhenResponseIsNot2xx() {
+    @ParameterizedTest
+    @MethodSource("not2xxInputData")
+    void shouldLoginFailWhenResponseIsNot2xx(String errorDescription, AuthResponsePhase authResponsePhaseExpected) {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.status(400).body(LoginResponse.builder()
-                        .error("error").errorDescription("Account disabled").build()));
+                        .error("error").errorDescription(errorDescription).build()));
 
         // act
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
         // assert
         assertNotNull(response);
-        assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
+        assertEquals(authResponsePhaseExpected, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
         verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
         verify(keycloakIntrospectService, never()).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
         assertLogContains(logAppender, "Login failed! Status code=400");
+    }
+
+    private static Object[][] not2xxInputData() {
+        return new Object[][] {
+                { "Account disabled", AuthResponsePhase.BLOCKED },
+                { "Other issue", AuthResponsePhase.FAILED }
+        };
     }
 
     @Test
