@@ -1,13 +1,10 @@
 package io.github.gms.common.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Set;
-
+import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.enums.UserRole;
+import io.github.gms.functions.user.SaveUserRequestDto;
+import io.github.gms.functions.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,11 +12,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.MDC;
 
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.UserRole;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.user.SaveUserRequestDto;
-import io.github.gms.functions.user.UserService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test of {@link SetupController}
@@ -42,7 +40,7 @@ class SetupControllerTest {
     void adminRoleMissing() {
         // arrange
         SaveUserRequestDto dto = new SaveUserRequestDto();
-        dto.setRoles(Set.of());
+        dto.setRole(null);
 
         SaveEntityResponseDto mockResponse = new SaveEntityResponseDto(1L);
         when(userService.saveAdminUser(dto)).thenReturn(mockResponse);
@@ -57,14 +55,14 @@ class SetupControllerTest {
 
         ArgumentCaptor<SaveUserRequestDto> argumentCaptorDto = ArgumentCaptor.forClass(SaveUserRequestDto.class);
         verify(userService).saveAdminUser(argumentCaptorDto.capture());
-        assertEquals(UserRole.ROLE_ADMIN, argumentCaptorDto.getValue().getRoles().iterator().next());
+        assertNull(argumentCaptorDto.getValue().getRole());
     }
 
     @Test
     void shouldHaveRole() {
         // arrange
         SaveUserRequestDto dto = new SaveUserRequestDto();
-        dto.setRoles(Set.of(UserRole.ROLE_USER));
+        dto.setRole(UserRole.ROLE_USER);
 
         SaveEntityResponseDto mockResponse = new SaveEntityResponseDto(1L);
         when(userService.saveAdminUser(dto)).thenReturn(mockResponse);
@@ -79,6 +77,6 @@ class SetupControllerTest {
 
         ArgumentCaptor<SaveUserRequestDto> argumentCaptorDto = ArgumentCaptor.forClass(SaveUserRequestDto.class);
         verify(userService).saveAdminUser(argumentCaptorDto.capture());
-        assertEquals(UserRole.ROLE_USER, argumentCaptorDto.getValue().getRoles().iterator().next());
+        assertEquals(UserRole.ROLE_ADMIN, argumentCaptorDto.getValue().getRole());
     }
 }

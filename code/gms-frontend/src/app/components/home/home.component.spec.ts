@@ -1,15 +1,14 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ReplaySubject, Subscription, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { HomeComponent } from "./home.component";
-import { HomeService } from "./service/home.service";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { ReplaySubject, Subscription, of, throwError } from "rxjs";
 import { User } from "../user/model/user.model";
+import { HomeComponent } from "./home.component";
 import { HomeData } from "./model/home-data.model";
-import { HttpErrorResponse } from "@angular/common/http";
+import { HomeService } from "./service/home.service";
 
 /**
  * @author Peter Szrnka
@@ -60,7 +59,7 @@ describe('HomeComponent', () => {
 
     it('should load component for admin', () => {
         const currentUser = {
-            roles: ["ROLE_ADMIN"],
+            role: "ROLE_ADMIN",
             username: "test1",
             id: 1
         };

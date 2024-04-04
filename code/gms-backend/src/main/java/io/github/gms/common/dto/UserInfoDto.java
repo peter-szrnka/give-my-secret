@@ -1,6 +1,8 @@
 package io.github.gms.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +11,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Peter Szrnka
@@ -30,6 +30,9 @@ public class UserInfoDto implements Serializable {
 	private String name;
 	private String username;
 	private String email;
-	@Builder.Default
-	private Set<UserRole> roles = new HashSet<>();
+	private UserRole role;
+	@JsonIgnore
+	private EntityStatus status;
+	@JsonIgnore
+	private Integer failedAttempts;
 }

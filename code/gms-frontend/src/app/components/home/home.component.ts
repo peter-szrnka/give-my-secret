@@ -71,7 +71,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                     ...this.data
                 };
 
-                this.data.role = user?.roles[0];
+                this.data.role = user?.role;
             });
         this.authModeSubcription = this.sharedData.authModeSubject$.subscribe(authMode => this.editEnabled = authMode === 'db');
     }

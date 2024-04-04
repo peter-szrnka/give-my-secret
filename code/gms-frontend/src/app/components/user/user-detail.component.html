@@ -8,8 +8,6 @@
             <form #form="ngForm" autocomplete="off">
                 <mat-card class="with-margin-top">
                     <mat-card-content>
-                        In order to make the application works, you must create an admin user. Please fill in the next
-                        form.
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label>Full name</mat-label>
                             <input matInput name="name" required [(ngModel)]="data.name" [disabled]="editEnabled === false">
@@ -37,23 +35,10 @@
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field appearance="fill" class="full-width">
-                            <mat-label>Allowed roles</mat-label>
-                            <mat-chip-grid #chipGrid aria-label="Role selection" [disabled]="editEnabled === false">
-                                <mat-chip-row *ngFor="let role of data.roles" (removed)="remove(role)">
-                                    {{role}}
-                                    <button matChipRemove [attr.aria-label]="'remove ' + role">
-                                        <mat-icon>cancel</mat-icon>
-                                    </button>
-                                </mat-chip-row>
-                                <input placeholder="Select a role..." #roleInput [matChipInputFor]="chipGrid"
-                                    [matAutocomplete]="auto" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                    (matChipInputTokenEnd)="add($event)">
-                            </mat-chip-grid>
-                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                                <mat-option *ngFor="let role of selectableRoles" [value]="role">
-                                    {{role}}
-                                </mat-option>
-                            </mat-autocomplete>
+                            <mat-label>Role</mat-label>
+                            <mat-select [(ngModel)]="data.role" name="role" required [disabled]="editEnabled === false">
+                                <mat-option *ngFor="let role of selectableRoles" [value]="role">{{role}}</mat-option>
+                            </mat-select>
                         </mat-form-field>
                     </mat-card-content>
                     <mat-card-actions>

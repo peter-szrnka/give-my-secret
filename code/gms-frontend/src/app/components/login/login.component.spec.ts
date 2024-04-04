@@ -1,18 +1,18 @@
 import { HttpErrorResponse } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ReplaySubject, of, throwError } from "rxjs";
+import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { EMPTY_USER, User } from "../user/model/user.model";
+import { EMPTY_USER } from "../user/model/user.model";
 import { LoginComponent } from "./login.component";
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 
 /**
  * @author Peter Szrnka
@@ -20,7 +20,6 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 describe('LoginComponent', () => {
     let component : LoginComponent;
     let fixture : ComponentFixture<LoginComponent>;
-    let mockSubject : ReplaySubject<any>;
     // Injected services
     let router : any;
     let authService : any;
@@ -56,10 +55,8 @@ describe('LoginComponent', () => {
             navigate : jest.fn().mockReturnValue(of(true))
         };
 
-        mockSubject = new ReplaySubject<any>();
         sharedDataService = {
             refreshCurrentUserInfo : jest.fn(),
-            userSubject$ : mockSubject,
             systemReady: true
         };
 
@@ -76,7 +73,7 @@ describe('LoginComponent', () => {
             login : jest.fn().mockImplementation(() => {
                 return of({
                     currentUser:  {
-                        roles: []
+                        role: "ROLE_USER"
                     },
                     phase: AuthenticationPhase.COMPLETED
                 });
@@ -96,29 +93,23 @@ describe('LoginComponent', () => {
     });
 
     it.each([
-        [undefined, []],
+        [undefined, "ROLE_USER"],
         [{
             previousUrl: '/'
-        }, ['ROLE_USER']],
+        }, 'ROLE_USER'],
         [{
             previousUrl: '/secret/list'
-        }, []],
+        }, 'ROLE_ADMIN'],
         [{
             previousUrl: '/users/list'
-        }, []],
+        }, 'ROLE_ADMIN'],
         [{
             previousUrl: '/secret/list'
-        }, ['ROLE_ADMIN']],
+        }, 'ROLE_USER'],
         [{
             previousUrl: '/users/list'
-        }, ['ROLE_ADMIN']],
-        [{
-            previousUrl: '/secret/list'
-        }, ['ROLE_USER']],
-        [{
-            previousUrl: '/users/list'
-        }, ['ROLE_USER']]
-    ])('Should create component and login with redirect', (inputQueryParam: any, inputRoles: string[]) => {
+        }, 'ROLE_USER']
+    ])('Should create component and login with redirect', (inputQueryParam: any, inputRole: string) => {
         // arrange
         activatedRoute = {
             snapshot : {
@@ -129,7 +120,7 @@ describe('LoginComponent', () => {
             login : jest.fn().mockImplementation(() => {
                 return of({
                     currentUser:  {
-                        roles: inputRoles
+                        role: inputRole
                     },
                     phase: AuthenticationPhase.COMPLETED
                 });
@@ -137,7 +128,6 @@ describe('LoginComponent', () => {
         };
 
         configTestBed();
-        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -160,7 +150,6 @@ describe('LoginComponent', () => {
             }
         };
         configTestBed();
-        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -174,24 +163,6 @@ describe('LoginComponent', () => {
         expect(component.showPassword).toBeTruthy();
     });
 
-    it('Should redirect to main page', () => {
-        // arrange
-        activatedRoute = {
-            snapshot : {
-                queryParams: {
-                }
-            }
-        };
-        configTestBed();
-
-        // act
-        mockSubject.next({ id: 1, username: 'test', roles: ['ROLE_USER'] } as User);
-
-        // assert
-        expect(component).toBeTruthy();
-        expect(router.navigate).toHaveBeenCalled();
-    });
-
     it('Should not redirect to main page when system is not ready', () => {
         // arrange
         activatedRoute = {
@@ -203,7 +174,6 @@ describe('LoginComponent', () => {
         configTestBed();
 
         // act
-        mockSubject.next(undefined);
         sharedDataService.systemReady = false;
 
         // assert
@@ -221,7 +191,7 @@ describe('LoginComponent', () => {
             }
         };
         const mockResponse: LoginResponse = {
-            currentUser: { username: 'test', roles: [] },
+            currentUser: { username: 'test', role: 'ROLE_USER' },
             phase: AuthenticationPhase.MFA_REQUIRED
         };
         authService = {
@@ -263,7 +233,6 @@ describe('LoginComponent', () => {
             })
         };
         configTestBed();
-        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -279,7 +248,7 @@ describe('LoginComponent', () => {
     it('Should require MFA', () => {
         // arrange
         const mockResponse: LoginResponse = {
-            currentUser: { username: 'test', roles: [] },
+            currentUser: { username: 'test', role: 'ROLE_USER' },
             phase: AuthenticationPhase.MFA_REQUIRED
         };
         authService = {
@@ -288,7 +257,6 @@ describe('LoginComponent', () => {
             })
         };
         configTestBed();
-        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act
@@ -309,7 +277,6 @@ describe('LoginComponent', () => {
         };
 
         configTestBed();
-        mockSubject.next(undefined);
         component.formModel = { username: "user-1", credential : "myPassword1" };
 
         // act

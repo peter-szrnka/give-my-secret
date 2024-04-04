@@ -1,6 +1,7 @@
 package io.github.gms.functions.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
@@ -9,8 +10,6 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 import static io.github.gms.common.util.Constants.DATE_FORMAT;
 
@@ -20,6 +19,7 @@ import static io.github.gms.common.util.Constants.DATE_FORMAT;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SaveUserRequestDto implements Serializable {
 
 	@Serial
@@ -29,9 +29,10 @@ public class SaveUserRequestDto implements Serializable {
 	private String name;
 	private String username;
 	private String email;
-	private EntityStatus status;
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
+	private EntityStatus status = EntityStatus.INITIAL;
 	private String credential;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
 	private ZonedDateTime creationDate;
-	private Set<UserRole> roles = new HashSet<>();
+	private UserRole role;
 }

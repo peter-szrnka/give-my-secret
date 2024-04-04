@@ -26,7 +26,7 @@ describe('InformationService', () => {
         const mockResponse: User  = {
             id: 1,
             username: 'test',
-            roles: ["ROLE_USER"]
+            role: "ROLE_USER"
         };
 
 

@@ -91,7 +91,7 @@ describe('AppComponent', () => {
 
     it('User is admin', () => {
         currentUser = {
-            roles : ["ROLE_ADMIN"],
+            role : "ROLE_ADMIN",
             username : "test1",
             id : 1
         };
@@ -111,7 +111,7 @@ describe('AppComponent', () => {
     ])('User is a normal user with nav setting=%s', (showTexts : boolean) => {
         localStorage.setItem('showTextsInSidevNav', showTexts.toString());
         currentUser = {
-            roles : ["ROLE_USER"],
+            role : "ROLE_USER",
             username : "test1",
             id : 1
         };
@@ -145,7 +145,6 @@ describe('AppComponent', () => {
         fixture.autoDetectChanges();
 
         // act & assert
-        expect(router.navigate).toHaveBeenCalledTimes(1);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
@@ -164,15 +163,32 @@ describe('AppComponent', () => {
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
-    it('should log out', () => {
+    it('should not log out', () => {
         sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
         configureTestBed();
         mockSubject.next(undefined);
-        mockSystemReadySubject.next({ ready: false, status: 403, authMode : 'db' });
+        mockSystemReadySubject.next({ ready: false, status: 500, authMode : 'db' });
         fixture.detectChanges();
 
         // act & assert
-        expect(router.navigate).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledTimes(0);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
+    });
+
+    it('Should navigate to main page', () => {
+        currentUser = {
+            role : "ROLE_ADMIN",
+            username : "test1",
+            id : 1
+        };
+        router.url = '/login';
+        mockSubject.next(currentUser);
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        configureTestBed();
+        
+        // act & assert
+        expect(component.isAdmin).toEqual(true);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });

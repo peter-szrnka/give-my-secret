@@ -1,17 +1,18 @@
 package io.github.gms.functions.keystore;
 
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-import java.util.UUID;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Files;
+import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
+import io.github.gms.common.dto.IdNamePairListDto;
+import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.KeyStoreValueType;
+import io.github.gms.common.filter.SecureHeaderInitializerFilter;
+import io.github.gms.functions.secret.GetSecureValueDto;
+import io.github.gms.util.DemoData;
+import io.github.gms.util.TestUtils;
+import io.github.gms.util.TestUtils.ValueHolder;
+import lombok.SneakyThrows;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -34,24 +35,17 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Files;
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
+import java.util.UUID;
 
-import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.KeyStoreValueType;
-import io.github.gms.common.filter.SecureHeaderInitializerFilter;
-import io.github.gms.functions.keystore.KeystoreController;
-import io.github.gms.functions.secret.GetSecureValueDto;
-import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.functions.keystore.KeystoreDto;
-import io.github.gms.functions.keystore.KeystoreListDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.keystore.KeystoreEntity;
-import io.github.gms.util.DemoData;
-import io.github.gms.util.TestUtils;
-import io.github.gms.util.TestUtils.ValueHolder;
-import lombok.SneakyThrows;
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Peter Szrnka
@@ -77,27 +71,28 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@SneakyThrows
 	void testSave() {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream jksFileStream = classloader.getResourceAsStream("test.jks");
+		try (InputStream jksFileStream = classloader.getResourceAsStream("test.jks")) {
+            assert jksFileStream != null;
+            MockMultipartFile sampleFile = new MockMultipartFile(KeystoreController.MULTIPART_FILE,
+					"test-" + UUID.randomUUID() + ".jks", MediaType.APPLICATION_OCTET_STREAM_VALUE,
+					jksFileStream.readAllBytes());
 
-		MockMultipartFile sampleFile = new MockMultipartFile(KeystoreController.MULTIPART_FILE,
-				"test-" + UUID.randomUUID().toString() + ".jks", MediaType.APPLICATION_OCTET_STREAM_VALUE,
-				jksFileStream.readAllBytes());
+			String saveRequestJson = objectMapper.writeValueAsString(TestUtils.createSaveKeystoreRequestDto());
 
-		String saveRequestJson = objectMapper.writeValueAsString(TestUtils.createSaveKeystoreRequestDto());
+			MockMultipartHttpServletRequestBuilder multipartRequest = MockMvcRequestBuilders.multipart("/secure/keystore")
+					.file(sampleFile);
 
-		MockMultipartHttpServletRequestBuilder multipartRequest = MockMvcRequestBuilders.multipart("/secure/keystore")
-				.file(sampleFile);
+			multipartRequest.flashAttr("model", saveRequestJson);
 
-		multipartRequest.flashAttr("model", saveRequestJson);
+			multipartRequest.headers(TestUtils.getHttpHeaders(null));
+			multipartRequest.cookie(TestUtils.getCookie(jwt));
 
-		multipartRequest.headers(TestUtils.getHttpHeaders(null));
-		multipartRequest.cookie(TestUtils.getCookie(jwt));
+			MockMvc mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+					.addFilter(secureHeaderInitializerFilter, "/secure/keystore").build();
 
-		MockMvc mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-				.addFilter(secureHeaderInitializerFilter, "/secure/keystore").build();
-
-		// act
-		mvc.perform(multipartRequest).andExpect(MockMvcResultMatchers.status().isOk());
+			// act
+			mvc.perform(multipartRequest).andExpect(MockMvcResultMatchers.status().isOk());
+		}
 	}
 
 	@Test

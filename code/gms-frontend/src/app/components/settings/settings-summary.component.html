@@ -3,10 +3,13 @@
 <div>
   <form #form="ngForm">
     <mat-accordion>
-      <div class="information" *ngIf="passwordEnabled === false">
+      <div class="information" *ngIf="authMode === 'ldap'">
         Your password is managed in LDAP
       </div>
-      <mat-expansion-panel hideToggle [disabled]="passwordEnabled === false">
+      <div class="information" *ngIf="authMode === 'sso'">
+        Your password is managed in SSO
+      </div>
+      <mat-expansion-panel hideToggle [disabled]="authMode !== 'db'">
         <mat-expansion-panel-header>
           <mat-panel-title>
             Password
@@ -35,7 +38,7 @@
 
         <button mat-button color="primary" [disabled]="form.status ==='INVALID'" (click)="save()">Save</button>
       </mat-expansion-panel>
-      <mat-expansion-panel hideToggle>
+      <mat-expansion-panel hideToggle [disabled]="authMode !== 'db'">
         <mat-expansion-panel-header>
           <mat-panel-title>
             Multi-Factor Authentication

@@ -8,7 +8,7 @@ import { Paging } from "../../../common/model/paging.model";
 
 const TEST_USER : User = {
   id: 1,
-  roles: []
+  role: 'ROLE_USER'
 };
 
 /**

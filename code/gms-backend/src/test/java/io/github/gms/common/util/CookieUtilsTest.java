@@ -1,16 +1,15 @@
 package io.github.gms.common.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.time.Duration;
-
+import io.github.gms.abstraction.AbstractUnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.ResponseCookie;
 
-import io.github.gms.abstraction.AbstractUnitTest;
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Peter Szrnka
@@ -27,14 +26,23 @@ class CookieUtilsTest extends AbstractUnitTest {
 	@ValueSource(booleans = { true, false })
 	void shouldReturnCookie(boolean secure) {
 		// act
-		ResponseCookie cookie = CookieUtils.createCookie("the-cookie", "new-value", 60l, secure);
+		ResponseCookie cookie = CookieUtils.createCookie("the-cookie", "new-value", 60L, secure);
 		
 		// assert
 		assertNotNull(cookie);
 		assertEquals("the-cookie", cookie.getName());
 		assertEquals("new-value", cookie.getValue());
-		assertEquals(Duration.ofSeconds(60l), cookie.getMaxAge());
+		assertEquals(Duration.ofSeconds(60L), cookie.getMaxAge());
 		assertEquals(secure, cookie.isSecure());
 		assertEquals(secure ? "None" : "Lax", cookie.getSameSite());
+	}
+
+	@Test
+	void shouldTestWithNullValues() {
+		//act
+		ResponseCookie cookie = CookieUtils.createCookie("the-cookie", null, 0L, true);
+
+		// assert
+		assertNotNull(cookie);
 	}
 }

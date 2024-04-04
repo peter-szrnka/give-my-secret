@@ -47,7 +47,7 @@ describe('SetupService', () => {
 
       // act
       const request : UserData = {
-        id : 1, status : "ACTIVE", name : "test", roles : []
+        id : 1, status : "ACTIVE", name : "test", role : 'USER_ADMIN'
       };
 
       service.saveAdminUser(request).subscribe((res) => expect(res).toBe(mockResponse));

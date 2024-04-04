@@ -17,7 +17,7 @@ import { KeystoreListComponent } from "./keystore-list.component";
 describe('KeystoreListComponent', () => {
     let component : KeystoreListComponent;
     const currentUser : User = {
-        roles :  ["ROLE_USER" ]
+        role: 'ROLE_USER'
     };
     // Injected services
     let service : any;

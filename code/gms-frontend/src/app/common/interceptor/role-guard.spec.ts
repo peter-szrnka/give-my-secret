@@ -13,7 +13,7 @@ describe('RoleGuard', () => {
         userId : "test",
         userName : "test-user",
         exp : 1,
-        roles : ["ROLE_USER"]
+        role : "ROLE_USER"
     };
 
     const configureTestBed = () => {

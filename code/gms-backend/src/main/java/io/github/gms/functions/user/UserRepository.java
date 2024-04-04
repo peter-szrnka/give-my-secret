@@ -23,17 +23,17 @@ import static io.github.gms.common.util.Constants.USER_ID;
 @CacheConfig(cacheNames = CACHE_USER)
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	
-	@Query("SELECT COUNT(u) from UserEntity u where u.roles LIKE '%ADMIN%'")
+	@Query("SELECT COUNT(u) from UserEntity u where u.role = 'ROLE_ADMIN'")
 	long countExistingAdmins();
 
-	@Query("SELECT u from UserEntity u where u.roles LIKE '%ADMIN%'")
+	@Query("SELECT u from UserEntity u where u.role = 'ROLE_ADMIN'")
 	List<UserEntity> getAllAdmins();
 
 	Optional<UserEntity> findByUsernameOrEmail(String username, String email);
 
 	Optional<UserEntity> findByUsername(String username);
 
-	@Query("SELECT COUNT(u) from UserEntity u where u.roles like '%ROLE_USER%' or u.roles like '%ROLE_VIEWER%'")
+	@Query("SELECT COUNT(u) from UserEntity u where u.role = 'ROLE_USER' or u.role = 'ROLE_VIEWER'")
 	long countNormalUsers();
 
 	@Cacheable

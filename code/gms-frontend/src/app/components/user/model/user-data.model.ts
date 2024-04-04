@@ -12,12 +12,12 @@ export interface UserData extends BaseDetail {
     id? : number,
     status? : string,
     creationDate? : Date,
-    roles : string[]
+    role : string
 }
 
 export const EMPTY_USER_DATA : UserData = {
     credential: undefined,
-    roles: []
+    role: 'ROLE_USER'
 };
 
 export const PAGE_CONFIG_USER : PageConfig = {

@@ -1,7 +1,7 @@
 package io.github.gms.auth.ldap;
 
+import io.github.gms.auth.ldap.converter.LdapUserConverter;
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.functions.user.UserConverter;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -32,13 +32,13 @@ public class LdapSyncServiceImpl implements LdapSyncService {
 
 	private final LdapTemplate ldapTemplate;
     private final UserRepository repository;
-	private final UserConverter converter;
+	private final LdapUserConverter converter;
 	private final String authType;
 
     public LdapSyncServiceImpl(
 			LdapTemplate ldapTemplate,
 			UserRepository repository,
-			UserConverter converter,
+			LdapUserConverter converter,
 			@Value("${config.auth.type}") String authType
 	) {
 		this.ldapTemplate = ldapTemplate;
@@ -60,13 +60,13 @@ public class LdapSyncServiceImpl implements LdapSyncService {
 		AtomicInteger counter = new AtomicInteger(0);
 		result.forEach(item -> saveOrUpdateUser(item, counter));
 
-		AtomicInteger deletedCounter = new AtomicInteger(0);
+		AtomicInteger toBeDeletedCounter = new AtomicInteger(0);
 		List<String> usernamesFromLdap = result.stream().map(GmsUserDetails::getUsername).toList();
 		repository.getAllUserNames().stream()
 				.filter(username -> !usernamesFromLdap.contains(username))
-				.forEach(username -> blockUser(username, deletedCounter));
+				.forEach(username -> blockUser(username, toBeDeletedCounter));
 
-		return Pair.of(counter.get(), deletedCounter.get());
+		return Pair.of(counter.get(), toBeDeletedCounter.get());
 	}
 
 	private void blockUser(String username, AtomicInteger deletedCounter) {

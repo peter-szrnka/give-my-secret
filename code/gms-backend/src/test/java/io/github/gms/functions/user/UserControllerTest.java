@@ -2,7 +2,6 @@ package io.github.gms.functions.user;
 
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import io.github.gms.abstraction.AbstractClientControllerTest;
-import io.github.gms.auth.ldap.LdapSyncService;
 import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.util.TestUtils;
@@ -10,7 +9,6 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.ResponseEntity;
 
@@ -18,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,13 +26,10 @@ import static org.mockito.Mockito.when;
  */
 class UserControllerTest extends AbstractClientControllerTest<UserService, UserController> {
 
-    private LdapSyncService ldapSyncService;
-
     @BeforeEach
     void setupTest() {
         service = mock(UserService.class);
-        ldapSyncService = mock(LdapSyncService.class);
-        controller = new UserController(service, ldapSyncService, "db");
+        controller = new UserController(service);
     }
 
     @Test
@@ -186,27 +180,5 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
         assertEquals(200, response.getStatusCode().value());
         assertEquals(true, response.getBody());
         verify(service).isMfaActive();
-    }
-
-    @ParameterizedTest
-    @MethodSource("inputData")
-    void shouldSyncUsers(String authType, int expectedReturnCode) {
-        // arrange
-        controller = new UserController(service, ldapSyncService, authType);
-
-        // act
-        ResponseEntity<Void> response = controller.synchronizeUsers();
-
-        // assert
-        assertNotNull(response);
-        assertEquals(expectedReturnCode, response.getStatusCode().value());
-        verify(ldapSyncService, times(expectedReturnCode==200 ? 1 : 0)).synchronizeUsers();
-    }
-
-    private static Object[][] inputData() {
-        return new Object[][] {
-                {"db", 404},
-                {"ldap", 200}
-        };
     }
 }

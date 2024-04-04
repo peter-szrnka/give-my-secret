@@ -5,8 +5,8 @@ package io.github.gms.common.util;
  * @since 1.0
  */
 public final class Constants {
-	
-	private Constants() {}
+
+    private Constants() {}
 	
 	public static final String SLASH = "/";
 	public static final String OK = "OK";
@@ -28,6 +28,8 @@ public final class Constants {
 	// Properties
 	public static final String CONFIG_AUTH_TYPE_DB = "db";
 	public static final String CONFIG_AUTH_TYPE_LDAP = "ldap";
+	public static final String CONFIG_AUTH_TYPE_KEYCLOAK_SSO = "keycloak-sso";
+	public static final String CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO = "!keycloak-sso";
 	public static final String CONFIG_LDAP_PASSWORD_ENCODER = "config.ldap.passwordencoder";
 	
 	// LDAP
@@ -41,9 +43,9 @@ public final class Constants {
 	public static final String PASSWORD_ENCODER = "passwordEncoder";
 	
 	// Environment properties
-	public static final String SELECTED_AUTH = "SELECTED_AUTH";
 	public static final String SELECTED_AUTH_DB = "db";
 	public static final String SELECTED_AUTH_LDAP = "ldap";
+	public static final String SELECTED_AUTH_SSO = "sso";
 	
 	// Headers
 	public static final String ACCESS_JWT_TOKEN = "jwt";
@@ -54,10 +56,12 @@ public final class Constants {
 	// Cache
 	public static final String CACHE_API = "apiCache";
 	public static final String CACHE_API_GENERATOR = "apiCacheKeyGenerator";
+	public static final String CACHE_KEYCLOAK_SSO_GENERATOR = "keycloakSsoKeyGenerator";
 	public static final String CACHE_USER = "userCache";
 	public static final String CACHE_SYSTEM_PROPERTY = "systemPropertyCache";
 	public static final String CACHE_IP_RESTRICTION = "ipRestrictionCache";
 	public static final String CACHE_GLOBAL_IP_RESTRICTION = "globalIpRestrictionCache";
+	public static final String CACHE_SSO_USER = "ssoUserCache";
 	
 	// Formats
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
@@ -68,4 +72,17 @@ public final class Constants {
 	public static final String PATH_LIST_NAMES = "/list_names";
 	public static final String PATH_ENABLED = "enabled";
 	public static final String ID = "id";
+
+	public static final String GRANT_TYPE = "grant_type";
+	public static final String AUDIENCE = "audience";
+	public static final String USERNAME = "username";
+	public static final String CREDENTIAL = "password";
+	public static final String SCOPE = "scope";
+	public static final String SCOPE_GMS = "profile email";
+	public static final String CLIENT_ID = "client_id";
+	public static final String CLIENT_SECRET = "client_secret";
+	public static final String TOKEN = "token";
+	public static final String REFRESH_TOKEN = "refresh_token";
+
+	public static final String ACCESS_DENIED = "Access denied!";
 }

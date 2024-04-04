@@ -92,8 +92,8 @@ describe('HeaderComponent', () => {
         fixture = TestBed.createComponent(HeaderComponent);
         component = fixture.componentInstance;
 
-        component.currentUser = {
-            roles: ["ROLE_ADMIN"],
+        currentUser = {
+            role: "ROLE_ADMIN",
             username: "test1",
             id: 1
         };
@@ -115,8 +115,8 @@ describe('HeaderComponent', () => {
         fixture = TestBed.createComponent(HeaderComponent);
         component = fixture.componentInstance;
 
-        component.currentUser = {
-            roles: ["ROLE_ADMIN"],
+        currentUser = {
+            role: "ROLE_ADMIN",
             username: "test1",
             id: 1
         };

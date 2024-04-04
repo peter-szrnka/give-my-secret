@@ -4,7 +4,7 @@ import { User } from "../../components/user/model/user.model";
  * @author Peter Szrnka
  */
 export function checkRights(user?: User, requireAdminRights?: boolean): boolean {
-    if (user === undefined || user.roles === undefined) {
+    if (!user) {
         return true;
     }
 
@@ -13,10 +13,10 @@ export function checkRights(user?: User, requireAdminRights?: boolean): boolean 
     }
 
     if (requireAdminRights) {
-        return user.roles.filter((role) => role === 'ROLE_ADMIN').length === 0;
+        return user.role !== 'ROLE_ADMIN';
     }
 
-    return user.roles.filter((role) => role === 'ROLE_ADMIN').length > 0;
+    return user.role === 'ROLE_ADMIN';
 }
 
 export function isSpecificUser(roles: string[], requiredRole: string): boolean {
@@ -24,5 +24,5 @@ export function isSpecificUser(roles: string[], requiredRole: string): boolean {
 }
 
 export function roleCheck(currentUser: User, roleName: string): boolean {
-    return currentUser.roles?.filter(role => role === roleName).length > 0;
+    return currentUser.role === roleName;
 }

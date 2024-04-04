@@ -2,6 +2,7 @@ package io.github.gms.functions.user;
 
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -50,18 +51,19 @@ public class UserEntity extends AbstractGmsEntity {
 	@Enumerated(EnumType.STRING)
 	private EntityStatus status;
 
-	@Column(name = "credential", nullable = true)
+	@Column(name = "credential")
 	private String credential;
 	
 	@Column(name = "creation_date")
 	private ZonedDateTime creationDate;
 	
-	@Column(name = "roles")
-	private String roles;
+	@Column(name = "role")
+	@Enumerated(EnumType.STRING)
+	private UserRole role;
 
 	@Column(name = "mfa_enabled")
 	@Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
-	private boolean mfaEnabled;
+	private boolean mfaEnabled = false;
 
 	@Column(name = "mfa_secret")
 	private String mfaSecret;

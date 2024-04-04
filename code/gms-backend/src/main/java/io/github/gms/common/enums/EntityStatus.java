@@ -11,6 +11,7 @@ public enum EntityStatus {
 	ACTIVE,
 	BLOCKED,
 	DISABLED,
+	INITIAL,
 	TO_BE_DELETED;
 
 	public static EntityStatus getByName(String name) {

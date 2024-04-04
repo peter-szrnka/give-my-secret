@@ -11,6 +11,7 @@ import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
+import io.github.gms.util.TestUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -102,7 +103,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		verify(response).sendError(HttpStatus.BAD_REQUEST.value(), ERROR_MESSAGE);
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	@ParameterizedTest
 	@MethodSource("testData")
 	@SneakyThrows
@@ -114,6 +115,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);
 		Authentication mockAuthentication = mock(Authentication.class);
+		when(mockAuthentication.getPrincipal()).thenReturn(TestUtils.createGmsAdminUser());
 
 		when(authorizationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthorizationResponse.builder()
 			.responseStatus(HttpStatus.OK)

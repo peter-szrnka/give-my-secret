@@ -5,7 +5,6 @@ import dev.samstevens.totp.exceptions.QrGenerationException;
 import dev.samstevens.totp.qr.QrData;
 import dev.samstevens.totp.qr.QrGenerator;
 import dev.samstevens.totp.qr.ZxingPngQrGenerator;
-import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.PagingDto;
@@ -13,13 +12,10 @@ import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.service.JwtClaimService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
-import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,11 +31,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
 
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.CACHE_API;
@@ -61,7 +54,7 @@ public class UserServiceImpl implements UserService {
 	private final UserConverter converter;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtClaimService jwtClaimService;
-	private final SystemPropertyService systemPropertyService;
+	private final SecretGenerator secretGenerator;
 	
 	@Override
 	@Transactional
@@ -166,50 +159,9 @@ public class UserServiceImpl implements UserService {
 			.id(entity.getId())
 			.name(entity.getName())
 			.username(entity.getUsername())
-			.roles(Stream.of(entity.getRoles().split(";")).map(UserRole::getByName).collect(Collectors.toSet()))
+			.role(entity.getRole())
 			.email(entity.getEmail())
 			.build();
-	}
-
-	@Override
-	public void updateLoginAttempt(String username) {
-		UserEntity user = getByUsername(username);
-
-		if (user == null) {
-			return;
-		}
-
-		if (EntityStatus.BLOCKED == user.getStatus()) {
-			log.info("User already blocked");
-			return;
-		}
-
-		Integer attemptsLimit = systemPropertyService.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
-		Integer failedAttempts = user.getFailedAttempts() + 1;
-		if (Objects.equals(attemptsLimit, failedAttempts)) {
-			user.setStatus(EntityStatus.BLOCKED);
-		}
-
-		user.setFailedAttempts(failedAttempts);
-		repository.save(user);
-	}
-
-	@Override
-	public void resetLoginAttempt(String username) {
-		UserEntity user = getByUsername(username);
-
-		if (user == null) {
-			return;
-		}
-
-		user.setFailedAttempts(0);
-		repository.save(user);
-	}
-
-	@Override
-	public boolean isBlocked(String username) {
-		UserEntity user = getByUsername(username);
-		return user != null && EntityStatus.BLOCKED == user.getStatus();
 	}
 
 	private SaveEntityResponseDto saveUser(SaveUserRequestDto dto, boolean roleChangeEnabled) {
@@ -221,7 +173,6 @@ public class UserServiceImpl implements UserService {
 			entity = converter.toNewEntity(dto, roleChangeEnabled);
 
 			// Generate an MFA secret for the user
-			SecretGenerator secretGenerator = new DefaultSecretGenerator();
 			entity.setMfaSecret(secretGenerator.generate());
 		} else {
 			entity = converter.toEntity(repository.findById(dto.getId())
@@ -230,10 +181,6 @@ public class UserServiceImpl implements UserService {
 
 		entity = repository.save(entity);
 		return new SaveEntityResponseDto(entity.getId());
-	}
-
-	private UserEntity getByUsername(String username) {
-		return repository.findByUsername(username).orElse(null);
 	}
 	
 	private void validateUserExistence(SaveUserRequestDto dto) {

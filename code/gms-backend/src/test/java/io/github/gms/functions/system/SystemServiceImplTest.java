@@ -21,6 +21,7 @@ import java.time.ZoneId;
 import static io.github.gms.common.util.Constants.OK;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_SSO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -108,7 +109,7 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 	public static Object[][] inputData() {
 		return new Object[][] {
 			{SELECTED_AUTH_LDAP, false, "DevRuntime" },
-			{SELECTED_AUTH_DB, true, "1.0.0" },
+			{SELECTED_AUTH_SSO, true, "1.0.0" },
 			{SELECTED_AUTH_DB, true, "1.0.0" }
 		};
 	}

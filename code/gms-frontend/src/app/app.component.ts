@@ -39,7 +39,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
       this.sharedDataService.systemReadySubject$.subscribe(readyData => {
         if (readyData.status !== 200) {
-          this.navigateToLogin();
           return;
         }
 
@@ -49,19 +48,27 @@ export class AppComponent implements OnInit, OnDestroy {
         }
   
         this.systemReady = readyData.ready;
-      });
 
-      this.sharedDataService.userSubject$.subscribe(user => {
-        if ((!user?.roles) && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
-          this.navigateToLogin();
-          return;
-        }
-
-        this.currentUser = user;
-        this.isAdmin = this.currentUser!! && roleCheck(this.currentUser, 'ROLE_ADMIN');
+        this.processUserSubject();
       });
 
     this.sharedDataService.check();
+  }
+
+  private processUserSubject() : void {
+    this.sharedDataService.userSubject$.asObservable().subscribe(user => {
+      this.currentUser = user;
+      this.isAdmin = !this.currentUser ? false : roleCheck(this.currentUser, 'ROLE_ADMIN');
+
+      if (!this.currentUser && (!this.router.url.startsWith(LOGIN_CALLBACK_URL))) {
+        this.navigateToLogin();
+        return;
+      }
+
+      if (this.currentUser && this.router.url.startsWith(LOGIN_CALLBACK_URL)) {
+        this.router.navigate(['']);
+      }
+    });
   }
 
   ngOnDestroy(): void {

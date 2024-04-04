@@ -2,6 +2,17 @@ package io.github.gms.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dev.samstevens.totp.code.CodeGenerator;
+import dev.samstevens.totp.code.CodeVerifier;
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.code.DefaultCodeVerifier;
+import dev.samstevens.totp.secret.DefaultSecretGenerator;
+import dev.samstevens.totp.secret.SecretGenerator;
+import dev.samstevens.totp.time.SystemTimeProvider;
+import dev.samstevens.totp.time.TimeProvider;
+import io.github.gms.common.interceptor.HttpClientResponseLoggingInterceptor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jackson.JsonComponentModule;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,6 +21,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -47,13 +60,16 @@ public class ApplicationConfig implements WebMvcConfigurer {
 	ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		
+		mapper.registerModule(new JsonComponentModule());
 		return mapper;
 	}
 
 	@Bean
-	RestTemplate restTemplate() {
-		return new RestTemplateBuilder().build();
+	RestTemplate restTemplate(@Value("${config.logging.httpClient.enabled}") boolean httpClientLoggingEnabled) {
+		return new RestTemplateBuilder()
+				.requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
+				.additionalInterceptors(new HttpClientResponseLoggingInterceptor(httpClientLoggingEnabled))
+				.build();
 	}
 	
 	@Bean
@@ -76,4 +92,16 @@ public class ApplicationConfig implements WebMvcConfigurer {
                     }
                 });
     }
+
+	@Bean
+	public CodeVerifier codeVerifier() {
+		TimeProvider timeProvider = new SystemTimeProvider();
+		CodeGenerator codeGenerator = new DefaultCodeGenerator();
+		return new DefaultCodeVerifier(codeGenerator, timeProvider);
+	}
+
+	@Bean
+	public SecretGenerator secretGenerator() {
+		return new DefaultSecretGenerator();
+	}
 }

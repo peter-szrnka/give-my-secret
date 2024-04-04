@@ -10,8 +10,6 @@ import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +19,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
+import static io.github.gms.common.enums.UserRole.ROLE_VIEWER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -56,7 +55,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=null, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=null, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -77,7 +76,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
+		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 	}
 
 	@Test
@@ -94,12 +93,12 @@ class UserConverterImplTest extends AbstractUnitTest {
 		mockEntity.setUsername("my-user-1");
 		mockEntity.setCreationDate(ZonedDateTime.now(clock));
 		mockEntity.setStatus(EntityStatus.DISABLED);
-		mockEntity.setRoles("ROLE_VIEWER");
+		mockEntity.setRole(ROLE_VIEWER);
 		UserEntity entity = converter.toEntity(mockEntity, dto, true);
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -118,7 +117,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=null, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, role=null, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -137,7 +136,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(entity);
-		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, roles=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
+		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
 	}
 
@@ -158,15 +157,14 @@ class UserConverterImplTest extends AbstractUnitTest {
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
 
-		UserDto dto = resultList.getResultList().get(0);
+		UserDto dto = resultList.getResultList().getFirst();
 		assertEquals(1L, dto.getId());
 		assertEquals("name", dto.getName());
 		assertEquals(TestUtils.USERNAME, dto.getUsername());
 
 		assertEquals("a@b.com", dto.getEmail());
 		assertEquals(EntityStatus.ACTIVE, dto.getStatus());
-		assertEquals(1, dto.getRoles().size());
-		assertEquals(UserRole.ROLE_USER, dto.getRoles().iterator().next());
+		assertEquals(UserRole.ROLE_USER, dto.getRole());
 		assertEquals("2023-06-29T00:00Z", dto.getCreationDate().toString());
 	}
 
@@ -181,8 +179,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 		assertEquals(DemoData.USERNAME1, dto.getName());
 		assertEquals(DemoData.USERNAME1, dto.getUsername());
 		assertEquals("a@b.com", dto.getEmail());
-		assertEquals(1, dto.getRoles().size());
-		assertEquals(UserRole.ROLE_USER, dto.getRoles().iterator().next());
+		assertEquals(UserRole.ROLE_USER, dto.getRole());
 	}
 
 	@Test
@@ -197,7 +194,7 @@ class UserConverterImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(dto);
-		assertEquals("UserInfoDto(id=null, name=null, username=username1, email=null, roles=[])", dto.toString());
+		assertEquals("UserInfoDto(id=null, name=null, username=username1, email=null, role=null, status=null, failedAttempts=null)", dto.toString());
 	}
 
 	@Test
@@ -212,40 +209,5 @@ class UserConverterImplTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(1L, response.getUserId());
-	}
-
-	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
-	void shouldConvertUserDetailsWithNewUser(boolean storeLdapCredential) {
-		// arrange
-		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-		converter.setStoreLdapCredential(storeLdapCredential);
-		GmsUserDetails testUser = TestUtils.createGmsUser();
-
-		// act
-		UserEntity response = converter.toEntity(testUser, null);
-
-		// assert
-		assertNotNull(response);
-		assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
-	}
-
-	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
-	void shouldConvertUserDetailsWithExistingUser(boolean storeLdapCredential) {
-		// arrange
-		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-		converter.setStoreLdapCredential(storeLdapCredential);
-		GmsUserDetails testUser = TestUtils.createGmsUser();
-		UserEntity existingEntity = TestUtils.createUser();
-
-		// act
-		UserEntity response = converter.toEntity(testUser, existingEntity);
-
-		// assert
-		assertNotNull(response);
-		assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
 	}
 }

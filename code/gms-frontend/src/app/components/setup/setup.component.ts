@@ -27,6 +27,7 @@ export class SetupComponent {
 
     saveAdminUser() {
         this.splashScreenService.start();
+        this.userData.role = 'ROLE_ADMIN';
         this.setupService.saveAdminUser(this.userData)
         .subscribe({
             next: () => {
