@@ -77,9 +77,8 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
                 new Cookie(ACCESS_JWT_TOKEN, MOCK_ACCESS_TOKEN),
                 new Cookie(REFRESH_JWT_TOKEN, MOCK_REFRESH_TOKEN)
         });
-        UserInfoDto mockUserInfo = TestUtils.createUserInfoDto();
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
-                .thenReturn(ResponseEntity.badRequest().build());
+                .thenReturn(ResponseEntity.status(400).body(IntrospectResponse.builder().errorDescription("Account disabled").build()));
 
         // act
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
