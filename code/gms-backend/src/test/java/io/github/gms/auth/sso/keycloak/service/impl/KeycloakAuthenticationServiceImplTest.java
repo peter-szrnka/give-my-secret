@@ -194,6 +194,28 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
+    void shouldLoginFailedWhenIntrospectReturnsEmptyBody() {
+        // arrange
+        when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
+                .thenReturn(ResponseEntity.ok(LoginResponse.builder()
+                        .accessToken(MOCK_ACCESS_TOKEN)
+                        .refreshToken(MOCK_REFRESH_TOKEN)
+                        .build()));
+        when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
+                .thenReturn(ResponseEntity.ok().build());
+
+        // act
+        AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(AuthResponsePhase.FAILED, response.getPhase());
+        verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
+        verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
+        verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);
+    }
+
+    @Test
     void shouldLoginSucceedWhenUserNotFound() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
