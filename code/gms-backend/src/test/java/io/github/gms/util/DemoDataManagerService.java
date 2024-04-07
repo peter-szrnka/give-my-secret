@@ -116,7 +116,7 @@ public class DemoDataManagerService {
 				.id(1L)
 				.global(true)
 				.allow(true)
-				.ipPattern("(192.168.0.)[0-9]{1,3}")
+				.ipPattern("(127.0.0.)[0-9]{1,3}")
 				.creationDate(ZonedDateTime.now().minusDays(1L))
 				.lastModified(ZonedDateTime.now())
 				.status(EntityStatus.ACTIVE)
