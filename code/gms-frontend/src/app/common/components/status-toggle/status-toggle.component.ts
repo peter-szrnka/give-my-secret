@@ -15,7 +15,6 @@ export class StatusToggleComponent {
     @Input() status? : string;
     @Input() doNotToggle? : boolean = false;
     @Output() callbackFunction: EventEmitter<any> = new EventEmitter();
-    component: import("events");
 
     constructor(private snackbar : MatSnackBar) {}
 
