@@ -1,8 +1,8 @@
 package io.github.gms.functions.message;
 
 import io.github.gms.common.abstraction.GmsService;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
+import org.springframework.data.domain.Pageable;
 
 /**
  * @author Peter Szrnka
@@ -12,7 +12,7 @@ public interface MessageService extends GmsService {
 	
 	SaveEntityResponseDto save(MessageDto dto);
 
-	MessageListDto list(PagingDto dto);
+	MessageListDto list(Pageable pageable);
 	
 	long getUnreadMessagesCount();
 

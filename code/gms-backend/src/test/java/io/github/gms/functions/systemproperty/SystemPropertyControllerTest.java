@@ -1,10 +1,11 @@
 package io.github.gms.functions.systemproperty;
 
-import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,17 +65,21 @@ class SystemPropertyControllerTest {
     @Test
     void shouldReturnList() {
         // arrange
-        PagingDto pagingDto = new PagingDto("DESC", "id", 0, 10);
         SystemPropertyListDto dtoList = TestUtils.createSystemPropertyListDto();
-        when(service.list(pagingDto)).thenReturn(dtoList);
-        
+        Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
+        when(service.list(pageable)).thenReturn(dtoList);
 
         // act
-        SystemPropertyListDto response = controller.list(pagingDto);
+        SystemPropertyListDto response = controller.list(
+                "DESC",
+                "id",
+                0,
+                10
+        );
 
         // assert
         assertNotNull(response);
         assertEquals(dtoList, response);
-        verify(service).list(pagingDto);
+        verify(service).list(pageable);
     }
 }

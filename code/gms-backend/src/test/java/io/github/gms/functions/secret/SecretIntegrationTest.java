@@ -153,18 +153,6 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 				String.class);
 	}
 
-	/*@Test
-	void testCount() {
-		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		// act
-		ResponseEntity<LongValueDto> response = executeHttpGet("/count", requestEntity, LongValueDto.class);
-
-		// assert
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertNotNull(response.getBody());
-		assertEquals(2L, response.getBody().getValue());
-	}*/
-
 	@Test
 	void testRotateSecret() {
 		String oldValue = secretRepository.findById(DemoData.SECRET_ENTITY_ID).get().getValue();

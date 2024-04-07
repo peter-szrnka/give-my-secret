@@ -2,12 +2,12 @@ package io.github.gms.functions.keystore;
 
 import io.github.gms.common.abstraction.AbstractClientController;
 import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.secret.GetSecureValueDto;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,12 +70,16 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 		return service.getById(id);
 	}
 	
-	@PostMapping(PATH_LIST)
+	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public KeystoreListDto list(@RequestBody PagingDto dto) {
-		return service.list(dto);
+	public KeystoreListDto list(
+			@RequestParam("direction") String direction,
+			@RequestParam("property") String property,
+			@RequestParam("size") int page,
+			@RequestParam("size") int size) {
+		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
-	
+
 	@PostMapping("/value")
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	@Audited(operation = EventOperation.GET_VALUE)

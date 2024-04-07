@@ -6,6 +6,7 @@ import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -42,8 +43,8 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public EventListDto list(PagingDto dto) {
-		Page<EventEntity> results = repository.findAll(ConverterUtils.createPageable(dto));
+	public EventListDto list(Pageable pageable) {
+		Page<EventEntity> results = repository.findAll(pageable);
 		return EventListDto.builder().resultList(results.toList().stream()
 						.map(entity -> converter.toDto(entity, getUsername(entity.getUserId())))
 						.toList()).totalElements(results.getTotalElements()).build();

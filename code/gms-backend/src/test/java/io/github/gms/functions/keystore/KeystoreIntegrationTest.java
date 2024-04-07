@@ -180,20 +180,6 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		executeHttpPost("/" + DemoData.KEYSTORE_ID + "?enabled=" + true, requestEntity, String.class);
 	}
 
-	/*@Test
-	void testCount() {
-		// arrange
-		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-
-		// act
-		ResponseEntity<LongValueDto> response = executeHttpGet("/count", requestEntity, LongValueDto.class);
-
-		// assert
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertNotNull(response.getBody());
-		assertEquals(2L, response.getBody().getValue());
-	}*/
-
 	@Test
 	void testGetAllKeystoreNames() {
 		// arrange

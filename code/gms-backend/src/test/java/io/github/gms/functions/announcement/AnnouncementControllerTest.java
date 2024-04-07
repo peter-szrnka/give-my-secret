@@ -1,12 +1,13 @@
 package io.github.gms.functions.announcement;
 
 import io.github.gms.abstraction.AbstractClientControllerTest;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,17 +73,22 @@ class AnnouncementControllerTest extends AbstractClientControllerTest<Announceme
     @Test
     void shouldReturnList() {
         // arrange
-        PagingDto pagingDto = new PagingDto("DESC", "id", 0, 10);
         AnnouncementListDto dtoList = TestUtils.createAnnouncementListDto();
-        when(service.list(pagingDto)).thenReturn(dtoList);
+        Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
+        when(service.list(pageable)).thenReturn(dtoList);
         
 
         // act
-        AnnouncementListDto response = controller.list(pagingDto);
+        AnnouncementListDto response = controller.list(
+                "DESC",
+                "id",
+                0,
+                10
+        );
 
         // assert
         assertNotNull(response);
         assertEquals(dtoList, response);
-        verify(service).list(pagingDto);
+        verify(service).list(pageable);
     }
 }

@@ -1,6 +1,6 @@
 package io.github.gms.common.abstraction;
 
-import io.github.gms.common.dto.PagingDto;
+import org.springframework.data.domain.Pageable;
 
 /**
  * @author Peter Szrnka
@@ -17,5 +17,5 @@ public interface AbstractCrudService<A, B, C, D> extends GmsClientService {
 
 	C getById(Long id);
 
-	D list(PagingDto dto);
+	D list(Pageable pageable);
 }

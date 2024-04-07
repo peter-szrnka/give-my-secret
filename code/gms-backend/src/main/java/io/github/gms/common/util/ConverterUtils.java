@@ -18,4 +18,9 @@ public class ConverterUtils {
 		Sort sort = Sort.by(Direction.valueOf(dto.getDirection()), dto.getProperty());
 		return PageRequest.of(dto.getPage(), dto.getSize(), sort);
 	}
+
+	public static Pageable createPageable(String direction, String property, int page, int size) {
+		Sort sort = Sort.by(Direction.valueOf(direction), property);
+		return PageRequest.of(page, size, sort);
+	}
 }

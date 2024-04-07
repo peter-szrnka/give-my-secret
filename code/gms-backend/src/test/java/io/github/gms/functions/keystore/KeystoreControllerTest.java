@@ -1,37 +1,32 @@
 package io.github.gms.functions.keystore;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
 import io.github.gms.abstraction.AbstractClientControllerTest;
-import io.github.gms.functions.keystore.KeystoreController;
+import io.github.gms.common.dto.IdNamePairDto;
+import io.github.gms.common.dto.IdNamePairListDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.functions.secret.GetSecureValueDto;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.github.gms.functions.keystore.DownloadFileResponseDto;
-import io.github.gms.functions.secret.GetSecureValueDto;
-import io.github.gms.common.dto.IdNamePairDto;
-import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.functions.keystore.KeystoreDto;
-import io.github.gms.functions.keystore.KeystoreListDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.keystore.KeystoreService;
-import io.github.gms.util.TestUtils;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test of {@link KeystoreController}
@@ -107,18 +102,22 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     @Test
     void shouldReturnList() {
         // arrange
-        PagingDto pagingDto = new PagingDto("DESC", "id", 0, 10);
         KeystoreListDto dtoList = TestUtils.createKeystoreListDto();
-        when(service.list(pagingDto)).thenReturn(dtoList);
-        
+        Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
+        when(service.list(pageable)).thenReturn(dtoList);
 
         // act
-        KeystoreListDto response = controller.list(pagingDto);
+        KeystoreListDto response = controller.list(
+                "DESC",
+                "id",
+                0,
+                10
+        );
 
         // assert
         assertNotNull(response);
         assertEquals(dtoList, response);
-        verify(service).list(pagingDto);
+        verify(service).list(pageable);
     }
 
     @Test
@@ -180,9 +179,10 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
         // assert
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
-        assertEquals("attachment; filename=\"test.jks\"", response.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION).get(0));
+        assertEquals("attachment; filename=\"test.jks\"", response.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION).getFirst());
 
         ByteArrayResource resource = (ByteArrayResource) response.getBody();
+        assertNotNull(resource);
         assertEquals(4, resource.contentLength());
         assertEquals("data", new String(resource.getByteArray()));
     }
