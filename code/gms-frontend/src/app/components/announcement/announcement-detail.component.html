@@ -9,7 +9,7 @@
     <form #form="ngForm">
       <mat-card class="with-margin-top">
         <mat-card-content>
-          @if (data?.id !== undefined) {
+          @if (data.id !== undefined) {
             <mat-form-field appearance="fill" class="full-width">
               <mat-label>ID</mat-label>
               <input disabled="true" name="id" matInput value="{{data.id}}">
@@ -25,7 +25,7 @@
               <textarea matInput rows="5" name="description" minlength="1" maxlength="200" required
               [(ngModel)]="data.description" autocomplete="off"></textarea>
             </mat-form-field>
-            @if (data?.id !== undefined) {
+            @if (data.id !== undefined) {
               <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Announcement date</mat-label>
                 <input disabled="true" matInput
