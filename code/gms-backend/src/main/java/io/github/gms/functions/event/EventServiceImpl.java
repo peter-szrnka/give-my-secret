@@ -1,8 +1,6 @@
 package io.github.gms.functions.event;
 
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.model.UserEvent;
-import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,8 +49,8 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public EventListDto listByUser(Long userId, PagingDto dto) {
-		return converter.toDtoList(repository.findAllByUserId(userId, ConverterUtils.createPageable(dto)), getUsername(userId));
+	public EventListDto listByUser(Long userId, Pageable pageable) {
+		return converter.toDtoList(repository.findAllByUserId(userId, pageable), getUsername(userId));
 	}
 	
 	private String getUsername(Long userId) {

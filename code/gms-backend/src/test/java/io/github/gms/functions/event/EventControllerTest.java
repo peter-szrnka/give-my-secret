@@ -1,7 +1,6 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractClientControllerTest;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,17 +51,21 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
     @Test
     void shouldReturnListByUserId() {
         // arrange
-        PagingDto pagingDto = new PagingDto("DESC", "id", 0, 10);
+        Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         EventListDto dtoList = TestUtils.createEventListDto();
-        when(service.listByUser(1L, pagingDto)).thenReturn(dtoList);
+        when(service.listByUser(1L, pageable)).thenReturn(dtoList);
         
 
         // act
-        EventListDto response = controller.listByUserId(1L, pagingDto);
+        EventListDto response = controller.listByUserId(1L,
+                "DESC",
+                "id",
+                0,
+                10);
 
         // assert
         assertNotNull(response);
         assertEquals(dtoList, response);
-        verify(service).listByUser(1L, pagingDto);
+        verify(service).listByUser(1L, pageable);
     }
 }

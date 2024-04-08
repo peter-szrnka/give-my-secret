@@ -1,10 +1,6 @@
 package io.github.gms.functions.announcement;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.functions.announcement.AnnouncementDto;
-import io.github.gms.functions.announcement.AnnouncementListDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.announcement.SaveAnnouncementDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
@@ -71,10 +67,8 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	@Test
 	void testList() {
 		// act
-		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-
-		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<AnnouncementListDto> response = executeHttpPost("/list", requestEntity, AnnouncementListDto.class);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<AnnouncementListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, AnnouncementListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -15,6 +15,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static io.github.gms.common.util.Constants.TRUE;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -22,7 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "config.job.secretRotation.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "config.job.secretRotation.enabled", havingValue = TRUE, matchIfMissing = true)
 public class SecretRotationJob {
 	
 	private static final long DELAY_SECONDS = 55L;

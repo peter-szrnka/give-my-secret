@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
+import static io.github.gms.common.util.Constants.TRUE;
 
 @Component
 @RequiredArgsConstructor
@@ -73,6 +74,6 @@ public class KeycloakConverterImpl implements KeycloakConverter {
     }
 
     private static EntityStatus getStatus(IntrospectResponse response) {
-        return "true".equals(response.getActive()) ? EntityStatus.ACTIVE : EntityStatus.DISABLED;
+        return TRUE.equals(response.getActive()) ? EntityStatus.ACTIVE : EntityStatus.DISABLED;
     }
 }

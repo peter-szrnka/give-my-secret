@@ -1,7 +1,6 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.enums.MdcParameter;
@@ -130,11 +129,12 @@ class EventServiceImplTest extends AbstractUnitTest {
 		when(converter.toDtoList(any(), eq("user1"))).thenReturn(EventListDto.builder()
 				.resultList(Lists.newArrayList(new EventDto()))
 				.totalElements(1).build());
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		when(userRepository.getUsernameById(anyLong())).thenReturn("user1");
 
 		// act
-		EventListDto response = service.listByUser(1L, new PagingDto("ASC", "id", 0, 10));
+		EventListDto response = service.listByUser(1L, pageable);
 
 		// assert
 		assertNotNull(response);

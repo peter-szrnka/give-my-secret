@@ -2,7 +2,6 @@ package io.github.gms.functions.apikey;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.functions.secret.GetSecureValueDto;
@@ -68,10 +67,8 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	void testList() {
 		// act
-		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-
-		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<ApiKeyListDto> response = executeHttpPost("/list", requestEntity, ApiKeyListDto.class);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<ApiKeyListDto> response = executeHttpPost("/list?page=0&size=10&direction=ASC&property=id", requestEntity, ApiKeyListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

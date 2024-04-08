@@ -1,12 +1,9 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
+import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
-import io.github.gms.functions.event.EventListDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.event.EventEntity;
-import io.github.gms.functions.event.EventRepository;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -52,14 +49,12 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 		eventEntity.setUserId(2L);
 		eventEntity.setOperation(EventOperation.GET_BY_ID);
 		eventEntity.setTarget(EventTarget.API_KEY);
-		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1l));
+		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1L));
 		eventRepository.save(eventEntity);
 
 		// act
-		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-
-		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<EventListDto> response = executeHttpPost(path + "/list", requestEntity, EventListDto.class);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<EventListDto> response = executeHttpPost(path + "/list?page=0&size=10&direction=ASC&property=id", requestEntity, EventListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -67,8 +62,8 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 		
 		EventListDto responseList = response.getBody();
 		assertFalse(responseList.getResultList().isEmpty());
-		assertEquals(EventOperation.GET_BY_ID, responseList.getResultList().get(0).getOperation());
-		assertEquals(EventTarget.API_KEY, responseList.getResultList().get(0).getTarget());
+		assertEquals(EventOperation.GET_BY_ID, responseList.getResultList().getFirst().getOperation());
+		assertEquals(EventTarget.API_KEY, responseList.getResultList().getFirst().getTarget());
 	}
 	
 	@Test
@@ -81,7 +76,7 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 		eventEntity.setUserId(2L);
 		eventEntity.setOperation(EventOperation.GET_BY_ID);
 		eventEntity.setTarget(EventTarget.API_KEY);
-		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1l));
+		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1L));
 		eventRepository.save(eventEntity);
 
 		// act
@@ -96,7 +91,7 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 		
 		EventListDto responseList = response.getBody();
 		assertFalse(responseList.getResultList().isEmpty());
-		assertEquals(EventOperation.GET_BY_ID, responseList.getResultList().get(0).getOperation());
-		assertEquals(EventTarget.API_KEY, responseList.getResultList().get(0).getTarget());
+		assertEquals(EventOperation.GET_BY_ID, responseList.getResultList().getFirst().getOperation());
+		assertEquals(EventTarget.API_KEY, responseList.getResultList().getFirst().getTarget());
 	}
 }

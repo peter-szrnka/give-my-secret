@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.filter.SecureHeaderInitializerFilter;
@@ -114,10 +113,8 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	void testList() {
 		// act
-		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-
-		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<KeystoreListDto> response = executeHttpPost("/list", requestEntity, KeystoreListDto.class);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<KeystoreListDto> response = executeHttpPost("/list?page=0&size=10&direction=ASC&property=id", requestEntity, KeystoreListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

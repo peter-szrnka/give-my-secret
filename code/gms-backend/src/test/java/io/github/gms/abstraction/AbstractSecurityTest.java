@@ -1,7 +1,6 @@
 package io.github.gms.abstraction;
 
 import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,17 +51,16 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest {
 	}
 
 	protected <T> void shouldListFailWith403(Class<T> clazz) {
-		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
 		// act
-		ResponseEntity<T> response = executeHttpPost(urlPrefix + "/list", requestEntity, clazz);
+		ResponseEntity<T> response = executeHttpGet(urlPrefix + "/list?page=0&size=10&direction=ASC&property=id", requestEntity, clazz);
 
 		// assert
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
-	protected <T> void shouldDeleteFailWith403(Long id) {
+	protected void shouldDeleteFailWith403(Long id) {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
 		// act
@@ -72,7 +70,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest {
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
-	protected <T> void shouldToggleFailWith403(Long id) {
+	protected void shouldToggleFailWith403(Long id) {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
 		// act
@@ -82,7 +80,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest {
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
-	protected <T> void shouldListingFailWith403(String url) {
+	protected void shouldListingFailWith403(String url) {
 		// act
 		ResponseEntity<IdNamePairListDto> response =
 				executeHttpGet(urlPrefix + url, null, IdNamePairListDto.class);

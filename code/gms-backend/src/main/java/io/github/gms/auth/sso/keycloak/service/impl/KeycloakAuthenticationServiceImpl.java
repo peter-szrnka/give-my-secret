@@ -27,6 +27,7 @@ import static io.github.gms.auth.types.AuthResponsePhase.FAILED;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
 import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.TRUE;
 
 /**
  * @author Peter Szrnka
@@ -135,7 +136,7 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
             return null;
         }
 
-        if (!"true".equals(payload.getActive())) {
+        if (!TRUE.equals(payload.getActive())) {
             // TODO Handle this case, might need to query required user actions via admin REST API
             return null;
         }

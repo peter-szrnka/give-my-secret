@@ -52,7 +52,7 @@ public class IpRestrictionController extends AbstractAdminController<IpRestricti
     public IpRestrictionListDto list(
             @RequestParam("direction") String direction,
             @RequestParam("property") String property,
-            @RequestParam("size") int page,
+            @RequestParam("page") int page,
             @RequestParam("size") int size) {
         return service.list(ConverterUtils.createPageable(direction, property, page, size));
     }

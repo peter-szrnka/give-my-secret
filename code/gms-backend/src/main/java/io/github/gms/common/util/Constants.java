@@ -85,4 +85,5 @@ public final class Constants {
 	public static final String REFRESH_TOKEN = "refresh_token";
 
 	public static final String ACCESS_DENIED = "Access denied!";
+	public static final String TRUE = "true";
 }
