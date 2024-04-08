@@ -47,12 +47,6 @@ public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
 		return getResponse(ex, HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponseDto> handleOtherException(Exception ex) {
-		log.error("Exception handled", ex);
-		return getResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
 	private ResponseEntity<ErrorResponseDto> getResponse(Exception ex, HttpStatus httpStatus) {
 		return new ResponseEntity<>(new ErrorResponseDto(
 				Throwables.getRootCause(ex).getMessage(),
