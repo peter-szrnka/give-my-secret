@@ -498,7 +498,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 		List<ApiKeyRestrictionEntity> mockRestrictionEntities = List.of(TestUtils.createApiKeyRestrictionEntity(1L));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(4L, 1L)).thenReturn(mockRestrictionEntities);
-		when(ipRestrictionService.getAllBySecretId(eq(1L))).thenReturn(emptyList());
+		when(ipRestrictionService.getAllBySecretId(1L)).thenReturn(emptyList());
 
 		// act
 		SecretDto response = service.getById(1L);
@@ -511,7 +511,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).findById(1L);
 		verify(converter).toDto(any());
 		verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(4L, 1L);
-		verify(ipRestrictionService).getAllBySecretId(eq(1L));
+		verify(ipRestrictionService).getAllBySecretId(1L);
 		mockedMdcUtils.close();
 	}
 
