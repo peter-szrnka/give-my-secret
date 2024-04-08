@@ -1,10 +1,9 @@
 package io.github.gms.abstraction;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import io.github.gms.common.abstraction.AbstractController;
 import io.github.gms.common.abstraction.GmsService;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author Peter Szrnka

@@ -2,14 +2,15 @@ package io.github.gms.functions.user;
 
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import io.github.gms.abstraction.AbstractClientControllerTest;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -90,18 +91,22 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     @Test
     void shouldReturnList() {
         // arrange
-        PagingDto pagingDto = new PagingDto("DESC", "id", 0, 10);
         UserListDto dtoList = TestUtils.createUserListDto();
-        when(service.list(pagingDto)).thenReturn(dtoList);
-        
+        Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
+        when(service.list(pageable)).thenReturn(dtoList);
 
         // act
-        UserListDto response = controller.list(pagingDto);
+        UserListDto response = controller.list(
+                "DESC",
+                "id",
+                0,
+                10
+        );
 
         // assert
         assertNotNull(response);
         assertEquals(dtoList, response);
-        verify(service).list(pagingDto);
+        verify(service).list(pageable);
     }
 
     @Test

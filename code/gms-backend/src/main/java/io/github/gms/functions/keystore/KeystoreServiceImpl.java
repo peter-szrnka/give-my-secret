@@ -3,7 +3,6 @@ package io.github.gms.functions.keystore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.common.dto.IdNamePairListDto;
 import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
@@ -13,9 +12,9 @@ import io.github.gms.common.model.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.secret.GetSecureValueDto;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +22,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,6 +52,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @CacheConfig(cacheNames = { CACHE_API })
 public class KeystoreServiceImpl implements KeystoreService {
 
@@ -69,26 +70,6 @@ public class KeystoreServiceImpl implements KeystoreService {
 	@Setter
 	@Value("${config.location.keystoreTemp.path}")
 	private String keystoreTempPath;
-
-	public KeystoreServiceImpl(
-			CryptoService cryptoService,
-			KeystoreRepository repository,
-			KeystoreAliasRepository aliasRepository,
-			KeystoreConverter converter,
-			ObjectMapper objectMapper,
-			ApplicationEventPublisher applicationEventPublisher,
-			KeystoreFileService keystoreFileService,
-			FileService fileService
-	) {
-		this.cryptoService = cryptoService;
-		this.repository = repository;
-		this.aliasRepository = aliasRepository;
-		this.converter = converter;
-		this.objectMapper = objectMapper;
-		this.applicationEventPublisher = applicationEventPublisher;
-		this.keystoreFileService = keystoreFileService;
-		this.fileService = fileService;
-	}
 
 	@Override
 	@Transactional
@@ -142,9 +123,9 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	@Override
-	public KeystoreListDto list(PagingDto dto) {
+	public KeystoreListDto list(Pageable pageable) {
 		try {
-			Page<KeystoreEntity> resultList = repository.findAllByUserId(getUserId(), ConverterUtils.createPageable(dto));
+			Page<KeystoreEntity> resultList = repository.findAllByUserId(getUserId(), pageable);
 			return converter.toDtoList(resultList);
 		} catch (Exception e) {
 			return KeystoreListDto.builder().resultList(Collections.emptyList()).totalElements(0).build();

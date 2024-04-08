@@ -7,14 +7,12 @@ import dev.samstevens.totp.qr.QrGenerator;
 import dev.samstevens.totp.qr.ZxingPngQrGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.service.JwtClaimService;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -26,6 +24,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,8 +75,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserListDto list(PagingDto dto) {
-		Page<UserEntity> resultList = repository.findAll(ConverterUtils.createPageable(dto));
+	public UserListDto list(Pageable pageable) {
+		Page<UserEntity> resultList = repository.findAll(pageable);
 		return converter.toDtoList(resultList);
 	}
 

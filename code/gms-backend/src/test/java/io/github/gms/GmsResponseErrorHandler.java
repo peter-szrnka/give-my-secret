@@ -7,7 +7,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import java.io.IOException;
 
 /**
- * Custom response error handler to supress unnecessary errors during tests.
+ * Custom response error handler to suppress unnecessary errors during tests.
  *
  * @author Peter Szrnka
  * @since 1.0

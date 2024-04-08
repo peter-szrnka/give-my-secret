@@ -1,15 +1,12 @@
 package io.github.gms.auth;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.PrintWriter;
-import java.time.Clock;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.dto.ErrorResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
@@ -17,14 +14,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.MimeTypeUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.PrintWriter;
+import java.time.Clock;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.dto.ErrorResponseDto;
-import io.github.gms.common.enums.MdcParameter;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.SneakyThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka

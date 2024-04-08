@@ -90,23 +90,6 @@ class GmsExceptionHandlerTest {
     }
 
     @Test
-    void shouldHandleOtherException() {
-        try (MockedStatic<ZonedDateTime> mockedZonedDateTime = mockStatic(ZonedDateTime.class)) {
-            mockedZonedDateTime.when(() -> ZonedDateTime.now(clock)).thenReturn(zonedDateTime);
-            // act
-            ResponseEntity<ErrorResponseDto> response = handler.handleOtherException(new RuntimeException("Oops!"));
-
-            // assert
-            assertNotNull(response);
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-            assertNotNull(response.getBody());
-            assertEquals(CORRELATION_ID, response.getBody().getCorrelationId());
-            assertEquals("Oops!", response.getBody().getMessage());
-            mockedZonedDateTime.verify(() -> ZonedDateTime.now(clock));
-        }
-    }
-
-    @Test
     void shouldHandleMissingRequestHeaderException() {
         try (MockedStatic<ZonedDateTime> mockedZonedDateTime = mockStatic(ZonedDateTime.class)) {
             mockedZonedDateTime.when(() -> ZonedDateTime.now(clock)).thenReturn(zonedDateTime);

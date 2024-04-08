@@ -1,25 +1,24 @@
 package io.github.gms.auth.db;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.functions.user.UserRepository;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.functions.user.UserRepository;
-import io.github.gms.util.TestUtils;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka

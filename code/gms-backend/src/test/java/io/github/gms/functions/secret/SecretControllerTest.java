@@ -1,5 +1,15 @@
 package io.github.gms.functions.secret;
 
+import io.github.gms.abstraction.AbstractClientControllerTest;
+import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -7,22 +17,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import io.github.gms.abstraction.AbstractClientControllerTest;
-import io.github.gms.functions.secret.SecretController;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
-
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.secret.SaveSecretRequestDto;
-import io.github.gms.functions.secret.SecretDto;
-import io.github.gms.functions.secret.SecretListDto;
-import io.github.gms.functions.secret.SecretRotationService;
-import io.github.gms.functions.secret.SecretService;
-import io.github.gms.util.TestUtils;
 
 /**
  * Unit test of {@link SecretController}
@@ -98,18 +92,22 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
     @Test
     void shouldReturnList() {
         // arrange
-        PagingDto pagingDto = new PagingDto("DESC", "id", 0, 10);
         SecretListDto dtoList = TestUtils.createSecretListDto();
-        when(service.list(pagingDto)).thenReturn(dtoList);
-        
+        Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
+        when(service.list(pageable)).thenReturn(dtoList);
 
         // act
-        SecretListDto response = controller.list(pagingDto);
+        SecretListDto response = controller.list(
+                "DESC",
+                "id",
+                0,
+                10
+        );
 
         // assert
         assertNotNull(response);
         assertEquals(dtoList, response);
-        verify(service).list(pagingDto);
+        verify(service).list(pageable);
     }
 
     @Test

@@ -1,24 +1,20 @@
 package io.github.gms.functions.message;
 
+import io.github.gms.abstraction.AbstractClientControllerTest;
+import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import io.github.gms.abstraction.AbstractClientControllerTest;
-import io.github.gms.functions.message.MessageController;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
-
-import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.functions.message.MarkAsReadRequestDto;
-import io.github.gms.functions.message.MessageListDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.message.MessageService;
-import io.github.gms.util.TestUtils;
 
 /**
  * Unit test of {@link MessageController}
@@ -36,17 +32,22 @@ class MessageControllerTest extends AbstractClientControllerTest<MessageService,
     @Test
     void shouldReturnList() {
         // arrange
-        PagingDto pagingDto = new PagingDto("DESC", "id", 0, 10);
         MessageListDto dtoList = TestUtils.createMessageListDto();
-        when(service.list(pagingDto)).thenReturn(dtoList);
+        Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
+        when(service.list(pageable)).thenReturn(dtoList);
 
         // act
-        MessageListDto response = controller.list(pagingDto);
+        MessageListDto response = controller.list(
+                "DESC",
+                "id",
+                0,
+                10
+        );
 
         // assert
         assertNotNull(response);
         assertEquals(dtoList, response);
-        verify(service).list(pagingDto);
+        verify(service).list(pageable);
     }
 
     @Test

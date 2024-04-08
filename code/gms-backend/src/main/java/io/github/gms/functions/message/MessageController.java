@@ -2,15 +2,15 @@ package io.github.gms.functions.message;
 
 import io.github.gms.common.abstraction.AbstractController;
 import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.util.ConverterUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ALL_ROLE;
@@ -28,10 +28,14 @@ public class MessageController extends AbstractController<MessageService> {
 		super(service);
 	}
 
-	@PostMapping(PATH_LIST)
+	@GetMapping(PATH_LIST)
 	@PreAuthorize(ALL_ROLE)
-	public MessageListDto list(@RequestBody PagingDto dto) {
-		return service.list(dto);
+	public MessageListDto list(
+			@RequestParam("direction") String direction,
+			@RequestParam("property") String property,
+			@RequestParam("page") int page,
+			@RequestParam("size") int size) {
+		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
 	
 	@GetMapping("/unread")

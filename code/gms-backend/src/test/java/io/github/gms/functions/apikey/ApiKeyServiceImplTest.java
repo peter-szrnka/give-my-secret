@@ -1,20 +1,16 @@
 package io.github.gms.functions.apikey;
 
-import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
-import io.github.gms.functions.apikey.ApiKeyServiceImpl;
+import ch.qos.logback.classic.Logger;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.dto.IdNamePairDto;
+import io.github.gms.common.dto.IdNamePairListDto;
+import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,23 +23,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import ch.qos.logback.classic.Logger;
-import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.functions.apikey.ApiKeyConverter;
-import io.github.gms.functions.apikey.ApiKeyDto;
-import io.github.gms.functions.apikey.ApiKeyListDto;
-import io.github.gms.common.dto.IdNamePairDto;
-import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.apikey.SaveApiKeyRequestDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.apikey.ApiKeyEntity;
-import io.github.gms.functions.apikey.ApiKeyRepository;
-import io.github.gms.util.TestUtils;
+import java.util.Optional;
+
+import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -184,9 +176,10 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	void shouldReturnEmptyList() {
 		// arrange
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenThrow(new RuntimeException("Unexpected error!"));
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		// act
-		ApiKeyListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+		ApiKeyListDto response = service.list(pageable);
 
 		// assert
 		assertNotNull(response);
@@ -202,9 +195,10 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		Page<ApiKeyEntity> mockList = new PageImpl<>(Lists.newArrayList(new ApiKeyEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
 		when(converter.toDtoList(any())).thenReturn(ApiKeyListDto.builder().resultList(Lists.newArrayList(new ApiKeyDto())).build());
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		// act
-		ApiKeyListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+		ApiKeyListDto response = service.list(pageable);
 
 		// assert
 		assertNotNull(response);
@@ -280,7 +274,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(2, response.getResultList().size());
-		assertEquals("apikey1", response.getResultList().get(0).getName());
+		assertEquals("apikey1", response.getResultList().getFirst().getName());
 		verify(repository).getAllApiKeyNames(anyLong());
 	}
 }

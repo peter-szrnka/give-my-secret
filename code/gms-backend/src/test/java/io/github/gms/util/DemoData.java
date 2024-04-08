@@ -18,7 +18,6 @@ public class DemoData {
 	public static final Long API_KEY_3_ID = 3L;
 	public static final Long KEYSTORE_ID = 1L;
 	public static final Long KEYSTORE2_ID = 2L;
-	public static final Long KEYSTORE3_ID = 3L;
 	public static final Long KEYSTORE_ALIAS_ID = 1L;
 	public static final Long KEYSTORE_ALIAS2_ID = 2L;
 	public static final Long KEYSTORE_ALIAS3_ID = 3L;

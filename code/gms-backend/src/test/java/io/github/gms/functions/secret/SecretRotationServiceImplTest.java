@@ -2,11 +2,8 @@ package io.github.gms.functions.secret;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.functions.secret.SecretEntity;
-import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.common.service.CryptoService;
-import io.github.gms.functions.secret.SecretRotationServiceImpl;
+import io.github.gms.common.types.GmsException;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

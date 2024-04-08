@@ -1,10 +1,10 @@
-import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { AnnouncementService } from "./announcement-service";
 import { environment } from "../../../../environments/environment";
 import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
 import { Paging } from "../../../common/model/paging.model";
 import { Announcement } from "../model/announcement.model";
+import { AnnouncementService } from "./announcement-service";
 
 const TEST_ANNOUNCEMENT : Announcement = {
   id : 1,
@@ -71,7 +71,7 @@ describe("AnnouncementService", () => {
 
     it('Should list results', () => {
       // arrange
-      const expectedUrl = environment.baseUrl + "secure/announcement/list";
+      const expectedUrl = environment.baseUrl + "secure/announcement/list?direction=asc&property=id&page=0&size=10";
       const mockResponse : Announcement[] = [TEST_ANNOUNCEMENT];
 
       // act
@@ -85,8 +85,7 @@ describe("AnnouncementService", () => {
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(request);
+      expect(req.request.method).toBe('GET');
       req.flush(request);
       httpMock.verify();
     });

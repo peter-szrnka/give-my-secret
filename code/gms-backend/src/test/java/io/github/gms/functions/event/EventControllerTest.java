@@ -1,17 +1,17 @@
 package io.github.gms.functions.event;
 
+import io.github.gms.abstraction.AbstractClientControllerTest;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.util.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.data.domain.Pageable;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import io.github.gms.abstraction.AbstractClientControllerTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.util.TestUtils;
 
 /**
  * Unit test of {@link EventController}
@@ -29,34 +29,43 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
     @Test
     void shouldReturnList() {
         // arrange
-        PagingDto pagingDto = new PagingDto("DESC", "id", 0, 10);
         EventListDto dtoList = TestUtils.createEventListDto();
-        when(service.list(pagingDto)).thenReturn(dtoList);
+        Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
+        when(service.list(pageable)).thenReturn(dtoList);
         
 
         // act
-        EventListDto response = controller.list(pagingDto);
+        EventListDto response = controller.list(
+                "DESC",
+                "id",
+                0,
+                10
+        );
 
         // assert
         assertNotNull(response);
         assertEquals(dtoList, response);
-        verify(service).list(pagingDto);
+        verify(service).list(pageable);
     }
 
     @Test
     void shouldReturnListByUserId() {
         // arrange
-        PagingDto pagingDto = new PagingDto("DESC", "id", 0, 10);
+        Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         EventListDto dtoList = TestUtils.createEventListDto();
-        when(service.listByUser(1L, pagingDto)).thenReturn(dtoList);
+        when(service.listByUser(1L, pageable)).thenReturn(dtoList);
         
 
         // act
-        EventListDto response = controller.listByUserId(1L, pagingDto);
+        EventListDto response = controller.listByUserId(1L,
+                "DESC",
+                "id",
+                0,
+                10);
 
         // assert
         assertNotNull(response);
         assertEquals(dtoList, response);
-        verify(service).listByUser(1L, pagingDto);
+        verify(service).listByUser(1L, pageable);
     }
 }

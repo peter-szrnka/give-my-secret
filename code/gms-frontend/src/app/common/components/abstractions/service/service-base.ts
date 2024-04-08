@@ -18,7 +18,8 @@ export abstract class ServiceBase<T, L extends BaseList<T>> implements Service<T
     }
 
     list(paging: Paging): Observable<L> {
-        return this.http.post<L>(environment.baseUrl + 'secure/' + this.scope + '/list', paging, { withCredentials: true, headers : getHeaders() });
+        return this.http.get<L>(environment.baseUrl + 'secure/' + this.scope + `/list?direction=${paging.direction}&property=${paging.property}&page=${paging.page}&size=${paging.size}`, 
+            { withCredentials: true, headers : getHeaders() });
     }
 
     getById(id: number): Observable<T> {

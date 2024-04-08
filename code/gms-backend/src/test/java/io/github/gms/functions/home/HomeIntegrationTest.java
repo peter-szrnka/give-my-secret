@@ -1,7 +1,6 @@
 package io.github.gms.functions.home;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
-import io.github.gms.functions.home.HomeDataResponseDto;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

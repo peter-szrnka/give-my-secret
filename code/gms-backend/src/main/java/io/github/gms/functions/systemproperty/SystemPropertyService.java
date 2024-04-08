@@ -1,7 +1,7 @@
 package io.github.gms.functions.systemproperty;
 
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.dto.PagingDto;
+import org.springframework.data.domain.Pageable;
 
 /**
  * @author Peter Szrnka
@@ -13,7 +13,7 @@ public interface SystemPropertyService {
 	
 	void delete(String key);
 	
-	SystemPropertyListDto list(PagingDto dto);
+	SystemPropertyListDto list(Pageable pageable);
 
 	String get(SystemProperty key);
 	

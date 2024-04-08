@@ -1,7 +1,6 @@
 package io.github.gms.functions.user;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.functions.apikey.ApiKeyDto;
@@ -80,10 +79,8 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	void testList() {
 		// act
-		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-
-		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<UserListDto> response = executeHttpPost("/list", requestEntity, UserListDto.class);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<UserListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, UserListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

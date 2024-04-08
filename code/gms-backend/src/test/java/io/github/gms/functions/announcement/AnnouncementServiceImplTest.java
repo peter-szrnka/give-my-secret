@@ -1,5 +1,27 @@
 package io.github.gms.functions.announcement;
 
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.functions.user.UserService;
+import io.github.gms.util.TestUtils;
+import org.assertj.core.util.Lists;
+import org.jboss.logging.MDC;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Optional;
+
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,35 +33,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-
-import io.github.gms.functions.announcement.AnnouncementServiceImpl;
-import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.types.GmsException;
-import io.github.gms.functions.announcement.AnnouncementDto;
-import io.github.gms.functions.announcement.AnnouncementListDto;
-import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.announcement.SaveAnnouncementDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.announcement.AnnouncementEntity;
-import io.github.gms.functions.announcement.AnnouncementRepository;
-import io.github.gms.functions.user.UserService;
-import io.github.gms.util.TestUtils;
 
 /**
  * @author Peter Szrnka
@@ -136,18 +129,19 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		entity.setAnnouncementDate(ZonedDateTime.now(clock));
 		when(repository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Lists.newArrayList(entity)));
 		when(userService.getUsernameById(anyLong())).thenReturn("myuser");
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		// act
-		AnnouncementListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+		AnnouncementListDto response = service.list(pageable);
 
 		// assert
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
-		assertEquals(1L, response.getResultList().get(0).getId());
-		assertEquals("Maintenance at 2022-01-01", response.getResultList().get(0).getTitle());
-		assertEquals("Test", response.getResultList().get(0).getDescription());
-		assertEquals("myuser", response.getResultList().get(0).getAuthor());
-		assertEquals("2023-06-29T00:00Z", response.getResultList().get(0).getAnnouncementDate().toString());
+		assertEquals(1L, response.getResultList().getFirst().getId());
+		assertEquals("Maintenance at 2022-01-01", response.getResultList().getFirst().getTitle());
+		assertEquals("Test", response.getResultList().getFirst().getDescription());
+		assertEquals("myuser", response.getResultList().getFirst().getAuthor());
+		assertEquals("2023-06-29T00:00Z", response.getResultList().getFirst().getAnnouncementDate().toString());
 		assertEquals(1L, response.getTotalElements());
 
 		verify(repository).findAll(any(Pageable.class));

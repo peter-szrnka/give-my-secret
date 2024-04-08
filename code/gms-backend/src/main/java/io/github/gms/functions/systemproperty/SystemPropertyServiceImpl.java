@@ -2,13 +2,12 @@ package io.github.gms.functions.systemproperty;
 
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.common.dto.PagingDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -41,9 +40,9 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
 	}
 
 	@Override
-	public SystemPropertyListDto list(PagingDto dto) {
+	public SystemPropertyListDto list(Pageable pageable) {
 		try {
-			Page<SystemPropertyEntity> resultList = repository.findAll(ConverterUtils.createPageable(dto));
+			Page<SystemPropertyEntity> resultList = repository.findAll(pageable);
 			return converter.toDtoList(resultList.getContent());
 		} catch (Exception e) {
 			return SystemPropertyListDto.builder().resultList(Collections.emptyList()).totalElements(0).build();

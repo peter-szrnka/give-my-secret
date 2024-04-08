@@ -19,6 +19,7 @@ import static io.github.gms.common.util.Constants.LDAP_PROPERTY_MFA_ENABLED;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_ROLE;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_STATUS;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_UID;
+import static io.github.gms.common.util.Constants.TRUE;
 
 /**
  * @author Peter Szrnka
@@ -34,7 +35,7 @@ public class LDAPAttributesMapper implements AttributesMapper<GmsUserDetails> {
 				.credential(getAttribute(attributes, LDAP_PROPERTY_CREDENTIAL))
 				.email(getAttribute(attributes, LDAP_PROPERTY_EMAIL))
 				.authorities(getAttributeCollection(attributes))
-				.mfaEnabled("true".equals(getAttribute(attributes, LDAP_PROPERTY_MFA_ENABLED)))
+				.mfaEnabled(TRUE.equals(getAttribute(attributes, LDAP_PROPERTY_MFA_ENABLED)))
 				.accountNonLocked("ACTIVE".equals(getAttribute(attributes, LDAP_PROPERTY_STATUS)))
 				.status(EntityStatus.getByName(getAttribute(attributes, LDAP_PROPERTY_STATUS)))
 				.build();

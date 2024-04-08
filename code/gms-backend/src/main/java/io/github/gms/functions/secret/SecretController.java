@@ -1,12 +1,12 @@
 package io.github.gms.functions.secret;
 
 import io.github.gms.common.abstraction.AbstractClientController;
+import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.util.ConverterUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ID;
@@ -52,10 +53,14 @@ public class SecretController extends AbstractClientController<SecretService> {
 		return service.getById(id);
 	}
 
-	@PostMapping(PATH_LIST)
+	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public SecretListDto list(@RequestBody PagingDto dto) {
-		return service.list(dto);
+	public SecretListDto list(
+			@RequestParam("direction") String direction,
+			@RequestParam("property") String property,
+			@RequestParam("page") int page,
+			@RequestParam("size") int size) {
+		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
 	
 	@GetMapping("/value/{id}")

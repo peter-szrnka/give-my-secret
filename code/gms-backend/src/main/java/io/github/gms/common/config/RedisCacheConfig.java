@@ -29,6 +29,7 @@ import static io.github.gms.common.util.Constants.CACHE_KEYCLOAK_SSO_GENERATOR;
 import static io.github.gms.common.util.Constants.CACHE_SSO_USER;
 import static io.github.gms.common.util.Constants.CACHE_SYSTEM_PROPERTY;
 import static io.github.gms.common.util.Constants.CACHE_USER;
+import static io.github.gms.common.util.Constants.TRUE;
 
 
 /**
@@ -37,7 +38,7 @@ import static io.github.gms.common.util.Constants.CACHE_USER;
  */
 @Configuration
 @EnableCaching
-@ConditionalOnProperty(name = "config.cache.redis.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "config.cache.redis.enabled", havingValue = TRUE)
 public class RedisCacheConfig {
 
     @Bean

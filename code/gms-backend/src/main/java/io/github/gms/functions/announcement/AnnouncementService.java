@@ -1,9 +1,9 @@
 package io.github.gms.functions.announcement;
 
 import io.github.gms.common.abstraction.GmsService;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.service.CountService;
+import org.springframework.data.domain.Pageable;
 
 /**
  * @author Peter Szrnka
@@ -13,7 +13,7 @@ public interface AnnouncementService extends GmsService, CountService {
 	
 	SaveEntityResponseDto save(SaveAnnouncementDto dto);
 
-	AnnouncementListDto list(PagingDto dto);
+	AnnouncementListDto list(Pageable pageable);
 	
 	AnnouncementDto getById(Long id);
 }

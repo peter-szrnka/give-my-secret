@@ -3,13 +3,7 @@ package io.github.gms.functions.message;
 import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.functions.message.MarkAsReadRequestDto;
-import io.github.gms.functions.message.MessageListDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.message.MessageEntity;
-import io.github.gms.functions.message.MessageRepository;
 import io.github.gms.util.TestUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +30,6 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 		super("/secure/message");
 	}
 	
-	@Override
-	@BeforeEach
-	public void setup() {
-		gmsUser = TestUtils.createGmsUser();
-		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest());
-	}
-	
 	@Test
 	void testMarkAsRead() {
 		// arrange
@@ -66,10 +53,8 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 		repository.save(TestUtils.createNewMessageEntity());
 		
 		// act
-		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-
-		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<MessageListDto> response = executeHttpPost("/list", requestEntity, MessageListDto.class);
+		HttpEntity<Void> requestEntity = new HttpEntity<>( TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<MessageListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, MessageListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

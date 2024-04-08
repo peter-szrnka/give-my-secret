@@ -75,7 +75,7 @@ describe("SecretService", () => {
 
     it('should list results', () => {
       // arrange
-      const expectedUrl = environment.baseUrl + "secure/secret/list";
+      const expectedUrl = environment.baseUrl + "secure/secret/list?direction=asc&property=id&page=0&size=10";
       const mockResponse : Secret[] = [TEST_SECRET];
 
       // act
@@ -89,8 +89,7 @@ describe("SecretService", () => {
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(request);
+      expect(req.request.method).toBe('GET');
       req.flush(request);
       httpMock.verify();
     });

@@ -2,11 +2,11 @@ package io.github.gms.functions.iprestriction;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.model.IpRestrictionPatterns;
 import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -120,9 +120,10 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         when(repository.findAllGlobal(any(Pageable.class))).thenReturn(mockList);
         when(converter.toDtoList(any(Page.class)))
                 .thenReturn(IpRestrictionListDto.builder().resultList(Lists.newArrayList(new IpRestrictionDto())).build());
+        Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
         // act
-        IpRestrictionListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+        IpRestrictionListDto response = service.list(pageable);
 
         // assert
         assertNotNull(response);

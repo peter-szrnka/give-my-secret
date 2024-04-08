@@ -4,13 +4,13 @@ import ch.qos.logback.classic.Logger;
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.service.JwtClaimService;
 import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -189,9 +189,10 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		when(converter.toDtoList(any())).thenReturn(UserListDto.builder()
 				.resultList(Lists.newArrayList(TestUtils.createUserDto()))
 				.totalElements(1).build());
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		// act
-		UserListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+		UserListDto response = service.list(pageable);
 
 		// assert
 		assertNotNull(response);

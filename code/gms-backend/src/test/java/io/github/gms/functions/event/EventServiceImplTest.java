@@ -1,5 +1,26 @@
 package io.github.gms.functions.event;
 
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.enums.EventOperation;
+import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.model.UserEvent;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.functions.user.UserRepository;
+import io.github.gms.util.TestUtils;
+import org.assertj.core.util.Lists;
+import org.jboss.logging.MDC;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,34 +31,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-
-import io.github.gms.functions.event.EventServiceImpl;
-import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.EventOperation;
-import io.github.gms.common.enums.EventTarget;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.functions.event.EventConverter;
-import io.github.gms.functions.event.EventDto;
-import io.github.gms.functions.event.EventListDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.event.EventEntity;
-import io.github.gms.common.model.UserEvent;
-import io.github.gms.functions.event.EventRepository;
-import io.github.gms.functions.user.UserRepository;
-import io.github.gms.util.TestUtils;
 
 /**
  * @author Peter Szrnka
@@ -89,7 +82,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 		// assert
 		verify(repository).deleteById(1L);
 	}
-	
+
 	@Test
 	void shouldReturnList() {
 		// arrange
@@ -110,9 +103,10 @@ class EventServiceImplTest extends AbstractUnitTest {
 		when(converter.toDto(eq(event1), anyString())).thenReturn(mockEvent1);
 		when(converter.toDto(eq(secondEventEntity), anyString())).thenReturn(mockEvent2);
 		when(userRepository.getUsernameById(anyLong())).thenReturn("user1");
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		// act
-		EventListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+		EventListDto response = service.list(pageable);
 
 		// assert
 		assertNotNull(response);
@@ -135,11 +129,12 @@ class EventServiceImplTest extends AbstractUnitTest {
 		when(converter.toDtoList(any(), eq("user1"))).thenReturn(EventListDto.builder()
 				.resultList(Lists.newArrayList(new EventDto()))
 				.totalElements(1).build());
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		when(userRepository.getUsernameById(anyLong())).thenReturn("user1");
 
 		// act
-		EventListDto response = service.listByUser(1L, new PagingDto("ASC", "id", 0, 10));
+		EventListDto response = service.listByUser(1L, pageable);
 
 		// assert
 		assertNotNull(response);

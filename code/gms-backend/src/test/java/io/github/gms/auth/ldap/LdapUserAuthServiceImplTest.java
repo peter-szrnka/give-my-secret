@@ -48,7 +48,6 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	void shouldNotFoundUser() {
 		// arrange
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of());
@@ -62,7 +61,6 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	@SuppressWarnings("unchecked")
 	void shouldFoundMoreUser() {
 		// arrange
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(TestUtils.createGmsUser(), TestUtils.createGmsUser()));
@@ -76,7 +74,6 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	void shouldFoundOneUser() {
 		// arrange
 		GmsUserDetails mockUser = TestUtils.createGmsUser();

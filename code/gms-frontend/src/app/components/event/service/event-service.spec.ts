@@ -1,8 +1,8 @@
-import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
-import { Event } from "../model/event.model";
 import { Paging } from "../../../common/model/paging.model";
+import { Event } from "../model/event.model";
 import { EventService } from "./event-service";
 
 const TEST_EVENT : Event = {
@@ -48,7 +48,7 @@ describe("EventService", () => {
 
     it('Should list results', () => {
       // arrange
-      const expectedUrl = environment.baseUrl + "secure/event/list";
+      const expectedUrl = environment.baseUrl + "secure/event/list?direction=asc&property=id&page=0&size=10";
       const mockResponse : Event[] = [TEST_EVENT];
 
       // act
@@ -62,15 +62,14 @@ describe("EventService", () => {
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(request);
+      expect(req.request.method).toBe('GET');
       req.flush(request);
       httpMock.verify();
     });
 
     it('Should list results by user id', () => {
       // arrange
-      const expectedUrl = environment.baseUrl + "secure/event/list/2";
+      const expectedUrl = environment.baseUrl + "secure/event/list/2?direction=asc&property=id&page=0&size=10";
       const mockResponse : Event[] = [TEST_EVENT];
 
       // act
@@ -84,8 +83,7 @@ describe("EventService", () => {
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(request);
+      expect(req.request.method).toBe('GET');
       req.flush(request);
       httpMock.verify();
     });

@@ -10,12 +10,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
+import static io.github.gms.common.util.Constants.TRUE;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 @Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
-@ConditionalOnProperty(value = "config.job.ldapUserSyncJob.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "config.job.ldapUserSyncJob.enabled", havingValue = TRUE)
 public class LdapUserSyncJob {
 
     private final LdapSyncService service;

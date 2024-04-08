@@ -1,12 +1,12 @@
 package io.github.gms.functions.user;
 
 import io.github.gms.common.abstraction.AbstractAdminController;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
+import io.github.gms.common.util.ConverterUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,10 +57,14 @@ public class UserController extends AbstractAdminController<UserService> {
 		return service.getById(id);
 	}
 	
-	@PostMapping(PATH_LIST)
+	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_ADMIN)
-	public UserListDto list(@RequestBody PagingDto dto) {
-		return service.list(dto);
+	public UserListDto list(
+			@RequestParam("direction") String direction,
+			@RequestParam("property") String property,
+			@RequestParam("page") int page,
+			@RequestParam("size") int size) {
+		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
 	
 	@PostMapping("/change_credential")

@@ -1,10 +1,10 @@
-import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { User } from "../model/user.model";
-import { UserService } from "./user-service";
 import { environment } from "../../../../environments/environment";
 import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
 import { Paging } from "../../../common/model/paging.model";
+import { User } from "../model/user.model";
+import { UserService } from "./user-service";
 
 const TEST_USER : User = {
   id: 1,
@@ -62,7 +62,7 @@ describe("SecretService", () => {
 
     it('should list results', () => {
       // arrange
-      const expectedUrl = environment.baseUrl + "secure/user/list";
+      const expectedUrl = environment.baseUrl + "secure/user/list?direction=asc&property=id&page=0&size=10";
       const mockResponse : User[] = [TEST_USER];
 
       // act
@@ -76,8 +76,7 @@ describe("SecretService", () => {
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(request);
+      expect(req.request.method).toBe('GET');
       req.flush(request);
       httpMock.verify();
     });

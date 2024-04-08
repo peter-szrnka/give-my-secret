@@ -1,19 +1,20 @@
 package io.github.gms.functions.apikey;
 
 import io.github.gms.common.abstraction.AbstractClientController;
+import io.github.gms.common.dto.IdNamePairListDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
-import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.util.ConverterUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.ID;
@@ -50,10 +51,14 @@ public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 		return service.getById(id);
 	}
 	
-	@PostMapping(PATH_LIST)
+	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	public ApiKeyListDto list(@RequestBody PagingDto dto) {
-		return service.list(dto);
+	public ApiKeyListDto list(
+			@RequestParam("direction") String direction,
+			@RequestParam("property") String property,
+			@RequestParam("page") int page,
+			@RequestParam("size") int size) {
+		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
 	
 	@GetMapping("/value/{id}")

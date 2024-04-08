@@ -1,13 +1,8 @@
 package io.github.gms.functions.secret;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.secret.SaveSecretRequestDto;
-import io.github.gms.functions.secret.SecretDto;
-import io.github.gms.functions.secret.SecretListDto;
-import io.github.gms.functions.secret.SecretEntity;
+import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
@@ -92,10 +87,8 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	void testList() {
 		// act
-		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-
-		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<SecretListDto> response = executeHttpPost("/list", requestEntity, SecretListDto.class);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<SecretListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, SecretListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -152,18 +145,6 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 		executeHttpPost("/" + DemoData.SECRET_ENTITY_ID + "?enabled=" + true, requestEntity,
 				String.class);
 	}
-
-	/*@Test
-	void testCount() {
-		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		// act
-		ResponseEntity<LongValueDto> response = executeHttpGet("/count", requestEntity, LongValueDto.class);
-
-		// assert
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertNotNull(response.getBody());
-		assertEquals(2L, response.getBody().getValue());
-	}*/
 
 	@Test
 	void testRotateSecret() {

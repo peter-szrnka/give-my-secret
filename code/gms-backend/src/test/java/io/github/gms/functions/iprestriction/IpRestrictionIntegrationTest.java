@@ -1,7 +1,6 @@
 package io.github.gms.functions.iprestriction;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
@@ -70,10 +69,8 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	@Test
 	void testList() {
 		// act
-		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-
-		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<IpRestrictionListDto> response = executeHttpPost("/list", requestEntity, IpRestrictionListDto.class);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<IpRestrictionListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, IpRestrictionListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

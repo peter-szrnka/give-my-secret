@@ -11,13 +11,15 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 
+import static io.github.gms.common.util.Constants.TRUE;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "config.job.messageCleanup.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "config.job.messageCleanup.enabled", havingValue = TRUE, matchIfMissing = true)
 public class MessageCleanupJob extends AbstractLimitBasedJob {
 
 	private final MessageRepository messageRepository;

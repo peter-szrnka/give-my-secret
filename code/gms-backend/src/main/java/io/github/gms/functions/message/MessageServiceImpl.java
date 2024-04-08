@@ -1,12 +1,11 @@
 package io.github.gms.functions.message;
 
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.enums.MdcParameter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -43,10 +42,10 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public MessageListDto list(PagingDto dto) {
+	public MessageListDto list(Pageable pageable) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 
-		Page<MessageEntity> resultList = repository.findAllByUserId(userId, ConverterUtils.createPageable(dto));
+		Page<MessageEntity> resultList = repository.findAllByUserId(userId, pageable);
 		return converter.toDtoList(resultList);
 	}
 

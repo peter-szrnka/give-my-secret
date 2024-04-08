@@ -1,14 +1,12 @@
 package io.github.gms.common.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import io.github.gms.abstraction.AbstractUnitTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.dto.PagingDto;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Szrnka
@@ -23,9 +21,8 @@ class ConverterUtilsTest extends AbstractUnitTest {
     
     @Test
     void shouldCreatePageable() {
-        PagingDto dto = new PagingDto("DESC", "id", 1, 10);
         // act
-        Pageable response = ConverterUtils.createPageable(dto);
+        Pageable response = ConverterUtils.createPageable("DESC", "id", 1, 10);
 
         // assert
         assertNotNull(response);

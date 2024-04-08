@@ -1,15 +1,14 @@
 package io.github.gms.functions.announcement;
 
 import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -49,8 +48,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	}
 
 	@Override
-	public AnnouncementListDto list(PagingDto dto) {
-		Page<AnnouncementEntity> results = repository.findAll(ConverterUtils.createPageable(dto));
+	public AnnouncementListDto list(Pageable pageable) {
+		Page<AnnouncementEntity> results = repository.findAll(pageable);
 		return AnnouncementListDto.builder()
 				.resultList(results.toList().stream()
 						.map(this::toDto)
