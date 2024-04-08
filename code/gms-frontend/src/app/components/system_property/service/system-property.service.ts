@@ -24,6 +24,8 @@ export class SystemPropertyService {
     }
 
     list(paging: Paging): Observable<SystemPropertyList> {
-        return this.http.post<SystemPropertyList>(environment.baseUrl + 'secure/system_property/list', paging, { withCredentials: true, headers : getHeaders() });
+        return this.http.get<SystemPropertyList>(environment.baseUrl + 'secure/system_property/list' + 
+            `?direction=${paging.direction}&property=${paging.property}&page=${paging.page}&size=${paging.size}`, 
+            { withCredentials: true, headers : getHeaders() });
     }
 }

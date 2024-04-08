@@ -1,48 +1,52 @@
 <div class="with-margin-top">
-    <nav-back [buttonConfig]="buttonConfig"></nav-back>
+  <nav-back [buttonConfig]="buttonConfig"></nav-back>
 
-    <div class="warning" *ngIf="error"><b>System error:</b> {{error}}</div>
-    <form #form="ngForm" *ngIf="!error">
-        <mat-card class="with-margin-top">
-            <mat-card-content>
-                <mat-form-field appearance="fill" class="full-width" *ngIf="data?.id !== undefined">
-                    <mat-label>ID</mat-label>
-                    <input disabled="true" name="id" matInput value="{{data.id}}">
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>IP pattern</mat-label>
-                    <input matInput name="name" required [(ngModel)]="data.ipPattern">
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Allowed/blocked</mat-label>
-                    <mat-select required [(ngModel)]="data.allow" name="allow">
-                        <mat-option [value]="true">true</mat-option>
-                        <mat-option [value]="false">false</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Status</mat-label>
-                    <mat-select [(ngModel)]="data.status" name="status" required>
-                        <mat-option [value]="'ACTIVE'">ACTIVE</mat-option>
-                        <mat-option [value]="'DISABLED'">DISABLED</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" class="full-width" *ngIf="data?.id !== undefined">
-                    <mat-label>Creation date</mat-label>
-                    <input disabled="true" matInput value="{{data.creationDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}">
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" class="full-width" *ngIf="data?.id !== undefined">
-                    <mat-label>Last modified</mat-label>
-                    <input disabled="true" matInput value="{{data.lastModified | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}">
-                </mat-form-field>
-
-                <button [disabled]="form.status ==='INVALID'" mat-button color="primary" (click)="save()">Save</button>
-            </mat-card-content>
-        </mat-card>
+  @if (error) {
+    <div class="warning"><b>System error:</b> {{error}}</div>
+  }
+  @if (!error) {
+    <form #form="ngForm">
+      <mat-card class="with-margin-top">
+        <mat-card-content>
+          @if (data?.id !== undefined) {
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>ID</mat-label>
+              <input disabled="true" name="id" matInput value="{{data.id}}">
+            </mat-form-field>
+          }
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>IP pattern</mat-label>
+            <input matInput name="name" required [(ngModel)]="data.ipPattern">
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Allowed/blocked</mat-label>
+            <mat-select required [(ngModel)]="data.allow" name="allow">
+              <mat-option [value]="true">true</mat-option>
+              <mat-option [value]="false">false</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="data.status" name="status" required>
+              <mat-option [value]="'ACTIVE'">ACTIVE</mat-option>
+              <mat-option [value]="'DISABLED'">DISABLED</mat-option>
+            </mat-select>
+          </mat-form-field>
+          @if (data?.id !== undefined) {
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Creation date</mat-label>
+              <input disabled="true" matInput value="{{data.creationDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}">
+            </mat-form-field>
+          }
+          @if (data?.id !== undefined) {
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Last modified</mat-label>
+              <input disabled="true" matInput value="{{data.lastModified | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}">
+            </mat-form-field>
+          }
+          <button [disabled]="form.status ==='INVALID'" mat-button color="primary" (click)="save()">Save</button>
+        </mat-card-content>
+      </mat-card>
     </form>
+  }
 </div>

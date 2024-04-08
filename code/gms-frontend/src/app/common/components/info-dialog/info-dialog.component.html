@@ -1,8 +1,12 @@
 <h1 mat-dialog-title>{{TITLE_MAP[data.type]}}</h1>
 <div mat-dialog-content>
   <p class="{{data.type}}">
-    <mat-icon *ngIf="data.type === 'warning'" class="v-bottom">warning</mat-icon>
-    <mat-icon *ngIf="data.type === 'information'" class="v-bottom">info</mat-icon>
+    @if (data.type === 'warning') {
+      <mat-icon class="v-bottom">warning</mat-icon>
+    }
+    @if (data.type === 'information') {
+      <mat-icon class="v-bottom">info</mat-icon>
+    }
     {{data.text}}
   </p>
 </div>
