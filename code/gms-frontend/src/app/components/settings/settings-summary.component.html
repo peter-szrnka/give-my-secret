@@ -3,12 +3,16 @@
 <div>
   <form #form="ngForm">
     <mat-accordion>
-      <div class="information" *ngIf="authMode === 'ldap'">
-        Your password is managed in LDAP
-      </div>
-      <div class="information" *ngIf="authMode === 'sso'">
-        Your password is managed in SSO
-      </div>
+      @if (authMode === 'ldap') {
+        <div class="information">
+          Your password is managed in LDAP
+        </div>
+      }
+      @if (authMode === 'sso') {
+        <div class="information">
+          Your password is managed in SSO
+        </div>
+      }
       <mat-expansion-panel hideToggle [disabled]="authMode !== 'db'">
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -22,42 +26,46 @@
           <mat-label>Current password</mat-label>
           <input type="password" matInput name="oldCredential" required minlength="8"
             [(ngModel)]="credentialData.oldCredential">
-        </mat-form-field>
+          </mat-form-field>
 
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>New password</mat-label>
-          <input type="password" matInput name="newCredential1" required minlength="8"
-            [(ngModel)]="credentialData.newCredential1">
-        </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>New password</mat-label>
+            <input type="password" matInput name="newCredential1" required minlength="8"
+              [(ngModel)]="credentialData.newCredential1">
+            </mat-form-field>
 
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Verify new password</mat-label>
-          <input type="password" matInput name="newCredential2" required minlength="8"
-            [(ngModel)]="credentialData.newCredential2">
-        </mat-form-field>
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Verify new password</mat-label>
+              <input type="password" matInput name="newCredential2" required minlength="8"
+                [(ngModel)]="credentialData.newCredential2">
+              </mat-form-field>
 
-        <button mat-button color="primary" [disabled]="form.status ==='INVALID'" (click)="save()">Save</button>
-      </mat-expansion-panel>
-      <mat-expansion-panel hideToggle [disabled]="authMode !== 'db'">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Multi-Factor Authentication
-          </mat-panel-title>
-          <mat-panel-description>
-            Enable or disable MFA
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <mat-checkbox  name="mfaEnabled" [(ngModel)]="mfaEnabled" [checked]="mfaEnabled === true" (change)="toggleMfa()" />
-        Multi-Factor Authentication enabled
+              <button mat-button color="primary" [disabled]="form.status ==='INVALID'" (click)="save()">Save</button>
+            </mat-expansion-panel>
+            <mat-expansion-panel hideToggle [disabled]="authMode !== 'db'">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Multi-Factor Authentication
+                </mat-panel-title>
+                <mat-panel-description>
+                  Enable or disable MFA
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-checkbox  name="mfaEnabled" [(ngModel)]="mfaEnabled" [checked]="mfaEnabled === true" (change)="toggleMfa()" />
+              Multi-Factor Authentication enabled
 
-        <div *ngIf="showQrCode">
-          <img src="{{imageBaseUrl}}secure/user/mfa_qr_code" alt="MFA QR code" /> <br/>
-          Scan this QR code with your preferred/supported Authenticator app.
-        </div>
-        <div *ngIf="!showQrCode">
-          <button mat-raised-button color="primary" (click)="showQrCode = !showQrCode">Show QR code</button>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </form>
-</div>
+              @if (showQrCode) {
+                <div>
+                  <img src="{{imageBaseUrl}}secure/user/mfa_qr_code" alt="MFA QR code" /> <br/>
+                  Scan this QR code with your preferred/supported Authenticator app.
+                </div>
+              }
+              @if (!showQrCode) {
+                <div>
+                  <button mat-raised-button color="primary" (click)="showQrCode = !showQrCode">Show QR code</button>
+                </div>
+              }
+            </mat-expansion-panel>
+          </mat-accordion>
+        </form>
+      </div>

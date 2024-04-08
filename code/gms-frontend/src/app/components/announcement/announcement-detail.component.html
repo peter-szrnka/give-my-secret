@@ -1,38 +1,40 @@
 <div class="with-margin-top">
 
-    <nav-back [buttonConfig]="[{url:'/announcement/list', label:'Back to list', primary : true}]"></nav-back>
+  <nav-back [buttonConfig]="[{url:'/announcement/list', label:'Back to list', primary : true}]"></nav-back>
 
-    <div class="warning" *ngIf="error"><b>System error:</b> {{error}}</div>
-    <form #form="ngForm" *ngIf="!error">
-        <mat-card class="with-margin-top">
-            <mat-card-content>
-
-                <mat-form-field appearance="fill" class="full-width" *ngIf="data?.id !== undefined">
-                    <mat-label>ID</mat-label>
-                    <input disabled="true" name="id" matInput value="{{data.id}}">
+  @if (error) {
+    <div class="warning"><b>System error:</b> {{error}}</div>
+  }
+  @if (!error) {
+    <form #form="ngForm">
+      <mat-card class="with-margin-top">
+        <mat-card-content>
+          @if (data.id !== undefined) {
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>ID</mat-label>
+              <input disabled="true" name="id" matInput value="{{data.id}}">
+            </mat-form-field>
+          }
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Title</mat-label>
+            <input matInput name="title" minlength="1" maxlength="50" required
+              [(ngModel)]="data.title" placeholder="..." autocomplete="off">
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Description</mat-label>
+              <textarea matInput rows="5" name="description" minlength="1" maxlength="200" required
+              [(ngModel)]="data.description" autocomplete="off"></textarea>
+            </mat-form-field>
+            @if (data.id !== undefined) {
+              <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Announcement date</mat-label>
+                <input disabled="true" matInput
+                  value="{{data.announcementDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}">
                 </mat-form-field>
-
-                <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Title</mat-label>
-                    <input matInput name="title" minlength="1" maxlength="50" required
-                        [(ngModel)]="data.title" placeholder="..." autocomplete="off">
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Description</mat-label>
-                    <textarea matInput rows="5" name="description" minlength="1" maxlength="200" required
-                        [(ngModel)]="data.description" autocomplete="off"></textarea>
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" class="full-width" *ngIf="data?.id !== undefined">
-                    <mat-label>Announcement date</mat-label>
-                    <input disabled="true" matInput
-                        value="{{data.announcementDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}">
-                </mat-form-field>
-
-                <button [disabled]="form.status ==='INVALID'" mat-button color="primary" (click)="save()">Save</button>
-
+              }
+              <button [disabled]="form.status ==='INVALID'" mat-button color="primary" (click)="save()">Save</button>
             </mat-card-content>
-        </mat-card>
-    </form>
-</div>
+          </mat-card>
+        </form>
+      }
+    </div>

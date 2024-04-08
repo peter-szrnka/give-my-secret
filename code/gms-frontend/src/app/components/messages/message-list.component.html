@@ -3,39 +3,43 @@
 
   <nav-back></nav-back>
 
-  <div class="warning" *ngIf="error"><b>System error:</b> {{error}}</div>
-  <mat-card class="simple-margin-top" *ngIf="!error">
-    <mat-card-content>
-      <table mat-table [dataSource]="datasource" (load)="true">
-        <tr mat-header-row *matHeaderRowDef="messageColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: messageColumns;"></tr>
-
-        <ng-container matColumnDef="message">
-          <th mat-header-cell *matHeaderCellDef>Message</th>
-          <td mat-cell *matCellDef="let element" [ngClass]="element.opened === false ? 'bold-text' : ''">
+  @if (error) {
+    <div class="warning"><b>System error:</b> {{error}}</div>
+  }
+  @if (!error) {
+    <mat-card class="simple-margin-top">
+      <mat-card-content>
+        <table mat-table [dataSource]="datasource" (load)="true">
+          <tr mat-header-row *matHeaderRowDef="messageColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: messageColumns;"></tr>
+          <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef>Message</th>
+            <td mat-cell *matCellDef="let element" [ngClass]="element.opened === false ? 'bold-text' : ''">
             {{element.message}} </td>
-        </ng-container>
-        <ng-container matColumnDef="creationDate">
-          <th mat-header-cell *matHeaderCellDef>Creation date</th>
-          <td mat-cell *matCellDef="let element" [ngClass]="element.opened === false ? 'bold-text' : ''">
+          </ng-container>
+          <ng-container matColumnDef="creationDate">
+            <th mat-header-cell *matHeaderCellDef>Creation date</th>
+            <td mat-cell *matCellDef="let element" [ngClass]="element.opened === false ? 'bold-text' : ''">
             {{element.creationDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="operations">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element" [ngClass]="element.opened === false ? 'bold-text' : ''">
-
-            <button mat-icon-button color="primary" *ngIf="element.actionPath" [routerLink]="element.actionPath">
-              <mat-icon aria-hidden="false">arrow_forward</mat-icon>
-            </button>
-            <button mat-icon-button color="primary" *ngIf="element.opened === false" (click)="markAsRead(element.id)">
-              <mat-icon aria-hidden="false">done</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-      </table>
-
-      <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
-    </mat-card-content>
-  </mat-card>
+          </ng-container>
+          <ng-container matColumnDef="operations">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element" [ngClass]="element.opened === false ? 'bold-text' : ''">
+              @if (element.actionPath) {
+                <button mat-icon-button color="primary" [routerLink]="element.actionPath">
+                  <mat-icon aria-hidden="false">arrow_forward</mat-icon>
+                </button>
+              }
+              @if (element.opened === false) {
+                <button mat-icon-button color="primary" (click)="markAsRead(element.id)">
+                  <mat-icon aria-hidden="false">done</mat-icon>
+                </button>
+              }
+            </td>
+          </ng-container>
+        </table>
+        <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  }
 </div>

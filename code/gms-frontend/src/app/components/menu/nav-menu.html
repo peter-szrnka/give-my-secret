@@ -1,50 +1,90 @@
 <div>
-    <mat-list role="list">
-        <mat-list-item class="side-menu-list-item" [routerLink]="'/'">
-          <mat-icon matListIcon>home</mat-icon>
-          <span matLine *ngIf="showTexts" (click)="handleClick()"> Home </span>
-        </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'secret/list'" (click)="handleClick()" *ngIf="!admin">
-          <mat-icon matListIcon>key</mat-icon>
-          <span matLine *ngIf="showTexts"> Secrets </span>
-        </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'apikey/list'" (click)="handleClick()" *ngIf="!admin">
-          <mat-icon matListIcon>security</mat-icon>
-          <span matLine *ngIf="showTexts"> API keys </span>
-        </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'keystore/list'" (click)="handleClick()" *ngIf="!admin">
-          <mat-icon matListIcon>widgets</mat-icon>
-          <span matLine *ngIf="showTexts"> Keystores </span>
-        </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'api-testing'" (click)="handleClick()" *ngIf="!admin">
-          <mat-icon matListIcon>speaker_phone</mat-icon>
-          <span matLine *ngIf="showTexts"> API Testing </span>
-        </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'user/list'" (click)="handleClick()" *ngIf="admin">
-          <mat-icon matListIcon>face</mat-icon>
-          <h3 matLine *ngIf="showTexts"> Users </h3>
-        </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'system_property/list'" (click)="handleClick()" *ngIf="admin">
-          <mat-icon matListIcon>settings</mat-icon>
-          <h3 matLine *ngIf="showTexts"> System properties </h3>
-        </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'ip_restriction/list'" (click)="handleClick()" *ngIf="admin">
-          <mat-icon matListIcon>http</mat-icon>
-          <h3 matLine *ngIf="showTexts"> IP restrictions </h3>
-        </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'announcement/list'" (click)="handleClick()" *ngIf="admin">
-          <mat-icon matListIcon>announcement</mat-icon>
-          <h3 matLine *ngIf="showTexts"> Announcements </h3>
-        </mat-list-item>
-        <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'event/list'" (click)="handleClick()" *ngIf="admin">
-          <mat-icon matListIcon>event</mat-icon>
-          <h3 matLine *ngIf="showTexts"> Events </h3>
-        </mat-list-item>
-      </mat-list>
+  <mat-list role="list">
+    <mat-list-item class="side-menu-list-item" [routerLink]="'/'">
+      <mat-icon matListIcon>home</mat-icon>
+      @if (showTexts) {
+        <span matLine (click)="handleClick()"> Home </span>
+      }
+    </mat-list-item>
+    @if (!admin) {
+      <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'secret/list'" (click)="handleClick()">
+        <mat-icon matListIcon>key</mat-icon>
+        @if (showTexts) {
+          <span matLine> Secrets </span>
+        }
+      </mat-list-item>
+    }
+    @if (!admin) {
+      <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'apikey/list'" (click)="handleClick()">
+        <mat-icon matListIcon>security</mat-icon>
+        @if (showTexts) {
+          <span matLine> API keys </span>
+        }
+      </mat-list-item>
+    }
+    @if (!admin) {
+      <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'keystore/list'" (click)="handleClick()">
+        <mat-icon matListIcon>widgets</mat-icon>
+        @if (showTexts) {
+          <span matLine> Keystores </span>
+        }
+      </mat-list-item>
+    }
+    @if (!admin) {
+      <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'api-testing'" (click)="handleClick()">
+        <mat-icon matListIcon>speaker_phone</mat-icon>
+        @if (showTexts) {
+          <span matLine> API Testing </span>
+        }
+      </mat-list-item>
+    }
+    @if (admin) {
+      <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'user/list'" (click)="handleClick()">
+        <mat-icon matListIcon>face</mat-icon>
+        @if (showTexts) {
+          <h3 matLine> Users </h3>
+        }
+      </mat-list-item>
+    }
+    @if (admin) {
+      <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'system_property/list'" (click)="handleClick()">
+        <mat-icon matListIcon>settings</mat-icon>
+        @if (showTexts) {
+          <h3 matLine> System properties </h3>
+        }
+      </mat-list-item>
+    }
+    @if (admin) {
+      <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'ip_restriction/list'" (click)="handleClick()">
+        <mat-icon matListIcon>http</mat-icon>
+        @if (showTexts) {
+          <h3 matLine> IP restrictions </h3>
+        }
+      </mat-list-item>
+    }
+    @if (admin) {
+      <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'announcement/list'" (click)="handleClick()">
+        <mat-icon matListIcon>announcement</mat-icon>
+        @if (showTexts) {
+          <h3 matLine> Announcements </h3>
+        }
+      </mat-list-item>
+    }
+    @if (admin) {
+      <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="'event/list'" (click)="handleClick()">
+        <mat-icon matListIcon>event</mat-icon>
+        @if (showTexts) {
+          <h3 matLine> Events </h3>
+        }
+      </mat-list-item>
+    }
+  </mat-list>
 
-      <mat-list class="nav-toggle-btn" *ngIf="enableBottomToggle">
-        <mat-list-item>
-            <mat-icon matListIcon (click)="toggleTextMenuVisibility()">{{showTexts ? 'arrow_back_ios' : 'arrow_forward_ios'}}</mat-icon>
-        </mat-list-item>
-      </mat-list>
+  @if (enableBottomToggle) {
+    <mat-list class="nav-toggle-btn">
+      <mat-list-item>
+        <mat-icon matListIcon (click)="toggleTextMenuVisibility()">{{showTexts ? 'arrow_back_ios' : 'arrow_forward_ios'}}</mat-icon>
+      </mat-list-item>
+    </mat-list>
+  }
 </div>

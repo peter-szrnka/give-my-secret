@@ -1,7 +1,11 @@
 <div>
-    <button *ngIf="backToHome === true" mat-raised-button [routerLink]="''">Back to home</button>
-    <button *ngFor="let button of buttonConfig!! | navButtonVisibility" 
-        color="{{button.primary ? 'primary':'default'}}" 
-        mat-raised-button 
-        [routerLink]="button.url">{{button.label}}</button>
+  @if (backToHome === true) {
+    <button mat-raised-button [routerLink]="''">Back to home</button>
+  }
+  @for (button of buttonConfig!! | navButtonVisibility; track button) {
+    <button
+      color="{{button.primary ? 'primary':'default'}}"
+      mat-raised-button
+    [routerLink]="button.url">{{button.label}}</button>
+  }
 </div>

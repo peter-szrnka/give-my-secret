@@ -2,56 +2,57 @@
   <h2>Announcements</h2>
 
   <nav-back [buttonConfig]="[{url:'/announcement/new', label:'Create +', primary : true}]"></nav-back>
-  
-  <div class="warning" *ngIf="error"><b>System error:</b> {{error}}</div>
-  <mat-card class="simple-margin-top" *ngIf="!error">
-    <mat-card-content>
-      <table mat-table [dataSource]="datasource" class="width100-and-margin-top">
-        <tr mat-header-row *matHeaderRowDef="columns"></tr>
-        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
-    
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef>ID</th>
-          <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-        </ng-container>
-        <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>Title</th>
-          <td mat-cell *matCellDef="let element"> {{element.title}} </td>
-        </ng-container>
-        <ng-container matColumnDef="announcementDate">
-          <th mat-header-cell *matHeaderCellDef class="show-large">Announcement date</th>
-          <td mat-cell *matCellDef="let element" class="show-large"> {{element.announcementDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
-        </ng-container>
-        <ng-container matColumnDef="operations">
-          <th mat-header-cell *matHeaderCellDef>Operations</th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="primary" class="show-large" [routerLink]="['/announcement/' + element.id]">
-              <mat-icon aria-hidden="false">edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" class="show-large" (click)="promptDelete(element.id)">
-              <mat-icon aria-hidden="false">delete</mat-icon>
-            </button>
-            
-            <button mat-icon-button class="show-small" [matMenuTriggerFor]="menu"
-              aria-label="Operations menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu" class="show-small">
-              <button mat-menu-item color="primary" [routerLink]="'/announcement/' + element.id">
+
+  @if (error) {
+    <div class="warning"><b>System error:</b> {{error}}</div>
+  }
+  @if (!error) {
+    <mat-card class="simple-margin-top">
+      <mat-card-content>
+        <table mat-table [dataSource]="datasource" class="width100-and-margin-top">
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+          </ng-container>
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>Title</th>
+            <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+          </ng-container>
+          <ng-container matColumnDef="announcementDate">
+            <th mat-header-cell *matHeaderCellDef class="show-large">Announcement date</th>
+            <td mat-cell *matCellDef="let element" class="show-large"> {{element.announcementDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="operations">
+            <th mat-header-cell *matHeaderCellDef>Operations</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary" class="show-large" [routerLink]="['/announcement/' + element.id]">
                 <mat-icon aria-hidden="false">edit</mat-icon>
-                <span>Edit</span>
               </button>
-              <button mat-menu-item color="warn" (click)="promptDelete(element.id)">
+              <button mat-icon-button color="warn" class="show-large" (click)="promptDelete(element.id)">
                 <mat-icon aria-hidden="false">delete</mat-icon>
-                <span>Delete</span>
               </button>
-            </mat-menu>
-          </td>
-        </ng-container>
-      </table>
-    
-      <mat-paginator [length]="tableConfig.count" [pageSize]="tableConfig.pageSize" [pageIndex]="tableConfig.pageIndex"
-                        [pageSizeOptions]="[10, 25, 50]" (page)="onFetch($event)"></mat-paginator>
-    </mat-card-content>
-  </mat-card>
+              <button mat-icon-button class="show-small" [matMenuTriggerFor]="menu"
+                aria-label="Operations menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu" class="show-small">
+                <button mat-menu-item color="primary" [routerLink]="'/announcement/' + element.id">
+                  <mat-icon aria-hidden="false">edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <button mat-menu-item color="warn" (click)="promptDelete(element.id)">
+                  <mat-icon aria-hidden="false">delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+        </table>
+        <mat-paginator [length]="tableConfig.count" [pageSize]="tableConfig.pageSize" [pageIndex]="tableConfig.pageIndex"
+        [pageSizeOptions]="[10, 25, 50]" (page)="onFetch($event)"></mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  }
 </div>
