@@ -5,7 +5,7 @@
 </div>
 
 <div *ngIf="data !== undefined && pageStatus === 1">
-  <div *ngIf="data.role === 'ROLE_USER'">
+  <div *ngIf="data.role === 'ROLE_USER' || data.role === 'ROLE_VIEWER'">
     <div class="gms-box">
       <div class="gms-sub-box" style="vertical-align: top !important;">
         <mat-card class="gms-card-left">
