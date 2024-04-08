@@ -1,7 +1,6 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.util.TestUtils;
@@ -80,9 +79,7 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 		eventRepository.save(eventEntity);
 
 		// act
-		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
-
-		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<EventListDto> response = executeHttpGet(path + "/list/2?page=0&size=10&direction=ASC&property=id", requestEntity, EventListDto.class);
 
 		// Assert

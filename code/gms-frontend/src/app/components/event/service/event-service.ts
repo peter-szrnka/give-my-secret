@@ -1,12 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Event } from "../model/event.model";
-import { EventList } from "../model/event-list.model";
-import { ServiceBase } from "../../../common/components/abstractions/service/service-base";
 import { Observable, map, tap } from "rxjs";
 import { environment } from "../../../../environments/environment";
+import { ServiceBase } from "../../../common/components/abstractions/service/service-base";
 import { Paging } from "../../../common/model/paging.model";
 import { getHeaders } from "../../../common/utils/header-utils";
+import { EventList } from "../model/event-list.model";
+import { Event } from "../model/event.model";
 
 /**
  * @author Peter Szrnka
@@ -19,7 +19,8 @@ export class EventService extends ServiceBase<Event, EventList> {
     }
 
     listByUserId(paging: Paging, userId?: number): Observable<Event[]> {
-        return this.http.post<EventList>(environment.baseUrl + 'secure/event/list/' + userId, paging, { withCredentials: true, headers : getHeaders() })
+        return this.http.get<EventList>(environment.baseUrl + 'secure/event/list/' + userId + `?direction=${paging.direction}&property=${paging.property}&page=${paging.page}&size=${paging.size}`,
+             { withCredentials: true, headers : getHeaders() })
             .pipe(tap(), map(value => value.resultList));
     }
 }

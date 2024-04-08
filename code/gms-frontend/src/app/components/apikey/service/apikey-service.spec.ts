@@ -1,11 +1,11 @@
-import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
-import { ApiKey } from "../model/apikey.model";
-import { IdNamePair } from "../../../common/model/id-name-pair.model";
-import { IdNamePairList } from "../../../common/model/id-name-pair-list.model";
 import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
+import { IdNamePairList } from "../../../common/model/id-name-pair-list.model";
+import { IdNamePair } from "../../../common/model/id-name-pair.model";
 import { Paging } from "../../../common/model/paging.model";
+import { ApiKey } from "../model/apikey.model";
 import { ApiKeyService } from "./apikey-service";
 
 const TEST_API_KEY : ApiKey = {
@@ -67,7 +67,7 @@ describe("ApiKeyService", () => {
 
     it('Should list results', () => {
       // arrange
-      const expectedUrl = environment.baseUrl + "secure/apikey/list";
+      const expectedUrl = environment.baseUrl + "secure/apikey/list?direction=asc&property=id&page=0&size=10";
       const mockResponse : ApiKey[] = [TEST_API_KEY];
 
       // act
@@ -81,8 +81,7 @@ describe("ApiKeyService", () => {
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(request);
+      expect(req.request.method).toBe('GET');
       req.flush(request);
       httpMock.verify();
     });

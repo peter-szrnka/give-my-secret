@@ -64,7 +64,7 @@ describe("IpRestrictionService", () => {
 
     it('Should list results', () => {
       // arrange
-      const expectedUrl = environment.baseUrl + "secure/ip_restriction/list";
+      const expectedUrl = environment.baseUrl + "secure/ip_restriction/list?direction=asc&property=id&page=0&size=10";
       const mockResponse : IpRestriction[] = [TEST_IP_RESTRICTION];
 
       // act
@@ -78,8 +78,7 @@ describe("IpRestrictionService", () => {
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(request);
+      expect(req.request.method).toBe('GET');
       req.flush(request);
       httpMock.verify();
     });
