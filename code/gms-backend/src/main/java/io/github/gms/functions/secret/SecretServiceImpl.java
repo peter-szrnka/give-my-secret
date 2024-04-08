@@ -1,13 +1,11 @@
 package io.github.gms.functions.secret;
 
 import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.iprestriction.IpRestrictionDto;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.keystore.KeystoreAliasEntity;
@@ -17,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -101,8 +100,8 @@ public class SecretServiceImpl implements SecretService {
 	}
 
 	@Override
-	public SecretListDto list(PagingDto dto) {
-		Page<SecretEntity> resultList = repository.findAllByUserId(getUserId(), ConverterUtils.createPageable(dto));
+	public SecretListDto list(Pageable pageable) {
+		Page<SecretEntity> resultList = repository.findAllByUserId(getUserId(), pageable);
 		return converter.toDtoList(resultList);
 	}
 

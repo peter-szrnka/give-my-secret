@@ -4,13 +4,13 @@ import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.keystore.KeystoreAliasEntity;
@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -497,6 +498,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 		List<ApiKeyRestrictionEntity> mockRestrictionEntities = List.of(TestUtils.createApiKeyRestrictionEntity(1L));
 		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(4L, 1L)).thenReturn(mockRestrictionEntities);
+		when(ipRestrictionService.getAllBySecretId(eq(1L))).thenReturn(emptyList());
 
 		// act
 		SecretDto response = service.getById(1L);
@@ -509,6 +511,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).findById(1L);
 		verify(converter).toDto(any());
 		verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(4L, 1L);
+		verify(ipRestrictionService).getAllBySecretId(eq(1L));
 		mockedMdcUtils.close();
 	}
 
@@ -520,9 +523,10 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		when(converter.toDtoList(any())).thenReturn(SecretListDto.builder()
 				.resultList(Lists.newArrayList(TestUtils.createSecretDto()))
 				.totalElements(1).build());
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		// act
-		SecretListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+		SecretListDto response = service.list(pageable);
 
 		// assert
 		assertNotNull(response);

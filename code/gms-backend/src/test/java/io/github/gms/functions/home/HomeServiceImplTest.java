@@ -1,17 +1,14 @@
 package io.github.gms.functions.home;
 
 import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.functions.announcement.AnnouncementDto;
 import io.github.gms.functions.announcement.AnnouncementListDto;
-import io.github.gms.functions.event.EventDto;
-import io.github.gms.functions.event.EventListDto;
-import io.github.gms.functions.home.HomeServiceImpl;
-import io.github.gms.functions.home.HomeDataResponseDto;
-import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.functions.announcement.AnnouncementService;
 import io.github.gms.functions.apikey.ApiKeyService;
+import io.github.gms.functions.event.EventDto;
+import io.github.gms.functions.event.EventListDto;
 import io.github.gms.functions.event.EventService;
 import io.github.gms.functions.keystore.KeystoreService;
 import io.github.gms.functions.secret.SecretService;
@@ -20,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.MDC;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -62,7 +60,7 @@ class HomeServiceImplTest extends AbstractUnitTest {
         MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), "true");
         when(announcementService.count()).thenReturn(new LongValueDto(2L));
         when(userService.count()).thenReturn(new LongValueDto(5L));
-        when(eventService.list(any(PagingDto.class))).thenReturn(EventListDto.builder().totalElements(1)
+        when(eventService.list(any(Pageable.class))).thenReturn(EventListDto.builder().totalElements(1)
                 .resultList(List.of(new EventDto())).build());
 
         // act
@@ -76,10 +74,10 @@ class HomeServiceImplTest extends AbstractUnitTest {
 
         verify(announcementService).count();
         verify(userService).count();
-        ArgumentCaptor<PagingDto> captor = ArgumentCaptor.forClass(PagingDto.class);
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
         verify(eventService).list(captor.capture());
-        PagingDto captured = captor.getValue();
-        assertEquals("PagingDto(direction=DESC, property=eventDate, page=0, size=10)", captured.toString());
+        Pageable captured = captor.getValue();
+        assertEquals("Page request [number: 0, size 10, sort: eventDate: DESC]", captured.toString());
     }
 
     @Test
@@ -89,7 +87,7 @@ class HomeServiceImplTest extends AbstractUnitTest {
         when(apiKeyService.count()).thenReturn(new LongValueDto(4L));
         when(keystoreService.count()).thenReturn(new LongValueDto(2L));
         when(secretService.count()).thenReturn(new LongValueDto(3L));
-        when(announcementService.list(any(PagingDto.class))).thenReturn(AnnouncementListDto.builder().totalElements(1)
+        when(announcementService.list(any(Pageable.class))).thenReturn(AnnouncementListDto.builder().totalElements(1)
                 .resultList(List.of(new AnnouncementDto())).build());
 
         // act
@@ -106,9 +104,9 @@ class HomeServiceImplTest extends AbstractUnitTest {
         verify(keystoreService).count();
         verify(secretService).count();
 
-        ArgumentCaptor<PagingDto> captor = ArgumentCaptor.forClass(PagingDto.class);
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
         verify(announcementService).list(captor.capture());
-        PagingDto captured = captor.getValue();
-        assertEquals("PagingDto(direction=DESC, property=announcementDate, page=0, size=10)", captured.toString());
+        Pageable captured = captor.getValue();
+        assertEquals("Page request [number: 0, size 10, sort: announcementDate: DESC]", captured.toString());
     }
 }

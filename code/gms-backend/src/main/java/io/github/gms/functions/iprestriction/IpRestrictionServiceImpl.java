@@ -1,17 +1,16 @@
 package io.github.gms.functions.iprestriction;
 
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.model.IpRestrictionPatterns;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.ConverterUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,8 +51,8 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
     }
 
     @Override
-    public IpRestrictionListDto list(PagingDto dto) {
-        Page<IpRestrictionEntity> results = repository.findAllGlobal(ConverterUtils.createPageable(dto));
+    public IpRestrictionListDto list(Pageable pageable) {
+        Page<IpRestrictionEntity> results = repository.findAllGlobal(pageable);
         return converter.toDtoList(results);
     }
 

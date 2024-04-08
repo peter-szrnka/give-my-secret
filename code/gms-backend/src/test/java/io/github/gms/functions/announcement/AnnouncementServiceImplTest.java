@@ -129,7 +129,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		entity.setAnnouncementDate(ZonedDateTime.now(clock));
 		when(repository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Lists.newArrayList(entity)));
 		when(userService.getUsernameById(anyLong())).thenReturn("myuser");
-		Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		// act
 		AnnouncementListDto response = service.list(pageable);

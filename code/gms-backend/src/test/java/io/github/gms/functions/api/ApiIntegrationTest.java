@@ -15,6 +15,7 @@ import java.util.Map;
 
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Peter Szrnka
@@ -43,6 +44,8 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
 		keystoreAliasRepository.deleteById(DemoData.KEYSTORE_ALIAS3_ID);
 
 		// Assert
+		assertNotNull(response);
+		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(DemoData.ENCRYPTED_VALUE, response.getBody().get("value"));
 	}

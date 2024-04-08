@@ -6,7 +6,6 @@ import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.IdNamePairDto;
 import io.github.gms.common.dto.IdNamePairListDto;
 import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
@@ -17,6 +16,7 @@ import io.github.gms.common.model.EntityChangeEvent.EntityChangeType;
 import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.secret.GetSecureValueDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
@@ -133,7 +133,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldNotSaveNewEntityCausedByInvalidKeystoreFile() {
         when(fileService.readAllBytes(any(Path.class)))
                 .thenThrow(new RuntimeException("Test failure"));
@@ -190,7 +189,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldNotSaveNewEntityWhenKeystoreFileIsMissing() {
         when(fileService.exists(any(Path.class))).thenReturn(false);
 
@@ -218,7 +216,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldNotSaveNewEntityBecauseOfInvalidJson() {
         // arrange
         String model = "{invalidJson}";
@@ -238,7 +235,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
+
     void shouldNotSaveNewEntityBecauseOfMissingFile() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -258,7 +255,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldNotSaveNewEntityWhenKeystoreNameMustBeUnique() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -283,7 +279,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldSaveNewEntityFailedByCopyError() {
         // arrange
         MDC.put(MdcParameter.USER_ID.getDisplayName(), 6L);
@@ -314,7 +309,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldNotSaveNewEntityWithNonUniqueFileName() {
         String fileName = "my-key.jks";
         TestUtils.createDirectory("unit-test-output/1/");
@@ -351,7 +345,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldSaveNewEntity() {
         // arrange
         Files.createDirectory(Paths.get("unit-test-output/" + DemoData.USER_1_ID + "/"));
@@ -380,7 +373,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         verify(objectMapper).readValue(eq(model), any(Class.class));
     }
 
-    @SuppressWarnings("unchecked")
+
     @Test
     @SneakyThrows
     void shouldSaveEntityWithoutFile() {
@@ -416,7 +409,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         Files.deleteIfExists(Paths.get(JKS_TEST_FILE_LOCATION));
     }
 
-    @SuppressWarnings("unchecked")
+
     @Test
     @SneakyThrows
     void shouldNotSaveEntityCausedByMissingAlias() {
@@ -439,7 +432,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldNotSaveEntityOccurredWhenOnlyDeletedAliasProvided() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -461,7 +453,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldNotSaveEntityWhenBothFileInputProvided() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -480,7 +471,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         verify(objectMapper).readValue(eq(model), any(Class.class));
     }
 
-    @SuppressWarnings("unchecked")
+
     @Test
     @SneakyThrows
     void shouldSaveEntity() {
@@ -528,7 +519,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldSaveNewEntityWhenGeneratedInputIsAvailable() {
         AtomicInteger counter = new AtomicInteger(0);
         Files.createDirectory(Paths.get("unit-test-output/" + DemoData.USER_1_ID + "/"));
@@ -565,7 +555,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings("unchecked")
     void shouldSaveEntityWithoutFileInputs() {
         // arrange
         when(fileService.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
@@ -610,7 +599,6 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         verify(fileService).exists(any(Path.class));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     @SneakyThrows
     void shouldNotSaveEntity() {
@@ -664,9 +652,10 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         // arrange
         when(repository.findAllByUserId(anyLong(), any(Pageable.class)))
                 .thenThrow(new RuntimeException("Unexpected error!"));
+        Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
         // act
-        KeystoreListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+        KeystoreListDto response = service.list(pageable);
 
         // assert
         assertNotNull(response);
@@ -683,9 +672,10 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         when(converter.toDtoList(any())).thenReturn(KeystoreListDto.builder()
                 .resultList(Lists.newArrayList(new KeystoreDto()))
                 .totalElements(1).build());
+        Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
         // act
-        KeystoreListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+        KeystoreListDto response = service.list(pageable);
 
         // assert
         assertNotNull(response);
@@ -840,7 +830,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         // assert
         assertNotNull(response);
         assertEquals(2, response.getResultList().size());
-        assertEquals("keystore1", response.getResultList().get(0).getName());
+        assertEquals("keystore1", response.getResultList().getFirst().getName());
         verify(repository).getAllKeystoreNames(anyLong());
     }
 

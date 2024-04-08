@@ -1,8 +1,8 @@
 package io.github.gms.functions.home;
 
-import io.github.gms.common.util.MdcUtils;
 import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
+import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.common.util.MdcUtils;
 import io.github.gms.functions.announcement.AnnouncementService;
 import io.github.gms.functions.apikey.ApiKeyService;
 import io.github.gms.functions.event.EventService;
@@ -10,6 +10,7 @@ import io.github.gms.functions.keystore.KeystoreService;
 import io.github.gms.functions.secret.SecretService;
 import io.github.gms.functions.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -45,10 +46,8 @@ public class HomeServiceImpl implements HomeService {
         return dto;
     }
 
-    private static PagingDto buildPaging(String property) {
-        return PagingDto.builder()
-                .direction("DESC").page(0).size(10).property(property)
-                .build();
+    private static Pageable buildPaging(String property) {
+        return ConverterUtils.createPageable("DESC", property, 0, 10);
     }
 
     private static Long getValue(LongValueDto longValueDto) {

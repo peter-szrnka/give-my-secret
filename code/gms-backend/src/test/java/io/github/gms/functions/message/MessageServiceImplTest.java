@@ -2,16 +2,9 @@ package io.github.gms.functions.message;
 
 import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.functions.message.MessageServiceImpl;
-import io.github.gms.functions.message.MessageConverter;
-import io.github.gms.functions.message.MarkAsReadRequestDto;
-import io.github.gms.functions.message.MessageDto;
-import io.github.gms.functions.message.MessageListDto;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.functions.message.MessageEntity;
-import io.github.gms.functions.message.MessageRepository;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
@@ -84,9 +77,10 @@ class MessageServiceImplTest extends AbstractUnitTest {
 		when(converter.toDtoList(any())).thenReturn(MessageListDto.builder()
 				.resultList(Lists.newArrayList(new MessageDto()))
 				.totalElements(1).build());
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		// act
-		MessageListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+		MessageListDto response = service.list(pageable);
 
 		// assert
 		assertNotNull(response);

@@ -1,19 +1,18 @@
 package io.github.gms.functions.apikey;
 
+import io.github.gms.common.dto.IdNamePairListDto;
+import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.common.util.MdcUtils;
-import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.common.dto.LongValueDto;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.common.dto.SaveEntityResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -59,11 +58,11 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 	}
 
 	@Override
-	public ApiKeyListDto list(PagingDto dto) {
+	public ApiKeyListDto list(Pageable pageable) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 
 		try {
-			Page<ApiKeyEntity> resultList = repository.findAllByUserId(userId, ConverterUtils.createPageable(dto));
+			Page<ApiKeyEntity> resultList = repository.findAllByUserId(userId, pageable);
 			return converter.toDtoList(resultList);
 		} catch (Exception e) {
 			return ApiKeyListDto.builder().resultList(Collections.emptyList()).totalElements(0).build();

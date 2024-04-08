@@ -3,13 +3,7 @@ package io.github.gms.functions.systemproperty;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.functions.systemproperty.SystemPropertyServiceImpl;
-import io.github.gms.functions.systemproperty.SystemPropertyConverter;
-import io.github.gms.common.dto.PagingDto;
-import io.github.gms.functions.systemproperty.SystemPropertyDto;
-import io.github.gms.functions.systemproperty.SystemPropertyListDto;
-import io.github.gms.functions.systemproperty.SystemPropertyEntity;
-import io.github.gms.functions.systemproperty.SystemPropertyRepository;
+import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,9 +86,10 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 	void shouldReturnEmptyList() {
 		// arrange
 		when(repository.findAll(any(Pageable.class))).thenThrow(new RuntimeException("Unexpected error!"));
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		// act
-		SystemPropertyListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+		SystemPropertyListDto response = service.list(pageable);
 
 		// assert
 		assertNotNull(response);
@@ -113,14 +108,15 @@ class SystemPropertyServiceImplTest extends AbstractUnitTest {
 				.resultList(Lists.newArrayList(SystemPropertyDto.builder().key("a").value("b").build()))
 				.totalElements(1).build();
 		when(converter.toDtoList(any())).thenReturn(mockDto);
+		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
 		// act
-		SystemPropertyListDto response = service.list(new PagingDto("ASC", "id", 0, 10));
+		SystemPropertyListDto response = service.list(pageable);
 
 		// assert
 		assertNotNull(response);
 		assertEquals(1, response.getResultList().size());
-		assertEquals(mockDto.getResultList().get(0).toString(), response.getResultList().get(0).toString());
+		assertEquals(mockDto.getResultList().getFirst().toString(), response.getResultList().getFirst().toString());
 		verify(repository).findAll(any(Pageable.class));
 		verify(converter).toDtoList(any());
 	}
