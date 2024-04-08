@@ -1,24 +1,17 @@
 package io.github.gms.functions.event;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import io.github.gms.functions.event.EventConverterImpl;
+import com.google.common.collect.Lists;
+import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.enums.EventOperation;
+import io.github.gms.common.enums.EventTarget;
+import io.github.gms.util.DemoData;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
-import com.google.common.collect.Lists;
-
-import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.EventOperation;
-import io.github.gms.common.enums.EventTarget;
-import io.github.gms.functions.event.EventConverter;
-import io.github.gms.functions.event.EventDto;
-import io.github.gms.functions.event.EventListDto;
-import io.github.gms.functions.event.EventEntity;
-import io.github.gms.util.DemoData;
-import io.github.gms.util.TestUtils;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Peter Szrnka

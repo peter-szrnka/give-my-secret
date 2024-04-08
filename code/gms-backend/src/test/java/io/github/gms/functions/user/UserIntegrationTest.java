@@ -80,7 +80,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<UserListDto> response = executeHttpPost("/list?page=0&size=10&direction=ASC&property=id", requestEntity, UserListDto.class);
+		ResponseEntity<UserListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, UserListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

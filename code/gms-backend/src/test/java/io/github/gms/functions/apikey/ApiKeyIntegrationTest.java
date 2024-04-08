@@ -68,13 +68,11 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<ApiKeyListDto> response = executeHttpPost("/list?page=0&size=10&direction=ASC&property=id", requestEntity, ApiKeyListDto.class);
+		ResponseEntity<ApiKeyListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, ApiKeyListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		
-		ApiKeyListDto responseList = response.getBody();
 		assertFalse(response.getBody().getResultList().isEmpty());
 	}
 	

@@ -2,10 +2,6 @@ package io.github.gms.functions.message;
 
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.functions.message.MessageConverterImpl;
-import io.github.gms.functions.message.MessageDto;
-import io.github.gms.functions.message.MessageListDto;
-import io.github.gms.functions.message.MessageEntity;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;

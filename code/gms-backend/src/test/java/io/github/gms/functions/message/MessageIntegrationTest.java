@@ -54,7 +54,7 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 		
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>( TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<MessageListDto> response = executeHttpPost("/list?page=0&size=10&direction=ASC&property=id", requestEntity, MessageListDto.class);
+		ResponseEntity<MessageListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, MessageListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

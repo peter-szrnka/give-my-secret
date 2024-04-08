@@ -54,7 +54,7 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<EventListDto> response = executeHttpPost(path + "/list?page=0&size=10&direction=ASC&property=id", requestEntity, EventListDto.class);
+		ResponseEntity<EventListDto> response = executeHttpGet(path + "/list?page=0&size=10&direction=ASC&property=id", requestEntity, EventListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -83,7 +83,7 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 		PagingDto request = PagingDto.builder().page(0).size(50).direction("ASC").property("id").build();
 
 		HttpEntity<PagingDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<EventListDto> response = executeHttpPost(path + "/list/2", requestEntity, EventListDto.class);
+		ResponseEntity<EventListDto> response = executeHttpGet(path + "/list/2?page=0&size=10&direction=ASC&property=id", requestEntity, EventListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

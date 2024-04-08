@@ -1,7 +1,6 @@
 package io.github.gms.functions.systemproperty;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
-import io.github.gms.common.dto.PagingDto;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +55,7 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest {
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<SystemPropertyListDto> response = executeHttpPost("/secure/system_property/list?page=0&size=10&direction=ASC&property=id", requestEntity, SystemPropertyListDto.class);
+		ResponseEntity<SystemPropertyListDto> response = executeHttpGet("/secure/system_property/list?page=0&size=10&direction=ASC&property=id", requestEntity, SystemPropertyListDto.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

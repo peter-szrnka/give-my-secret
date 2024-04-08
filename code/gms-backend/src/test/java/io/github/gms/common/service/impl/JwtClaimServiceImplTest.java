@@ -3,7 +3,6 @@ package io.github.gms.common.service.impl;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.service.JwtService;
-import io.github.gms.common.service.impl.JwtClaimServiceImpl;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
