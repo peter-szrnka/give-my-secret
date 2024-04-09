@@ -38,6 +38,7 @@ import { IpRestrictionListComponent } from './components/ip_restriction/ip-restr
 import { IpRestrictionListResolver } from './components/ip_restriction/resolver/ip-restriction-list.resolver';
 import { IpRestrictionDetailResolver } from './components/ip_restriction/resolver/ip-restriction-detail.resolver';
 import { IprestrictionDetailComponent } from './components/ip_restriction/ip-restriction-detail.component';
+import { AboutComponent } from './components/about/about.component';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 
@@ -65,6 +66,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'verify', component: VerifyComponent },
   { path: 'password_reset', component: RequestPasswordResetComponent },
+  { path: 'about', component: AboutComponent },
 
   // Secured components
   { path: '', component: HomeComponent, pathMatch: 'full', data: { 'roles': ROLES_ALL } },

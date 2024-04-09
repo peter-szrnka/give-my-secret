@@ -31,8 +31,12 @@
           }
           <span>Messages</span>
         </button>
+        <button mat-menu-item [routerLink]="'/about'">
+          <mat-icon aria-hidden="false" aria-label="Current user">info</mat-icon>
+          <span>About</span>
+        </button>
         <button mat-menu-item (click)="logout()">
-          <mat-icon aria-hidden="false" aria-label="Current user">exit_to_app</mat-icon>
+          <mat-icon aria-hidden="false" aria-label="Logout">exit_to_app</mat-icon>
           <span>Logout</span>
         </button>
       </mat-menu>

@@ -4,4 +4,6 @@
 export interface SystemStatusDto {
     status : string,
     authMode : string;
+    version: string;
+    built: string;
 }
