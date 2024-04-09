@@ -46,7 +46,7 @@ describe('SharedDataService', () => {
     };
 
     setupService = {
-      checkReady: (): Observable<SystemStatusDto> => { return of({ status: 'OK', authMode: 'db' }); }
+      checkReady: (): Observable<SystemStatusDto> => { return of({  authMode:'db', status:'OK', version: '1.0.0', built: '2024-04-09T12:34:56.000Z' }); }
     };
 
     authService = {
