@@ -1,9 +1,4 @@
 name: Release of application
-
-defaults:
-  run:
-    shell: bash
-
 on:
   workflow_dispatch:
     inputs:
