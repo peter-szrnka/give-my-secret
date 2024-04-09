@@ -10,11 +10,11 @@ on:
       releaseVersion:
         description: "Default version to use when preparing a release."
         required: true
-        default: "X.Y"
+        default: "X.Y.Z"
       developmentVersion:
         description: "Default version to use for new local working copy."
         required: true
-        default: "X.Y-SNAPSHOT"
+        default: "X.Y.Z-SNAPSHOT"
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -39,12 +39,6 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      #- name: Cache Maven packages
-      #  uses: actions/cache@v1
-      #  with:
-      #    path: ~/.m2
-      #    key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-      #    restore-keys: ${{ runner.os }}-m2
       - name: Sonarcloud scan
         working-directory: ./code/gms-backend
         env:
@@ -69,7 +63,6 @@ jobs:
         working-directory: ./code/gms-frontend
         run: npm run test
       - name: Sonarcloud scan
-        
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
@@ -119,58 +112,3 @@ jobs:
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git commit -am "Version updated to ${{ github.event.inputs.releaseVersion }}"
           git push
-#      - name: Build and analyze
-#        run: mvn clean install -Pbuild-prod --file pom.xml -DskipTests=true
-#        working-directory: ${{env.working-directory}}
-#      - name: Temporarily save jar artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: gms-app
-#          path: ${{ github.workspace }}/code/gms-backend/target/gms-app.jar
-#          retention-days: 1
-#      - name: Temporarily save Dockerfile
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: Dockerfile
-#          path: ${{ github.workspace }}/code/gms-backend/Dockerfile
-#          retention-days: 1
-#      - name: Update pom.xml to developmentVersion
-#        working-directory: ./code
-#        run: mvn -B versions:set -DnewVersion=${{ github.event.inputs.developmentVersion }} -DgenerateBackupPoms=false -f ./code/pom.xml
-#      - name: Commit version change to next SNAPSHOT version
-#        run: |
-#          git config --global user.name ${{ secrets.GH_USERNAME }}
-#          git config --global user.email ${{ secrets.GH_EMAIL }}
-#          git commit -am "Version updated to ${{ github.event.inputs.developmentVersion }}"
-#          git push
-#  deploy:
-#    name: 'Deploy to GHCR'
-#    runs-on : ubuntu-latest
-#    needs: build
-#    if: false
-#    steps:
-#      - name: Log in to the Container registry
-#        uses: docker/login-action@master
-#        with:
-#          registry: ${{ env.REGISTRY }}
-#          username: ${{ github.actor }}
-#          password: ${{ secrets.GITHUB_TOKEN }}
-#      - name: Extract Docker metadata
-#        id: meta
-#        uses: docker/metadata-action@master
-#        with:
-#          images: ${{ env.REGISTRY }}/peter-szrnka/give-my-secret
-#      - uses: actions/download-artifact@v1
-#        with:
-#          name: gms-app
-#          path: ./
-#      - uses: actions/download-artifact@v1
-#        with:
-#          name: Dockerfile
-#          path: ./
-#      - name: Build Docker by Dockerfile
-#        run: docker build --build-arg JAR_FILE=./gms-app.jar -t peter-szrnka/give-my-secret -f ./Dockerfile .
-#      - name: Tag the image
-#        run: docker image tag peter-szrnka/give-my-secret:latest ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:latest
-#      - name: Docker push
-#        run: docker push ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:latest
