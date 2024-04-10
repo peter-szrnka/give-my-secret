@@ -11,21 +11,22 @@ GMS provides a simple REST API that you can call with your other systems to quer
 - Text based secret/password/credential storage
 - Simple of even complex key/value pairs can be stored
 - REST API to query the secrets from your local instance
-- 4 supported database providers
+- 4 supported database providers:
   - PostgreSQL, 
   - MSSQL, 
   - MySQL, 
   - MariaDb
-
-- 3 supported authentications
+- 3 supported authentications:
   - DB,
   - LDAP,
   - Keycloak SSO (basic level support)
-
-- 2 supported protocols
+- 2 supported protocols:
   - HTTPS,
   - HTTP
-
+- Observability support for:
+  - OpenZipkin
+  - ELK stack (ElasticSearch - Logstash - Kibana)
+  - Prometheus
 - 2 Factor Authentication support
 - Redis cache support
 - IP address and API key restriction functionalities
