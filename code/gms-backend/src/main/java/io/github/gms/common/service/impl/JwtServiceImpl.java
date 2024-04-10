@@ -44,20 +44,24 @@ public class JwtServiceImpl implements JwtService {
 
 	@Override
 	public String generateJwt(GenerateJwtRequest request) {
-		Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), getAlgorithmByName(request.getAlgorithm()).getJcaName());
+		Key key = getKey(request.getAlgorithm());
 
 		Instant now = clock.instant();
 		return Jwts.builder()
 				.setClaims(request.getClaims())
 				.setSubject(request.getSubject())
 				.setId(UUID.randomUUID().toString()).setIssuedAt(Date.from(now))
-				.setExpiration(Date.from(now.plus(request.getExpirationDateInSeconds(), ChronoUnit.SECONDS))).signWith(hmacKey).compact();
+				.setExpiration(Date.from(now.plus(request.getExpirationDateInSeconds(), ChronoUnit.SECONDS))).signWith(key).compact();
 	}
 
 	@Override
 	public Claims parseJwt(String jwtToken, String algorithm) {
-		Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), getAlgorithmByName(algorithm).getJcaName());
-		return Jwts.parserBuilder().setSigningKey(hmacKey).build().parseClaimsJws(jwtToken).getBody();
+		Key key = getKey(algorithm);
+		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken).getBody();
+	}
+
+	private Key getKey(String algorithmName) {
+		return new SecretKeySpec(Base64.getDecoder().decode(secret), getAlgorithmByName(algorithmName).getJcaName());
 	}
 	
 	private static SignatureAlgorithm getAlgorithmByName(String name) {
