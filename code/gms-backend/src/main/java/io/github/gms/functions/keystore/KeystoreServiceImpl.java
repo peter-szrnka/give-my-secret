@@ -14,7 +14,6 @@ import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.secret.GetSecureValueDto;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -100,7 +100,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		dto.getAliases().forEach(alias -> processAlias(newEntity, alias));
 
 		if (EntityStatus.DISABLED == newEntity.getStatus()) {
-			publishEvent(true, initMetaData(newEntity.getId()), EntityChangeType.KEYSTORE_DISABLED);
+			publishEvent(initMetaData(newEntity.getId()), EntityChangeType.KEYSTORE_DISABLED);
 		}
 
 		if (dto.getId() == null) {
@@ -157,7 +157,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			return;
 		}
 
-		publishEvent(true, initMetaData(entity.getId()), EntityChangeType.KEYSTORE_DISABLED);
+		publishEvent(initMetaData(entity.getId()), EntityChangeType.KEYSTORE_DISABLED);
 	}
 
 	@Override
@@ -202,6 +202,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 
 	@Async
 	@Override
+	@Transactional
 	public void batchDeleteByUserIds(Set<Long> userIds) {
 		Set<KeystoreBasicInfoDto> keystoreIds = repository.findAllByUserId(userIds);
 
@@ -220,7 +221,9 @@ public class KeystoreServiceImpl implements KeystoreService {
 		try {
 			log.info("Keystore file={} will be removed", keystoreFile.toPath());
 			fileService.delete(keystoreFile.toPath());
-			publishEvent(publishEvent, initMetaData(id), EntityChangeType.KEYSTORE_DELETED);
+			if (publishEvent) {
+				publishEvent(initMetaData(id), EntityChangeType.KEYSTORE_DELETED);
+			}
 		} catch (IOException e) {
 			log.error("Keystore file cannot be deleted", e);
 		}
@@ -274,15 +277,11 @@ public class KeystoreServiceImpl implements KeystoreService {
 			aliasRepository.deleteById(alias.getId());
 			Map<String, Object> metadata = initMetaData(newEntity.getId());
 			metadata.put(ALIAS_ID, alias.getId());
-			publishEvent(true, metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED);
+			publishEvent(metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED);
 		}
 	}
 
-	private void publishEvent(boolean publishEvent, Map<String, Object> metadata, EntityChangeType entityChangeType) {
-		if (!publishEvent) {
-			return;
-		}
-
+	private void publishEvent(Map<String, Object> metadata, EntityChangeType entityChangeType) {
 		applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, entityChangeType));
 	}
 
