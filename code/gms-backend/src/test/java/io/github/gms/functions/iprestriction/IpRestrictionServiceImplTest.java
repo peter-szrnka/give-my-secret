@@ -44,7 +44,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     private IpRestrictionRepository repository;
     private IpRestrictionConverter converter;
-    private IpRestrictionService service;
+    private IpRestrictionServiceImpl service;
 
     @Override
     @BeforeEach
@@ -52,9 +52,9 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         super.setup();
         repository = mock(IpRestrictionRepository.class);
         converter = mock(IpRestrictionConverter.class);
-        service = new IpRestrictionService(repository, converter);
+        service = new IpRestrictionServiceImpl(repository, converter);
 
-        ((Logger) LoggerFactory.getLogger(IpRestrictionService.class)).addAppender(logAppender);
+        ((Logger) LoggerFactory.getLogger(IpRestrictionServiceImpl.class)).addAppender(logAppender);
     }
 
     @Test
