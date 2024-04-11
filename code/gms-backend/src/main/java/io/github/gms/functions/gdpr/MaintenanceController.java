@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.github.gms.functions.gdpr.MaintenanceController.PATH;
 import static org.springframework.http.HttpStatus.OK;
 
 /**
@@ -22,8 +23,10 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequiredArgsConstructor
 @AuditTarget(EventTarget.MAINTENANCE)
-@RequestMapping("/secure/maintenance")
-public class GdprController {
+@RequestMapping(PATH)
+public class MaintenanceController {
+
+    public static final String PATH = "/secure/maintenance";
 
     private final UserDeletionService userDeletionService;
 
