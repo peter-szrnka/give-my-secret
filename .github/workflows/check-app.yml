@@ -8,8 +8,8 @@ on:
       - '*/*'
       - '**'
       - '!main'
-    paths:
-      - '!/docs'
+    paths-ignore:
+      - '/docs'
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
