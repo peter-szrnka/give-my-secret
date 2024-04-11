@@ -2,6 +2,7 @@ package io.github.gms.functions.keystore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.common.dto.IdNamePairListDto;
+import io.github.gms.common.dto.KeystoreBasicInfoDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.AliasOperation;
@@ -138,7 +139,8 @@ public class KeystoreServiceImpl implements KeystoreService {
 	@Transactional
 	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void delete(Long id) {
-		deleteFileById(id, true);
+		KeystoreEntity entity = getKeystore(id);
+		deleteFileById(id, entity.getUserId(), entity.getFileName(),true);
 
 		aliasRepository.deleteByKeystoreId(id);
 		repository.deleteById(id);
@@ -201,20 +203,19 @@ public class KeystoreServiceImpl implements KeystoreService {
 	@Async
 	@Override
 	public void batchDeleteByUserIds(Set<Long> userIds) {
-		Set<Long> keystoreIds = repository.findAllByUserId(userIds);
+		Set<KeystoreBasicInfoDto> keystoreIds = repository.findAllByUserId(userIds);
 
-		keystoreIds.forEach(keystoreId -> {
-			deleteFileById(keystoreId, false);
-			aliasRepository.deleteByKeystoreId(keystoreId);
-			repository.deleteById(keystoreId);
+		keystoreIds.forEach(entity -> {
+			deleteFileById(entity.getId(), entity.getUserId(), entity.getFilename(), false);
+			aliasRepository.deleteByKeystoreId(entity.getId());
+			repository.deleteById(entity.getId());
 		});
 
 		log.info("All keystore entities and files have been removed for the requested users");
 	}
 
-	private void deleteFileById(Long id, boolean publishEvent) {
-		KeystoreEntity entity = getKeystore(id);
-		File keystoreFile = new File(keystorePath + entity.getUserId() + SLASH + entity.getFileName());
+	private void deleteFileById(Long id, Long userId, String fileName, boolean publishEvent) {
+		File keystoreFile = new File(keystorePath + userId + SLASH + fileName);
 
 		try {
 			log.info("Keystore file={} will be removed", keystoreFile.toPath());

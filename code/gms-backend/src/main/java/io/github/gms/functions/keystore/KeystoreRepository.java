@@ -1,7 +1,8 @@
 package io.github.gms.functions.keystore;
 
-import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.dto.IdNamePairDto;
+import io.github.gms.common.dto.KeystoreBasicInfoDto;
+import io.github.gms.common.enums.EntityStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,6 +40,6 @@ public interface KeystoreRepository extends JpaRepository<KeystoreEntity, Long> 
 	@Query("select k.fileName from KeystoreEntity k where k.fileName = :fileName")
 	String findByFileName(@Param("fileName") String fileName);
 
-	@Query("select k.id from KeystoreEntity k where k.userId in :userIds")
-	Set<Long> findAllByUserId(@Param("userIds") Set<Long> userIds);
+	@Query("select new io.github.gms.common.dto.KeystoreBasicInfoDto(k.id, k.userId, k.fileName) from KeystoreEntity k where k.userId in :userIds")
+	Set<KeystoreBasicInfoDto> findAllByUserId(@Param("userIds") Set<Long> userIds);
 }

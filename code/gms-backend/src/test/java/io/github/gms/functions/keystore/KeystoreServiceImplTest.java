@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.IdNamePairDto;
 import io.github.gms.common.dto.IdNamePairListDto;
+import io.github.gms.common.dto.KeystoreBasicInfoDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
@@ -49,10 +50,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -156,7 +159,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         verify(repository, never()).save(any());
         verify(converter).toNewEntity(any(), any());
         verify(objectMapper).readValue(eq(model), any(Class.class));
-        TestUtils.assertLogContains(logAppender, "Keystore content cannot be parsed");
+        assertLogContains(logAppender, "Keystore content cannot be parsed");
     }
 
     @SneakyThrows
@@ -621,20 +624,20 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     @Test
     void shouldNotFindById() {
         // arrange
-        when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
         // assert
         assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
-        verify(repository).findByIdAndUserId(anyLong(), anyLong());
+        verify(repository).findById(anyLong());
     }
 
     @Test
     void shouldFindById() {
         // arrange
-        when(repository.findByIdAndUserId(anyLong(), anyLong()))
+        when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(converter.toDto(any(), anyList())).thenReturn(new KeystoreDto());
 
@@ -643,7 +646,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
-        verify(repository).findByIdAndUserId(anyLong(), anyLong());
+        verify(repository).findById(anyLong());
         verify(converter).toDto(any(), anyList());
     }
 
@@ -689,15 +692,15 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     void shouldNotDeleteBecauseFileIsMissing() {
         // arrange
         doThrow(FileNotFoundException.class).when(fileService).delete(any(Path.class));
-        when(repository.findByIdAndUserId(anyLong(), anyLong()))
+        when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
         // act
         service.delete(11L);
 
         // assert
-        TestUtils.assertLogContains(logAppender, "Keystore file cannot be deleted");
-        verify(repository).findByIdAndUserId(anyLong(), anyLong());
+        assertLogContains(logAppender, "Keystore file cannot be deleted");
+        verify(repository).findById(anyLong());
         verify(aliasRepository).deleteByKeystoreId(anyLong());
 
         verify(fileService).delete(any(Path.class));
@@ -714,14 +717,14 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         printWriter.close();
 
         // arrange
-        when(repository.findByIdAndUserId(anyLong(), anyLong()))
+        when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
         // act
         service.delete(1L);
 
         // assert
-        verify(repository).findByIdAndUserId(anyLong(), anyLong());
+        verify(repository).findById(anyLong());
         verify(repository).deleteById(1L);
         verify(aliasRepository).deleteByKeystoreId(anyLong());
 
@@ -738,7 +741,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     @ValueSource(booleans = {true, false})
     void shouldToggleStatus(boolean enabled) {
         // arrange
-        when(repository.findByIdAndUserId(anyLong(), anyLong()))
+        when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
         // act
@@ -749,7 +752,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         verify(repository).save(argumentCaptor.capture());
         KeystoreEntity capturedEntity = argumentCaptor.getValue();
         assertEquals(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED, capturedEntity.getStatus());
-        verify(repository).findByIdAndUserId(anyLong(), anyLong());
+        verify(repository).findById(anyLong());
 
         if (!enabled) {
             ArgumentCaptor<EntityChangeEvent> eventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
@@ -765,7 +768,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     @MethodSource("valueData")
     void shouldGetValue(ValueHolder input) {
         // arrange
-        when(repository.findByIdAndUserId(anyLong(), anyLong()))
+        when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
         if (input.getAliasId() != null) {
@@ -778,7 +781,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         assertEquals(input.getExpectedValue(), response);
-        verify(repository).findByIdAndUserId(anyLong(), anyLong());
+        verify(repository).findById(anyLong());
 
         if (input.getAliasId() != null) {
             verify(aliasRepository).findByIdAndKeystoreId(anyLong(), anyLong());
@@ -788,7 +791,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     @Test
     void shouldNotGetValue() {
         // arrange
-        when(repository.findByIdAndUserId(anyLong(), anyLong()))
+        when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(aliasRepository.findByIdAndKeystoreId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
@@ -797,7 +800,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
-        verify(repository).findByIdAndUserId(anyLong(), anyLong());
+        verify(repository).findById(anyLong());
         verify(aliasRepository).findByIdAndKeystoreId(anyLong(), anyLong());
     }
 
@@ -839,7 +842,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         // arrange
         when(aliasRepository.getAllAliasNames(anyLong()))
                 .thenReturn(Lists.newArrayList(new IdNamePairDto(1L, "alias1"), new IdNamePairDto(1L, "alias2")));
-        when(repository.findByIdAndUserId(anyLong(), anyLong()))
+        when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
         // act
@@ -850,14 +853,14 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         assertEquals(2, response.getResultList().size());
         assertEquals("alias1", response.getResultList().getFirst().getName());
         verify(aliasRepository).getAllAliasNames(anyLong());
-        verify(repository).findByIdAndUserId(anyLong(), anyLong());
+        verify(repository).findById(anyLong());
     }
 
     @Test
     @SneakyThrows
     void shouldNotDownloadFile() {
         // arrange
-        when(repository.findByIdAndUserId(anyLong(), anyLong()))
+        when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(fileService.readAllBytes(any(Path.class))).thenThrow(new IOException("File cannot be downloaded"));
 
@@ -873,7 +876,7 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
     @SneakyThrows
     void shouldDownloadFile() {
         // arrange
-        when(repository.findByIdAndUserId(anyLong(), anyLong()))
+        when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(fileService.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
 
@@ -885,6 +888,24 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         assertEquals("test.jks", response.getFileName());
         assertEquals("test", new String(response.getFileContent()));
         verify(fileService).readAllBytes(any(Path.class));
+    }
+
+    @Test
+    void shouldDeleteKeystoreInBatch() {
+        // arrange
+        Set<Long> userIds = Set.of(1L, 2L);
+        KeystoreBasicInfoDto dto1 = new KeystoreBasicInfoDto(1L, 1L, "file1.jks");
+        KeystoreBasicInfoDto dto2 = new KeystoreBasicInfoDto(2L, 2L, "file2.jks");
+        when(repository.findAllByUserId(userIds)).thenReturn(Set.of(dto1, dto2));
+
+        // act
+        service.batchDeleteByUserIds(userIds);
+
+        // assert
+        verify(repository).findAllByUserId(userIds);
+        verify(repository, times(2)).deleteById(anyLong());
+        verify(aliasRepository, times(2)).deleteByKeystoreId(anyLong());
+        assertLogContains(logAppender, "All keystore entities and files have been removed for the requested users");
     }
 
     public static List<ValueHolder> valueData() {
