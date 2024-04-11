@@ -41,9 +41,9 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
+class ApiKeyServiceTest extends AbstractLoggingUnitTest {
 
-	private ApiKeyServiceImpl service;
+	private ApiKeyService service;
 	private ApiKeyRepository repository;
 	private ApiKeyConverter converter;
 
@@ -53,8 +53,8 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		super.setup();
 		repository = mock(ApiKeyRepository.class);
 		converter = mock(ApiKeyConverter.class);
-		service = new ApiKeyServiceImpl(repository, converter);
-		((Logger) LoggerFactory.getLogger(ApiKeyServiceImpl.class)).addAppender(logAppender);
+		service = new ApiKeyService(repository, converter);
+		((Logger) LoggerFactory.getLogger(ApiKeyService.class)).addAppender(logAppender);
 	}
 
 	@Test

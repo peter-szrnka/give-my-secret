@@ -33,11 +33,11 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class KeystoreDataServiceImplTest extends AbstractLoggingUnitTest {
+class KeystoreDataServiceTest extends AbstractLoggingUnitTest {
 
 	private KeystoreRepository keystoreRepository;
 	private KeystoreAliasRepository keystoreAliasRepository;
-	private KeystoreDataServiceImpl service;
+	private KeystoreDataService service;
 	private FileService fileService;
 
 	@Override
@@ -49,7 +49,7 @@ class KeystoreDataServiceImplTest extends AbstractLoggingUnitTest {
 		keystoreRepository = mock(KeystoreRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
 		fileService = mock(FileService.class);
-		service = new KeystoreDataServiceImpl(keystoreRepository, keystoreAliasRepository, fileService, "src/test/resources/");
+		service = new KeystoreDataService(keystoreRepository, keystoreAliasRepository, fileService, "src/test/resources/");
 	}
 	
 	@Test

@@ -77,12 +77,11 @@ import static org.mockito.Mockito.when;
  * @since 1.0
  */
 @Nested
-class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
+class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     private static final String JKS_TEST_FILE_LOCATION = "./unit-test-output/" + DemoData.USER_1_ID + "/my-key.jks";
-    //private static final AtomicInteger counter = new AtomicInteger(0);
 
-    private KeystoreServiceImpl service;
+    private KeystoreService service;
     private CryptoService cryptoService;
     private KeystoreRepository repository;
     private KeystoreAliasRepository aliasRepository;
@@ -106,10 +105,10 @@ class KeystoreServiceImplTest extends AbstractLoggingUnitTest {
         applicationEventPublisher = mock(ApplicationEventPublisher.class);
         keystoreFileService = mock(KeystoreFileService.class);
         fileService = mock(FileService.class);
-        service = new KeystoreServiceImpl(cryptoService, repository, aliasRepository, converter, objectMapper,
+        service = new KeystoreService(cryptoService, repository, aliasRepository, converter, objectMapper,
                 applicationEventPublisher, keystoreFileService, fileService);
 
-        ((Logger) LoggerFactory.getLogger(KeystoreServiceImpl.class)).addAppender(logAppender);
+        ((Logger) LoggerFactory.getLogger(KeystoreService.class)).addAppender(logAppender);
 
         service.setKeystorePath("unit-test-output/");
         service.setKeystoreTempPath("temp-output/");

@@ -23,28 +23,28 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link ApiServiceImpl}
+ * Unit test of {@link ApiService}
  *
  * @author Peter Szrnka
  * @since 1.0
  */
-class ApiServiceImplTest extends AbstractUnitTest {
+class ApiServiceTest extends AbstractUnitTest {
 
     private static final GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
     private ListAppender<ILoggingEvent> logAppender;
     private SecretPreparationService secretPreparationService;
     private SecretValueProviderService secretValueProviderService;
-    private ApiServiceImpl service;
+    private ApiService service;
 
     @BeforeEach
     void beforeEach() {
         secretPreparationService = mock(SecretPreparationService.class);
         secretValueProviderService = mock(SecretValueProviderService.class);
-        service = new ApiServiceImpl(secretPreparationService, secretValueProviderService);
+        service = new ApiService(secretPreparationService, secretValueProviderService);
 
         logAppender = new ListAppender<>();
         logAppender.start();
-        ((Logger) LoggerFactory.getLogger(ApiServiceImpl.class)).addAppender(logAppender);
+        ((Logger) LoggerFactory.getLogger(ApiService.class)).addAppender(logAppender);
     }
 
     @AfterEach

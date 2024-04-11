@@ -39,11 +39,11 @@ import static org.mockito.Mockito.when;
  * @since 1.0
  */
 @MockitoSettings(strictness = Strictness.LENIENT)
-class KeystoreFileServiceImplTest extends AbstractUnitTest {
+class KeystoreFileServiceTest extends AbstractUnitTest {
 
 	private KeystoreRepository repository;
 	private UserRepository userRepository;
-	private KeystoreFileServiceImpl service;
+	private KeystoreFileService service;
 	private SystemPropertyService systemPropertyService;
     private FileService fileService;
 
@@ -56,7 +56,7 @@ class KeystoreFileServiceImplTest extends AbstractUnitTest {
 		userRepository = mock(UserRepository.class);
 		systemPropertyService = mock(SystemPropertyService.class);
         fileService = mock(FileService.class);
-		service = new KeystoreFileServiceImpl(repository, userRepository, "./temp-output/", systemPropertyService, fileService);
+		service = new KeystoreFileService(repository, userRepository, "./temp-output/", systemPropertyService, fileService);
 	}
 
 	@AfterEach

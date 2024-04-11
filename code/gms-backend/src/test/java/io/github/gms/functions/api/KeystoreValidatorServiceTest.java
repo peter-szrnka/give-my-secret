@@ -28,27 +28,27 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link KeystoreValidatorServiceImpl}
+ * Unit test of {@link KeystoreValidatorService}
  *
  * @author Peter Szrnka
  * @since 1.0
  */
-class KeystoreValidatorServiceImplTest extends AbstractUnitTest {
+class KeystoreValidatorServiceTest extends AbstractUnitTest {
 
     private ListAppender<ILoggingEvent> logAppender;
     private KeystoreRepository keystoreRepository;
     private KeystoreAliasRepository keystoreAliasRepository;
-    private KeystoreValidatorServiceImpl service;
+    private KeystoreValidatorService service;
 
     @BeforeEach
     void beforeEach() {
         keystoreRepository = mock(KeystoreRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
-        service = new KeystoreValidatorServiceImpl(keystoreRepository, keystoreAliasRepository);
+        service = new KeystoreValidatorService(keystoreRepository, keystoreAliasRepository);
 
         logAppender = new ListAppender<>();
         logAppender.start();
-        ((Logger) LoggerFactory.getLogger(KeystoreValidatorServiceImpl.class)).addAppender(logAppender);
+        ((Logger) LoggerFactory.getLogger(KeystoreValidatorService.class)).addAppender(logAppender);
     }
 
     @AfterEach

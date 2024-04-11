@@ -31,17 +31,17 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class UserConverterImplTest extends AbstractUnitTest {
+class UserConverterTest extends AbstractUnitTest {
 
 	private Clock clock;
 	private PasswordEncoder passwordEncoder;
-	private UserConverterImpl converter;
+	private UserConverter converter;
 
 	@BeforeEach
 	void beforeEach() {
 		clock = mock(Clock.class);
 		passwordEncoder = mock(PasswordEncoder.class);
-		converter = new UserConverterImpl(clock, passwordEncoder);
+		converter = new UserConverter(clock, passwordEncoder);
 	}
 
 	@Test

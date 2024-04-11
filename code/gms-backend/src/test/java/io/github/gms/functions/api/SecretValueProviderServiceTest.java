@@ -29,11 +29,11 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class SecretValueProviderServiceImplTest extends AbstractLoggingUnitTest {
+class SecretValueProviderServiceTest extends AbstractLoggingUnitTest {
 
     private KeystoreValidatorService keystoreValidatorService;
     private CryptoService cryptoService;
-    private SecretValueProviderServiceImpl service;
+    private SecretValueProviderService service;
 
     @Override
     @BeforeEach
@@ -41,9 +41,9 @@ class SecretValueProviderServiceImplTest extends AbstractLoggingUnitTest {
         super.setup();
         keystoreValidatorService = mock(KeystoreValidatorService.class);
         cryptoService = mock(CryptoService.class);
-        service = new SecretValueProviderServiceImpl(keystoreValidatorService, cryptoService);
+        service = new SecretValueProviderService(keystoreValidatorService, cryptoService);
 
-        ((Logger) LoggerFactory.getLogger(SecretValueProviderServiceImpl.class)).addAppender(logAppender);
+        ((Logger) LoggerFactory.getLogger(SecretValueProviderService.class)).addAppender(logAppender);
     }
 
     @Test

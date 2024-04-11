@@ -32,30 +32,30 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class SystemServiceImplTest extends AbstractLoggingUnitTest {
+class SystemServiceTest extends AbstractLoggingUnitTest {
 
 	private Clock clock;
 	private UserRepository userRepository;
 	private BuildProperties buildProperties;
-	private SystemServiceImpl service;
+	private SystemService service;
 
 	@Override
 	@BeforeEach
 	public void setup() {
 		super.setup();
-		((Logger) LoggerFactory.getLogger(SystemServiceImpl.class)).addAppender(logAppender);
+		((Logger) LoggerFactory.getLogger(SystemService.class)).addAppender(logAppender);
 
 		clock = mock(Clock.class);
 		userRepository = mock(UserRepository.class, Mockito.RETURNS_SMART_NULLS);
 		buildProperties = mock(BuildProperties.class);
 
-		service = new SystemServiceImpl(userRepository, clock, "db");
+		service = new SystemService(userRepository, clock, "db");
 	}
 	
 	@ParameterizedTest
 	@ValueSource(strings = { "NEED_SETUP", OK })
 	void shouldReturnSystemStatus(String mockResponse) {
-		service = new SystemServiceImpl(userRepository, clock, "db");
+		service = new SystemService(userRepository, clock, "db");
 		service.setBuildProperties(buildProperties);
 		// arrange
 		when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
@@ -76,7 +76,7 @@ class SystemServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@MethodSource("inputData")
 	void shouldReturnOkWithDifferentAuthMethod(String selectedAuth, boolean hasBuildProperties, String expectedVersion) {
-		service = new SystemServiceImpl(userRepository, clock, selectedAuth);
+		service = new SystemService(userRepository, clock, selectedAuth);
 		service.setBuildProperties(buildProperties);
 
 		if (hasBuildProperties) {

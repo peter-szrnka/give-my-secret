@@ -41,12 +41,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link SecretPreparationServiceImpl}
+ * Unit test of {@link SecretPreparationService}
  *
  * @author Peter Szrnka
  * @since 1.0
  */
-class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
+class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
 
     private static final GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
 
@@ -57,7 +57,7 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
     private IpRestrictionService ipRestrictionService;
     private IpRestrictionValidator ipRestrictionValidator;
 
-    private SecretPreparationServiceImpl service;
+    private SecretPreparationService service;
 
     @Override
     @BeforeEach
@@ -69,9 +69,9 @@ class SecretPreparationServiceImplTest extends AbstractLoggingUnitTest {
         apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);
         ipRestrictionService = mock(IpRestrictionService.class);
         ipRestrictionValidator = mock(IpRestrictionValidator.class);
-        service = new SecretPreparationServiceImpl(secretRepository, apiKeyRepository, userRepository, apiKeyRestrictionRepository,
+        service = new SecretPreparationService(secretRepository, apiKeyRepository, userRepository, apiKeyRestrictionRepository,
                 ipRestrictionService, ipRestrictionValidator);
-        ((Logger) LoggerFactory.getLogger(SecretPreparationServiceImpl.class)).addAppender(logAppender);
+        ((Logger) LoggerFactory.getLogger(SecretPreparationService.class)).addAppender(logAppender);
     }
 
     @Test

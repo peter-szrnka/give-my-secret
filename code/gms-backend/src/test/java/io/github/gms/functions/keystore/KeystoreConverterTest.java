@@ -30,16 +30,16 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class KeystoreConverterImplTest extends AbstractUnitTest {
+class KeystoreConverterTest extends AbstractUnitTest {
 
 	private static final String FILE_NAME = "test.jks";
 	private Clock clock;
-	private KeystoreConverterImpl converter;
+	private KeystoreConverter converter;
 
 	@BeforeEach
 	void beforeEach() {
 		clock = mock(Clock.class);
-		converter = new KeystoreConverterImpl(clock);
+		converter = new KeystoreConverter(clock);
 	}
 
 	@Test
@@ -145,8 +145,8 @@ class KeystoreConverterImplTest extends AbstractUnitTest {
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
-		assertNotNull(resultList.getResultList().get(0));
-		assertEquals("KeystoreDto(id=1, userId=1, status=ACTIVE, name=keystore, fileName=test.jks, type=JKS, description=description, credential=test, creationDate=null, aliases=[])", resultList.getResultList().get(0).toString());
+		assertNotNull(resultList.getResultList().getFirst());
+		assertEquals("KeystoreDto(id=1, userId=1, status=ACTIVE, name=keystore, fileName=test.jks, type=JKS, description=description, credential=test, creationDate=null, aliases=[])", resultList.getResultList().getFirst().toString());
 	}
 
 	@Test

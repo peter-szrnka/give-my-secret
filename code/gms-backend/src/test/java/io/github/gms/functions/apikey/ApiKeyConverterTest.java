@@ -24,16 +24,16 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class ApiKeyConverterImplTest extends AbstractUnitTest {
+class ApiKeyConverterTest extends AbstractUnitTest {
 
 	private Clock clock;
-	private ApiKeyConverterImpl converter;
+	private ApiKeyConverter converter;
 
 	@BeforeEach
 	void beforeEach() {
 		// init
 		clock = mock(Clock.class);
-		converter = new ApiKeyConverterImpl(clock);
+		converter = new ApiKeyConverter(clock);
 	}
 
 	@Test
@@ -114,7 +114,7 @@ class ApiKeyConverterImplTest extends AbstractUnitTest {
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
 
-		ApiKeyDto entity = resultList.getResultList().get(0);
+		ApiKeyDto entity = resultList.getResultList().getFirst();
 		assertEquals(1L, entity.getId());
 		assertEquals("test", entity.getName());
 		assertEquals(1L, entity.getUserId());

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class HomeServiceImplTest extends AbstractUnitTest {
+class HomeServiceTest extends AbstractUnitTest {
 
     private AnnouncementService announcementService;
     private ApiKeyService apiKeyService;
@@ -41,7 +41,7 @@ class HomeServiceImplTest extends AbstractUnitTest {
     private SecretService secretService;
     private UserService userService;
 
-    private HomeServiceImpl service;
+    private HomeService service;
 
     @BeforeEach
     public void setup() {
@@ -51,7 +51,7 @@ class HomeServiceImplTest extends AbstractUnitTest {
         keystoreService = mock(KeystoreService.class);
         secretService = mock(SecretService.class);
         userService = mock(UserService.class);
-        service = new HomeServiceImpl(announcementService, apiKeyService, eventService, keystoreService, secretService, userService);
+        service = new HomeService(announcementService, apiKeyService, eventService, keystoreService, secretService, userService);
     }
 
     @Test

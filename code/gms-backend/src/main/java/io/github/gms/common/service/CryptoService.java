@@ -37,7 +37,6 @@ public class CryptoService {
 
 	private final KeystoreDataService keystoreDataService;
 
-	@Override
 	public void validateKeyStoreFile(SaveKeystoreRequestDto dto, byte[] fileContent) {
 		try {
 			KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -54,7 +53,6 @@ public class CryptoService {
 		}
 	}
 
-	@Override
 	public String decrypt(SecretEntity secretEntity) {
 		try {
 			KeystorePair keyPairData = keystoreDataService.getKeystoreData(secretEntity);
@@ -73,7 +71,6 @@ public class CryptoService {
 		}
 	}
 
-	@Override
 	public void encrypt(SecretEntity secretEntity) {
 		try {
 			KeystorePair keyPairData = keystoreDataService.getKeystoreData(secretEntity);

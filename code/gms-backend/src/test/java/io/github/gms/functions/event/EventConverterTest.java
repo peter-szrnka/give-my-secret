@@ -17,9 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author Peter Szrnka
  * @since 1.0
  */
-class EventConverterImplTest extends AbstractUnitTest {
+class EventConverterTest extends AbstractUnitTest {
 
-	private final EventConverter converter = new EventConverterImpl();
+	private final EventConverter converter = new EventConverter();
 
 	@Test
 	void checkToList() {
@@ -34,7 +34,7 @@ class EventConverterImplTest extends AbstractUnitTest {
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
 
-		EventDto dto = resultList.getResultList().get(0);
+		EventDto dto = resultList.getResultList().getFirst();
 		assertEquals(1L, dto.getId());
 		assertNotNull(dto.getEventDate());
 		assertEquals(EventOperation.GET_BY_ID, dto.getOperation());

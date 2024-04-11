@@ -25,18 +25,18 @@ import static org.mockito.Mockito.mockStatic;
  * @author Peter Szrnka
  * @since 1.0
  */
-class IpRestrictionValidatorImplTest extends AbstractLoggingUnitTest {
+class IpRestrictionValidatorTest extends AbstractLoggingUnitTest {
 
     private HttpServletRequest httpServletRequest;
-    private IpRestrictionValidatorImpl validator;
+    private IpRestrictionValidator validator;
 
     @Override
     @BeforeEach
     public void setup() {
         super.setup();
         httpServletRequest = mock(HttpServletRequest.class);
-        validator = new IpRestrictionValidatorImpl(httpServletRequest);
-        ((Logger) LoggerFactory.getLogger(IpRestrictionValidatorImpl.class)).addAppender(logAppender);
+        validator = new IpRestrictionValidator(httpServletRequest);
+        ((Logger) LoggerFactory.getLogger(IpRestrictionValidator.class)).addAppender(logAppender);
     }
 
     @ParameterizedTest
