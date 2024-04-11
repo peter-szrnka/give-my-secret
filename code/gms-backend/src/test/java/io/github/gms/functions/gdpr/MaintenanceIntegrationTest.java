@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-public class MaintenanceIntegrationTest extends AbstractIntegrationTest {
+class MaintenanceIntegrationTest extends AbstractIntegrationTest {
 
     @Override
     @BeforeEach
@@ -34,7 +34,7 @@ public class MaintenanceIntegrationTest extends AbstractIntegrationTest {
         // act
         BatchUserOperationDto input = BatchUserOperationDto.builder().build();
         HttpEntity<BatchUserOperationDto> requestEntity = new HttpEntity<>(input, TestUtils.getHttpHeaders(jwt));
-        ResponseEntity<Void> response = executeHttpPost(MaintenanceController.PATH + "/request_user_deletion", requestEntity, Void.class);
+        ResponseEntity<Void> response = executeHttpPost("/secure/maintenance/request_user_deletion", requestEntity, Void.class);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
