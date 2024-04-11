@@ -99,7 +99,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 		dto.getAliases().forEach(alias -> processAlias(newEntity, alias));
 
 		if (EntityStatus.DISABLED == newEntity.getStatus()) {
-			publishEvent(initMetaData(newEntity.getId()), EntityChangeType.KEYSTORE_DISABLED);
+			publishEvent(true, initMetaData(newEntity.getId()), EntityChangeType.KEYSTORE_DISABLED);
 		}
 
 		if (dto.getId() == null) {
@@ -138,19 +138,10 @@ public class KeystoreServiceImpl implements KeystoreService {
 	@Transactional
 	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void delete(Long id) {
-		KeystoreEntity entity = getKeystore(id);
-		File keystoreFile = new File(keystorePath + entity.getUserId() + SLASH + entity.getFileName());
+		deleteFileById(id, true);
 
 		aliasRepository.deleteByKeystoreId(id);
 		repository.deleteById(id);
-
-		try {
-			log.info("Keystore file={} will be removed", keystoreFile.toPath());
-			fileService.delete(keystoreFile.toPath());
-			publishEvent(initMetaData(id), EntityChangeType.KEYSTORE_DELETED);
-		} catch (IOException e) {
-			log.error("Keystore file cannot be deleted", e);
-		}
 	}
 
 	@Override
@@ -164,7 +155,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 			return;
 		}
 
-		publishEvent(initMetaData(entity.getId()), EntityChangeType.KEYSTORE_DISABLED);
+		publishEvent(true, initMetaData(entity.getId()), EntityChangeType.KEYSTORE_DISABLED);
 	}
 
 	@Override
@@ -210,8 +201,28 @@ public class KeystoreServiceImpl implements KeystoreService {
 	@Async
 	@Override
 	public void batchDeleteByUserIds(Set<Long> userIds) {
-		userIds.parallelStream().forEach(this::delete);
+		Set<Long> keystoreIds = repository.findAllByUserId(userIds);
+
+		keystoreIds.forEach(keystoreId -> {
+			deleteFileById(keystoreId, false);
+			aliasRepository.deleteByKeystoreId(keystoreId);
+			repository.deleteById(keystoreId);
+		});
+
 		log.info("All keystore entities and files have been removed for the requested users");
+	}
+
+	private void deleteFileById(Long id, boolean publishEvent) {
+		KeystoreEntity entity = getKeystore(id);
+		File keystoreFile = new File(keystorePath + entity.getUserId() + SLASH + entity.getFileName());
+
+		try {
+			log.info("Keystore file={} will be removed", keystoreFile.toPath());
+			fileService.delete(keystoreFile.toPath());
+			publishEvent(publishEvent, initMetaData(id), EntityChangeType.KEYSTORE_DELETED);
+		} catch (IOException e) {
+			log.error("Keystore file cannot be deleted", e);
+		}
 	}
 
 	private void persistFile(KeystoreEntity newEntity, byte[] fileContent, boolean generated) {
@@ -262,11 +273,15 @@ public class KeystoreServiceImpl implements KeystoreService {
 			aliasRepository.deleteById(alias.getId());
 			Map<String, Object> metadata = initMetaData(newEntity.getId());
 			metadata.put(ALIAS_ID, alias.getId());
-			publishEvent(metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED);
+			publishEvent(true, metadata, EntityChangeType.KEYSTORE_ALIAS_REMOVED);
 		}
 	}
 
-	private void publishEvent(Map<String, Object> metadata, EntityChangeType entityChangeType) {
+	private void publishEvent(boolean publishEvent, Map<String, Object> metadata, EntityChangeType entityChangeType) {
+		if (!publishEvent) {
+			return;
+		}
+
 		applicationEventPublisher.publishEvent(new EntityChangeEvent(this, metadata, entityChangeType));
 	}
 
@@ -318,7 +333,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	private KeystoreEntity getKeystore(Long id) {
-		return repository.findByIdAndUserId(id, getUserId()).orElseThrow(() -> {
+		return repository.findById(id).orElseThrow(() -> {
 			log.warn(ENTITY_NOT_FOUND);
 			return new GmsException(ENTITY_NOT_FOUND);
 		});

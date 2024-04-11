@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static io.github.gms.common.util.Constants.USER_ID;
 
@@ -37,4 +38,7 @@ public interface KeystoreRepository extends JpaRepository<KeystoreEntity, Long> 
 
 	@Query("select k.fileName from KeystoreEntity k where k.fileName = :fileName")
 	String findByFileName(@Param("fileName") String fileName);
+
+	@Query("select k.id from KeystoreEntity k where k.userId in :userIds")
+	Set<Long> findAllByUserId(@Param("userIds") Set<Long> userIds);
 }

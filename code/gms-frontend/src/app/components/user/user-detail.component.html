@@ -32,9 +32,9 @@
                   <mat-form-field appearance="fill" class="full-width">
                     <mat-label>Status</mat-label>
                     <mat-select [(ngModel)]="data.status" name="status" required [disabled]="editEnabled === false">
-                      <mat-option [value]="'ACTIVE'">ACTIVE</mat-option>
-                      <mat-option [value]="'BLOCKED'">BLOCKED</mat-option>
-                      <mat-option [value]="'DISABLED'">DISABLED</mat-option>
+                      @for (status of selectableStatuses; track status) {
+                        <mat-option [value]="status">{{status}}</mat-option>
+                      }
                     </mat-select>
                   </mat-form-field>
                   <mat-form-field appearance="fill" class="full-width">

@@ -19,13 +19,13 @@ import static io.github.gms.common.util.Constants.TRUE;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "config.job.userMaintenance.enabled", havingValue = TRUE, matchIfMissing = true)
-public class UserMaintenanceJob {
+@ConditionalOnProperty(value = "config.job.userDeletion.enabled", havingValue = TRUE, matchIfMissing = true)
+public class UserDeletionJob {
 
     private final UserDeletionService userDeletionService;
     private final UserAssetDeletionService userAssetDeletionService;
 
-    @Scheduled(cron = "0 5 * * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")
     public void execute() {
         Set<Long> userIds = userDeletionService.getRequestedUserDeletionIds();
 
