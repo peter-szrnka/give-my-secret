@@ -12,10 +12,12 @@ import io.github.gms.functions.keystore.KeystoreAliasEntity;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.keystore.KeystoreRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -35,6 +37,7 @@ import static java.util.stream.Collectors.toSet;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = { CACHE_API })
@@ -131,6 +134,13 @@ public class SecretServiceImpl implements SecretService {
 	@Override
 	public LongValueDto count() {
 		return new LongValueDto(repository.countByUserId(getUserId()));
+	}
+
+	@Async
+	@Override
+	public void batchDeleteByUserIds(Set<Long> userIds) {
+		repository.deleteAllByUserId(userIds);
+		log.info("All secrets have been removed for the requested users");
 	}
 
 	private void updateApiRestrictions(SecretEntity entity, Set<Long> apiKeys) {

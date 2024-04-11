@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 /**
  * @author Peter Szrnka
@@ -24,4 +25,9 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
 	int deleteAllEventDateOlderThan(@Param("eventDate") ZonedDateTime eventDate);
 	
 	Page<EventEntity> findAllByUserId(Long userId, Pageable pageable);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM EventEntity e where e.userId in :userIds")
+	void deleteAllByUserId(@Param("userIds") Set<Long> userIds);
 }

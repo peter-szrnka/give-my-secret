@@ -8,14 +8,17 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.MdcUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
@@ -24,6 +27,7 @@ import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = { CACHE_API })
@@ -101,6 +105,13 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 	public IdNamePairListDto getAllApiKeyNames() {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		return new IdNamePairListDto(repository.getAllApiKeyNames(userId));
+	}
+
+	@Async
+	@Override
+	public void batchDeleteByUserIds(Set<Long> userIds) {
+		repository.deleteAllByUserId(userIds);
+		log.info("All API keys have been removed for the requested users");
 	}
 
 	private ApiKeyEntity getApiKeyEntity(Long id, Long userId) {

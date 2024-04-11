@@ -3,18 +3,22 @@ package io.github.gms.functions.message;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.MdcParameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
@@ -59,5 +63,12 @@ public class MessageServiceImpl implements MessageService {
 	public void markAsRead(MarkAsReadRequestDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		repository.markAsRead(userId, dto.getIds());
+	}
+
+	@Async
+	@Override
+	public void batchDeleteByUserIds(Set<Long> userIds) {
+		repository.deleteAllByUserId(userIds);
+		log.info("All messages have been removed for the requested users");
 	}
 }

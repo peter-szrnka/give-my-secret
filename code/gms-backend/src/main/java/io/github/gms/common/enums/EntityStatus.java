@@ -10,6 +10,7 @@ public enum EntityStatus {
 
 	ACTIVE,
 	BLOCKED,
+	DELETE_REQUESTED,
 	DISABLED,
 	INITIAL,
 	TO_BE_DELETED;

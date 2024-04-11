@@ -2,10 +2,10 @@
   @if (status === 'ACTIVE') {
     <mat-icon (click)="toggle()" class="active">check_circle_outline</mat-icon>
   }
-  @if (status === 'BLOCKED') {
-    <mat-icon (click)="toggle()" class="disabled">block</mat-icon>
+  @if (status === 'BLOCKED' || status === 'DISABLED') {
+    <mat-icon (click)="toggle()" class="disabled" matTooltip="{{status}}">block</mat-icon>
   }
-  @if (status === 'DISABLED') {
-    <mat-icon (click)="toggle()" class="disabled">block</mat-icon>
+  @if (status === 'DELETE_REQUESTED' || status === 'TO_BE_DELETED') {
+    <mat-icon (click)="toggle()" class="disabled" matTooltip="{{status}}">delete_forever</mat-icon>
   }
 </ng-container>

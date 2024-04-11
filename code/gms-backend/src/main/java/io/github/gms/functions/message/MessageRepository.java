@@ -35,4 +35,9 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
 	@Transactional
 	@Query("delete from MessageEntity m where m.creationDate < :eventDate")
 	int deleteAllEventDateOlderThan(@Param("eventDate") ZonedDateTime eventDate);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM MessageEntity m where m.userId in :userIds")
+	void deleteAllByUserId(@Param("userIds") Set<Long> userIds);
 }

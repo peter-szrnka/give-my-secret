@@ -2,6 +2,7 @@ package io.github.gms.functions.keystore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.common.dto.IdNamePairListDto;
+import io.github.gms.common.dto.KeystoreBasicInfoDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.AliasOperation;
@@ -13,7 +14,6 @@ import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.secret.GetSecureValueDto;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -35,6 +37,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static io.github.gms.common.util.Constants.ALIAS_ID;
 import static io.github.gms.common.util.Constants.CACHE_API;
@@ -137,18 +140,10 @@ public class KeystoreServiceImpl implements KeystoreService {
 	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void delete(Long id) {
 		KeystoreEntity entity = getKeystore(id);
-		File keystoreFile = new File(keystorePath + entity.getUserId() + SLASH + entity.getFileName());
+		deleteFileById(id, entity.getUserId(), entity.getFileName(),true);
 
 		aliasRepository.deleteByKeystoreId(id);
 		repository.deleteById(id);
-
-		try {
-			log.info("Keystore file={} will be removed", keystoreFile.toPath());
-			fileService.delete(keystoreFile.toPath());
-			publishEvent(initMetaData(id), EntityChangeType.KEYSTORE_DELETED);
-		} catch (IOException e) {
-			log.error("Keystore file cannot be deleted", e);
-		}
 	}
 
 	@Override
@@ -202,6 +197,35 @@ public class KeystoreServiceImpl implements KeystoreService {
 			return new DownloadFileResponseDto(entity.getFileName(), fileService.readAllBytes(Paths.get(getUserFolder() + entity.getFileName())));
 		} catch (Exception e) {
 			throw new GmsException(e);
+		}
+	}
+
+	@Async
+	@Override
+	@Transactional
+	public void batchDeleteByUserIds(Set<Long> userIds) {
+		Set<KeystoreBasicInfoDto> keystoreIds = repository.findAllByUserId(userIds);
+
+		keystoreIds.forEach(entity -> {
+			deleteFileById(entity.getId(), entity.getUserId(), entity.getFilename(), false);
+			aliasRepository.deleteByKeystoreId(entity.getId());
+			repository.deleteById(entity.getId());
+		});
+
+		log.info("All keystore entities and files have been removed for the requested users");
+	}
+
+	private void deleteFileById(Long id, Long userId, String fileName, boolean publishEvent) {
+		File keystoreFile = new File(keystorePath + userId + SLASH + fileName);
+
+		try {
+			log.info("Keystore file={} will be removed", keystoreFile.toPath());
+			fileService.delete(keystoreFile.toPath());
+			if (publishEvent) {
+				publishEvent(initMetaData(id), EntityChangeType.KEYSTORE_DELETED);
+			}
+		} catch (IOException e) {
+			log.error("Keystore file cannot be deleted", e);
 		}
 	}
 
@@ -309,7 +333,7 @@ public class KeystoreServiceImpl implements KeystoreService {
 	}
 
 	private KeystoreEntity getKeystore(Long id) {
-		return repository.findByIdAndUserId(id, getUserId()).orElseThrow(() -> {
+		return repository.findById(id).orElseThrow(() -> {
 			log.warn(ENTITY_NOT_FOUND);
 			return new GmsException(ENTITY_NOT_FOUND);
 		});

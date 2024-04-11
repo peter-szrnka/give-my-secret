@@ -18,7 +18,8 @@ const EVENT_LIST_FILTER = {
   size: 10
 };
 
-const ALL_ROLES: string[] = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
+const ALL_ROLES: string[] = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN','ROLE_TECHNICAL'];
+const ALL_STATUS: string[] = [ 'ACTIVE', 'BLOCKED', 'DISABLED', 'DELETE_REQUESTED', 'TO_BE_DELETED' ];
 
 @Component({
   selector: 'user-detail-component',
@@ -31,6 +32,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
 
   auto = true;
   selectableRoles = ALL_ROLES;
+  selectableStatuses = ALL_STATUS;
   eventList : Event[] = [];
   public datasource : ArrayDataSource<Event>;
   editEnabled: boolean = true;

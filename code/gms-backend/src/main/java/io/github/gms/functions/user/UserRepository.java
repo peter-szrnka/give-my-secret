@@ -1,5 +1,6 @@
 package io.github.gms.functions.user;
 
+import io.github.gms.common.enums.EntityStatus;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static io.github.gms.common.util.Constants.CACHE_USER;
 import static io.github.gms.common.util.Constants.USER_ID;
@@ -50,4 +52,17 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	@Transactional
 	@Query("UPDATE UserEntity u set u.status='TO_BE_DELETED' where u.username = :username and u.status!='TO_BE_DELETED'")
 	void markUserAsDeleted(@Param("username") String username);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE UserEntity u set u.status=:newStatus where u.id in :userIds")
+    void batchUpdateStatus(@Param("userIds") Set<Long> userIds, @Param("newStatus") EntityStatus newStatus);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM UserEntity u where u.id in :userIds")
+	void deleteAllByUserId(@Param("userIds") Set<Long> userIds);
+
+	@Query("SELECT u.id from UserEntity u where u.status=:status")
+	Set<Long> findAllByStatus(@Param("status") EntityStatus status);
 }

@@ -8,10 +8,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Peter Szrnka
@@ -36,4 +38,9 @@ public interface SecretRepository extends JpaRepository<SecretEntity, Long> {
 	void disableAllActiveByKeystoreAliasId(@Param("keystoreAliasId") Long keystoreAliasId);
 
 	long countAllSecretsByUserIdAndSecretId(Long userId, String secretId);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM SecretEntity s where s.userId in :userIds")
+	void deleteAllByUserId(@Param("userIds") Set<Long> userIds);
 }
