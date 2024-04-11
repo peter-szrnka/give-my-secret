@@ -24,10 +24,10 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class SystemPropertyConverterImplTest extends AbstractUnitTest {
+class SystemPropertyConverterTest extends AbstractUnitTest {
 
 	private final Clock clock = mock(Clock.class);
-	private final SystemPropertyConverterImpl converter = new SystemPropertyConverterImpl(clock);
+	private final SystemPropertyConverter converter = new SystemPropertyConverter(clock);
 
 	@Test
 	void shouldConvertToDtoList() {
