@@ -1,4 +1,4 @@
-package io.github.gms.auth.ldap.converter.impl;
+package io.github.gms.auth.ldap.converter;
 
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.abstraction.AbstractUnitTest;

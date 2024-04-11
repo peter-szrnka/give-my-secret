@@ -1,6 +1,7 @@
-package io.github.gms.auth.sso.keycloak.service.impl;
+package io.github.gms.auth.sso.keycloak.service;
 
 import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.auth.sso.keycloak.service.KeycloakOAuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
@@ -25,16 +26,16 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class KeycloakOAuthServiceImplTest extends AbstractUnitTest {
+public class KeycloakOAuthServiceTest extends AbstractUnitTest {
 
     public static final String URL = "http://localhost";
     private RestTemplate restTemplate;
-    private KeycloakOAuthServiceImpl service;
+    private KeycloakOAuthService service;
 
     @BeforeEach
     public void setup() {
         restTemplate = mock(RestTemplate.class);
-        service = new KeycloakOAuthServiceImpl(restTemplate);
+        service = new KeycloakOAuthService(restTemplate);
     }
 
     @Test

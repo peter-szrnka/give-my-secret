@@ -1,6 +1,7 @@
-package io.github.gms.common.converter.impl;
+package io.github.gms.common.converter;
 
 import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.converter.GenerateJwtRequestConverter;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.model.GenerateJwtRequest;
@@ -21,16 +22,16 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class GenerateJwtRequestConverterImplTest extends AbstractUnitTest {
+class GenerateJwtRequestConverterTest extends AbstractUnitTest {
 
     private SystemPropertyService systemPropertyService;
-    private GenerateJwtRequestConverterImpl converter;
+    private GenerateJwtRequestConverter converter;
 
     @BeforeEach
     void beforeEach() {
         // init
         systemPropertyService = mock(SystemPropertyService.class);
-        converter = new GenerateJwtRequestConverterImpl(systemPropertyService);
+        converter = new GenerateJwtRequestConverter(systemPropertyService);
     }
 
     @Test

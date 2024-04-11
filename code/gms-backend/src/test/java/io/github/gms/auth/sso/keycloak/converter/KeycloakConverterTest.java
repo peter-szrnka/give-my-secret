@@ -34,20 +34,20 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class KeycloakConverterImplTest {
+class KeycloakConverterTest {
 
     private static final ZonedDateTime zonedDateTime =
             ZonedDateTime.ofInstant(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());
 
     private Clock clock;
     private SecretGenerator secretGenerator;
-    private KeycloakConverterImpl converter;
+    private KeycloakConverter converter;
 
     @BeforeEach
     void setup() {
         clock = mock(Clock.class);
         secretGenerator = mock(SecretGenerator.class);
-        converter = new KeycloakConverterImpl(clock, secretGenerator);
+        converter = new KeycloakConverter(clock, secretGenerator);
     }
 
     @ParameterizedTest

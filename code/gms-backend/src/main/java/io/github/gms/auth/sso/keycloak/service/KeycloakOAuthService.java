@@ -1,6 +1,6 @@
-package io.github.gms.auth.sso.keycloak.service.impl;
+package io.github.gms.auth.sso.keycloak.service;
 
-import io.github.gms.auth.sso.keycloak.service.OAuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,16 +17,12 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 @Profile(value = { CONFIG_AUTH_TYPE_KEYCLOAK_SSO })
-public class KeycloakOAuthServiceImpl implements OAuthService {
+public class KeycloakOAuthService {
 
     private final RestTemplate restTemplate;
 
-    public KeycloakOAuthServiceImpl(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
-    @Override
     public <T> ResponseEntity<T> callPostEndpoint(String url, MultiValueMap<String, String> requestBody, Class<T> responseClass) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

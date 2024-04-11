@@ -1,6 +1,7 @@
 package io.github.gms.common.service.impl;
 
 import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.service.FileService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -22,9 +23,9 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class FileServiceImplTest extends AbstractUnitTest {
+class FileServiceTest extends AbstractUnitTest {
 
-    private final FileServiceImpl service = new FileServiceImpl();
+    private final FileService service = new FileService();
 
     @Test
     @SneakyThrows

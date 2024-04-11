@@ -2,6 +2,7 @@ package io.github.gms.common.service.impl;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.service.JwtClaimService;
 import io.github.gms.common.service.JwtService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.jsonwebtoken.Claims;
@@ -17,17 +18,17 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class JwtClaimServiceImplTest extends AbstractUnitTest {
+class JwtClaimServiceTest extends AbstractUnitTest {
     
     private JwtService jwtService;
     private SystemPropertyService systemPropertyService;
-    private JwtClaimServiceImpl service;
+    private JwtClaimService service;
 
 	@BeforeEach
 	public void setup() {
 		jwtService = mock(JwtService.class);
 		systemPropertyService = mock(SystemPropertyService.class);
-		service = new JwtClaimServiceImpl(jwtService, systemPropertyService);
+		service = new JwtClaimService(jwtService, systemPropertyService);
 	}
 	
 	@Test

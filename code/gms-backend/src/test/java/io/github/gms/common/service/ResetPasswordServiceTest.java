@@ -4,7 +4,7 @@ import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.message.MessageDto;
 import io.github.gms.functions.message.MessageService;
 import io.github.gms.functions.resetpassword.ResetPasswordRequestDto;
-import io.github.gms.functions.resetpassword.ResetPasswordServiceImpl;
+import io.github.gms.functions.resetpassword.ResetPasswordService;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,18 +29,18 @@ import static org.mockito.Mockito.when;
  * @since 1.0
  */
 @ExtendWith(MockitoExtension.class)
-class ResetPasswordServiceImplTest {
+class ResetPasswordServiceTest {
 
     private MessageService messageService;
     private UserRepository userRepository;
 
-    private ResetPasswordServiceImpl service;
+    private ResetPasswordService service;
 
     @BeforeEach
     void setup() {
         messageService = mock(MessageService.class);
         userRepository = mock(UserRepository.class);
-        service = new ResetPasswordServiceImpl(messageService, userRepository);
+        service = new ResetPasswordService(messageService, userRepository);
     }
 
     @Test

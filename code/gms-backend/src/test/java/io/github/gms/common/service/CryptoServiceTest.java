@@ -3,6 +3,7 @@ package io.github.gms.common.service.impl;
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.model.KeystorePair;
+import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.keystore.KeystoreDataService;
 import io.github.gms.functions.keystore.SaveKeystoreRequestDto;
@@ -31,18 +32,18 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class CryptoServiceImplTest extends AbstractLoggingUnitTest {
+class CryptoServiceTest extends AbstractLoggingUnitTest {
 
 	private KeystoreDataService keystoreDataService;
-	private CryptoServiceImpl service;
+	private CryptoService service;
 	
 	@Override
 	@BeforeEach
 	public void setup() {
 		super.setup();
 		keystoreDataService = mock(KeystoreDataService.class);
-		service = new CryptoServiceImpl(keystoreDataService);
-		((Logger) LoggerFactory.getLogger(CryptoServiceImpl.class)).addAppender(logAppender);
+		service = new CryptoService(keystoreDataService);
+		((Logger) LoggerFactory.getLogger(CryptoService.class)).addAppender(logAppender);
 	}
 	
 	@Test

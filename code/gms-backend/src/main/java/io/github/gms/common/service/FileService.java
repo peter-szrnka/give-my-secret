@@ -1,7 +1,10 @@
 package io.github.gms.common.service;
 
+import org.springframework.stereotype.Service;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -9,17 +12,30 @@ import java.util.stream.Stream;
  * @author Peter Szrnka
  * @since 1.0
  */
-public interface FileService {
+@Service
+public class FileService {
 
-    void createDirectories(Path path) throws IOException;
+    public void createDirectories(Path path) throws IOException {
+        Files.createDirectories(path);
+    }
 
-    boolean delete(Path path) throws IOException;
+    public boolean delete(Path path) throws IOException {
+        return Files.deleteIfExists(path);
+    }
 
-    boolean exists(Path path);
+    public boolean exists(Path path) {
+        return Files.exists(path);
+    }
 
-    Stream<Path> list(Path path) throws IOException;
+    public Stream<Path> list(Path path) throws IOException {
+        return Files.list(path);
+    }
 
-    byte[] readAllBytes(Path path) throws IOException;
+    public byte[] readAllBytes(Path path) throws IOException {
+        return Files.readAllBytes(path);
+    }
 
-    byte[] toByteArray(File file) throws IOException;
+    public byte[] toByteArray(File file) throws IOException {
+        return readAllBytes(file.toPath());
+    }
 }

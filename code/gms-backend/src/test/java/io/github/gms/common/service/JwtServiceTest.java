@@ -4,6 +4,7 @@ import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.model.GenerateJwtRequest;
+import io.github.gms.common.service.JwtService;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
@@ -35,23 +36,23 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class JwtServiceImplTest extends AbstractUnitTest {
+class JwtServiceTest extends AbstractUnitTest {
 
 	private static final String secret = "YXNkZjEyMzQ1Njc4OTBhc2RmMTIzNDU2Nzg5MGFzZGYxMjM0NTY3ODkwYXNkZjEyMzQ1Njc4OTA=";
 	private Clock clock;
-	private JwtServiceImpl service;
+	private JwtService service;
 	
 	@BeforeEach
 	void setup() {
 		clock = mock(Clock.class);
-		service = new JwtServiceImpl(clock, secret);
+		service = new JwtService(clock, secret);
 	}
 
 	@Test
 	@SneakyThrows
-	void shouldgenerateJwts() {
+	void shouldGenerateJwts() {
 		// arrange
-		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900l));
+		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900L));
 		GenerateJwtRequest generateRequest1 = new GenerateJwtRequest("subject1", "HS384", 1000L, Map.of("k1", "v1"));
 		GenerateJwtRequest generateRequest2 = new GenerateJwtRequest("subject2", "HS384", 1000L, Map.of("k2", "v2"));
 		Map<JwtConfigType, GenerateJwtRequest> request = Map.of(
@@ -61,7 +62,7 @@ class JwtServiceImplTest extends AbstractUnitTest {
 		MockedStatic<UUID> mockedUUID = mockStatic(UUID.class);
 		UUID mockUUID = mock(UUID.class);
 		when(mockUUID.toString()).thenReturn("123456-1234-1234-123456");
-		mockedUUID.when(() -> UUID.randomUUID()).thenReturn(mockUUID);
+		mockedUUID.when(UUID::randomUUID).thenReturn(mockUUID);
 		
 		// act
 		Map<JwtConfigType, String> response = service.generateJwts(request);
@@ -87,7 +88,7 @@ class JwtServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldGenerateJwt() {
 		// arrange
-		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900l));
+		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900L));
 		// act
 		String response = service.generateJwt(TestUtils.createJwtAdminRequest());
 
@@ -98,7 +99,7 @@ class JwtServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldParseJwt() {
 		// arrange
-		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900l));
+		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900L));
 		String generatedToken = service.generateJwt(TestUtils.createJwtAdminRequest());
 
 		// act

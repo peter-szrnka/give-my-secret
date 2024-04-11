@@ -1,9 +1,10 @@
-package io.github.gms.auth.sso.keycloak.service.impl;
+package io.github.gms.auth.sso.keycloak.service;
 
 import io.github.gms.auth.sso.keycloak.Input;
 import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
 import io.github.gms.auth.sso.keycloak.model.LoginResponse;
-import io.github.gms.auth.sso.keycloak.service.OAuthService;
+import io.github.gms.auth.sso.keycloak.service.KeycloakLoginService;
+import io.github.gms.auth.sso.keycloak.service.KeycloakOAuthService;
 import io.github.gms.util.TestUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,20 +44,20 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class KeycloakLoginServiceImplTest {
+class KeycloakLoginServiceTest {
 
-    private OAuthService oAuthService;
+    private KeycloakOAuthService oAuthService;
     private HttpServletRequest httpServletRequest;
     private KeycloakSettings keycloakSettings;
-    private KeycloakLoginServiceImpl service;
+    private KeycloakLoginService service;
 
     @BeforeEach
     public void setup() {
-        oAuthService = mock(OAuthService.class);
+        oAuthService = mock(KeycloakOAuthService.class);
         httpServletRequest = mock(HttpServletRequest.class);
         keycloakSettings = mock(KeycloakSettings.class);
 
-        service = new KeycloakLoginServiceImpl(oAuthService, httpServletRequest, keycloakSettings);
+        service = new KeycloakLoginService(oAuthService, httpServletRequest, keycloakSettings);
     }
 
     @Test

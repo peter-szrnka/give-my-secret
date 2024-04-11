@@ -31,14 +31,14 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class VerificationServiceImplTest extends AbstractLoggingUnitTest {
+class VerificationServiceTest extends AbstractLoggingUnitTest {
 
     private UserAuthService userAuthService;
     private UserConverter userConverter;
     private CodeVerifier verifier;
     private UserLoginAttemptManagerService userLoginAttemptManagerService;
     private TokenGeneratorService tokenGeneratorService;
-    private VerificationServiceImpl service;
+    private VerificationService service;
 
     @Override
     @BeforeEach
@@ -51,7 +51,7 @@ class VerificationServiceImplTest extends AbstractLoggingUnitTest {
         verifier = mock(CodeVerifier.class);
         userLoginAttemptManagerService = mock(UserLoginAttemptManagerService.class);
         userConverter = mock(UserConverter.class);
-        service = new VerificationServiceImpl(userAuthService, userConverter, verifier, userLoginAttemptManagerService, tokenGeneratorService);
+        service = new VerificationService(userAuthService, userConverter, verifier, userLoginAttemptManagerService, tokenGeneratorService);
 
         ((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
     }

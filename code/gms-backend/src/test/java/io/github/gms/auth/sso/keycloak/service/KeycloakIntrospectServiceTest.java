@@ -1,8 +1,7 @@
-package io.github.gms.auth.sso.keycloak.service.impl;
+package io.github.gms.auth.sso.keycloak.service;
 
 import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
-import io.github.gms.auth.sso.keycloak.service.OAuthService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,17 +25,17 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class KeycloakIntrospectServiceImplTest {
+class KeycloakIntrospectServiceTest {
 
-    private OAuthService oAuthService;
+    private KeycloakOAuthService oAuthService;
     private KeycloakSettings keycloakSettings;
-    private KeycloakIntrospectServiceImpl service;
+    private KeycloakIntrospectService service;
 
     @BeforeEach
     public void setup() {
-        oAuthService = mock(OAuthService.class);
+        oAuthService = mock(KeycloakOAuthService.class);
         keycloakSettings = mock(KeycloakSettings.class);
-        service = new KeycloakIntrospectServiceImpl(oAuthService, keycloakSettings);
+        service = new KeycloakIntrospectService(oAuthService, keycloakSettings);
     }
 
     @Test

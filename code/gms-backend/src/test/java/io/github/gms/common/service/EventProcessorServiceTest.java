@@ -3,6 +3,7 @@ package io.github.gms.common.service.impl;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.model.EntityChangeEvent;
 import io.github.gms.common.model.EntityChangeEvent.EntityChangeType;
+import io.github.gms.common.service.EventProcessorService;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.message.MessageDto;
 import io.github.gms.functions.message.MessageService;
@@ -31,19 +32,19 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class EventProcessorServiceImplTest extends AbstractUnitTest {
+class EventProcessorServiceTest extends AbstractUnitTest {
 
 	private MessageService messageService;
 	private SecretRepository secretRepository;
 	private KeystoreAliasRepository keystoreAliasRepository;
-	private EventProcessorServiceImpl service;
+	private EventProcessorService service;
 
 	@BeforeEach
 	public void setup() {
 		messageService = mock(MessageService.class);
 		secretRepository = mock(SecretRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
-		service = new EventProcessorServiceImpl(messageService, secretRepository, keystoreAliasRepository);
+		service = new EventProcessorService(messageService, secretRepository, keystoreAliasRepository);
 	}
 	
 	@ParameterizedTest
@@ -80,9 +81,9 @@ class EventProcessorServiceImplTest extends AbstractUnitTest {
 	private static InputData[] input() {
 		return new InputData[] {
 			new InputData(EntityChangeType.KEYSTORE_DISABLED, 
-					EventProcessorServiceImpl.REASON_PREFIX + EventProcessorServiceImpl.REASON_KEYSTORE_DISABLED),
+					EventProcessorService.REASON_PREFIX + EventProcessorService.REASON_KEYSTORE_DISABLED),
 			new InputData(EntityChangeType.KEYSTORE_ALIAS_REMOVED, 
-					EventProcessorServiceImpl.REASON_PREFIX + EventProcessorServiceImpl.REASON_KEYSTORE_ALIAS_REMOVED)
+					EventProcessorService.REASON_PREFIX + EventProcessorService.REASON_KEYSTORE_ALIAS_REMOVED)
 		};
 	}
 
