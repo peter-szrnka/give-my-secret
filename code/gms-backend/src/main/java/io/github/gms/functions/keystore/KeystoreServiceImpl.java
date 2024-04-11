@@ -23,6 +23,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +36,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static io.github.gms.common.util.Constants.ALIAS_ID;
 import static io.github.gms.common.util.Constants.CACHE_API;
@@ -203,6 +205,13 @@ public class KeystoreServiceImpl implements KeystoreService {
 		} catch (Exception e) {
 			throw new GmsException(e);
 		}
+	}
+
+	@Async
+	@Override
+	public void batchDeleteByUserIds(Set<Long> userIds) {
+		userIds.parallelStream().forEach(this::delete);
+		log.info("All keystore entities and files have been removed for the requested users");
 	}
 
 	private void persistFile(KeystoreEntity newEntity, byte[] fileContent, boolean generated) {

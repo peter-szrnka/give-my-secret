@@ -3,12 +3,15 @@ package io.github.gms.functions.event;
 import io.github.gms.common.model.UserEvent;
 import io.github.gms.functions.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 import static io.github.gms.common.util.MdcUtils.getUserId;
 
@@ -16,6 +19,7 @@ import static io.github.gms.common.util.MdcUtils.getUserId;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
@@ -51,6 +55,13 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public EventListDto listByUser(Long userId, Pageable pageable) {
 		return converter.toDtoList(repository.findAllByUserId(userId, pageable), getUsername(userId));
+	}
+
+	@Async
+	@Override
+	public void batchDeleteByUserIds(Set<Long> userIds) {
+		repository.deleteAllByUserId(userIds);
+		log.info("All events have been removed for the requested users");
 	}
 	
 	private String getUsername(Long userId) {

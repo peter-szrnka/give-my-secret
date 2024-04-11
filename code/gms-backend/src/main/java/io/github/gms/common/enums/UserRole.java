@@ -1,6 +1,5 @@
 package io.github.gms.common.enums;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,10 +11,11 @@ import java.util.stream.Stream;
 public enum UserRole {
 
 	ROLE_ADMIN,
+	ROLE_TECHNICAL,
 	ROLE_USER,
 	ROLE_VIEWER;
 	
-	private static Map<String, UserRole> nameMap = new HashMap<>();
+	private static final Map<String, UserRole> nameMap;
 	
 	static {
 		nameMap = Stream.of(values()).collect(Collectors.toMap(Enum::name, value -> value));

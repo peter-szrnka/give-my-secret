@@ -1,6 +1,7 @@
 package io.github.gms.functions.iprestriction;
 
 import io.github.gms.common.abstraction.AbstractCrudService;
+import io.github.gms.common.abstraction.BatchDeletionService;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.model.IpRestrictionPatterns;
 
@@ -11,7 +12,8 @@ import java.util.List;
  * @since 1.0
  */
 public interface IpRestrictionService extends
-        AbstractCrudService<IpRestrictionDto, SaveEntityResponseDto, IpRestrictionDto, IpRestrictionListDto> {
+        AbstractCrudService<IpRestrictionDto, SaveEntityResponseDto, IpRestrictionDto, IpRestrictionListDto>,
+        BatchDeletionService {
 
     void updateIpRestrictionsForSecret(Long secretId, List<IpRestrictionDto> ipRestrictions);
 

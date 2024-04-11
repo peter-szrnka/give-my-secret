@@ -1,5 +1,6 @@
 package io.github.gms.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.dto.UserInfoDto;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthenticateResponseDto implements Serializable {
 
 	@Serial

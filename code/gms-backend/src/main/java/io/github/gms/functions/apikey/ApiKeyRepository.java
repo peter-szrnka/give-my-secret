@@ -5,12 +5,15 @@ import io.github.gms.common.dto.IdNamePairDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static io.github.gms.common.util.Constants.USER_ID;
 
@@ -37,4 +40,9 @@ public interface ApiKeyRepository extends JpaRepository<ApiKeyEntity, Long> {
 	
 	@Query("select count(a) from ApiKeyEntity a where a.userId = :userId and a.value = :value")
 	long countAllApiKeysByValue(@Param(USER_ID) Long userId, @Param("value") String value);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM ApiKeyEntity a where a.userId in :userIds")
+	void deleteAllByUserId(@Param("userIds") Set<Long> userIds);
 }

@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -110,6 +111,13 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
         IpRestrictionEntity entity = findAndValidateEntity(id);
         entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
         repository.save(entity);
+    }
+
+    @Async
+    @Override
+    public void batchDeleteByUserIds(Set<Long> userIds) {
+        repository.deleteAllByUserId(userIds);
+        log.info("All IP restrictions have been removed for the requested users");
     }
 
     private IpRestrictionEntity findAndValidateEntity(Long id) {
