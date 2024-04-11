@@ -1,7 +1,6 @@
-package io.github.gms.auth.ldap.converter.impl;
+package io.github.gms.auth.ldap;
 
 import dev.samstevens.totp.secret.SecretGenerator;
-import io.github.gms.auth.ldap.converter.LdapUserConverter;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.abstraction.AbstractUserConverter;
 import io.github.gms.functions.user.UserEntity;
@@ -24,7 +23,7 @@ import static io.github.gms.common.util.Constants.LDAP_CRYPT_PREFIX;
 @Component
 @RequiredArgsConstructor
 @Profile(value = { CONFIG_AUTH_TYPE_LDAP })
-public class LdapUserConverterImpl extends AbstractUserConverter implements LdapUserConverter {
+public class LdapUserConverter extends AbstractUserConverter {
 
     private final Clock clock;
     private final SecretGenerator secretGenerator;
@@ -32,7 +31,6 @@ public class LdapUserConverterImpl extends AbstractUserConverter implements Ldap
     @Value("${config.store.ldap.credential:false}")
     private boolean storeLdapCredential;
 
-    @Override
     public UserEntity toEntity(GmsUserDetails foundUser, UserEntity existingEntity) {
         UserEntity entity = existingEntity == null ? new UserEntity() : existingEntity;
 

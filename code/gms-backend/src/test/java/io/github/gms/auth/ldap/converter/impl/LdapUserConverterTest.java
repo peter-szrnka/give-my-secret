@@ -2,6 +2,7 @@ package io.github.gms.auth.ldap.converter.impl;
 
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.auth.ldap.LdapUserConverter;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.util.DemoData;
@@ -24,17 +25,17 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class LdapUserConverterImplTest extends AbstractUnitTest {
+class LdapUserConverterTest extends AbstractUnitTest {
 
     private Clock clock;
     private SecretGenerator secretGenerator;
-    private LdapUserConverterImpl converter;
+    private LdapUserConverter converter;
 
     @BeforeEach
     void beforeEach() {
         clock = mock(Clock.class);
         secretGenerator = mock(SecretGenerator.class);
-        converter = new LdapUserConverterImpl(clock, secretGenerator);
+        converter = new LdapUserConverter(clock, secretGenerator);
     }
 
     @ParameterizedTest

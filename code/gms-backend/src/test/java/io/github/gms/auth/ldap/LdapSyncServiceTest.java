@@ -4,7 +4,6 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.auth.ldap.converter.LdapUserConverter;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
@@ -33,18 +32,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit test of {@link LdapSyncServiceImpl}
+ * Unit test of {@link LdapSyncService}
  * 
  * @author Peter Szrnka
  * @since 1.0
  */
-class LdapSyncServiceImplTest extends AbstractUnitTest {
+class LdapSyncServiceTest extends AbstractUnitTest {
     
     private ListAppender<ILoggingEvent> logAppender;
 	private LdapTemplate ldapTemplate;
 	private UserRepository repository;
 	private LdapUserConverter converter;
-    private LdapSyncServiceImpl service;
+    private LdapSyncService service;
 
     @BeforeEach
 	void beforeEach() {
@@ -54,8 +53,8 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 		ldapTemplate = mock(LdapTemplate.class);
 		repository = mock(UserRepository.class);
 		converter = mock(LdapUserConverter.class);
-		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "db");
-		((Logger) LoggerFactory.getLogger(LdapSyncServiceImpl.class)).addAppender(logAppender);
+		service = new LdapSyncService(ldapTemplate, repository, converter, "db");
+		((Logger) LoggerFactory.getLogger(LdapSyncService.class)).addAppender(logAppender);
 	}
 
     @AfterEach
@@ -67,7 +66,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldSkipLdapUserSync() {
 		// arrange
-		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "db");
+		service = new LdapSyncService(ldapTemplate, repository, converter, "db");
 
 		// act
 		Pair<Integer, Integer> response = service.synchronizeUsers();
@@ -83,7 +82,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 	@MethodSource("testData")
 	void shouldSyncAllUsers(String username, boolean findUser) {
 		// arrange
-		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "ldap");
+		service = new LdapSyncService(ldapTemplate, repository, converter, "ldap");
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		UserEntity mockEntity = TestUtils.createUser();
 		mockUser.setUsername(username);
@@ -118,7 +117,7 @@ class LdapSyncServiceImplTest extends AbstractUnitTest {
 	@Test
 	void shouldNotSyncAllUsers() {
 		// arrange
-		service = new LdapSyncServiceImpl(ldapTemplate, repository, converter, "ldap");
+		service = new LdapSyncService(ldapTemplate, repository, converter, "ldap");
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		UserEntity mockEntity = TestUtils.createUser();
 
