@@ -135,7 +135,7 @@
                     <p class="announcement-item">
                       {{item.description}}
                       <br/>
-                      <sub>{{item.created}}</sub>
+                      <sub>{{item.created | momentPipe: 'yyyy.MM.DD.'}}</sub>
                     </p>
                   </div>
                 }

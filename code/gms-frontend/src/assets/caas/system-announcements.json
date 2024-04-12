@@ -1,5 +1,10 @@
 [
     {
+        "id" : 7,
+        "title" : "Basic GDPR user deletion(RTBF) feature",
+        "description" : "Basic level features for GDPR RTBF has been implemented, so GDPR maintenance systems/DPO can request to delete the given user(s) data from Give My Secret via REST API",
+        "created" : "2024-04-11"
+    }, {
         "id" : 6,
         "title" : "Basic Keycloak SSO feature",
         "description" : "Basic level features for Keycloak SSO has been implemented, so users can log in with their Keycloak realm users. Currently the only limitation is the lack of 2FA functionality. This will be implemented in the future.",
