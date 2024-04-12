@@ -27,21 +27,21 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class SecretRotationServiceImplTest extends AbstractUnitTest {
+class SecretRotationServiceTest extends AbstractUnitTest {
 
 	private static final String SECRET_VALUE = "12345678";
 
 	private Clock clock;
 	private SecretRepository secretRepository;
 	private CryptoService cryptoService;
-	private SecretRotationServiceImpl service;
+	private SecretRotationService service;
 
 	@BeforeEach
 	public void setup() {
 		clock = mock(Clock.class);
 		secretRepository = mock(SecretRepository.class);
 		cryptoService = mock(CryptoService.class);
-		service = new SecretRotationServiceImpl(clock, secretRepository, cryptoService);
+		service = new SecretRotationService(clock, secretRepository, cryptoService);
 	}
 	
 	@Test

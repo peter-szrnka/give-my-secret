@@ -24,6 +24,6 @@ public interface ApiKeyRestrictionRepository extends JpaRepository<ApiKeyRestric
 
 	@Modifying
 	@org.springframework.transaction.annotation.Transactional
-	@Query("DELETE FROM ApiKeyEntity a where a.userId in :userIds")
+	@Query("DELETE FROM ApiKeyRestrictionEntity a where a.userId in :userIds")
 	void deleteAllByUserId(@Param("userIds") Set<Long> userIds);
 }

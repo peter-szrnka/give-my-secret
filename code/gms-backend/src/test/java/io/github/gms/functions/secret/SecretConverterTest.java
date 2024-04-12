@@ -27,17 +27,17 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class SecretConverterImplTest extends AbstractUnitTest {
+class SecretConverterTest extends AbstractUnitTest {
 
 	@Mock
 	private Clock clock;
 	@InjectMocks
-	private SecretConverterImpl converter;
+	private SecretConverter converter;
 
 	@BeforeEach
 	void beforeEach() {
 		clock = mock(Clock.class);
-		converter = new SecretConverterImpl(clock);
+		converter = new SecretConverter(clock);
 	}
 
 	@Test

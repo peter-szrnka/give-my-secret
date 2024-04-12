@@ -31,17 +31,17 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class SystemPropertyServiceImplTest extends AbstractUnitTest {
+class SystemPropertyServiceTest extends AbstractUnitTest {
 
 	private SystemPropertyConverter converter;
 	private SystemPropertyRepository repository;
-	private SystemPropertyServiceImpl service;
+	private SystemPropertyService service;
 
 	@BeforeEach
 	public void setup() {
 		converter = mock(SystemPropertyConverter.class);
 		repository = mock(SystemPropertyRepository.class);
-		service = new SystemPropertyServiceImpl(converter, repository);
+		service = new SystemPropertyService(converter, repository);
 	}
 	
 	@Test

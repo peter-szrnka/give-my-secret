@@ -21,9 +21,9 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class MessageConverterImplTest extends AbstractUnitTest {
+class MessageConverterTest extends AbstractUnitTest {
 
-	private final MessageConverterImpl converter = new MessageConverterImpl();
+	private final MessageConverter converter = new MessageConverter();
 
 	@Test
 	void checkToList() {
@@ -44,7 +44,7 @@ class MessageConverterImplTest extends AbstractUnitTest {
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
 
-		MessageDto dto = resultList.getResultList().get(0);
+		MessageDto dto = resultList.getResultList().getFirst();
 		assertEquals("MessageDto(id=1, userId=1, opened=true, message=test message, actionPath=null, creationDate=2023-06-29T00:00Z)", dto.toString());
 	}
 }
