@@ -36,13 +36,13 @@ import static org.mockito.Mockito.when;
 class IpRestrictionConverterImplTest extends AbstractUnitTest {
 
     private Clock clock;
-    private IpRestrictionConverterImpl converter;
+    private IpRestrictionConverter converter;
 
     @BeforeEach
     void beforeEach() {
         // init
         clock = mock(Clock.class);
-        converter = new IpRestrictionConverterImpl(clock);
+        converter = new IpRestrictionConverter(clock);
     }
 
     @Test

@@ -67,7 +67,6 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
         repository.delete(findAndValidateEntity(id));
     }
 
-    @Override
     @CacheEvict(cacheNames = { CACHE_IP_RESTRICTION }, allEntries = true)
     public void updateIpRestrictionsForSecret(Long secretId, List<IpRestrictionDto> ipRestrictions) {
         ipRestrictions.forEach(ipRestriction -> ipRestriction.setSecretId(secretId));
@@ -88,18 +87,15 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
         repository.deleteAllById(existingEntityIds.stream().filter(id -> !newIds.contains(id)).collect(toSet()));
     }
 
-    @Override
     public List<IpRestrictionDto> getAllBySecretId(Long secretId) {
         return converter.toDtoList(findAll(secretId));
     }
 
-    @Override
     @Cacheable(cacheNames = CACHE_IP_RESTRICTION)
     public IpRestrictionPatterns checkIpRestrictionsBySecret(Long secretId) {
         return converter.toModel(findAll(secretId));
     }
 
-    @Override
     @Cacheable(cacheNames = CACHE_GLOBAL_IP_RESTRICTION)
     public IpRestrictionPatterns checkGlobalIpRestrictions() {
         return converter.toModel(repository.findAllGlobal());
