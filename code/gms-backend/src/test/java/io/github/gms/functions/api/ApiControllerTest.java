@@ -15,16 +15,15 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ApiControllerTest {
-    
-    private ApiController controller;
-    private ApiService service = mock(ApiService.class);
+
+    private final ApiService service = mock(ApiService.class);
 
     @Test
     void shouldReturnSecret() {
         // arrange
         Map<String, String> mockResponse = Map.of("value", "x");
         when(service.getSecret(any(GetSecretRequestDto.class))).thenReturn(mockResponse);
-        controller = new ApiController(service);
+        ApiController controller = new ApiController(service);
 
         // act
         Map<String, String> response = controller.getSecret("api-key", "secret-id-1");

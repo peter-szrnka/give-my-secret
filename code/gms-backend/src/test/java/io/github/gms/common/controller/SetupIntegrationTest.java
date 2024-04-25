@@ -55,7 +55,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest {
 		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().status("NEED_SETUP").build());
 
 		// act
-		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDtoWithNoRoles("userRandom", UUID.randomUUID().toString() + "@email.com");
+		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDtoWithNoRoles("userRandom", UUID.randomUUID() + "@email.com");
 		HttpEntity<SaveUserRequestDto> requestEntity = new HttpEntity<>(dto);
 		ResponseEntity<SaveEntityResponseDto> response = executeHttpPost("/setup/user", requestEntity, SaveEntityResponseDto.class);
 		

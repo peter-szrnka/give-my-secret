@@ -9,5 +9,5 @@ public enum AuthResponsePhase {
     BLOCKED,
     FAILED,
     MFA_REQUIRED,
-    COMPLETED;
+    COMPLETED
 }

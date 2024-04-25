@@ -21,7 +21,7 @@ public enum EnabledAlgorithm {
     SHA384WITHRSAANDMGF1("SHA384WITHRSAANDMGF1"),
     SHA512WITHRSAANDMGF1("SHA512WITHRSAANDMGF1");
 
-    private EnabledAlgorithm(String displayName) {
+    EnabledAlgorithm(String displayName) {
         this.displayName = displayName;
     }
 

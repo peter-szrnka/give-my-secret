@@ -7,5 +7,5 @@ package io.github.gms.common.enums;
 public enum AliasOperation {
 
 	SAVE,
-	DELETE;
+	DELETE
 }

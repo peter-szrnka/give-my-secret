@@ -280,7 +280,6 @@ public class TestUtils {
 		entity.setValue(DemoData.ENCRYPTED_VALUE);
 		entity.setType(SecretType.SIMPLE_CREDENTIAL);
 		entity.setSecretId(secretId);
-		;
 		entity.setKeystoreAliasId(keystoreAliasId);
 		entity.setLastRotated(ZonedDateTime.now());
 		entity.setReturnDecrypted(false);

@@ -12,7 +12,7 @@ public enum JwtConfigType {
 	ACCESS_JWT(SystemProperty.ACCESS_JWT_ALGORITHM, SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS),
 	REFRESH_JWT(SystemProperty.REFRESH_JWT_ALGORITHM, SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
 	
-	private JwtConfigType(SystemProperty algorithmProperty, SystemProperty expirationSecondsProperty) {
+	JwtConfigType(SystemProperty algorithmProperty, SystemProperty expirationSecondsProperty) {
 		this.algorithmProperty = algorithmProperty;
 		this.expirationSecondsProperty = expirationSecondsProperty;
 	}

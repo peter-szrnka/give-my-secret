@@ -170,5 +170,5 @@ class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
                 {EntityStatus.BLOCKED, true},
                 {EntityStatus.ACTIVE, false}
         };
-    };
+    }
 }

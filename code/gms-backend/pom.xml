@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>6.1.5</version>
+			<version>6.1.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -164,7 +164,7 @@
 		<dependency>
 			<groupId>org.springframework.ldap</groupId>
 			<artifactId>spring-ldap-core</artifactId>
-			<version>3.2.2</version>
+			<version>3.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.unboundid</groupId>
@@ -304,6 +304,12 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id/>
+			<url>https://repo.maven.apache.org/maven2/</url>
+		</repository>
+	</repositories>
 	<profiles>
 		<profile>
 			<id>default</id>

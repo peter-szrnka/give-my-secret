@@ -33,7 +33,7 @@ public class EntityChangeEvent extends ApplicationEvent {
 		KEYSTORE_DELETED("keystore deleted"),
 		KEYSTORE_ALIAS_REMOVED("keystore alias");
 		
-		private EntityChangeType(String displayName) {
+		EntityChangeType(String displayName) {
 			this.displayName = displayName;
 		}
 

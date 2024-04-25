@@ -15,5 +15,5 @@ public enum EventTarget {
 	USER,
 	VALUES,
 	SYSTEM_PROPERTY,
-	MAINTENANCE;
+	MAINTENANCE
 }

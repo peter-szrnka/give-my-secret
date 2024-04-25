@@ -16,16 +16,15 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(MockitoExtension.class)
 class SystemControllerTest {
-    
-    private SystemController controller;
-    private SystemService systemService = mock(SystemService.class);
+
+    private final SystemService systemService = mock(SystemService.class);
 
     @Test
     void shouldReturnSecret() {
         SystemStatusDto mockResponseDto = new SystemStatusDto("db", "OK", "test", "local");
         // arrange
         when(systemService.getSystemStatus()).thenReturn(mockResponseDto);
-        controller = new SystemController(systemService);
+        SystemController controller = new SystemController(systemService);
 
         // act
         SystemStatusDto response = controller.status();

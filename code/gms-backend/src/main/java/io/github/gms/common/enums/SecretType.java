@@ -6,5 +6,5 @@ package io.github.gms.common.enums;
  */
 public enum SecretType {
 	SIMPLE_CREDENTIAL,
-	MULTIPLE_CREDENTIAL;
+	MULTIPLE_CREDENTIAL
 }

@@ -19,7 +19,7 @@ public enum TimeUnit {
 	MONTH("M", ChronoUnit.MONTHS),
 	YEAR("y", ChronoUnit.YEARS);
 	
-	private TimeUnit(String code, ChronoUnit unit) {
+	TimeUnit(String code, ChronoUnit unit) {
 		this.code = code;
 		this.unit = unit;
 	}
