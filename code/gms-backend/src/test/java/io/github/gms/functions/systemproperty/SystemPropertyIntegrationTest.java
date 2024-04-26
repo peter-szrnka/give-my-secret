@@ -32,7 +32,7 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	void testSave() {
 		// act
-		HttpEntity<SystemPropertyDto> requestEntity = new HttpEntity<>(SystemPropertyDto.builder().key(SystemProperty.OLD_EVENT_TIME_LIMIT_DAYS.name()).value("2").build(), TestUtils.getHttpHeaders(jwt));
+		HttpEntity<SystemPropertyDto> requestEntity = new HttpEntity<>(SystemPropertyDto.builder().key(SystemProperty.JOB_OLD_EVENT_LIMIT.name()).value("2;d").build(), TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<Void> response = executeHttpPost("/secure/system_property", requestEntity, Void.class);
 		
 		// Assert

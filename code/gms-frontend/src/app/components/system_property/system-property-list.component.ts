@@ -37,7 +37,6 @@ export const PROPERTY_TEXT_MAP: any = {
   'ACCESS_JWT_ALGORITHM': { text: 'Access JWT Algorithom', valueSet: ALGORITHM_SET, displayMode: 'list' },
   'REFRESH_JWT_EXPIRATION_TIME_SECONDS': { text: 'Refresh JWT expiration time in seconds', displayMode: 'text' },
   'REFRESH_JWT_ALGORITHM': { text: 'Refresh JWT Algorithom', valueSet: ALGORITHM_SET, displayMode: 'list' },
-  'OLD_EVENT_TIME_LIMIT_DAYS': { text: 'Limit of old events deletion in days', displayMode: 'text' },
   'ORGANIZATION_NAME' : { text: 'Organization / Company name', displayMode: 'text' },
   'ORGANIZATION_CITY' : { text: 'Location (city) of the organization', displayMode: 'text' },
   'ENABLE_GLOBAL_MFA' : { text: 'Global MFA usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
