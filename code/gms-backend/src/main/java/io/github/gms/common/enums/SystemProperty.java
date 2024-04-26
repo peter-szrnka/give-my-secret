@@ -16,7 +16,6 @@ public enum SystemProperty {
 	ACCESS_JWT_ALGORITHM(PropertyType.STRING, "HS512"),
 	REFRESH_JWT_EXPIRATION_TIME_SECONDS(PropertyType.LONG, "86400"),
 	REFRESH_JWT_ALGORITHM(PropertyType.STRING, "HS512"),
-	OLD_EVENT_TIME_LIMIT_DAYS(PropertyType.LONG, "1"),
 	ORGANIZATION_NAME(PropertyType.STRING, "NA"),
 	ORGANIZATION_CITY(PropertyType.STRING, "NA"),
 	// MFA is mandatory for all users
@@ -26,7 +25,7 @@ public enum SystemProperty {
 	FAILED_ATTEMPTS_LIMIT(PropertyType.INTEGER, "3"),
 	// Job configurations
 	JOB_OLD_MESSAGE_LIMIT(PropertyType.STRING, "90;d"),
-	JOB_OLD_EVENT_LIMIT(PropertyType.STRING, "1;d");
+	JOB_OLD_EVENT_LIMIT(PropertyType.STRING, "180;d");
 
 	SystemProperty(PropertyType type, String defaultValue) {
 		this.type = type;

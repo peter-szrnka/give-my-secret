@@ -76,8 +76,8 @@ describe('SystemPropertyListComponent', () => {
                             lastModified : new Date()
                         },
                         {
-                            key : "OLD_EVENT_TIME_LIMIT_DAYS",
-                            value : "1",
+                            key : "JOB_OLD_EVENT_LIMIT",
+                            value : "1;d",
                             factoryValue : true,
                             lastModified : new Date()
                         }

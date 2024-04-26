@@ -62,13 +62,13 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 		// act
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-		SystemPropertyEntity response = converter.toEntity(null, SystemPropertyDto.builder().key(SystemProperty.OLD_EVENT_TIME_LIMIT_DAYS.name()).value("1").build());
+		SystemPropertyEntity response = converter.toEntity(null, SystemPropertyDto.builder().key(SystemProperty.JOB_OLD_EVENT_LIMIT.name()).value("1;d").build());
 		
 		// assert
 		assertNotNull(response);
 		assertNull(response.getId());
-		assertEquals(SystemProperty.OLD_EVENT_TIME_LIMIT_DAYS, response.getKey());
-		assertEquals("1", response.getValue());
+		assertEquals(SystemProperty.JOB_OLD_EVENT_LIMIT, response.getKey());
+		assertEquals("1;d", response.getValue());
 	}
 
 	@Test
@@ -80,11 +80,11 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 		SystemPropertyEntity entity = new SystemPropertyEntity();
 		entity.setId(2L);
 		entity.setLastModified(ZonedDateTime.now(clock));
-		SystemPropertyEntity response = converter.toEntity(entity, SystemPropertyDto.builder().key(SystemProperty.OLD_EVENT_TIME_LIMIT_DAYS.name()).value("1").build());
+		SystemPropertyEntity response = converter.toEntity(entity, SystemPropertyDto.builder().key(SystemProperty.JOB_OLD_EVENT_LIMIT.name()).value("1;d").build());
 		
 		// assert
 		assertNotNull(response);
-		assertEquals("SystemPropertyEntity(id=2, key=OLD_EVENT_TIME_LIMIT_DAYS, value=1, lastModified=2023-06-29T00:00Z)", response.toString());
+		assertEquals("SystemPropertyEntity(id=2, key=JOB_OLD_EVENT_LIMIT, value=1;d, lastModified=2023-06-29T00:00Z)", response.toString());
 	}
 	
 	@Test
