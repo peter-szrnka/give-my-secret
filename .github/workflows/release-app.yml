@@ -6,11 +6,11 @@ defaults:
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "main"
-    paths:
-      - code/**
+#  push:
+#    branches:
+#      - "main"
+#    paths:
+#      - code/**
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
