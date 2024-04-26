@@ -7,7 +7,7 @@ on:
       - '*'
       - '*/*'
       - '**'
-      - '!main'
+#      - '!main'
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
