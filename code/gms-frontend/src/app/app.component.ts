@@ -1,11 +1,12 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Route, Router, RouterEvent } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
 import { roleCheck } from './common/utils/permission-utils';
 import { User } from './components/user/model/user.model';
+import { relative } from 'path';
 
 const LOGIN_CALLBACK_URL = '/login';
 
@@ -27,13 +28,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private location: Location,
+    private route: ActivatedRoute,
     private router: Router, 
     public sharedDataService: SharedDataService, 
-    private splashScreenStateService: SplashScreenStateService) {
+    private splashScreenStateService: SplashScreenStateService,
+    private ngZone: NgZone) {
   }
 
   ngOnInit(): void {
     this.splashScreenStateService.start();
+    this.sharedDataService.navigationChangeEvent.subscribe(newUrl => this.navigateTo(newUrl));
     this.router.events.pipe(takeUntil(this.unsubscribe))
       .subscribe((routerEvent) => this.checkRouterEvent(routerEvent as RouterEvent));
 
@@ -80,9 +84,21 @@ export class AppComponent implements OnInit, OnDestroy {
     localStorage.setItem('showTextsInSidevNav', this.showTexts)
   }
 
+  private navigateTo(newUrl : string): void {
+    console.info("Let's navigate to -> ", newUrl);
+    //this.ngZone.run(() => {
+    void this.router.navigate(['/secret/list'], { relativeTo: this.route.root }); 
+    //});
+  }
+
   private navigateToLogin(): void {
-    // FIXME previousUrl temporary disabled!
-    void this.router.navigate([LOGIN_CALLBACK_URL]/*, { queryParams: { previousUrl: this.location.path() } }*/);
+    const locationPath = this.location.path();
+
+    if (locationPath === '') {
+      void this.router.navigate([LOGIN_CALLBACK_URL]);
+    } else {
+      void this.router.navigate([LOGIN_CALLBACK_URL], { queryParams: { previousUrl: this.location.path() } });
+    }
   }
 
   private checkRouterEvent(routerEvent: RouterEvent): void {

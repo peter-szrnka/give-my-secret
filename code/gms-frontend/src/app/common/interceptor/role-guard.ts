@@ -4,7 +4,7 @@ import { User } from "../../components/user/model/user.model";
 import { SharedDataService } from "../service/shared-data-service";
 
 export const checker = (arr: string[], target: string) => {
-    return arr.filter(arrElement => arrElement === target).length === 1;
+    return arr.length === 0 ? true : arr.filter(arrElement => arrElement === target).length === 1;
 };
 
 /**

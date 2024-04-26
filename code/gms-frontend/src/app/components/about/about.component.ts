@@ -16,7 +16,7 @@ import { Subscription } from "rxjs";
 })
 export class AboutComponent implements OnInit, OnDestroy {
 
-    systemStatus: SystemStatusDto;
+    systemStatus?: SystemStatusDto;
     subscription: Subscription;
 
     constructor(private setupService: SetupService) {}
