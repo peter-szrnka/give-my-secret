@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, EventEmitter, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
 import { Observable, of, ReplaySubject } from "rxjs";
@@ -23,6 +23,7 @@ describe('AppComponent', () => {
     let mockSystemReadySubject : ReplaySubject<SystemReadyData>;
     let mockEvents: any[] = [];
     let mockLocation: any;
+    let mockNavigationEmitter: EventEmitter<string> = new EventEmitter<string>();
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -67,7 +68,8 @@ describe('AppComponent', () => {
             authMode : 'db',
             systemReadySubject$ : mockSystemReadySubject,
             getUserInfo : jest.fn(),
-            clearData : jest.fn()
+            clearData : jest.fn(),
+            navigationChangeEvent: mockNavigationEmitter
         };
 
         splashScreenStateService = {
@@ -163,6 +165,21 @@ describe('AppComponent', () => {
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
+    it('No available user and set previousUrl parameter', () => {
+        sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
+        router.url = '/api_key/list';
+        mockLocation.path = jest.fn().mockReturnValue("");
+        configureTestBed();
+        mockSubject.next(undefined); 
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        fixture.detectChanges();
+
+        // act & assert
+        expect(router.navigate).toHaveBeenCalled();
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
+    });
+
     it('should not log out', () => {
         sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
         configureTestBed();
@@ -185,6 +202,24 @@ describe('AppComponent', () => {
         router.url = '/login';
         mockSubject.next(currentUser);
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        configureTestBed();
+        
+        // act & assert
+        expect(component.isAdmin).toEqual(true);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
+    });
+
+    it('Should navigate to custom url after successful login', () => {
+        currentUser = {
+            role : "ROLE_ADMIN",
+            username : "test1",
+            id : 1
+        };
+        router.url = '/login';
+        mockSubject.next(currentUser);
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        mockNavigationEmitter.emit('/apikey/list');
         configureTestBed();
         
         // act & assert

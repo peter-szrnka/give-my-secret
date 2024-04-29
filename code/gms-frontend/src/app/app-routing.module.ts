@@ -47,7 +47,7 @@ const routeBuilder = (routePath: string, resolveKey: string, component: Type<any
     path: routePath,
     component: component,
     data: { 'roles': ROLE_ROUTE_MAP[routePath] },
-    resolve: { [resolveKey]: (snapshot: ActivatedRouteSnapshot) => inject(resolver).resolve(snapshot) },
+    resolve: { [resolveKey]: async (snapshot: ActivatedRouteSnapshot) => inject(resolver).resolve(snapshot) },
     canActivate: [ROLE_GUARD],
     runGuardsAndResolvers: 'always',
   };
@@ -99,7 +99,7 @@ const routes: Routes = [
  * @author Peter Szrnka
  */
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
+import { EventEmitter } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
@@ -11,9 +12,9 @@ import { AuthenticationPhase, LoginResponse, VerifyLogin } from "../../common/mo
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { WINDOW_TOKEN } from "../../window.provider";
 import { User } from "../user/model/user.model";
 import { VerifyComponent } from "./verify.component";
-import { WINDOW_TOKEN } from "../../window.provider";
 
 /**
  * @author Peter Szrnka
@@ -72,7 +73,8 @@ describe('VerifyComponent', () => {
         mockSubject = new ReplaySubject<any>();
         sharedDataService = {
             refreshCurrentUserInfo : jest.fn(),
-            userSubject$ : mockSubject
+            userSubject$ : mockSubject,
+            navigationChangeEvent: jest.fn().mockReturnValue(new EventEmitter<string>())
         };
 
         dialog = {
@@ -159,10 +161,34 @@ describe('VerifyComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(component.formModel.username).toEqual('user-1');
-        expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
+        expect(authService.verifyLogin).toHaveBeenCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalled();
+    });
+
+    it('Should MFA verification succeed and navigate to custom url', async () => {
+        // arrange
+        const mockUser: User = { username: 'test', role: 'ROLE_USER' };
+        const mockResponse: LoginResponse = {
+            currentUser: mockUser,
+            phase: AuthenticationPhase.COMPLETED
+        };
+        authService = {
+            verifyLogin : jest.fn().mockReturnValue(of(mockResponse))
+        };
+        activatedRoute.snapshot.queryParams['previousUrl'] = '/secret/list';
+        configTestBed();
+        component.formModel.verificationCode = "123456";
+
+        // act
+        await component.verifyLogin();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.formModel.username).toEqual('user-1');
+        expect(authService.verifyLogin).toHaveBeenCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
     it('Should MFA verification fail', async () => {

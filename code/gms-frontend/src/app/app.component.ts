@@ -29,11 +29,13 @@ export class AppComponent implements OnInit, OnDestroy {
     private location: Location,
     private router: Router, 
     public sharedDataService: SharedDataService, 
-    private splashScreenStateService: SplashScreenStateService) {
+    private splashScreenStateService: SplashScreenStateService,
+    ) {
   }
 
   ngOnInit(): void {
     this.splashScreenStateService.start();
+    this.sharedDataService.navigationChangeEvent.subscribe(newUrl => this.navigateTo(newUrl));
     this.router.events.pipe(takeUntil(this.unsubscribe))
       .subscribe((routerEvent) => this.checkRouterEvent(routerEvent as RouterEvent));
 
@@ -80,9 +82,18 @@ export class AppComponent implements OnInit, OnDestroy {
     localStorage.setItem('showTextsInSidevNav', this.showTexts)
   }
 
+  private navigateTo(newUrl : string): void {
+    void this.router.navigate([newUrl]);
+  }
+
   private navigateToLogin(): void {
-    // FIXME previousUrl temporary disabled!
-    void this.router.navigate([LOGIN_CALLBACK_URL]/*, { queryParams: { previousUrl: this.location.path() } }*/);
+    const locationPath = this.location.path();
+
+    if (locationPath === '') {
+      void this.router.navigate([LOGIN_CALLBACK_URL]);
+    } else {
+      void this.router.navigate([LOGIN_CALLBACK_URL], { queryParams: { previousUrl: locationPath } });
+    }
   }
 
   private checkRouterEvent(routerEvent: RouterEvent): void {

@@ -23,6 +23,7 @@ export class SharedDataService {
 
     @Output() messageCountUpdateEvent = new EventEmitter<number>();
     @Output() showLargeMenuEvent = new EventEmitter<boolean>();
+    @Output() navigationChangeEvent = new EventEmitter<string>();
 
     constructor(
         private router: Router, 
