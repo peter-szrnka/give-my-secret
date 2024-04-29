@@ -1,12 +1,11 @@
 import { Location } from '@angular/common';
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Route, Router, RouterEvent } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
 import { roleCheck } from './common/utils/permission-utils';
 import { User } from './components/user/model/user.model';
-import { relative } from 'path';
 
 const LOGIN_CALLBACK_URL = '/login';
 
@@ -28,11 +27,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private location: Location,
-    private route: ActivatedRoute,
     private router: Router, 
     public sharedDataService: SharedDataService, 
     private splashScreenStateService: SplashScreenStateService,
-    private ngZone: NgZone) {
+    ) {
   }
 
   ngOnInit(): void {
@@ -85,10 +83,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private navigateTo(newUrl : string): void {
-    console.info("Let's navigate to -> ", newUrl);
-    //this.ngZone.run(() => {
-    void this.router.navigate(['/secret/list'], { relativeTo: this.route.root }); 
-    //});
+    void this.router.navigate([newUrl]);
   }
 
   private navigateToLogin(): void {
@@ -97,7 +92,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (locationPath === '') {
       void this.router.navigate([LOGIN_CALLBACK_URL]);
     } else {
-      void this.router.navigate([LOGIN_CALLBACK_URL], { queryParams: { previousUrl: this.location.path() } });
+      void this.router.navigate([LOGIN_CALLBACK_URL], { queryParams: { previousUrl: locationPath } });
     }
   }
 

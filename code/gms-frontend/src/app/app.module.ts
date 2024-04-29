@@ -1,39 +1,39 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule  } from '@angular/forms';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 
 // Material Modules
-import { AngularMaterialModule } from './angular-material-module';
-import { AuthInterceptor } from './common/interceptor/auth-interceptor';
-import { KeystoreModule } from './components/keystore/keystore-module';
-import { ServiceModule } from './common/service/service-module';
-import { ApiKeyModule } from './components/apikey/apikey-module';
-import { SecretModule } from './components/secret/secret-module';
-import { UserModule } from './components/user/user-module';
-import { GmsComponentsModule } from './common/components/gms-components-module';
-import { EventModule } from './components/event/event-module';
-import { AnnouncementModule } from './components/announcement/announcement-module';
-import { SettingsModule } from './components/settings/settings-module';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
-import { MessageModule } from './components/messages/message-module';
-import { ApiTestingModule } from './components/api_testing/api-testing.module';
-import { SetupModule } from './components/setup/setup-module';
-import { LoginModule } from './components/login/login-module';
-import { HomeModule } from './components/home/home-module';
-import { HeaderModule } from './components/header/header-module';
+import { AngularMaterialModule } from './angular-material-module';
+import { GmsComponentsModule } from './common/components/gms-components-module';
 import { PipesModule } from './common/components/pipes/pipes.module';
-import { SystemPropertyModule } from './components/system_property/system-property-module';
-import { NavMenuModule } from './components/menu/nav-menu.module';
-import { VerifyModule } from './components/verify/verify-module';
-import { RequestPasswordResetModule } from './components/password_reset/request-password-reset.module';
+import { AuthInterceptor } from './common/interceptor/auth-interceptor';
+import { ServiceModule } from './common/service/service-module';
+import { AnnouncementModule } from './components/announcement/announcement-module';
+import { ApiTestingModule } from './components/api_testing/api-testing.module';
+import { ApiKeyModule } from './components/apikey/apikey-module';
+import { EventModule } from './components/event/event-module';
+import { HeaderModule } from './components/header/header-module';
+import { HomeModule } from './components/home/home-module';
 import { IpRestrictionModule } from './components/ip_restriction/ip-restriction-module';
+import { KeystoreModule } from './components/keystore/keystore-module';
+import { LoginModule } from './components/login/login-module';
+import { NavMenuModule } from './components/menu/nav-menu.module';
+import { MessageModule } from './components/messages/message-module';
+import { RequestPasswordResetModule } from './components/password_reset/request-password-reset.module';
+import { SecretModule } from './components/secret/secret-module';
+import { SettingsModule } from './components/settings/settings-module';
+import { SetupModule } from './components/setup/setup-module';
+import { SystemPropertyModule } from './components/system_property/system-property-module';
+import { UserModule } from './components/user/user-module';
+import { VerifyModule } from './components/verify/verify-module';
 
 /**
  * @author Peter Szrnka
@@ -80,8 +80,9 @@ import { IpRestrictionModule } from './components/ip_restriction/ip-restriction-
     IpRestrictionModule
   ],
   providers: [ 
+    provideHttpClient(),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500 }}
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500 }},
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
