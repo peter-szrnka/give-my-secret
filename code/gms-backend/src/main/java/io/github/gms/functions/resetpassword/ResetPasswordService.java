@@ -8,6 +8,8 @@ import io.github.gms.functions.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static io.github.gms.common.types.ErrorCode.GMS_002;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -22,7 +24,7 @@ public class ResetPasswordService {
     private final UserRepository userRepository;
 
     public void resetPassword(ResetPasswordRequestDto dto) {
-        UserEntity user = userRepository.findByUsername(dto.getUsername()).orElseThrow(() -> new GmsException("User not found!"));
+        UserEntity user = userRepository.findByUsername(dto.getUsername()).orElseThrow(() -> new GmsException("User not found!", GMS_002));
 
         userRepository.getAllAdmins().parallelStream().forEach(adminUser -> messageService.save(MessageDto.builder()
                 .message(MESSAGE_TEMPLATE.formatted(dto.getUsername()))

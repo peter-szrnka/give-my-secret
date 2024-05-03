@@ -15,16 +15,20 @@ public class GmsException extends RuntimeException {
 	
 	@Serial
 	private static final long serialVersionUID = 1070662056072166798L;
-	
-	public GmsException(String message) {
+	private ErrorCode errorCode;
+
+	public GmsException(String message, ErrorCode errorCode) {
 		super(message);
+		this.errorCode = errorCode;
 	}
 
-	public GmsException(String message, Exception e) {
+	public GmsException(String message, Exception e, ErrorCode errorCode) {
 		super(message, e);
+		this.errorCode = errorCode;
 	}
 
-	public GmsException(Exception e) {
+	public GmsException(Exception e, ErrorCode errorCode) {
 		super(e);
+		this.errorCode = errorCode;
 	}
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static io.github.gms.common.types.ErrorCode.GMS_003;
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
 
 /**
@@ -40,6 +41,6 @@ public class LdapUserAuthServiceImpl implements UserAuthService {
 		}
 
 		return userConverter.addIdToUserDetails(result.getFirst(),
-				userRepository.getIdByUsername(username).orElseThrow(() -> new GmsException("User not found!")));
+				userRepository.getIdByUsername(username).orElseThrow(() -> new GmsException("User not found!", GMS_003)));
 	}
 }

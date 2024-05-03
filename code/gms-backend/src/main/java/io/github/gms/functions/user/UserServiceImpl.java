@@ -12,6 +12,7 @@ import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.service.JwtClaimService;
+import io.github.gms.common.types.ErrorCode;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.MdcUtils;
 import io.jsonwebtoken.Claims;
@@ -33,6 +34,9 @@ import org.springframework.web.util.WebUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.github.gms.common.types.ErrorCode.GMS_003;
+import static io.github.gms.common.types.ErrorCode.GMS_004;
+import static io.github.gms.common.types.ErrorCode.GMS_005;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.CACHE_USER;
@@ -175,7 +179,7 @@ public class UserServiceImpl implements UserService {
 			entity.setMfaSecret(secretGenerator.generate());
 		} else {
 			entity = converter.toEntity(repository.findById(dto.getId())
-					.orElseThrow(() -> new GmsException("User entity not found!")), dto, roleChangeEnabled);
+					.orElseThrow(() -> new GmsException("User entity not found!", ErrorCode.GMS_003)), dto, roleChangeEnabled);
 		}
 
 		entity = repository.save(entity);
@@ -188,27 +192,27 @@ public class UserServiceImpl implements UserService {
 		}
 
 		if(repository.findByUsernameOrEmail(dto.getUsername(), dto.getEmail()).isPresent()) {
-			throw new GmsException("User already exists!");
+			throw new GmsException("User already exists!", GMS_003);
 		}
 	}
 
 	private UserEntity validateAndReturnUser(Long userId) {
 		return repository.findById(userId).orElseThrow(() -> {
 			log.warn("User not found");
-            return new GmsException("User not found!");
+            return new GmsException("User not found!", ErrorCode.GMS_003);
 		});
 	}
 	
 	private void validateCredentials(UserEntity entity, ChangePasswordRequestDto dto) {
 		if (!passwordEncoder.matches(dto.getOldCredential(), entity.getCredential())) {
-			throw new GmsException("Old credential is not valid!");
+			throw new GmsException("Old credential is not valid!", GMS_004);
 		}
 
 		Pattern pattern = Pattern.compile(CREDENTIAL_REGEX);
         Matcher matcher = pattern.matcher(dto.getNewCredential());
 
         if (!matcher.matches()) {
-        	throw new GmsException("New credential is not valid! It must contain at least 1 lowercase, 1 uppercase and 1 numeric character.");
+        	throw new GmsException("New credential is not valid! It must contain at least 1 lowercase, 1 uppercase and 1 numeric character.", GMS_005);
         }
 	}
 }

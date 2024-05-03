@@ -3,6 +3,7 @@ package io.github.gms.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.types.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,12 @@ public class GmsAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse httpServletResponse,
                          AuthenticationException e) throws IOException {
 
-        ErrorResponseDto dto = new ErrorResponseDto("GmsAuthenticationEntryPoint: " + e.getMessage(), MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()), ZonedDateTime.now(clock));
+        ErrorResponseDto dto =
+                new ErrorResponseDto(
+                        "GmsAuthenticationEntryPoint: " + e.getMessage(),
+                        MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()),
+                        ZonedDateTime.now(clock),
+                        ErrorCode.GMS_000.getCode());
     	
         httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
     	httpServletResponse.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);

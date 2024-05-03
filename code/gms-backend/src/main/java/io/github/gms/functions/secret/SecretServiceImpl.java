@@ -28,6 +28,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.gms.common.types.ErrorCode.GMS_002;
+import static io.github.gms.common.types.ErrorCode.GMS_007;
+import static io.github.gms.common.types.ErrorCode.GMS_008;
+import static io.github.gms.common.types.ErrorCode.GMS_015;
+import static io.github.gms.common.types.ErrorCode.GMS_020;
+import static io.github.gms.common.types.ErrorCode.GMS_021;
 import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
 import static io.github.gms.common.util.MdcUtils.getUserId;
@@ -69,7 +75,7 @@ public class SecretServiceImpl implements SecretService {
 			entity = converter.toNewEntity(dto);
 		} else {
 			entity = repository.findById(dto.getId())
-					.orElseThrow(() -> new GmsException("Secret not found!"));
+					.orElseThrow(() -> new GmsException("Secret not found!", GMS_002));
 			entity = converter.toEntity(entity, dto);
 		}
 		
@@ -86,7 +92,7 @@ public class SecretServiceImpl implements SecretService {
 
 	@Override
 	public SecretDto getById(Long id) {
-		SecretEntity entity = repository.findById(id).orElseThrow(() -> new GmsException(WRONG_ENTITY));
+		SecretEntity entity = repository.findById(id).orElseThrow(() -> new GmsException(WRONG_ENTITY, GMS_002));
 		
 		List<ApiKeyRestrictionEntity> apiKeyRestrictions = apiKeyRestrictionRepository.findAllByUserIdAndSecretId(getUserId(), entity.getId());
 		List<IpRestrictionDto> ipRestrictions = ipRestrictionService.getAllBySecretId(entity.getId());
@@ -118,7 +124,7 @@ public class SecretServiceImpl implements SecretService {
 	public void toggleStatus(Long id, boolean enabled) {
 		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, getUserId());
 
-		SecretEntity entity = entityOptionalResult.orElseThrow(() -> new GmsException(WRONG_ENTITY));
+		SecretEntity entity = entityOptionalResult.orElseThrow(() -> new GmsException(WRONG_ENTITY, GMS_002));
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
 		repository.save(entity);
 	}
@@ -127,7 +133,7 @@ public class SecretServiceImpl implements SecretService {
 	public String getSecretValue(Long id) {
 		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, getUserId());
 
-		SecretEntity entity = entityOptionalResult.orElseThrow(() -> new GmsException(WRONG_ENTITY));
+		SecretEntity entity = entityOptionalResult.orElseThrow(() -> new GmsException(WRONG_ENTITY, GMS_002));
 		return cryptoService.decrypt(entity);
 	}
 
@@ -171,21 +177,22 @@ public class SecretServiceImpl implements SecretService {
 
 	private void validateKeystore(SaveSecretRequestDto dto) {
 		if (dto.getKeystoreAliasId() == null) {
-			throw new GmsException(WRONG_KEYSTORE_ALIAS);
+			throw new GmsException(WRONG_KEYSTORE_ALIAS, GMS_008);
 		}
 		
-		KeystoreAliasEntity keystoreAlias = keystoreAliasRepository.findById(dto.getKeystoreAliasId()).orElseThrow(() -> new GmsException(WRONG_KEYSTORE_ALIAS));
+		KeystoreAliasEntity keystoreAlias = keystoreAliasRepository.findById(dto.getKeystoreAliasId()).orElseThrow(() ->
+				new GmsException(WRONG_KEYSTORE_ALIAS, GMS_008));
 
 		keystoreRepository.findByIdAndUserId(keystoreAlias.getKeystoreId(), dto.getUserId()).ifPresentOrElse(entity -> {
 			if (EntityStatus.DISABLED == entity.getStatus()) {
-				throw new GmsException(PLEASE_PROVIDE_ACTIVE_KEYSTORE);
+				throw new GmsException(PLEASE_PROVIDE_ACTIVE_KEYSTORE, GMS_015);
 			}
 		}, () -> {
-			throw new GmsException(WRONG_ENTITY);
+			throw new GmsException(WRONG_ENTITY, GMS_002);
 		});
 		
 		if (!dto.getKeystoreId().equals(keystoreAlias.getKeystoreId())) {
-			throw new GmsException("Invalid keystore defined in the request!");
+			throw new GmsException("Invalid keystore defined in the request!", GMS_007);
 		}
 	}
 	
@@ -193,7 +200,7 @@ public class SecretServiceImpl implements SecretService {
 		long secretIdCount = repository.countAllSecretsByUserIdAndSecretId(getUserId(), dto.getSecretId());
 
 		if (secretIdCount > expectedCount) {
-			throw new GmsException("Secret ID name must be unique!");
+			throw new GmsException("Secret ID name must be unique!", GMS_020);
 		}
 		
 		if (SecretType.MULTIPLE_CREDENTIAL != dto.getType()) {
@@ -201,7 +208,7 @@ public class SecretServiceImpl implements SecretService {
 		}
 
 		if (StringUtils.hasLength(dto.getValue()) && itemsNotValid(dto.getValue())) {
-			throw new GmsException("Username password pair is invalid!");
+			throw new GmsException("Username password pair is invalid!", GMS_021);
 		}
 	}
 	

@@ -26,6 +26,9 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.util.Base64;
 
+import static io.github.gms.common.types.ErrorCode.GMS_001;
+import static io.github.gms.common.types.ErrorCode.GMS_006;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -49,7 +52,7 @@ public class CryptoService {
 			throw e;
 		} catch (Exception e) {
 			log.error("Keystore cannot be loaded!", e);
-			throw new GmsException(e);
+			throw new GmsException(e, GMS_001);
 		}
 	}
 
@@ -67,7 +70,7 @@ public class CryptoService {
 			return new String(decryptedMessage, StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			log.warn("Decrypt failed!", e);
-			throw new GmsException(e);
+			throw new GmsException(e, GMS_001);
 		}
 	}
 
@@ -84,7 +87,7 @@ public class CryptoService {
 			secretEntity.setValue(Base64.getEncoder().withoutPadding().encodeToString(encryptedMessage));
 		} catch (Exception e) {
 			log.warn("Encrypt failed!", e);
-			throw new GmsException(e);
+			throw new GmsException(e, GMS_001);
 		}
 	}
 
@@ -94,7 +97,7 @@ public class CryptoService {
 
 		Certificate cert = keystore.getCertificate(dto.getAlias());
 		if (cert == null) {
-			throw new GmsException("The given alias("+ dto.getAlias() + ") is not valid!");
+			throw new GmsException("The given alias("+ dto.getAlias() + ") is not valid!", GMS_006);
 		}
 
 		// Encrypt

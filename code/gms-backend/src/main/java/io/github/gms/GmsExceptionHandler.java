@@ -3,6 +3,7 @@ package io.github.gms;
 import com.google.common.base.Throwables;
 import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.types.ErrorCode;
 import io.github.gms.common.types.GmsException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -34,7 +35,12 @@ public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(GmsException.class)
 	public ResponseEntity<ErrorResponseDto> handleGmsException(GmsException ex) {
 		log.error("GmsException handled", ex);
-		return getResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(new ErrorResponseDto(
+				Throwables.getRootCause(ex).getMessage(),
+				MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()),
+				ZonedDateTime.now(clock),
+				ex.getErrorCode().getCode()
+		), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)
@@ -51,7 +57,8 @@ public class GmsExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(new ErrorResponseDto(
 				Throwables.getRootCause(ex).getMessage(),
 				MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()),
-				ZonedDateTime.now(clock)
+				ZonedDateTime.now(clock),
+				ErrorCode.GMS_000.getCode()
 		), httpStatus);
 	}
 }

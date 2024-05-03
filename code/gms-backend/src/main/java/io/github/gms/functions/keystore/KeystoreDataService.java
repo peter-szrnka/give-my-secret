@@ -16,6 +16,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
+import static io.github.gms.common.types.ErrorCode.GMS_003;
+import static io.github.gms.common.types.ErrorCode.GMS_008;
 import static io.github.gms.common.util.Constants.SLASH;
 
 /**
@@ -43,7 +45,7 @@ public class KeystoreDataService {
 	public KeystorePair getKeystoreData(SecretEntity secretEntity)
 			throws NoSuchAlgorithmException, CertificateException, KeyStoreException, IOException {
 		KeystoreAliasEntity keystoreAliasEntity = keystoreAliasRepository.findById(secretEntity.getKeystoreAliasId())
-				.orElseThrow(() -> new GmsException("Invalid keystore alias!"));
+				.orElseThrow(() -> new GmsException("Invalid keystore alias!", GMS_008));
 
 		KeystoreEntity keystoreEntity = getKeystoreEntity(keystoreAliasEntity.getKeystoreId());
 		KeyStore keystore = getKeyStore(GetKeystore.builder().keystoreEntity(keystoreEntity)
@@ -66,6 +68,6 @@ public class KeystoreDataService {
 	}
 
 	private KeystoreEntity getKeystoreEntity(Long keystoreId) {
-		return keystoreRepository.findById(keystoreId).orElseThrow(() -> new GmsException("Keystore entity not found!"));
+		return keystoreRepository.findById(keystoreId).orElseThrow(() -> new GmsException("Keystore entity not found!", GMS_003));
 	}
 }
