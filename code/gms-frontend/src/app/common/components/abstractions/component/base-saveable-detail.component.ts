@@ -44,10 +44,12 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         this.service.save(this.data)
         .subscribe({
             next: () => {
+                this.splashScreenStateService.stop();
                 this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
             },
             error: (err) => {
-                this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
+                this.splashScreenStateService.stop();
+                this.openInformationDialog("Error (" + err.error.errorCode + "): " + getErrorMessage(err), false, 'warning');
             },
             complete: () => {
                 this.splashScreenStateService.stop();
