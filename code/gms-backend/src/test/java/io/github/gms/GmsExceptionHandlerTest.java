@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import static io.github.gms.common.types.ErrorCode.GMS_000;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -60,7 +61,7 @@ class GmsExceptionHandlerTest {
         try (MockedStatic<ZonedDateTime> mockedZonedDateTime = mockStatic(ZonedDateTime.class)) {
             mockedZonedDateTime.when(() -> ZonedDateTime.now(clock)).thenReturn(zonedDateTime);
             // act
-            ResponseEntity<ErrorResponseDto> response = handler.handleGmsException(new GmsException("Oops!"));
+            ResponseEntity<ErrorResponseDto> response = handler.handleGmsException(new GmsException("Oops!", GMS_000));
 
             // assert
             assertNotNull(response);

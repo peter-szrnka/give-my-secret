@@ -27,6 +27,6 @@ export abstract class ListResolver<T, L extends BaseList<T>, S extends ServiceBa
             property : this.getOrderProperty(),
             page : snapshot.queryParams['page'] ?? 0,
             size: JSON.parse(localStorage.getItem(this.getPageConfig().scope + "_pageSize") ?? '25')
-        }).pipe(catchError((err) => of({ totalElements: 0, resultList: [], error: err.error.message }) as Observable<any>));
+        }).pipe(catchError((err) =>  of({ totalElements: 0, resultList: [], error: err.error.message }) as Observable<any>));
     }
 }

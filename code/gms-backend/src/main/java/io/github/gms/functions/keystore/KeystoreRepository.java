@@ -1,11 +1,11 @@
 package io.github.gms.functions.keystore;
 
+import io.github.gms.common.abstraction.CountableRepository;
 import io.github.gms.common.dto.IdNamePairDto;
 import io.github.gms.common.dto.KeystoreBasicInfoDto;
 import io.github.gms.common.enums.EntityStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,15 +21,13 @@ import static io.github.gms.common.util.Constants.USER_ID;
  * @since 1.0
  */
 @Repository
-public interface KeystoreRepository extends JpaRepository<KeystoreEntity, Long> {
+public interface KeystoreRepository extends CountableRepository<KeystoreEntity, Long> {
 	
 	Optional<KeystoreEntity> findByIdAndUserId(Long id, Long userId);
 	
 	Optional<KeystoreEntity> findByIdAndUserIdAndStatus(Long id, Long userId, EntityStatus status);
 	
 	Page<KeystoreEntity> findAllByUserId(Long userId, Pageable pagingRequest);
-	
-	long countByUserId(Long userId);
 
 	@Query("select new io.github.gms.common.dto.IdNamePairDto(k.id,k.name) from KeystoreEntity k where k.status='ACTIVE' and k.userId = :userId")
 	List<IdNamePairDto> getAllKeystoreNames(@Param(USER_ID) Long userId);

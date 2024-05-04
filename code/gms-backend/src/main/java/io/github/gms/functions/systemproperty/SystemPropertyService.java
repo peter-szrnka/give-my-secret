@@ -1,6 +1,7 @@
 package io.github.gms.functions.systemproperty;
 
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.types.ErrorCode;
 import io.github.gms.common.types.GmsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
@@ -57,7 +58,7 @@ public class SystemPropertyService {
 	}
 
 	private SystemProperty getSystemPropertyByName(String key) {
-		return SystemProperty.getByKey(key).orElseThrow(() -> new GmsException("Unknown system property!"));
+		return SystemProperty.getByKey(key).orElseThrow(() -> new GmsException("Unknown system property!", ErrorCode.GMS_026));
 	}
 
 	public boolean getBoolean(SystemProperty key) {

@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static io.github.gms.common.types.ErrorCode.GMS_006;
+import static io.github.gms.common.types.ErrorCode.GMS_007;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -24,14 +27,14 @@ public class KeystoreValidatorService {
     public void validateSecretKeystore(SecretEntity secretEntity) {
         KeystoreAliasEntity aliasEntity = keystoreAliasRepository.findById(secretEntity.getKeystoreAliasId()).orElseThrow(() -> {
             log.warn("Keystore alias not found");
-            return new GmsException("Keystore alias is not available!");
+            return new GmsException("Keystore alias is not available!", GMS_006);
         });
 
         if (keystoreRepository
                 .findByIdAndUserIdAndStatus(aliasEntity.getKeystoreId(), secretEntity.getUserId(), EntityStatus.ACTIVE)
                 .isEmpty()) {
             log.warn("Keystore is not active");
-            throw new GmsException("Invalid keystore!");
+            throw new GmsException("Invalid keystore!", GMS_007);
         }
     }
 }

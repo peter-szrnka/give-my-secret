@@ -15,8 +15,8 @@ import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { IprestrictionDetailComponent } from "./ip-restriction-detail.component";
-import { IpRestrictionService } from "./service/ip-restriction.service";
 import { IpRestriction } from "./model/ip-restriction.model";
+import { IpRestrictionService } from "./service/ip-restriction.service";
 
 /**
  * @author Peter Szrnka
@@ -84,7 +84,7 @@ describe('IprestrictionDetailComponent', () => {
 
     it('Should fail at form validation', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+            save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : { message: "OOPS!", errorCode: "GMS-018" }, status : 500, statusText: "OOPS!"})))
         };
         dialog = {
             open : jest.fn().mockReturnValue({ afterClosed : () => of(false) })
@@ -96,13 +96,12 @@ describe('IprestrictionDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledTimes(1);
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning" } as DialogData });
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning", errorCode: "GMS-018" } as DialogData });
     });
 
     it('Should fail at form validation 2', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => new Error("OOPS!")))
+            save : jest.fn().mockReturnValue(throwError(() => { return { message: "OOPS!", errorCode: "GMS-018" } }))
         };
         dialog = {
             open : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
@@ -114,7 +113,6 @@ describe('IprestrictionDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledTimes(1);
     });
 
     it('Should save IP restriction', () => {

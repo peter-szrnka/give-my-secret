@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static io.github.gms.common.types.ErrorCode.GMS_002;
+import static io.github.gms.common.types.ErrorCode.GMS_024;
+import static io.github.gms.common.types.ErrorCode.GMS_025;
 import static io.github.gms.common.util.Constants.CACHE_GLOBAL_IP_RESTRICTION;
 import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
 import static java.util.stream.Collectors.toSet;
@@ -39,7 +42,7 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
     @CacheEvict(cacheNames = { CACHE_GLOBAL_IP_RESTRICTION }, allEntries = true)
     public SaveEntityResponseDto save(IpRestrictionDto dto) {
         if (dto.getId() != null && !dto.isGlobal()) {
-            throw new GmsException("Only global IP restrictions allowed to save with this service!");
+            throw new GmsException("Only global IP restrictions allowed to save with this service!", GMS_024);
         }
 
         IpRestrictionEntity entity = converter.toEntity(dto);
@@ -117,10 +120,10 @@ public class IpRestrictionServiceImpl implements IpRestrictionService {
     }
 
     private IpRestrictionEntity findAndValidateEntity(Long id) {
-        IpRestrictionEntity entity = repository.findById(id).orElseThrow(() -> new GmsException("Entity not found!"));
+        IpRestrictionEntity entity = repository.findById(id).orElseThrow(() -> new GmsException("Entity not found!", GMS_002));
 
         if (!entity.isGlobal()) {
-            throw new GmsException("Invalid request, the given resource is not a global IP restriction!");
+            throw new GmsException("Invalid request, the given resource is not a global IP restriction!", GMS_025);
         }
 
         return entity;

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 
+import static io.github.gms.common.types.ErrorCode.GMS_002;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -31,7 +33,7 @@ public class SecretRotationService {
 
 	public void rotateSecretById(Long id) {
 		log.info("Rotate secret={}", id);
-		SecretEntity entity = secretRepository.findById(id).orElseThrow(() -> new GmsException("Secret not found!"));
+		SecretEntity entity = secretRepository.findById(id).orElseThrow(() -> new GmsException("Secret not found!", GMS_002));
 		rotateSecretEntity(entity);
 	}
 

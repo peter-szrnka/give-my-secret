@@ -41,6 +41,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static io.github.gms.common.types.ErrorCode.GMS_001;
+import static io.github.gms.common.types.ErrorCode.GMS_002;
+import static io.github.gms.common.types.ErrorCode.GMS_009;
+import static io.github.gms.common.types.ErrorCode.GMS_010;
+import static io.github.gms.common.types.ErrorCode.GMS_011;
+import static io.github.gms.common.types.ErrorCode.GMS_012;
+import static io.github.gms.common.types.ErrorCode.GMS_013;
 import static io.github.gms.common.util.Constants.ALIAS_ID;
 import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
@@ -194,7 +201,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 		try {
 			return new DownloadFileResponseDto(entity.getFileName(), fileService.readAllBytes(Paths.get(getUserFolder() + entity.getFileName())));
 		} catch (Exception e) {
-			throw new GmsException(e);
+			throw new GmsException(e, GMS_001);
 		}
 	}
 
@@ -234,7 +241,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 			Path newFilePath = Paths.get(newFileName);
 
 			if (fileService.exists(newFilePath)) {
-				throw new GmsException("File name must be unique!");
+				throw new GmsException("File name must be unique!", GMS_009);
 			}
 
 			fileService.createDirectories(Paths.get(getUserFolder()));
@@ -249,7 +256,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 			throw e;
 		} catch (Exception e) {
 			log.error("File cannot be copied", e);
-			throw new GmsException(e);
+			throw new GmsException(e, GMS_001);
 		}
 	}
 
@@ -263,7 +270,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 		}
 
 		KeystoreEntity foundEntity = repository.findByIdAndUserId(dto.getId(), getUserId())
-				.orElseThrow(() -> new GmsException("Entity not found!"));
+				.orElseThrow(() -> new GmsException("Entity not found!", GMS_002));
 
 		return converter.toEntity(foundEntity, dto);
 	}
@@ -297,18 +304,18 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 		try {
 			return objectMapper.readValue(model, SaveKeystoreRequestDto.class);
 		} catch (Exception e) {
-			throw new GmsException(e);
+			throw new GmsException(e, GMS_001);
 		}
 	}
 
 	private void validateInput(SaveKeystoreRequestDto dto, MultipartFile file) {
 		if (dto.getAliases().stream().noneMatch(alias -> AliasOperation.DELETE != alias.getOperation())) {
-			throw new GmsException("You must define at least one keystore alias!");
+			throw new GmsException("You must define at least one keystore alias!", GMS_010);
 		}
 
 		if (file != null && dto.isGenerated()) {
 			// Edge case: User cannot upload a keystore along with a generated keystore, only one can be selected
-			throw new GmsException("Only one keystore source is allowed!");
+			throw new GmsException("Only one keystore source is allowed!", GMS_011);
 		}
 
 		validateKeystore(dto, file, dto.getId() == null ? 0 : 1);
@@ -320,20 +327,20 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 		}
 
 		if (dto.getId() == null && file == null) {
-			throw new GmsException("Keystore file must be provided!");
+			throw new GmsException("Keystore file must be provided!", GMS_012);
 		}
 
 		long keystoreCount = repository.countAllKeystoresByName(getUserId(), dto.getName());
 
 		if (keystoreCount > expectedCount) {
-			throw new GmsException("Keystore name must be unique!");
+			throw new GmsException("Keystore name must be unique!", GMS_013);
 		}
 	}
 
 	private KeystoreEntity getKeystore(Long id) {
 		return repository.findById(id).orElseThrow(() -> {
 			log.warn(ENTITY_NOT_FOUND);
-			return new GmsException(ENTITY_NOT_FOUND);
+			return new GmsException(ENTITY_NOT_FOUND, GMS_002);
 		});
 	}
 
@@ -341,7 +348,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 		KeystoreAliasEntity entity = aliasRepository.findByIdAndKeystoreId(dto.getAliasId(), dto.getEntityId())
 				.orElseThrow(() -> {
 					log.warn(ENTITY_NOT_FOUND);
-					return new GmsException(ENTITY_NOT_FOUND);
+					return new GmsException(ENTITY_NOT_FOUND, GMS_002);
 				});
 
 		if (KeyStoreValueType.KEYSTORE_ALIAS == dto.getValueType()) {
@@ -371,7 +378,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 			Path keystoreFile = new File(folder + filename).toPath();
 
 			if (!fileService.exists(keystoreFile)) {
-				throw new GmsException("Keystore file does not exist!");
+				throw new GmsException("Keystore file does not exist!", GMS_013);
 			}
 
 			return fileService.readAllBytes(keystoreFile);
@@ -379,7 +386,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 			throw e;
 		} catch (Exception e) {
 			log.error("Keystore content cannot be parsed", e);
-			throw new GmsException(e);
+			throw new GmsException(e, GMS_001);
 		}
 	}
 

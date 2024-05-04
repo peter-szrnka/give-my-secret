@@ -13,6 +13,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.gms.common.types.ErrorCode.GMS_026;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -41,7 +43,7 @@ public class SystemPropertyConverter {
 			entity = new SystemPropertyEntity();
 		}
 
-		entity.setKey(SystemProperty.getByKey(dto.getKey()).orElseThrow(() -> new GmsException("Unknown system property!")));
+		entity.setKey(SystemProperty.getByKey(dto.getKey()).orElseThrow(() -> new GmsException("Unknown system property!", GMS_026)));
 		entity.setValue(dto.getValue());
 		entity.setLastModified(ZonedDateTime.now(clock));
 		return entity;

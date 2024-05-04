@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 
+import static io.github.gms.common.types.ErrorCode.GMS_002;
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 
 /**
@@ -61,7 +62,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	@Override
 	public AnnouncementDto getById(Long id) {
 		return toDto(repository.findById(id)
-				.orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND)));
+				.orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND, GMS_002)));
 	}
 
 	@Override

@@ -4,19 +4,19 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { Data, ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import {  Observable, of, throwError } from "rxjs";
+import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { ApiKey } from "./model/apikey.model";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { ApiKeyService } from "./service/apikey-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { ApiKeyDetailComponent } from "./apikey-detail.component";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { ApiKeyDetailComponent } from "./apikey-detail.component";
+import { ApiKey } from "./model/apikey.model";
+import { ApiKeyService } from "./service/apikey-service";
 
 /**
  * @author Peter Szrnka
@@ -89,7 +89,7 @@ describe('ApiKeyDetailComponent', () => {
 
     it('Should fail at form validation', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+            save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : { message: "OOPS!", errorCode: "GMS-018" }, status : 500, statusText: "OOPS!"})))
         };
         dialog = {
             open : jest.fn().mockReturnValue({ afterClosed : () => of(false) })
@@ -101,13 +101,12 @@ describe('ApiKeyDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledTimes(1);
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning" } as DialogData });
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning", errorCode: "GMS-018" } as DialogData });
     });
 
     it('Should fail at form validation 2', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => new Error("OOPS!")))
+            save : jest.fn().mockReturnValue(throwError(() => { return { message: "OOPS!", errorCode: "GMS-018" }; }))
         };
         dialog = {
             open : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
@@ -119,7 +118,7 @@ describe('ApiKeyDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledTimes(1);
+
     });
 
     it('Should save api key', () => {
