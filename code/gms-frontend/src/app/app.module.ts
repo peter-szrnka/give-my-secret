@@ -34,6 +34,7 @@ import { SetupModule } from './components/setup/setup-module';
 import { SystemPropertyModule } from './components/system_property/system-property-module';
 import { UserModule } from './components/user/user-module';
 import { VerifyModule } from './components/verify/verify-module';
+import { HelpModule } from './components/help/help-module';
 
 /**
  * @author Peter Szrnka
@@ -77,7 +78,8 @@ import { VerifyModule } from './components/verify/verify-module';
     ApiTestingModule,
     SystemPropertyModule,
     VerifyModule,
-    IpRestrictionModule
+    IpRestrictionModule,
+    HelpModule
   ],
   providers: [ 
     provideHttpClient(),

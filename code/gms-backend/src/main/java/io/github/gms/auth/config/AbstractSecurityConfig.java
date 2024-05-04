@@ -27,7 +27,7 @@ public abstract class AbstractSecurityConfig {
     private static final String[] FILTER_URL = new String[]{"/", "/system/status", "/healthcheck", "/setup/**",
             "/login", "/authenticate", "/verify", "/logoutUser", "/api/**", "/info/me", "/actuator/**",
             "/gms-app/**", "/favicon.ico", "/assets/**", "/index.html**", "/*.js**", "/*.css**", "/*.json**",
-            "/manifest.webmanifest", "/reset_password"};
+            "/manifest.webmanifest", "/reset_password", "/error_codes"};
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,

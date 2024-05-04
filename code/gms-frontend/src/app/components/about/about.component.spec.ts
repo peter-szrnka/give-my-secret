@@ -1,14 +1,10 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { AboutComponent } from "./about.component";
-import { SystemStatusDto } from "../../common/model/system-status.model";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
-import { Router } from "@angular/router";
-import { AngularMaterialModule } from "../../angular-material-module";
-import { SharedDataService } from "../../common/service/shared-data-service";
-import { MessageService } from "../messages/service/message-service";
-import { SetupService } from "../setup/service/setup-service";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
-
+import { AngularMaterialModule } from "../../angular-material-module";
+import { SystemStatusDto } from "../../common/model/system-status.model";
+import { SetupService } from "../setup/service/setup-service";
+import { AboutComponent } from "./about.component";
 
 /**
  * @author Peter Szrnka
