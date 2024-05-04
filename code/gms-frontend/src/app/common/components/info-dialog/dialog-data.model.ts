@@ -4,5 +4,6 @@
  */
 export interface DialogData {
     text : string,
-    type : string
+    type : string,
+    errorCode?: string;
 }

@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { BaseList } from "../../../model/base-list";
 import { PageConfig } from "../../../model/common.model";
 import { SharedDataService } from "../../../service/shared-data-service";
-import { getErrorMessage } from "../../../utils/error-utils";
+import { getErrorCode, getErrorMessage } from "../../../utils/error-utils";
 import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { SaveServiceBase } from "../service/save-service-base";
 import { SplashScreenStateService } from "../../../service/splash-screen-service";
@@ -49,7 +49,7 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
             },
             error: (err) => {
                 this.splashScreenStateService.stop();
-                this.openInformationDialog("Error (" + err.error.errorCode + "): " + getErrorMessage(err), false, 'warning');
+                this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning', getErrorCode(err));
             },
             complete: () => {
                 this.splashScreenStateService.stop();
@@ -65,9 +65,9 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         });
     }
 
-    public openInformationDialog(message : string, navigateToList : boolean, type : string) {
+    public openInformationDialog(message : string, navigateToList : boolean, type : string, errorCode?: string) {
         const dialogRef : MatDialogRef<InfoDialog, any> = this.dialog.open(InfoDialog, {
-          data: { text: message, type : type },
+          data: { text: message, type : type, errorCode: errorCode },
         });
     
         dialogRef.afterClosed().subscribe(() => {

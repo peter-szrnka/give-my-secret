@@ -1,6 +1,8 @@
 import { NgModule, Type, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, Route, RouterModule, Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, ResolveFn, Route, RouterModule, Routes } from '@angular/router';
 import { ROLE_GUARD } from './common/interceptor/role-guard';
+import { ROLE_ROUTE_MAP } from './common/utils/route-utils';
+import { AboutComponent } from './components/about/about.component';
 import { AnnouncementDetailComponent } from './components/announcement/announcement-detail.component';
 import { AnnouncementListComponent } from './components/announcement/announcement-list.component';
 import { AnnouncementDetailResolver } from './components/announcement/resolver/announcement-detail.resolver';
@@ -13,12 +15,17 @@ import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.res
 import { EventListComponent } from './components/event/event-list.component';
 import { EventListResolver } from './components/event/resolver/event-list.resolver';
 import { HomeComponent } from './components/home/home.component';
+import { IprestrictionDetailComponent } from './components/ip_restriction/ip-restriction-detail.component';
+import { IpRestrictionListComponent } from './components/ip_restriction/ip-restriction-list.component';
+import { IpRestrictionDetailResolver } from './components/ip_restriction/resolver/ip-restriction-detail.resolver';
+import { IpRestrictionListResolver } from './components/ip_restriction/resolver/ip-restriction-list.resolver';
 import { KeystoreDetailComponent } from './components/keystore/keystore-detail.component';
 import { KeystoreListComponent } from './components/keystore/keystore-list.component';
 import { KeystoreDetailResolver } from './components/keystore/resolver/keystore-detail.resolver';
 import { KeystoreListResolver } from './components/keystore/resolver/keystore-list.resolver';
 import { LoginComponent } from './components/login/login.component';
 import { MessageListComponent } from './components/messages/message-list.component';
+import { RequestPasswordResetComponent } from './components/password_reset/request-password-reset.component';
 import { SecretDetailResolver } from './components/secret/resolver/secret-detail.resolver';
 import { SecretListResolver } from './components/secret/resolver/secret-list.resolver';
 import { SecretDetailComponent } from './components/secret/secret-detail.component';
@@ -32,13 +39,6 @@ import { UserListResolver } from './components/user/resolver/user-list.resolver'
 import { UserDetailComponent } from './components/user/user-detail.component';
 import { UserListComponent } from './components/user/user-list.component';
 import { VerifyComponent } from './components/verify/verify.component';
-import { ROLE_ROUTE_MAP } from './common/utils/route-utils';
-import { RequestPasswordResetComponent } from './components/password_reset/request-password-reset.component';
-import { IpRestrictionListComponent } from './components/ip_restriction/ip-restriction-list.component';
-import { IpRestrictionListResolver } from './components/ip_restriction/resolver/ip-restriction-list.resolver';
-import { IpRestrictionDetailResolver } from './components/ip_restriction/resolver/ip-restriction-detail.resolver';
-import { IprestrictionDetailComponent } from './components/ip_restriction/ip-restriction-detail.component';
-import { AboutComponent } from './components/about/about.component';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 
@@ -47,7 +47,7 @@ const routeBuilder = (routePath: string, resolveKey: string, component: Type<any
     path: routePath,
     component: component,
     data: { 'roles': ROLE_ROUTE_MAP[routePath] },
-    resolve: { [resolveKey]: async (snapshot: ActivatedRouteSnapshot) => inject(resolver).resolve(snapshot) },
+    resolve: { [resolveKey]: (snapshot: ActivatedRouteSnapshot): ResolveFn<Object> => inject(resolver).resolve(snapshot) },
     canActivate: [ROLE_GUARD],
     runGuardsAndResolvers: 'always',
   };
@@ -99,7 +99,7 @@ const routes: Routes = [
  * @author Peter Szrnka
  */
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes,{ enableTracing: false })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

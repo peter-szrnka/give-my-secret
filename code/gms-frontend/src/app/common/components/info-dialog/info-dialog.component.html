@@ -9,6 +9,9 @@
     }
     {{data.text}}
   </p>
+  @if (data.errorCode) {
+    <p><b>Code: {{data.errorCode}}</b></p>
+  }
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="closeDialog()">Close</button>
