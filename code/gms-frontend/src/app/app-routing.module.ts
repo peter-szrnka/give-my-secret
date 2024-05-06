@@ -14,6 +14,8 @@ import { ApiKeyDetailResolver } from './components/apikey/resolver/apikey-detail
 import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.resolver';
 import { EventListComponent } from './components/event/event-list.component';
 import { EventListResolver } from './components/event/resolver/event-list.resolver';
+import { HelpComponent } from './components/help/help.compontent';
+import { ErrorCodeResolver } from './components/help/resolver/error-code.resolver';
 import { HomeComponent } from './components/home/home.component';
 import { IprestrictionDetailComponent } from './components/ip_restriction/ip-restriction-detail.component';
 import { IpRestrictionListComponent } from './components/ip_restriction/ip-restriction-list.component';
@@ -67,6 +69,7 @@ const routes: Routes = [
   { path: 'verify', component: VerifyComponent },
   { path: 'password_reset', component: RequestPasswordResetComponent },
   { path: 'about', component: AboutComponent },
+  { path: 'help', component: HelpComponent, resolve: { 'data': (snapshot: ActivatedRouteSnapshot) => inject(ErrorCodeResolver).resolve(snapshot) }  },
 
   // Secured components
   { path: '', component: HomeComponent, pathMatch: 'full', data: { 'roles': ROLES_ALL } },
