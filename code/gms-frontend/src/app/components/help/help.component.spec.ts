@@ -1,10 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
+import { of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { HelpComponent } from "./help.compontent";
-import { ActivatedRoute } from "@angular/router";
 import { ErrorCode } from "./model/error-code.model";
-import { of } from "rxjs";
 
 /**
  * @author Peter Szrnka
@@ -16,11 +16,7 @@ describe('HelpComponent', () => {
     // Fixtures
     let fixture: ComponentFixture<HelpComponent>;
 
-    beforeEach(async () => {
-        activatedRoute = class {
-            data : ErrorCode[] = of([])
-        };
-
+    const configureTestBed = () => {
         TestBed.configureTestingModule({
             imports: [AngularMaterialModule],
             declarations : [HelpComponent],
@@ -32,9 +28,21 @@ describe('HelpComponent', () => {
         fixture = TestBed.createComponent(HelpComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+    };
+
+    beforeEach(async () => {
+        activatedRoute = class {
+            data : any = of({
+                data: [
+                    { code: "GMS-001", description: "test" } as ErrorCode
+                ]
+            })
+        };
     });
 
     it('should load component', () => {
+        configureTestBed();
         expect(component).toBeTruthy();
+        expect(component.datasource).toBeDefined();
     });
 });

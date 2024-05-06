@@ -1,7 +1,6 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { catchError } from "rxjs";
 import { ErrorCode } from "./model/error-code.model";
 
 
@@ -23,9 +22,7 @@ export class HelpComponent implements OnInit {
     constructor(private activatedRoute: ActivatedRoute) { }
 
     ngOnInit(): void {
-        this.activatedRoute.data
-            .pipe(catchError(async () => new ArrayDataSource<ErrorCode>([])))
-            .subscribe((response: any) => {
+        this.activatedRoute.data.subscribe((response: any) => {
                 this.datasource = new ArrayDataSource<ErrorCode>(response.data);
             });
     }
