@@ -78,8 +78,8 @@ jobs:
           node-version: 20
       - name: Update version
         working-directory: ./code/gms-frontend
-        run:
-          npm version {{github.event.inputs.releaseVersion}}
+        run: |
+          npm version ${{github.event.inputs.releaseVersion}}
       - name: Commit version change
         run: |
           git config --global user.name ${{ secrets.GH_USERNAME }}
