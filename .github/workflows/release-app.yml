@@ -6,6 +6,15 @@ defaults:
 
 on:
   workflow_dispatch:
+    inputs:
+      releaseVersion:
+        description: "Default version to use when preparing a release."
+        required: true
+        default: "X.Y.Z"
+      developmentVersion:
+        description: "Default version to use for new local working copy."
+        required: true
+        default: "X.Y.Z-SNAPSHOT"
 #  push:
 #    branches:
 #      - "main"
@@ -20,7 +29,7 @@ jobs:
     name: Backend code analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
            fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up JDK 21
@@ -28,24 +37,34 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+      - name: Update pom.xml to releaseVersion
+        run: mvn -B versions:set -DnewVersion=${{ github.event.inputs.releaseVersion }} -DgenerateBackupPoms=false -f ./code/pom.xml
+      - name: Commit version change
+        run: |
+          git config --global user.name ${{ secrets.GH_USERNAME }}
+          git config --global user.email ${{ secrets.GH_EMAIL }}
+          git commit -am "[ci-skip] Version updated to ${{ github.event.inputs.releaseVersion }}"
+          git push
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      #- name: Cache Maven packages
-      #  uses: actions/cache@v1
-      #  with:
-      #    path: ~/.m2
-      #    key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-      #    restore-keys: ${{ runner.os }}-m2
-      - name: Sonarcloud scan
+      - name: Maven verify
         working-directory: ./code/gms-backend
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn clean -Pcodecov -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=peter-szrnka_give-my-secret-backend
+        run: mvn clean verify
+      - name: Update pom.xml to developmentVersion
+        run: mvn -B versions:set -DnewVersion=${{ github.event.inputs.developmentVersion }} -DgenerateBackupPoms=false -f ./code/pom.xml
+      - name: Commit version change to next SNAPSHOT version
+        run: |
+          git config --global user.name ${{ secrets.GH_USERNAME }}
+          git config --global user.email ${{ secrets.GH_EMAIL }}
+          git commit -am "[ci-skip] Version updated to ${{ github.event.inputs.developmentVersion }}"
+          git push
   analize_frontend:
     name: Frontend code analysis
     runs-on: ubuntu-latest
@@ -57,27 +76,28 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+      - name: Update version
+        working-directory: ./code/gms-frontend
+        run:
+          npm version {{github.event.inputs.releaseVersion}}
+      - name: Commit version change
+        run: |
+          git config --global user.name ${{ secrets.GH_USERNAME }}
+          git config --global user.email ${{ secrets.GH_EMAIL }}
+          git commit -am "[ci-skip] Version updated to ${{ github.event.inputs.releaseVersion }}"
+          git push
       - name: Build with NPM
         working-directory: ./code/gms-frontend
         run: npm install
       - name: Run tests
         working-directory: ./code/gms-frontend
         run: npm run test
-      - name: Sonarcloud scan
-        
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          args:
-            -Dsonar.projectKey=peter-szrnka_give-my-secret-frontend
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }}
-            -Dsonar.test.inclusions=**/*.spec.ts
-            -Dsonar.exclusions=**/*.java,**/*.class,**/*.scss,**/*.html,**/*.json,**/*.xml,**/*.js,**/environments/*.*,**/polyfills.ts,**/*module.ts,**/main.ts,**/mock-config.ts,**/*.provider.ts
-            -Dsonar.typescript.lcov.reportPaths=./code/gms-frontend/coverage/lcov.info
-            -Dsonar.javascript.lcov.reportPaths=./code/gms-frontend/coverage/lcov.info
-            -Dsonar.sources=./code/gms-frontend/src
+      - name: Commit version change to next SNAPSHOT version
+        run: |
+          git config --global user.name ${{ secrets.GH_USERNAME }}
+          git config --global user.email ${{ secrets.GH_EMAIL }}
+          git commit -am "[ci-skip] Version updated to ${{ github.event.inputs.developmentVersion }}"
+          git push
 
   build:
     name: Build production artifact
