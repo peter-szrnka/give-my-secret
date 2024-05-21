@@ -27,6 +27,7 @@ env:
 jobs:
   setup_new_version:
     name: Maven version updated to ${{ github.event.inputs.releaseVersion }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -56,7 +57,7 @@ jobs:
   analize_backend:
     name: Backend code analysis
     runs-on: ubuntu-latest
-    needs: setup_new_version
+    needs: [setup_new_version]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -92,7 +93,7 @@ jobs:
   analize_frontend:
     name: Frontend code analysis
     runs-on: ubuntu-latest
-    needs: setup_new_version
+    needs: [setup_new_version]
     steps:
       - uses: actions/checkout@v3
         with:
