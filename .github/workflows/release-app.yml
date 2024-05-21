@@ -25,9 +25,8 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  analize_backend:
-    name: Backend code analysis
-    runs-on: ubuntu-latest
+  setup_new_version:
+    name: Maven version updated to ${{ github.event.inputs.releaseVersion }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -37,14 +36,36 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
       - name: Update pom.xml to releaseVersion
-        run: mvn -B versions:set -DnewVersion=${{ github.event.inputs.releaseVersion }} -DgenerateBackupPoms=false -f ./code/pom.xml
+        run: |
+          mvn -B versions:set -DnewVersion=${{ github.event.inputs.releaseVersion }} -DgenerateBackupPoms=false -f ./code/pom.xml
+      - name: Update frontend version
+        working-directory: ./code/gms-frontend
+        run: |
+          npm version ${{github.event.inputs.releaseVersion}}
       - name: Commit version change
         run: |
           git config --global user.name ${{ secrets.GH_USERNAME }}
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git commit -am "[ci-skip] Version updated to ${{ github.event.inputs.releaseVersion }}"
           git push
+  analize_backend:
+    name: Backend code analysis
+    runs-on: ubuntu-latest
+    needs: setup_new_version
+    steps:
+      - uses: actions/checkout@v3
+        with:
+           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
@@ -57,6 +78,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn clean verify
+      - name: Git pull
+        run: |
+          git pull
       - name: Update pom.xml to developmentVersion
         run: mvn -B versions:set -DnewVersion=${{ github.event.inputs.developmentVersion }} -DgenerateBackupPoms=false -f ./code/pom.xml
       - name: Commit version change to next SNAPSHOT version
@@ -68,6 +92,7 @@ jobs:
   analize_frontend:
     name: Frontend code analysis
     runs-on: ubuntu-latest
+    needs: setup_new_version
     steps:
       - uses: actions/checkout@v3
         with:
@@ -76,22 +101,19 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-      - name: Update version
-        working-directory: ./code/gms-frontend
-        run: |
-          npm version ${{github.event.inputs.releaseVersion}}
-      - name: Commit version change
-        run: |
-          git config --global user.name ${{ secrets.GH_USERNAME }}
-          git config --global user.email ${{ secrets.GH_EMAIL }}
-          git commit -am "[ci-skip] Version updated to ${{ github.event.inputs.releaseVersion }}"
-          git push
       - name: Build with NPM
         working-directory: ./code/gms-frontend
         run: npm install
       - name: Run tests
         working-directory: ./code/gms-frontend
         run: npm run test
+      - name: Git pull
+        run: |
+          git pull
+      - name: Update frontend version
+        working-directory: ./code/gms-frontend
+        run: |
+          npm version ${{github.event.inputs.developmentVersion}}
       - name: Commit version change to next SNAPSHOT version
         run: |
           git config --global user.name ${{ secrets.GH_USERNAME }}
