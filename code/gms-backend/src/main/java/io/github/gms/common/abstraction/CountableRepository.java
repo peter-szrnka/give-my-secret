@@ -6,6 +6,9 @@ import org.springframework.data.repository.NoRepositoryBean;
 /**
  * @author Peter Szrnka
  * @since 1.0
+ *
+ * @param <T> Entity type
+ * @param <ID> Type of the identifier
  */
 @NoRepositoryBean
 public interface CountableRepository<T, ID> extends JpaRepository<T, ID> {
