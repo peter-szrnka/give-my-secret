@@ -26,7 +26,7 @@ env:
 
 jobs:
   setup_new_version:
-    name: Maven version updated to ${{ github.event.inputs.releaseVersion }}
+    name: Update version to ${{ github.event.inputs.releaseVersion }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -140,10 +140,10 @@ jobs:
       - name: Git pull
         run: |
           git pull
-      - name: Update pom.xml to developmentVersion
+      - name: Update backend version to ${{ github.event.inputs.developmentVersion }}
         run: |
-          mvn -B versions:set -DnewVersion=${{ github.event.inputs.developmentVersion }} -DgenerateBackupPoms=false -f ./pom.xml
-      - name: Update frontend version
+          mvn -B versions:set -DnewVersion=${{ github.event.inputs.developmentVersion }} -DgenerateBackupPoms=false -f ${{ github.workspace }}/code/pom.xml
+      - name: Update frontend version to ${{ github.event.inputs.developmentVersion }}
         working-directory: ./code/gms-frontend
         run: |
           npm version ${{github.event.inputs.developmentVersion}}
