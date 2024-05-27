@@ -200,6 +200,7 @@ jobs:
           npm version ${{github.event.inputs.developmentVersion}}
       - name: Commit version change
         run: |
+          git pull
           git config --global user.name ${{ secrets.GH_USERNAME }}
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git commit -am "[ci-skip] Version updated to ${{ github.event.inputs.developmentVersion }}"
