@@ -137,23 +137,6 @@ jobs:
           name: Dockerfile
           path: ${{ github.workspace }}/code/gms-backend/Dockerfile
           retention-days: 1
-      - name: Git pull
-        run: |
-          git pull
-      - name: Update backend version to ${{ github.event.inputs.developmentVersion }}
-        run: |
-          mvn -B versions:set -DnewVersion=${{ github.event.inputs.developmentVersion }} -DgenerateBackupPoms=false -f ${{ github.workspace }}/code/pom.xml
-      - name: Update frontend version to ${{ github.event.inputs.developmentVersion }}
-        working-directory: ./code/gms-frontend
-        run: |
-          npm version ${{github.event.inputs.developmentVersion}}
-      - name: Commit version change
-        run: |
-          git config --global user.name ${{ secrets.GH_USERNAME }}
-          git config --global user.email ${{ secrets.GH_EMAIL }}
-          git commit -am "[ci-skip] Version updated to ${{ github.event.inputs.developmentVersion }}"
-          git push
-
   deploy:
     name: 'Deploy to GHCR'
     runs-on : ubuntu-latest
@@ -189,3 +172,35 @@ jobs:
         run: docker push ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:${{ github.event.inputs.releaseVersion }}
       - name: Docker push latest
         run: docker push ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:latest
+  update_version:
+    name: Update version to ${{ github.event.inputs.developmentVersion }}
+    runs-on: ubuntu-latest
+    # if: false
+    needs: [deploy]
+    env:
+      working-directory: ./code
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Update backend version to ${{ github.event.inputs.developmentVersion }}
+        run: |
+          mvn -B versions:set -DnewVersion=${{ github.event.inputs.developmentVersion }} -DgenerateBackupPoms=false -f ${{ github.workspace }}/code/pom.xml
+      - name: Update frontend version to ${{ github.event.inputs.developmentVersion }}
+        working-directory: ./code/gms-frontend
+        run: |
+          npm version ${{github.event.inputs.developmentVersion}}
+      - name: Commit version change
+        run: |
+          git config --global user.name ${{ secrets.GH_USERNAME }}
+          git config --global user.email ${{ secrets.GH_EMAIL }}
+          git commit -am "[ci-skip] Version updated to ${{ github.event.inputs.developmentVersion }}"
+          git push
