@@ -185,5 +185,7 @@ jobs:
         run: docker image tag peter-szrnka/give-my-secret ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:${{ github.event.inputs.releaseVersion }}
       - name: Tag the latest image
         run: docker image tag peter-szrnka/give-my-secret ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:latest
-      - name: Docker push
+      - name: Docker push ${{ github.event.inputs.releaseVersion }}
         run: docker push ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:${{ github.event.inputs.releaseVersion }}
+      - name: Docker push latest
+        run: docker push ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:latest
