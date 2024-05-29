@@ -15,11 +15,6 @@ on:
         description: "Default version to use for new local working copy."
         required: true
         default: "X.Y.Z-SNAPSHOT"
-#  push:
-#    branches:
-#      - "main"
-#    paths:
-#      - code/**
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -73,6 +68,9 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+      - name: Pull recent changes
+        run: |
+          git pull
       - name: Maven verify
         working-directory: ./code/gms-backend
         env:
@@ -91,6 +89,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+      - name: Pull recent changes
+        run: |
+          git pull
       - name: Build with NPM
         working-directory: ./code/gms-frontend
         run: npm install
@@ -122,7 +123,10 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
+      - name: Pull recent changes
+        run: |
+          git pull
+      - name: Build
         run: mvn clean install -Pbuild-prod --file pom.xml -DskipTests=true
         working-directory: ${{env.working-directory}}
       - name: Temporarily save jar artifact
@@ -191,6 +195,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+      - name: Pull recent changes
+        run: |
+          git pull
       - name: Update backend version to ${{ github.event.inputs.developmentVersion }}
         run: |
           mvn -B versions:set -DnewVersion=${{ github.event.inputs.developmentVersion }} -DgenerateBackupPoms=false -f ${{ github.workspace }}/code/pom.xml
@@ -200,7 +207,6 @@ jobs:
           npm version ${{github.event.inputs.developmentVersion}}
       - name: Commit version change
         run: |
-          git pull
           git config --global user.name ${{ secrets.GH_USERNAME }}
           git config --global user.email ${{ secrets.GH_EMAIL }}
           git commit -am "[ci-skip] Version updated to ${{ github.event.inputs.developmentVersion }}"
