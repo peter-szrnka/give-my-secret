@@ -76,6 +76,19 @@
                 }
               ]
             },
+            "mockHttp" : {
+              "buildOptimizer": false,
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.mock.http.ts"
+                }
+              ]
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -97,6 +110,9 @@
             },
             "localHttps": {
               "buildTarget": "gms-frontend:build:localHttps"
+            },
+            "mockHttp": {
+              "buildTarget": "gms-frontend:build:mockHttp"
             }
           },
           "defaultConfiguration": "development"

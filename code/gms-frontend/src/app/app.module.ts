@@ -35,6 +35,7 @@ import { SystemPropertyModule } from './components/system_property/system-proper
 import { UserModule } from './components/user/user-module';
 import { VerifyModule } from './components/verify/verify-module';
 import { HelpModule } from './components/help/help-module';
+import { MockInterceptor } from './common/interceptor/mock-interceptor';
 
 /**
  * @author Peter Szrnka
@@ -84,6 +85,7 @@ import { HelpModule } from './components/help/help-module';
   providers: [ 
     provideHttpClient(),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: MockInterceptor, multi: true },
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500 }},
   ],
   bootstrap: [AppComponent],

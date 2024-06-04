@@ -23,7 +23,8 @@ export class HelpComponent implements OnInit {
 
     ngOnInit(): void {
         this.activatedRoute.data.subscribe((response: any) => {
-                this.datasource = new ArrayDataSource<ErrorCode>(response.data);
+            console.info("resp", response);
+                this.datasource = new ArrayDataSource<ErrorCode>(response.data as ErrorCode[]);
             });
     }
 }

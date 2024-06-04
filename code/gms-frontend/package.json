@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve",
     "startHttps": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve --configuration localHttps",
+    "mockHttp": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve --configuration mockHttp",
     "build": "ng build --output-hashing none",
     "watch": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --watch --configuration development",
     "watchHttps": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --watch --configuration localHttps",
