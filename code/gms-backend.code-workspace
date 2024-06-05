@@ -13,6 +13,7 @@
 		"jest.disabledWorkspaceFolders": [
 			"gms-backend"
 		],
-		"java.debug.settings.onBuildFailureProceed": true
+		"java.debug.settings.onBuildFailureProceed": true,
+		"testing.openTesting": "neverOpen"
 	}
 }

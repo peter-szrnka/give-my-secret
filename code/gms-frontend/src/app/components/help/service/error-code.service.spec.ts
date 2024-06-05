@@ -1,6 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
+import { ErrorCodeList } from "../model/error-code-list.model";
 import { ErrorCode } from "../model/error-code.model";
 import { ErrorCodeService } from "./error-code.service";
 
@@ -32,7 +33,7 @@ describe("ErrorCodeService", () => {
     it('Should list results', () => {
       // arrange
       const expectedUrl = environment.baseUrl + "error_codes";
-      const mockResponse : ErrorCode[] = [TEST_CODE];
+      const mockResponse : ErrorCodeList = { errorCodeList: [TEST_CODE] };
 
       // act
       service.list().subscribe((res) => expect(res).toBe(mockResponse));

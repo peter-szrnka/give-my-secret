@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment";
 import { getHeaders } from "../../../common/utils/header-utils";
-import { ErrorCode } from "../model/error-code.model";
+import { ErrorCodeList } from "../model/error-code-list.model";
 
 /**
  * @author Peter Szrnka
@@ -13,7 +13,7 @@ export class ErrorCodeService {
 
     constructor(protected http : HttpClient) {}
 
-    list(): Observable<ErrorCode[]> {
-        return this.http.get<ErrorCode[]>(environment.baseUrl + 'error_codes', { withCredentials: true, headers : getHeaders() });
+    list(): Observable<ErrorCodeList> {
+        return this.http.get<ErrorCodeList>(environment.baseUrl + 'error_codes', { withCredentials: true, headers : getHeaders() });
     }
 }
