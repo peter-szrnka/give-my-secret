@@ -1,0 +1,12 @@
+{
+    "resultList": [
+        {
+            "id": 1,
+            "userId" : 1,
+            "opened": false,
+            "message" : "Test",
+            "creationDate" : "2024-06-01T12:34:56.000"
+        }
+    ],
+    "totalElements": 1
+ }

@@ -3,7 +3,6 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ErrorCode } from "./model/error-code.model";
 
-
 /**
  * @author Peter Szrnka
  */
@@ -22,8 +21,6 @@ export class HelpComponent implements OnInit {
     constructor(private activatedRoute: ActivatedRoute) { }
 
     ngOnInit(): void {
-        this.activatedRoute.data.subscribe((response: any) => {
-                this.datasource = new ArrayDataSource<ErrorCode>(response.data);
-            });
+        this.activatedRoute.data.subscribe((response: any) => this.datasource = new ArrayDataSource<ErrorCode>(response.data.errorCodeList));
     }
 }

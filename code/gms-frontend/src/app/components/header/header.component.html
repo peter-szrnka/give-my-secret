@@ -15,7 +15,12 @@
       }
       <span class="label_user">{{currentUser?.username}}</span>
       <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Context menu">
-        <mat-icon>person</mat-icon>
+        @if (unreadMessageCount > 0) {
+          <mat-icon matBadge="i" matBadgeColor="warn" aria-hidden="false">person</mat-icon>
+        }
+        @if (unreadMessageCount === 0) {
+          <mat-icon>person</mat-icon>
+        }
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item [routerLink]="'/settings'">

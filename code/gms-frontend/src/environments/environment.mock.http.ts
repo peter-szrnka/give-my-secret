@@ -7,8 +7,8 @@ export interface Environment {
   enableMock: boolean
 }
 
-export const defaultEnvironment : Environment = {
+export const environment : Environment = {
   production: false,
   baseUrl: "http://localhost:8080/",
-  enableMock: false
+  enableMock: true
 };

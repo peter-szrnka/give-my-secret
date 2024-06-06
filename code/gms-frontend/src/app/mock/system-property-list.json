@@ -1,0 +1,12 @@
+{
+    "resultList" : [
+        {
+            "key" : "ACCESS_JWT_EXPIRATION_TIME_SECONDS",
+            "type" : "LONG",
+            "value" : "900",
+            "lastModified" : "2024-06-01T12:34:56.000",
+            "factoryValue": true
+        }
+    ],
+    "totalElements": 0
+}

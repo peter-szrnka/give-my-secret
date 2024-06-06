@@ -1,6 +1,7 @@
 package io.github.gms.common.controller;
 
 import io.github.gms.common.dto.ErrorCodeDto;
+import io.github.gms.common.dto.ErrorCodeListDto;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.types.ErrorCode;
 import io.github.gms.functions.system.SystemService;
@@ -48,8 +49,8 @@ class SystemControllerTest {
     @Test
     void shouldReturnErrorCodes() {
         // act
-        List<ErrorCodeDto> response = controller.getErrorCodes();
-        List<String> codes = response.stream().map(ErrorCodeDto::getCode).toList();
+        ErrorCodeListDto response = controller.getErrorCodes();
+        List<String> codes = response.getErrorCodeList().stream().map(ErrorCodeDto::getCode).toList();
 
         // arrange
         assertNotNull(response);
