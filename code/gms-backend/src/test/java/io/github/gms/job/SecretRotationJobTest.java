@@ -7,11 +7,13 @@ import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.secret.SecretRotationService;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -35,6 +37,8 @@ import static org.mockito.Mockito.when;
  */
 class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
+	private Environment env;
+	private SystemPropertyService systemPropertyService;
 	private SecretRepository secretRepository;
 	private SecretRotationService service;
 	private SecretRotationJob job;
@@ -44,9 +48,11 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	public void setup() {
 		super.setup();
 		Clock clock = mock(Clock.class);
+		env = mock(Environment.class);
+		systemPropertyService = mock(SystemPropertyService.class);
 		secretRepository = mock(SecretRepository.class);
 		service = mock(SecretRotationService.class);
-		job = new SecretRotationJob(clock, secretRepository, service);
+		job = new SecretRotationJob(env, systemPropertyService, clock, secretRepository, service);
 		((Logger) LoggerFactory.getLogger(SecretRotationJob.class)).addAppender(logAppender);
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);

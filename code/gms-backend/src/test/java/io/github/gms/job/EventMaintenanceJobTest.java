@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.when;
  */
 class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 
+	private Environment env;
     private EventRepository eventRepository;
 	private EventMaintenanceJob job;
 	private SystemPropertyService systemPropertyService;
@@ -42,9 +44,10 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		super.setup();
 		// init
         Clock clock = mock(Clock.class);
+		env = mock(Environment.class);
 		eventRepository = mock(EventRepository.class);
 		systemPropertyService = mock(SystemPropertyService.class);
-		job = new EventMaintenanceJob(clock, eventRepository, systemPropertyService);
+		job = new EventMaintenanceJob(env, clock, eventRepository, systemPropertyService);
 		((Logger) LoggerFactory.getLogger(EventMaintenanceJob.class)).addAppender(logAppender);
 		
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));

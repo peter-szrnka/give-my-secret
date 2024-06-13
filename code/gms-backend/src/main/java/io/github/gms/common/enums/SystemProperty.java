@@ -25,7 +25,13 @@ public enum SystemProperty {
 	FAILED_ATTEMPTS_LIMIT(PropertyType.INTEGER, "3"),
 	// Job configurations
 	JOB_OLD_MESSAGE_LIMIT(PropertyType.STRING, "90;d"),
-	JOB_OLD_EVENT_LIMIT(PropertyType.STRING, "180;d");
+	JOB_OLD_EVENT_LIMIT(PropertyType.STRING, "180;d"),
+	EVENT_MAINTENANCE_RUNNER_CONTAINER_ID(PropertyType.STRING, null),
+	KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID(PropertyType.STRING, null),
+	LDAP_SYNC_RUNNER_CONTAINER_ID(PropertyType.STRING, null),
+	MESSAGE_CLEANUP_RUNNER_CONTAINER_ID(PropertyType.STRING, null),
+	SECRET_ROTATION_RUNNER_CONTAINER_ID(PropertyType.STRING, null),
+	USER_DELETION_RUNNER_CONTAINER_ID(PropertyType.STRING, null),;
 
 	SystemProperty(PropertyType type, String defaultValue) {
 		this.type = type;
@@ -34,15 +40,15 @@ public enum SystemProperty {
 
 	private final String defaultValue;
 	private final PropertyType type;
-	
+
 	private static final Map<String, SystemProperty> keyMap = new HashMap<>();
-	
+
 	static {
 		for (SystemProperty property : values()) {
 			keyMap.put(property.name(), property);
 		}
 	}
-	
+
 	public static Optional<SystemProperty> getByKey(String key) {
 		return Optional.ofNullable(keyMap.get(key));
 	}

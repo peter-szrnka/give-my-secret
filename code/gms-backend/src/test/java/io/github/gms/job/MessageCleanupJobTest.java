@@ -8,6 +8,7 @@ import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.when;
  */
 class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 
+	private Environment env;
 	private MessageRepository messageRepository;
 	private MessageCleanupJob job;
 	private SystemPropertyService systemPropertyService;
@@ -36,8 +38,9 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		super.setup();
 		Clock clock = mock(Clock.class);
 		messageRepository = mock(MessageRepository.class);
+		env = mock(Environment.class);
 		systemPropertyService = mock(SystemPropertyService.class);
-		job = new MessageCleanupJob(clock, messageRepository, systemPropertyService);
+		job = new MessageCleanupJob(env, clock, messageRepository, systemPropertyService);
 		((Logger) LoggerFactory.getLogger(MessageCleanupJob.class)).addAppender(logAppender);
 		setupClock(clock);
 	}

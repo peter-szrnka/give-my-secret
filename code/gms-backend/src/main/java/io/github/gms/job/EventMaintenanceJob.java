@@ -6,6 +6,7 @@ import io.github.gms.functions.event.EventRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,13 +25,17 @@ public class EventMaintenanceJob extends AbstractLimitBasedJob {
 
 	private final EventRepository eventRepository;
 
-	public EventMaintenanceJob(Clock clock, EventRepository eventRepository, SystemPropertyService systemPropertyService) {
-		super(clock, systemPropertyService);
+	public EventMaintenanceJob(Environment env, Clock clock, EventRepository eventRepository, SystemPropertyService systemPropertyService) {
+		super(env, clock, systemPropertyService);
 		this.eventRepository = eventRepository;
 	}
 
 	@Scheduled(cron = "0 15 * * * ?")
 	public void execute() {
+		if (skipJobExecution(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID)) {
+			return;
+		}
+
 		int result = eventRepository.deleteAllEventDateOlderThan(processConfig(SystemProperty.JOB_OLD_EVENT_LIMIT));
 
 		if (result > 0) {
