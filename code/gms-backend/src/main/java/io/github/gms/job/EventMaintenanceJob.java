@@ -32,7 +32,7 @@ public class EventMaintenanceJob extends AbstractLimitBasedJob {
 
 	@Scheduled(cron = "0 15 * * * ?")
 	public void execute() {
-		if (skipJobExecution(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID)) {
+		if (skipJobExecution(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)) {
 			return;
 		}
 

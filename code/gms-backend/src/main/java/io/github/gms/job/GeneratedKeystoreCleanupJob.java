@@ -1,6 +1,7 @@
 package io.github.gms.job;
 
 import io.github.gms.common.abstraction.AbstractJob;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.keystore.KeystoreFileService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,10 @@ public class GeneratedKeystoreCleanupJob extends AbstractJob {
 
     @Scheduled(cron = "0 45 * * * ?")
     public void execute() {
+        if (skipJobExecution(SystemProperty.KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID)) {
+            return;
+        }
+
         long deletedCount = service.deleteTempKeystoreFiles();
 
         if (deletedCount > 0) {
