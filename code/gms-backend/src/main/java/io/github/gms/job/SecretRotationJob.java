@@ -1,12 +1,15 @@
 package io.github.gms.job;
 
+import io.github.gms.common.abstraction.AbstractJob;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.secret.SecretRotationService;
-import lombok.RequiredArgsConstructor;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,17 +26,32 @@ import static io.github.gms.common.util.Constants.TRUE;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 @ConditionalOnProperty(value = "config.job.secretRotation.enabled", havingValue = TRUE, matchIfMissing = true)
-public class SecretRotationJob {
+public class SecretRotationJob extends AbstractJob {
 	
 	private static final long DELAY_SECONDS = 55L;
 	private final Clock clock;
 	private final SecretRepository secretRepository;
 	private final SecretRotationService service;
 
+	public SecretRotationJob(
+			Environment environment,
+			SystemPropertyService systemPropertyService,
+			Clock clock,
+			SecretRepository secretRepository,
+			SecretRotationService service) {
+		super(environment, systemPropertyService);
+		this.clock = clock;
+		this.secretRepository = secretRepository;
+		this.service = service;
+	}
+
 	@Scheduled(cron = "0 * * * * ?")
 	public void execute() {
+		if (skipJobExecution(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID)) {
+			return;
+		}
+
 		List<SecretEntity> resultList = secretRepository.findAllOldRotated(ZonedDateTime.now(clock).minusSeconds(DELAY_SECONDS));
 		
 		AtomicLong counter = new AtomicLong(0L);

@@ -90,7 +90,6 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		
 		// assert
 		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().contains("Authorization failed: ")));
-		//assertFalse(response.isSkip());
 		assertEquals("Authorization failed!", response.getErrorMessage());
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
 		verify(jwtService).parseJwt(anyString(), anyString());
