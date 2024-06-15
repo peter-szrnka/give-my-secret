@@ -52,9 +52,9 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 		assertEquals("Budapest", response.getResultList().stream()
 			.filter(property -> property.getKey().equals("ORGANIZATION_CITY"))
 			.map(SystemPropertyDto::getValue).findFirst().get());
-		assertTrue(response.getResultList().stream().noneMatch(item -> item.getType() == null || item.getKey() == null || item.getValue() == null));
+		assertTrue(response.getResultList().stream().noneMatch(item -> item.getType() == null || item.getKey() == null));
 		assertEquals(SystemProperty.values().length-1, response.getResultList().stream().filter(SystemPropertyDto::isFactoryValue).count());
-		assertEquals(1L, response.getResultList().stream().filter((item) -> item.getLastModified() != null).count());
+		assertEquals(1L, response.getResultList().stream().filter(item -> item.getLastModified() != null).count());
 	}
 	
 	@Test

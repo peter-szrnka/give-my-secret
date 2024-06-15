@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +65,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		// assert
 		assertTrue(logAppender.list.isEmpty());
 		verify(env).getProperty("HOSTNAME");
-		verify(systemPropertyService).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService, times(2)).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
 	}
 
 	@Test
