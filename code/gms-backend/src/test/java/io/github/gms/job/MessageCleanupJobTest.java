@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.when;
  */
 class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 
+	private Clock clock;
 	private Environment env;
 	private MessageRepository messageRepository;
 	private MessageCleanupJob job;
@@ -36,20 +38,36 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 	@BeforeEach
 	public void setup() {
 		super.setup();
-		Clock clock = mock(Clock.class);
+		clock = mock(Clock.class);
 		messageRepository = mock(MessageRepository.class);
 		env = mock(Environment.class);
 		systemPropertyService = mock(SystemPropertyService.class);
 		job = new MessageCleanupJob(env, clock, messageRepository, systemPropertyService);
 		((Logger) LoggerFactory.getLogger(MessageCleanupJob.class)).addAppender(logAppender);
-		setupClock(clock);
+	}
+
+	@Test
+	void execute_whenAppIsNotRunningInMainContainer_thenSkipExecution() {
+		// arrange
+		when(env.getProperty("HOSTNAME")).thenReturn("ab123457");
+		when(systemPropertyService.get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
+
+		// act
+		job.execute();
+
+		// assert
+		assertTrue(logAppender.list.isEmpty());
+		verify(env).getProperty("HOSTNAME");
+		verify(systemPropertyService, times(2)).get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID);
 	}
 	
 	@Test
 	void shouldNotProcess() {
 		// arrange
+		setupClock(clock);
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_MESSAGE_LIMIT)).thenReturn("1;d");
+		when(systemPropertyService.get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID)).thenReturn(null);
 		
 		// act
 		job.execute();
@@ -58,13 +76,16 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		assertTrue(logAppender.list.isEmpty());
 		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_MESSAGE_LIMIT);
+		verify(systemPropertyService).get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID);
 	}
 	
 	@Test
 	void shouldProcess() {
 		// arrange
+		setupClock(clock);
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_MESSAGE_LIMIT)).thenReturn("1;d");
+		when(systemPropertyService.get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID)).thenReturn(null);
 		
 		// act
 		job.execute();
@@ -74,5 +95,6 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		assertEquals("1 message(s) deleted", logAppender.list.getFirst().getFormattedMessage());
 		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_MESSAGE_LIMIT);
+		verify(systemPropertyService).get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID);
 	}
 }
