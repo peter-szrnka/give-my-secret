@@ -336,7 +336,6 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 		// assert
 		assertNotNull(response);
-		//assertEquals("https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth%3A%2F%2Ftotp%2Fgms%3Aszrnka.peter%40gmail.com%3Fsecret%3Dtest%26issuer%3Dgms", response);
 		verify(repository).findById(1L);
 		MDC.clear();
 	}

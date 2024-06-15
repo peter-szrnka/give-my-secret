@@ -599,8 +599,7 @@ public class TestUtils {
 		assertTrue(appender.list.stream().noneMatch(event -> event.getFormattedMessage().contains(expectedMessage)));
 	}
 
-	public static <T extends Exception> void assertException(Class<T> cls, Executable executable,
-			String expectedMessage) {
+	public static <T extends Exception> void assertException(Executable executable, String expectedMessage) {
 		try {
 			executable.execute();
 		} catch (Throwable e) {
@@ -609,7 +608,7 @@ public class TestUtils {
 	}
 
 	public static void assertGmsException(Executable executable, String expectedMessage) {
-		assertException(GmsException.class, executable, expectedMessage);
+		assertException(executable, expectedMessage);
 	}
 
 	private static List<KeystoreAliasDto> createKeystoreAliasList() {

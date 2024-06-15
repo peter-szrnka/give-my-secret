@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.RotationPeriod;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.secret.SecretRotationService;
@@ -59,6 +60,21 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
+	void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
+		// arrange
+		when(env.getProperty("HOSTNAME")).thenReturn("ab123457");
+		when(systemPropertyService.get(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
+
+		// act
+		job.execute();
+
+		// assert
+		assertTrue(logAppender.list.isEmpty());
+		verify(systemPropertyService, times(2)).get(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID);
+		verify(service, never()).rotateSecret(any(SecretEntity.class));
+	}
+
+	@Test
 	void shouldNotProcess() {
 		// arrange
 		Clock mockClock = Clock.fixed(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());
@@ -91,7 +107,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 		verify(service, times(1)).rotateSecret(any(SecretEntity.class));
 		verify(secretRepository).findAllOldRotated(any(ZonedDateTime.class));
 		assertFalse(logAppender.list.isEmpty());
-		assertEquals("1 entities updated", logAppender.list.get(0).getFormattedMessage());
+		assertEquals("1 entities updated", logAppender.list.getFirst().getFormattedMessage());
 
 		ArgumentCaptor<ZonedDateTime> dateCArgumentCaptor = ArgumentCaptor.forClass(ZonedDateTime.class);
 		verify(secretRepository).findAllOldRotated(dateCArgumentCaptor.capture());

@@ -3,8 +3,10 @@ package io.github.gms.job;
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.ldap.LdapSyncService;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
@@ -13,7 +15,10 @@ import org.springframework.data.util.Pair;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +45,21 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
         job = new LdapUserSyncJob(env, systemPropertyService, service);
 
         ((Logger) LoggerFactory.getLogger(LdapUserSyncJob.class)).addAppender(logAppender);
+    }
+
+    @Test
+    void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
+        // arrange
+        when(env.getProperty("HOSTNAME")).thenReturn("ab123457");
+        when(systemPropertyService.get(SystemProperty.LDAP_SYNC_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
+
+        // act
+        job.execute();
+
+        // assert
+        assertTrue(logAppender.list.isEmpty());
+        verify(systemPropertyService, times(2)).get(SystemProperty.LDAP_SYNC_RUNNER_CONTAINER_ID);
+        verify(service, never()).synchronizeUsers();
     }
 
     @ParameterizedTest

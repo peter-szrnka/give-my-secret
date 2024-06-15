@@ -1,7 +1,6 @@
 package io.github.gms.auth.sso.keycloak.service;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.auth.sso.keycloak.service.KeycloakOAuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;

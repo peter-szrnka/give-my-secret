@@ -1,7 +1,6 @@
 package io.github.gms.common.converter;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.converter.GenerateJwtRequestConverter;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.model.GenerateJwtRequest;

@@ -8,7 +8,6 @@ import io.github.gms.functions.system.SystemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Comparator;
@@ -31,7 +30,7 @@ public class SystemController {
 	}
 
 	@GetMapping("error_codes")
-	public @ResponseBody ErrorCodeListDto getErrorCodes() {
+	public ErrorCodeListDto getErrorCodes() {
 		return new ErrorCodeListDto(Stream.of(ErrorCode.values())
 				.sorted(Comparator.comparing(ErrorCode::getCode))
 				.map(errorCode -> new ErrorCodeDto(errorCode.getCode(), errorCode.getDescription()))
