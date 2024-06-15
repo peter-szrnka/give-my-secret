@@ -36,6 +36,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	private Environment env;
     private EventRepository eventRepository;
 	private EventMaintenanceJob job;
+	private Clock clock;
 	private SystemPropertyService systemPropertyService;
 	
 	@Override
@@ -43,22 +44,37 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	public void setup() {
 		super.setup();
 		// init
-        Clock clock = mock(Clock.class);
+        clock = mock(Clock.class);
 		env = mock(Environment.class);
 		eventRepository = mock(EventRepository.class);
 		systemPropertyService = mock(SystemPropertyService.class);
 		job = new EventMaintenanceJob(env, clock, eventRepository, systemPropertyService);
 		((Logger) LoggerFactory.getLogger(EventMaintenanceJob.class)).addAppender(logAppender);
-		
-		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+	}
+
+	@Test
+	void execute_whenAppIsNotRunningInMainContainer_thenSkipExecution() {
+		// arrange
+		when(env.getProperty("HOSTNAME")).thenReturn("ab123457");
+		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
+
+		// act
+		job.execute();
+
+		// assert
+		assertTrue(logAppender.list.isEmpty());
+		verify(env).getProperty("HOSTNAME");
+		verify(systemPropertyService).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
 	}
 
 	@Test
 	void shouldNotProcess() {
 		// arrange
+		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn(null);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		
 		// act
 		job.execute();
@@ -69,13 +85,18 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		ArgumentCaptor<ZonedDateTime> dateCArgumentCaptor = ArgumentCaptor.forClass(ZonedDateTime.class);
 		verify(eventRepository).deleteAllEventDateOlderThan(dateCArgumentCaptor.capture());
 		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
+		verify(systemPropertyService).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_EVENT_LIMIT);
 	}
 
 	@Test
 	void shouldProcess() {
 		// arrange
+		when(env.getProperty("HOSTNAME")).thenReturn("ab123456");
+		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		MockedStatic<TimeUnit> mockedTimeUnit = mockStatic(TimeUnit.class);
 		mockedTimeUnit.when(() -> TimeUnit.getByCode("d")).thenReturn(TimeUnit.DAY);
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);

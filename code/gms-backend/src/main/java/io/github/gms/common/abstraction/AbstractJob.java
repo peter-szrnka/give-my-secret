@@ -16,6 +16,7 @@ public abstract class AbstractJob {
     protected final SystemPropertyService systemPropertyService;
 
     protected boolean skipJobExecution(SystemProperty systemProperty) {
-        return !systemPropertyService.get(systemProperty).equalsIgnoreCase(environment.getProperty("HOSTNAME"));
+        return systemPropertyService.get(systemProperty) != null &&
+                !systemPropertyService.get(systemProperty).equalsIgnoreCase(environment.getProperty("HOSTNAME"));
     }
 }
