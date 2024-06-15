@@ -38,6 +38,7 @@ import static org.mockito.Mockito.when;
  */
 class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
+	private Clock clock;
 	private Environment env;
 	private SystemPropertyService systemPropertyService;
 	private SecretRepository secretRepository;
@@ -48,15 +49,13 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	@BeforeEach
 	public void setup() {
 		super.setup();
-		Clock clock = mock(Clock.class);
+		clock = mock(Clock.class);
 		env = mock(Environment.class);
 		systemPropertyService = mock(SystemPropertyService.class);
 		secretRepository = mock(SecretRepository.class);
 		service = mock(SecretRotationService.class);
 		job = new SecretRotationJob(env, systemPropertyService, clock, secretRepository, service);
 		((Logger) LoggerFactory.getLogger(SecretRotationJob.class)).addAppender(logAppender);
-		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 	}
 
 	@Test
@@ -80,6 +79,8 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 		Clock mockClock = Clock.fixed(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());
 		when(secretRepository.findAllOldRotated(any(ZonedDateTime.class)))
 			.thenReturn(Lists.newArrayList(TestUtils.createSecretEntity(RotationPeriod.MONTHLY, ZonedDateTime.now(mockClock).minusDays(10L))));
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
 		// act
 		job.execute();
@@ -99,6 +100,8 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 					TestUtils.createSecretEntity(RotationPeriod.HOURLY, ZonedDateTime.now(mockClock).minusDays(10L)), 
 					TestUtils.createSecretEntity(RotationPeriod.MONTHLY, ZonedDateTime.now(mockClock).minusDays(10L))
 			));
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
 		// act
 		job.execute();
