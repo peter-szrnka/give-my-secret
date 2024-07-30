@@ -74,7 +74,7 @@ public abstract class AbstractIntegrationTest {
 		return rest.exchange(basePath + port + url, HttpMethod.DELETE, requestEntity, responseType);
 	}
 
-	protected <I, O> ResponseEntity<O> executeHttpPut(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
-		return rest.exchange(basePath + port + url, HttpMethod.PUT, requestEntity, responseType);
+	protected <I> ResponseEntity<String> executeHttpPut(HttpEntity<I> requestEntity) {
+		return rest.exchange(basePath + port + "/mark_as_read", HttpMethod.PUT, requestEntity, String.class);
 	}
 }

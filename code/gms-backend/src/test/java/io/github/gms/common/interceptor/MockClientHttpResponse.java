@@ -25,7 +25,7 @@ public class MockClientHttpResponse implements ClientHttpResponse {
 
     @Override
     public void close() {
-
+        System.out.println("HTTP call closed");
     }
 
     @NonNull

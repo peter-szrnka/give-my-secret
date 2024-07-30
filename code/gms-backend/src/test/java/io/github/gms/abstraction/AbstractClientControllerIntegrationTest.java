@@ -33,8 +33,7 @@ public abstract class AbstractClientControllerIntegrationTest extends AbstractIn
 	}
 	
 	@Override
-	protected <I, O> ResponseEntity<O> executeHttpPut(String url, HttpEntity<I> requestEntity,
-			Class<O> responseType) {
-		return rest.exchange(basePath + port + path + url, HttpMethod.PUT, requestEntity, responseType);
+	protected <I> ResponseEntity<String> executeHttpPut(HttpEntity<I> requestEntity) {
+		return rest.exchange(basePath + port + path + "/mark_as_read", HttpMethod.PUT, requestEntity, String.class);
 	}
 }

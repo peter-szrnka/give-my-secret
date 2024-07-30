@@ -6,7 +6,6 @@ import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.user.SaveUserRequestDto;
 import io.github.gms.util.TestUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,11 +29,6 @@ class SetupIntegrationTest extends AbstractIntegrationTest {
 
 	@MockBean
 	private SystemService systemService;
-
-	@Override
-	@BeforeEach
-	public void setup() {
-	}
 
 	@Test
 	void shouldSetupAdminUser() {

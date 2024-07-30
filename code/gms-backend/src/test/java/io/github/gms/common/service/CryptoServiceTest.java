@@ -1,9 +1,8 @@
-package io.github.gms.common.service.impl;
+package io.github.gms.common.service;
 
 import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.model.KeystorePair;
-import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.keystore.KeystoreDataService;
 import io.github.gms.functions.keystore.SaveKeystoreRequestDto;
@@ -64,7 +63,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 		// arrange
 		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-	    dto.getAliases().get(0).setAlias("aliasfail");
+	    dto.getAliases().getFirst().setAlias("aliasfail");
 		
 		// act & assert
 	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "The given alias(aliasfail) is not valid!");
@@ -76,7 +75,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 		// arrange
 		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-	    dto.getAliases().get(0).setAliasCredential("testfail");
+	    dto.getAliases().getFirst().setAliasCredential("testfail");
 		
 		// act & assert
 	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "java.security.UnrecoverableKeyException: Cannot recover key");
