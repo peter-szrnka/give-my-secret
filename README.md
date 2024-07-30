@@ -10,7 +10,7 @@ Give My Secret is a credential storage application, that stores secrets, passwor
 
 - Java 21 (Eclipse Temurin)
 - Maven
-- Spring Boot 3.2.3
+- Spring Boot 3.2.5
 - Angular 17
 - Docker
 - Flyway (DB migration)
