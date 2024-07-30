@@ -38,7 +38,7 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 		// act
 		MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().ids(Sets.newHashSet(newEntity.getId())).build();
 		HttpEntity<MarkAsReadRequestDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpPut("/mark_as_read", requestEntity, String.class);
+		ResponseEntity<String> response = executeHttpPut(requestEntity);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

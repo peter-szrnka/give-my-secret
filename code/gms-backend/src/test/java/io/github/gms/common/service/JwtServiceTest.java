@@ -1,10 +1,9 @@
-package io.github.gms.common.service.impl;
+package io.github.gms.common.service;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.model.GenerateJwtRequest;
-import io.github.gms.common.service.JwtService;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
@@ -38,14 +37,14 @@ import static org.mockito.Mockito.when;
  */
 class JwtServiceTest extends AbstractUnitTest {
 
-	private static final String secret = "YXNkZjEyMzQ1Njc4OTBhc2RmMTIzNDU2Nzg5MGFzZGYxMjM0NTY3ODkwYXNkZjEyMzQ1Njc4OTA=";
+	private static final String SECRET = "YXNkZjEyMzQ1Njc4OTBhc2RmMTIzNDU2Nzg5MGFzZGYxMjM0NTY3ODkwYXNkZjEyMzQ1Njc4OTA=";
 	private Clock clock;
 	private JwtService service;
 	
 	@BeforeEach
 	void setup() {
 		clock = mock(Clock.class);
-		service = new JwtService(clock, secret);
+		service = new JwtService(clock, SECRET);
 	}
 
 	@Test
@@ -72,7 +71,7 @@ class JwtServiceTest extends AbstractUnitTest {
 		assertEquals(2, response.size());
 
 		// verify access jwt
-		Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), SignatureAlgorithm.forName("HS384").getJcaName());
+		Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(SECRET), SignatureAlgorithm.forName("HS384").getJcaName());
 		Claims claims = Jwts.parserBuilder().setSigningKey(hmacKey).build().parseClaimsJws(response.get(JwtConfigType.ACCESS_JWT)).getBody();
 		
 		assertEquals("subject1", claims.getSubject());

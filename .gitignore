@@ -98,3 +98,4 @@ client-samples/gms-client-sample-go/go.sum
 /code/gms-backend/.vscode/launch.json
 /batch-files/elk-sample-configuration/mounted-data
 /code/gms-backend/keystores
+code/gms-frontend/gms-frontend.iml

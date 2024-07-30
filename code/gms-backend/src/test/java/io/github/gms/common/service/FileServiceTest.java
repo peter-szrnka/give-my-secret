@@ -1,7 +1,6 @@
-package io.github.gms.common.service.impl;
+package io.github.gms.common.service;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.service.FileService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;

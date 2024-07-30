@@ -1,9 +1,8 @@
-package io.github.gms.common.service.impl;
+package io.github.gms.common.service;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.model.EntityChangeEvent;
 import io.github.gms.common.model.EntityChangeEvent.EntityChangeType;
-import io.github.gms.common.service.EventProcessorService;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.message.MessageDto;
 import io.github.gms.functions.message.MessageService;

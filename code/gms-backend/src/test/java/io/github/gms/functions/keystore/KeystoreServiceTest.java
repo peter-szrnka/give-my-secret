@@ -119,9 +119,11 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         MDC.put(MdcParameter.USER_ID.getDisplayName(), DemoData.USER_1_ID);
     }
 
+    @Override
     @AfterEach
     @SneakyThrows
     public void tearDown() {
+        super.tearDown();
         TestUtils.deleteDirectoryWithContent("./unit-test-output/");
         TestUtils.deleteDirectoryWithContent("./temp-output/");
     }
