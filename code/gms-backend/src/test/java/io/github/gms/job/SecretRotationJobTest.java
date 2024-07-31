@@ -62,6 +62,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
 		// arrange
 		when(env.getProperty("HOSTNAME")).thenReturn("ab123457");
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
 		// act
@@ -69,7 +70,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
 		// assert
 		assertTrue(logAppender.list.isEmpty());
-		verify(systemPropertyService, times(2)).get(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService).get(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID);
 		verify(service, never()).rotateSecret(any(SecretEntity.class));
 	}
 

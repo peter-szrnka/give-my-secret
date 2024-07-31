@@ -3,10 +3,13 @@ package io.github.gms.functions.system;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.util.Constants;
 import io.github.gms.functions.user.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -22,26 +25,24 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SystemService {
 
+    private final Environment environment;
 	private final UserRepository userRepository;
 	private final Clock clock;
-	private final String authType;
+	@Setter
+    @Value("${config.auth.type}")
+	private String authType;
 	// It will be set with setter injection
 	private BuildProperties buildProperties;
-
-	public SystemService(UserRepository userRepository, Clock clock, @Value("${config.auth.type}") String authType) {
-		this.userRepository = userRepository;
-		this.clock = clock;
-		this.authType = authType;
-	}
 
 	public SystemStatusDto getSystemStatus() {
 		SystemStatusDto.SystemStatusDtoBuilder builder = SystemStatusDto.builder();
 		builder.authMode(authType);
 		builder.version(getVersion());
 		builder.built(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
-		builder.containerId(System.getenv("HOSTNAME"));
+		builder.containerId(environment.getProperty("HOSTNAME","N/A"));
 
 		if (!SELECTED_AUTH_DB.equals(authType)) {
 			return builder.status(OK).build();

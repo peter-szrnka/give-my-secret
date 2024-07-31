@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.when;
  */
 class SystemServiceTest extends AbstractLoggingUnitTest {
 
+	private Environment environment;
 	private Clock clock;
 	private UserRepository userRepository;
 	private BuildProperties buildProperties;
@@ -45,17 +47,20 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
 		super.setup();
 		((Logger) LoggerFactory.getLogger(SystemService.class)).addAppender(logAppender);
 
+		environment = mock(Environment.class);
 		clock = mock(Clock.class);
 		userRepository = mock(UserRepository.class, Mockito.RETURNS_SMART_NULLS);
 		buildProperties = mock(BuildProperties.class);
 
-		service = new SystemService(userRepository, clock, "db");
+		service = new SystemService(environment, userRepository, clock);
+		service.setAuthType("db");
 	}
 	
 	@ParameterizedTest
 	@ValueSource(strings = { "NEED_SETUP", OK })
 	void shouldReturnSystemStatus(String mockResponse) {
-		service = new SystemService(userRepository, clock, "db");
+		service = new SystemService(environment, userRepository, clock);
+		service.setAuthType("db");
 		service.setBuildProperties(buildProperties);
 		// arrange
 		when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
@@ -76,7 +81,8 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@MethodSource("inputData")
 	void shouldReturnOkWithDifferentAuthMethod(String selectedAuth, boolean hasBuildProperties, String expectedVersion) {
-		service = new SystemService(userRepository, clock, selectedAuth);
+		service = new SystemService(environment, userRepository, clock);
+		service.setAuthType(selectedAuth);
 		service.setBuildProperties(buildProperties);
 
 		if (hasBuildProperties) {

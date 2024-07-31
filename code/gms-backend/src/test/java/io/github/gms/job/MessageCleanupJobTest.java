@@ -50,6 +50,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 	void execute_whenAppIsNotRunningInMainContainer_thenSkipExecution() {
 		// arrange
 		when(env.getProperty("HOSTNAME")).thenReturn("ab123457");
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
 		// act

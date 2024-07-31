@@ -2,5 +2,6 @@
     "authMode" : "db",
     "status" : "OK",
     "version" : "MOCK",
-    "built" : "1.0.0-MOCK"
+    "built" : "2024-07-31T12:34:56.000Z",
+    "containerId" : "86969f7b8991"
 }

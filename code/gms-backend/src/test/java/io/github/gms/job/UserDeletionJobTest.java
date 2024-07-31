@@ -19,7 +19,6 @@ import static io.github.gms.util.TestUtils.assertLogMissing;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,6 +50,7 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
     void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
         // arrange
         when(env.getProperty("HOSTNAME")).thenReturn("ab123457");
+        when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
         when(systemPropertyService.get(SystemProperty.USER_DELETION_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
         // act
@@ -58,7 +58,7 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
 
         // assert
         assertTrue(logAppender.list.isEmpty());
-        verify(systemPropertyService, times(2)).get(SystemProperty.USER_DELETION_RUNNER_CONTAINER_ID);
+        verify(systemPropertyService).get(SystemProperty.USER_DELETION_RUNNER_CONTAINER_ID);
         verify(userDeletionService, never()).getRequestedUserDeletionIds();
     }
 

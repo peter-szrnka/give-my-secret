@@ -1,15 +1,16 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Subscription } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
+import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { SystemStatusDto } from "../../common/model/system-status.model";
 import { SetupService } from "../setup/service/setup-service";
-import { Subscription } from "rxjs";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
     standalone: true,
-    imports: [ AngularMaterialModule ],
+    imports: [ AngularMaterialModule, PipesModule ],
     selector: 'about',
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.scss']
