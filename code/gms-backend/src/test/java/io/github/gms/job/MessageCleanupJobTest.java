@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,8 +68,8 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		setupClock(clock);
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_MESSAGE_LIMIT)).thenReturn("1;d");
-		when(systemPropertyService.get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID)).thenReturn(null);
-		
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(false);
+
 		// act
 		job.execute();
 		
@@ -76,7 +77,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		assertTrue(logAppender.list.isEmpty());
 		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_MESSAGE_LIMIT);
-		verify(systemPropertyService).get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService, never()).get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID);
 	}
 	
 	@Test
@@ -85,7 +86,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		setupClock(clock);
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_MESSAGE_LIMIT)).thenReturn("1;d");
-		when(systemPropertyService.get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID)).thenReturn(null);
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(false);
 		
 		// act
 		job.execute();
@@ -95,6 +96,6 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		assertEquals("1 message(s) deleted", logAppender.list.getFirst().getFormattedMessage());
 		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_MESSAGE_LIMIT);
-		verify(systemPropertyService).get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService, never()).get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID);
 	}
 }
