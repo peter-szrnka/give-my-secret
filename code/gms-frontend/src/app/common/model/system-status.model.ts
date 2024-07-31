@@ -6,4 +6,5 @@ export interface SystemStatusDto {
     authMode : string;
     version: string;
     built: string;
+    containerId: string;
 }

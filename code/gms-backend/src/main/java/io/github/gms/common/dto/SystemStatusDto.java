@@ -1,5 +1,9 @@
 package io.github.gms.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +22,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @RedisHash("SystemStatusDto")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SystemStatusDto implements Serializable {
 
 	@Serial
@@ -27,4 +32,5 @@ public class SystemStatusDto implements Serializable {
 	private String status;
 	private String version;
 	private String built;
+	private String containerId;
 }

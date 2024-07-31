@@ -34,7 +34,7 @@ class SystemControllerTest {
 
     @Test
     void shouldReturnSecret() {
-        SystemStatusDto mockResponseDto = new SystemStatusDto("db", "OK", "test", "local");
+        SystemStatusDto mockResponseDto = new SystemStatusDto("db", "OK", "test", "local", "containerId");
         // arrange
         when(systemService.getSystemStatus()).thenReturn(mockResponseDto);
 

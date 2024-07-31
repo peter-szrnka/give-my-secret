@@ -41,6 +41,7 @@ public class SystemService {
 		builder.authMode(authType);
 		builder.version(getVersion());
 		builder.built(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
+		builder.containerId(System.getenv("HOSTNAME"));
 
 		if (!SELECTED_AUTH_DB.equals(authType)) {
 			return builder.status(OK).build();
