@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gms-service-local
+spec:
+  selector:
+    app: gms-app-local
+  ports:
+    - protocol: TCP
+      port: 8443
+      targetPort: 8443
+  type: LoadBalancer

@@ -644,7 +644,7 @@
 						<configuration>
 							<googleContainerRegistryEnabled>false</googleContainerRegistryEnabled>
 							<finalName>gms-app-local</finalName>
-							<tag>latest</tag>
+							<tag>local</tag>
 							<repository>gms-app-local</repository>
 							<buildArgs>
 								<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
