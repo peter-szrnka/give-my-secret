@@ -3,10 +3,10 @@ package io.github.gms.job;
 import io.github.gms.common.abstraction.AbstractJob;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.keystore.KeystoreFileService;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +23,8 @@ public class GeneratedKeystoreCleanupJob extends AbstractJob {
 
     private final KeystoreFileService service;
 
-    public GeneratedKeystoreCleanupJob(Environment environment, SystemPropertyService systemPropertyService, KeystoreFileService service) {
-        super(environment, systemPropertyService);
+    public GeneratedKeystoreCleanupJob(SystemService systemService, SystemPropertyService systemPropertyService, KeystoreFileService service) {
+        super(systemService, systemPropertyService);
         this.service = service;
     }
 

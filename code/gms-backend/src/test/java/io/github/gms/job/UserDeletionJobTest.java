@@ -5,11 +5,11 @@ import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.gdpr.UserAssetDeletionService;
 import io.github.gms.functions.gdpr.UserDeletionService;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 
 import java.util.Collections;
 import java.util.Set;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
  */
 class UserDeletionJobTest extends AbstractLoggingUnitTest {
 
-    private Environment env;
+    private SystemService systemService;
     private SystemPropertyService systemPropertyService;
     private UserDeletionService userDeletionService;
     private UserAssetDeletionService userAssetDeletionService;
@@ -38,18 +38,18 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
     @BeforeEach
     public void setup() {
         super.setup();
-        env = mock(Environment.class);
+        systemService = mock(SystemService.class);
         systemPropertyService = mock(SystemPropertyService.class);
         userDeletionService = mock(UserDeletionService.class);
         userAssetDeletionService = mock(UserAssetDeletionService.class);
-        job = new UserDeletionJob(env, systemPropertyService, userDeletionService, userAssetDeletionService);
+        job = new UserDeletionJob(systemService, systemPropertyService, userDeletionService, userAssetDeletionService);
         ((Logger) LoggerFactory.getLogger(UserDeletionJob.class)).addAppender(logAppender);
     }
 
     @Test
     void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
         // arrange
-        when(env.getProperty("HOSTNAME")).thenReturn("ab123457");
+        when(systemService.getContainerId()).thenReturn("ab123457");
         when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
         when(systemPropertyService.get(SystemProperty.USER_DELETION_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 

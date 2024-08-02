@@ -3,10 +3,10 @@ package io.github.gms.job;
 import io.github.gms.common.abstraction.AbstractLimitBasedJob;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.message.MessageRepository;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -25,8 +25,8 @@ public class MessageCleanupJob extends AbstractLimitBasedJob {
 
 	private final MessageRepository messageRepository;
 
-	public MessageCleanupJob(Environment environment, Clock clock, MessageRepository messageRepository, SystemPropertyService systemPropertyService) {
-		super(environment, clock, systemPropertyService);
+	public MessageCleanupJob(SystemService systemService, Clock clock, MessageRepository messageRepository, SystemPropertyService systemPropertyService) {
+		super(systemService, clock, systemPropertyService);
 		this.messageRepository = messageRepository;
 	}
 	

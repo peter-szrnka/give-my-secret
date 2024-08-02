@@ -6,10 +6,10 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.secret.SecretRotationService;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -30,18 +30,18 @@ import static io.github.gms.common.util.Constants.TRUE;
 public class SecretRotationJob extends AbstractJob {
 	
 	private static final long DELAY_SECONDS = 55L;
-	private final Clock clock;
+    private final Clock clock;
 	private final SecretRepository secretRepository;
 	private final SecretRotationService service;
 
 	public SecretRotationJob(
-			Environment environment,
+			SystemService systemService,
 			SystemPropertyService systemPropertyService,
 			Clock clock,
 			SecretRepository secretRepository,
 			SecretRotationService service) {
-		super(environment, systemPropertyService);
-		this.clock = clock;
+		super(systemService, systemPropertyService);
+        this.clock = clock;
 		this.secretRepository = secretRepository;
 		this.service = service;
 	}

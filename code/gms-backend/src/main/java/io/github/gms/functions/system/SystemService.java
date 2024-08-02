@@ -1,6 +1,7 @@
 package io.github.gms.functions.system;
 
 import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.enums.ContainerHostType;
 import io.github.gms.common.util.Constants;
 import io.github.gms.functions.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,8 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 @RequiredArgsConstructor
 public class SystemService {
 
-    private final Environment environment;
+	private static final String N_A = "N/A";
+	private final Environment environment;
 	private final UserRepository userRepository;
 	private final Clock clock;
 	@Setter
@@ -39,17 +41,18 @@ public class SystemService {
 
 	public SystemStatusDto getSystemStatus() {
 		SystemStatusDto.SystemStatusDtoBuilder builder = SystemStatusDto.builder();
-		builder.authMode(authType);
-		builder.version(getVersion());
-		builder.built(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
-		builder.containerId(environment.getProperty("HOSTNAME","N/A"));
+		builder.withAuthMode(authType);
+		builder.withVersion(getVersion());
+		builder.withBuilt(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
+		builder.withContainerHostType(getContainerHostType());
+		builder.withContainerId(getContainerId());
 
 		if (!SELECTED_AUTH_DB.equals(authType)) {
-			return builder.status(OK).build();
+			return builder.withStatus(OK).build();
 		}
 
 		long result = userRepository.countExistingAdmins();
-		return builder.status(result > 0 ? OK : "NEED_SETUP").build();
+		return builder.withStatus(result > 0 ? OK : "NEED_SETUP").build();
 	}
 
 	@Autowired(required = false)
@@ -57,8 +60,25 @@ public class SystemService {
 		this.buildProperties = buildProperties;
 	}
 
+	public String getContainerId() {
+        ContainerHostType containerHostType = getContainerHostType();
+		log.info("Container host type: {}", containerHostType);
+
+		if (ContainerHostType.DOCKER == containerHostType || ContainerHostType.SWARM == containerHostType) {
+			return environment.getProperty("CONTAINER_ID", N_A);
+		} else if (ContainerHostType.KUBERNETES == containerHostType || ContainerHostType.OPENSHIFT == containerHostType) {
+			return environment.getProperty("POD_ID", N_A);
+		}
+
+		return N_A;
+	}
+
 	private String getVersion() {
 		return buildProperties != null ? buildProperties.getVersion() : "DevRuntime";
+	}
+
+	private ContainerHostType getContainerHostType() {
+		return ContainerHostType.getContainerHostType(environment.getProperty("CONTAINER_HOST_TYPE"));
 	}
 
 	private ZonedDateTime getBuildTime() {

@@ -28,6 +28,8 @@ spec:
           ports:
             - containerPort: 8443
           env:
+            - name: CONTAINER_HOST_TYPE
+              value: KUBERNETES
             - name: SELECTED_DB
               value: "postgresql"
             - name: SPRING_PROFILE
@@ -74,6 +76,10 @@ spec:
               value: "/usr/share/keystore-temp/"
             - name: COMPOSE_CONVERT_WINDOWS_PATHS
               value: "1"
+            - name: POD_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
       volumes:
         - name: gms-storage1
           persistentVolumeClaim:

@@ -3,6 +3,7 @@ package io.github.gms.common.controller;
 import io.github.gms.common.dto.ErrorCodeDto;
 import io.github.gms.common.dto.ErrorCodeListDto;
 import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.enums.ContainerHostType;
 import io.github.gms.common.types.ErrorCode;
 import io.github.gms.functions.system.SystemService;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,15 @@ class SystemControllerTest {
 
     @Test
     void shouldReturnSecret() {
-        SystemStatusDto mockResponseDto = new SystemStatusDto("db", "OK", "test", "local", "containerId");
+        SystemStatusDto mockResponseDto = SystemStatusDto.builder()
+                .withAuthMode("db")
+                .withStatus("OK")
+                .withVersion("test")
+                .withBuilt("local")
+                .withContainerHostType(ContainerHostType.DOCKER)
+                .withContainerId("containerId")
+                .build();
+
         // arrange
         when(systemService.getSystemStatus()).thenReturn(mockResponseDto);
 
