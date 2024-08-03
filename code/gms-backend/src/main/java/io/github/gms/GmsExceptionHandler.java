@@ -23,7 +23,7 @@ import java.time.ZonedDateTime;
  */
 @Slf4j
 @ControllerAdvice
-public class GmsExceptionHandler/* extends ResponseEntityExceptionHandler*/ {
+public class GmsExceptionHandler {
 
 	private final Clock clock;
 
