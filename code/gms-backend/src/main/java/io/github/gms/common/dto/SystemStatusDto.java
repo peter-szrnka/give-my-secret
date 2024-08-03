@@ -1,6 +1,7 @@
 package io.github.gms.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.github.gms.common.enums.ContainerHostType;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @Builder(setterPrefix = "with")
 @RedisHash("SystemStatusDto")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(builder = SystemStatusDto.SystemStatusDtoBuilder.class)
 public class SystemStatusDto implements Serializable {
 
 	@Serial
