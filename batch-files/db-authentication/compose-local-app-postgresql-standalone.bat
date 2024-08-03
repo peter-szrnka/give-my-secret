@@ -1,0 +1,1 @@
+docker compose -f docker-compose-local.yml --env-file env-postgresql.txt -p give-my-secret-local up -d

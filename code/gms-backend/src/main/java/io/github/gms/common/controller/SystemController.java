@@ -18,8 +18,8 @@ import java.util.stream.Stream;
  * @since 1.0
  */
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class SystemController {
 
 	private final SystemService systemService;

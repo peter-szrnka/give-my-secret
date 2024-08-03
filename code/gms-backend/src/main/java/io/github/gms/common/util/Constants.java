@@ -86,4 +86,10 @@ public final class Constants {
 
 	public static final String ACCESS_DENIED = "Access denied!";
 	public static final String TRUE = "true";
+
+	// Container related constants
+	public static final String CONTAINER_HOST_TYPE = "CONTAINER_HOST_TYPE";
+	public static final String DOCKER_CONTAINER_ID = "DOCKER_CONTAINER_ID";
+	public static final String POD_ID = "POD_ID";
+	public static final String N_A = "N/A";
 }

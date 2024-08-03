@@ -2,8 +2,8 @@ package io.github.gms.common.abstraction;
 
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.TimeUnit;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
-import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
@@ -16,8 +16,8 @@ public abstract class AbstractLimitBasedJob extends AbstractJob {
 
 	protected final Clock clock;
 
-	public AbstractLimitBasedJob(Environment environment, Clock clock, SystemPropertyService systemPropertyService) {
-		super(environment, systemPropertyService);
+	protected AbstractLimitBasedJob(SystemService systemService, Clock clock, SystemPropertyService systemPropertyService) {
+		super(systemService, systemPropertyService);
         this.clock = clock;
     }
 

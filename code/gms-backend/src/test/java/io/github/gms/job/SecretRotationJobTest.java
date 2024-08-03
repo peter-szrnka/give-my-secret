@@ -8,13 +8,13 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.secret.SecretRotationService;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
 	private Clock clock;
-	private Environment env;
+	private SystemService systemService;
 	private SystemPropertyService systemPropertyService;
 	private SecretRepository secretRepository;
 	private SecretRotationService service;
@@ -50,18 +50,19 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	public void setup() {
 		super.setup();
 		clock = mock(Clock.class);
-		env = mock(Environment.class);
+		systemService = mock(SystemService.class);
 		systemPropertyService = mock(SystemPropertyService.class);
 		secretRepository = mock(SecretRepository.class);
 		service = mock(SecretRotationService.class);
-		job = new SecretRotationJob(env, systemPropertyService, clock, secretRepository, service);
+		job = new SecretRotationJob(systemService, systemPropertyService, clock, secretRepository, service);
 		((Logger) LoggerFactory.getLogger(SecretRotationJob.class)).addAppender(logAppender);
 	}
 
 	@Test
 	void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
 		// arrange
-		when(env.getProperty("HOSTNAME")).thenReturn("ab123457");
+		when(systemService.getContainerId()).thenReturn("ab123457");
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
 		// act
@@ -69,7 +70,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
 		// assert
 		assertTrue(logAppender.list.isEmpty());
-		verify(systemPropertyService, times(2)).get(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService).get(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID);
 		verify(service, never()).rotateSecret(any(SecretEntity.class));
 	}
 

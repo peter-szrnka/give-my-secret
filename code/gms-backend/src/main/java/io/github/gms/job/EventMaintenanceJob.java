@@ -3,6 +3,7 @@ package io.github.gms.job;
 import io.github.gms.common.abstraction.AbstractLimitBasedJob;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.event.EventRepository;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -25,8 +26,8 @@ public class EventMaintenanceJob extends AbstractLimitBasedJob {
 
 	private final EventRepository eventRepository;
 
-	public EventMaintenanceJob(Environment env, Clock clock, EventRepository eventRepository, SystemPropertyService systemPropertyService) {
-		super(env, clock, systemPropertyService);
+	public EventMaintenanceJob(SystemService systemService, Clock clock, EventRepository eventRepository, SystemPropertyService systemPropertyService) {
+		super(systemService, clock, systemPropertyService);
 		this.eventRepository = eventRepository;
 	}
 

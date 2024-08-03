@@ -43,7 +43,14 @@ export const PROPERTY_TEXT_MAP: any = {
 	'ENABLE_MFA': { text: 'MFA usage is enabled or not for the users', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'FAILED_ATTEMPTS_LIMIT' : { text: 'Limit after users should be blocked', displayMode: 'text' },
   'JOB_OLD_EVENT_LIMIT' : { text: 'Limit of deletion of the old events', hint: 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"', displayMode: 'text' },
-  'JOB_OLD_MESSAGE_LIMIT' : { text: 'Limit of deletion of the old messages', hint: 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"', displayMode: 'text' }
+  'JOB_OLD_MESSAGE_LIMIT' : { text: 'Limit of deletion of the old messages', hint: 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"', displayMode: 'text' },
+  'EVENT_MAINTENANCE_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running event maintenance job', displayMode: 'text' },
+  'KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running keystore maintenance job', displayMode: 'text' },
+  'LDAP_SYNC_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running LDAP sync runner job', displayMode: 'text' },
+  'MESSAGE_CLEANUP_RUNNER_CONTAINER_ID' : { text: 'Main container ID for message cleanup job', displayMode: 'text' },
+  'SECRET_ROTATION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for secret rotation job', displayMode: 'text' },
+  'USER_DELETION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running user deletion job', displayMode: 'text' },
+  'ENABLE_MULTI_NODE' : { text: 'Multi-node usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' }
 };
 
 interface SystemPropertyElement extends SystemProperty {

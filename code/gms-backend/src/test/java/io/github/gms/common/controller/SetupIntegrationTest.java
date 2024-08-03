@@ -32,7 +32,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest {
 
 	@Test
 	void shouldSetupAdminUser() {
-		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().status("NEED_SETUP").build());
+		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("NEED_SETUP").build());
 
 		// act
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
@@ -46,7 +46,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest {
 	
 	@Test
 	void shouldSetupAdminUserWithoutRoles() {
-		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().status("NEED_SETUP").build());
+		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("NEED_SETUP").build());
 
 		// act
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDtoWithNoRoles("userRandom", UUID.randomUUID() + "@email.com");

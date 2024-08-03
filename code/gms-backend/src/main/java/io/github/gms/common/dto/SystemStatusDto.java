@@ -1,9 +1,10 @@
 package io.github.gms.common.dto;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.github.gms.common.enums.ContainerHostType;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serial;
@@ -14,10 +15,10 @@ import java.io.Serializable;
  * @since 1.0
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder(setterPrefix = "with")
 @RedisHash("SystemStatusDto")
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(builder = SystemStatusDto.SystemStatusDtoBuilder.class)
 public class SystemStatusDto implements Serializable {
 
 	@Serial
@@ -27,4 +28,6 @@ public class SystemStatusDto implements Serializable {
 	private String status;
 	private String version;
 	private String built;
+	private ContainerHostType containerHostType;
+	private String containerId;
 }
