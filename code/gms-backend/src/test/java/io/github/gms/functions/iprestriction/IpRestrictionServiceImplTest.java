@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -279,6 +280,19 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         verify(repository).save(argumentCaptor.capture());
 
         assertEquals(enabled, argumentCaptor.getValue().getStatus() == EntityStatus.ACTIVE);
+    }
+
+    @Test
+    void shouldDeleteInBatch() {
+        // arrange
+        Set<Long> userIds = Set.of(1L, 2L);
+
+        // act
+        service.batchDeleteByUserIds(userIds);
+
+        // assert
+        verify(repository).deleteAllByUserId(userIds);
+        assertLogContains(logAppender, "All IP restrictions have been removed for the requested users");
     }
 
     private static Object[][] saveInputData() {

@@ -24,8 +24,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
+import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -276,5 +278,18 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(2, response.getResultList().size());
 		assertEquals("apikey1", response.getResultList().getFirst().getName());
 		verify(repository).getAllApiKeyNames(anyLong());
+	}
+
+	@Test
+	void shouldDeleteInBatch() {
+		// arrange
+		Set<Long> userIds = Set.of(1L, 2L);
+
+		// act
+		service.batchDeleteByUserIds(userIds);
+
+		// assert
+		verify(repository).deleteAllByUserId(userIds);
+		assertLogContains(logAppender, "All API keys have been removed for the requested users");
 	}
 }
