@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static io.github.gms.util.TestUtils.assertLogContains;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -615,6 +616,19 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(4L, response.getValue());
 
 		MDC.clear();
+	}
+
+	@Test
+	void shouldDeleteInBatch() {
+		// arrange
+		Set<Long> userIds = Set.of(1L, 2L);
+
+		// act
+		service.batchDeleteByUserIds(userIds);
+
+		// assert
+		verify(repository).deleteAllByUserId(userIds);
+		assertLogContains(logAppender, "All secrets have been removed for the requested users");
 	}
 
 	private static Object[] findByIdData() {

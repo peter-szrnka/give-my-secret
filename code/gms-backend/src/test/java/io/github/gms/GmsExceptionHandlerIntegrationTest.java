@@ -18,6 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
+/**
+ * Integration tests for {@link GmsExceptionHandler}.
+ *
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Tag(TAG_INTEGRATION_TEST)
 class GmsExceptionHandlerIntegrationTest extends AbstractIntegrationTest {
 

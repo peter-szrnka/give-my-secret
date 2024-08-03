@@ -12,7 +12,7 @@
 		<maven.compiler.target>21</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<backend.buildname>gms-app</backend.buildname>
-		<spring-boot.version>3.2.5</spring-boot.version>
+		<spring-boot.version>3.3.2</spring-boot.version>
 		<maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
 		<flyway.version>9.22.3</flyway.version>
 		<bouncycastle.version>1.78.1</bouncycastle.version>
@@ -71,17 +71,17 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>6.1.6</version>
+			<version>6.1.11</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>6.1.6</version>
+			<version>6.1.11</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>6.2.3</version>
+			<version>6.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -165,7 +165,7 @@
 		<dependency>
 			<groupId>org.springframework.ldap</groupId>
 			<artifactId>spring-ldap-core</artifactId>
-			<version>3.2.3</version>
+			<version>3.2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.unboundid</groupId>
@@ -270,12 +270,12 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.32</version>
+			<version>1.18.34</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>33.2.0-jre</version>
+			<version>33.2.1-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>dev.samstevens.totp</groupId>
@@ -316,7 +316,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-checkstyle-plugin</artifactId>
-						<version>3.2.1</version>
+						<version>3.4.0</version>
 						<configuration>
 							<inputEncoding>UTF-8</inputEncoding>
 							<outputEncoding>UTF-8</outputEncoding>
