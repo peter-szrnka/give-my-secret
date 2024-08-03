@@ -7,7 +7,11 @@
                 <li>Built time: <b>{{ systemStatus.built | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}</b></li>
                 <li>Authentication mode: <b>{{systemStatus.authMode}}</b></li>
                 <li>Status: <b>{{systemStatus.status}}</b></li>
-                <li>Container ID: <b>{{systemStatus.containerId}}</b></li>
+                @if (systemStatus.containerHostType === 'DOCKER' || systemStatus.containerHostType === 'SWARM' || systemStatus.containerHostType === 'UNKNOWN') {
+                    <li>Container ID: <b>{{systemStatus.containerId}}</b></li>
+                } @else if (systemStatus.containerHostType === 'KUBERNETES' || systemStatus.containerHostType === 'OPENSHIFT') {
+                    <li>Pod ID: <b>{{systemStatus.containerId}}</b></li>
+                }
             </ul>
         } @else {
             <mat-spinner></mat-spinner>

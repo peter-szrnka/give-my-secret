@@ -17,7 +17,11 @@ import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static io.github.gms.common.util.Constants.CONTAINER_HOST_TYPE;
+import static io.github.gms.common.util.Constants.DOCKER_CONTAINER_ID;
+import static io.github.gms.common.util.Constants.N_A;
 import static io.github.gms.common.util.Constants.OK;
+import static io.github.gms.common.util.Constants.POD_ID;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 
 /**
@@ -29,7 +33,6 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 @RequiredArgsConstructor
 public class SystemService {
 
-	private static final String N_A = "N/A";
 	private final Environment environment;
 	private final UserRepository userRepository;
 	private final Clock clock;
@@ -62,12 +65,11 @@ public class SystemService {
 
 	public String getContainerId() {
         ContainerHostType containerHostType = getContainerHostType();
-		log.info("Container host type: {}", containerHostType);
 
 		if (ContainerHostType.DOCKER == containerHostType || ContainerHostType.SWARM == containerHostType) {
-			return environment.getProperty("CONTAINER_ID", N_A);
+			return environment.getProperty(DOCKER_CONTAINER_ID, N_A);
 		} else if (ContainerHostType.KUBERNETES == containerHostType || ContainerHostType.OPENSHIFT == containerHostType) {
-			return environment.getProperty("POD_ID", N_A);
+			return environment.getProperty(POD_ID, N_A);
 		}
 
 		return N_A;
@@ -78,7 +80,7 @@ public class SystemService {
 	}
 
 	private ContainerHostType getContainerHostType() {
-		return ContainerHostType.getContainerHostType(environment.getProperty("CONTAINER_HOST_TYPE"));
+		return ContainerHostType.getContainerHostType(environment.getProperty(CONTAINER_HOST_TYPE));
 	}
 
 	private ZonedDateTime getBuildTime() {

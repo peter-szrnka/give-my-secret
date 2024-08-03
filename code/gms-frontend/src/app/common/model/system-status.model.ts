@@ -7,5 +7,5 @@ export interface SystemStatusDto {
     version: string;
     built: string;
     containerHostType: string;
-    containerId: string;
+    containerId?: string;
 }
