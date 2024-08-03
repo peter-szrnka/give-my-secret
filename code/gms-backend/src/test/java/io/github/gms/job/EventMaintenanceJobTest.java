@@ -5,13 +5,13 @@ import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.TimeUnit;
 import io.github.gms.functions.event.EventRepository;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  */
 class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 
-	private Environment env;
+	private SystemService systemService;
     private EventRepository eventRepository;
 	private EventMaintenanceJob job;
 	private Clock clock;
@@ -46,17 +46,18 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		super.setup();
 		// init
         clock = mock(Clock.class);
-		env = mock(Environment.class);
+		systemService = mock(SystemService.class);
 		eventRepository = mock(EventRepository.class);
 		systemPropertyService = mock(SystemPropertyService.class);
-		job = new EventMaintenanceJob(env, clock, eventRepository, systemPropertyService);
+		job = new EventMaintenanceJob(systemService, clock, eventRepository, systemPropertyService);
 		((Logger) LoggerFactory.getLogger(EventMaintenanceJob.class)).addAppender(logAppender);
 	}
 
 	@Test
 	void execute_whenAppIsNotRunningInMainContainer_thenSkipExecution() {
 		// arrange
-		when(env.getProperty("HOSTNAME")).thenReturn("ab123457");
+		when(systemService.getContainerId()).thenReturn("ab123457");
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
 		// act
@@ -64,13 +65,14 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 
 		// assert
 		assertTrue(logAppender.list.isEmpty());
-		verify(env).getProperty("HOSTNAME");
-		verify(systemPropertyService, times(2)).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
+		verify(systemService).getContainerId();
+		verify(systemPropertyService/*, times(2)*/).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
 	}
 
 	@Test
 	void shouldNotProcess() {
 		// arrange
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn(null);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
@@ -91,9 +93,32 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
+	void execute_whenMultiNodeDisabled_thenShouldNotProcess() {
+		// arrange
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(false);
+		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
+		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+
+		// act
+		job.execute();
+
+		// assert
+		assertTrue(logAppender.list.isEmpty());
+
+		ArgumentCaptor<ZonedDateTime> dateCArgumentCaptor = ArgumentCaptor.forClass(ZonedDateTime.class);
+		verify(eventRepository).deleteAllEventDateOlderThan(dateCArgumentCaptor.capture());
+		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
+		verify(systemPropertyService, never()).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService).get(SystemProperty.JOB_OLD_EVENT_LIMIT);
+	}
+
+	@Test
 	void shouldProcess() {
 		// arrange
-		when(env.getProperty("HOSTNAME")).thenReturn("ab123456");
+		when(systemService.getContainerId()).thenReturn("ab123456");
+		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));

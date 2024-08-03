@@ -605,21 +605,6 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<configuration>
-							<source>${java.version}</source>
-							<target>${java.version}</target>
-						</configuration>
-						<dependencies>
-							<dependency>
-								<groupId>io.github.gms</groupId>
-								<artifactId>gms-frontend</artifactId>
-								<version>0.0.1-SNAPSHOT</version>
-							</dependency>
-						</dependencies>
-					</plugin>
-					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
 						<version>${spring-boot.version}</version>
@@ -659,7 +644,7 @@
 						<configuration>
 							<googleContainerRegistryEnabled>false</googleContainerRegistryEnabled>
 							<finalName>gms-app-local</finalName>
-							<tag>latest</tag>
+							<tag>local</tag>
 							<repository>gms-app-local</repository>
 							<buildArgs>
 								<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>

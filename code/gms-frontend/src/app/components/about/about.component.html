@@ -4,9 +4,14 @@
         @if (systemStatus) {
             <ul>
                 <li>Application version: <b>{{systemStatus.version}}</b></li>
-                <li>Built time: <b>{{systemStatus.built}}</b></li>
+                <li>Built time: <b>{{ systemStatus.built | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}</b></li>
                 <li>Authentication mode: <b>{{systemStatus.authMode}}</b></li>
-                <li>status: <b>{{systemStatus.status}}</b></li>
+                <li>Status: <b>{{systemStatus.status}}</b></li>
+                @if (systemStatus.containerHostType === 'DOCKER' || systemStatus.containerHostType === 'SWARM' || systemStatus.containerHostType === 'UNKNOWN') {
+                    <li>Container ID: <b>{{systemStatus.containerId}}</b></li>
+                } @else if (systemStatus.containerHostType === 'KUBERNETES' || systemStatus.containerHostType === 'OPENSHIFT') {
+                    <li>Pod ID: <b>{{systemStatus.containerId}}</b></li>
+                }
             </ul>
         } @else {
             <mat-spinner></mat-spinner>

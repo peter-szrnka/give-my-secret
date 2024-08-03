@@ -4,10 +4,10 @@ import io.github.gms.common.abstraction.AbstractJob;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.gdpr.UserAssetDeletionService;
 import io.github.gms.functions.gdpr.UserDeletionService;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +27,8 @@ public class UserDeletionJob extends AbstractJob {
     private final UserDeletionService userDeletionService;
     private final UserAssetDeletionService userAssetDeletionService;
 
-    public UserDeletionJob(Environment environment, SystemPropertyService systemPropertyService, UserDeletionService userDeletionService, UserAssetDeletionService userAssetDeletionService) {
-        super(environment, systemPropertyService);
+    public UserDeletionJob(SystemService systemService, SystemPropertyService systemPropertyService, UserDeletionService userDeletionService, UserAssetDeletionService userAssetDeletionService) {
+        super(systemService, systemPropertyService);
         this.userDeletionService = userDeletionService;
         this.userAssetDeletionService = userAssetDeletionService;
     }

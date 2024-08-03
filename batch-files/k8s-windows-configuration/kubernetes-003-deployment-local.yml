@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gms-app-local-deployment
+  labels:
+    app: gms-app-local
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gms-app-local
+  template:
+    metadata:
+      labels:
+        app: gms-app-local
+    spec:
+      hostNetwork: true
+      containers:
+        - name: gms-app-local
+          image: gms-app-local:local
+          volumeMounts:
+            - mountPath: "/usr/share/ssl/"
+              name: gms-storage1
+            - mountPath: "/usr/share/keystore/"
+              name: gms-storage2
+            - mountPath: "/usr/share/keystore-temp/"
+              name: gms-storage3
+          ports:
+            - containerPort: 8443
+          env:
+            - name: CONTAINER_HOST_TYPE
+              value: KUBERNETES
+            - name: SELECTED_DB
+              value: "postgresql"
+            - name: SPRING_PROFILE
+              value: "postgresql,db,https"
+            - name: SSL_KEYSTORE_TYPE
+              value: "PKCS12"
+            - name: SSL_KEYSTORE_PATH
+              value: "/usr/share/ssl/"
+            - name: SSL_KEYSTORE
+              value: "/usr/share/ssl/test.p12"
+            - name: SSL_KEYSTORE_PASSWORD
+              value: "Test1234"
+            - name: SSL_KEYSTORE_ALIAS
+              value: "test"
+            - name: HTTPS_PORT
+              value: "8443"
+            - name: CONFIG_SECRET_JWT
+              value: "MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2Nzg="
+            - name: CONFIG_SECRET_CRYPTO
+              value: "MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2Nzg="
+            - name: CONFIG_ENCRYPTION_IV
+              value: "R4nd0mIv1234567!"
+            - name: LDAP_BASE_DN
+              value: "dc=givemysecret,dc=szrnkapeter,dc=hu"
+            - name: LDAP_URL
+              value: "ldap://host.docker.internal:11389"
+            - name: LDAP_USERNAME
+              value: "uid=admin,ou=system"
+            - name: LDAP_CREDENTIAL
+              value: "postgresql"
+            - name: LDAP_PASSWORD_ENCODER
+              value: "CRYPT"
+            - name: DB_SHOW_SQL
+              value: "false"
+            - name: DB_JDBC_URL
+              value: "jdbc:postgresql://localhost:5432/gms?currentSchema=gms&schema=gms"
+            - name: DB_USERNAME
+              value: "postgres"
+            - name: DB_CREDENTIAL
+              value: "Secret"
+            - name: KEYSTORE_PATH
+              value: "/usr/share/keystore/"
+            - name: KEYSTORE_TEMP_DEFAULT_PATH
+              value: "/usr/share/keystore-temp/"
+            - name: COMPOSE_CONVERT_WINDOWS_PATHS
+              value: "1"
+            - name: POD_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+      volumes:
+        - name: gms-storage1
+          persistentVolumeClaim:
+            claimName: gms-keystores-pvc
+        - name: gms-storage2
+          persistentVolumeClaim:
+            claimName: gms-ks-pvc
+        - name: gms-storage3
+          persistentVolumeClaim:
+            claimName: gms-tempks-pvc

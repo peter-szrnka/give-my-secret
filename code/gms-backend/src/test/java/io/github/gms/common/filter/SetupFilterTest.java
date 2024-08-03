@@ -36,7 +36,7 @@ class SetupFilterTest extends AbstractUnitTest {
 	@Test
 	@SneakyThrows
 	void shouldSetupEnabled() {
-		SystemStatusDto mock = SystemStatusDto.builder().status("NEED_SETUP").build();
+		SystemStatusDto mock = SystemStatusDto.builder().withStatus("NEED_SETUP").build();
 		when(service.getSystemStatus()).thenReturn(mock);
 
 		// act
@@ -55,7 +55,7 @@ class SetupFilterTest extends AbstractUnitTest {
 	@Test
 	@SneakyThrows
 	void shouldBeOk() {
-		SystemStatusDto mock = SystemStatusDto.builder().status("OK").build();
+		SystemStatusDto mock = SystemStatusDto.builder().withStatus("OK").build();
 		when(service.getSystemStatus()).thenReturn(mock);
 
 		// act
