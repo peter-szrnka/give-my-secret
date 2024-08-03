@@ -86,3 +86,6 @@ You can find client code examples for Java, Go, Python and Node.js [here](client
 
 # Donate
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7YEPKTQRNK5YA)
+
+# Hit counter
+ [![HitCount](https://hits.dwyl.com/peter-szrnka/give-my-secret.svg?style=flat-square)](http://hits.dwyl.com/peter-szrnka/give-my-secret)
