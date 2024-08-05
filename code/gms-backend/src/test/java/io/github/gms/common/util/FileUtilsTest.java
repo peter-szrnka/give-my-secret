@@ -33,8 +33,7 @@ class FileUtilsTest extends AbstractUnitTest {
     private static String[] testData() {
         return new String[] {
                 null,
-                "hack/../../root/etc/password",
-                "/root/etc/password"
+                "hack/../../root/etc/password"
         };
     }
 }

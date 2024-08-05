@@ -33,7 +33,7 @@ public interface SecretRepository extends CountableRepository<SecretEntity, Long
 
 	@Modifying
 	@Query("update SecretEntity s set s.status=io.github.gms.common.enums.EntityStatus.DISABLED where s.status != io.github.gms.common.enums.EntityStatus.DISABLED and s.keystoreAliasId = :keystoreAliasId")
-	void disableAllActiveByKeystoreAliasId(@Param("keystoreAliasId") Long keystoreAliasId);
+	int disableAllActiveByKeystoreAliasId(@Param("keystoreAliasId") Long keystoreAliasId);
 
 	long countAllSecretsByUserIdAndSecretId(Long userId, String secretId);
 

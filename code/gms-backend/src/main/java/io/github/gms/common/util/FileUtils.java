@@ -14,7 +14,7 @@ public class FileUtils {
     private FileUtils() {}
 
     public static void validatePath(String path) {
-        if (isNull(path) || path.startsWith("/") || path.contains("../")) {
+        if (isNull(path) || path.contains("../")) {
             throw new GmsException("Could not upload file!", GMS_001);
         }
     }
