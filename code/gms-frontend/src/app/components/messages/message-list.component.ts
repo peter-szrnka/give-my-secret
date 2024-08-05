@@ -5,6 +5,7 @@ import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
 import { catchError, of } from "rxjs";
 import { MessageList } from "./model/message-list.model";
+import { SharedDataService } from "../../common/service/shared-data-service";
 
 const FILTER : Paging = {
     direction: "DESC",
@@ -27,7 +28,7 @@ export class MessageListComponent implements OnInit {
     protected count  = 0;
     error? : string;
 
-    constructor(public service : MessageService) {
+    constructor(private service : MessageService, private sharedDataService : SharedDataService) {
     }
 
     ngOnInit(): void {
@@ -49,6 +50,7 @@ export class MessageListComponent implements OnInit {
             this.datasource = new ArrayDataSource<Message>(response.resultList);
             this.count = response.totalElements;
             this.error = response.error;
+            this.sharedDataService.messageCountUpdateEvent.emit(this.count);
         });
     }
 }

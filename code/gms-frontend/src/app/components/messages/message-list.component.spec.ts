@@ -9,6 +9,7 @@ import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
 import { MessageListComponent } from "./message-list.component";
 import { HttpErrorResponse } from "@angular/common/http";
+import { SharedDataService } from "../../common/service/shared-data-service";
 
 /**
  * @author Peter Szrnka
@@ -17,6 +18,7 @@ describe('MessageListComponent', () => {
     let component : MessageListComponent;
     let fixture : ComponentFixture<MessageListComponent>;
     // Injected services
+    let sharedDataService : any;
     let service : any;
 
     const configureTestBed = () => {
@@ -25,7 +27,8 @@ describe('MessageListComponent', () => {
             declarations : [MessageListComponent],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
             providers: [
-                { provide : MessageService, useValue : service }
+                { provide : MessageService, useValue : service },
+                { provide : SharedDataService, useValue : sharedDataService }
             ]
         });
 
@@ -47,7 +50,10 @@ describe('MessageListComponent', () => {
                 });
             }),
             markAsRead : jest.fn().mockReturnValue(of("OK"))
-        }
+        };
+        sharedDataService = {
+            messageCountUpdateEvent : { emit : jest.fn() }
+        };
     });
 
     it('should return count', () => {
@@ -59,10 +65,11 @@ describe('MessageListComponent', () => {
         expect(component).toBeTruthy();
         expect(response).toEqual(2);
         expect(service.list).toHaveBeenCalledTimes(2);
+        expect(sharedDataService.messageCountUpdateEvent.emit).toHaveBeenCalledTimes(2);
     });
 
     it('should handle unknown error', () => {
-        service.list = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+        service.list = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
         configureTestBed();
 
         // assert
