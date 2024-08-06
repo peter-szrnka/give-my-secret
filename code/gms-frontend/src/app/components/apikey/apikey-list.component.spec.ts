@@ -4,15 +4,14 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "../user/model/user.model";
-import { ApiKeyService } from "./service/apikey-service";
-import { SharedDataService } from "../../common/service/shared-data-service";
-import { ApiKeyListComponent, COPY_MESSAGE } from "./apikey-list.component";
 import { ClipboardService } from "../../common/service/clipboard-service";
+import { SharedDataService } from "../../common/service/shared-data-service";
+import { User } from "../user/model/user.model";
+import { ApiKeyListComponent, COPY_MESSAGE } from "./apikey-list.component";
+import { ApiKeyService } from "./service/apikey-service";
 
 /**
  * @author Peter Szrnka
@@ -34,7 +33,7 @@ describe('ApiKeyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            imports : [ AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
             declarations : [ApiKeyListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -54,7 +53,8 @@ describe('ApiKeyListComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn().mockReturnValue(of(true))
+            navigate : jest.fn(),
+            navigateByUrl : jest.fn().mockResolvedValue(true)
         };
 
         sharedDataService = {

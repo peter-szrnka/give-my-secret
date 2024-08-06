@@ -38,9 +38,6 @@ describe('StatusToggleComponent', () => {
         component.doNotToggle = false;
         component.entityId = 1;
         component.status = 'ACTIVE';
-        component.callbackFunction.subscribe((response) => {
-            expect(response).toBeDefined();
-        });
 
         // act
         component.toggle();

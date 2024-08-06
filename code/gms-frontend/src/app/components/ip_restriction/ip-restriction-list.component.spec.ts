@@ -4,7 +4,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
@@ -32,7 +31,7 @@ describe('IpRestrictionListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            imports : [ AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
             declarations : [IpRestrictionListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -51,7 +50,8 @@ describe('IpRestrictionListComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn().mockReturnValue(of(true))
+            navigate : jest.fn(),
+            navigateByUrl : jest.fn().mockResolvedValue(true)
         };
 
         sharedDataService = {

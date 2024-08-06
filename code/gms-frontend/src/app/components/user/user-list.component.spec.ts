@@ -88,7 +88,8 @@ describe('UserListComponent', () => {
         };
 
         router = {
-            navigate : jest.fn()
+            navigate : jest.fn(),
+            navigateByUrl : jest.fn().mockReturnValue(of({ then : jest.fn().mockReturnValue(of(true)) }))
         };
     });
 
@@ -176,7 +177,7 @@ describe('UserListComponent', () => {
         component.manualLdapUserSync();
 
         expect(component.dialog.open).toHaveBeenCalled();
-        expect(component.router.navigate).toHaveBeenCalled();
+        expect(component.router.navigateByUrl).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
     });
