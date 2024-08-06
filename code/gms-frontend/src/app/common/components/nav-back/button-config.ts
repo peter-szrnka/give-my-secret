@@ -3,7 +3,8 @@
  */
 export interface ButtonConfig {
     label : string,
-    url? : string
+    url? : string,
+    callFunction?: (() => void);
     primary : boolean,
     visibilityCondition? : boolean;
 }

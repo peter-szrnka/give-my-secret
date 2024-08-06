@@ -9,7 +9,6 @@ export interface UserData extends BaseDetail {
     name? : string,
     email? : string,
     credential? : string,
-    id? : number,
     status? : string,
     creationDate? : Date,
     role : string

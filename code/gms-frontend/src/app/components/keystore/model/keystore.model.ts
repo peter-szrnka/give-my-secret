@@ -6,7 +6,6 @@ import { KeystoreAlias } from "./keystore-alias.model";
  * @author Peter Szrnka
  */
 export interface Keystore extends BaseDetail {
-    id? : number,
     userId? : number,
     name? : string,
     fileName? : string,

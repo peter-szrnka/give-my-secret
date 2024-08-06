@@ -5,7 +5,6 @@ import { PageConfig } from "../../../common/model/common.model";
  * @author Peter Szrnka
  */
 export interface ApiKey extends BaseDetail {
-    id? : number,
     userId? : number,
     name? : string,
     value? : string,
