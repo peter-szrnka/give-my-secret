@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class UserServiceImplTest extends AbstractLoggingUnitTest {
+class UserServiceTest extends AbstractLoggingUnitTest {
 
 	private UserRepository repository;
 	private UserConverter converter;
@@ -62,7 +62,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	private JwtClaimService jwtClaimService;
 	private SecretGenerator secretGenerator;
 
-	private UserServiceImpl service;
+	private UserService service;
 
 	@Override
 	@BeforeEach
@@ -73,8 +73,8 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		passwordEncoder = mock(PasswordEncoder.class);
 		jwtClaimService = mock(JwtClaimService.class);
 		secretGenerator = mock(SecretGenerator.class);
-		service = new UserServiceImpl(repository, converter, passwordEncoder, jwtClaimService, secretGenerator);
-		((Logger) LoggerFactory.getLogger(UserServiceImpl.class)).addAppender(logAppender);
+		service = new UserService(repository, converter, passwordEncoder, jwtClaimService, secretGenerator);
+		((Logger) LoggerFactory.getLogger(UserService.class)).addAppender(logAppender);
 	}
 
 	@Test

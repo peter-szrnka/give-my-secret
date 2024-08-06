@@ -35,12 +35,12 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class MessageServiceImplTest extends AbstractLoggingUnitTest {
+class MessageServiceTest extends AbstractLoggingUnitTest {
 
 	private Clock clock;
 	private MessageRepository repository;
 	private MessageConverter converter;
-	private MessageServiceImpl service;
+	private MessageService service;
 
 	@Override
 	@BeforeEach
@@ -51,8 +51,8 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		clock = mock(Clock.class);
 		repository = mock(MessageRepository.class);
 		converter = mock(MessageConverter.class);
-		service = new MessageServiceImpl(clock, repository, converter);
-		((Logger) LoggerFactory.getLogger(MessageServiceImpl.class)).addAppender(logAppender);
+		service = new MessageService(clock, repository, converter);
+		((Logger) LoggerFactory.getLogger(MessageService.class)).addAppender(logAppender);
 	}
 	@Test
 	void shouldSave() {
