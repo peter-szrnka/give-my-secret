@@ -1,7 +1,7 @@
 /**
  * @author Peter Szrnka
  */
-export interface SystemStatusDto {
+export interface SystemStatus {
     status : string,
     authMode : string;
     version: string;

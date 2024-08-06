@@ -6,7 +6,7 @@ import { SetupService } from "../../components/setup/service/setup-service";
 import { SharedDataService } from "./shared-data-service";
 import { Router } from "@angular/router";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { SystemStatusDto } from "../model/system-status.model";
+import { SystemStatus } from "../model/system-status.model";
 import { AuthService } from "./auth-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SystemReadyData } from "../model/system-ready.model";
@@ -46,7 +46,7 @@ describe('SharedDataService', () => {
     };
 
     setupService = {
-      checkReady: (): Observable<SystemStatusDto> => { return of({  authMode:'db', status:'OK', version: '1.0.0', built: '2024-04-09T12:34:56.000Z', containerId: '1234567', containerHostType: 'DOCKER' }); }
+      checkReady: (): Observable<SystemStatus> => { return of({  authMode:'db', status:'OK', version: '1.0.0', built: '2024-04-09T12:34:56.000Z', containerId: '1234567', containerHostType: 'DOCKER' }); }
     };
 
     authService = {
