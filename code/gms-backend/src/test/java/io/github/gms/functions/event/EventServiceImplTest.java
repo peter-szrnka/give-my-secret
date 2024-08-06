@@ -36,13 +36,13 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class EventServiceTest extends AbstractUnitTest {
+class EventServiceImplTest extends AbstractUnitTest {
 
 	private Clock clock;
 	private EventRepository repository;
 	private UserRepository userRepository;
 	private EventConverter converter;
-	private EventService service;
+	private EventServiceImpl service;
 
 	@BeforeEach
 	public void setup() {
@@ -50,7 +50,7 @@ class EventServiceTest extends AbstractUnitTest {
 		repository = mock(EventRepository.class);
 		userRepository = mock(UserRepository.class);
 		converter = mock(EventConverter.class);
-		service = new EventService(clock, repository, userRepository, converter);
+		service = new EventServiceImpl(clock, repository, userRepository, converter);
 	}
 	
 	@Test

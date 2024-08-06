@@ -38,10 +38,10 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class AnnouncementServiceTest extends AbstractUnitTest {
+class AnnouncementServiceImplTest extends AbstractUnitTest {
 
 	private Clock clock;
-	private AnnouncementService service;
+	private AnnouncementServiceImpl service;
 	private AnnouncementRepository repository;
 	private UserService userService;
 
@@ -51,7 +51,7 @@ class AnnouncementServiceTest extends AbstractUnitTest {
 		clock = mock(Clock.class);
 		repository = mock(AnnouncementRepository.class);
 		userService = mock(UserService.class);
-		service = new AnnouncementService(clock, repository, userService);
+		service = new AnnouncementServiceImpl(clock, repository, userService);
 	}
 
 	@Test

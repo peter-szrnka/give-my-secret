@@ -62,7 +62,7 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class SecretServiceTest extends AbstractLoggingUnitTest {
+class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 	private CryptoService cryptoService;
 	private KeystoreRepository keystoreRepository;
@@ -71,7 +71,7 @@ class SecretServiceTest extends AbstractLoggingUnitTest {
 	private SecretConverter converter;
 	private ApiKeyRestrictionRepository apiKeyRestrictionRepository;
 	private IpRestrictionService ipRestrictionService;
-	private SecretService service;
+	private SecretServiceImpl service;
 
 	@Override
 	@BeforeEach
@@ -84,9 +84,9 @@ class SecretServiceTest extends AbstractLoggingUnitTest {
 		converter = mock(SecretConverter.class);
 		apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);
 		ipRestrictionService = mock(IpRestrictionService.class);
-		service = new SecretService(cryptoService, keystoreRepository, keystoreAliasRepository, repository,
+		service = new SecretServiceImpl(cryptoService, keystoreRepository, keystoreAliasRepository, repository,
 				converter, apiKeyRestrictionRepository, ipRestrictionService);
-		((Logger) LoggerFactory.getLogger(SecretService.class)).addAppender(logAppender);
+		((Logger) LoggerFactory.getLogger(SecretServiceImpl.class)).addAppender(logAppender);
 
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 	}
@@ -101,7 +101,7 @@ class SecretServiceTest extends AbstractLoggingUnitTest {
 		GmsException exception = assertThrows(GmsException.class, () -> service.save(dto));
 
 		// assert
-		assertEquals(SecretService.WRONG_KEYSTORE_ALIAS, exception.getMessage());
+		assertEquals(SecretServiceImpl.WRONG_KEYSTORE_ALIAS, exception.getMessage());
 		verify(keystoreRepository, never()).findByIdAndUserId(anyLong(), anyLong());
 	}
 
@@ -112,7 +112,7 @@ class SecretServiceTest extends AbstractLoggingUnitTest {
 
 		// act & assert
 		SaveSecretRequestDto input = TestUtils.createSaveSecretRequestDto(2L);
-		TestUtils.assertGmsException(() -> service.save(input), SecretService.WRONG_KEYSTORE_ALIAS);
+		TestUtils.assertGmsException(() -> service.save(input), SecretServiceImpl.WRONG_KEYSTORE_ALIAS);
 		verify(keystoreAliasRepository).findById(anyLong());
 	}
 
@@ -125,7 +125,7 @@ class SecretServiceTest extends AbstractLoggingUnitTest {
 
 		// act & assert
 		SaveSecretRequestDto input = TestUtils.createSaveSecretRequestDto(2L);
-		TestUtils.assertGmsException(() -> service.save(input), SecretService.WRONG_ENTITY);
+		TestUtils.assertGmsException(() -> service.save(input), SecretServiceImpl.WRONG_ENTITY);
 		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
 		verify(keystoreAliasRepository).findById(anyLong());
 	}
@@ -141,7 +141,7 @@ class SecretServiceTest extends AbstractLoggingUnitTest {
 
 		// act & assert
 		SaveSecretRequestDto input = TestUtils.createSaveSecretRequestDto(2L);
-		TestUtils.assertGmsException(() -> service.save(input), SecretService.PLEASE_PROVIDE_ACTIVE_KEYSTORE);
+		TestUtils.assertGmsException(() -> service.save(input), SecretServiceImpl.PLEASE_PROVIDE_ACTIVE_KEYSTORE);
 		verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
 		verify(keystoreAliasRepository).findById(anyLong());
 	}
@@ -482,7 +482,7 @@ class SecretServiceTest extends AbstractLoggingUnitTest {
 		GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
 		// assert
-		assertEquals(SecretService.WRONG_ENTITY, exception.getMessage());
+		assertEquals(SecretServiceImpl.WRONG_ENTITY, exception.getMessage());
 		verify(repository).findById(1L);
 		verify(converter, never()).toDto(any());
 	}
