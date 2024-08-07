@@ -49,7 +49,8 @@ describe('MessageListComponent', () => {
                 });
             }),
             markAsRead : jest.fn().mockReturnValue(of("OK")),
-            deleteAllByIds: jest.fn().mockReturnValue(of("OK"))
+            deleteAllByIds: jest.fn().mockReturnValue(of("OK")),
+            toggleAllAsRead: jest.fn().mockReturnValue(of("OK")),
         };
         sharedDataService = {
             messageCountUpdateEvent : { emit : jest.fn() }
