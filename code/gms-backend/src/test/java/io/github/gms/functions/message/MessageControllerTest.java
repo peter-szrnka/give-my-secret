@@ -1,6 +1,6 @@
 package io.github.gms.functions.message;
 
-import io.github.gms.abstraction.AbstractClientControllerTest;
+import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,7 +23,10 @@ import static org.mockito.Mockito.when;
  * 
  * @author Peter Szrnka
  */
-class MessageControllerTest extends AbstractClientControllerTest<MessageService, MessageController> {
+class MessageControllerTest {
+
+    private MessageService service;
+    private MessageController controller;
     
     @BeforeEach
     void setupTest() {
@@ -78,5 +83,20 @@ class MessageControllerTest extends AbstractClientControllerTest<MessageService,
         assertEquals(200, response.getStatusCode().value());
         assertEquals("", response.getBody());
         verify(service).markAsRead(dto);
+    }
+
+    @Test
+    void shouldDeleteAllByIds() {
+        // arrange
+        IdListDto dto = new IdListDto(Set.of(1L, 2L, 3L));
+        doNothing().when(service).deleteAllByIds(dto);
+
+        // act
+        ResponseEntity<Void> response = controller.deleteAllByIds(dto);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        verify(service).deleteAllByIds(dto);
     }
 }

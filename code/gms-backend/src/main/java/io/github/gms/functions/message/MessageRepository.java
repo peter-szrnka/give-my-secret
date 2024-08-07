@@ -40,4 +40,9 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
 	@Transactional
 	@Query("DELETE FROM MessageEntity m where m.userId in :userIds")
 	void deleteAllByUserId(@Param("userIds") Set<Long> userIds);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM MessageEntity m where m.userId = :userId and m.id in :ids")
+    void deleteAllByUserIdAndIds(@Param("userId") Long userId, @Param("ids") Set<Long> ids);
 }

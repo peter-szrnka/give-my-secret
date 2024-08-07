@@ -8,4 +8,5 @@ export interface Message extends BaseDetail {
     creationDate? : Date,
     opened : boolean;
     actionPath?: string;
+    selectedToDelete?: boolean;
 }

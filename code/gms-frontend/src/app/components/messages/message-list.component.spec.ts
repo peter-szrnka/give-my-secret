@@ -61,6 +61,9 @@ describe('MessageListComponent', () => {
         const response : number = component.getCount();
 
         component.markAsRead(1);
+        component.selectAll();
+        component.selectAll();
+        component.update(true, 1);
 
         expect(component).toBeTruthy();
         expect(response).toEqual(2);

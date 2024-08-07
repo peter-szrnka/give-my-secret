@@ -1,6 +1,7 @@
 package io.github.gms.functions.message;
 
 import io.github.gms.abstraction.AbstractSecurityTest;
+import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
@@ -48,6 +49,18 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
 
         // act
         ResponseEntity<String> response = executeHttpPost(urlPrefix + "/mark_as_read", requestEntity, String.class);
+
+        // assert
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
+    void testDeleteAllByIds403() {
+        IdListDto request = new IdListDto(Set.of(1L, 2L, 3L));
+        HttpEntity<IdListDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
+
+        // act
+        ResponseEntity<Void> response = executeHttpPost(urlPrefix + "/delete_all_by_ids", requestEntity, Void.class);
 
         // assert
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());

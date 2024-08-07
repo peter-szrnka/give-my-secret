@@ -1,7 +1,9 @@
 package io.github.gms.functions.message;
 
+import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.util.MdcUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -41,11 +43,6 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public void delete(Long id) {
-		repository.deleteById(id);
-	}
-
-	@Override
 	public MessageListDto list(Pageable pageable) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 
@@ -63,6 +60,11 @@ public class MessageServiceImpl implements MessageService {
 	public void markAsRead(MarkAsReadRequestDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
 		repository.markAsRead(userId, dto.getIds());
+	}
+
+	@Override
+	public void deleteAllByIds(IdListDto dto) {
+		repository.deleteAllByUserIdAndIds(MdcUtils.getUserId(), dto.getIds());
 	}
 
 	@Async
