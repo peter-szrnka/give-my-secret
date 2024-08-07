@@ -51,7 +51,7 @@ const routeBuilder = (routePath: string, resolveKey: string, component: Type<any
     data: { 'roles': ROLE_ROUTE_MAP[routePath] },
     resolve: { [resolveKey]: (snapshot: ActivatedRouteSnapshot): ResolveFn<Object> => inject(resolver).resolve(snapshot) },
     canActivate: [ROLE_GUARD],
-    runGuardsAndResolvers: 'always',
+    runGuardsAndResolvers: 'always'
   };
 };
 

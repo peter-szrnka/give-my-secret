@@ -2,7 +2,7 @@ import { EventEmitter, Injectable, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { catchError, Observable, of, ReplaySubject } from "rxjs";
 import { SystemReadyData } from "../model/system-ready.model";
-import { SystemStatusDto } from "../model/system-status.model";
+import { SystemStatus } from "../model/system-status.model";
 import { User } from "../../components/user/model/user.model";
 import { AuthService } from "./auth-service";
 import { SetupService } from "../../components/setup/service/setup-service";
@@ -62,7 +62,7 @@ export class SharedDataService {
     public check() {
         if (this.systemReady === undefined) {
             this.setupService.checkReady().pipe(catchError(() => {
-                return of({ status: 'FAIL' } as SystemStatusDto);
+                return of({ status: 'FAIL' } as SystemStatus);
               })).subscribe(response => {
                 if (response.status === "FAIL") {
                     this.systemReadySubject$.next({ ready : false, status: 0, authMode : response.authMode });

@@ -6,7 +6,6 @@ import { IpRestriction } from "../../ip_restriction/model/ip-restriction.model";
  * @author Peter Szrnka
  */
 export interface Secret extends BaseDetail {
-    id? : number,
     secretId? : string,
     keystoreId? : number,
     keystoreAliasId? : number,

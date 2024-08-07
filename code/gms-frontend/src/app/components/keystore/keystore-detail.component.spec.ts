@@ -116,7 +116,7 @@ describe('KeystoreDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Keystore has been saved!", type: "information" } as DialogData });
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Keystore has been saved!", type: "information" } as DialogData });
     });
 
     it('Should save new generated keystore', () => {
@@ -138,7 +138,7 @@ describe('KeystoreDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Keystore has been saved!", type: "information" } as DialogData });
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Keystore has been saved!", type: "information" } as DialogData });
     });
 
     it('Should fail on save keystore | HTTP error', () => {
@@ -155,7 +155,8 @@ describe('KeystoreDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning" } as DialogData });
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning" } as DialogData });
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
     it('Should fail on save keystore | Unknown error', () => {
@@ -172,7 +173,7 @@ describe('KeystoreDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning" } as DialogData });
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning" } as DialogData });
     });
 
     it('should upload file', () => {

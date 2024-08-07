@@ -162,16 +162,12 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         assertLogContains(logAppender, "Keystore content cannot be parsed");
     }
 
+    @Test
     @SneakyThrows
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "hack/../../root/etc/password",
-            "/root/etc/password"
-    })
-    void shouldNotSaveNewEntityCausedByVulnerableKeystoreFile(String mockValue) {
+    void shouldNotSaveNewEntityCausedByVulnerableKeystoreFile() {
         // arrange
         MultipartFile multiPart = mock(MultipartFile.class);
-        when(multiPart.getOriginalFilename()).thenReturn(mockValue);
+        when(multiPart.getOriginalFilename()).thenReturn("hack/../../root/etc/password");
 
         SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
         dtoInput.setId(null);

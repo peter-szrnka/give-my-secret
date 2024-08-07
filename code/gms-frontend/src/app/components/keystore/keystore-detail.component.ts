@@ -83,6 +83,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
           this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
         },
         error: (err) => {
+          this.splashScreenStateService.stop();
           this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
         },
         complete: () => {

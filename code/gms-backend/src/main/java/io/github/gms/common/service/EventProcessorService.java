@@ -10,6 +10,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static io.github.gms.common.util.Constants.ALIAS_ID;
 import static io.github.gms.common.util.Constants.KEYSTORE_ID;
 import static io.github.gms.common.util.Constants.USER_ID;
@@ -38,16 +40,23 @@ public class EventProcessorService {
 
 		if (event.getType() == EntityChangeEvent.EntityChangeType.KEYSTORE_DISABLED) {
 			// We have to disable all secret by alias id where the given keystore is used
+			AtomicInteger disabledSecretsCount = new AtomicInteger(0);
 			keystoreAliasRepository.findAllByKeystoreId(keystoreId)
-					.forEach(alias -> secretRepository.disableAllActiveByKeystoreAliasId(alias.getId()));
-			sendMessage(userId, REASON_KEYSTORE_DISABLED);
+					.forEach(alias -> disabledSecretsCount.addAndGet(secretRepository.disableAllActiveByKeystoreAliasId(alias.getId())));
+
+			if (disabledSecretsCount.get() > 0) {
+				sendMessage(userId, REASON_KEYSTORE_DISABLED);
+			}
+
 			return;
 		}
 
 		Long aliasId = (Long) event.getMetadata().get(ALIAS_ID);
-		secretRepository.disableAllActiveByKeystoreAliasId(aliasId);
+		int disabledSecretsCount = secretRepository.disableAllActiveByKeystoreAliasId(aliasId);
 
-		sendMessage(userId, REASON_KEYSTORE_ALIAS_REMOVED);
+		if (disabledSecretsCount > 0) {
+			sendMessage(userId, REASON_KEYSTORE_ALIAS_REMOVED);
+		}
 	}
 
 	private void sendMessage(Long userId, String reason) {

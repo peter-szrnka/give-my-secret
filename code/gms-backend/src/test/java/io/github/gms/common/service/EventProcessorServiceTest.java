@@ -53,6 +53,7 @@ class EventProcessorServiceTest extends AbstractUnitTest {
 		if (input.eventType == EntityChangeType.KEYSTORE_DISABLED) {
 			when(keystoreAliasRepository.findAllByKeystoreId(anyLong())).thenReturn(List.of(TestUtils.createKeystoreAliasEntity()));
 		}
+		when(secretRepository.disableAllActiveByKeystoreAliasId(anyLong())).thenReturn(input.resultCount);
 		
 		// act
 		Map<String, Object> metadata = new HashMap<>();
@@ -66,23 +67,29 @@ class EventProcessorServiceTest extends AbstractUnitTest {
 		ArgumentCaptor<MessageDto> messageDtoCaptor = ArgumentCaptor.forClass(MessageDto.class);
 		verify(secretRepository).disableAllActiveByKeystoreAliasId(keystoreIdCaptor.capture());
 		verify(keystoreAliasRepository, times(input.eventType == EntityChangeType.KEYSTORE_DISABLED ? 1 : 0)).findAllByKeystoreId(anyLong());
-		verify(messageService).save(messageDtoCaptor.capture());
-		
+
 		assertEquals(input.eventType == EntityChangeType.KEYSTORE_DISABLED ? 1L : 2L, keystoreIdCaptor.getValue());
-		
-		MessageDto capturedDto = messageDtoCaptor.getValue();
-		assertNotNull(capturedDto);
-		assertEquals(5L, capturedDto.getUserId());
-		assertEquals(input.expectedMessage,
-				capturedDto.getMessage());
+
+		if (input.resultCount > 0) {
+			verify(messageService, times(input.resultCount)).save(messageDtoCaptor.capture());
+			MessageDto capturedDto = messageDtoCaptor.getValue();
+			assertNotNull(capturedDto);
+			assertEquals(5L, capturedDto.getUserId());
+			assertEquals(input.expectedMessage,
+					capturedDto.getMessage());
+		}
 	}
 	
 	private static InputData[] input() {
 		return new InputData[] {
+				new InputData(EntityChangeType.KEYSTORE_DISABLED,
+						EventProcessorService.REASON_PREFIX + EventProcessorService.REASON_KEYSTORE_DISABLED, 0),
+				new InputData(EntityChangeType.KEYSTORE_ALIAS_REMOVED,
+						EventProcessorService.REASON_PREFIX + EventProcessorService.REASON_KEYSTORE_ALIAS_REMOVED, 0),
 			new InputData(EntityChangeType.KEYSTORE_DISABLED, 
-					EventProcessorService.REASON_PREFIX + EventProcessorService.REASON_KEYSTORE_DISABLED),
+					EventProcessorService.REASON_PREFIX + EventProcessorService.REASON_KEYSTORE_DISABLED, 1),
 			new InputData(EntityChangeType.KEYSTORE_ALIAS_REMOVED, 
-					EventProcessorService.REASON_PREFIX + EventProcessorService.REASON_KEYSTORE_ALIAS_REMOVED)
+					EventProcessorService.REASON_PREFIX + EventProcessorService.REASON_KEYSTORE_ALIAS_REMOVED, 1)
 		};
 	}
 
@@ -91,5 +98,6 @@ class EventProcessorServiceTest extends AbstractUnitTest {
 	private static class InputData {
 		private EntityChangeEvent.EntityChangeType eventType;
 		private String expectedMessage;
+		private int resultCount;
 	}
 }
