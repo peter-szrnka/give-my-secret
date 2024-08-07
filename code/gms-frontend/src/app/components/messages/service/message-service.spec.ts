@@ -135,7 +135,7 @@ describe("MessageService", () => {
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('PUT');
+      expect(req.request.method).toBe('POST');
       req.flush(mockResponse);
       httpMock.verify();
     });
