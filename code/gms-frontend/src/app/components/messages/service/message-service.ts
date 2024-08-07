@@ -26,6 +26,14 @@ export class MessageService extends ServiceBase<Message, MessageList> {
         return this.http.put<string>(environment.baseUrl + "secure/" + this.scope + '/mark_as_read', {"ids":[id]}, { withCredentials: true, headers : getHeaders() });
     }
 
+    public deleteById(id : number) : Observable<string> {
+        return this.http.delete<string>(environment.baseUrl + "secure/" + this.scope + '/' + id, { withCredentials: true, headers : getHeaders() });
+    }
+
+    public toggleAllAsRead(ids : number[], opened: boolean) : Observable<string> {
+        return this.http.put<string>(environment.baseUrl + "secure/" + this.scope + '/toggle_read_by_ids?opened=' + opened, {"ids":ids}, { withCredentials: true, headers : getHeaders() });
+    }
+
     public deleteAllByIds(ids : number[]) : Observable<string> {
         return this.http.post<string>(environment.baseUrl + "secure/" + this.scope + '/delete_all_by_ids', {"ids" : ids}, { withCredentials: true, headers : getHeaders() });
     }

@@ -61,7 +61,7 @@ export class MessageListComponent implements OnInit {
         if (this.selectionStatus === SelectionStatus.SOME) {
             this.results.forEach(message => message.selected = false);
         } else {
-            const currentStatus = (this.selectionStatus === SelectionStatus.NONE) ? true : false;
+            const currentStatus = (this.selectionStatus === SelectionStatus.NONE);
             this.results.forEach(message => message.selected = currentStatus);
         }
 
@@ -72,23 +72,6 @@ export class MessageListComponent implements OnInit {
         this.results[index].selected = checked;
         this.calculateSelectionStatus();
     }
-    
-    /*private calculateButtonConfig(): ButtonConfig[] {
-        return [
-            {
-                label: 'Delete selected messages',
-                primary: true,
-                enabled: this.selectionStatus !== SelectionStatus.NONE,
-                callFunction: () => this.deleteMessages()
-            },
-            {
-                label: 'Mark all selected messages as read',
-                primary: true,
-                enabled: this.selectionStatus !== SelectionStatus.NONE,
-                callFunction: () => this.markAllSelectedAsRead()
-            }
-        ];
-    }*/
 
     deleteMessages(): void {
         if (this.selectionStatus === SelectionStatus.NONE) {
@@ -120,8 +103,6 @@ export class MessageListComponent implements OnInit {
         } else {
             this.selectionStatus = SelectionStatus.SOME;
         }
-
-        //this.buttonConfig = this.calculateButtonConfig();
     }
 
     private fetchData(): void {

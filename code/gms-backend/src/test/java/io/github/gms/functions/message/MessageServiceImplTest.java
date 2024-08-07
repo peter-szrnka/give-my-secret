@@ -10,6 +10,8 @@ import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -146,5 +148,30 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 
 		// assert
 		verify(repository).deleteAllByUserIdAndIds(anyLong(), eq(input.getIds()));
+	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	void shouldToggleReadAllByIds(boolean opened) {
+		// arrange
+		IdListDto dto = new IdListDto(Set.of(1L, 2L, 3L));
+
+		// act
+		service.toggleReadByIds(dto, opened);
+
+		// assert
+		verify(repository).toggleOpened(1L, dto.getIds(), opened);
+	}
+
+	@Test
+	void shouldDeleteById() {
+		// arrange
+		Long id = 1L;
+
+		// act
+		service.deleteById(id);
+
+		// assert
+		verify(repository).deleteById(id);
 	}
 }

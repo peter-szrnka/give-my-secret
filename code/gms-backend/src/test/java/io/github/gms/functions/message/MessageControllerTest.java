@@ -99,4 +99,34 @@ class MessageControllerTest {
         assertEquals(200, response.getStatusCode().value());
         verify(service).deleteAllByIds(dto);
     }
+
+    @Test
+    void shouldToggleReadByIds() {
+        // arrange
+        IdListDto dto = new IdListDto(Set.of(1L, 2L, 3L));
+        doNothing().when(service).toggleReadByIds(dto, true);
+
+        // act
+        ResponseEntity<Void> response = controller.toggleReadByIds(dto, true);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        verify(service).toggleReadByIds(dto, true);
+    }
+    
+    @Test
+    void shouldDeleteById() {
+        // arrange
+        Long id = 1L;
+        doNothing().when(service).deleteById(id);
+
+        // act
+        ResponseEntity<Void> response = controller.deleteById(id);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        verify(service).deleteById(id);
+    }
 }

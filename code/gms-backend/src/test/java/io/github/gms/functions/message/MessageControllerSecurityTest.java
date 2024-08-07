@@ -65,4 +65,27 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
         // assert
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
+
+    @Test
+    void testToggleReadByIds() {
+        IdListDto request = new IdListDto(Set.of(1L, 2L, 3L));
+        HttpEntity<IdListDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
+
+        // act
+        ResponseEntity<Void> response = executeHttpPost(urlPrefix + "/toggle_read_by_ids?opened=true", requestEntity, Void.class);
+
+        // assert
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
+    void testDeleteById() {
+        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+
+        // act
+        ResponseEntity<Void> response = executeHttpDelete(urlPrefix + "/1", requestEntity, Void.class);
+
+        // assert
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
 }

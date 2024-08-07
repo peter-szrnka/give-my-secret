@@ -124,4 +124,34 @@ describe("MessageService", () => {
       req.flush(mockResponse);
       httpMock.verify();
     });
+
+    it('Should toggle all messages as read', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/message/toggle_read_by_ids?opened=true";
+      const mockResponse = "OK";
+
+      // act
+      service.toggleAllAsRead([1], true).subscribe(res => expect(res).toBe(mockResponse));
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('PUT');
+      req.flush(mockResponse);
+      httpMock.verify();
+    });
+
+    it('Should delete message by id', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/message/1";
+      const mockResponse = "OK";
+
+      // act
+      service.deleteById(1).subscribe(res => expect(res).toBe(mockResponse));
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('DELETE');
+      req.flush(mockResponse);
+      httpMock.verify();
+    });
 });

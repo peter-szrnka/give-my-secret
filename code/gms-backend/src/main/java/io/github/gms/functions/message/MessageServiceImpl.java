@@ -2,11 +2,8 @@ package io.github.gms.functions.message;
 
 import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.common.enums.MdcParameter;
-import io.github.gms.common.util.MdcUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
@@ -15,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Set;
+
+import static io.github.gms.common.util.MdcUtils.getUserId;
 
 /**
  * @author Peter Szrnka
@@ -44,28 +43,23 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public MessageListDto list(Pageable pageable) {
-		Long userId = MdcUtils.getUserId();
-
-		Page<MessageEntity> resultList = repository.findAllByUserId(userId, pageable);
+		Page<MessageEntity> resultList = repository.findAllByUserId(getUserId(), pageable);
 		return converter.toDtoList(resultList);
 	}
 
 	@Override
 	public long getUnreadMessagesCount() {
-		Long userId = MdcUtils.getUserId();
-		return repository.countAllUnreadByUserId(userId);
+		return repository.countAllUnreadByUserId(getUserId());
 	}
 
 	@Override
 	public void markAsRead(MarkAsReadRequestDto dto) {
-		Long userId = MdcUtils.getUserId();
-		repository.markAsRead(userId, dto.getIds());
+		repository.markAsRead(getUserId(), dto.getIds());
 	}
 
 	@Override
 	public void toggleReadByIds(IdListDto dto, boolean opened) {
-		Long userId = MdcUtils.getUserId();
-		repository.toggleOpened(userId, dto.getIds(), opened);
+		repository.toggleOpened(getUserId(), dto.getIds(), opened);
 	}
 
 	@Override
@@ -75,7 +69,7 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public void deleteAllByIds(IdListDto dto) {
-		repository.deleteAllByUserIdAndIds(MdcUtils.getUserId(), dto.getIds());
+		repository.deleteAllByUserIdAndIds(getUserId(), dto.getIds());
 	}
 
 	@Async
