@@ -3,14 +3,15 @@ package io.github.gms.functions.message;
 import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,6 +56,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		service = new MessageServiceImpl(clock, repository, converter);
 		((Logger) LoggerFactory.getLogger(MessageServiceImpl.class)).addAppender(logAppender);
 	}
+
 	@Test
 	void shouldSave() {
 		// arrange
@@ -80,7 +83,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldReturnList() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
+
 		Page<MessageEntity> mockList = new PageImpl<>(Lists.newArrayList(new MessageEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
 		when(converter.toDtoList(any())).thenReturn(MessageListDto.builder()
@@ -96,23 +99,11 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(1, response.getResultList().size());
 		verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
 		verify(converter).toDtoList(any());
-		
-		MDC.clear();
-	}
-	
-	@Test
-	void shouldDelete() {
-		// act
-		service.delete(1L);
-
-		// assert
-		verify(repository).deleteById(1L);
 	}
 	
 	@Test
 	void shouldReturnUnreadMessagesCount() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(repository.countAllUnreadByUserId(1L)).thenReturn(2L);
 
 		// act
@@ -121,15 +112,12 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertEquals(2L, count);
 		verify(repository).countAllUnreadByUserId(1L);
-		
-		MDC.clear();
 	}
 	
 	@Test
 	void shouldMarkAsRead() {
 		// arrange
 		MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().ids(Sets.newHashSet(2L)).build();
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 
 		// act
 		service.markAsRead(dto);
@@ -149,5 +137,41 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		verify(repository).deleteAllByUserId(userIds);
 		assertLogContains(logAppender, "All messages have been removed for the requested users");
+	}
+
+	@Test
+	void shouldDeleteAllByIds() {
+		// arrange
+		IdListDto input = new IdListDto(Set.of(1L, 2L, 3L));
+		// act
+		service.deleteAllByIds(input);
+
+		// assert
+		verify(repository).deleteAllByUserIdAndIds(anyLong(), eq(input.getIds()));
+	}
+
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	void shouldToggleReadAllByIds(boolean opened) {
+		// arrange
+		IdListDto dto = new IdListDto(Set.of(1L, 2L, 3L));
+
+		// act
+		service.toggleReadByIds(dto, opened);
+
+		// assert
+		verify(repository).toggleOpened(1L, dto.getIds(), opened);
+	}
+
+	@Test
+	void shouldDeleteById() {
+		// arrange
+		Long id = 1L;
+
+		// act
+		service.deleteById(id);
+
+		// assert
+		verify(repository).deleteById(id);
 	}
 }

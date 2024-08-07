@@ -5,7 +5,10 @@
   @for (button of buttonConfig!! | navButtonVisibility; track button) {
     <button
       color="{{button.primary ? 'primary':'default'}}"
+      mat-button
       mat-raised-button
+      [disabled]="button.enabled === false"
+      (click)="button.callFunction()"
     [routerLink]="button.url">{{button.label}}</button>
   }
 </div>

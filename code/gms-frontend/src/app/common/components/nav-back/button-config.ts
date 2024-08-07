@@ -1,10 +1,12 @@
+
 /**
  * @author Peter Szrnka
  */
 export interface ButtonConfig {
     label : string,
     url? : string,
-    callFunction?: (() => void);
+    callFunction?: Function,
     primary : boolean,
     visibilityCondition? : boolean;
+    enabled? : boolean;
 }
