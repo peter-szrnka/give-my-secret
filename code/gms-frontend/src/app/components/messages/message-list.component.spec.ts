@@ -6,7 +6,7 @@ import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { MessageListComponent } from "./message-list.component";
+import { MessageListComponent, SelectionStatus } from "./message-list.component";
 import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
 
@@ -58,7 +58,7 @@ describe('MessageListComponent', () => {
 
     it('Should create component', () => {
         configureTestBed();
-
+        component.selectionStatus = SelectionStatus.SOME;
         component.selectAll();
         component.selectAll();
         component.onFetch({ pageSize : 0 });
