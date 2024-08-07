@@ -1,7 +1,6 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
 import { catchError, of } from "rxjs";
-import { ButtonConfig } from "../../common/components/nav-back/button-config";
 import { Paging } from "../../common/model/paging.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { MessageList } from "./model/message-list.model";
@@ -23,20 +22,13 @@ export enum SelectionStatus {
     styleUrls: ['./message-list.component.scss']
 })
 export class MessageListComponent implements OnInit {
-    messageColumns: string[] = ['message', 'creationDate', 'operations', 'selection'];
+    messageColumns: string[] = ['message', 'creationDate', 'read_toggle', 'delete', 'selection'];
     results: Message[];
     datasource: ArrayDataSource<Message>;
     protected count = 0;
     error?: string;
     selectionStatus: SelectionStatus = SelectionStatus.NONE;
-    buttonConfig: ButtonConfig[] = [
-        {
-            label: 'Delete selected messages',
-            primary: true,
-            enabled: this.selectionStatus !== SelectionStatus.NONE,
-            callFunction: () => this.deleteMessages()
-        }
-    ];
+    markAllAsReadEnabled: boolean = false;
 
     public tableConfig = {
         count: 0,
@@ -66,37 +58,61 @@ export class MessageListComponent implements OnInit {
     }
 
     selectAll(): void {
-        const currentStatus = (this.selectionStatus === SelectionStatus.NONE) ? true : ((this.selectionStatus === SelectionStatus.ALL) ? false : false);
-        this.results.forEach(message => message.selectedToDelete = currentStatus);
+        if (this.selectionStatus === SelectionStatus.SOME) {
+            this.results.forEach(message => message.selected = false);
+        } else {
+            const currentStatus = (this.selectionStatus === SelectionStatus.NONE) ? true : false;
+            this.results.forEach(message => message.selected = currentStatus);
+        }
+
         this.calculateSelectionStatus();
     }
 
-    update(completed: boolean, index: number): void {
-        this.results[index].selectedToDelete = completed;
+    update(checked: boolean, index: number): void {
+        this.results[index].selected = checked;
         this.calculateSelectionStatus();
     }
     
-    private calculateButtonConfig(): void {
-        this.buttonConfig = [
+    /*private calculateButtonConfig(): ButtonConfig[] {
+        return [
             {
                 label: 'Delete selected messages',
                 primary: true,
                 enabled: this.selectionStatus !== SelectionStatus.NONE,
                 callFunction: () => this.deleteMessages()
+            },
+            {
+                label: 'Mark all selected messages as read',
+                primary: true,
+                enabled: this.selectionStatus !== SelectionStatus.NONE,
+                callFunction: () => this.markAllSelectedAsRead()
             }
         ];
-    }
+    }*/
 
-    private deleteMessages(): void {
-        const ids: number[] = this.results.filter(message => message.selectedToDelete === true).map(message => message.id) as number[];
+    deleteMessages(): void {
+        if (this.selectionStatus === SelectionStatus.NONE) {
+            return;
+        }
+
+        const ids: number[] = this.results.filter(message => message.selected === true).map(message => message.id) as number[];
         this.service.deleteAllByIds(ids).subscribe(() => {
             this.selectionStatus = SelectionStatus.NONE;
+            this.results.forEach(message => message.selected = false);
             this.fetchData();
         });
     }
 
+    markAllSelectedAsRead(): void {
+        if (this.selectionStatus === SelectionStatus.NONE) {
+            return;
+        }
+
+        console.info("Marking all selected messages as read");
+    }
+
     private calculateSelectionStatus(): void {
-        const count = this.results.filter(message => message.selectedToDelete === true).length;
+        const count = this.results.filter(message => message.selected === true).length;
         if (count === 0) {
             this.selectionStatus = SelectionStatus.NONE;
         } else if (count === this.results.length) {
@@ -105,7 +121,7 @@ export class MessageListComponent implements OnInit {
             this.selectionStatus = SelectionStatus.SOME;
         }
 
-        this.calculateButtonConfig();
+        //this.buttonConfig = this.calculateButtonConfig();
     }
 
     private fetchData(): void {
@@ -124,7 +140,7 @@ export class MessageListComponent implements OnInit {
                 this.count = response.totalElements;
                 this.error = response.error;
                 this.sharedDataService.messageCountUpdateEvent.emit(this.count);
-                this.calculateButtonConfig();
+                this.markAllAsReadEnabled = this.results.some(message => !message.opened);
             });
     }
 }

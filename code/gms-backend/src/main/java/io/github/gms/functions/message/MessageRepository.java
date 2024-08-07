@@ -45,4 +45,9 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
 	@Transactional
 	@Query("DELETE FROM MessageEntity m where m.userId = :userId and m.id in :ids")
     void deleteAllByUserIdAndIds(@Param("userId") Long userId, @Param("ids") Set<Long> ids);
+
+	@Modifying
+	@Transactional
+	@Query("update MessageEntity m set m.opened=:opened where m.userId = :userId and m.id in :ids")
+    void toggleOpened(@Param("userId") Long userId, @Param("ids") Set<Long> ids, @Param("opened") boolean opened);
 }

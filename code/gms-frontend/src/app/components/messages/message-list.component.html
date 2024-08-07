@@ -1,7 +1,7 @@
 <h2>Messages</h2>
 <div class="datatable">
 
-  <nav-back [buttonConfig]="buttonConfig"></nav-back>
+  <nav-back></nav-back>
 
   @if (error) {
     <div class="warning"><b>System error:</b> {{error}}</div>
@@ -22,8 +22,14 @@
             <td mat-cell *matCellDef="let element" [ngClass]="element.opened === false ? 'bold-text' : ''">
             {{element.creationDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
           </ng-container>
-          <ng-container matColumnDef="operations">
-            <th mat-header-cell *matHeaderCellDef></th>
+          <ng-container matColumnDef="read_toggle">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-icon 
+                class="margin-top" 
+                fontIcon="done" 
+                matTooltip="Mark selected messages as read"
+                [ngClass]="selectionStatus !== 0 ? 'clickable' : 'unclickable'" (click)="markAllSelectedAsRead()"></mat-icon>
+            </th>
             <td mat-cell *matCellDef="let element" [ngClass]="element.opened === false ? 'bold-text' : ''">
               @if (element.actionPath) {
                 <button mat-icon-button color="primary" [routerLink]="element.actionPath">
@@ -31,22 +37,35 @@
                 </button>
               }
               @if (element.opened === false) {
-                <button mat-icon-button color="primary" (click)="markAsRead(element.id)">
-                  <mat-icon aria-hidden="false">done</mat-icon>
+                <button mat-icon-button color="primary" (click)="markAsRead(element.id)" matTooltip="Mark as read">
+                  <mat-icon aria-hidden="false" matTooltip="Mark as read">done</mat-icon>
                 </button>
               }
             </td>
           </ng-container>
+          <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-icon 
+              class="margin-top"
+              fontIcon="delete" 
+              matTooltip="Delete selected messages"
+              [ngClass]="selectionStatus !== 0 ? 'clickable' : 'unclickable'" (click)="deleteMessages()"></mat-icon>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary" matTooltip="Delete message">
+                <mat-icon fontIcon="delete"></mat-icon>
+              </button>
+            </td>
+          </ng-container>
           <ng-container matColumnDef="selection">
             <th mat-header-cell *matHeaderCellDef>
-              <mat-checkbox 
-              (click)="selectAll()"
-              [indeterminate]="selectionStatus === 1"></mat-checkbox>
+              <mat-icon class="margin-top" (click)="selectAll()" color="red" fontIcon="indeterminate_check_box" *ngIf="selectionStatus === 1"></mat-icon>
+              <mat-icon class="margin-top" (click)="selectAll()" color="red" fontIcon="check_box" *ngIf="selectionStatus === 2"></mat-icon>
+              <mat-icon class="margin-top" (click)="selectAll()" color="red" fontIcon="check_box_outline_blank" *ngIf="selectionStatus === 0"></mat-icon>
             </th>
             <td mat-cell *matCellDef="let element; let i = index" [ngClass]="element.opened === false ? 'bold-text' : ''">
-              <mat-checkbox [checked]="element.selectedToDelete" (change)="update($event.checked, i)"></mat-checkbox>
+              <mat-checkbox [checked]="element.selected" (change)="update($event.checked, i)"></mat-checkbox>
             </td>
-              
           </ng-container>
         </table>
         <mat-paginator [length]="tableConfig.count" [pageSize]="tableConfig.pageSize" [pageIndex]="tableConfig.pageIndex"

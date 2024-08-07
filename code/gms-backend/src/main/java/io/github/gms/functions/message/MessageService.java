@@ -20,5 +20,9 @@ public interface MessageService extends BatchDeletionService {
 
 	void markAsRead(MarkAsReadRequestDto dto);
 
+	void toggleReadByIds(IdListDto dto, boolean opened);
+
+	void deleteById(Long id);
+
 	void deleteAllByIds(IdListDto dto);
 }

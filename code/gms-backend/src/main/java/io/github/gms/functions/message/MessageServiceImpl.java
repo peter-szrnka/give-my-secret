@@ -44,7 +44,7 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public MessageListDto list(Pageable pageable) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
+		Long userId = MdcUtils.getUserId();
 
 		Page<MessageEntity> resultList = repository.findAllByUserId(userId, pageable);
 		return converter.toDtoList(resultList);
@@ -52,14 +52,25 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public long getUnreadMessagesCount() {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
+		Long userId = MdcUtils.getUserId();
 		return repository.countAllUnreadByUserId(userId);
 	}
 
 	@Override
 	public void markAsRead(MarkAsReadRequestDto dto) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
+		Long userId = MdcUtils.getUserId();
 		repository.markAsRead(userId, dto.getIds());
+	}
+
+	@Override
+	public void toggleReadByIds(IdListDto dto, boolean opened) {
+		Long userId = MdcUtils.getUserId();
+		repository.toggleOpened(userId, dto.getIds(), opened);
+	}
+
+	@Override
+	public void deleteById(Long id) {
+		repository.deleteById(id);
 	}
 
 	@Override
