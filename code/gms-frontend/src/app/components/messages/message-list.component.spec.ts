@@ -59,6 +59,8 @@ describe('MessageListComponent', () => {
     it('Should create component', () => {
         configureTestBed();
 
+        component.selectAll();
+        component.selectAll();
         component.onFetch({ pageSize : 0 });
         expect(component).toBeTruthy();
         expect(sharedDataService.messageCountUpdateEvent.emit).toHaveBeenCalledTimes(2);

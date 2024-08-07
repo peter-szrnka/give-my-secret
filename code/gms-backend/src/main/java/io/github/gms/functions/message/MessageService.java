@@ -1,7 +1,6 @@
 package io.github.gms.functions.message;
 
 import io.github.gms.common.abstraction.BatchDeletionService;
-import io.github.gms.common.abstraction.GmsService;
 import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import org.springframework.data.domain.Pageable;
