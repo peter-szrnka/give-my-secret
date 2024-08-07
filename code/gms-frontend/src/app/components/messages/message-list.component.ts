@@ -91,7 +91,11 @@ export class MessageListComponent implements OnInit {
             return;
         }
 
-        console.info("Marking all selected messages as read");
+        const ids = this.results.filter(message => message.selected === true).map(message => message.id) as number[];
+        this.service.toggleAllAsRead(ids, true).subscribe(() => {
+            this.fetchData();
+            this.selectionStatus = SelectionStatus.NONE;
+        });
     }
 
     private calculateSelectionStatus(): void {

@@ -31,7 +31,7 @@ export class MessageService extends ServiceBase<Message, MessageList> {
     }
 
     public toggleAllAsRead(ids : number[], opened: boolean) : Observable<string> {
-        return this.http.put<string>(environment.baseUrl + "secure/" + this.scope + '/toggle_read_by_ids?opened=' + opened, {"ids":ids}, { withCredentials: true, headers : getHeaders() });
+        return this.http.post<string>(environment.baseUrl + "secure/" + this.scope + '/toggle_read_by_ids?opened=' + opened, {"ids":ids}, { withCredentials: true, headers : getHeaders() });
     }
 
     public deleteAllByIds(ids : number[]) : Observable<string> {
