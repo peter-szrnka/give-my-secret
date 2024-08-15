@@ -10,8 +10,6 @@ import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,12 +24,8 @@ import java.util.Set;
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -115,15 +109,15 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldMarkAsRead() {
+	void shouldToggleMarkAsRead() {
 		// arrange
 		MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().ids(Sets.newHashSet(2L)).build();
 
 		// act
-		service.markAsRead(dto);
+		service.toggleMarkAsRead(dto);
 
 		// assert
-		verify(repository).markAsRead(1L, dto.getIds());
+		verify(repository).markAsRead(1L, dto.getIds(), true);
 	}
 
 	@Test
@@ -148,19 +142,6 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 
 		// assert
 		verify(repository).deleteAllByUserIdAndIds(anyLong(), eq(input.getIds()));
-	}
-
-	@ParameterizedTest
-	@ValueSource(booleans = {true, false})
-	void shouldToggleReadAllByIds(boolean opened) {
-		// arrange
-		IdListDto dto = new IdListDto(Set.of(1L, 2L, 3L));
-
-		// act
-		service.toggleReadByIds(dto, opened);
-
-		// assert
-		verify(repository).toggleOpened(1L, dto.getIds(), opened);
 	}
 
 	@Test

@@ -24,46 +24,39 @@
           </ng-container>
           <ng-container matColumnDef="read_toggle">
             <th mat-header-cell *matHeaderCellDef>
-              <mat-icon 
-                class="margin-top" 
-                fontIcon="done" 
-                matTooltip="Mark selected messages as read"
-                [ngClass]="selectionStatus !== 0 ? 'clickable' : 'unclickable'" (click)="markAllSelectedAsRead()"></mat-icon>
             </th>
-            <td mat-cell *matCellDef="let element" [ngClass]="element.opened === false ? 'bold-text' : ''">
+            <td mat-cell *matCellDef="let element" [ngClass]="'col-center' + (element.opened === false ? ' bold-text' : '')">
               @if (element.actionPath) {
                 <button mat-icon-button color="primary" [routerLink]="element.actionPath">
                   <mat-icon aria-hidden="false">arrow_forward</mat-icon>
                 </button>
               }
-              @if (element.opened === false) {
-                <button mat-icon-button color="primary" (click)="markAsRead(element.id)" matTooltip="Mark as read">
-                  <mat-icon aria-hidden="false" matTooltip="Mark as read">done</mat-icon>
-                </button>
-              }
+              <button mat-icon-button color="primary" (click)="markAsRead(element.id, !element.opened)" matTooltip="Mark as read">
+                <mat-icon aria-hidden="false" matTooltip="Mark as read">done</mat-icon>
+              </button>
             </td>
           </ng-container>
           <ng-container matColumnDef="delete">
-            <th mat-header-cell *matHeaderCellDef>
+            <th mat-header-cell *matHeaderCellDef class="col-center">
               <mat-icon 
-              class="margin-top"
+              class="margin-top col-center"
               fontIcon="delete" 
               matTooltip="Delete selected messages"
               [ngClass]="selectionStatus !== 0 ? 'clickable' : 'unclickable'" (click)="deleteMessages()"></mat-icon>
             </th>
-            <td mat-cell *matCellDef="let element">
+            <td mat-cell *matCellDef="let element" class="col-center">
               <button mat-icon-button color="primary" matTooltip="Delete message">
                 <mat-icon fontIcon="delete"></mat-icon>
               </button>
             </td>
           </ng-container>
           <ng-container matColumnDef="selection">
-            <th mat-header-cell *matHeaderCellDef>
-              <mat-icon class="margin-top" (click)="selectAll()" color="red" fontIcon="indeterminate_check_box" *ngIf="selectionStatus === 1"></mat-icon>
-              <mat-icon class="margin-top" (click)="selectAll()" color="red" fontIcon="check_box" *ngIf="selectionStatus === 2"></mat-icon>
-              <mat-icon class="margin-top" (click)="selectAll()" color="red" fontIcon="check_box_outline_blank" *ngIf="selectionStatus === 0"></mat-icon>
+            <th mat-header-cell *matHeaderCellDef class="col-center">
+              <mat-icon matTooltip="Select all/none" class="margin-top" (click)="selectAll()" color="red" fontIcon="indeterminate_check_box" *ngIf="selectionStatus === 1"></mat-icon>
+              <mat-icon matTooltip="Select all/none" class="margin-top" (click)="selectAll()" color="red" fontIcon="check_box" *ngIf="selectionStatus === 2"></mat-icon>
+              <mat-icon matTooltip="Select all/none" class="margin-top" (click)="selectAll()" color="red" fontIcon="check_box_outline_blank" *ngIf="selectionStatus === 0"></mat-icon>
             </th>
-            <td mat-cell *matCellDef="let element; let i = index" [ngClass]="element.opened === false ? 'bold-text' : ''">
+            <td mat-cell *matCellDef="let element; let i = index" [ngClass]="'col-center' + (element.opened === false ? ' bold-text' : '')">
               <mat-checkbox [checked]="element.selected" (change)="update($event.checked, i)"></mat-checkbox>
             </td>
           </ng-container>

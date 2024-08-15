@@ -49,8 +49,8 @@ export class MessageListComponent implements OnInit {
         this.fetchData();
     }
 
-    markAsRead(id: number): void {
-        this.service.markAsRead(id).subscribe(() => this.fetchData());
+    markAsRead(id: number, opened: boolean): void {
+        this.service.markAsRead(id, opened).subscribe(() => this.fetchData());
     }
 
     getCount(): number {
@@ -83,18 +83,6 @@ export class MessageListComponent implements OnInit {
             this.selectionStatus = SelectionStatus.NONE;
             this.results.forEach(message => message.selected = false);
             this.fetchData();
-        });
-    }
-
-    markAllSelectedAsRead(): void {
-        if (this.selectionStatus === SelectionStatus.NONE) {
-            return;
-        }
-
-        const ids = this.results.filter(message => message.selected === true).map(message => message.id) as number[];
-        this.service.toggleAllAsRead(ids, true).subscribe(() => {
-            this.fetchData();
-            this.selectionStatus = SelectionStatus.NONE;
         });
     }
 

@@ -53,13 +53,8 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public void markAsRead(MarkAsReadRequestDto dto) {
-		repository.markAsRead(getUserId(), dto.getIds());
-	}
-
-	@Override
-	public void toggleReadByIds(IdListDto dto, boolean opened) {
-		repository.toggleOpened(getUserId(), dto.getIds(), opened);
+	public void toggleMarkAsRead(MarkAsReadRequestDto dto) {
+		repository.markAsRead(getUserId(), dto.getIds(), dto.isOpened());
 	}
 
 	@Override

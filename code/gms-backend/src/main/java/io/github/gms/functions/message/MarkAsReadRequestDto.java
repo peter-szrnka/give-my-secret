@@ -22,4 +22,5 @@ public class MarkAsReadRequestDto implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 9078232383962461807L;
 	private Set<Long> ids;
+	private boolean opened;
 }

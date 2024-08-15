@@ -49,8 +49,7 @@ describe('MessageListComponent', () => {
                 });
             }),
             markAsRead : jest.fn().mockReturnValue(of("OK")),
-            deleteAllByIds: jest.fn().mockReturnValue(of("OK")),
-            toggleAllAsRead: jest.fn().mockReturnValue(of("OK")),
+            deleteAllByIds: jest.fn().mockReturnValue(of("OK"))
         };
         sharedDataService = {
             messageCountUpdateEvent : { emit : jest.fn() }
@@ -71,7 +70,7 @@ describe('MessageListComponent', () => {
         configureTestBed();
         const response : number = component.getCount();
 
-        component.markAsRead(0);
+        component.markAsRead(0, false);
         component.selectAll();
         component.selectAll();
         component.selectAll();
@@ -103,16 +102,6 @@ describe('MessageListComponent', () => {
 
         component.selectAll();
         component.deleteMessages();
-
-        expect(component).toBeTruthy();
-    });
-
-    it('should mark all as read', () => {
-        configureTestBed();
-        component.markAllSelectedAsRead();
-
-        component.selectAll();
-        component.markAllSelectedAsRead();
 
         expect(component).toBeTruthy();
     });

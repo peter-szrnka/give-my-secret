@@ -22,16 +22,12 @@ export class MessageService extends ServiceBase<Message, MessageList> {
         return this.http.get<LongValue>(environment.baseUrl + "secure/" + this.scope + '/unread', { withCredentials: true, headers : getHeaders() }).pipe(map(dto => dto.value));
     }
 
-    public markAsRead(id : number) : Observable<string> {
-        return this.http.put<string>(environment.baseUrl + "secure/" + this.scope + '/mark_as_read', {"ids":[id]}, { withCredentials: true, headers : getHeaders() });
+    public markAsRead(id : number, opened: boolean) : Observable<string> {
+        return this.http.put<string>(environment.baseUrl + "secure/" + this.scope + '/mark_as_read', { "ids":[id], "opened" : opened }, { withCredentials: true, headers : getHeaders() });
     }
 
     public deleteById(id : number) : Observable<string> {
         return this.http.delete<string>(environment.baseUrl + "secure/" + this.scope + '/' + id, { withCredentials: true, headers : getHeaders() });
-    }
-
-    public toggleAllAsRead(ids : number[], opened: boolean) : Observable<string> {
-        return this.http.post<string>(environment.baseUrl + "secure/" + this.scope + '/toggle_read_by_ids?opened=' + opened, {"ids":ids}, { withCredentials: true, headers : getHeaders() });
     }
 
     public deleteAllByIds(ids : number[]) : Observable<string> {

@@ -101,7 +101,7 @@ describe("MessageService", () => {
       const mockResponse = "OK";
 
       // act
-      service.markAsRead(1).subscribe(res => expect(res).toBe(mockResponse));
+      service.markAsRead(1, true).subscribe(res => expect(res).toBe(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -117,21 +117,6 @@ describe("MessageService", () => {
 
       // act
       service.deleteAllByIds([1]).subscribe(res => expect(res).toBe(mockResponse));
-
-      // assert
-      const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('POST');
-      req.flush(mockResponse);
-      httpMock.verify();
-    });
-
-    it('Should toggle all messages as read', () => {
-      // arrange
-      const expectedUrl = environment.baseUrl + "secure/message/toggle_read_by_ids?opened=true";
-      const mockResponse = "OK";
-
-      // act
-      service.toggleAllAsRead([1], true).subscribe(res => expect(res).toBe(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);

@@ -14,9 +14,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link MessageController}
@@ -73,7 +71,7 @@ class MessageControllerTest {
     void shouldMarkAsRead() {
         // arrange
         MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().build();
-        doNothing().when(service).markAsRead(dto);
+        doNothing().when(service).toggleMarkAsRead(dto);
 
         // act
         ResponseEntity<String> response = controller.markAsRead(dto);
@@ -82,7 +80,7 @@ class MessageControllerTest {
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals("", response.getBody());
-        verify(service).markAsRead(dto);
+        verify(service).toggleMarkAsRead(dto);
     }
 
     @Test
@@ -98,21 +96,6 @@ class MessageControllerTest {
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).deleteAllByIds(dto);
-    }
-
-    @Test
-    void shouldToggleReadByIds() {
-        // arrange
-        IdListDto dto = new IdListDto(Set.of(1L, 2L, 3L));
-        doNothing().when(service).toggleReadByIds(dto, true);
-
-        // act
-        ResponseEntity<Void> response = controller.toggleReadByIds(dto, true);
-
-        // assert
-        assertNotNull(response);
-        assertEquals(200, response.getStatusCode().value());
-        verify(service).toggleReadByIds(dto, true);
     }
     
     @Test
