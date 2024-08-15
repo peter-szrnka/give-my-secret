@@ -22,8 +22,8 @@ export class MessageService extends ServiceBase<Message, MessageList> {
         return this.http.get<LongValue>(environment.baseUrl + "secure/" + this.scope + '/unread', { withCredentials: true, headers : getHeaders() }).pipe(map(dto => dto.value));
     }
 
-    public markAsRead(id : number, opened: boolean) : Observable<string> {
-        return this.http.put<string>(environment.baseUrl + "secure/" + this.scope + '/mark_as_read', { "ids":[id], "opened" : opened }, { withCredentials: true, headers : getHeaders() });
+    public markAsRead(ids : number[], opened: boolean) : Observable<string> {
+        return this.http.put<string>(environment.baseUrl + "secure/" + this.scope + '/mark_as_read', { "ids" : ids, "opened" : opened }, { withCredentials: true, headers : getHeaders() });
     }
 
     public deleteById(id : number) : Observable<string> {

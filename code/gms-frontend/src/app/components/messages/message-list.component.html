@@ -23,7 +23,14 @@
             {{element.creationDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
           </ng-container>
           <ng-container matColumnDef="read_toggle">
-            <th mat-header-cell *matHeaderCellDef>
+            <th mat-header-cell *matHeaderCellDef  class="col-center">
+              <mat-icon 
+                *ngIf="unreadCount > 0"
+                class="margin-top col-center"
+                fontIcon="done" 
+                matTooltip="Mark all selected messages as read"
+                [ngClass]="selectionStatus !== 0 ? 'clickable' : 'unclickable'" (click)="markAllSelectedAsRead()">
+              </mat-icon>
             </th>
             <td mat-cell *matCellDef="let element" [ngClass]="'col-center' + (element.opened === false ? ' bold-text' : '')">
               @if (element.actionPath) {
@@ -31,8 +38,11 @@
                   <mat-icon aria-hidden="false">arrow_forward</mat-icon>
                 </button>
               }
-              <button mat-icon-button color="primary" (click)="markAsRead(element.id, !element.opened)" matTooltip="Mark as read">
-                <mat-icon aria-hidden="false" matTooltip="Mark as read">done</mat-icon>
+              <button mat-icon-button color="default" style="color:darkgrey;" (click)="markAsRead(element.id, !element.opened)" *ngIf="element.opened === true">
+                <mat-icon aria-hidden="false" matTooltip="Mark as unread">drafts</mat-icon>
+              </button>
+              <button mat-icon-button color="primary" (click)="markAsRead(element.id, !element.opened)" *ngIf="element.opened === false">
+                <mat-icon aria-hidden="false" matTooltip="Mark as read">mail</mat-icon>
               </button>
             </td>
           </ng-container>
@@ -45,7 +55,7 @@
               [ngClass]="selectionStatus !== 0 ? 'clickable' : 'unclickable'" (click)="deleteMessages()"></mat-icon>
             </th>
             <td mat-cell *matCellDef="let element" class="col-center">
-              <button mat-icon-button color="primary" matTooltip="Delete message">
+              <button mat-icon-button color="primary" matTooltip="Delete message" (click)="deleteMessage(element.id)">
                 <mat-icon fontIcon="delete"></mat-icon>
               </button>
             </td>

@@ -101,7 +101,7 @@ describe("MessageService", () => {
       const mockResponse = "OK";
 
       // act
-      service.markAsRead(1, true).subscribe(res => expect(res).toBe(mockResponse));
+      service.markAsRead([1], true).subscribe(res => expect(res).toBe(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);

@@ -9,6 +9,8 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { MessageListComponent, SelectionStatus } from "./message-list.component";
 import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
+import { MatDialog } from "@angular/material/dialog";
+import { ConfirmDeleteDialogData } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 
 /**
  * @author Peter Szrnka
@@ -19,6 +21,7 @@ describe('MessageListComponent', () => {
     // Injected services
     let sharedDataService : any;
     let service : any;
+    let dialog : any;
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -27,7 +30,8 @@ describe('MessageListComponent', () => {
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
             providers: [
                 { provide : MessageService, useValue : service },
-                { provide : SharedDataService, useValue : sharedDataService }
+                { provide : SharedDataService, useValue : sharedDataService },
+                { provide : MatDialog, useValue : dialog }
             ]
         });
 
@@ -53,6 +57,9 @@ describe('MessageListComponent', () => {
         };
         sharedDataService = {
             messageCountUpdateEvent : { emit : jest.fn() }
+        };
+        dialog = {
+            open : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true } as ConfirmDeleteDialogData)) })
         };
     });
 
@@ -84,14 +91,32 @@ describe('MessageListComponent', () => {
         expect(sharedDataService.messageCountUpdateEvent.emit).toHaveBeenCalledTimes(2);
     });
 
+    it('should mark all as read', () => {
+        configureTestBed();
+
+        component.markAllSelectedAsRead();
+        component.selectAll();
+        component.markAllSelectedAsRead();
+
+        expect(component).toBeTruthy();
+        expect(service.markAsRead).toHaveBeenCalledTimes(1);
+    });
+
     it('should delete messages', () => {
         configureTestBed();
-        component.deleteMessages();
+
+        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of({ result: true } as ConfirmDeleteDialogData)) };
+        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
+        component.deleteMessage(1);
 
         component.selectAll();
+
+        const mockDialogRef2 : any = { afterClosed : jest.fn().mockReturnValue(of(undefined)) };
+        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef2);
         component.deleteMessages();
 
         expect(component).toBeTruthy();
+        expect(component.dialog.open).toHaveBeenCalled();
     });
 
     it('should delete messages', () => {

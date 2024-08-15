@@ -111,7 +111,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	void shouldToggleMarkAsRead() {
 		// arrange
-		MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().ids(Sets.newHashSet(2L)).build();
+		MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().ids(Sets.newHashSet(2L)).opened(true).build();
 
 		// act
 		service.toggleMarkAsRead(dto);
