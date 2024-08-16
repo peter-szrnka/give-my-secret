@@ -1,6 +1,6 @@
 package io.github.gms.functions.message;
 
-import io.github.gms.abstraction.AbstractClientControllerTest;
+import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
@@ -10,18 +10,21 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link MessageController}
  * 
  * @author Peter Szrnka
  */
-class MessageControllerTest extends AbstractClientControllerTest<MessageService, MessageController> {
+class MessageControllerTest {
+
+    private MessageService service;
+    private MessageController controller;
     
     @BeforeEach
     void setupTest() {
@@ -68,7 +71,7 @@ class MessageControllerTest extends AbstractClientControllerTest<MessageService,
     void shouldMarkAsRead() {
         // arrange
         MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().build();
-        doNothing().when(service).markAsRead(dto);
+        doNothing().when(service).toggleMarkAsRead(dto);
 
         // act
         ResponseEntity<String> response = controller.markAsRead(dto);
@@ -77,6 +80,36 @@ class MessageControllerTest extends AbstractClientControllerTest<MessageService,
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals("", response.getBody());
-        verify(service).markAsRead(dto);
+        verify(service).toggleMarkAsRead(dto);
+    }
+
+    @Test
+    void shouldDeleteAllByIds() {
+        // arrange
+        IdListDto dto = new IdListDto(Set.of(1L, 2L, 3L));
+        doNothing().when(service).deleteAllByIds(dto);
+
+        // act
+        ResponseEntity<Void> response = controller.deleteAllByIds(dto);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        verify(service).deleteAllByIds(dto);
+    }
+    
+    @Test
+    void shouldDeleteById() {
+        // arrange
+        Long id = 1L;
+        doNothing().when(service).deleteById(id);
+
+        // act
+        ResponseEntity<Void> response = controller.deleteById(id);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCode().value());
+        verify(service).deleteById(id);
     }
 }

@@ -16,3 +16,21 @@ tr th {
   font-style: bold;
   font-weight: bold;
 }
+
+.margin-top {
+  margin-top: 10px;
+}
+
+.clickable {
+  cursor: pointer;
+  color: black;
+}
+
+.unclickable {
+  cursor: not-allowed;
+  color: lightgrey;
+}
+
+.col-center {
+  text-align: center !important;
+}

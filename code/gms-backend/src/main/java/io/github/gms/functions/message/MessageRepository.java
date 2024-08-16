@@ -28,8 +28,8 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
 
 	@Modifying
 	@Transactional
-	@Query("update MessageEntity m set m.opened=true where m.userId = :userId and m.id in :messageIds")
-	void markAsRead(@Param(USER_ID) Long userId, @Param("messageIds") Set<Long> messageIds);
+	@Query("update MessageEntity m set m.opened=:opened where m.userId = :userId and m.id in :messageIds")
+	void markAsRead(@Param(USER_ID) Long userId, @Param("messageIds") Set<Long> messageIds, @Param("opened") boolean opened);
 
 	@Modifying
 	@Transactional
@@ -40,4 +40,9 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
 	@Transactional
 	@Query("DELETE FROM MessageEntity m where m.userId in :userIds")
 	void deleteAllByUserId(@Param("userIds") Set<Long> userIds);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM MessageEntity m where m.userId = :userId and m.id in :ids")
+    void deleteAllByUserIdAndIds(@Param("userId") Long userId, @Param("ids") Set<Long> ids);
 }

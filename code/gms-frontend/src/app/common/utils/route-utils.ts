@@ -1,5 +1,6 @@
 export const ROLES_USER_AND_VIEWER = ['ROLE_USER', 'ROLE_VIEWER'];
 export const ROLES_ADMIN = ['ROLE_ADMIN'];
+export const ROLES_ALL = ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_VIEWER'];
 
 export const ROLE_ROUTE_MAP: any = {
   'secret/list': ROLES_USER_AND_VIEWER,
@@ -17,5 +18,6 @@ export const ROLE_ROUTE_MAP: any = {
   'announcement/:id': ROLES_ADMIN,
   'system_property/:id': ROLES_ADMIN,
   'ip_restriction/list': ROLES_ADMIN,
-  'ip_restriction/:id': ROLES_ADMIN
+  'ip_restriction/:id': ROLES_ADMIN,
+  'messages' : ROLES_ALL
 };

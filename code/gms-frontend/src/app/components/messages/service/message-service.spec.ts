@@ -101,11 +101,26 @@ describe("MessageService", () => {
       const mockResponse = "OK";
 
       // act
-      service.markAsRead(1).subscribe(res => expect(res).toBe(mockResponse));
+      service.markAsRead([1], true).subscribe(res => expect(res).toBe(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('PUT');
+      req.flush(mockResponse);
+      httpMock.verify();
+    });
+
+    it('Should delete all messages by id', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/message/delete_all_by_ids";
+      const mockResponse = "OK";
+
+      // act
+      service.deleteAllByIds([1]).subscribe(res => expect(res).toBe(mockResponse));
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('POST');
       req.flush(mockResponse);
       httpMock.verify();
     });
