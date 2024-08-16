@@ -17,15 +17,13 @@ export interface ConfirmDeleteDialogData {
 })
 export class ConfirmDeleteDialog {
 
-  message: string = DEFAULT_DELETE_MESSAGE;
+  message: string;
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDeleteDialog>,
     @Inject(MAT_DIALOG_DATA) public data: ConfirmDeleteDialogData
   ) {
-    if (data.confirmMessage) {
-      this.message = data.confirmMessage;
-    }
+    this.message = data.confirmMessage ?? DEFAULT_DELETE_MESSAGE;
   }
 
   onNoClick(): void {
