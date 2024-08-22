@@ -141,6 +141,12 @@ jobs:
           name: Dockerfile
           path: ${{ github.workspace }}/code/gms-backend/Dockerfile
           retention-days: 1
+      - name: Temporarily save entrypoint.sh
+        uses: actions/upload-artifact@v2
+        with:
+          name: entrypointSh
+          path: ${{ github.workspace }}/code/gms-backend/entrypoint.sh
+          retention-days: 1
   deploy:
     name: 'Deploy to GHCR'
     runs-on : ubuntu-latest
@@ -165,6 +171,10 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: Dockerfile
+          path: ./
+      - uses: actions/download-artifact@v1
+        with:
+          name: entrypointSh
           path: ./
       - name: Build Docker by Dockerfile
         run: docker build --build-arg JAR_FILE=./gms-app.jar -t peter-szrnka/give-my-secret -f ./Dockerfile .
