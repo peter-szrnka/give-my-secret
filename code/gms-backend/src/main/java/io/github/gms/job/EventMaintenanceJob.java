@@ -7,7 +7,6 @@ import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
