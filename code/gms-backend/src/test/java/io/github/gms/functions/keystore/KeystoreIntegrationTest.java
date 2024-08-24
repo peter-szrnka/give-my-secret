@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-@TestedClass(value = KeystoreController.class, skip = false)
+@TestedClass(KeystoreController.class)
 class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Autowired

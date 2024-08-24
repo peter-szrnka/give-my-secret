@@ -97,7 +97,7 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 		// act
 		HttpEntity<IdListDto> requestEntity =
 				new HttpEntity<>(new IdListDto(Set.of(1L, 2L)), TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<Void> response = executeHttpDelete("/delete_all_by_ids", requestEntity, Void.class);
+		ResponseEntity<Void> response = executeHttpPost("/delete_all_by_ids", requestEntity, Void.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,7 +31,7 @@ import static org.springframework.test.util.AssertionErrors.assertNotNull;
  */
 class IntegrationAnnotationCheckerTest {
     private static final Set<String> IGNORED_METHODS = Set.of(
-            "equals", "hashCode", "toString", "notify", "notifyAll", "wait", "getClass", "finalize", "wait0", "clone"
+            "$jacocoInit", "equals", "hashCode", "toString", "notify", "notifyAll", "wait", "getClass", "finalize", "wait0", "clone"
     );
     private static final Map<String, ClassData> controllers;
     private static final Map<String, TestClassData> tests;
@@ -84,6 +85,7 @@ class IntegrationAnnotationCheckerTest {
                     .filter(name -> !name.startsWith("lambda$")).collect(Collectors.toSet());
 
             controllerMethods.addAll(Stream.of(controller.getSuperclass().getDeclaredMethods())
+                    .filter(method -> Modifier.isPublic(method.getModifiers()))
                     .map(Method::getName)
                     .filter(name -> !IGNORED_METHODS.contains(name))
                     .collect(Collectors.toSet()));
@@ -133,8 +135,7 @@ class IntegrationAnnotationCheckerTest {
         Set<Class<?>> resultList = new HashSet<>();
         Set<BeanDefinition> components = provider.findCandidateComponents("io.github.gms");
 
-        for (BeanDefinition component : components)
-        {
+        for (BeanDefinition component : components) {
             Class<?> resultClass = Class.forName(component.getBeanClassName());
             resultList.add(resultClass);
         }
