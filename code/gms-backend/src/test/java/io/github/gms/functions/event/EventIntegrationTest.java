@@ -3,6 +3,7 @@ package io.github.gms.functions.event;
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.util.TestUtils;
@@ -42,6 +43,7 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 	}
 
 	@Test
+	@TestedMethod("list")
 	void testList() {
 		eventRepository.deleteAll();
 		
@@ -69,6 +71,7 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 	}
 	
 	@Test
+	@TestedMethod("listByUserId")
 	void testListByUserId() {
 		eventRepository.deleteAll();
 		

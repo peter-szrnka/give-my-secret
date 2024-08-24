@@ -2,6 +2,7 @@ package io.github.gms.functions.apikey;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.IdNamePairListDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
@@ -18,11 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka
@@ -37,6 +34,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
+	@TestedMethod("save")
 	void testSave() {
 		// act
 		HttpEntity<SaveApiKeyRequestDto> requestEntity = new HttpEntity<>(TestUtils.createSaveApiKeyRequestDto(), TestUtils.getHttpHeaders(jwt));
@@ -51,6 +49,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("getById")
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -67,6 +66,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("list")
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -79,6 +79,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("getValue")
 	void testGetValue() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -93,6 +94,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("delete")
 	void testDelete() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -106,6 +108,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Transactional
 	@ParameterizedTest
+	@TestedMethod("toggle")
 	@ValueSource(booleans = { false, true })
 	void testToggleStatus(boolean enabled) {
 		// act
@@ -126,6 +129,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	
 	@Test
+	@TestedMethod("getAllApiKeyNames")
 	void testGetAllApiKeyNames() {
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		

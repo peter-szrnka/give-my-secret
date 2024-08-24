@@ -1,6 +1,7 @@
 package io.github.gms.functions.user;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.functions.apikey.ApiKeyDto;
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
+@TestedClass(UserController.class)
 class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	UserIntegrationTest() {

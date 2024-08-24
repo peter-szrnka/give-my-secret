@@ -3,6 +3,7 @@ package io.github.gms.common.controller;
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.util.DemoData;
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class InformationControllerIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
     @Test
+    @TestedMethod("getUserInfo")
 	void shouldReturnHttp200WithEmptyResponse() {
 		// act
 		ResponseEntity<UserInfoDto> response = executeHttpGet("/info/me", new HttpEntity<>(null), UserInfoDto.class);
@@ -37,6 +39,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 	}
 
     @Test
+    @TestedMethod("getUserInfo")
 	void shouldReturnHttp200() {
         // arrange
 		HttpHeaders headers = new HttpHeaders();

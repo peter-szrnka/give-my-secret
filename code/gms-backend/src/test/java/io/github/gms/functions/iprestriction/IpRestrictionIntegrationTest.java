@@ -2,6 +2,7 @@ package io.github.gms.functions.iprestriction;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
@@ -40,8 +41,9 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 		jwt = jwtService.generateJwt(TestUtils.createJwtAdminRequest(gmsUser));
 	}
 
-	@Transactional
 	@Test
+	@Transactional
+	@TestedMethod("save")
 	void testSave() {
 		// act
 		HttpEntity<IpRestrictionDto> saveRequestEntity = new HttpEntity<>(
@@ -55,6 +57,7 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	}
 	
 	@Test
+	@TestedMethod("getById")
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -69,6 +72,7 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	}
 	
 	@Test
+	@TestedMethod("list")
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -83,6 +87,7 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	}
 	
 	@Test
+	@TestedMethod("delete")
 	void testDelete() {
 		// arrange
 		HttpEntity<IpRestrictionDto> saveRequestEntity = new HttpEntity<>(
@@ -105,6 +110,7 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 
 	@Transactional
 	@ParameterizedTest
+	@TestedMethod("toggle")
 	@ValueSource(booleans = { false, true })
 	void testToggleStatus(boolean enabled) {
 		// act

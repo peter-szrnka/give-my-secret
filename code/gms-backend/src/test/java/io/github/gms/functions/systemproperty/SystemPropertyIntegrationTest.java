@@ -3,6 +3,7 @@ package io.github.gms.functions.systemproperty;
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,7 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements G
 	}
 	
 	@Test
+	@TestedMethod("save")
 	void testSave() {
 		// act
 		HttpEntity<SystemPropertyDto> requestEntity = new HttpEntity<>(SystemPropertyDto.builder().key(SystemProperty.JOB_OLD_EVENT_LIMIT.name()).value("2;d").build(), TestUtils.getHttpHeaders(jwt));
@@ -44,6 +46,7 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements G
 	}
 	
 	@Test
+	@TestedMethod("delete")
 	void testDelete() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -55,6 +58,7 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements G
 	}
 
 	@Test
+	@TestedMethod("list")
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
