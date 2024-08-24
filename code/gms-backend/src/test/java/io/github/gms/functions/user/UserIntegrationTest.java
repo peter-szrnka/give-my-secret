@@ -2,6 +2,7 @@ package io.github.gms.functions.user;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.functions.apikey.ApiKeyDto;
@@ -42,8 +43,9 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		jwt = jwtService.generateJwt(TestUtils.createJwtAdminRequest(gmsUser));
 	}
 
-	@Transactional
 	@Test
+	@Transactional
+	@TestedMethod("save")
 	void testSave() {
 		// act
 		HttpEntity<SaveUserRequestDto> saveRequestEntity = new HttpEntity<>(
@@ -63,6 +65,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("getById")
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -79,6 +82,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("list")
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -93,6 +97,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("delete")
 	void testDelete() {
 		// arrange
 		HttpEntity<SaveUserRequestDto> saveRequestEntity = new HttpEntity<>(
@@ -115,6 +120,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	@Transactional
 	@ParameterizedTest
+	@TestedMethod("toggle")
 	@ValueSource(booleans = { true, false })
 	void testToggleStatus(boolean enabled) {
 		// act
@@ -133,8 +139,9 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		executeHttpPost("/" + DemoData.USER_1_ID + "?enabled="+ !enabled, requestEntity,String.class);
 	}
 	
-	@Transactional
 	@Test
+	@Transactional
+	@TestedMethod("changePassword")
 	void testChangePassword() {
 		// arrange
 		HttpEntity<ChangePasswordRequestDto> requestEntity = new HttpEntity<>(TestUtils.createChangePasswordRequestDto(), TestUtils.getHttpHeaders(jwt));
@@ -152,6 +159,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Test
 	@Transactional
+	@TestedMethod("isMfaActive")
 	void testIsMfaActive() {
 		// arrange
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));

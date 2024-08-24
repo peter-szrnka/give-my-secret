@@ -6,6 +6,7 @@ import io.github.gms.common.TestedMethod;
 import io.github.gms.common.abstraction.GmsController;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -17,9 +18,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertNotNull;
 
@@ -29,6 +32,7 @@ import static org.springframework.test.util.AssertionErrors.assertNotNull;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 class IntegrationAnnotationCheckerTest {
     private static final Set<String> IGNORED_METHODS = Set.of(
             "$jacocoInit", "equals", "hashCode", "toString", "notify", "notifyAll", "wait", "getClass", "finalize", "wait0", "clone"
@@ -40,24 +44,31 @@ class IntegrationAnnotationCheckerTest {
         try {
             controllers = getAllControllerClasses();
             tests = getAllTestClasses();
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
     void shouldHaveIntegrationAnnotation() {
+        AtomicInteger skipCounter = new AtomicInteger(0);
         controllers.forEach((k, v) -> {
             assertNotNull("Integration test is missing for " + k, tests.containsKey(k));
 
             TestClassData testClassData = tests.get(k);
 
             if (testClassData.isSkip()) {
+                skipCounter.incrementAndGet();
                 return;
             }
 
-            assertEquals(k + " has some untested methods!", v.getMethods(), tests.get(k).getMethods());
+            assertEquals(k + " has some untested methods!", postFilterMethods(v.getMethods()), tests.get(k).getMethods());
+
+            log.info("{} has been tested.", k);
         });
+
+        // Threshold for the number of classes & methods that is skipped temporarily
+        assertThat(skipCounter.get()).isLessThan(3);
     }
 
     @Getter
@@ -74,11 +85,12 @@ class IntegrationAnnotationCheckerTest {
         private boolean skip;
     }
 
-    private static Map<String, ClassData> getAllControllerClasses() throws ClassNotFoundException {
+    private static Map<String, ClassData> getAllControllerClasses() throws Exception {
         Map<String, ClassData> resultMap = new HashMap<>();
         Set<Class<?>> controllers = getAllSubClasses(GmsController.class);
 
         for (Class<?> controller : controllers) {
+            log.info("Controller: {}", controller.getSimpleName());
             ClassData classData = new ClassData();
             Set<String> controllerMethods = Stream.of(controller.getDeclaredMethods())
                     .map(Method::getName)
@@ -87,7 +99,7 @@ class IntegrationAnnotationCheckerTest {
             controllerMethods.addAll(Stream.of(controller.getSuperclass().getDeclaredMethods())
                     .filter(method -> Modifier.isPublic(method.getModifiers()))
                     .map(Method::getName)
-                    .filter(name -> !IGNORED_METHODS.contains(name))
+                    .filter(name -> !IGNORED_METHODS.contains(name) && !name.contains("$"))
                     .collect(Collectors.toSet()));
 
             classData.setMethods(controllerMethods);
@@ -97,7 +109,7 @@ class IntegrationAnnotationCheckerTest {
         return resultMap;
     }
 
-    private static Map<String, TestClassData> getAllTestClasses() throws ClassNotFoundException {
+    private static Map<String, TestClassData> getAllTestClasses() throws Exception {
         Map<String, TestClassData> resultMap = new HashMap<>();
         Set<Class<?>> testClasses = getAllSubClasses(GmsControllerIntegrationTest.class);
 
@@ -128,9 +140,9 @@ class IntegrationAnnotationCheckerTest {
         return resultMap;
     }
 
-    private static Set<Class<?>> getAllSubClasses(Class<?> clazz) throws ClassNotFoundException {
+    private static Set<Class<?>> getAllSubClasses(Class<?> inputClazz) throws Exception {
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
-        provider.addIncludeFilter(new AssignableTypeFilter(clazz));
+        provider.addIncludeFilter(new AssignableTypeFilter(inputClazz));
 
         Set<Class<?>> resultList = new HashSet<>();
         Set<BeanDefinition> components = provider.findCandidateComponents("io.github.gms");
@@ -141,5 +153,9 @@ class IntegrationAnnotationCheckerTest {
         }
 
         return resultList;
+    }
+
+    private static Set<String> postFilterMethods(Set<String> methodNames) {
+        return methodNames.stream().filter(name -> !name.contains("$")).collect(Collectors.toSet());
     }
 }

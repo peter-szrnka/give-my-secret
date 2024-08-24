@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-@TestedClass(value = InformationController.class, skip = true) // TODO Fix test related issues
+@TestedClass(InformationController.class)
 class InformationControllerIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
     @Test
