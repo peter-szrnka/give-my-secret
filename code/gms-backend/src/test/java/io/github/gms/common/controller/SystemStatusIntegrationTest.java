@@ -1,6 +1,8 @@
 package io.github.gms.common.controller;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
+import io.github.gms.abstraction.GmsControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
 import io.github.gms.common.dto.SystemStatusDto;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-class SystemStatusIntegrationTest extends AbstractIntegrationTest {
+@TestedClass(SystemController.class)
+class SystemStatusIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
 	@Test
 	void shouldSystemStatusOK() {

@@ -21,12 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link KeystoreController}
@@ -179,7 +178,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
         // assert
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
-        assertEquals("attachment; filename=\"test.jks\"", response.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION).getFirst());
+        assertEquals("attachment; filename=\"test.jks\"", requireNonNull(response.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION)).getFirst());
 
         ByteArrayResource resource = (ByteArrayResource) response.getBody();
         assertNotNull(resource);

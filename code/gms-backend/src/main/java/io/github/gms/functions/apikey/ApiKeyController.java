@@ -17,12 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static io.github.gms.common.util.Constants.ID;
-import static io.github.gms.common.util.Constants.PATH_LIST;
-import static io.github.gms.common.util.Constants.PATH_LIST_NAMES;
-import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
-import static io.github.gms.common.util.Constants.ROLE_USER;
-import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
+import static io.github.gms.common.util.Constants.*;
+import static io.github.gms.common.util.Constants.SIZE;
 
 /**
  * @author Peter Szrnka
@@ -54,10 +50,10 @@ public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	public ApiKeyListDto list(
-			@RequestParam("direction") String direction,
-			@RequestParam("property") String property,
-			@RequestParam("page") int page,
-			@RequestParam("size") int size) {
+			@RequestParam(DIRECTION) String direction,
+			@RequestParam(PROPERTY) String property,
+			@RequestParam(PAGE) int page,
+			@RequestParam(SIZE) int size) {
 		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
 	

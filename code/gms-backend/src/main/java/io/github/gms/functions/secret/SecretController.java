@@ -10,19 +10,9 @@ import io.github.gms.common.util.ConverterUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static io.github.gms.common.util.Constants.ID;
-import static io.github.gms.common.util.Constants.PATH_LIST;
-import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
-import static io.github.gms.common.util.Constants.ROLE_USER;
-import static io.github.gms.common.util.Constants.ROLE_USER_OR_VIEWER;
+import static io.github.gms.common.util.Constants.*;
 
 /**
  * @author Peter Szrnka
@@ -56,10 +46,10 @@ public class SecretController extends AbstractClientController<SecretService> {
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
 	public SecretListDto list(
-			@RequestParam("direction") String direction,
-			@RequestParam("property") String property,
-			@RequestParam("page") int page,
-			@RequestParam("size") int size) {
+			@RequestParam(DIRECTION) String direction,
+			@RequestParam(PROPERTY) String property,
+			@RequestParam(PAGE) int page,
+			@RequestParam(SIZE) int size) {
 		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
 	

@@ -1,6 +1,7 @@
 package io.github.gms.common.controller;
 
 
+import io.github.gms.common.abstraction.GmsController;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
@@ -29,7 +30,7 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_
 @RequestMapping("/setup")
 @AuditTarget(EventTarget.ADMIN_USER)
 @Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
-public class SetupController {
+public class SetupController implements GmsController {
 
 	private final UserService userService;
 

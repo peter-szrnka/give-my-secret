@@ -1,6 +1,8 @@
 package io.github.gms.functions.systemproperty;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
+import io.github.gms.abstraction.GmsControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-class SystemPropertyIntegrationTest extends AbstractIntegrationTest {
+@TestedClass(SystemPropertyController.class)
+class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 	
 	@Override
 	@BeforeEach

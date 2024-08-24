@@ -3,15 +3,9 @@ package io.github.gms.functions.event;
 import io.github.gms.common.abstraction.AbstractController;
 import io.github.gms.common.util.ConverterUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static io.github.gms.common.util.Constants.PATH_LIST;
-import static io.github.gms.common.util.Constants.ROLE_ADMIN;
-import static io.github.gms.common.util.Constants.USER_ID;
+import static io.github.gms.common.util.Constants.*;
 
 /**
  * @author Peter Szrnka
@@ -28,20 +22,20 @@ public class EventController extends AbstractController<EventService> {
 	@GetMapping(PATH_LIST)
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_VIEWER')")
 	public EventListDto list(
-			@RequestParam("direction") String direction,
-			@RequestParam("property") String property,
-			@RequestParam("page") int page,
-			@RequestParam("size") int size) {
+			@RequestParam(DIRECTION) String direction,
+			@RequestParam(PROPERTY) String property,
+			@RequestParam(PAGE) int page,
+			@RequestParam(SIZE) int size) {
 		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
 	
 	@GetMapping("/list/{userId}")
 	@PreAuthorize(ROLE_ADMIN)
 	public EventListDto listByUserId(@PathVariable(USER_ID) Long userId,
-									 @RequestParam("direction") String direction,
-									 @RequestParam("property") String property,
-									 @RequestParam("page") int page,
-									 @RequestParam("size") int size) {
+									 @RequestParam(DIRECTION) String direction,
+									 @RequestParam(PROPERTY) String property,
+									 @RequestParam(PAGE) int page,
+									 @RequestParam(SIZE) int size) {
 		return service.listByUser(userId, ConverterUtils.createPageable(direction, property, page, size));
 	}
 }

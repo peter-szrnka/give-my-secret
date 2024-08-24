@@ -1,6 +1,7 @@
 package io.github.gms.functions.apikey;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
 import io.github.gms.common.dto.IdNamePairListDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
+@TestedClass(ApiKeyController.class)
 class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	ApiKeyIntegrationTest() {

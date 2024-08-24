@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+import static io.github.gms.common.util.Constants.KEY;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -20,7 +22,7 @@ public interface SystemPropertyRepository extends JpaRepository<SystemPropertyEn
 	void deleteByKey(SystemProperty key);
 
 	@Query("select s.value from SystemPropertyEntity s where s.key = :key")
-	Optional<String> getValueByKey(@Param("key") SystemProperty key);
+	Optional<String> getValueByKey(@Param(KEY) SystemProperty key);
 
 	SystemPropertyEntity findByKey(SystemProperty key);
 

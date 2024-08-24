@@ -1,6 +1,8 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
+import io.github.gms.abstraction.GmsControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.util.TestUtils;
@@ -24,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-class EventIntegrationTest extends AbstractIntegrationTest {
+@TestedClass(EventController.class)
+class EventIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 	
 	private final String path = "/secure/event";
 	

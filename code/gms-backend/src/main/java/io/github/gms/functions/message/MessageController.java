@@ -1,5 +1,6 @@
 package io.github.gms.functions.message;
 
+import io.github.gms.common.abstraction.GmsController;
 import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.util.ConverterUtils;
@@ -18,17 +19,17 @@ import static io.github.gms.common.util.Constants.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/secure/message")
-public class MessageController {
+public class MessageController implements GmsController {
 
 	private final MessageService service;
 
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ALL_ROLE)
 	public MessageListDto list(
-			@RequestParam("direction") String direction,
-			@RequestParam("property") String property,
-			@RequestParam("page") int page,
-			@RequestParam("size") int size) {
+			@RequestParam(DIRECTION) String direction,
+			@RequestParam(PROPERTY) String property,
+			@RequestParam(PAGE) int page,
+			@RequestParam(SIZE) int size) {
 		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
 	

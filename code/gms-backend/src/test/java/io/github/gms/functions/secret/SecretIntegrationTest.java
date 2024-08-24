@@ -1,6 +1,7 @@
 package io.github.gms.functions.secret;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.util.DemoData;
@@ -21,17 +22,14 @@ import java.io.File;
 import java.io.InputStream;
 
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
+@TestedClass(SecretController.class)
 class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	SecretIntegrationTest() {

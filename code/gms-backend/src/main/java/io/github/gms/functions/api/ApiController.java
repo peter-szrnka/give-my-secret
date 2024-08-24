@@ -1,5 +1,6 @@
 package io.github.gms.functions.api;
 
+import io.github.gms.common.abstraction.GmsController;
 import io.github.gms.functions.secret.GetSecretRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.MimeTypeUtils;
@@ -18,7 +19,7 @@ import static io.github.gms.common.util.Constants.API_KEY_HEADER;
  */
 @RestController
 @RequiredArgsConstructor
-public class ApiController {
+public class ApiController implements GmsController {
 
 	private final ApiService service;
 

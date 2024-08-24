@@ -1,5 +1,6 @@
 package io.github.gms.common.controller;
 
+import io.github.gms.common.abstraction.GmsController;
 import io.github.gms.common.dto.ErrorCodeDto;
 import io.github.gms.common.dto.ErrorCodeListDto;
 import io.github.gms.common.dto.SystemStatusDto;
@@ -20,7 +21,7 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
-public class SystemController {
+public class SystemController implements GmsController {
 
 	private final SystemService systemService;
 
