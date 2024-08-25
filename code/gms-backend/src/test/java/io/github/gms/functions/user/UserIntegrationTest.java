@@ -157,6 +157,36 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(entity);
 	}
 
+    @Test
+    @TestedMethod("getMfaQrCode")
+    void testGetMfaQrCode() {
+        // arrange
+        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+
+        // act
+        ResponseEntity<byte[]> response = executeHttpGet("/mfa_qr_code", requestEntity, byte[].class);
+
+        // Assert
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    @TestedMethod("toggleMfa")
+    void testToggleMfa() {
+        // act
+        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+        ResponseEntity<Void> response = executeHttpPost("/toggle_mfa?enabled=true", requestEntity, Void.class);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNull(response.getBody());
+
+        UserEntity entity = userRepository.getReferenceById(DemoData.USER_1_ID);
+        assertNotNull(entity);
+    }
+
 	@Test
 	@Transactional
 	@TestedMethod("isMfaActive")
@@ -165,12 +195,11 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
 		// act
-		ResponseEntity<Boolean> response = executeHttpGet("/mfa_active", requestEntity, Boolean.class);
+		ResponseEntity<byte[]> response = executeHttpGet("/mfa_qr_code", requestEntity, byte[].class);
 
 		// Assert
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertFalse(response.getBody());
 	}
 }

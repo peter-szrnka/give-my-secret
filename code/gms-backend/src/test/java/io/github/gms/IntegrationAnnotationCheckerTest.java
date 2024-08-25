@@ -6,11 +6,8 @@ import io.github.gms.common.TestedMethod;
 import io.github.gms.common.abstraction.GmsController;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AssignableTypeFilter;
+import org.reflections.Reflections;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -24,7 +21,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertNotNull;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 /**
  * Checks that all endpoints are covered by integration tests.
@@ -32,8 +29,8 @@ import static org.springframework.test.util.AssertionErrors.assertNotNull;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Slf4j
 class IntegrationAnnotationCheckerTest {
+    private static final int FAILURE_THRESHOLD = 3;
     private static final Set<String> IGNORED_METHODS = Set.of(
             "$jacocoInit", "equals", "hashCode", "toString", "notify", "notifyAll", "wait", "getClass", "finalize", "wait0", "clone"
     );
@@ -50,25 +47,12 @@ class IntegrationAnnotationCheckerTest {
     }
 
     @Test
-    void shouldHaveIntegrationAnnotation() {
+    void shouldControllerHaveProperIntegrationTests() {
         AtomicInteger skipCounter = new AtomicInteger(0);
-        controllers.forEach((k, v) -> {
-            assertNotNull("Integration test is missing for " + k, tests.containsKey(k));
-
-            TestClassData testClassData = tests.get(k);
-
-            if (testClassData.isSkip()) {
-                skipCounter.incrementAndGet();
-                return;
-            }
-
-            assertEquals(k + " has some untested methods!", postFilterMethods(v.getMethods()), tests.get(k).getMethods());
-
-            log.info("{} has been tested.", k);
-        });
+        controllers.forEach((k, v) -> assertController(skipCounter, k, v));
 
         // Threshold for the number of classes & methods that is skipped temporarily
-        assertThat(skipCounter.get()).isLessThan(3);
+        assertThat(skipCounter.get()).isLessThan(FAILURE_THRESHOLD);
     }
 
     @Getter
@@ -90,7 +74,6 @@ class IntegrationAnnotationCheckerTest {
         Set<Class<?>> controllers = getAllSubClasses(GmsController.class);
 
         for (Class<?> controller : controllers) {
-            log.info("Controller: {}", controller.getSimpleName());
             ClassData classData = new ClassData();
             Set<String> controllerMethods = Stream.of(controller.getDeclaredMethods())
                     .map(Method::getName)
@@ -141,18 +124,20 @@ class IntegrationAnnotationCheckerTest {
     }
 
     private static Set<Class<?>> getAllSubClasses(Class<?> inputClazz) throws Exception {
-        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
-        provider.addIncludeFilter(new AssignableTypeFilter(inputClazz));
+        Reflections reflections = new Reflections("io.github.gms");
+        return reflections.getSubTypesOf(inputClazz).stream().filter(cls -> !Modifier.isAbstract(cls.getModifiers())).collect(Collectors.toSet());
+    }
 
-        Set<Class<?>> resultList = new HashSet<>();
-        Set<BeanDefinition> components = provider.findCandidateComponents("io.github.gms");
+    private static void assertController(AtomicInteger skipCounter, String key, ClassData classData) {
+        assertTrue("Integration test is missing for " + key, tests.containsKey(key));
 
-        for (BeanDefinition component : components) {
-            Class<?> resultClass = Class.forName(component.getBeanClassName());
-            resultList.add(resultClass);
+        TestClassData testClassData = tests.get(key);
+        if (testClassData.isSkip()) {
+            skipCounter.incrementAndGet();
+            return;
         }
 
-        return resultList;
+        assertEquals(key + " has some untested methods!", postFilterMethods(classData.getMethods()), tests.get(key).getMethods());
     }
 
     private static Set<String> postFilterMethods(Set<String> methodNames) {
