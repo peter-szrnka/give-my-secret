@@ -30,7 +30,10 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
  * @since 1.0
  */
 class IntegrationAnnotationCheckerTest {
+    // Test settings
     private static final int FAILURE_THRESHOLD = 3;
+    private static final boolean SKIP_ENABLED = true;
+
     private static final Set<String> IGNORED_METHODS = Set.of(
             "$jacocoInit", "equals", "hashCode", "toString", "notify", "notifyAll", "wait", "getClass", "finalize", "wait0", "clone"
     );
@@ -132,7 +135,7 @@ class IntegrationAnnotationCheckerTest {
         assertTrue("Integration test is missing for " + key, tests.containsKey(key));
 
         TestClassData testClassData = tests.get(key);
-        if (testClassData.isSkip()) {
+        if (SKIP_ENABLED && testClassData.isSkip()) {
             skipCounter.incrementAndGet();
             return;
         }
