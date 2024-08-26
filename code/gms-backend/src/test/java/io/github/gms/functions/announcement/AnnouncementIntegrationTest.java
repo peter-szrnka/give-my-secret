@@ -32,7 +32,7 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	@BeforeEach
 	public void setup() {
 		gmsUser = TestUtils.createGmsAdminUser();
-		jwt = jwtService.generateJwt(TestUtils.createJwtAdminRequest(gmsUser));
+		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
 	}
 
 	@Test

@@ -630,24 +630,11 @@ public class TestUtils {
 	}
 
 	public static GenerateJwtRequest createJwtAdminRequest() {
-		return createJwtAdminRequest(GmsUserDetails.builder()
+		return createJwtUserRequest(GmsUserDetails.builder()
 				.userId(DemoData.USER_1_ID)
 				.username(DemoData.USERNAME1)
 				.authorities(Set.of(ROLE_ADMIN))
 				.build());
-	}
-
-	public static GenerateJwtRequest createJwtAdminRequest(GmsUserDetails user) {
-		Map<String, Object> claims = Map.of(
-				MdcParameter.USER_ID.getDisplayName(), user.getUserId(),
-				MdcParameter.USER_NAME.getDisplayName(), user.getUsername(),
-				"roles",
-				user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()));
-
-		return GenerateJwtRequest.builder().subject(user.getUsername()).algorithm("HS512")
-				.expirationDateInSeconds(30L)
-				.claims(claims)
-				.build();
 	}
 
 	public static GenerateJwtRequest createJwtUserRequest(GmsUserDetails user) {
