@@ -9,7 +9,7 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
-import io.github.gms.common.types.SkipTestAnnotationCheck;
+import io.github.gms.common.types.SkipSecurityTestCheck;
 import io.github.gms.functions.user.SaveUserRequestDto;
 import io.github.gms.functions.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/setup")
-@SkipTestAnnotationCheck
+@SkipSecurityTestCheck
 @AuditTarget(EventTarget.ADMIN_USER)
 @Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
 public class SetupController implements GmsController {

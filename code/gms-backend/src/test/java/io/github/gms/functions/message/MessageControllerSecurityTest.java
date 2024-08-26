@@ -2,6 +2,7 @@ package io.github.gms.functions.message;
 
 import io.github.gms.abstraction.AbstractSecurityTest;
 import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.util.TestUtils;
@@ -22,19 +23,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(MessageController.class)
-class MessageControllerSecurityTest extends AbstractSecurityTest {
+public class MessageControllerSecurityTest extends AbstractSecurityTest {
 
     public MessageControllerSecurityTest() {
         super("/message");
     }
 
     @Test
-    void testListFailWithHttp403() {
+    @TestedMethod("list")
+    public void testListFailWithHttp403() {
         shouldListFailWith403(MessageListDto.class);
     }
 
     @Test
-    void testUnreadMessagesCountFailWithHttp403() {
+    @TestedMethod("unreadMessagesCount")
+    public void testUnreadMessagesCountFailWithHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
         // act
@@ -45,7 +48,8 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
     }
 
     @Test
-    void testMarkAsReadFailWithHttp403() {
+    @TestedMethod("markAsRead")
+    public void testMarkAsReadFailWithHttp403() {
         MarkAsReadRequestDto request =  MarkAsReadRequestDto.builder().ids(Set.of(1L, 2L, 3L)).build();
         HttpEntity<MarkAsReadRequestDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 
@@ -57,7 +61,8 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
     }
 
     @Test
-    void testDeleteAllByIds403() {
+    @TestedMethod("deleteAllByIds")
+    public void testDeleteAllByIds403() {
         IdListDto request = new IdListDto(Set.of(1L, 2L, 3L));
         HttpEntity<IdListDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 
@@ -69,19 +74,8 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
     }
 
     @Test
-    void testToggleReadByIds() {
-        IdListDto request = new IdListDto(Set.of(1L, 2L, 3L));
-        HttpEntity<IdListDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
-
-        // act
-        ResponseEntity<Void> response = executeHttpPost(urlPrefix + "/toggle_read_by_ids?opened=true", requestEntity, Void.class);
-
-        // assert
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-    }
-
-    @Test
-    void testDeleteById() {
+    @TestedMethod("deleteById")
+    public void testDeleteById() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
         // act

@@ -6,7 +6,7 @@ import io.github.gms.abstraction.GmsControllerSecurityTest;
 import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
 import io.github.gms.common.abstraction.GmsController;
-import io.github.gms.common.types.SkipTestAnnotationCheck;
+import io.github.gms.common.types.SkipSecurityTestCheck;
 import lombok.Getter;
 import lombok.Setter;
 import org.junit.jupiter.api.Test;
@@ -23,8 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.util.AssertionErrors.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
+import static org.springframework.test.util.AssertionErrors.*;
 
 /**
  * Checks that all endpoints are covered by integration tests.
@@ -40,13 +39,12 @@ class IntegrationAnnotationCheckerTest {
     private static final Set<String> IGNORED_METHODS = Set.of(
             "$jacocoInit", "equals", "hashCode", "toString", "notify", "notifyAll", "wait", "getClass", "finalize", "wait0", "clone"
     );
-    private static final Map<String, ClassData> controllers;
+    private static Map<String, ClassData> controllers;
     private static final Map<String, TestClassData> integrationTests;
     private static final Map<String, TestClassData> securityTests;
 
     static {
         try {
-            controllers = getAllControllerClasses();
             integrationTests = getAllIntegrationTestClasses();
             securityTests = getAllSecurityTestClasses();
         } catch (Exception e) {
@@ -55,7 +53,8 @@ class IntegrationAnnotationCheckerTest {
     }
 
     @Test
-    void shouldControllerHaveProperIntegrationTests() {
+    void shouldControllerHaveProperIntegrationTests() throws Exception {
+        controllers = getAllControllerClasses(false);
         AtomicInteger skipCounter = new AtomicInteger(0);
         controllers.forEach((k, v) -> assertController(skipCounter, k, v));
 
@@ -64,7 +63,8 @@ class IntegrationAnnotationCheckerTest {
     }
 
     @Test
-    void shouldControllerHaveProperSecurityTests() {
+    void shouldControllerHaveProperSecurityTests() throws Exception {
+        controllers = getAllControllerClasses(true);
         AtomicInteger skipCounter = new AtomicInteger(0);
         Set<String> missingSecurityTests = new HashSet<>();
         Map<String, Set<String>> missingSecurityTestMethods = new HashMap<>();
@@ -80,9 +80,9 @@ class IntegrationAnnotationCheckerTest {
                 return;
             }
 
-            final Set<String> postFilteredMethods = postFilterMethods(v.getMethods());
-            if (!postFilteredMethods.equals(testClassData.getMethods())) {
-                missingSecurityTestMethods.put(k, Sets.difference(postFilteredMethods, testClassData.getMethods()));
+            final Set<String> postFilteredMethods = Sets.difference(postFilterMethods(v.getMethods()), testClassData.getMethods());
+            if (!postFilteredMethods.isEmpty()) {
+                missingSecurityTestMethods.put(k, postFilteredMethods);
             }
         });
 
@@ -106,12 +106,12 @@ class IntegrationAnnotationCheckerTest {
         private boolean skip;
     }
 
-    private static Map<String, ClassData> getAllControllerClasses() throws Exception {
+    private static Map<String, ClassData> getAllControllerClasses(boolean securityTestCheck) throws Exception {
         Map<String, ClassData> resultMap = new HashMap<>();
         Set<Class<?>> controllers = getAllSubClasses(GmsController.class);
 
         for (Class<?> controller : controllers) {
-            SkipTestAnnotationCheck skipTestAnnotationCheck = controller.getAnnotation(SkipTestAnnotationCheck.class);
+            SkipSecurityTestCheck skipTestAnnotationCheck = controller.getAnnotation(SkipSecurityTestCheck.class);
 
             if (skipTestAnnotationCheck != null) {
                 continue;
@@ -119,13 +119,15 @@ class IntegrationAnnotationCheckerTest {
 
             ClassData classData = new ClassData();
             Set<String> controllerMethods = Stream.of(controller.getDeclaredMethods())
+                    .filter(method -> !securityTestCheck || method.getAnnotation(SkipSecurityTestCheck.class) == null)
                     .map(Method::getName)
                     .filter(name -> !name.startsWith("lambda$")).collect(Collectors.toSet());
 
             controllerMethods.addAll(Stream.of(controller.getSuperclass().getDeclaredMethods())
                     .filter(method -> Modifier.isPublic(method.getModifiers()))
+                    .filter(method -> !IGNORED_METHODS.contains(method.getName()) && !method.getName().contains("$"))
+                    .filter(method -> !securityTestCheck || method.getAnnotation(SkipSecurityTestCheck.class) == null)
                     .map(Method::getName)
-                    .filter(name -> !IGNORED_METHODS.contains(name) && !name.contains("$"))
                     .collect(Collectors.toSet()));
 
             classData.setMethods(controllerMethods);
@@ -136,28 +138,24 @@ class IntegrationAnnotationCheckerTest {
     }
 
     private static Map<String, TestClassData> getAllIntegrationTestClasses() throws Exception {
-        return getAllSpecificTestClasses(GmsControllerIntegrationTest.class);
+        return getAllSpecificTestClasses("integration", GmsControllerIntegrationTest.class);
     }
 
     private static Map<String, TestClassData> getAllSecurityTestClasses() throws Exception {
-        return getAllSpecificTestClasses(GmsControllerSecurityTest.class);
+        return getAllSpecificTestClasses("security", GmsControllerSecurityTest.class);
     }
 
-    private static Map<String, TestClassData> getAllSpecificTestClasses(Class<?> clazz) throws Exception {
+    private static Map<String, TestClassData> getAllSpecificTestClasses(String scope, Class<?> clazz) throws Exception {
         Map<String, TestClassData> resultMap = new HashMap<>();
         Set<Class<?>> testClasses = getAllSubClasses(clazz);
 
         for (Class<?> test : testClasses) {
             TestedClass testedClassAnnotation = test.getAnnotation(TestedClass.class);
+            assertNotNull("Annotation @TestedClass is missing from " + test.getSimpleName(), testedClassAnnotation);
             String className = "-";
-            Class<?> originalClass = null;
-            boolean skip = false;
-
-            if (testedClassAnnotation != null) {
-                originalClass = testedClassAnnotation.value();
-                className = originalClass.getSimpleName();
-                skip = testedClassAnnotation.skip();
-            }
+            Class<?> originalClass = testedClassAnnotation.value();
+            boolean skip = testedClassAnnotation.skip();
+            className = originalClass.getSimpleName();
 
             TestClassData classData = new TestClassData();
             Set<String> testMethods = Stream.of(test.getDeclaredMethods())
@@ -166,7 +164,6 @@ class IntegrationAnnotationCheckerTest {
                         TestedMethod testedMethodAnnotation = methods.getAnnotation(TestedMethod.class);
                         return testedMethodAnnotation.value();
                     })
-                    // TODO Filter methods that is marked with @SkipTestAnnotationCheck
                     .collect(Collectors.toSet());
             classData.setTestClassName(test.getSimpleName());
             classData.setMethods(testMethods);

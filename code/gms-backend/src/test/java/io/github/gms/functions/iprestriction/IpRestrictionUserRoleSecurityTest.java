@@ -3,6 +3,7 @@ package io.github.gms.functions.iprestriction;
 import io.github.gms.abstraction.AbstractUserRoleSecurityTest;
 import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +22,34 @@ public class IpRestrictionUserRoleSecurityTest extends AbstractUserRoleSecurityT
     }
 
     @Test
+    @TestedMethod("save")
+    void testSaveFailWithHttp403() {
+        shouldSaveFailWith403(TestUtils.createIpRestrictionDto());
+    }
+
+    @Test
     @TestedMethod("list")
     public void testListFailWithHttp403() {
         shouldListFailWith403(IpRestrictionListDto.class);
+    }
+
+    @Test
+    @TestedMethod("getById")
+    public void testGetByIdFailWithHttp403() {
+        gmsUser = null;
+        jwt = null;
+        shouldGetByIdFailWith403(IpRestrictionDto.class, 1L);
+    }
+
+    @Test
+    @TestedMethod("delete")
+    void testDeleteFailWithHttp403() {
+        shouldDeleteFailWith403(1L);
+    }
+
+    @Test
+    @TestedMethod("toggle")
+    void testToggleStatusFailWithHttp403() {
+        shouldToggleFailWith403(1L);
     }
 }

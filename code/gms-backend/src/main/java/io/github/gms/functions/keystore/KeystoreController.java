@@ -7,7 +7,7 @@ import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
-import io.github.gms.common.types.SkipTestAnnotationCheck;
+import io.github.gms.common.types.SkipSecurityTestCheck;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.secret.GetSecureValueDto;
 import org.springframework.core.io.ByteArrayResource;
@@ -45,7 +45,7 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 			MediaType.APPLICATION_JSON_VALUE
 	})
 	@PreAuthorize(ROLE_USER)
-	@SkipTestAnnotationCheck
+	@SkipSecurityTestCheck
 	@Audited(operation = EventOperation.SAVE)
 	public SaveEntityResponseDto save(@ModelAttribute(name = MULTIPART_MODEL) String model, @RequestPart(name = MULTIPART_FILE, required = false) MultipartFile file) {
 		return service.save(model, file);

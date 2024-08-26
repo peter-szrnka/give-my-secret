@@ -29,6 +29,21 @@ public class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTe
     }
 
     @Test
+    @TestedMethod("list")
+    public void testListFailWithHttp403() {
+        jwt = null;
+        shouldListFailWith403(AnnouncementListDto.class);
+    }
+
+    @Test
+    @TestedMethod("getById")
+    public void testGetByIdFailWithHttp403() {
+        gmsUser = null;
+        jwt = null;
+        shouldGetByIdFailWith403(AnnouncementDto.class, DemoData.USER_1_ID);
+    }
+
+    @Test
     @TestedMethod("delete")
     public void testDeleteFailWithHttp403() {
         shouldDeleteFailWith403(DemoData.ANNOUNCEMENT_ID);
