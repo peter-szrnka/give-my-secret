@@ -13,6 +13,7 @@ public class DemoData {
 	public static final String CREDENTIAL_TEST = "test";
 	public static final Long USER_1_ID = 1L;
 	public static final Long USER_2_ID = 2L;
+	public static final Long USER_3_ID = 3L;
 	public static final Long API_KEY_1_ID = 1L;
 	public static final Long API_KEY_2_ID = 2L;
 	public static final Long API_KEY_3_ID = 3L;

@@ -14,15 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
+import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka
@@ -161,7 +161,11 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
     @TestedMethod("getMfaQrCode")
     void testGetMfaQrCode() {
         // arrange
-        HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		gmsUser = TestUtils.createGmsMfaUser();
+		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Cookie", ACCESS_JWT_TOKEN + "=" + jwt + ";Max-Age=3600;HttpOnly");
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
         // act
         ResponseEntity<byte[]> response = executeHttpGet("/mfa_qr_code", requestEntity, byte[].class);
@@ -195,11 +199,12 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
 		// act
-		ResponseEntity<byte[]> response = executeHttpGet("/mfa_qr_code", requestEntity, byte[].class);
+		ResponseEntity<Boolean> response = executeHttpGet("/mfa_active", requestEntity, Boolean.class);
 
 		// Assert
 		assertNotNull(response);
 		assertNotNull(response.getBody());
+		assertThat(response.getBody()).isFalse();
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 }

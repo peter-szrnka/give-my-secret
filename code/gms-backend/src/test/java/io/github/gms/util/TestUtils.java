@@ -57,6 +57,7 @@ import static io.github.gms.common.enums.UserRole.ROLE_ADMIN;
 import static io.github.gms.common.enums.UserRole.ROLE_USER;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.API_KEY_HEADER;
+import static io.github.gms.util.DemoData.USER_3_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -158,6 +159,18 @@ public class TestUtils {
 				.build();
 	}
 
+	public static GmsUserDetails createGmsMfaUser() {
+		return GmsUserDetails.builder()
+				.accountNonLocked(true)
+				.credential(DemoData.CREDENTIAL_TEST)
+				.userId(USER_3_ID)
+				.username(USERNAME_MFA)
+				.authorities(Sets.newHashSet(ROLE_USER))
+				.mfaEnabled(true)
+				.mfaSecret("MFA_SECRET")
+				.build();
+	}
+
 	public static SaveApiKeyRequestDto createSaveApiKeyRequestDto() {
 		SaveApiKeyRequestDto request = new SaveApiKeyRequestDto();
 		request.setId(1L);
@@ -216,6 +229,7 @@ public class TestUtils {
 
 	public static UserEntity createMfaUser() {
 		UserEntity user = new UserEntity();
+		user.setId(USER_3_ID);
 		user.setUsername(USERNAME_MFA);
 		user.setCredential(NEW_CREDENTIAL);
 		user.setEmail("test@email.hu");
@@ -624,6 +638,19 @@ public class TestUtils {
 	}
 
 	public static GenerateJwtRequest createJwtAdminRequest(GmsUserDetails user) {
+		Map<String, Object> claims = Map.of(
+				MdcParameter.USER_ID.getDisplayName(), user.getUserId(),
+				MdcParameter.USER_NAME.getDisplayName(), user.getUsername(),
+				"roles",
+				user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()));
+
+		return GenerateJwtRequest.builder().subject(user.getUsername()).algorithm("HS512")
+				.expirationDateInSeconds(30L)
+				.claims(claims)
+				.build();
+	}
+
+	public static GenerateJwtRequest createJwtUserRequest(GmsUserDetails user) {
 		Map<String, Object> claims = Map.of(
 				MdcParameter.USER_ID.getDisplayName(), user.getUserId(),
 				MdcParameter.USER_NAME.getDisplayName(), user.getUsername(),

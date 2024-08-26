@@ -60,7 +60,7 @@ public class UserController extends AbstractAdminController<UserService> {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/mfa_qr_code", produces = MimeTypeUtils.IMAGE_PNG_VALUE)
+	@GetMapping(value = "/mfa_qr_code", produces = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)
 	@PreAuthorize(ALL_ROLE)
 	public ResponseEntity<byte[]> getMfaQrCode() {
 		try {
