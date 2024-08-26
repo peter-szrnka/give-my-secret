@@ -32,7 +32,7 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 class IntegrationAnnotationCheckerTest {
     // Test settings
     private static final int FAILURE_THRESHOLD = 3;
-    private static final boolean SKIP_ENABLED = true;
+    private static final boolean SKIP_ENABLED = false;
 
     private static final Set<String> IGNORED_METHODS = Set.of(
             "$jacocoInit", "equals", "hashCode", "toString", "notify", "notifyAll", "wait", "getClass", "finalize", "wait0", "clone"
