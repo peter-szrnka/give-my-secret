@@ -6,6 +6,7 @@ import io.github.gms.auth.dto.AuthenticateResponseDto;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.abstraction.AbstractLoginController;
+import io.github.gms.common.types.SkipTestAnnotationCheck;
 import io.github.gms.common.util.CookieUtils;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.SET_COOKIE;
+import static io.github.gms.common.util.Constants.*;
 
 /**
  * @author Peter Szrnka
@@ -27,6 +26,7 @@ import static io.github.gms.common.util.Constants.SET_COOKIE;
  */
 @RestController
 @RequestMapping("/")
+@SkipTestAnnotationCheck
 public class LoginController extends AbstractLoginController {
 	
 	public static final String LOGIN_PATH = "authenticate";

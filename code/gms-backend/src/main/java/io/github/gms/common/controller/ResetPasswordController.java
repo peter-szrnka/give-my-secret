@@ -1,6 +1,7 @@
 package io.github.gms.common.controller;
 
 import io.github.gms.common.abstraction.GmsController;
+import io.github.gms.common.types.SkipTestAnnotationCheck;
 import io.github.gms.functions.resetpassword.ResetPasswordRequestDto;
 import io.github.gms.functions.resetpassword.ResetPasswordService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/")
+@SkipTestAnnotationCheck
 @RequiredArgsConstructor
 public class ResetPasswordController implements GmsController {
 

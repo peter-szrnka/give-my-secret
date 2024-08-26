@@ -1,6 +1,7 @@
 package io.github.gms.functions.message;
 
 import io.github.gms.abstraction.AbstractSecurityTest;
+import io.github.gms.common.TestedClass;
 import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.util.TestUtils;
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 1.0
  */
 @Tag(TAG_SECURITY_TEST)
+@TestedClass(MessageController.class)
 class MessageControllerSecurityTest extends AbstractSecurityTest {
 
     public MessageControllerSecurityTest() {

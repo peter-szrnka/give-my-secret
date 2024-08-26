@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Peter Szrnka
  * @since 1.0
  */
-public abstract class AbstractSecurityTest extends AbstractIntegrationTest {
+public abstract class AbstractSecurityTest extends AbstractIntegrationTest implements GmsControllerSecurityTest {
 
-	protected final String urlPrefix;
+	protected String urlPrefix;
 
 	public AbstractSecurityTest(String urlPrefix) {
 		this.urlPrefix = "/secure" + urlPrefix;

@@ -1,6 +1,8 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractSecurityTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -11,14 +13,16 @@ import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
  * @since 1.0
  */
 @Tag(TAG_SECURITY_TEST)
-class EventAdminRoleSecurityTest extends AbstractSecurityTest {
+@TestedClass(EventController.class)
+public class EventAdminRoleSecurityTest extends AbstractSecurityTest {
 
 	public EventAdminRoleSecurityTest() {
 		super("/event");
 	}
 
 	@Test
-	void testListFailWithHttp403() {
+	@TestedMethod("list")
+	public void testListFailWithHttp403() {
 		shouldListFailWith403(EventListDto.class);
 	}
 }

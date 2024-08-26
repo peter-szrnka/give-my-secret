@@ -6,6 +6,7 @@ import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.abstraction.AbstractLoginController;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
+import io.github.gms.common.types.SkipTestAnnotationCheck;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -24,6 +25,7 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_
  */
 @RestController
 @RequestMapping("/")
+@SkipTestAnnotationCheck
 @Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
 public class VerificationController extends AbstractLoginController {
 

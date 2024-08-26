@@ -5,6 +5,7 @@ import io.github.gms.common.dto.ErrorCodeDto;
 import io.github.gms.common.dto.ErrorCodeListDto;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.types.ErrorCode;
+import io.github.gms.common.types.SkipTestAnnotationCheck;
 import io.github.gms.functions.system.SystemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
  */
 @RestController
 @RequestMapping("/")
+@SkipTestAnnotationCheck
 @RequiredArgsConstructor
 public class SystemController implements GmsController {
 
