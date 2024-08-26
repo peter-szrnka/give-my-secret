@@ -24,7 +24,7 @@ class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     @Test
     @TestedMethod("save")
-    public void testSaveFailWithHttp403() {
+    void testSaveFailWithHttp403() {
         shouldSaveFailWith403(TestUtils.createSaveAnnouncementDto());
     }
 
