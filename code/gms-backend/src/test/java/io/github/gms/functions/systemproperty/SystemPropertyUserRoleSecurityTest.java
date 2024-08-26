@@ -15,7 +15,7 @@ import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(SystemPropertyController.class)
-public class SystemPropertyUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
+class SystemPropertyUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     public SystemPropertyUserRoleSecurityTest() {
         super("/system_property");
@@ -23,19 +23,19 @@ public class SystemPropertyUserRoleSecurityTest extends AbstractUserRoleSecurity
 
     @Test
     @TestedMethod("save")
-    public void testSaveFailWithHttp403() {
+    void testSaveFailWithHttp403() {
         shouldSaveFailWith403(TestUtils.createSystemPropertyDto());
     }
 
     @Test
     @TestedMethod("delete")
-    public void testDeleteFailWithHttp403() {
+    void testDeleteFailWithHttp403() {
         shouldDeleteFailWith403(1L);
     }
 
     @Test
     @TestedMethod("list")
-    public void testListFailWithHttp403() {
+    void testListFailWithHttp403() {
         shouldListFailWith403(SystemPropertyListDto.class);
     }
 }

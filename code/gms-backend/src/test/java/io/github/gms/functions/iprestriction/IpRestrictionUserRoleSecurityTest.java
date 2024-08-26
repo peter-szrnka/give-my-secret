@@ -15,7 +15,7 @@ import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(value = IpRestrictionController.class)
-public class IpRestrictionUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
+class IpRestrictionUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     public IpRestrictionUserRoleSecurityTest() {
         super("/iprestriction");
@@ -29,13 +29,13 @@ public class IpRestrictionUserRoleSecurityTest extends AbstractUserRoleSecurityT
 
     @Test
     @TestedMethod("list")
-    public void testListFailWithHttp403() {
+    void testListFailWithHttp403() {
         shouldListFailWith403(IpRestrictionListDto.class);
     }
 
     @Test
     @TestedMethod("getById")
-    public void testGetByIdFailWithHttp403() {
+    void testGetByIdFailWithHttp403() {
         gmsUser = null;
         jwt = null;
         shouldGetByIdFailWith403(IpRestrictionDto.class, 1L);

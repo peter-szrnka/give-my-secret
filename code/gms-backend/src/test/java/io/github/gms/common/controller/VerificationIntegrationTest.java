@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
  * @since 1.0
  */
 @TestedClass(VerificationController.class)
-public class VerificationIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
+class VerificationIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
     @MockBean
     private CodeVerifier verifier;

@@ -138,24 +138,22 @@ class IntegrationAnnotationCheckerTest {
     }
 
     private static Map<String, TestClassData> getAllIntegrationTestClasses() throws Exception {
-        return getAllSpecificTestClasses("integration", GmsControllerIntegrationTest.class);
+        return getAllSpecificTestClasses(GmsControllerIntegrationTest.class);
     }
 
     private static Map<String, TestClassData> getAllSecurityTestClasses() throws Exception {
-        return getAllSpecificTestClasses("security", GmsControllerSecurityTest.class);
+        return getAllSpecificTestClasses(GmsControllerSecurityTest.class);
     }
 
-    private static Map<String, TestClassData> getAllSpecificTestClasses(String scope, Class<?> clazz) throws Exception {
+    private static Map<String, TestClassData> getAllSpecificTestClasses(Class<?> clazz) throws Exception {
         Map<String, TestClassData> resultMap = new HashMap<>();
         Set<Class<?>> testClasses = getAllSubClasses(clazz);
 
         for (Class<?> test : testClasses) {
             TestedClass testedClassAnnotation = test.getAnnotation(TestedClass.class);
             assertNotNull("Annotation @TestedClass is missing from " + test.getSimpleName(), testedClassAnnotation);
-            String className = "-";
             Class<?> originalClass = testedClassAnnotation.value();
             boolean skip = testedClassAnnotation.skip();
-            className = originalClass.getSimpleName();
 
             TestClassData classData = new TestClassData();
             Set<String> testMethods = Stream.of(test.getDeclaredMethods())
@@ -168,13 +166,13 @@ class IntegrationAnnotationCheckerTest {
             classData.setTestClassName(test.getSimpleName());
             classData.setMethods(testMethods);
             classData.setSkip(skip);
-            resultMap.put(className, classData);
+            resultMap.put(originalClass.getSimpleName(), classData);
         }
 
         return resultMap;
     }
 
-    private static Set<Class<?>> getAllSubClasses(Class<?> inputClazz) throws Exception {
+    private static Set<Class<?>> getAllSubClasses(Class<?> inputClazz) {
         Reflections reflections = new Reflections("io.github.gms");
         return reflections.getSubTypesOf(inputClazz).stream().filter(cls -> !Modifier.isAbstract(cls.getModifiers())).collect(Collectors.toSet());
     }

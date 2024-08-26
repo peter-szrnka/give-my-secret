@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @ActiveProfiles({"secure"})
 @Tag(TAG_INTEGRATION_TEST)
-public class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
+class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 
 	@Test
 	void shouldNotAuthenticate() {

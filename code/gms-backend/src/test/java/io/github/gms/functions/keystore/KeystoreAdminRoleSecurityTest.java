@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(KeystoreController.class)
-public class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
+class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     public KeystoreAdminRoleSecurityTest() {
         super("/keystore");
@@ -30,19 +30,19 @@ public class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest
 
     @Test
     @TestedMethod("getById")
-    public void testGetByIdFailWithHttp403() {
+    void testGetByIdFailWithHttp403() {
         shouldGetByIdFailWith403(KeystoreDto.class, DemoData.KEYSTORE_ID);
     }
 
     @Test
     @TestedMethod("list")
-    public void testListFailWithHttp403() {
+    void testListFailWithHttp403() {
         shouldListFailWith403(KeystoreListDto.class);
     }
 
     @Test
     @TestedMethod("getValue")
-    public void testGetValueFailWithHttp403() {
+    void testGetValueFailWithHttp403() {
         GetSecureValueDto dto = new GetSecureValueDto();
         dto.setEntityId(DemoData.KEYSTORE_ID);
         HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
@@ -56,31 +56,31 @@ public class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest
 
     @Test
     @TestedMethod("delete")
-    public void testDeleteFailWithHttp403() {
+    void testDeleteFailWithHttp403() {
         shouldDeleteFailWith403(DemoData.KEYSTORE2_ID);
     }
 
     @Test
     @TestedMethod("toggle")
-    public void testToggleStatusFailWithHttp403() {
+    void testToggleStatusFailWithHttp403() {
         shouldToggleFailWith403(DemoData.KEYSTORE_ID);
     }
 
     @Test
     @TestedMethod("getAllKeystoreNames")
-    public void testListAllKeystoreNamesFailWithHttp403() {
+    void testListAllKeystoreNamesFailWithHttp403() {
         shouldListingFailWith403("/list_names");
     }
 
     @Test
     @TestedMethod("getAllKeystoreAliases")
-    public void testListAllApiKeyNamesFailWithHttp403() {
+    void testListAllApiKeyNamesFailWithHttp403() {
         shouldListingFailWith403("/list_aliases/" + DemoData.KEYSTORE_ID);
     }
 
     @Test
     @TestedMethod("download")
-    public void testDownloadFailWithHttp403() {
+    void testDownloadFailWithHttp403() {
         // act
         ResponseEntity<Resource> response =
                 executeHttpGet("/secure/keystore/download/" + DemoData.KEYSTORE_ID, null, Resource.class);

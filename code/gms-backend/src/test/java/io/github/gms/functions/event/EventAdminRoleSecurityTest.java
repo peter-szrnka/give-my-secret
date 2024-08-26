@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(EventController.class)
-public class EventAdminRoleSecurityTest extends AbstractSecurityTest {
+class EventAdminRoleSecurityTest extends AbstractSecurityTest {
 
 	public EventAdminRoleSecurityTest() {
 		super("/event");
@@ -27,13 +27,13 @@ public class EventAdminRoleSecurityTest extends AbstractSecurityTest {
 
 	@Test
 	@TestedMethod("list")
-	public void testListFailWithHttp403() {
+	void testListFailWithHttp403() {
 		shouldListFailWith403(EventListDto.class);
 	}
 
 	@Test
 	@TestedMethod("listByUserId")
-	public void testListByUserIdFailWithHttp403() {
+	void testListByUserIdFailWithHttp403() {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));
 
 		// act

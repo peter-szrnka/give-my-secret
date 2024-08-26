@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(SecretController.class)
-public class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
+class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     public SecretAdminRoleSecurityTest() {
         super("/secret");
@@ -28,25 +28,25 @@ public class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     @Test
     @TestedMethod("save")
-    public void testSaveFailWithHttp403() {
+    void testSaveFailWithHttp403() {
         shouldSaveFailWith403(TestUtils.createSaveSecretRequestDto(1L));
     }
 
     @Test
     @TestedMethod("getById")
-    public void testGetByIdFailWithHttp403() {
+    void testGetByIdFailWithHttp403() {
         shouldGetByIdFailWith403(SecretDto.class, DemoData.SECRET_ENTITY_ID);
     }
 
     @Test
     @TestedMethod("list")
-    public void testListFailWithHttp403() {
+    void testListFailWithHttp403() {
         shouldListFailWith403(SecretListDto.class);
     }
 
     @Test
     @TestedMethod("getValue")
-    public void testGetValueFailWithHttp403() {
+    void testGetValueFailWithHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
         // act
@@ -59,7 +59,7 @@ public class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     @Test
     @TestedMethod("rotateSecret")
-    public void testRotateFailWithHttp403() {
+    void testRotateFailWithHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
         // act
@@ -72,13 +72,13 @@ public class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     @Test
     @TestedMethod("delete")
-    public void testDeleteFailWithHttp403() {
+    void testDeleteFailWithHttp403() {
         shouldDeleteFailWith403(DemoData.SECRET_ENTITY2_ID);
     }
 
     @Test
     @TestedMethod("toggle")
-    public void testToggleStatusFailWithHttp403() {
+    void testToggleStatusFailWithHttp403() {
         shouldToggleFailWith403(DemoData.SECRET_ENTITY_ID);
     }
 }

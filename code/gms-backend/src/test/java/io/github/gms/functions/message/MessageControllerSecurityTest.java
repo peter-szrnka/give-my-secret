@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(MessageController.class)
-public class MessageControllerSecurityTest extends AbstractSecurityTest {
+class MessageControllerSecurityTest extends AbstractSecurityTest {
 
     public MessageControllerSecurityTest() {
         super("/message");
@@ -31,13 +31,13 @@ public class MessageControllerSecurityTest extends AbstractSecurityTest {
 
     @Test
     @TestedMethod("list")
-    public void testListFailWithHttp403() {
+    void testListFailWithHttp403() {
         shouldListFailWith403(MessageListDto.class);
     }
 
     @Test
     @TestedMethod("unreadMessagesCount")
-    public void testUnreadMessagesCountFailWithHttp403() {
+    void testUnreadMessagesCountFailWithHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
         // act
@@ -49,7 +49,7 @@ public class MessageControllerSecurityTest extends AbstractSecurityTest {
 
     @Test
     @TestedMethod("markAsRead")
-    public void testMarkAsReadFailWithHttp403() {
+    void testMarkAsReadFailWithHttp403() {
         MarkAsReadRequestDto request =  MarkAsReadRequestDto.builder().ids(Set.of(1L, 2L, 3L)).build();
         HttpEntity<MarkAsReadRequestDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 
@@ -62,7 +62,7 @@ public class MessageControllerSecurityTest extends AbstractSecurityTest {
 
     @Test
     @TestedMethod("deleteAllByIds")
-    public void testDeleteAllByIds403() {
+    void testDeleteAllByIds403() {
         IdListDto request = new IdListDto(Set.of(1L, 2L, 3L));
         HttpEntity<IdListDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 
@@ -75,7 +75,7 @@ public class MessageControllerSecurityTest extends AbstractSecurityTest {
 
     @Test
     @TestedMethod("deleteById")
-    public void testDeleteById() {
+    void testDeleteById() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
         // act

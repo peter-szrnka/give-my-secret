@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 1.0
  */
 @TestedClass(ResetPasswordController.class)
-public class ResetPasswordIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
+class ResetPasswordIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
     @Test
     @TestedMethod(value = "resetPassword")

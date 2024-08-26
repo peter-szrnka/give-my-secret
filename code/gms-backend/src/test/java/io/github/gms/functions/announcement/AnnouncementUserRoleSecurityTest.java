@@ -16,7 +16,7 @@ import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(AnnouncementController.class)
-public class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
+class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     public AnnouncementUserRoleSecurityTest() {
         super("/announcement");
@@ -30,14 +30,14 @@ public class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTe
 
     @Test
     @TestedMethod("list")
-    public void testListFailWithHttp403() {
+    void testListFailWithHttp403() {
         jwt = null;
         shouldListFailWith403(AnnouncementListDto.class);
     }
 
     @Test
     @TestedMethod("getById")
-    public void testGetByIdFailWithHttp403() {
+    void testGetByIdFailWithHttp403() {
         gmsUser = null;
         jwt = null;
         shouldGetByIdFailWith403(AnnouncementDto.class, DemoData.USER_1_ID);
@@ -45,7 +45,7 @@ public class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTe
 
     @Test
     @TestedMethod("delete")
-    public void testDeleteFailWithHttp403() {
+    void testDeleteFailWithHttp403() {
         shouldDeleteFailWith403(DemoData.ANNOUNCEMENT_ID);
     }
 }
