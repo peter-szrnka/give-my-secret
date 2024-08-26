@@ -1,10 +1,6 @@
 package io.github.gms.util;
 
-import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.KeystoreType;
-import io.github.gms.common.enums.RotationPeriod;
-import io.github.gms.common.enums.SecretType;
-import io.github.gms.common.enums.UserRole;
+import io.github.gms.common.enums.*;
 import io.github.gms.functions.announcement.AnnouncementEntity;
 import io.github.gms.functions.announcement.AnnouncementRepository;
 import io.github.gms.functions.apikey.ApiKeyEntity;
@@ -28,25 +24,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
 
-import static io.github.gms.util.DemoData.ANNOUNCEMENT_ID;
-import static io.github.gms.util.DemoData.API_KEY_1_ID;
-import static io.github.gms.util.DemoData.API_KEY_2_ID;
-import static io.github.gms.util.DemoData.API_KEY_CREDENTIAL1;
-import static io.github.gms.util.DemoData.API_KEY_CREDENTIAL2;
-import static io.github.gms.util.DemoData.CREDENTIAL_TEST;
-import static io.github.gms.util.DemoData.ENCRYPTED_VALUE;
-import static io.github.gms.util.DemoData.KEYSTORE2_ID;
-import static io.github.gms.util.DemoData.KEYSTORE_ALIAS2_ID;
-import static io.github.gms.util.DemoData.KEYSTORE_ALIAS_ID;
-import static io.github.gms.util.DemoData.KEYSTORE_ID;
-import static io.github.gms.util.DemoData.SECRET_ENTITY2_ID;
-import static io.github.gms.util.DemoData.SECRET_ENTITY_ID;
-import static io.github.gms.util.DemoData.SECRET_ID1;
-import static io.github.gms.util.DemoData.SECRET_ID2;
-import static io.github.gms.util.DemoData.USERNAME1;
-import static io.github.gms.util.DemoData.USERNAME2;
-import static io.github.gms.util.DemoData.USER_1_ID;
-import static io.github.gms.util.DemoData.USER_2_ID;
+import static io.github.gms.util.DemoData.*;
+import static io.github.gms.util.TestUtils.createMfaUser;
 
 /**
  * @author Peter Szrnka
@@ -81,6 +60,7 @@ public class DemoDataManagerService {
 		// User
 		userRepository.save(createUser(USER_1_ID, USERNAME1, "ROLE_USER"));
 		userRepository.save(createUser(USER_2_ID, USERNAME2, "ROLE_ADMIN"));
+		userRepository.save(createMfaUser());
 		
 		// Api key
 		apiKeyRepository.save(createApiKey(USER_1_ID, API_KEY_1_ID, API_KEY_CREDENTIAL1));

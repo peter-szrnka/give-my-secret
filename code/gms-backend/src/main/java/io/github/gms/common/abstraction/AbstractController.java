@@ -3,10 +3,10 @@ package io.github.gms.common.abstraction;
 /**
  * @author Peter Szrnka
  * @since 1.0
- * 
+ *
  * @param <T> An extended GmsService
  */
-public abstract class AbstractController<T extends GmsService> {
+public abstract class AbstractController<T extends GmsService> implements GmsController {
 
 	protected T service;
 

@@ -1,9 +1,11 @@
 package io.github.gms.common.controller;
 
+import io.github.gms.common.abstraction.GmsController;
 import io.github.gms.common.dto.ErrorCodeDto;
 import io.github.gms.common.dto.ErrorCodeListDto;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.types.ErrorCode;
+import io.github.gms.common.types.SkipSecurityTestCheck;
 import io.github.gms.functions.system.SystemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,9 @@ import java.util.stream.Stream;
  */
 @RestController
 @RequestMapping("/")
+@SkipSecurityTestCheck
 @RequiredArgsConstructor
-public class SystemController {
+public class SystemController implements GmsController {
 
 	private final SystemService systemService;
 

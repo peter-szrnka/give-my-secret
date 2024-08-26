@@ -1,5 +1,6 @@
 package io.github.gms.functions.systemproperty;
 
+import io.github.gms.common.abstraction.GmsController;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
@@ -18,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static io.github.gms.common.util.Constants.PATH_LIST;
-import static io.github.gms.common.util.Constants.ROLE_ADMIN;
+import static io.github.gms.common.util.Constants.*;
+import static io.github.gms.common.util.Constants.SIZE;
 
 /**
  * @author Peter Szrnka
@@ -29,7 +30,7 @@ import static io.github.gms.common.util.Constants.ROLE_ADMIN;
 @RequiredArgsConstructor
 @RequestMapping("/secure/system_property")
 @AuditTarget(EventTarget.SYSTEM_PROPERTY)
-public class SystemPropertyController {
+public class SystemPropertyController implements GmsController {
 
 	private final SystemPropertyService service;
 
@@ -44,7 +45,7 @@ public class SystemPropertyController {
 	@DeleteMapping("/{key}")
 	@PreAuthorize(ROLE_ADMIN)
 	@Audited(operation = EventOperation.DELETE)
-	public ResponseEntity<String> delete(@PathVariable("key") String key) {
+	public ResponseEntity<String> delete(@PathVariable(KEY) String key) {
 		service.delete(key);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -52,10 +53,10 @@ public class SystemPropertyController {
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_ADMIN)
 	public SystemPropertyListDto list(
-			@RequestParam("direction") String direction,
-			@RequestParam("property") String property,
-			@RequestParam("page") int page,
-			@RequestParam("size") int size) {
+			@RequestParam(DIRECTION) String direction,
+			@RequestParam(PROPERTY) String property,
+			@RequestParam(PAGE) int page,
+			@RequestParam(SIZE) int size) {
 		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
 }

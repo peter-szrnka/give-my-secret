@@ -1,6 +1,9 @@
 package io.github.gms.common.controller;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
+import io.github.gms.abstraction.GmsControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
@@ -15,9 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-class HealthcheckIntegrationTest extends AbstractIntegrationTest {
+@TestedClass(HealthcheckController.class)
+class HealthcheckIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
 	@Test
+	@TestedMethod("healthcheck")
 	void shouldReturnHttp200() {
 
 		// act

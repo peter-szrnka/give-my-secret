@@ -16,7 +16,7 @@ import static io.github.gms.common.util.Constants.SET_COOKIE;
  * @since 1.0
  */
 @RequiredArgsConstructor
-public abstract class AbstractLoginController {
+public abstract class AbstractLoginController implements GmsController {
 
     protected final SystemPropertyService systemPropertyService;
     protected final boolean secure;

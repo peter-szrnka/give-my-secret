@@ -2,6 +2,9 @@ package io.github.gms.functions.message;
 
 import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
+import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
@@ -11,16 +14,17 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Set;
+
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
+@TestedClass(MessageController.class)
 class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	@Autowired
@@ -31,6 +35,7 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("markAsRead")
 	void testMarkAsRead() {
 		// arrange
 		MessageEntity newEntity = repository.save(TestUtils.createNewMessageEntity());
@@ -46,6 +51,7 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("list")
 	void testList() {
 		repository.deleteAll();
 
@@ -65,6 +71,7 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("unreadMessagesCount")
 	void testGetUnreadMessagesCount() {
 		repository.deleteAll();
 		
@@ -82,5 +89,31 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 		LongValueDto responseBody = response.getBody();
 		assertEquals(1, responseBody.getValue());
+	}
+
+	@Test
+	@TestedMethod("deleteAllByIds")
+	void testDeleteAllByIds() {
+		// act
+		HttpEntity<IdListDto> requestEntity =
+				new HttpEntity<>(new IdListDto(Set.of(1L, 2L)), TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<Void> response = executeHttpPost("/delete_all_by_ids", requestEntity, Void.class);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertNull(response.getBody());
+	}
+
+	@Test
+	@TestedMethod("deleteById")
+	void testDeleteById() {
+		// act
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<String> response = executeHttpDelete("/1", requestEntity,
+				String.class);
+
+		// Assert
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertNull(response.getBody());
 	}
 }

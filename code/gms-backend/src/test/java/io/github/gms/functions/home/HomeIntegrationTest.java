@@ -23,7 +23,7 @@ class HomeIntegrationTest extends AbstractIntegrationTest {
     void testGetAdminData() {
         // arrange
         gmsUser = TestUtils.createGmsAdminUser();
-        jwt = jwtService.generateJwt(TestUtils.createJwtAdminRequest(gmsUser));
+        jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
         // act

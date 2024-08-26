@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
  * @author Peter Szrnka
  * @since 1.0
  */
-public abstract class AbstractClientControllerIntegrationTest extends AbstractIntegrationTest {
+public abstract class AbstractClientControllerIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
 	protected final String path;
 

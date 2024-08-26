@@ -1,6 +1,9 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
+import io.github.gms.abstraction.GmsControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.util.TestUtils;
@@ -24,7 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-class EventIntegrationTest extends AbstractIntegrationTest {
+@TestedClass(EventController.class)
+class EventIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 	
 	private final String path = "/secure/event";
 	
@@ -35,10 +39,11 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 	@BeforeEach
 	public void setup() {
 		gmsUser = TestUtils.createGmsAdminUser();
-		jwt = jwtService.generateJwt(TestUtils.createJwtAdminRequest(gmsUser));
+		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
 	}
 
 	@Test
+	@TestedMethod("list")
 	void testList() {
 		eventRepository.deleteAll();
 		
@@ -66,6 +71,7 @@ class EventIntegrationTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
+	@TestedMethod("listByUserId")
 	void testListByUserId() {
 		eventRepository.deleteAll();
 		

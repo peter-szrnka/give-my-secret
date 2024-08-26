@@ -1,6 +1,9 @@
 package io.github.gms.common.controller;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
+import io.github.gms.abstraction.GmsControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.functions.system.SystemService;
@@ -25,12 +28,14 @@ import static org.mockito.Mockito.when;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-class SetupIntegrationTest extends AbstractIntegrationTest {
+@TestedClass(SetupController.class)
+class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
 	@MockBean
 	private SystemService systemService;
 
 	@Test
+	@TestedMethod("saveAdminUser")
 	void shouldSetupAdminUser() {
 		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("NEED_SETUP").build());
 

@@ -1,6 +1,8 @@
 package io.github.gms.functions.secret;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.util.DemoData;
@@ -21,17 +23,14 @@ import java.io.File;
 import java.io.InputStream;
 
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
+@TestedClass(SecretController.class)
 class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	SecretIntegrationTest() {
@@ -52,6 +51,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
+	@TestedMethod("save")
 	void testSave() {
 		// act
 		HttpEntity<SaveSecretRequestDto> requestEntity = new HttpEntity<>(
@@ -69,6 +69,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
+	@TestedMethod("getById")
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -85,6 +86,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
+	@TestedMethod("list")
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -99,6 +101,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
+	@TestedMethod("getValue")
 	void testGetValue() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -114,6 +117,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
+	@TestedMethod("delete")
 	void testDelete() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -127,6 +131,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Transactional
 	@ParameterizedTest
+	@TestedMethod("toggle")
 	@ValueSource(booleans = { false, true })
 	void testToggleStatus(boolean enabled) {
 		// act
@@ -147,6 +152,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
+	@TestedMethod("rotateSecret")
 	void testRotateSecret() {
 		String oldValue = secretRepository.findById(DemoData.SECRET_ENTITY_ID).get().getValue();
 		

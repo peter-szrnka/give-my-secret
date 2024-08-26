@@ -1,6 +1,9 @@
 package io.github.gms.common.controller;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
+import io.github.gms.abstraction.GmsControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.util.DemoData;
@@ -13,17 +16,18 @@ import org.springframework.http.ResponseEntity;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-class InformationControllerIntegrationTest extends AbstractIntegrationTest {
+@TestedClass(InformationController.class)
+class InformationControllerIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
     @Test
+    @TestedMethod("getUserInfo")
 	void shouldReturnHttp200WithEmptyResponse() {
 		// act
 		ResponseEntity<UserInfoDto> response = executeHttpGet("/info/me", new HttpEntity<>(null), UserInfoDto.class);
@@ -34,6 +38,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest {
 	}
 
     @Test
+    @TestedMethod("getUserInfo")
 	void shouldReturnHttp200() {
         // arrange
 		HttpHeaders headers = new HttpHeaders();
@@ -47,6 +52,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
         UserInfoDto result = response.getBody();
+        assertNotNull(result);
         assertEquals(DemoData.USER_1_ID, result.getId());
         assertEquals("a@b.hu", result.getEmail());
         assertEquals(DemoData.USERNAME1, result.getName());

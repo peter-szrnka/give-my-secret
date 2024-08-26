@@ -1,6 +1,7 @@
 package io.github.gms.common.controller;
 
 
+import io.github.gms.common.abstraction.GmsController;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
@@ -8,6 +9,7 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
+import io.github.gms.common.types.SkipSecurityTestCheck;
 import io.github.gms.functions.user.SaveUserRequestDto;
 import io.github.gms.functions.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +29,10 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/setup")
+@SkipSecurityTestCheck
 @AuditTarget(EventTarget.ADMIN_USER)
 @Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
-public class SetupController {
+public class SetupController implements GmsController {
 
 	private final UserService userService;
 

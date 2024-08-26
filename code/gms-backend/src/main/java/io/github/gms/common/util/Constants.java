@@ -66,7 +66,6 @@ public final class Constants {
 	// Formats
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
-
 	public static final String PATH_VARIABLE_ID = "/{id}";
 	public static final String PATH_LIST = "/list";
 	public static final String PATH_LIST_NAMES = "/list_names";
@@ -92,4 +91,11 @@ public final class Constants {
 	public static final String DOCKER_CONTAINER_ID = "DOCKER_CONTAINER_ID";
 	public static final String POD_ID = "POD_ID";
 	public static final String N_A = "N/A";
+
+	// Request & query parameters
+	public static final String DIRECTION = "direction";
+	public static final String PROPERTY = "property";
+	public static final String PAGE = "page";
+	public static final String SIZE = "size";
+	public static final String KEY = "key";
 }

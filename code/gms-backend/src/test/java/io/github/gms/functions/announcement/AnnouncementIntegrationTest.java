@@ -1,6 +1,8 @@
 package io.github.gms.functions.announcement;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
@@ -12,16 +14,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
+@TestedClass(AnnouncementController.class)
 class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	protected AnnouncementIntegrationTest() {
@@ -32,10 +32,11 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	@BeforeEach
 	public void setup() {
 		gmsUser = TestUtils.createGmsAdminUser();
-		jwt = jwtService.generateJwt(TestUtils.createJwtAdminRequest(gmsUser));
+		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
 	}
 
 	@Test
+	@TestedMethod("save")
 	void testSave() {
 		// act
 		HttpEntity<SaveAnnouncementDto> requestEntity = new HttpEntity<>(TestUtils.createSaveAnnouncementDto(), TestUtils.getHttpHeaders(jwt));
@@ -50,6 +51,7 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 	
 	@Test
+	@TestedMethod("getById")
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -65,6 +67,7 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 	
 	@Test
+	@TestedMethod("list")
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -79,6 +82,7 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 	
 	@Test
+	@TestedMethod("delete")
 	void testDelete() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));

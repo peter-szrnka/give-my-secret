@@ -1,6 +1,8 @@
 package io.github.gms.functions.keystore;
 
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.functions.secret.GetSecureValueDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
@@ -19,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 1.0
  */
 @Tag(TAG_SECURITY_TEST)
+@TestedClass(KeystoreController.class)
 class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     public KeystoreAdminRoleSecurityTest() {
@@ -26,16 +29,19 @@ class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
+    @TestedMethod("getById")
     void testGetByIdFailWithHttp403() {
         shouldGetByIdFailWith403(KeystoreDto.class, DemoData.KEYSTORE_ID);
     }
 
     @Test
+    @TestedMethod("list")
     void testListFailWithHttp403() {
         shouldListFailWith403(KeystoreListDto.class);
     }
 
     @Test
+    @TestedMethod("getValue")
     void testGetValueFailWithHttp403() {
         GetSecureValueDto dto = new GetSecureValueDto();
         dto.setEntityId(DemoData.KEYSTORE_ID);
@@ -49,26 +55,31 @@ class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
+    @TestedMethod("delete")
     void testDeleteFailWithHttp403() {
         shouldDeleteFailWith403(DemoData.KEYSTORE2_ID);
     }
 
     @Test
+    @TestedMethod("toggle")
     void testToggleStatusFailWithHttp403() {
         shouldToggleFailWith403(DemoData.KEYSTORE_ID);
     }
 
     @Test
+    @TestedMethod("getAllKeystoreNames")
     void testListAllKeystoreNamesFailWithHttp403() {
         shouldListingFailWith403("/list_names");
     }
 
     @Test
+    @TestedMethod("getAllKeystoreAliases")
     void testListAllApiKeyNamesFailWithHttp403() {
         shouldListingFailWith403("/list_aliases/" + DemoData.KEYSTORE_ID);
     }
 
     @Test
+    @TestedMethod("download")
     void testDownloadFailWithHttp403() {
         // act
         ResponseEntity<Resource> response =

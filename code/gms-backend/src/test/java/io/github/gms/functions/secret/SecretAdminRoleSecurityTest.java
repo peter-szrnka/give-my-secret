@@ -1,6 +1,8 @@
 package io.github.gms.functions.secret;
 
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
@@ -17,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 1.0
  */
 @Tag(TAG_SECURITY_TEST)
+@TestedClass(SecretController.class)
 class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     public SecretAdminRoleSecurityTest() {
@@ -24,21 +27,25 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
+    @TestedMethod("save")
     void testSaveFailWithHttp403() {
         shouldSaveFailWith403(TestUtils.createSaveSecretRequestDto(1L));
     }
 
     @Test
+    @TestedMethod("getById")
     void testGetByIdFailWithHttp403() {
         shouldGetByIdFailWith403(SecretDto.class, DemoData.SECRET_ENTITY_ID);
     }
 
     @Test
+    @TestedMethod("list")
     void testListFailWithHttp403() {
         shouldListFailWith403(SecretListDto.class);
     }
 
     @Test
+    @TestedMethod("getValue")
     void testGetValueFailWithHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
@@ -51,6 +58,7 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
+    @TestedMethod("rotateSecret")
     void testRotateFailWithHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
@@ -63,11 +71,13 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
+    @TestedMethod("delete")
     void testDeleteFailWithHttp403() {
         shouldDeleteFailWith403(DemoData.SECRET_ENTITY2_ID);
     }
 
     @Test
+    @TestedMethod("toggle")
     void testToggleStatusFailWithHttp403() {
         shouldToggleFailWith403(DemoData.SECRET_ENTITY_ID);
     }

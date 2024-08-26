@@ -1,6 +1,8 @@
 package io.github.gms.common.controller;
 
+import io.github.gms.common.abstraction.GmsController;
 import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.common.types.SkipSecurityTestCheck;
 import io.github.gms.functions.user.UserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/info")
+@SkipSecurityTestCheck
 @RequiredArgsConstructor
-public class InformationController {
+public class InformationController implements GmsController {
     
     private final UserInfoService userInfoService;
 

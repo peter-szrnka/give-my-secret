@@ -13,15 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.SET_COOKIE;
-import static io.github.gms.common.util.Constants.SLASH;
+import static io.github.gms.common.util.Constants.*;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka

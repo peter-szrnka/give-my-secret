@@ -1,6 +1,9 @@
 package io.github.gms.functions.api;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
+import io.github.gms.abstraction.GmsControllerIntegrationTest;
+import io.github.gms.common.TestedClass;
+import io.github.gms.common.TestedMethod;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
@@ -22,12 +25,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @since 1.0
  */
 @Tag(TAG_INTEGRATION_TEST)
-class ApiIntegrationTest extends AbstractIntegrationTest {
+@TestedClass(ApiController.class)
+class ApiIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
 	@Autowired
 	private KeystoreAliasRepository keystoreAliasRepository;
 
     @Test
+	@TestedMethod("getSecret")
 	void testGetSecret() {
 		// arrange
 		apiKeyRepository.save(TestUtils.createApiKey(DemoData.API_KEY_3_ID, DemoData.API_KEY_CREDENTIAL3));

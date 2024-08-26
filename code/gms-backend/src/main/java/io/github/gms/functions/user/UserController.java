@@ -12,23 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static io.github.gms.common.util.Constants.ALL_ROLE;
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_KEYCLOAK_SSO;
-import static io.github.gms.common.util.Constants.ID;
-import static io.github.gms.common.util.Constants.PATH_ENABLED;
-import static io.github.gms.common.util.Constants.PATH_LIST;
-import static io.github.gms.common.util.Constants.PATH_VARIABLE_ID;
-import static io.github.gms.common.util.Constants.ROLE_ADMIN;
-import static io.github.gms.common.util.Constants.ROLE_ADMIN_OR_USER;
+import static io.github.gms.common.util.Constants.*;
 
 /**
  * @author Peter Szrnka
@@ -60,10 +46,10 @@ public class UserController extends AbstractAdminController<UserService> {
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_ADMIN)
 	public UserListDto list(
-			@RequestParam("direction") String direction,
-			@RequestParam("property") String property,
-			@RequestParam("page") int page,
-			@RequestParam("size") int size) {
+			@RequestParam(DIRECTION) String direction,
+			@RequestParam(PROPERTY) String property,
+			@RequestParam(PAGE) int page,
+			@RequestParam(SIZE) int size) {
 		return service.list(ConverterUtils.createPageable(direction, property, page, size));
 	}
 	
@@ -74,7 +60,7 @@ public class UserController extends AbstractAdminController<UserService> {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/mfa_qr_code", produces = MimeTypeUtils.IMAGE_PNG_VALUE)
+	@GetMapping(value = "/mfa_qr_code", produces = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)
 	@PreAuthorize(ALL_ROLE)
 	public ResponseEntity<byte[]> getMfaQrCode() {
 		try {
