@@ -1,1 +1,0 @@
-docker run -p 50000:50000 --name db2 --env-file .env icr.io/db2_community/db2 -d -v D:/dev/projects/open-source/databases/db2
