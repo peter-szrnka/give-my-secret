@@ -8,4 +8,3 @@ DELETE FROM gms_announcement;
 DELETE FROM gms_message;
 DELETE FROM gms_api_restriction;
 DELETE FROM gms_system_property;
-DELETE FROM gms_ip_restriction;

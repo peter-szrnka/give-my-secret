@@ -8,4 +8,3 @@ DROP TABLE gms_announcement;
 DROP TABLE gms_message;
 DROP TABLE gms_api_restriction;
 DROP TABLE gms_system_property;
-DROP TABLE gms_ip_restriction;

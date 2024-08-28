@@ -1,0 +1,1 @@
+docker pull icr.io/db2_community/db2

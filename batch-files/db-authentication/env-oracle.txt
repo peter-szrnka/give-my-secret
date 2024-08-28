@@ -1,0 +1,39 @@
+CONTAINER_HOST_TYPE=DOCKER
+SELECTED_DB=oracle
+SELECTED_AUTH=db
+SPRING_PROFILE=${SELECTED_DB},${SELECTED_AUTH},https
+
+# HTTPS configuration
+SSL_KEYSTORE_TYPE=PKCS12
+SSL_KEYSTORE_PATH=/usr/share/ssl/
+SSL_KEYSTORE=${SSL_KEYSTORE_PATH}test.p12
+SSL_KEYSTORE_PASSWORD=Test1234
+SSL_KEYSTORE_ALIAS=test
+HTTPS_PORT=8443
+
+# Secrets
+CONFIG_SECRET_JWT=MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2Nzg=
+CONFIG_SECRET_CRYPTO=MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2Nzg=
+CONFIG_ENCRYPTION_IV=R4nd0mIv1234567!
+
+# LDAP
+LDAP_BASE_DN=dc=givemysecret,dc=szrnkapeter,dc=hu
+LDAP_URL=ldap://host.docker.internal:11389
+LDAP_USERNAME=uid=admin,ou=system
+LDAP_CREDENTIAL=secret
+LDAP_PASSWORD_ENCODER=CRYPT
+
+# Common db configuration
+DB_SHOW_SQL=false
+
+# MS SQL configuration
+DB_JDBC_URL=jdbc:oracle:thin:@localhost:1521:XE
+DB_USERNAME=gms
+DB_CREDENTIAL=gms
+
+# Keystore storage path
+KEYSTORE_PATH=/usr/share/keystore/
+KEYSTORE_TEMP_DEFAULT_PATH=/usr/share/keystore-temp/
+
+# Windows specific settings
+COMPOSE_CONVERT_WINDOWS_PATHS=1
