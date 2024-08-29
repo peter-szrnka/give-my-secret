@@ -76,10 +76,12 @@ Currently only AES encryption is supported.  In the future this will be configur
 
 | DB provider |      Db auth       |     ldap auth      |
 | ----------- | :----------------: | :----------------: |
+| IBM DB2     | :white_check_mark: | ❓ |
 | MariaDb     | :white_check_mark: | :white_check_mark: |
-| PostgreSql  | :white_check_mark: | :white_check_mark: |
 | MySql       | :white_check_mark: | :white_check_mark: |
 | MsSql       | :white_check_mark: | :white_check_mark: |
+| Oracle      | :white_check_mark: | ❓ |
+| PostgreSql  | :white_check_mark: | :white_check_mark: |
 
 # Code samples
 
