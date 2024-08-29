@@ -1,0 +1,1 @@
+docker run -p 50000:50000 -p 50001:50001 --name db2 --detach --privileged=true --env-file .env icr.io/db2_community/db2 -d  -v D:/dev/projects/open-source/databases/db2
