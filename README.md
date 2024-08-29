@@ -35,6 +35,8 @@ To start a new container, you have to set up a bunch of environment properties. 
 - [PostgreSql](db/postgresql/README.md)
 - [MySql](db/mysql/README.md)
 - [MsSql](db/mssql/README.md)
+- [Oracle](db/oracle/README.md)
+- [IBM DB2](db/db2/README.md)
 
 For further information & sample configurations, please check the sub folders under the "db" folder.
 
