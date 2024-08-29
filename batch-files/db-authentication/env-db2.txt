@@ -1,5 +1,5 @@
 CONTAINER_HOST_TYPE=DOCKER
-SELECTED_DB=oracle
+SELECTED_DB=db2
 SELECTED_AUTH=db
 SPRING_PROFILE=${SELECTED_DB},${SELECTED_AUTH},https
 
@@ -27,9 +27,9 @@ LDAP_PASSWORD_ENCODER=CRYPT
 DB_SHOW_SQL=false
 
 # MS SQL configuration
-DB_JDBC_URL=jdbc:oracle:thin:@host.docker.internal:1521:XE
-DB_USERNAME=gms
-DB_CREDENTIAL=gms
+DB_JDBC_URL=jdbc:db2://host.docker.internal:50000/testdb:currentSchema=gms;
+DB_USERNAME=db2inst1
+DB_CREDENTIAL=password
 
 # Keystore storage path
 KEYSTORE_PATH=/usr/share/keystore/

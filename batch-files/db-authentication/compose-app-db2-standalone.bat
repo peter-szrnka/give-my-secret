@@ -1,0 +1,1 @@
+docker compose --env-file env-db2.txt -p give-my-secret up -d
