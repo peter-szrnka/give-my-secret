@@ -22,8 +22,7 @@ import java.time.ZoneOffset;
 import java.util.Set;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -73,7 +72,12 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).save(messageEntityCaptor.capture());
 		
 		MessageEntity capturedEntity = messageEntityCaptor.getValue();
-		assertEquals("MessageEntity(id=null, userId=2L, message=test message, opened=false, creationDate=2023-06-29T00:00Z, actionPath=/test)", capturedEntity.toString());
+		assertNull(capturedEntity.getId());
+		assertEquals(2L, capturedEntity.getUserId());
+		assertEquals("test message", capturedEntity.getMessage());
+		assertFalse(capturedEntity.isOpened());
+		assertEquals(Instant.parse("2023-06-29T00:00:00Z"), capturedEntity.getCreationDate());
+		assertEquals("/test", capturedEntity.getActionPath());
 	}
 	
 	@Test
