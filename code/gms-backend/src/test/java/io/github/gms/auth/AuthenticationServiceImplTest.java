@@ -112,6 +112,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
 		assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equalsIgnoreCase("Login failed")));
 		verify(userLoginAttemptManagerService).isBlocked("user");
+		verify(userLoginAttemptManagerService).updateLoginAttempt("user");
 	}
 	
 	@ParameterizedTest

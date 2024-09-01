@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(KeystoreController.class)
-public class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
+class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     public KeystoreAdminRoleSecurityTest() {
         super("/keystore");

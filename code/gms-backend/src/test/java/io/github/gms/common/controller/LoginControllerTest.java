@@ -70,7 +70,7 @@ class LoginControllerTest {
 
             // assert
             assertNotNull(response);
-            assertEquals(response.getHeaders().size(), 1);
+            assertEquals(1, response.getHeaders().size());
             assertThat(response.getHeaders().get(SET_COOKIE)).hasSize(2);
             assertThat(response.getHeaders().get(SET_COOKIE)).contains("jwt=");
             assertThat(response.getHeaders().get(SET_COOKIE)).contains("refreshJwt=");

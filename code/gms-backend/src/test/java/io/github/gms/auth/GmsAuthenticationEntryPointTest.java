@@ -17,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.util.MimeTypeUtils;
 
 import java.io.PrintWriter;
@@ -56,7 +57,7 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		// arrange
 		HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 		HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
-		AuthenticationException exception = mock(AuthenticationException.class);
+		AuthenticationException exception = new InvalidCookieException("Invalid cookie");
 		PrintWriter mockWriter = mock(PrintWriter.class);
 		when(httpServletResponse.getWriter()).thenReturn(mockWriter);
 
@@ -72,7 +73,7 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		ArgumentCaptor<ErrorResponseDto> errorResponseDtoCaptor = ArgumentCaptor.forClass(ErrorResponseDto.class);
 		verify(objectMapper).writeValueAsString(errorResponseDtoCaptor.capture());
 
-		assertEquals("GmsAuthenticationEntryPoint: null", errorResponseDtoCaptor.getValue().getMessage());
+		assertEquals("GmsAuthenticationEntryPoint: Invalid cookie", errorResponseDtoCaptor.getValue().getMessage());
 		assertNull(errorResponseDtoCaptor.getValue().getCorrelationId());
 		assertEquals("GMS-000", errorResponseDtoCaptor.getValue().getErrorCode());
 

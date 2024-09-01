@@ -3,6 +3,7 @@ package io.github.gms.auth.db;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,12 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -48,8 +46,12 @@ class DbUserAuthServiceImplTest extends AbstractUnitTest {
 	
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
-	void shoulFoundUser(boolean isActive) {
-		when(repository.findByUsername(anyString())).thenReturn(Optional.of(TestUtils.createUserWithStatus(isActive? EntityStatus.ACTIVE : EntityStatus.DISABLED)));
+	void shouldFoundUser(boolean isActive) {
+		// arrange
+		UserEntity user = TestUtils.createUserWithStatus(isActive? EntityStatus.ACTIVE : EntityStatus.DISABLED);
+		user.setMfaEnabled(true);
+		user.setMfaSecret("12345678");
+		when(repository.findByUsername(anyString())).thenReturn(Optional.of(user));
 		
 		// act
 		GmsUserDetails response = (GmsUserDetails) service.loadUserByUsername("test");
@@ -64,5 +66,8 @@ class DbUserAuthServiceImplTest extends AbstractUnitTest {
 		assertEquals("name", response.getName());
 		assertEquals(isActive, response.isAccountNonLocked());
 		assertEquals(isActive, response.isEnabled());
+		assertEquals("12345678", response.getMfaSecret());
+		assertTrue(response.isMfaEnabled());
+		verify(repository).findByUsername(anyString());
 	}
 }

@@ -99,10 +99,10 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
         ArgumentCaptor<IpRestrictionEntity> entityArgumentCaptor = ArgumentCaptor.forClass(IpRestrictionEntity.class);
         verify(repository).save(entityArgumentCaptor.capture());
-        assertThat(mockEntity.isGlobal()).isTrue();
-        assertThat(mockEntity.getSecretId()).isNull();
-        assertThat(mockEntity.getUserId()).isNull();
-        assertThat(mockEntity.getStatus()).isEqualTo(EntityStatus.ACTIVE);
+        assertThat(entityArgumentCaptor.getValue().isGlobal()).isTrue();
+        assertThat(entityArgumentCaptor.getValue().getSecretId()).isNull();
+        assertThat(entityArgumentCaptor.getValue().getUserId()).isNull();
+        assertThat(EntityStatus.ACTIVE).isEqualTo(entityArgumentCaptor.getValue().getStatus());
     }
 
     @Test
@@ -205,7 +205,11 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         verify(repository).findAllBySecretId(1L);
-        verify(converter, times(2)).toEntity(any(IpRestrictionDto.class));
+        ArgumentCaptor<IpRestrictionDto> argumentCaptor = ArgumentCaptor.forClass(IpRestrictionDto.class);
+        verify(converter, times(2)).toEntity(argumentCaptor.capture());
+        List<IpRestrictionDto> capturedDtos = argumentCaptor.getAllValues();
+        capturedDtos.forEach(dto -> assertEquals(1L, dto.getSecretId()));
+
         ArgumentCaptor<Set<Long>> argumentCaptorIds = ArgumentCaptor.forClass(Set.class);
         verify(repository).deleteAllById(argumentCaptorIds.capture());
 

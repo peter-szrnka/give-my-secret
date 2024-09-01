@@ -11,7 +11,7 @@ import static org.mockito.Mockito.*;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class HttpUtilsTest extends AbstractUnitTest {
+class HttpUtilsTest extends AbstractUnitTest {
 
     @Test
     void shouldTestPrivateConstructor() {
@@ -23,8 +23,8 @@ public class HttpUtilsTest extends AbstractUnitTest {
         // arrange
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader(anyString())).thenReturn(null);
-        when(request.getHeader(eq("REMOTE_ADDR"))).thenReturn("169.154.0.1");
-        when(request.getHeader(eq("HTTP_CLIENT_IP"))).thenReturn("");
+        when(request.getHeader("REMOTE_ADDR")).thenReturn("169.154.0.1");
+        when(request.getHeader("HTTP_CLIENT_IP")).thenReturn("");
 
         // act
         String response = HttpUtils.getClientIpAddress(request);

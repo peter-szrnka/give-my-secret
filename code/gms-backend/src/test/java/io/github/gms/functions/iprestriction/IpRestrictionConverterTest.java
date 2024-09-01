@@ -112,12 +112,14 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
             dto.setId(id);
             dto.setGlobal(true);
             dto.setStatus(EntityStatus.ACTIVE);
+            dto.setCreationDate(ZonedDateTime.now(clock));
 
             // act
             IpRestrictionEntity response = converter.toEntity(dto);
 
             // assert
             assertNotNull(response);
+            assertNotNull(response.getCreationDate());
             assertThat(response.isGlobal()).isTrue();
             assertThat(response.getStatus()).isEqualTo(EntityStatus.ACTIVE);
             assertThat(response.toString()).isEqualTo(expectedResponse);
@@ -151,8 +153,8 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
 
     private static Object[] testData() {
         return new Object[][] {
-                { null, 2, "IpRestrictionEntity(id=null, userId=1, secretId=1, status=ACTIVE, ipPattern=.*, allow=true, global=true, creationDate=2023-06-29T00:00Z, lastModified=2023-06-29T00:00Z)" },
-                { 1L, 1, "IpRestrictionEntity(id=1, userId=1, secretId=1, status=ACTIVE, ipPattern=.*, allow=true, global=true, creationDate=null, lastModified=2023-06-29T00:00Z)" }
+                { null, 3, "IpRestrictionEntity(id=null, userId=1, secretId=1, status=ACTIVE, ipPattern=.*, allow=true, global=true, creationDate=2023-06-29T00:00Z, lastModified=2023-06-29T00:00Z)" },
+                { 1L, 2, "IpRestrictionEntity(id=1, userId=1, secretId=1, status=ACTIVE, ipPattern=.*, allow=true, global=true, creationDate=2023-06-29T00:00Z, lastModified=2023-06-29T00:00Z)" }
         };
     }
 }

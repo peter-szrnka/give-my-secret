@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(ApiKeyController.class)
-public class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
+class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
 	public ApiKeyAdminRoleSecurityTest() {
 		super("/apikey");

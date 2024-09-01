@@ -483,6 +483,18 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <excludedGroups>IntegrationTest,SecurityTest</excludedGroups>
+                            <excludes>
+                                <exclude>*IntegrationTest</exclude>
+                                <exclude>*SecurityTest</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>org.pitest</groupId>
                         <artifactId>pitest-maven</artifactId>
                         <version>1.14.1</version>
@@ -526,12 +538,6 @@
                                 <mutator>REMOVE_INCREMENTS</mutator>
                             </mutators>
                             <threads>2</threads>
-                            <targetClasses>
-                                <targetClass>io.github.gms.*</targetClass>
-                            </targetClasses>
-                            <targetTests>
-                                <targetTest>io.github.gms.*</targetTest>
-                            </targetTests>
                             <excludedClasses>
                                 <excludedClass>*.*Application</excludedClass>
                                 <excludedClass>*.*GmsExceptionHandler</excludedClass>
@@ -546,12 +552,10 @@
                                 <excludedClass>*.exception.*</excludedClass>
                                 <excludedClass>*.model.*</excludedClass>
                                 <excludedClass>*.repository.*</excludedClass>
-                                <excludedClass>*.*IntegrationTest</excludedClass>
-                                <excludedClass>*.*SecurityTest</excludedClass>
                             </excludedClasses>
                             <excludedTestClasses>
-                                <excludedTestClass>*.*IntegrationTest</excludedTestClass>
-                                <excludedTestClass>*.*SecurityTest</excludedTestClass>
+                                <excludedTestClass>io.github.gms.**.*IntegrationTest</excludedTestClass>
+                                <excludedTestClass>io.github.gms.**.*SecurityTest</excludedTestClass>
                             </excludedTestClasses>
                             <excludedGroups>
                                 <excludedGroup>IntegrationTest</excludedGroup>

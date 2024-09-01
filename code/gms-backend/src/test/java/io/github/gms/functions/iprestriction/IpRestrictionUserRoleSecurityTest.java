@@ -15,7 +15,7 @@ import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(value = IpRestrictionController.class)
-public class IpRestrictionUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
+class IpRestrictionUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     public IpRestrictionUserRoleSecurityTest() {
         super("/iprestriction");
