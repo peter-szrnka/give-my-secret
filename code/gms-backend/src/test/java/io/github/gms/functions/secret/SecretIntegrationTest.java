@@ -8,6 +8,8 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 @Tag(TAG_INTEGRATION_TEST)
 @TestedClass(SecretController.class)
 class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
@@ -48,6 +51,13 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 		new File("./keystores/1/").mkdirs();
 		FileCopyUtils.copy(buffer, new File("./keystores/1/test.jks"));
+	}
+
+	@AfterAll
+	public static void tearDownAll() {
+		new File("./keystores/1/test.jks").delete();
+		new File("./keystores/1/").delete();
+		new File("./keystores").delete();
 	}
 
 	@Test
