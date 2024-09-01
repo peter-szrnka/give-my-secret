@@ -64,8 +64,7 @@ class TokenGeneratorServiceTest extends AbstractUnitTest {
         assertThat(accessClaimsCaptor.getValue()).containsEntry(MdcParameter.USER_NAME.getDisplayName(), user.getUsername());
 
         Set<UserRole> capturedRoles = (Set<UserRole>) accessClaimsCaptor.getValue().get("roles");
-        assertEquals(capturedRoles.iterator().next(), UserRole.ROLE_USER);
-
+        assertEquals(UserRole.ROLE_USER, capturedRoles.iterator().next());
 
         ArgumentCaptor<Map<JwtConfigType, GenerateJwtRequest>> jwtServiceCaptor = ArgumentCaptor.forClass(Map.class);
         verify(jwtService).generateJwts(jwtServiceCaptor.capture());
