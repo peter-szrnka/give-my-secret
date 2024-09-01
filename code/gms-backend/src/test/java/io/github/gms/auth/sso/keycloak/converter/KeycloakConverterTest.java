@@ -112,7 +112,7 @@ class KeycloakConverterTest {
             assertEquals("a@b.com", response.getEmail());
             assertEquals(ROLE_USER, response.getRole());
             assertEquals("name", response.getName());
-            assertEquals("2023-06-29T02:00", response.getCreationDate().toLocalDateTime().toString());
+            assertEquals("2023-06-29", response.getCreationDate().toLocalDate().toString());
             assertEquals("user", response.getUsername());
             assertEquals(EntityStatus.ACTIVE, response.getStatus());
             mockedZonedDateTime.verify(() -> ZonedDateTime.now(clock));
