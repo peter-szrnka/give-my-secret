@@ -29,7 +29,6 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		jwt = null;
 	}
 
-
 	protected <T> void shouldSaveFailWith403(T request) {
 		HttpEntity<T> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 

@@ -485,7 +485,7 @@
                     <plugin>
                         <groupId>org.pitest</groupId>
                         <artifactId>pitest-maven</artifactId>
-                        <version>1.7.3</version>
+                        <version>1.14.1</version>
                         <executions>
                             <execution>
                                 <id>pit-report</id>
@@ -499,36 +499,64 @@
                             <dependency>
                                 <groupId>org.pitest</groupId>
                                 <artifactId>pitest-junit5-plugin</artifactId>
-                                <version>0.15</version>
+                                <version>1.2.1</version>
                             </dependency>
                         </dependencies>
                         <configuration>
                             <mutationThreshold>95</mutationThreshold>
                             <coverageThreshold>95</coverageThreshold>
+                            <mutators>
+                                <mutator>FALSE_RETURNS</mutator>
+                                <mutator>TRUE_RETURNS</mutator>
+                                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                                <mutator>EMPTY_RETURNS</mutator>
+                                <mutator>INCREMENTS</mutator>
+                                <mutator>INLINE_CONSTS</mutator>
+                                <mutator>INVERT_NEGS</mutator>
+                                <mutator>MATH</mutator>
+                                <mutator>NEGATE_CONDITIONALS</mutator>
+                                <mutator>NON_VOID_METHOD_CALLS</mutator>
+                                <mutator>NULL_RETURNS</mutator>
+                                <mutator>PRIMITIVE_RETURNS</mutator>
+                                <mutator>REMOVE_CONDITIONALS_EQUAL_IF</mutator>
+                                <mutator>REMOVE_CONDITIONALS_EQUAL_ELSE</mutator>
+                                <mutator>REMOVE_CONDITIONALS_ORDER_IF</mutator>
+                                <mutator>REMOVE_CONDITIONALS_ORDER_ELSE</mutator>
+                                <mutator>VOID_METHOD_CALLS</mutator>
+                                <mutator>REMOVE_INCREMENTS</mutator>
+                            </mutators>
                             <threads>2</threads>
                             <targetClasses>
-                                <param>io.github.gms.*</param>
+                                <targetClass>io.github.gms.*</targetClass>
                             </targetClasses>
                             <targetTests>
-                                <param>io.github.gms.*</param>
+                                <targetTest>io.github.gms.*</targetTest>
                             </targetTests>
                             <excludedClasses>
-                                <param>*.*Application</param>
-                                <param>*.*Config</param>
-                                <param>*.*Dto</param>
-                                <param>*.*Entity</param>
-                                <param>*.config.*</param>
-                                <param>*.dto.*</param>
-                                <param>*.entity.*</param>
-                                <param>*.enums.*</param>
-                                <param>*.event.*</param>
-                                <param>*.exception.*</param>
-                                <param>*.model.*</param>
-                                <param>*.repository.*</param>
+                                <excludedClass>*.*Application</excludedClass>
+                                <excludedClass>*.*GmsExceptionHandler</excludedClass>
+                                <excludedClass>*.*Config</excludedClass>
+                                <excludedClass>*.*Dto</excludedClass>
+                                <excludedClass>*.*Entity</excludedClass>
+                                <excludedClass>*.config.*</excludedClass>
+                                <excludedClass>*.dto.*</excludedClass>
+                                <excludedClass>*.entity.*</excludedClass>
+                                <excludedClass>*.enums.*</excludedClass>
+                                <excludedClass>*.event.*</excludedClass>
+                                <excludedClass>*.exception.*</excludedClass>
+                                <excludedClass>*.model.*</excludedClass>
+                                <excludedClass>*.repository.*</excludedClass>
+                                <excludedClass>*.*IntegrationTest</excludedClass>
+                                <excludedClass>*.*SecurityTest</excludedClass>
                             </excludedClasses>
                             <excludedTestClasses>
-                                <param>io.github.gms.**IntegrationTest</param>
+                                <excludedTestClass>*.*IntegrationTest</excludedTestClass>
+                                <excludedTestClass>*.*SecurityTest</excludedTestClass>
                             </excludedTestClasses>
+                            <excludedGroups>
+                                <excludedGroup>IntegrationTest</excludedGroup>
+                                <excludedGroup>SecurityTest</excludedGroup>
+                            </excludedGroups>
                             <avoidCallsTo>
                                 <avoidCallsTo>java.util.logging</avoidCallsTo>
                                 <avoidCallsTo>org.apache.log4j</avoidCallsTo>
@@ -601,35 +629,13 @@
             </build>
         </profile>
         <profile>
-            <id>build-prod-docker-image-local</id>
+            <id>build-backend-docker-image-local</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
             <build>
                 <finalName>gms-app</finalName>
                 <plugins>
-                    <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.0.2</version>
-                        <executions>
-                            <execution>
-                                <id>copy-javascript-resources</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${basedir}/target/classes/static</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${basedir}/../gms-frontend/dist/gms-frontend</directory>
-                                            <filtering>false</filtering>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -657,21 +663,15 @@
                         <version>3.1.0</version>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${maven-surefire-plugin.version}</version>
-                        <configuration>
-                            <skipTests>true</skipTests>
-                        </configuration>
-                    </plugin>
-                    <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>dockerfile-maven-plugin</artifactId>
+                        <version>1.4.13</version>
                         <configuration>
                             <googleContainerRegistryEnabled>false</googleContainerRegistryEnabled>
                             <finalName>gms-app-local</finalName>
                             <tag>local</tag>
                             <repository>gms-app-local</repository>
+                            <dockerfile>Dockerfile</dockerfile>
                             <buildArgs>
                                 <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
                             </buildArgs>

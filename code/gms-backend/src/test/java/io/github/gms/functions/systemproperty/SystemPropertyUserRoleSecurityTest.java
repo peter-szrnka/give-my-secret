@@ -15,7 +15,7 @@ import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(SystemPropertyController.class)
-class SystemPropertyUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
+public class SystemPropertyUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     public SystemPropertyUserRoleSecurityTest() {
         super("/system_property");

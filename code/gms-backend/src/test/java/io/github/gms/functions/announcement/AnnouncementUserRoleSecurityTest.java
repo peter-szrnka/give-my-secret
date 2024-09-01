@@ -16,7 +16,7 @@ import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(AnnouncementController.class)
-class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
+public class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     public AnnouncementUserRoleSecurityTest() {
         super("/announcement");

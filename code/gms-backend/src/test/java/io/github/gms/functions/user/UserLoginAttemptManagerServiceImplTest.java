@@ -86,7 +86,9 @@ class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         verify(systemPropertyService).getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
-        verify(repository).save(any(UserEntity.class));
+        ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
+        verify(repository).save(userEntityArgumentCaptor.capture());
+        assertEquals(1, userEntityArgumentCaptor.getValue().getFailedAttempts());
     }
 
     @Test

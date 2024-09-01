@@ -14,16 +14,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.AUDIENCE;
-import static io.github.gms.common.util.Constants.CLIENT_ID;
-import static io.github.gms.common.util.Constants.CLIENT_SECRET;
-import static io.github.gms.common.util.Constants.CREDENTIAL;
-import static io.github.gms.common.util.Constants.GRANT_TYPE;
-import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.SCOPE;
-import static io.github.gms.common.util.Constants.SCOPE_GMS;
-import static io.github.gms.common.util.Constants.USERNAME;
+import static io.github.gms.common.util.Constants.*;
 import static io.github.gms.util.DemoData.CREDENTIAL_TEST;
 import static io.github.gms.util.DemoData.USERNAME1;
 import static io.github.gms.util.TestUtils.MOCK_ACCESS_TOKEN;
@@ -32,11 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -116,6 +103,8 @@ class KeycloakLoginServiceTest {
         MultiValueMap<String, String> captured = argumentCaptor.getValue();
         assertEquals("clientId", captured.get(CLIENT_ID).getFirst());
         assertEquals("clientSecret", captured.get(CLIENT_SECRET).getFirst());
+        assertEquals("access", captured.get(TOKEN).getFirst());
+        assertEquals("refresh", captured.get(REFRESH_TOKEN).getFirst());
     }
 
     @ParameterizedTest

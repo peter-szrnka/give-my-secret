@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -401,7 +402,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		UserInfoDto response = service.getUserInfo(request);
 
 		// assert
-		assertNotNull(response);
+		assertThat(response.toString()).isEqualTo("UserInfoDto(id=1, name=name, username=username, email=a@b.com, role=ROLE_USER, status=null, failedAttempts=null)");
 		verify(jwtClaimService).getClaims(anyString());
 		verify(repository).findById(1L);
 	}

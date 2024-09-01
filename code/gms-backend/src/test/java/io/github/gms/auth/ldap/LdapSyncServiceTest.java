@@ -105,6 +105,7 @@ class LdapSyncServiceTest extends AbstractUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(1, response.getFirst());
+		assertEquals(1, response.getSecond());
 		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));
 		verify(repository).findByUsername(username);
 		if (findUser) {
@@ -112,6 +113,7 @@ class LdapSyncServiceTest extends AbstractUnitTest {
 		} else {
 			verify(converter).toEntity(any(GmsUserDetails.class), any(UserEntity.class));
 		}
+		verify(repository).markUserAsDeleted("nonExistingUser");
 	}
 
 	@Test

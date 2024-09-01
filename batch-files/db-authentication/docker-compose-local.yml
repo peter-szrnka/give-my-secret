@@ -1,13 +1,13 @@
-version: "3.9"
 services:
   gms-app:
     #build: .
-    container_name: gms-app-${SELECTED_DB}-${SELECTED_AUTH}
+    container_name: gms-app-${SELECTED_DB}-${SELECTED_AUTH}-local
     image: gms-app-local:local
     ports:
       - "8080:8080"
       - "8443:8443"
     environment:
+      - SPRING_PROFILES_ACTIVE
       - CONTAINER_HOST_TYPE
       - SPRING_PROFILE
       - DB_JDBC_URL

@@ -31,16 +31,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -156,7 +150,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		verify(systemPropertyService).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
 
 		mockedMDC.verify(() -> MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), String.valueOf(admin)));
-		mockedMDC.verify(() -> MDC.clear());
+		mockedMDC.verify(MDC::clear);
 
 		mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.ACCESS_JWT_TOKEN), eq("ACCESS_JWT"), eq(900L), eq(true)));
         mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESH_JWT"), eq(86400L), eq(true)));

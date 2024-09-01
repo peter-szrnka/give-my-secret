@@ -3,6 +3,9 @@ package io.github.gms.common.service;
 import io.github.gms.abstraction.AbstractUnitTest;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 
 import java.io.File;
@@ -10,13 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -41,35 +40,38 @@ class FileServiceTest extends AbstractUnitTest {
         }
     }
 
-    @Test
-    @SneakyThrows
-    void shouldDelete() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldDelete(boolean mockResult) {
         try (MockedStatic<Files> mockedStatic = mockStatic(Files.class)) {
             Path path = mock(Path.class);
-            mockedStatic.when(() -> Files.deleteIfExists(any(Path.class))).thenReturn(true);
+            mockedStatic.when(() -> Files.deleteIfExists(any(Path.class))).thenReturn(mockResult);
 
             // act
-            boolean response = service.delete(path);
+            boolean response = assertDoesNotThrow(() -> service.delete(path));
 
             // assert
-            assertTrue(response);
+            assertEquals(mockResult, response);
             mockedStatic.verify(() -> Files.deleteIfExists(any(Path.class)));
         }
     }
 
-    @Test
-    @SneakyThrows
-    void shouldExists() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldExists(boolean mockResult) {
         try (MockedStatic<Files> mockedStatic = mockStatic(Files.class)) {
             Path path = mock(Path.class);
-            mockedStatic.when(() -> Files.exists(any(Path.class))).thenReturn(true);
+            mockedStatic.when(() -> Files.exists(any(Path.class))).thenReturn(mockResult);
 
             // act
-            boolean response =  service.exists(path);
+            boolean response =  assertDoesNotThrow(() -> service.exists(path));
 
             // assert
-            assertTrue(response);
-            mockedStatic.verify(() -> Files.exists(any(Path.class)));
+            assertEquals(mockResult, response);
+
+            ArgumentCaptor<Path> argumentCaptor = ArgumentCaptor.forClass(Path.class);
+            mockedStatic.verify(() -> Files.exists(argumentCaptor.capture()));
+            assertEquals(path, argumentCaptor.getValue());
         }
     }
 

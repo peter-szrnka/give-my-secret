@@ -180,6 +180,15 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		verify(systemPropertyService, enableGlobalMfa ? never() : times(1)).getBoolean(SystemProperty.ENABLE_MFA);
 	}
 
+	@Test
+	void shouldLogout() {
+		// act
+		service.logout();
+
+		// assert
+		assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equalsIgnoreCase("User logged out")));
+	}
+
 	private static Object[][] nonMfaTestData() {
 		return new Object[][] {
 			{ true, false },

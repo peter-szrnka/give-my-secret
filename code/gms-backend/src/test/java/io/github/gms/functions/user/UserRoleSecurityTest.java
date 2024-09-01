@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(UserController.class)
-class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
+public class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     public UserRoleSecurityTest() {
         super("/user");

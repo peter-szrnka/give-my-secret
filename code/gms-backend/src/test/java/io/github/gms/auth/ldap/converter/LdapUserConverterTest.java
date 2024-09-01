@@ -9,6 +9,7 @@ import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Clock;
@@ -17,9 +18,7 @@ import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -39,8 +38,8 @@ class LdapUserConverterTest extends AbstractUnitTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = { true, false })
-    void shouldConvertUserDetailsWithNewUser(boolean storeLdapCredential) {
+    @MethodSource("newUserTestData")
+    void shouldConvertUserDetailsWithNewUser(boolean storeLdapCredential, String expectedResponse) {
         // arrange
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -52,10 +51,17 @@ class LdapUserConverterTest extends AbstractUnitTest {
         UserEntity response = converter.toEntity(testUser, null);
 
         // assert
-        assertNotNull(response);
+        assertEquals(expectedResponse, response.toString());
         assertEquals("secret!", response.getMfaSecret());
         assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
         verify(secretGenerator).generate();
+    }
+
+    private static Object[][] newUserTestData() {
+        return new Object[][] {
+                { true, "UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=null, credential=test, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=secret!, failedAttempts=0)" },
+                { false, "UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=null, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=secret!, failedAttempts=0)" }
+        };
     }
 
     @ParameterizedTest

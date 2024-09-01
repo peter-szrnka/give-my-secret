@@ -20,8 +20,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Objects;
 
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -70,6 +70,10 @@ class LoginControllerTest {
 
             // assert
             assertNotNull(response);
+            assertEquals(response.getHeaders().size(), 1);
+            assertThat(response.getHeaders().get(SET_COOKIE)).hasSize(2);
+            assertThat(response.getHeaders().get(SET_COOKIE)).contains("jwt=");
+            assertThat(response.getHeaders().get(SET_COOKIE)).contains("refreshJwt=");
             assertEquals(401, response.getStatusCode().value());
         }
     }
@@ -155,5 +159,6 @@ class LoginControllerTest {
                 .stream().anyMatch(item -> item.equals("jwt=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax")));
         assertTrue(Objects.requireNonNull(response.getHeaders().get("Set-Cookie"))
                 .stream().anyMatch(item -> item.equals("refreshJwt=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax")));
+        verify(service).logout();
     }
 }

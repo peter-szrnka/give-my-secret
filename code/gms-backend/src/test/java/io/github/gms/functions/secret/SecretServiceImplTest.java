@@ -44,6 +44,7 @@ import java.util.Set;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -491,29 +492,31 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	@MethodSource("findByIdData")
 	void shouldFindById(Optional<KeystoreAliasEntity> aliasEntity) {
 		// arrange
-		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
-		mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(4L);
-		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createSecretEntity()));
-		when(converter.toDto(any())).thenReturn(new SecretDto());
-		when(keystoreAliasRepository.findById(anyLong())).thenReturn(aliasEntity);
+		try( MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class)) {
+			mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(4L);
+			when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createSecretEntity()));
+			when(converter.toDto(any())).thenReturn(new SecretDto());
+			when(keystoreAliasRepository.findById(anyLong())).thenReturn(aliasEntity);
 
-		List<ApiKeyRestrictionEntity> mockRestrictionEntities = List.of(TestUtils.createApiKeyRestrictionEntity(1L));
-		when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(4L, 1L)).thenReturn(mockRestrictionEntities);
-		when(ipRestrictionService.getAllBySecretId(1L)).thenReturn(emptyList());
+			List<ApiKeyRestrictionEntity> mockRestrictionEntities = List.of(TestUtils.createApiKeyRestrictionEntity(1L));
+			when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(4L, 1L)).thenReturn(mockRestrictionEntities);
+			when(ipRestrictionService.getAllBySecretId(1L)).thenReturn(emptyList());
 
-		// act
-		SecretDto response = service.getById(1L);
+			// act
+			SecretDto response = service.getById(1L);
 
-		// assert
-		assertNotNull(response);
-		if (aliasEntity.isPresent()) {
-			assertEquals(DemoData.KEYSTORE_ID, response.getKeystoreId());
+			// assert
+			assertNotNull(response);
+			assertThat(response.getApiKeyRestrictions()).isNotEmpty();
+			assertThat(response.getIpRestrictions()).isEmpty();
+			if (aliasEntity.isPresent()) {
+				assertEquals(DemoData.KEYSTORE_ID, response.getKeystoreId());
+			}
+			verify(repository).findById(1L);
+			verify(converter).toDto(any());
+			verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(4L, 1L);
+			verify(ipRestrictionService).getAllBySecretId(1L);
 		}
-		verify(repository).findById(1L);
-		verify(converter).toDto(any());
-		verify(apiKeyRestrictionRepository).findAllByUserIdAndSecretId(4L, 1L);
-		verify(ipRestrictionService).getAllBySecretId(1L);
-		mockedMdcUtils.close();
 	}
 
 	@Test

@@ -405,6 +405,7 @@ public class TestUtils {
 		entity.setSecretId(1L);
 		entity.setUserId(1L);
 		entity.setGlobal(false);
+		entity.setStatus(EntityStatus.ACTIVE);
 		return entity;
 	}
 

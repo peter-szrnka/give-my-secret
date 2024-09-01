@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   gms-app:
     #build: .
@@ -8,6 +7,7 @@ services:
       - "8080:8080"
       - "8443:8443"
     environment:
+      - SPRING_PROFILES_ACTIVE
       - CONTAINER_HOST_TYPE
       - SPRING_PROFILE
       - DB_JDBC_URL

@@ -3,10 +3,7 @@ package io.github.gms.functions.keystore;
 import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.dto.IdNamePairDto;
-import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.common.dto.KeystoreBasicInfoDto;
-import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.dto.*;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
@@ -56,6 +53,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 import static io.github.gms.util.TestUtils.assertLogContains;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -499,9 +497,11 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(repository.save(any(KeystoreEntity.class))).thenReturn(savedEntity);
 
         // act
-        service.save(model, multiPart);
+        SaveEntityResponseDto response = service.save(model, multiPart);
 
         // assert
+        assertThat(response).isNotNull();
+        assertThat(response.getEntityId()).isEqualTo(1L);
         verify(converter).toEntity(any(), any());
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
@@ -521,6 +521,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     void shouldSaveNewEntityWhenGeneratedInputIsAvailable() {
         AtomicInteger counter = new AtomicInteger(0);
         Files.createDirectory(Paths.get("unit-test-output/" + DemoData.USER_1_ID + "/"));
+        Files.createDirectory(Paths.get("temp-output/"));
         String fileName = "generated-" + UUID.randomUUID() + ".jks";
         Path newFilePath = Files.createFile(Paths.get("temp-output/" + fileName));
         Files.writeString(newFilePath, "test");
@@ -658,6 +659,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
+        assertThat(response.getTotalElements()).isEqualTo(0L);
         assertEquals(0, response.getResultList().size());
         verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
         verify(converter, never()).toDtoList(any());
@@ -678,6 +680,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
+        assertThat(response.getTotalElements()).isEqualTo(1L);
         assertEquals(1, response.getResultList().size());
         verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
         verify(converter).toDtoList(any());

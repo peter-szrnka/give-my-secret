@@ -1,7 +1,7 @@
 CONTAINER_HOST_TYPE=DOCKER
 SELECTED_DB=oracle
 SELECTED_AUTH=db
-SPRING_PROFILE=${SELECTED_DB},${SELECTED_AUTH},https
+SPRING_PROFILES_ACTIVE=${SELECTED_DB},${SELECTED_AUTH},https
 
 # HTTPS configuration
 SSL_KEYSTORE_TYPE=PKCS12
@@ -26,7 +26,7 @@ LDAP_PASSWORD_ENCODER=CRYPT
 # Common db configuration
 DB_SHOW_SQL=false
 
-# MS SQL configuration
+# Oracle configuration
 DB_JDBC_URL=jdbc:oracle:thin:@host.docker.internal:1521:XE
 DB_USERNAME=gms
 DB_CREDENTIAL=gms

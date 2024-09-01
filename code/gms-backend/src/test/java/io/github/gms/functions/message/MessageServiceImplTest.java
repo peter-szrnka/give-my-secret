@@ -58,6 +58,8 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		MessageDto dto = MessageDto.builder()
 				.message("test message")
+				.userId(2L)
+				.actionPath("/test")
 				.build();
 		when(repository.save(any(MessageEntity.class))).thenReturn(TestUtils.createMessageEntity());
 		
@@ -71,7 +73,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).save(messageEntityCaptor.capture());
 		
 		MessageEntity capturedEntity = messageEntityCaptor.getValue();
-		assertEquals("MessageEntity(id=null, userId=null, message=test message, opened=false, creationDate=2023-06-29T00:00Z, actionPath=null)", capturedEntity.toString());
+		assertEquals("MessageEntity(id=null, userId=2L, message=test message, opened=false, creationDate=2023-06-29T00:00Z, actionPath=/test)", capturedEntity.toString());
 	}
 	
 	@Test

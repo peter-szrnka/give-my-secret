@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(EventController.class)
-class EventAdminRoleSecurityTest extends AbstractSecurityTest {
+public class EventAdminRoleSecurityTest extends AbstractSecurityTest {
 
 	public EventAdminRoleSecurityTest() {
 		super("/event");
