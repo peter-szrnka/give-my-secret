@@ -84,7 +84,7 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
         UserInfoDto response = service.getUserInfo(request);
 
         // assert
-        assertThat(response.toString()).isEqualTo("UserInfoDto(id=1, name=name, username=username, email=a@b.com, role=ROLE_USER, status=null, failedAttempts=null)");
+        assertThat(response).hasToString("UserInfoDto(id=1, name=name, username=username, email=a@b.com, role=ROLE_USER, status=null, failedAttempts=null)");
         verify(repository).findById(anyLong());
     }
 }

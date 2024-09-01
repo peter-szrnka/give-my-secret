@@ -102,7 +102,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         assertThat(entityArgumentCaptor.getValue().isGlobal()).isTrue();
         assertThat(entityArgumentCaptor.getValue().getSecretId()).isNull();
         assertThat(entityArgumentCaptor.getValue().getUserId()).isNull();
-        assertThat(EntityStatus.ACTIVE).isEqualTo(entityArgumentCaptor.getValue().getStatus());
+        assertThat(entityArgumentCaptor.getValue().getStatus()).isEqualTo(EntityStatus.ACTIVE);
     }
 
     @Test

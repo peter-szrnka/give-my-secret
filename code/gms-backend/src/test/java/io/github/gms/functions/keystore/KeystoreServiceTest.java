@@ -652,7 +652,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
-        assertThat(response.getTotalElements()).isEqualTo(0L);
+        assertThat(response.getTotalElements()).isZero();
         assertEquals(0, response.getResultList().size());
         verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
         verify(converter, never()).toDtoList(any());

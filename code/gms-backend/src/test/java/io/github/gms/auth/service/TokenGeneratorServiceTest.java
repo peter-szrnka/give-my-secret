@@ -50,8 +50,9 @@ class TokenGeneratorServiceTest extends AbstractUnitTest {
 
         // assert
         assertNotNull(response);
-        assertThat(response).containsEntry(JwtConfigType.ACCESS_JWT, "access_token");
-        assertThat(response).containsEntry(JwtConfigType.REFRESH_JWT, "refresh_token");
+        assertThat(response)
+                .containsEntry(JwtConfigType.ACCESS_JWT, "access_token")
+                .containsEntry(JwtConfigType.REFRESH_JWT, "refresh_token");
 
         ArgumentCaptor<Map<String, Object>> refreshClaimsCaptor = ArgumentCaptor.forClass(Map.class);
         verify(generateJwtRequestConverter).toRequest(eq(JwtConfigType.REFRESH_JWT), eq(user.getUsername()), refreshClaimsCaptor.capture());

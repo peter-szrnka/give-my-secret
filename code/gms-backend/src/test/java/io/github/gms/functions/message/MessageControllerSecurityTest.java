@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(MessageController.class)
-public class MessageControllerSecurityTest extends AbstractSecurityTest {
+class MessageControllerSecurityTest extends AbstractSecurityTest {
 
     public MessageControllerSecurityTest() {
         super("/message");

@@ -122,7 +122,7 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
             assertNotNull(response.getCreationDate());
             assertThat(response.isGlobal()).isTrue();
             assertThat(response.getStatus()).isEqualTo(EntityStatus.ACTIVE);
-            assertThat(response.toString()).isEqualTo(expectedResponse);
+            assertThat(response).hasToString(expectedResponse);
             verify(clock, times(expectedTimes)).instant();
             verify(clock, times(expectedTimes)).getZone();
             utilsMockedStatic.verify(MdcUtils::getUserId);
