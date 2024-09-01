@@ -70,8 +70,8 @@ class EventProcessorServiceTest extends AbstractUnitTest {
 
 		assertEquals(input.eventType == EntityChangeType.KEYSTORE_DISABLED ? 1L : 2L, keystoreIdCaptor.getValue());
 
+		verify(messageService, times(input.resultCount)).save(messageDtoCaptor.capture());
 		if (input.resultCount > 0) {
-			verify(messageService, times(input.resultCount)).save(messageDtoCaptor.capture());
 			MessageDto capturedDto = messageDtoCaptor.getValue();
 			assertNotNull(capturedDto);
 			assertEquals(5L, capturedDto.getUserId());

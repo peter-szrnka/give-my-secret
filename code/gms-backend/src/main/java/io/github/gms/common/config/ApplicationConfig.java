@@ -11,6 +11,18 @@ import dev.samstevens.totp.secret.SecretGenerator;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
 import io.github.gms.common.interceptor.HttpClientResponseLoggingInterceptor;
+import io.github.gms.functions.announcement.AnnouncementRepository;
+import io.github.gms.functions.apikey.ApiKeyRepository;
+import io.github.gms.functions.event.EventRepository;
+import io.github.gms.functions.iprestriction.IpRestrictionRepository;
+import io.github.gms.functions.keystore.KeystoreAliasRepository;
+import io.github.gms.functions.keystore.KeystoreRepository;
+import io.github.gms.functions.message.MessageRepository;
+import io.github.gms.functions.secret.ApiKeyRestrictionRepository;
+import io.github.gms.functions.secret.SecretRepository;
+import io.github.gms.functions.systemproperty.SystemPropertyRepository;
+import io.github.gms.functions.user.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jackson.JsonComponentModule;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -39,12 +51,29 @@ import java.time.Clock;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 @Configuration
 @EnableScheduling
 @EnableAsync
 @ComponentScan(basePackages = "io.github.gms")
-@EnableJpaRepositories(basePackages = "io.github.gms")
+@EnableJpaRepositories(basePackageClasses = {
+		AnnouncementRepository.class,
+		ApiKeyRepository.class,
+		ApiKeyRestrictionRepository.class,
+		EventRepository.class,
+		IpRestrictionRepository.class,
+		KeystoreAliasRepository.class,
+		KeystoreRepository.class,
+		MessageRepository.class,
+		SecretRepository.class,
+		SystemPropertyRepository.class,
+		UserRepository.class
+
+})
 public class ApplicationConfig implements WebMvcConfigurer {
+
+	@Value("${config.resource-handler.disabled}")
+	private boolean resourceHandlerDisabled;
 
 	@Bean("secretRotationExecutor")
     public TaskExecutor getAsyncExecutor() {
@@ -57,7 +86,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
     }
 	
 	@Bean
-	ObjectMapper objectMapper() {
+	public ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		mapper.registerModule(new JsonComponentModule());
@@ -65,7 +94,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
 	}
 
 	@Bean
-	RestTemplate restTemplate(@Value("${config.logging.httpClient.enabled}") boolean httpClientLoggingEnabled) {
+	public RestTemplate restTemplate(@Value("${config.logging.httpClient.enabled}") boolean httpClientLoggingEnabled) {
 		return new RestTemplateBuilder()
 				.requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
 				.additionalInterceptors(new HttpClientResponseLoggingInterceptor(httpClientLoggingEnabled))
@@ -73,12 +102,17 @@ public class ApplicationConfig implements WebMvcConfigurer {
 	}
 	
 	@Bean
-	Clock clock() {
+	public Clock clock() {
 		return Clock.systemDefaultZone();
 	}
 	
 	@Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+		if (resourceHandlerDisabled) {
+			log.info("Resource handler is disabled.");
+			return;
+		}
+
 		registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")
                 .resourceChain(true)
@@ -86,7 +120,6 @@ public class ApplicationConfig implements WebMvcConfigurer {
                     @Override
                     protected Resource getResource(@NonNull String resourcePath, @NonNull Resource location) throws IOException {
                         Resource requestedResource = location.createRelative(resourcePath);
-
                         return requestedResource.exists() && requestedResource.isReadable() ? requestedResource
                                 : new ClassPathResource("/static/index.html");
                     }

@@ -112,6 +112,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
 		assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equalsIgnoreCase("Login failed")));
 		verify(userLoginAttemptManagerService).isBlocked("user");
+		verify(userLoginAttemptManagerService).updateLoginAttempt("user");
 	}
 	
 	@ParameterizedTest
@@ -178,6 +179,15 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		verify(userConverter).toUserInfoDto(any(GmsUserDetails.class), eq(true));
 		verify(systemPropertyService).getBoolean(SystemProperty.ENABLE_GLOBAL_MFA);
 		verify(systemPropertyService, enableGlobalMfa ? never() : times(1)).getBoolean(SystemProperty.ENABLE_MFA);
+	}
+
+	@Test
+	void shouldLogout() {
+		// act
+		service.logout();
+
+		// assert
+		assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equalsIgnoreCase("User logged out")));
 	}
 
 	private static Object[][] nonMfaTestData() {

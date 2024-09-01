@@ -33,8 +33,7 @@ import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 import static io.github.gms.util.TestUtils.MOCK_ACCESS_TOKEN;
 import static io.github.gms.util.TestUtils.MOCK_REFRESH_TOKEN;
 import static io.github.gms.util.TestUtils.assertLogContains;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -100,6 +99,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
                 new Cookie(REFRESH_JWT_TOKEN, MOCK_REFRESH_TOKEN)
         });
         UserInfoDto mockUserInfo = TestUtils.createUserInfoDto();
+        mockUserInfo.setFailedAttempts(2);
         when(converter.toUserInfoDto(any(IntrospectResponse.class))).thenReturn(mockUserInfo);
         IntrospectResponse mockIntrospectResponse = IntrospectResponse.builder()
                 .email("email@email")
@@ -114,6 +114,8 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
+        assertNull(response.getCurrentUser().getStatus());
+        assertNull(response.getCurrentUser().getFailedAttempts());
         assertEquals(AuthResponsePhase.ALREADY_LOGGED_IN, response.getPhase());
         verify(keycloakLoginService, never()).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
         verify(converter).toUserInfoDto(any(IntrospectResponse.class));
@@ -196,6 +198,9 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
+        assertNull(response.getCurrentUser());
+        assertNull(response.getToken());
+        assertNull(response.getRefreshToken());
         assertEquals(AuthResponsePhase.FAILED, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
     }
@@ -240,6 +245,9 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
+        assertNull(response.getCurrentUser());
+        assertNull(response.getToken());
+        assertNull(response.getRefreshToken());
         assertEquals(AuthResponsePhase.FAILED, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
         verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));

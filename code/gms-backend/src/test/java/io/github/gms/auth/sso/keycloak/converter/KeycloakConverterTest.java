@@ -22,13 +22,9 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import static io.github.gms.common.enums.UserRole.ROLE_USER;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -65,6 +61,9 @@ class KeycloakConverterTest {
         assertNotNull(userDetails);
         assertEquals("user1", userDetails.getUsername());
         assertEquals(expectedStatus, userDetails.getStatus());
+        assertThat(userDetails.getEmail()).isEqualTo("email@email");
+        assertThat(userDetails.getName()).isEqualTo("My Name");
+        assertThat(userDetails.getAuthorities().stream().findFirst().get().getAuthority()).isEqualTo("ROLE_USER");
     }
 
     @Test
@@ -74,7 +73,9 @@ class KeycloakConverterTest {
                 .email("email@email")
                 .name("My Name")
                 .username("user1")
+                .active("true")
                 .realmAccess(RealmAccess.builder().roles(List.of("ROLE_USER")).build())
+                .failedAttempts(1)
                 .build());
 
         // assert
@@ -82,6 +83,8 @@ class KeycloakConverterTest {
         assertEquals("email@email", response.getEmail());
         assertEquals("My Name", response.getName());
         assertEquals("user1", response.getUsername());
+        assertEquals(EntityStatus.ACTIVE, response.getStatus());
+        assertEquals(1, response.getFailedAttempts());
         assertEquals(UserRole.ROLE_USER, response.getRole());
     }
 
@@ -92,6 +95,9 @@ class KeycloakConverterTest {
             // arrange
             UserEntity mockEntity = TestUtils.createAdminUser();
             mockEntity.setId(null);
+            mockEntity.setStatus(null);
+            mockEntity.setName(null);
+            mockEntity.setFailedAttempts(null);
             UserInfoDto mockUserInfoDto = TestUtils.createUserInfoDto();
             when(secretGenerator.generate()).thenReturn("secret!");
 
@@ -106,6 +112,7 @@ class KeycloakConverterTest {
             assertEquals("a@b.com", response.getEmail());
             assertEquals(ROLE_USER, response.getRole());
             assertEquals("name", response.getName());
+            assertEquals("2023-06-29", response.getCreationDate().toLocalDate().toString());
             assertEquals("user", response.getUsername());
             assertEquals(EntityStatus.ACTIVE, response.getStatus());
             mockedZonedDateTime.verify(() -> ZonedDateTime.now(clock));
@@ -117,6 +124,7 @@ class KeycloakConverterTest {
     void shouldReturnExistingEntity() {
         // arrange
         UserEntity mockEntity = TestUtils.createAdminUser();
+        mockEntity.setStatus(null);
         UserInfoDto mockUserInfoDto = TestUtils.createUserInfoDto();
 
         // act

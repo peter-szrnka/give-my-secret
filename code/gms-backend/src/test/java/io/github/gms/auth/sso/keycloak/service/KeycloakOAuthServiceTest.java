@@ -3,7 +3,9 @@ package io.github.gms.auth.sso.keycloak.service;
 import io.github.gms.abstraction.AbstractUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -56,6 +58,8 @@ public class KeycloakOAuthServiceTest extends AbstractUnitTest {
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals("ok", response.getBody());
-        verify(restTemplate).postForEntity(eq(URL), any(HttpEntity.class), eq(String.class));
+        ArgumentCaptor<HttpEntity<?>> argument = ArgumentCaptor.forClass(HttpEntity.class);
+        verify(restTemplate).postForEntity(eq(URL), argument.capture(), eq(String.class));
+        assertEquals(MediaType.APPLICATION_FORM_URLENCODED, argument.getValue().getHeaders().getContentType());
     }
 }

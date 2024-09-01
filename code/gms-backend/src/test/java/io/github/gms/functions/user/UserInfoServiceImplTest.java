@@ -15,13 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -87,7 +84,7 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
         UserInfoDto response = service.getUserInfo(request);
 
         // assert
-        assertNotNull(response);
+        assertThat(response).hasToString("UserInfoDto(id=1, name=name, username=username, email=a@b.com, role=ROLE_USER, status=null, failedAttempts=null)");
         verify(repository).findById(anyLong());
     }
 }

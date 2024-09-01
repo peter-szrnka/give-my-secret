@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Peter Szrnka
@@ -23,12 +24,14 @@ class ResetPasswordControllerTest {
         // arrange
         ResetPasswordService service = mock(ResetPasswordService.class);
         ResetPasswordController controller = new ResetPasswordController(service);
+        ResetPasswordRequestDto dto = new ResetPasswordRequestDto("test");
 
         // act
-        ResponseEntity<Void> response = controller.resetPassword(new ResetPasswordRequestDto("test"));
+        ResponseEntity<Void> response = controller.resetPassword(dto);
 
         // assert
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
+        verify(service).resetPassword(dto);
     }
 }

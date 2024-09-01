@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -89,12 +90,19 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
+        assertThat(response.getEntityId()).isEqualTo(mockEntity.getId());
         ArgumentCaptor<IpRestrictionDto> dtoArgumentCaptor = ArgumentCaptor.forClass(IpRestrictionDto.class);
         verify(converter).toEntity(dtoArgumentCaptor.capture());
         IpRestrictionDto capturedDto = dtoArgumentCaptor.getValue();
         assertEquals(id, capturedDto.getId());
         assertEquals(global, capturedDto.isGlobal());
-        verify(repository).save(mockEntity);
+
+        ArgumentCaptor<IpRestrictionEntity> entityArgumentCaptor = ArgumentCaptor.forClass(IpRestrictionEntity.class);
+        verify(repository).save(entityArgumentCaptor.capture());
+        assertThat(entityArgumentCaptor.getValue().isGlobal()).isTrue();
+        assertThat(entityArgumentCaptor.getValue().getSecretId()).isNull();
+        assertThat(entityArgumentCaptor.getValue().getUserId()).isNull();
+        assertThat(entityArgumentCaptor.getValue().getStatus()).isEqualTo(EntityStatus.ACTIVE);
     }
 
     @Test
@@ -197,7 +205,11 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         verify(repository).findAllBySecretId(1L);
-        verify(converter, times(2)).toEntity(any(IpRestrictionDto.class));
+        ArgumentCaptor<IpRestrictionDto> argumentCaptor = ArgumentCaptor.forClass(IpRestrictionDto.class);
+        verify(converter, times(2)).toEntity(argumentCaptor.capture());
+        List<IpRestrictionDto> capturedDtos = argumentCaptor.getAllValues();
+        capturedDtos.forEach(dto -> assertEquals(1L, dto.getSecretId()));
+
         ArgumentCaptor<Set<Long>> argumentCaptorIds = ArgumentCaptor.forClass(Set.class);
         verify(repository).deleteAllById(argumentCaptorIds.capture());
 
@@ -221,6 +233,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
+        assertEquals(1, response.size());
         verify(repository).findAllBySecretId(1L);
         verify(converter).toDtoList(anyList());
     }

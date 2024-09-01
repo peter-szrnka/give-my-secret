@@ -3,10 +3,7 @@ package io.github.gms.functions.keystore;
 import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.dto.IdNamePairDto;
-import io.github.gms.common.dto.IdNamePairListDto;
-import io.github.gms.common.dto.KeystoreBasicInfoDto;
-import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.dto.*;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
@@ -27,7 +24,6 @@ import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -56,27 +52,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 import static io.github.gms.util.TestUtils.assertLogContains;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-@Nested
 class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     private static final String JKS_TEST_FILE_LOCATION = "./unit-test-output/" + DemoData.USER_1_ID + "/my-key.jks";
@@ -499,9 +483,11 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(repository.save(any(KeystoreEntity.class))).thenReturn(savedEntity);
 
         // act
-        service.save(model, multiPart);
+        SaveEntityResponseDto response = service.save(model, multiPart);
 
         // assert
+        assertThat(response).isNotNull();
+        assertThat(response.getEntityId()).isEqualTo(1L);
         verify(converter).toEntity(any(), any());
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
@@ -520,7 +506,15 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     @SneakyThrows
     void shouldSaveNewEntityWhenGeneratedInputIsAvailable() {
         AtomicInteger counter = new AtomicInteger(0);
-        Files.createDirectory(Paths.get("unit-test-output/" + DemoData.USER_1_ID + "/"));
+        Path userPath = Paths.get("unit-test-output/" + DemoData.USER_1_ID + "/");
+        if (!Files.exists(userPath)) {
+            Files.createDirectory(userPath);
+        }
+
+        Path tempOutputPath = Paths.get("temp-output/");
+        if (!Files.exists(tempOutputPath)) {
+            Files.createDirectory(tempOutputPath);
+        }
         String fileName = "generated-" + UUID.randomUUID() + ".jks";
         Path newFilePath = Files.createFile(Paths.get("temp-output/" + fileName));
         Files.writeString(newFilePath, "test");
@@ -658,6 +652,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
+        assertThat(response.getTotalElements()).isZero();
         assertEquals(0, response.getResultList().size());
         verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
         verify(converter, never()).toDtoList(any());
@@ -678,6 +673,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
+        assertThat(response.getTotalElements()).isEqualTo(1L);
         assertEquals(1, response.getResultList().size());
         verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
         verify(converter).toDtoList(any());

@@ -6,10 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Sets;
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.*;
 import io.github.gms.common.model.GenerateJwtRequest;
+import io.github.gms.common.types.ErrorCode;
 import io.github.gms.functions.announcement.AnnouncementDto;
 import io.github.gms.functions.announcement.AnnouncementEntity;
 import io.github.gms.functions.announcement.AnnouncementListDto;
@@ -43,6 +45,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.StringUtils;
 
@@ -405,6 +408,7 @@ public class TestUtils {
 		entity.setSecretId(1L);
 		entity.setUserId(1L);
 		entity.setGlobal(false);
+		entity.setStatus(EntityStatus.ACTIVE);
 		return entity;
 	}
 
@@ -436,6 +440,10 @@ public class TestUtils {
 
     public static ResponseCookie createResponseCookie(String cookieName) {
 		return ResponseCookie.from(cookieName).value(null).build();
+    }
+
+    public static ErrorResponseDto createErrorResponseDto(AuthenticationException e) {
+		return new ErrorResponseDto("GmsAuthenticationEntryPoint: " + e.getMessage(), "1234", null, ErrorCode.GMS_000.getCode());
     }
 
     @Data

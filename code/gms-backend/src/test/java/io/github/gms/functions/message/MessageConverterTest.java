@@ -26,6 +26,25 @@ class MessageConverterTest extends AbstractUnitTest {
 	private final MessageConverter converter = new MessageConverter();
 
 	@Test
+	void checkToDto() {
+		// arrange
+		Clock clock = mock(Clock.class);
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		MessageEntity entity = TestUtils.createMessageEntity();
+		entity.setCreationDate(ZonedDateTime.now(clock));
+		entity.setOpened(true);
+		entity.setActionPath("/test");
+
+		// act
+		MessageDto dto = converter.toDto(entity);
+
+		// assert
+		assertNotNull(dto);
+		assertEquals("MessageDto(id=1, userId=1, opened=true, message=test message, actionPath=/test, creationDate=2023-06-29T00:00Z)", dto.toString());
+	}
+
+	@Test
 	void checkToList() {
 		// arrange
 		Clock clock = mock(Clock.class);

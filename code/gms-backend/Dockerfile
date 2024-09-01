@@ -1,4 +1,3 @@
-# Deprecated file
 FROM eclipse-temurin:21-jdk
 LABEL maintainer="Peter Szrnka"
 
@@ -8,7 +7,7 @@ COPY ${JAR_FILE} gms-app.jar
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-ENTRYPOINT ["/entrypoint.sh", "java","-Dspring.profiles.active=${SPRING_PROFILE}","-jar","gms-app.jar"]
+ENTRYPOINT ["/entrypoint.sh", "java","-jar","gms-app.jar"]
 
 EXPOSE 8080
 EXPOSE 8443

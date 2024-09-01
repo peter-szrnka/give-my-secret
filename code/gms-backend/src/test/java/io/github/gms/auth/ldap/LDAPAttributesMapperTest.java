@@ -19,9 +19,7 @@ import static io.github.gms.common.util.Constants.LDAP_PROPERTY_MFA_ENABLED;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_ROLE;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_STATUS;
 import static io.github.gms.common.util.Constants.LDAP_PROPERTY_UID;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,6 +56,8 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 		assertEquals("My User", response.getUsername());
 		assertEquals("Secret1!", response.getCredential());
 		assertEquals(EntityStatus.ACTIVE, response.getStatus());
+		assertFalse(response.isMfaEnabled());
+		assertTrue(response.getAccountNonLocked());
 		assertTrue(response.getEmail().isEmpty());
 	}
 
