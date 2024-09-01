@@ -78,5 +78,6 @@ class ResetPasswordServiceTest {
         MessageDto captured = messageDtoArgumentCaptor.getValue();
         assertEquals("Password reset requested by user 'user'", captured.getMessage());
         assertEquals("/user/1", captured.getActionPath());
+        assertEquals(1L, captured.getUserId());
     }
 }

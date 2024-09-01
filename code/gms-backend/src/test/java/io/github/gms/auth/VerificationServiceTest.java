@@ -18,14 +18,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -116,9 +113,13 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
 
 		// assert
 		assertNotNull(response);
+		assertNull(response.getCurrentUser());
+		assertNull(response.getToken());
+		assertNull(response.getRefreshToken());
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
 		verify(userLoginAttemptManagerService).isBlocked("user1");
 		verify(userLoginAttemptManagerService).updateLoginAttempt("user1");
+		verify(tokenGeneratorService, never()).getAuthenticationDetails(any(GmsUserDetails.class));
 	}
 
 	@Test

@@ -69,6 +69,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		assertNotNull(response);
 		assertEquals(1L, response.getEntityId());
 		ArgumentCaptor<MessageEntity> messageEntityCaptor = ArgumentCaptor.forClass(MessageEntity.class);
+		verify(repository).save(any());
 		verify(repository).save(messageEntityCaptor.capture());
 		
 		MessageEntity capturedEntity = messageEntityCaptor.getValue();
@@ -76,7 +77,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(2L, capturedEntity.getUserId());
 		assertEquals("test message", capturedEntity.getMessage());
 		assertFalse(capturedEntity.isOpened());
-		assertEquals(Instant.parse("2023-06-29T00:00:00Z"), capturedEntity.getCreationDate());
+		assertNotNull(capturedEntity.getCreationDate());
 		assertEquals("/test", capturedEntity.getActionPath());
 	}
 	

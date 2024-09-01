@@ -24,6 +24,7 @@ public class HttpUtilsTest extends AbstractUnitTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader(anyString())).thenReturn(null);
         when(request.getHeader(eq("REMOTE_ADDR"))).thenReturn("169.154.0.1");
+        when(request.getHeader(eq("HTTP_CLIENT_IP"))).thenReturn("");
 
         // act
         String response = HttpUtils.getClientIpAddress(request);

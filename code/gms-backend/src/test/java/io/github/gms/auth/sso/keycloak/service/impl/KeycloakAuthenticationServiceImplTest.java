@@ -33,8 +33,7 @@ import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 import static io.github.gms.util.TestUtils.MOCK_ACCESS_TOKEN;
 import static io.github.gms.util.TestUtils.MOCK_REFRESH_TOKEN;
 import static io.github.gms.util.TestUtils.assertLogContains;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -240,6 +239,9 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
         // assert
         assertNotNull(response);
+        assertNull(response.getCurrentUser());
+        assertNull(response.getToken());
+        assertNull(response.getRefreshToken());
         assertEquals(AuthResponsePhase.FAILED, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
         verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
