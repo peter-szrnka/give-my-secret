@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk
+FROM mcr.microsoft.com/openjdk/jdk:21-ubuntu
 LABEL maintainer="Peter Szrnka"
 
 ARG JAR_FILE=target/gms-app.jar

@@ -382,7 +382,11 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${maven-surefire-plugin.version}</version>
                         <configuration>
-                            <groups>!IntegrationTest,!SecurityTest</groups>
+                            <excludedGroups>IntegrationTest,SecurityTest</excludedGroups>
+                            <excludes>
+                                <exclude>*IntegrationTest</exclude>
+                                <exclude>*SecurityTest</exclude>
+                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>
