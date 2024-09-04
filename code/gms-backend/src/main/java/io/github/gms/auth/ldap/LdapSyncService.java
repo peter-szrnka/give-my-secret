@@ -3,6 +3,8 @@ package io.github.gms.auth.ldap;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -15,10 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.github.gms.common.util.Constants.CACHE_API;
-import static io.github.gms.common.util.Constants.CACHE_USER;
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
+import static io.github.gms.common.util.Constants.*;
 
 /**
  * @author Peter Szrnka
@@ -26,25 +25,16 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Profile(value = { CONFIG_AUTH_TYPE_LDAP })
 public class LdapSyncService {
 
 	private final LdapTemplate ldapTemplate;
     private final UserRepository repository;
 	private final LdapUserConverter converter;
-	private final String authType;
-
-    public LdapSyncService(
-			LdapTemplate ldapTemplate,
-			UserRepository repository,
-			LdapUserConverter converter,
-			@Value("${config.auth.type}") String authType
-	) {
-		this.ldapTemplate = ldapTemplate;
-        this.repository = repository;
-		this.converter = converter;
-		this.authType = authType;
-    }
+	@Setter
+	@Value("${config.auth.type}")
+	private String authType;
 
 	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
 	public Pair<Integer, Integer> synchronizeUsers() {

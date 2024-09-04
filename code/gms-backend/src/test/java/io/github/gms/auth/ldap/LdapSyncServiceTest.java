@@ -26,10 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link LdapSyncService}
@@ -53,7 +50,8 @@ class LdapSyncServiceTest extends AbstractUnitTest {
 		ldapTemplate = mock(LdapTemplate.class);
 		repository = mock(UserRepository.class);
 		converter = mock(LdapUserConverter.class);
-		service = new LdapSyncService(ldapTemplate, repository, converter, "db");
+		service = new LdapSyncService(ldapTemplate, repository, converter);
+		service.setAuthType("db");
 		((Logger) LoggerFactory.getLogger(LdapSyncService.class)).addAppender(logAppender);
 	}
 
@@ -66,7 +64,7 @@ class LdapSyncServiceTest extends AbstractUnitTest {
 	@Test
 	void shouldSkipLdapUserSync() {
 		// arrange
-		service = new LdapSyncService(ldapTemplate, repository, converter, "db");
+		service.setAuthType("db");
 
 		// act
 		Pair<Integer, Integer> response = service.synchronizeUsers();
@@ -82,7 +80,7 @@ class LdapSyncServiceTest extends AbstractUnitTest {
 	@MethodSource("testData")
 	void shouldSyncAllUsers(String username, boolean findUser) {
 		// arrange
-		service = new LdapSyncService(ldapTemplate, repository, converter, "ldap");
+		service.setAuthType("ldap");
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		UserEntity mockEntity = TestUtils.createUser();
 		mockUser.setUsername(username);
@@ -119,7 +117,7 @@ class LdapSyncServiceTest extends AbstractUnitTest {
 	@Test
 	void shouldNotSyncAllUsers() {
 		// arrange
-		service = new LdapSyncService(ldapTemplate, repository, converter, "ldap");
+		service.setAuthType("ldap");
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		UserEntity mockEntity = TestUtils.createUser();
 

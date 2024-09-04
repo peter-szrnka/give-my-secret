@@ -6,6 +6,7 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,14 +21,11 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
  * @since 1.0
  */
 @Service
+@RequiredArgsConstructor
 @Profile(CONFIG_AUTH_TYPE_DB)
 public class DbUserAuthServiceImpl implements UserAuthService {
 
 	private final UserRepository repository;
-
-	public DbUserAuthServiceImpl(UserRepository repository) {
-		this.repository = repository;
-	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
