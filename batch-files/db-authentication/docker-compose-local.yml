@@ -1,6 +1,5 @@
 services:
   gms-app:
-    #build: .
     container_name: gms-app-${SELECTED_DB}-${SELECTED_AUTH}-local
     image: gms-app-local:local
     ports:
@@ -35,6 +34,7 @@ services:
       - ENABLE_SECRET_ROTATION
       - ENABLE_EVENT_MAINTENANCE
       - ENABLE_MESSAGE_CLEANUP
+      - CONFIG_RESOURCE_HANDLER_DISABLED
 
     volumes:
       - "D:/dev/projects/open-source/keystores/:/usr/share/ssl/"
