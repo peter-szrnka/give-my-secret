@@ -164,15 +164,15 @@ jobs:
         uses: docker/metadata-action@master
         with:
           images: ${{ env.REGISTRY }}/peter-szrnka/give-my-secret
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: gms-app
           path: ./
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: Dockerfile
           path: ./
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: entrypointSh
           path: ./
