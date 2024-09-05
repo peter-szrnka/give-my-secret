@@ -10,7 +10,7 @@ Prerequisite:
 
 TODO
 
-# Scenario 2: MySQL with LDAP authentication
+# Scenario 2: PostgreSQL with LDAP authentication
 
 Prerequisite:
 
@@ -25,6 +25,10 @@ Prerequisite:
 - Preconfigure a self-signed keystore (<u>details can be found in "HTTPS Configuration" section!</u>)
 
 TODO
+
+# Scenario 4: ELK stack configuration
+
+Please read the separate **[guide](elk-sample-configuration/README.md)** how to configure an ELK stack for Give My Secret application!
 
 # Scenario N+1: Setting up with Kubernetes on Windows
 
