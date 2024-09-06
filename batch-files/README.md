@@ -2,39 +2,55 @@
 
 Here are some samples how you can configure Give My Secret with numerous databases and authentication providers.
 
-# Scenario 1: PostgreSQL with database authentication
+# Use case 1: PostgreSQL with database authentication
 
 Prerequisite:
 
 - Preconfigure a self-signed keystore (<u>details can be found in "HTTPS Configuration" section!</u>)
+- A running PostgreSQL database instance (sample configuration can be found [**HERE**](../db/postgresql/README.md))
 
-TODO
+In order to run a GMS instance with PostgresSQL and db based authentication, you can use the preconfigured
 
-# Scenario 2: PostgreSQL with LDAP authentication
+- [env file](db-authentication/env-postgresql.txt),
+- [Docker compose file](db-authentication/docker-compose.yml),
+- [Windows batch file](db-authentication/compose-app-postgresql-standalone.bat)
+
+that you can find in the [db-authentication](db-authentication/) folder.
+
+# Use case 2: PostgreSQL with LDAP authentication
 
 Prerequisite:
 
 - Preconfigure a self-signed keystore (<u>details can be found in "HTTPS Configuration" section!</u>)
+- A running PostgreSQL database instance (sample configuration can be found [**HERE**](../db/postgresql/README.md))
 
-TODO
+In order to run a GMS instance with PostgresSQL and LDAP based authentication, you can use the preconfigured
 
-# Scenario 3: Keycloak SSO authentication with PostgreSQL database
+- [env file](ldap-authentication/env-postgresql-and-ldap.txt),
+- [Docker compose file](ldap-authentication/docker-compose.yml),
+- [Windows batch file](ldap-authentication/compose-app-postgresql-and-ldap.bat)
+
+that you can find in the [ldap-authentication](ldap-authentication/) folder.
+
+# Use case 3: Keycloak SSO authentication with PostgreSQL database
 
 Prerequisite:
 
 - Preconfigure a self-signed keystore (<u>details can be found in "HTTPS Configuration" section!</u>)
+- A running PostgreSQL database instance (sample configuration can be found [**HERE**](../db/postgresql/README.md))
 
 TODO
 
-# Scenario 4: ELK stack configuration
+# Use case 4: ELK stack configuration
 
 Please read the separate **[guide](elk-sample-configuration/README.md)** how to configure an ELK stack for Give My Secret application!
 
-# Scenario N+1: Setting up with Kubernetes on Windows
+# Use case N+1: Setting up with Kubernetes on Windows
 
 Prerequisite:
 
 - Preconfigure a self-signed keystore (<u>details can be found in "HTTPS Configuration" section!</u>)
+- A running PostgreSQL database instance (sample configuration can be found [**HERE**](../db/postgresql/README.md))
 
 TODO
 

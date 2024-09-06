@@ -1,40 +1,56 @@
 services:
   gms-app:
-    #build: .
     container_name: gms-app-${SELECTED_DB}-${SELECTED_AUTH}
     image: ghcr.io/peter-szrnka/give-my-secret:latest
     ports:
       - "8080:8080"
       - "8443:8443"
     environment:
-      - SPRING_PROFILES_ACTIVE
       - CONTAINER_HOST_TYPE
-      - SPRING_PROFILE
-      - DB_JDBC_URL
-      - DB_USERNAME
-      - DB_CREDENTIAL
-      - DB_SHOW_SQL
-      - DB_MAX_LIFETIME
+      - SELECTED_DB
+      - SELECTED_AUTH
+      - SPRING_PROFILES_ACTIVE
+      - HTTPS_PORT
+      - SSL_KEYSTORE_TYPE
       - SSL_KEYSTORE
       - SSL_KEYSTORE_PATH
       - SSL_KEYSTORE_ALIAS
       - SSL_KEYSTORE_PASSWORD
       - KEYSTORE_PATH
       - KEYSTORE_TEMP_DEFAULT_PATH
+      - CONFIG_SECRET_JWT
+      - CONFIG_SECRET_CRYPTO
+      - CONFIG_ENCRYPTION_IV
       - LDAP_BASE_DN
       - LDAP_CREDENTIAL
       - LDAP_URL
       - LDAP_USERNAME
       - LDAP_PASSWORD_ENCODER
-      - SELECTED_DB
-      - SELECTED_AUTH
-      - HTTPS_PORT
-      - CONFIG_SECRET_JWT
-      - CONFIG_SECRET_CRYPTO
-      - CONFIG_ENCRYPTION_IV
+      - KEYCLOAK_BASE_URL
+      - KEYCLOAK_REALM
+      - KEYCLOAK_CLIENT_ID
+      - KEYCLOAK_CLIENT_SECRET
+      - DB_JDBC_URL
+      - DB_USERNAME
+      - DB_CREDENTIAL
+      - DB_SHOW_SQL
+      - DB_MAX_LIFETIME
+      - LOG_TYPE
+      - LOG_FOLDER
+      - LOGSTASH_URL
+      - HTTP_CLIENT_LOGGING_ENABLED
+      - ARCHIVED_LOG_FOLDER
+      - ENABLE_REDIS_CACHE
+      - REDIS_HOST
+      - REDIS_PORT
       - ENABLE_SECRET_ROTATION
       - ENABLE_EVENT_MAINTENANCE
       - ENABLE_MESSAGE_CLEANUP
+      - ENABLE_GENERATE_KEYSTORE_CLEANUP
+      - ENABLE_LDAP_SYNC
+      - ENABLE_USER_DELETION
+      - ZIPKIN_URL
+      - CONFIG_RESOURCE_HANDLER_DISABLED
 
     volumes:
       - "D:/dev/projects/open-source/keystores/:/usr/share/ssl/"

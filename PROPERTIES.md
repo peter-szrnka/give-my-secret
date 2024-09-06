@@ -1,6 +1,6 @@
 # Environment properties
 
-Give My Secret (GMS) provides a bunch of external properties that you can use to customize your GMS instance. In the following list you can find all available environment properties:
+Give My Secret (GMS) provides more than 40 external properties that you can use to customize your GMS instance. In the following list you can find all available environment properties:
 
 | #    | Name                              | Type         | Possible values                               | Description                                                  |
 | ---- | --------------------------------- | ------------ | --------------------------------------------- | ------------------------------------------------------------ |
@@ -32,32 +32,32 @@ Give My Secret (GMS) provides a bunch of external properties that you can use to
 | 22   | KEYCLOAK_REALM                    | String       |                                               | Keycloak realm.                                              |
 | 23   | KEYCLOAK_CLIENT_ID                | String       |                                               | Client identifier for Keycloak.                              |
 | 24   | KEYCLOAK_CLIENT_SECRET            | String       |                                               | Client secret for Keycloak.                                  |
-| 25   | **Database settings**             |              |                                               |                                                              |
-| 26   | DB_SHOW_SQL                       | Boolean      | true, false                                   | This flag determines whether the executed SQL queries displayed in logs |
-| 27   | DB_JDBC_URL                       | String       | -                                             | Database URL in JDBC format.                                 |
-| 28   | DB_USERNAME                       | String       | -                                             | Database user.                                               |
-| 29   | DB_CREDENTIAL                     | String       | -                                             | Database user credentials                                    |
-| 30   | DB_MAX_LIFETIME                   | Number       | 580000 (by default)                           | *Used only for MySQL and MariaDB!*                           |
+|      | **Database settings**             |              |                                               |                                                              |
+| 25   | DB_SHOW_SQL                       | Boolean      | true, false                                   | This flag determines whether the executed SQL queries displayed in logs |
+| 26   | DB_JDBC_URL                       | String       | -                                             | Database URL in JDBC format.                                 |
+| 27   | DB_USERNAME                       | String       | -                                             | Database user.                                               |
+| 28   | DB_CREDENTIAL                     | String       | -                                             | Database user credentials                                    |
+| 29   | DB_MAX_LIFETIME                   | Number       | 580000 (by default)                           |                                                              |
 |      | **Logging**                       |              |                                               |                                                              |
-| 31   | LOG_TYPE                          | String       | console, file, logstash                       | You can configure where should Logback logging library send the logs: to a file, or to Logstash. |
-| 32   | LOG_FOLDER                        | String       | -                                             | Output folder of the logs in case of file based logging.     |
-| 33   | LOGSTASH_URL                      | String       |                                               |                                                              |
-| 34   | HTTP_CLIENT_LOGGING_ENABLED       | Boolean      | false, true                                   | This flag determines whether HTTP client calls logged or not. |
-| 35   | ARCHIVED_LOG_FOLDER               | String       | -                                             | Folder where the archived logs should be moved.              |
+| 30   | LOG_TYPE                          | String       | console, file, logstash                       | You can configure where should Logback logging library send the logs: to a file, or to Logstash (**You can find more info in [ELK configuration](batch-files/elk-sample-configuration/README.md)**) |
+| 31   | LOG_FOLDER                        | String       | -                                             | Output folder of the logs in case of file based logging.     |
+| 32   | LOGSTASH_URL                      | String       |                                               | Logstash instance URL. **You can find more info in [ELK configuration](batch-files/elk-sample-configuration/README.md)** |
+| 33   | HTTP_CLIENT_LOGGING_ENABLED       | Boolean      | false, true                                   | This flag determines whether HTTP client calls logged or not. |
+| 34   | ARCHIVED_LOG_FOLDER               | String       | -                                             | Folder where the archived logs should be moved.              |
 |      | **Caching / Redis**               |              |                                               |                                                              |
-| 36   | ENABLE_REDIS_CACHE                | Boolean      | false, true                                   | This flag determines whether Redis caching enabled or not.   |
-| 37   | REDIS_HOST                        | String       |                                               | Redis host URL.                                              |
-| 38   | REDIS_PORT                        | Number       |                                               | Redis host port.                                             |
+| 35   | ENABLE_REDIS_CACHE                | Boolean      | false, true                                   | This flag determines whether Redis caching enabled or not.   |
+| 36   | REDIS_HOST                        | String       |                                               | Redis host URL.                                              |
+| 37   | REDIS_PORT                        | Number       |                                               | Redis host port.                                             |
 |      | **Job settings**                  |              |                                               |                                                              |
-| 39   | ENABLE_SECRET_ROTATION            | Boolean      | false, true (default true)                    | This flag determines whether secret rotator job enabled or not. |
-| 40   | ENABLE_EVENT_MAINTENANCE          | Boolean      | false, true (default true)                    | This flag determines whether event maintenance job enabled or not. |
-| 41   | ENABLE_MESSAGE_CLEANUP            | Boolean      | false, true (default true)                    | This flag determines whether message cleanup job enabled or not. |
-| 42   | ENABLE_GENERATE_KEYSTORE_CLEANUP  | Boolean      | false, true (default true)                    | This flag determines whether temp keystore cleanup job enabled or not. |
-| 43   | ENABLE_LDAP_SYNC                  | Boolean      | false, true (default false)                   | This flag determines whether LDAP sync job enabled or not.   |
-| 44   | ENABLE_USER_DELETION              | Boolean      | false, true (default true)                    | This flag determines whether GDPR user deletion job enabled or not. |
+| 38   | ENABLE_SECRET_ROTATION            | Boolean      | false, true (default true)                    | This flag determines whether secret rotator job enabled or not. |
+| 39   | ENABLE_EVENT_MAINTENANCE          | Boolean      | false, true (default true)                    | This flag determines whether event maintenance job enabled or not. |
+| 40   | ENABLE_MESSAGE_CLEANUP            | Boolean      | false, true (default true)                    | This flag determines whether message cleanup job enabled or not. |
+| 41   | ENABLE_GENERATE_KEYSTORE_CLEANUP  | Boolean      | false, true (default true)                    | This flag determines whether temp keystore cleanup job enabled or not. |
+| 42   | ENABLE_LDAP_SYNC                  | Boolean      | false, true (default false)                   | This flag determines whether LDAP sync job enabled or not.   |
+| 43   | ENABLE_USER_DELETION              | Boolean      | false, true (default true)                    | This flag determines whether GDPR user deletion job enabled or not. |
 |      | **Tracing / Zipkin**              |              |                                               |                                                              |
-| 45   | ZIPKIN_URL                        | String       | -                                             | Zipkin host url.                                             |
+| 44   | ZIPKIN_URL                        | String       | -                                             | Zipkin host url.                                             |
 |      | **Other**                         |              |                                               |                                                              |
-| 46   | CONFIG_RESOURCE_HANDLER_DISABLED  | Boolean      | true, false                                   | This parameter is not necessary for production Docker images. |
-| 47   | COMPOSE_CONVERT_WINDOWS_PATHS     | Number       | 0, 1                                          | Required only by Windows!                                    |
+| 45   | CONFIG_RESOURCE_HANDLER_DISABLED  | Boolean      | true, false                                   | *This parameter is not necessary for production Docker images.* |
+| 46   | COMPOSE_CONVERT_WINDOWS_PATHS     | Number       | 0, 1                                          | Required only by Windows!                                    |
 
