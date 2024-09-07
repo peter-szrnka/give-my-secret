@@ -84,17 +84,25 @@ Prerequisite:
 Let's open the [**k8s-windows-configuration**](k8s-windows-configuration/) folder, and run the following commands in alphabetical order:
 
 > kubectl apply -f kubernetes-001-volume-keystores-local.yml
+
 > kubectl apply -f kubernetes-002-volume-pvc.yml
+
 > kubectl apply -f kubernetes-003-deployment-local.yml
+
 > kubectl apply -f kubernetes-004-service-local.yml
+
 > kubectl apply -f kubernetes-005-network-policy.yml
 
 To remove this setup, run these commands:
 
 > kubectl delete -f kubernetes-003-deployment-local.yml
+
 > kubectl delete -f kubernetes-005-network-policy.yml
+
 > kubectl delete -f kubernetes-004-service-local.yml
+
 > kubectl delete -f kubernetes-002-volume-pvc.yml
+
 > kubectl delete -f kubernetes-001-volume-keystores-local.yml
 
 # HTTPS Configuration
