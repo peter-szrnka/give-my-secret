@@ -55,6 +55,25 @@ that you can find in the [**keycloak-sso**](keycloak-sso/) folder.
 
 Please read the separate **[guide](elk-sample-configuration/README.md)** how to configure an ELK stack for Give My Secret application!
 
+# Use case 5: Redis caching
+
+Prerequisite:
+
+- Preconfigure a self-signed keystore (<u>details can be found in "HTTPS Configuration" section!</u>)
+- A running PostgreSQL database instance (sample configuration can be found [**HERE**](../db/postgresql/README.md))
+
+The simplest way to get a development-ready Redis instance is to run the following command:
+
+> docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+
+In order to run a GMS instance with PostgresSQL and Redis caching, you can use the preconfigured
+
+- [env file](redis-cache/env-postgresql-with-redis.txt),
+- [Docker compose file](redis-cache/docker-compose.yml),
+- [Windows batch file](redis-cache/compose-app-postgresql-with-redis-standalone.bat)
+
+that you can find in the [**redis-cache**](redis-cache/) folder.
+
 # Use case N+1: Setting up with Kubernetes on Windows
 
 Prerequisite:
