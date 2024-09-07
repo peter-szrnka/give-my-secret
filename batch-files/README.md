@@ -15,7 +15,7 @@ In order to run a GMS instance with PostgresSQL and db based authentication, you
 - [Docker compose file](db-authentication/docker-compose.yml),
 - [Windows batch file](db-authentication/compose-app-postgresql-standalone.bat)
 
-that you can find in the [db-authentication](db-authentication/) folder.
+that you can find in the [**db-authentication**](db-authentication/) folder.
 
 # Use case 2: PostgreSQL with LDAP authentication
 
@@ -30,7 +30,7 @@ In order to run a GMS instance with PostgresSQL and LDAP based authentication, y
 - [Docker compose file](ldap-authentication/docker-compose.yml),
 - [Windows batch file](ldap-authentication/compose-app-postgresql-and-ldap.bat)
 
-that you can find in the [ldap-authentication](ldap-authentication/) folder.
+that you can find in the [**ldap-authentication**](ldap-authentication/) folder.
 
 # Use case 3: Keycloak SSO authentication with PostgreSQL database
 
@@ -39,7 +39,17 @@ Prerequisite:
 - Preconfigure a self-signed keystore (<u>details can be found in "HTTPS Configuration" section!</u>)
 - A running PostgreSQL database instance (sample configuration can be found [**HERE**](../db/postgresql/README.md))
 
-TODO
+The simplest way to get a development-ready Keycloak instance is to run the following command:
+
+> docker run --name keycloak -p 7000:8080 -d -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:24.0.1 start-dev
+
+In order to run a GMS instance with PostgresSQL and Keycloak based authentication, you can use the preconfigured
+
+- [env file](keycloak-sso/env.txt),
+- [Docker compose file](keycloak-sso/docker-compose.yml),
+- [Windows batch file](keycloak-sso/compose-app.bat)
+
+that you can find in the [**keycloak-sso**](keycloak-sso/) folder.
 
 # Use case 4: ELK stack configuration
 
@@ -52,7 +62,21 @@ Prerequisite:
 - Preconfigure a self-signed keystore (<u>details can be found in "HTTPS Configuration" section!</u>)
 - A running PostgreSQL database instance (sample configuration can be found [**HERE**](../db/postgresql/README.md))
 
-TODO
+Let's open the [**k8s-windows-configuration**](k8s-windows-configuration/) folder, and run the following commands in alphabetical order:
+
+> kubectl apply -f kubernetes-001-volume-keystores-local.yml
+> kubectl apply -f kubernetes-002-volume-pvc.yml
+> kubectl apply -f kubernetes-003-deployment-local.yml
+> kubectl apply -f kubernetes-004-service-local.yml
+> kubectl apply -f kubernetes-005-network-policy.yml
+
+To remove this setup, run these commands:
+
+> kubectl delete -f kubernetes-003-deployment-local.yml
+> kubectl delete -f kubernetes-005-network-policy.yml
+> kubectl delete -f kubernetes-004-service-local.yml
+> kubectl delete -f kubernetes-002-volume-pvc.yml
+> kubectl delete -f kubernetes-001-volume-keystores-local.yml
 
 # HTTPS Configuration
 
