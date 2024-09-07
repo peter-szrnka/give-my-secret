@@ -5,6 +5,7 @@ import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.ErrorCode;
 import io.github.gms.common.types.GmsException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
@@ -23,13 +24,10 @@ import java.time.ZonedDateTime;
  */
 @Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GmsExceptionHandler {
 
 	private final Clock clock;
-
-	public GmsExceptionHandler(Clock clock) {
-		this.clock = clock;
-	}
 
 	@ExceptionHandler(GmsException.class)
 	public ResponseEntity<ErrorResponseDto> handleGmsException(GmsException ex) {

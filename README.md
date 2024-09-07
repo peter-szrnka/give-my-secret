@@ -8,7 +8,7 @@ Give My Secret is a credential storage application, that stores secrets, passwor
 
 # Tech stack
 
-- Java 21 (Eclipse Temurin)
+- Java 21 (Microsoft OpenJDK)
 - Maven
 - Spring Boot 3.3.2
 - Angular 17
@@ -17,17 +17,17 @@ Give My Secret is a credential storage application, that stores secrets, passwor
 
 # Usage
 
-Give My Secret is available as a Docker image, you can easily pull it from GitHub Container Registry by running the following command:
+Give My Secret is available as a Docker image, you can easily pull it from **GitHub Container Registry**(ghcr.io) by running the following command:
 > docker pull ghcr.io/peter-szrnka/give-my-secret:latest
 
-To start a new container, you have to set up a bunch of environment properties. I recommend to not start the configuration from scratch, if you open the "**[batch-files](batch-files)**" sub folder, you can find many ready-to-go configurations for all available database providers written in Docker Compose format.
+To start a new container, you have to set up a bunch of **[environment properties](PROPERTIES.md)**. I recommend to not utilize the Docker image from scratch, if you open the "**[batch-files](batch-files/README.md)**" sub folder, you can find many ready-to-go configurations for all available database providers written in Docker Compose format.
 
-# Supported
+# Features
 
 ## Protocol
 
-- HTTPS (by default)
-- HTTP
+- HTTPS (by default) on port 8443
+- HTTP  on port 8080
 
 ## DB
 
@@ -76,16 +76,16 @@ Currently only AES encryption is supported.  In the future this will be configur
 
 | DB provider |      Db auth       |     ldap auth      |
 | ----------- | :----------------: | :----------------: |
-| IBM DB2     | :white_check_mark: | ❓ |
+| IBM DB2     | :white_check_mark: | :white_check_mark: |
 | MariaDb     | :white_check_mark: | :white_check_mark: |
 | MySql       | :white_check_mark: | :white_check_mark: |
 | MsSql       | :white_check_mark: | :white_check_mark: |
-| Oracle      | :white_check_mark: | ❓ |
+| Oracle      | :white_check_mark: | :white_check_mark: |
 | PostgreSql  | :white_check_mark: | :white_check_mark: |
 
 # Code samples
 
-You can find client code examples for Java, Go, Python and Node.js [here](client-samples/README.md).
+You can find client code examples for Java, Go, Python and Node.js **[here](client-samples/README.md).**
 
 
 # Donate

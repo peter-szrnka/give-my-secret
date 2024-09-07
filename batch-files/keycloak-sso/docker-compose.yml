@@ -1,5 +1,5 @@
 services:
-  gms-app:
+  gms-app-keycloak-sso:
     container_name: gms-app-${SELECTED_DB}-${SELECTED_AUTH}
     image: ghcr.io/peter-szrnka/give-my-secret:latest
     ports:

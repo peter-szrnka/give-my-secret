@@ -375,6 +375,12 @@
                                     <goal>build-info</goal>
                                 </goals>
                             </execution>
+                            <execution>
+                                <id>process-aot</id>
+                                <goals>
+                                    <goal>process-aot</goal>
+                                </goals>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
@@ -626,6 +632,12 @@
                                     <goal>build-info</goal>
                                 </goals>
                             </execution>
+                            <execution>
+                                <id>process-aot</id>
+                                <goals>
+                                    <goal>process-aot</goal>
+                                </goals>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
@@ -661,6 +673,12 @@
                                 <id>build-info</id>
                                 <goals>
                                     <goal>build-info</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>process-aot</id>
+                                <goals>
+                                    <goal>process-aot</goal>
                                 </goals>
                             </execution>
                         </executions>
