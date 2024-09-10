@@ -10,7 +10,6 @@ import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.StringHttpMessageConverter;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +42,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testBeforeBodyRead() throws IOException {
+    void testBeforeBodyRead() {
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
         Type targetType = mock(Type.class);

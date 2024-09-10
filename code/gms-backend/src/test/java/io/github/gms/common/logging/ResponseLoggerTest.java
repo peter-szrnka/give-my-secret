@@ -59,6 +59,10 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
 
         // act
         assertEquals(body, responseLogger.beforeBodyWrite(body, methodParameter, targetType, converterType, request, response));
+
+        // assert
+        verify(objectMapper).writeValueAsString(body);
+        assertTrue(logAppender.list.stream().anyMatch(logEvent -> logEvent.getFormattedMessage().startsWith("Response: body")));
     }
 
     @Test
@@ -78,5 +82,24 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
         // assert
         verify(objectMapper, never()).writeValueAsString(body);
         assertTrue(logAppender.list.isEmpty());
+    }
+
+    @Test
+    void testBeforeBodyWrite_whenExceptionOccurs() throws JsonProcessingException {
+        // arrange
+        MethodParameter methodParameter = mock(MethodParameter.class);
+        MediaType targetType = MediaType.APPLICATION_JSON;
+        Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
+        SystemStatusDto body = SystemStatusDto.builder().build();
+        ServerHttpRequest request = mock(ServerHttpRequest.class);
+        ServerHttpResponse response = mock(ServerHttpResponse.class);
+        when(objectMapper.writeValueAsString(body)).thenThrow(JsonProcessingException.class);
+
+        // act
+        assertEquals(body, responseLogger.beforeBodyWrite(body, methodParameter, targetType, converterType, request, response));
+
+        // assert
+        verify(objectMapper).writeValueAsString(body);
+        assertTrue(logAppender.list.stream().anyMatch(logEvent -> logEvent.getMessage().contains("Error while logging response")));
     }
 }
