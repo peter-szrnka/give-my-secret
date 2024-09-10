@@ -1,5 +1,6 @@
 package io.github.gms.functions.user;
 
+import io.github.gms.common.types.Sensitive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,8 @@ public class ChangePasswordRequestDto implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = -8637245107764207697L;
+	@Sensitive
 	private String oldCredential;
+	@Sensitive
 	private String newCredential;
 }

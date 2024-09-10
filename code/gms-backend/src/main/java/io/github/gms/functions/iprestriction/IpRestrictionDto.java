@@ -3,6 +3,7 @@ package io.github.gms.functions.iprestriction;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.types.Sensitive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class IpRestrictionDto {
 
     private Long id;
     private Long secretId;
+    @Sensitive
     private String ipPattern;
     private boolean allow;
     private boolean global;

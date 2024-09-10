@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeystoreType;
+import io.github.gms.common.types.Sensitive;
 import lombok.Data;
 
 import java.io.Serial;
@@ -32,6 +33,7 @@ public class KeystoreDto implements Serializable {
 	private String fileName;
 	private KeystoreType type;
 	private String description;
+	@Sensitive
 	private String credential;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
 	private ZonedDateTime creationDate;
