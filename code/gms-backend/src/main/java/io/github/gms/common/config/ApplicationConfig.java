@@ -50,6 +50,8 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 import java.io.IOException;
 import java.time.Clock;
 
+import static io.github.gms.common.util.Constants.LOGGING_OBJECT_MAPPER;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -94,7 +96,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
 		return baseObjectMapper();
 	}
 
-	@Bean("loggingObjectMapper")
+	@Bean(LOGGING_OBJECT_MAPPER)
 	public ObjectMapper loggingObjectMapper() {
 		return baseObjectMapper()
 				.enable(SerializationFeature.INDENT_OUTPUT)

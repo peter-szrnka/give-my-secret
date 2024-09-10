@@ -14,6 +14,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import static io.github.gms.common.util.Constants.LOGGING_OBJECT_MAPPER;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -26,7 +28,7 @@ public class ResponseLogger implements ResponseBodyAdvice<Object> {
     private final boolean responseLoggingEnabled;
 
     public ResponseLogger(
-            @Qualifier("loggingObjectMapper") ObjectMapper objectMapper,
+            @Qualifier(LOGGING_OBJECT_MAPPER) ObjectMapper objectMapper,
             @Value("${config.response.logging.enabled}") boolean responseLoggingEnabled) {
         this.objectMapper = objectMapper;
         this.responseLoggingEnabled = responseLoggingEnabled;

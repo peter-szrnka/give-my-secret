@@ -14,6 +14,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
 
 import java.lang.reflect.Type;
 
+import static io.github.gms.common.util.Constants.LOGGING_OBJECT_MAPPER;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
@@ -26,7 +28,7 @@ public class RequestLogger implements RequestBodyAdvice {
     private final boolean requestLoggingEnabled;
 
     public RequestLogger(
-            @Qualifier("loggingObjectMapper") ObjectMapper objectMapper,
+            @Qualifier(LOGGING_OBJECT_MAPPER) ObjectMapper objectMapper,
             @Value("${config.request.logging.enabled}") boolean requestLoggingEnabled) {
         this.objectMapper = objectMapper;
         this.requestLoggingEnabled = requestLoggingEnabled;
