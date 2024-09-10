@@ -1,6 +1,7 @@
 package io.github.gms.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.CodeVerifier;
@@ -10,6 +11,7 @@ import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
+import io.github.gms.common.logging.GmsJacksonAnnotationIntrospector;
 import io.github.gms.common.interceptor.HttpClientResponseLoggingInterceptor;
 import io.github.gms.functions.announcement.AnnouncementRepository;
 import io.github.gms.functions.apikey.ApiKeyRepository;
@@ -29,6 +31,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.task.TaskExecutor;
@@ -86,11 +89,16 @@ public class ApplicationConfig implements WebMvcConfigurer {
     }
 	
 	@Bean
+	@Primary
 	public ObjectMapper objectMapper() {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-		mapper.registerModule(new JsonComponentModule());
-		return mapper;
+		return baseObjectMapper();
+	}
+
+	@Bean("loggingObjectMapper")
+	public ObjectMapper loggingObjectMapper() {
+		return baseObjectMapper()
+				.enable(SerializationFeature.INDENT_OUTPUT)
+				.setAnnotationIntrospector(new GmsJacksonAnnotationIntrospector());
 	}
 
 	@Bean
@@ -119,9 +127,8 @@ public class ApplicationConfig implements WebMvcConfigurer {
                 .addResolver(new PathResourceResolver() {
                     @Override
                     protected Resource getResource(@NonNull String resourcePath, @NonNull Resource location) throws IOException {
-                        Resource requestedResource = location.createRelative(resourcePath);
-                        return requestedResource.exists() && requestedResource.isReadable() ? requestedResource
-                                : new ClassPathResource("/static/index.html");
+						Resource requestedResource = location.createRelative(resourcePath);
+                        return checkRequestedResource(requestedResource) ? requestedResource : new ClassPathResource("/static/index.html");
                     }
                 });
     }
@@ -136,5 +143,19 @@ public class ApplicationConfig implements WebMvcConfigurer {
 	@Bean
 	public SecretGenerator secretGenerator() {
 		return new DefaultSecretGenerator();
+	}
+
+	private static boolean checkRequestedResource(Resource requestedResource) {
+		return requestedResource.exists() && requestedResource.isReadable();
+	}
+
+	private static ObjectMapper baseObjectMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		mapper.registerModule(new JsonComponentModule());
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+
+		return mapper;
 	}
 }

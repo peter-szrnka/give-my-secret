@@ -1,6 +1,5 @@
 package io.github.gms.auth;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -15,7 +14,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,15 +24,10 @@ import java.util.Date;
 import java.util.Map;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -60,7 +53,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		systemPropertyService = mock(SystemPropertyService.class);
 		service = new AuthorizationServiceImpl(jwtService, tokenGeneratorService, systemPropertyService, userAuthService);
 
-		((Logger) LoggerFactory.getLogger(AuthorizationServiceImpl.class)).addAppender(logAppender);
+		addAppender(AuthorizationServiceImpl.class);
 	}
 	
 	@Test

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.UserRole;
+import io.github.gms.common.types.Sensitive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,8 +28,11 @@ public class UserInfoDto implements Serializable {
 	private static final long serialVersionUID = 5446418144965465310L;
 
 	private Long id;
+	@Sensitive
 	private String name;
+	@Sensitive
 	private String username;
+	@Sensitive
 	private String email;
 	private UserRole role;
 	@JsonIgnore

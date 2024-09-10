@@ -2,6 +2,7 @@ package io.github.gms.functions.keystore;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.gms.common.enums.AliasOperation;
+import io.github.gms.common.types.Sensitive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,8 +26,11 @@ public class KeystoreAliasDto implements Serializable {
 	private static final long serialVersionUID = -8584105411899700590L;
 
 	private Long id;
+	@Sensitive
 	private String alias;
+	@Sensitive
 	private String aliasCredential;
 	private AliasOperation operation;
+	@Sensitive
 	private String algorithm;
 }

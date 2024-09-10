@@ -3,6 +3,7 @@ package io.github.gms.functions.systemproperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.gms.common.enums.PropertyType;
+import io.github.gms.common.types.Sensitive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class SystemPropertyDto implements Serializable {
 	private static final long serialVersionUID = 9035787175353459355L;
 	
 	private String key;
+	@Sensitive
 	private String value;
 	private PropertyType type;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)

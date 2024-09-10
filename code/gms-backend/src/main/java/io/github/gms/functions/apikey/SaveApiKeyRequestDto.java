@@ -2,6 +2,7 @@ package io.github.gms.functions.apikey;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.types.Sensitive;
 import lombok.Data;
 
 import java.io.Serial;
@@ -21,7 +22,9 @@ public class SaveApiKeyRequestDto implements Serializable {
 	private static final long serialVersionUID = -8287465195543229193L;
 	private Long id;
 	private Long userId;
+	@Sensitive
 	private String name;
+	@Sensitive
 	private String value;
 	private String description;
 	private EntityStatus status;
