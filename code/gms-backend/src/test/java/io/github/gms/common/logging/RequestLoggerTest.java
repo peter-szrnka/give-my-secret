@@ -22,15 +22,16 @@ import static org.mockito.Mockito.*;
  */
 class RequestLoggerTest extends AbstractLoggingUnitTest {
 
-    private RequestLogger requestLogger;
     private final ObjectMapper objectMapper = mock(ObjectMapper.class);
+    private final ObjectMapper sensitiveLoggingObjectMapper = mock(ObjectMapper.class);
+    private RequestLogger requestLogger;
 
     @Override
     @BeforeEach
     public void setup() {
         super.setup();
-        requestLogger = new RequestLogger(objectMapper, true);
-        addAppender(RequestLogger.class);
+        requestLogger = new RequestLogger(objectMapper, sensitiveLoggingObjectMapper, true, true);
+        addAppender(BasePayloadLogger.class);
     }
 
     @Test
@@ -51,7 +52,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testAfterBodyRead() throws JsonProcessingException {
+    void testAfterBodyRead_whenMaskingDisabled() throws JsonProcessingException {
         // arrange
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
@@ -59,12 +60,33 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
         SystemStatusDto body = SystemStatusDto.builder().build();
         when(objectMapper.writeValueAsString(body)).thenReturn("body");
+        requestLogger = new RequestLogger(objectMapper, sensitiveLoggingObjectMapper, false, true);
 
         // act
         assertEquals(body, requestLogger.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType));
 
         // assert
+        verify(sensitiveLoggingObjectMapper, never()).writeValueAsString(body);
         verify(objectMapper).writeValueAsString(body);
+        assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equals("Request logged: body")));
+    }
+
+    @Test
+    void testAfterBodyRead() throws JsonProcessingException {
+        // arrange
+        HttpInputMessage inputMessage = mock(HttpInputMessage.class);
+        MethodParameter methodParameter = mock(MethodParameter.class);
+        Type targetType = mock(Type.class);
+        Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
+        SystemStatusDto body = SystemStatusDto.builder().build();
+        when(sensitiveLoggingObjectMapper.writeValueAsString(body)).thenReturn("body");
+
+        // act
+        assertEquals(body, requestLogger.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType));
+
+        // assert
+        verify(sensitiveLoggingObjectMapper).writeValueAsString(body);
+        verify(objectMapper, never()).writeValueAsString(body);
         assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equals("Request logged: body")));
     }
 
@@ -76,12 +98,13 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         Type targetType = mock(Type.class);
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
         SystemStatusDto body = SystemStatusDto.builder().build();
-        requestLogger = new RequestLogger(objectMapper, false);
+        requestLogger = new RequestLogger(objectMapper, sensitiveLoggingObjectMapper, true,false);
 
         // act
         assertEquals(body, requestLogger.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType));
 
         // assert
+        verify(sensitiveLoggingObjectMapper, never()).writeValueAsString(body);
         verify(objectMapper, never()).writeValueAsString(body);
         assertTrue(logAppender.list.isEmpty());
     }
@@ -94,7 +117,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         Type targetType = mock(Type.class);
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
         SystemStatusDto body = SystemStatusDto.builder().build();
-        when(objectMapper.writeValueAsString(body)).thenThrow(JsonProcessingException.class);
+        when(sensitiveLoggingObjectMapper.writeValueAsString(body)).thenThrow(JsonProcessingException.class);
 
         // act
         assertEquals(body, requestLogger.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType));

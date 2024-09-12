@@ -1,8 +1,6 @@
 package io.github.gms.common.logging;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
@@ -20,18 +18,16 @@ import static io.github.gms.common.util.Constants.LOGGING_OBJECT_MAPPER;
  * @author Peter Szrnka
  * @since 1.0
  */
-@Slf4j
 @ControllerAdvice
-public class ResponseLogger implements ResponseBodyAdvice<Object> {
-
-    private final ObjectMapper objectMapper;
-    private final boolean responseLoggingEnabled;
+public class ResponseLogger extends BasePayloadLogger implements ResponseBodyAdvice<Object> {
 
     public ResponseLogger(
-            @Qualifier(LOGGING_OBJECT_MAPPER) ObjectMapper objectMapper,
-            @Value("${config.response.logging.enabled}") boolean responseLoggingEnabled) {
-        this.objectMapper = objectMapper;
-        this.responseLoggingEnabled = responseLoggingEnabled;
+            ObjectMapper objectMapper,
+            @Qualifier(LOGGING_OBJECT_MAPPER) ObjectMapper sensitiveLoggingObjectMapper,
+            @Value("${config.logging.enable.sensitive-data-masking}") boolean sensitiveDataMaskingEnabled,
+            @Value("${config.response.logging.enabled}") boolean responseLoggingEnabled
+    ) {
+        super(objectMapper, sensitiveLoggingObjectMapper, sensitiveDataMaskingEnabled, responseLoggingEnabled);
     }
 
 
@@ -48,19 +44,12 @@ public class ResponseLogger implements ResponseBodyAdvice<Object> {
                                   @NonNull ServerHttpRequest request,
                                   @NonNull ServerHttpResponse response) {
 
-        logResponse(body);
+        logPayload(body);
         return body;
     }
 
-    private void logResponse(Object body) {
-        if (!responseLoggingEnabled) {
-            return;
-        }
-
-        try {
-            log.info("Response: {}", objectMapper.writeValueAsString(body));
-        } catch (JsonProcessingException e) {
-            log.error("Error while logging response", e);
-        }
+    @Override
+    protected String scope() {
+        return "Response";
     }
 }
