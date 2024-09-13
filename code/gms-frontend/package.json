@@ -1,6 +1,6 @@
 {
   "name": "gms-frontend",
-  "version": "1.0.4",
+  "version": "1.0.4-SNAPSHOT",
   "scripts": {
     "ng": "ng",
     "start": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve",
