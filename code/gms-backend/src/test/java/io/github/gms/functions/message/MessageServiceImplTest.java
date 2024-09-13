@@ -1,6 +1,5 @@
 package io.github.gms.functions.message;
 
-import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.IdListDto;
@@ -11,7 +10,6 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +45,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 		repository = mock(MessageRepository.class);
 		converter = mock(MessageConverter.class);
 		service = new MessageServiceImpl(clock, repository, converter);
-		((Logger) LoggerFactory.getLogger(MessageServiceImpl.class)).addAppender(logAppender);
+		addAppender(MessageServiceImpl.class);
 	}
 
 	@Test

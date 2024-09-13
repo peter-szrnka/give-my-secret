@@ -1,6 +1,5 @@
 package io.github.gms.job;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.TimeUnit;
@@ -11,22 +10,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
-import org.slf4j.LoggerFactory;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -50,7 +42,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		eventRepository = mock(EventRepository.class);
 		systemPropertyService = mock(SystemPropertyService.class);
 		job = new EventMaintenanceJob(systemService, clock, eventRepository, systemPropertyService);
-		((Logger) LoggerFactory.getLogger(EventMaintenanceJob.class)).addAppender(logAppender);
+		addAppender(EventMaintenanceJob.class);
 	}
 
 	@Test

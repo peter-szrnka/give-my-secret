@@ -1,6 +1,5 @@
 package io.github.gms.job;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.ldap.LdapSyncService;
 import io.github.gms.common.enums.SystemProperty;
@@ -10,16 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.util.Pair;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -43,7 +38,7 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
         service = mock(LdapSyncService.class);
         job = new LdapUserSyncJob(systemService, systemPropertyService, service);
 
-        ((Logger) LoggerFactory.getLogger(LdapUserSyncJob.class)).addAppender(logAppender);
+        addAppender(LdapUserSyncJob.class);
     }
 
     @Test

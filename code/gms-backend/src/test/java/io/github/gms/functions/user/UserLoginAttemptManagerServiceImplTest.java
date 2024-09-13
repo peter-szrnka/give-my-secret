@@ -1,6 +1,5 @@
 package io.github.gms.functions.user;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.SystemProperty;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -20,10 +18,7 @@ import static io.github.gms.util.TestUtils.assertLogMissing;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -42,7 +37,7 @@ class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
         repository = mock(UserRepository.class);
         systemPropertyService = mock(SystemPropertyService.class);
         service = new UserLoginAttemptManagerServiceImpl(repository, systemPropertyService);
-        ((Logger) LoggerFactory.getLogger(UserLoginAttemptManagerServiceImpl.class)).addAppender(logAppender);
+        addAppender(UserLoginAttemptManagerServiceImpl.class);
     }
 
     @Test

@@ -1,7 +1,6 @@
 
 package io.github.gms.functions.system;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.enums.ContainerHostType;
@@ -12,7 +11,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.core.env.Environment;
 
@@ -20,19 +18,9 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 
-import static io.github.gms.common.util.Constants.CONTAINER_HOST_TYPE;
-import static io.github.gms.common.util.Constants.DOCKER_CONTAINER_ID;
-import static io.github.gms.common.util.Constants.N_A;
-import static io.github.gms.common.util.Constants.OK;
-import static io.github.gms.common.util.Constants.POD_ID;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_LDAP;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_SSO;
+import static io.github.gms.common.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -50,7 +38,7 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
     @BeforeEach
     public void setup() {
         super.setup();
-        ((Logger) LoggerFactory.getLogger(SystemService.class)).addAppender(logAppender);
+        addAppender(SystemService.class);
 
         environment = mock(Environment.class);
         clock = mock(Clock.class);

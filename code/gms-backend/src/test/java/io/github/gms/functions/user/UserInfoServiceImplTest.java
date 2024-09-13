@@ -1,6 +1,5 @@
 package io.github.gms.functions.user;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.service.JwtClaimService;
@@ -11,7 +10,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -37,7 +35,7 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
         repository = mock(UserRepository.class);
         jwtClaimService = mock(JwtClaimService.class);
         service = new UserInfoServiceImpl(repository, jwtClaimService);
-        ((Logger) LoggerFactory.getLogger(UserInfoServiceImpl.class)).addAppender(logAppender);
+        addAppender(UserInfoServiceImpl.class);
     }
 
     @Test

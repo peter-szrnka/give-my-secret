@@ -92,7 +92,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         service = new KeystoreService(cryptoService, repository, aliasRepository, converter, objectMapper,
                 applicationEventPublisher, keystoreFileService, fileService);
 
-        ((Logger) LoggerFactory.getLogger(KeystoreService.class)).addAppender(logAppender);
+        addAppender(KeystoreService.class);
 
         service.setKeystorePath("unit-test-output/");
         service.setKeystoreTempPath("temp-output/");

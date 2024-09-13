@@ -1,22 +1,18 @@
 package io.github.gms.functions.gdpr;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.functions.gdpr.model.BatchUserOperationDto;
 import io.github.gms.functions.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -33,7 +29,7 @@ class UserDeletionServiceTest extends AbstractLoggingUnitTest {
         super.setup();
         userRepository = mock(UserRepository.class);
         service = new UserDeletionService(userRepository);
-        ((Logger) LoggerFactory.getLogger(UserDeletionService.class)).addAppender(logAppender);
+        addAppender(UserDeletionService.class);
     }
 
     @Test

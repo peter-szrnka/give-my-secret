@@ -1,6 +1,5 @@
 package io.github.gms.common.service;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.model.KeystorePair;
 import io.github.gms.common.types.GmsException;
@@ -11,7 +10,6 @@ import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -19,10 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -42,7 +37,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 		super.setup();
 		keystoreDataService = mock(KeystoreDataService.class);
 		service = new CryptoService(keystoreDataService);
-		((Logger) LoggerFactory.getLogger(CryptoService.class)).addAppender(logAppender);
+		addAppender(CryptoService.class);
 	}
 	
 	@Test

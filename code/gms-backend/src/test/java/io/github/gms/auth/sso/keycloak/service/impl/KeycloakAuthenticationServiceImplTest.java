@@ -1,6 +1,5 @@
 package io.github.gms.auth.sso.keycloak.service.impl;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.sso.keycloak.converter.KeycloakConverter;
@@ -21,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -30,18 +28,10 @@ import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
-import static io.github.gms.util.TestUtils.MOCK_ACCESS_TOKEN;
-import static io.github.gms.util.TestUtils.MOCK_REFRESH_TOKEN;
-import static io.github.gms.util.TestUtils.assertLogContains;
+import static io.github.gms.util.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -66,7 +56,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         userRepository = mock(UserRepository.class);
         httpServletRequest = mock(HttpServletRequest.class);
         service = new KeycloakAuthenticationServiceImpl(keycloakLoginService, keycloakIntrospectService, converter, userRepository, httpServletRequest);
-        ((Logger) LoggerFactory.getLogger(KeycloakAuthenticationServiceImpl.class)).addAppender(logAppender);
+        addAppender(KeycloakAuthenticationServiceImpl.class);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package io.github.gms.functions.secret;
 
-import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.LongValueDto;
@@ -29,7 +28,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -45,19 +43,9 @@ import java.util.Set;
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -87,7 +75,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 		ipRestrictionService = mock(IpRestrictionService.class);
 		service = new SecretServiceImpl(cryptoService, keystoreRepository, keystoreAliasRepository, repository,
 				converter, apiKeyRestrictionRepository, ipRestrictionService);
-		((Logger) LoggerFactory.getLogger(SecretServiceImpl.class)).addAppender(logAppender);
+		addAppender(SecretServiceImpl.class);
 
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 	}

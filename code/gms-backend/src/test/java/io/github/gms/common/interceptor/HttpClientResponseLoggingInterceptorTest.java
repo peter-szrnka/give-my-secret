@@ -1,10 +1,8 @@
 package io.github.gms.common.interceptor;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpResponse;
@@ -15,10 +13,7 @@ import java.net.URI;
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static io.github.gms.util.TestUtils.assertLogMissing;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -34,7 +29,7 @@ class HttpClientResponseLoggingInterceptorTest extends AbstractLoggingUnitTest {
     public void setup() {
         super.setup();
         interceptor = new HttpClientResponseLoggingInterceptor(true);
-        ((Logger) LoggerFactory.getLogger(HttpClientResponseLoggingInterceptor.class)).addAppender(logAppender);
+        addAppender(HttpClientResponseLoggingInterceptor.class);
     }
 
     @Test
