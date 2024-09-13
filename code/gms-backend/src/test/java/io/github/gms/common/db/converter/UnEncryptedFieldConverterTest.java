@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class UnEncryptedFieldConverterTest extends AbstractUnitTest {
+class UnEncryptedFieldConverterTest extends AbstractUnitTest {
 
     private static final String ORIGINAL_VALUE = "value";
 

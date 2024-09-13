@@ -35,6 +35,7 @@ class KeystoreValidatorServiceTest extends AbstractLoggingUnitTest {
     @Override
     @BeforeEach
     public void setup() {
+        super.setup();
         keystoreRepository = mock(KeystoreRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
         service = new KeystoreValidatorService(keystoreRepository, keystoreAliasRepository);

@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
+class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
 
     private Clock clock;
     private RequestInitializationFilter filter ;
@@ -38,7 +38,7 @@ public class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    public void testDoFilterInternal() throws ServletException, IOException {
+    void testDoFilterInternal() throws ServletException, IOException {
         try (MockedStatic<MDC> mdcMockedStatic = mockStatic(MDC.class)) {
             // arrange
             AtomicBoolean atomicInteger = new AtomicBoolean(false);
@@ -60,7 +60,7 @@ public class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
             filter.doFilterInternal(request, response, filterChain);
 
             // assert
-            verify(response).addHeader(eq("X-CORRELATION-ID"), eq("MOCK_CORRELATION_ID"));
+            verify(response).addHeader("X-CORRELATION-ID", "MOCK_CORRELATION_ID");
             verify(filterChain).doFilter(request, response);
             mdcMockedStatic.verify(() -> MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
             mdcMockedStatic.verify(() -> MDC.put(eq(MdcParameter.CORRELATION_ID.getDisplayName()), anyString()));
