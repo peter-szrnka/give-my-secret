@@ -13,6 +13,13 @@ The purpose of this guide is to provide an example to setup your on ELK stack on
 
 **IMPORTANT: Logstash and Kibana will start only if ElasticSearch is up and running!**
 
+# Settings in GMS
+
+In order to send logs to Logstash, you have to configure some additional system properties to your GMS instance:
+
+- LOG_TYPE=logstash
+- LOGSTASH_URL=http://localhost:5000
+
 # Resources
 
 - [1] https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-compose-file
