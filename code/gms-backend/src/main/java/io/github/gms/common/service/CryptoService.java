@@ -92,7 +92,7 @@ public class CryptoService {
 	}
 
 
-	private void validateAliasDto(KeyStore keystore, KeystoreAliasDto dto)
+	private static void validateAliasDto(KeyStore keystore, KeystoreAliasDto dto)
 			throws KeyStoreException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnrecoverableKeyException {
 
 		Certificate cert = keystore.getCertificate(dto.getAlias());

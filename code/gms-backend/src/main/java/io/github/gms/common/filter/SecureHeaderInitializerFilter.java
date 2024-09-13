@@ -25,7 +25,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,15 +51,11 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, @NonNull FilterChain filterChain)
+	protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
 			throws ServletException, IOException {
-
-		MDC.put(MdcParameter.CORRELATION_ID.getDisplayName(), UUID.randomUUID().toString());
-		response.addHeader("X-CORRELATION-ID", MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
 
 		if (shouldSkipUrl(request.getRequestURI())) {
 			filterChain.doFilter(request, response);
-			MDC.clear();
 			return;
 		}
 
@@ -87,10 +82,11 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		filterChain.doFilter(request, response);
 		
-		MDC.clear();
+		MDC.remove(MdcParameter.USER_ID.getDisplayName());
+		MDC.remove(MdcParameter.IS_ADMIN.getDisplayName());
 	}
 	
-	private boolean shouldSkipUrl(String url) {
+	private static boolean shouldSkipUrl(String url) {
 		return IGNORED_URLS.stream().noneMatch(urlPattern -> {
 			Pattern p = Pattern.compile(urlPattern);
 			Matcher matcher = p.matcher(url);

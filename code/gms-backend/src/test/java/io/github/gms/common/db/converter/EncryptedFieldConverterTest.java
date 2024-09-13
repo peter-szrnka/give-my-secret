@@ -3,8 +3,6 @@ package io.github.gms.common.db.converter;
 import io.github.gms.abstraction.AbstractUnitTest;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,56 +24,47 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 	@SneakyThrows
 	void shouldConvertToDatabaseColumnFail() {
 		// arrange
-		converter = new EncryptedFieldConverter(true, INVALID_SECRET, ENCRYPTION_IV);
+		converter = new EncryptedFieldConverter(INVALID_SECRET, ENCRYPTION_IV);
 		
 		// act & assert
 		IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
 				converter.convertToDatabaseColumn(ORIGINAL_VALUE));
 		assertEquals("java.security.InvalidKeyException: Invalid AES key length: 33 bytes", exception.getMessage());
 	}
-	
-	@ParameterizedTest
-	@MethodSource("inputData")
-	void shouldConvertToDatabaseColumn(boolean enableEncryption, String expectedValue) {
+
+	@Test
+	void shouldConvertToDatabaseColumn() {
 		// arrange
-		converter = new EncryptedFieldConverter(enableEncryption, VALID_SECRET, ENCRYPTION_IV);
+		converter = new EncryptedFieldConverter(VALID_SECRET, ENCRYPTION_IV);
 
 		// act
 		String encryptedValue = converter.convertToDatabaseColumn(ORIGINAL_VALUE);
-		
+
 		// assert
-		assertEquals(expectedValue, encryptedValue);
+		assertEquals(ENCRYPTED_VALUE, encryptedValue);
 	}
-	
+
 	@Test
 	@SneakyThrows
 	void shouldConvertToEntityAttributeFail() {
 		// arrange
-		converter = new EncryptedFieldConverter(true, INVALID_SECRET, ENCRYPTION_IV);
+		converter = new EncryptedFieldConverter(INVALID_SECRET, ENCRYPTION_IV);
 
 		// act & assert
 		IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
 			converter.convertToEntityAttribute(ENCRYPTED_VALUE));
 		assertEquals("java.security.InvalidKeyException: Invalid AES key length: 33 bytes", exception.getMessage());
 	}
-	
-	@ParameterizedTest
-	@MethodSource("inputData")
-	void shouldConvertToEntityAttribute(boolean enableEncryption, String expectedValue) {
+
+	@Test
+	void shouldConvertToEntityAttribute() {
 		// arrange
-		converter = new EncryptedFieldConverter(enableEncryption, VALID_SECRET, ENCRYPTION_IV);
+		converter = new EncryptedFieldConverter(VALID_SECRET, ENCRYPTION_IV);
 
 		// act
-		String decryptedValue = converter.convertToEntityAttribute(expectedValue);
-		
+		String decryptedValue = converter.convertToEntityAttribute(ENCRYPTED_VALUE);
+
 		// assert
 		assertEquals(ORIGINAL_VALUE, decryptedValue);
-	}
-	
-	public static Object[][] inputData() {
-		return new Object[][] {
-			{false, ORIGINAL_VALUE},
-			{true, ENCRYPTED_VALUE},
-		};
 	}
 }

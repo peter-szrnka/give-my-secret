@@ -41,7 +41,7 @@ public class LDAPAttributesMapper implements AttributesMapper<GmsUserDetails> {
 				.build();
 	}
 	
-	private Set<UserRole> getAttributeCollection(Attributes attributes) throws NamingException {
+	private static Set<UserRole> getAttributeCollection(Attributes attributes) throws NamingException {
 		Attribute result = attributes.get(LDAP_PROPERTY_ROLE);
 
 		if (result == null) {
@@ -56,7 +56,7 @@ public class LDAPAttributesMapper implements AttributesMapper<GmsUserDetails> {
 		return roles;
 	}
 	
-	private String getAttribute(Attributes attributes, String attributeName) throws NamingException {
+	private static String getAttribute(Attributes attributes, String attributeName) throws NamingException {
 		Attribute result = attributes.get(attributeName);
 		
 		if (result == null) {

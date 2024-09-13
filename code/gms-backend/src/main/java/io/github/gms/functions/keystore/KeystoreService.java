@@ -35,25 +35,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static io.github.gms.common.types.ErrorCode.GMS_001;
-import static io.github.gms.common.types.ErrorCode.GMS_002;
-import static io.github.gms.common.types.ErrorCode.GMS_009;
-import static io.github.gms.common.types.ErrorCode.GMS_010;
-import static io.github.gms.common.types.ErrorCode.GMS_011;
-import static io.github.gms.common.types.ErrorCode.GMS_012;
-import static io.github.gms.common.types.ErrorCode.GMS_013;
-import static io.github.gms.common.util.Constants.ALIAS_ID;
-import static io.github.gms.common.util.Constants.CACHE_API;
-import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static io.github.gms.common.util.Constants.KEYSTORE_ID;
-import static io.github.gms.common.util.Constants.SLASH;
-import static io.github.gms.common.util.Constants.USER_ID;
+import static io.github.gms.common.types.ErrorCode.*;
+import static io.github.gms.common.util.Constants.*;
 import static io.github.gms.common.util.FileUtils.validatePath;
 import static io.github.gms.common.util.MdcUtils.getUserId;
 import static java.util.Objects.requireNonNull;
@@ -338,18 +323,12 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 	}
 
 	private KeystoreEntity getKeystore(Long id) {
-		return repository.findById(id).orElseThrow(() -> {
-			log.warn(ENTITY_NOT_FOUND);
-			return new GmsException(ENTITY_NOT_FOUND, GMS_002);
-		});
+		return repository.findById(id).orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND, GMS_002));
 	}
 
 	private String getAliasValue(GetSecureValueDto dto) {
 		KeystoreAliasEntity entity = aliasRepository.findByIdAndKeystoreId(dto.getAliasId(), dto.getEntityId())
-				.orElseThrow(() -> {
-					log.warn(ENTITY_NOT_FOUND);
-					return new GmsException(ENTITY_NOT_FOUND, GMS_002);
-				});
+				.orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND, GMS_002));
 
 		if (KeyStoreValueType.KEYSTORE_ALIAS == dto.getValueType()) {
 			return entity.getAlias();
