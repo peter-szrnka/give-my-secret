@@ -69,7 +69,6 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		filter.doFilterInternal(request, response, filterChain);
 		
 		// assert
-		assertNull(MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
 		verify(authorizationService, never()).authorize(any(HttpServletRequest.class));
 		verify(filterChain).doFilter(any(), any());
 		verify(response, never()).sendError(HttpStatus.OK.value(), ERROR_MESSAGE);
@@ -92,7 +91,6 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		filter.doFilterInternal(request, response, filterChain);
 		
 		// assert
-		assertNotNull(MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
 		verify(filterChain, never()).doFilter(any(), any());
 		verify(response).sendError(HttpStatus.BAD_REQUEST.value(), ERROR_MESSAGE);
 	}
@@ -103,59 +101,59 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 	@SneakyThrows
 	void shouldPass(UserRole role, boolean admin) {
 		// arrange
-		MockedStatic<MDC>  mockedMDC = mockStatic(MDC.class);
-		filter = new SecureHeaderInitializerFilter(authorizationService, systemPropertyService, true);
-		HttpServletRequest request = mock(HttpServletRequest.class);
-		HttpServletResponse response = mock(HttpServletResponse.class);
-		FilterChain filterChain = mock(FilterChain.class);
-		Authentication mockAuthentication = mock(Authentication.class);
-		when(mockAuthentication.getPrincipal()).thenReturn(TestUtils.createGmsAdminUser());
+		try (MockedStatic<MDC>  mockedMDC = mockStatic(MDC.class)) {
+			filter = new SecureHeaderInitializerFilter(authorizationService, systemPropertyService, true);
+			HttpServletRequest request = mock(HttpServletRequest.class);
+			HttpServletResponse response = mock(HttpServletResponse.class);
+			FilterChain filterChain = mock(FilterChain.class);
+			Authentication mockAuthentication = mock(Authentication.class);
+			when(mockAuthentication.getPrincipal()).thenReturn(TestUtils.createGmsAdminUser());
 
-		when(authorizationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthorizationResponse.builder()
-			.responseStatus(HttpStatus.OK)
-			.authentication(mockAuthentication)
-			.jwtPair(Map.of(JwtConfigType.ACCESS_JWT, "ACCESS_JWT", JwtConfigType.REFRESH_JWT, "REFRESH_JWT"))
-			.build());
-		
-		when(request.getRequestURI()).thenReturn("/secure/apikey/list");
-		Set mockAuthorities = Sets.newHashSet(new SimpleGrantedAuthority(role.name()));
-		when(mockAuthentication.getAuthorities()).thenReturn(mockAuthorities);
-		
-		when(systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS))
-			.thenReturn(900L);
-		when(systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS))
-			.thenReturn(86400L);
+			when(authorizationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthorizationResponse.builder()
+					.responseStatus(HttpStatus.OK)
+					.authentication(mockAuthentication)
+					.jwtPair(Map.of(JwtConfigType.ACCESS_JWT, "ACCESS_JWT", JwtConfigType.REFRESH_JWT, "REFRESH_JWT"))
+					.build());
 
-		MockedStatic<CookieUtils> mockCookieUtils = mockStatic(CookieUtils.class);
-		ResponseCookie accessJwtCookie = mock(ResponseCookie.class);
-        when(accessJwtCookie.toString()).thenReturn("mock-cookie1");
-        mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.ACCESS_JWT_TOKEN), eq("ACCESS_JWT"), eq(900L), eq(true))).thenReturn(accessJwtCookie);
+			when(request.getRequestURI()).thenReturn("/secure/apikey/list");
+			Set mockAuthorities = Sets.newHashSet(new SimpleGrantedAuthority(role.name()));
+			when(mockAuthentication.getAuthorities()).thenReturn(mockAuthorities);
 
-        ResponseCookie refreshJwtCookie = mock(ResponseCookie.class);
-        when(refreshJwtCookie.toString()).thenReturn("mock-cookie2");
-        mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESH_JWT"), eq(86400L), eq(true))).thenReturn(refreshJwtCookie);
+			when(systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS))
+					.thenReturn(900L);
+			when(systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS))
+					.thenReturn(86400L);
 
-		// act
-		filter.doFilterInternal(request, response, filterChain);
-		
-		// assert
-		assertNull(MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
-		assertEquals(mockAuthentication, SecurityContextHolder.getContext().getAuthentication());
-		verify(response).addHeader("Set-Cookie", "mock-cookie1");
-		verify(response).addHeader("Set-Cookie", "mock-cookie2");
-		verify(filterChain).doFilter(any(), any());
-		verify(response, never()).sendError(HttpStatus.BAD_REQUEST.value(), ERROR_MESSAGE);
-		verify(authorizationService).authorize(any(HttpServletRequest.class));
-		verify(systemPropertyService).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
-		verify(systemPropertyService).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
+			MockedStatic<CookieUtils> mockCookieUtils = mockStatic(CookieUtils.class);
+			ResponseCookie accessJwtCookie = mock(ResponseCookie.class);
+			when(accessJwtCookie.toString()).thenReturn("mock-cookie1");
+			mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.ACCESS_JWT_TOKEN), eq("ACCESS_JWT"), eq(900L), eq(true))).thenReturn(accessJwtCookie);
 
-		mockedMDC.verify(() -> MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), String.valueOf(admin)));
-		mockedMDC.verify(MDC::clear);
+			ResponseCookie refreshJwtCookie = mock(ResponseCookie.class);
+			when(refreshJwtCookie.toString()).thenReturn("mock-cookie2");
+			mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESH_JWT"), eq(86400L), eq(true))).thenReturn(refreshJwtCookie);
 
-		mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.ACCESS_JWT_TOKEN), eq("ACCESS_JWT"), eq(900L), eq(true)));
-        mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESH_JWT"), eq(86400L), eq(true)));
-		mockCookieUtils.close();
-		mockedMDC.close();
+			// act
+			filter.doFilterInternal(request, response, filterChain);
+
+			// assert
+			assertEquals(mockAuthentication, SecurityContextHolder.getContext().getAuthentication());
+			verify(response).addHeader("Set-Cookie", "mock-cookie1");
+			verify(response).addHeader("Set-Cookie", "mock-cookie2");
+			verify(filterChain).doFilter(any(), any());
+			verify(response, never()).sendError(HttpStatus.BAD_REQUEST.value(), ERROR_MESSAGE);
+			verify(authorizationService).authorize(any(HttpServletRequest.class));
+			verify(systemPropertyService).getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
+			verify(systemPropertyService).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
+
+			mockedMDC.verify(() -> MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), String.valueOf(admin)));
+			mockedMDC.verify(() -> MDC.remove(MdcParameter.USER_ID.getDisplayName()));
+			mockedMDC.verify(() -> MDC.remove(MdcParameter.IS_ADMIN.getDisplayName()));
+
+			mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.ACCESS_JWT_TOKEN), eq("ACCESS_JWT"), eq(900L), eq(true)));
+			mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESH_JWT"), eq(86400L), eq(true)));
+			mockCookieUtils.close();
+		}
 	}
 
 	private static Object[] testData() {

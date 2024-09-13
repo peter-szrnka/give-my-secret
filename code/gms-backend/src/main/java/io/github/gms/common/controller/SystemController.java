@@ -9,7 +9,6 @@ import io.github.gms.common.types.SkipSecurityTestCheck;
 import io.github.gms.functions.system.SystemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Comparator;
@@ -20,19 +19,18 @@ import java.util.stream.Stream;
  * @since 1.0
  */
 @RestController
-@RequestMapping("/")
 @SkipSecurityTestCheck
 @RequiredArgsConstructor
 public class SystemController implements GmsController {
 
 	private final SystemService systemService;
 
-	@GetMapping("system/status")
+	@GetMapping("/system/status")
 	public SystemStatusDto status() {
 		return systemService.getSystemStatus();
 	}
 
-	@GetMapping("error_codes")
+	@GetMapping("/error_codes")
 	public ErrorCodeListDto getErrorCodes() {
 		return new ErrorCodeListDto(Stream.of(ErrorCode.values())
 				.sorted(Comparator.comparing(ErrorCode::getCode))

@@ -1,6 +1,5 @@
 package io.github.gms.job;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.keystore.KeystoreFileService;
@@ -8,15 +7,11 @@ import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -40,7 +35,7 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
         service = mock(KeystoreFileService.class);
         job = new GeneratedKeystoreCleanupJob(systemService, systemPropertyService, service);
 
-        ((Logger) LoggerFactory.getLogger(GeneratedKeystoreCleanupJob.class)).addAppender(logAppender);
+        addAppender(GeneratedKeystoreCleanupJob.class);
     }
 
     @Test

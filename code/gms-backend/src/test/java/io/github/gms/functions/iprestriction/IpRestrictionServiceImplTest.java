@@ -1,6 +1,5 @@
 package io.github.gms.functions.iprestriction;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
@@ -15,7 +14,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,17 +24,9 @@ import java.util.Set;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -56,7 +46,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         converter = mock(IpRestrictionConverter.class);
         service = new IpRestrictionServiceImpl(repository, converter);
 
-        ((Logger) LoggerFactory.getLogger(IpRestrictionServiceImpl.class)).addAppender(logAppender);
+        addAppender(IpRestrictionServiceImpl.class);
     }
 
     @Test

@@ -1,8 +1,11 @@
 package io.github.gms.auth.config;
 
+import io.github.gms.common.filter.RequestInitializationFilter;
 import io.github.gms.common.filter.SecureHeaderInitializerFilter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +25,7 @@ import java.util.List;
  * @author Peter Szrnka
  * @since 1.0
  */
+@Slf4j
 public abstract class AbstractSecurityConfig {
 
     private static final String[] FILTER_URL = new String[]{"/", "/system/status", "/healthcheck", "/setup/**",
@@ -32,6 +36,7 @@ public abstract class AbstractSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            AuthenticationEntryPoint authenticationEntryPoint,
+                                           RequestInitializationFilter requestInitializationFilter,
                                            SecureHeaderInitializerFilter secureHeaderInitializerFilter) throws Exception {
         http
                 .cors(cors -> Customizer.withDefaults())
@@ -46,6 +51,7 @@ public abstract class AbstractSecurityConfig {
                 );
 
         http.addFilterBefore(secureHeaderInitializerFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(requestInitializationFilter, SecureHeaderInitializerFilter.class);
         http.formLogin(FormLoginConfigurer<HttpSecurity>::disable);
         http.httpBasic(HttpBasicConfigurer<HttpSecurity>::disable);
 
@@ -53,7 +59,8 @@ public abstract class AbstractSecurityConfig {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    @Profile("dev")
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200"));
         configuration.setAllowedMethods(List.of("*"));
@@ -62,6 +69,7 @@ public abstract class AbstractSecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+        log.info("CORS configuration is enabled for development profile");
         return source;
     }
 }

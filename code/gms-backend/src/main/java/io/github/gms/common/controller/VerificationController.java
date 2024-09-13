@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
@@ -24,7 +23,6 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_
  * @since 1.0
  */
 @RestController
-@RequestMapping("/")
 @SkipSecurityTestCheck
 @Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
 public class VerificationController extends AbstractLoginController {
@@ -39,7 +37,7 @@ public class VerificationController extends AbstractLoginController {
         this.service = verificationService;
     }
 
-    @PostMapping("verify")
+    @PostMapping("/verify")
     public ResponseEntity<AuthenticateResponseDto> verify(@RequestBody LoginVerificationRequestDto dto) {
         AuthenticationResponse authenticateResult = service.verify(dto);
 

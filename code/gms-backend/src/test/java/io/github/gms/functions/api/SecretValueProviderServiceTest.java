@@ -1,6 +1,5 @@
 package io.github.gms.functions.api;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.service.CryptoService;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -19,11 +17,7 @@ import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -43,7 +37,7 @@ class SecretValueProviderServiceTest extends AbstractLoggingUnitTest {
         cryptoService = mock(CryptoService.class);
         service = new SecretValueProviderService(keystoreValidatorService, cryptoService);
 
-        ((Logger) LoggerFactory.getLogger(SecretValueProviderService.class)).addAppender(logAppender);
+        addAppender(SecretValueProviderService.class);
     }
 
     @Test

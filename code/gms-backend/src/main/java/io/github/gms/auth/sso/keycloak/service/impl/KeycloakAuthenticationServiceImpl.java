@@ -118,15 +118,6 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         removeNonPublicAttributes(userInfoDto);
     }
 
-    private void removeNonPublicAttributes(@Nullable UserInfoDto userInfoDto) {
-        if (userInfoDto == null) {
-            return;
-        }
-
-        userInfoDto.setStatus(null);
-        userInfoDto.setFailedAttempts(null);
-    }
-
     private UserInfoDto getUserDetails(String accessToken, String refreshToken) {
         ResponseEntity<IntrospectResponse> response = keycloakIntrospectService.getUserDetails(accessToken, refreshToken);
         IntrospectResponse payload = response.getBody();
@@ -142,6 +133,15 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         }
 
         return converter.toUserInfoDto(payload);
+    }
+
+    private static void removeNonPublicAttributes(@Nullable UserInfoDto userInfoDto) {
+        if (userInfoDto == null) {
+            return;
+        }
+
+        userInfoDto.setStatus(null);
+        userInfoDto.setFailedAttempts(null);
     }
 
     private static AuthResponsePhase getPhaseByResponse(LoginResponse response) {

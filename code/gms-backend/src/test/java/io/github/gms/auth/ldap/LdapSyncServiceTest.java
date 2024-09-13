@@ -1,19 +1,14 @@
 package io.github.gms.auth.ldap;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.util.Pair;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
@@ -34,31 +29,24 @@ import static org.mockito.Mockito.*;
  * @author Peter Szrnka
  * @since 1.0
  */
-class LdapSyncServiceTest extends AbstractUnitTest {
-    
-    private ListAppender<ILoggingEvent> logAppender;
+class LdapSyncServiceTest extends AbstractLoggingUnitTest {
+
 	private LdapTemplate ldapTemplate;
 	private UserRepository repository;
 	private LdapUserConverter converter;
     private LdapSyncService service;
 
+	@Override
     @BeforeEach
-	void beforeEach() {
-		logAppender = new ListAppender<>();
-		logAppender.start();
+	public void setup() {
+		super.setup();
 
 		ldapTemplate = mock(LdapTemplate.class);
 		repository = mock(UserRepository.class);
 		converter = mock(LdapUserConverter.class);
 		service = new LdapSyncService(ldapTemplate, repository, converter);
 		service.setAuthType("db");
-		((Logger) LoggerFactory.getLogger(LdapSyncService.class)).addAppender(logAppender);
-	}
-
-    @AfterEach
-	void tearDown() {
-		logAppender.list.clear();
-		logAppender.stop();
+		addAppender(LdapSyncService.class);
 	}
 
 	@Test

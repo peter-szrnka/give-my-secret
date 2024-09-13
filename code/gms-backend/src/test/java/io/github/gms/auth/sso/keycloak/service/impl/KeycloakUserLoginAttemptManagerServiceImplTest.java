@@ -1,11 +1,9 @@
 package io.github.gms.auth.sso.keycloak.service.impl;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.util.DemoData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,7 +21,7 @@ class KeycloakUserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnit
     public void setup() {
         super.setup();
         service = new KeycloakUserLoginAttemptManagerServiceImpl();
-        ((Logger) LoggerFactory.getLogger(KeycloakUserLoginAttemptManagerServiceImpl.class)).addAppender(logAppender);
+        addAppender(KeycloakUserLoginAttemptManagerServiceImpl.class);
     }
 
     @Test

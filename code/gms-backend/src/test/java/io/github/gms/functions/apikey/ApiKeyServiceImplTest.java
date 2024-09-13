@@ -1,6 +1,5 @@
 package io.github.gms.functions.apikey;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.IdNamePairDto;
 import io.github.gms.common.dto.IdNamePairListDto;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,16 +26,9 @@ import java.util.Set;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 import static io.github.gms.util.TestUtils.assertLogContains;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -56,7 +47,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		repository = mock(ApiKeyRepository.class);
 		converter = mock(ApiKeyConverter.class);
 		service = new ApiKeyServiceImpl(repository, converter);
-		((Logger) LoggerFactory.getLogger(ApiKeyServiceImpl.class)).addAppender(logAppender);
+		addAppender(ApiKeyServiceImpl.class);
 	}
 
 	@Test

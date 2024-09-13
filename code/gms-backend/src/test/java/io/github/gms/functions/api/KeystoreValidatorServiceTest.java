@@ -1,20 +1,15 @@
 package io.github.gms.functions.api;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.keystore.KeystoreRepository;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.util.TestUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -23,9 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link KeystoreValidatorService}
@@ -33,28 +26,21 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class KeystoreValidatorServiceTest extends AbstractUnitTest {
+class KeystoreValidatorServiceTest extends AbstractLoggingUnitTest {
 
-    private ListAppender<ILoggingEvent> logAppender;
     private KeystoreRepository keystoreRepository;
     private KeystoreAliasRepository keystoreAliasRepository;
     private KeystoreValidatorService service;
 
+    @Override
     @BeforeEach
-    void beforeEach() {
+    public void setup() {
+        super.setup();
         keystoreRepository = mock(KeystoreRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
         service = new KeystoreValidatorService(keystoreRepository, keystoreAliasRepository);
 
-        logAppender = new ListAppender<>();
-        logAppender.start();
-        ((Logger) LoggerFactory.getLogger(KeystoreValidatorService.class)).addAppender(logAppender);
-    }
-
-    @AfterEach
-    void tearDown() {
-        logAppender.list.clear();
-        logAppender.stop();
+        addAppender(KeystoreValidatorService.class);
     }
 
     @Test

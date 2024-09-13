@@ -1,6 +1,5 @@
 package io.github.gms.functions.iprestriction;
 
-import ch.qos.logback.classic.Logger;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.common.util.HttpUtils;
@@ -10,7 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -36,7 +34,7 @@ class IpRestrictionValidatorTest extends AbstractLoggingUnitTest {
         super.setup();
         httpServletRequest = mock(HttpServletRequest.class);
         validator = new IpRestrictionValidator(httpServletRequest);
-        ((Logger) LoggerFactory.getLogger(IpRestrictionValidator.class)).addAppender(logAppender);
+        addAppender(IpRestrictionValidator.class);
     }
 
     @ParameterizedTest

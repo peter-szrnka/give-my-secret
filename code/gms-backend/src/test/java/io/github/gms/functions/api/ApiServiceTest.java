@@ -1,16 +1,11 @@
 package io.github.gms.functions.api;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.functions.secret.GetSecretRequestDto;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.util.TestUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -18,9 +13,7 @@ import static io.github.gms.common.util.Constants.VALUE;
 import static io.github.gms.util.TestUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link ApiService}
@@ -28,29 +21,22 @@ import static org.mockito.Mockito.when;
  * @author Peter Szrnka
  * @since 1.0
  */
-class ApiServiceTest extends AbstractUnitTest {
+class ApiServiceTest extends AbstractLoggingUnitTest {
 
     private static final GetSecretRequestDto dto = new GetSecretRequestDto("12345678", "123456");
-    private ListAppender<ILoggingEvent> logAppender;
     private SecretPreparationService secretPreparationService;
     private SecretValueProviderService secretValueProviderService;
     private ApiService service;
 
+    @Override
     @BeforeEach
-    void beforeEach() {
+    public void setup() {
+        super.setup();
         secretPreparationService = mock(SecretPreparationService.class);
         secretValueProviderService = mock(SecretValueProviderService.class);
         service = new ApiService(secretPreparationService, secretValueProviderService);
 
-        logAppender = new ListAppender<>();
-        logAppender.start();
-        ((Logger) LoggerFactory.getLogger(ApiService.class)).addAppender(logAppender);
-    }
-
-    @AfterEach
-    void tearDown() {
-        logAppender.list.clear();
-        logAppender.stop();
+        addAppender(ApiService.class);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package io.github.gms.auth;
 
-import ch.qos.logback.classic.Logger;
 import dev.samstevens.totp.code.CodeVerifier;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthenticationResponse;
@@ -14,14 +13,11 @@ import io.github.gms.functions.user.UserLoginAttemptManagerService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -50,7 +46,7 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
         userConverter = mock(UserConverter.class);
         service = new VerificationService(userAuthService, userConverter, verifier, userLoginAttemptManagerService, tokenGeneratorService);
 
-        ((Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class)).addAppender(logAppender);
+        addAppender(AuthenticationServiceImpl.class);
     }
 
     @Test

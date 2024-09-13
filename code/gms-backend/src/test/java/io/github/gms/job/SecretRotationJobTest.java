@@ -1,6 +1,5 @@
 package io.github.gms.job;
 
-import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.RotationPeriod;
@@ -14,23 +13,12 @@ import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.slf4j.LoggerFactory;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -55,7 +43,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 		secretRepository = mock(SecretRepository.class);
 		service = mock(SecretRotationService.class);
 		job = new SecretRotationJob(systemService, systemPropertyService, clock, secretRepository, service);
-		((Logger) LoggerFactory.getLogger(SecretRotationJob.class)).addAppender(logAppender);
+		addAppender(SecretRotationJob.class);
 	}
 
 	@Test
