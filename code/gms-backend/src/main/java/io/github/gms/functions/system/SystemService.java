@@ -2,7 +2,9 @@ package io.github.gms.functions.system;
 
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.enums.ContainerHostType;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.functions.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -17,12 +19,7 @@ import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static io.github.gms.common.util.Constants.CONTAINER_HOST_TYPE;
-import static io.github.gms.common.util.Constants.DOCKER_CONTAINER_ID;
-import static io.github.gms.common.util.Constants.N_A;
-import static io.github.gms.common.util.Constants.OK;
-import static io.github.gms.common.util.Constants.POD_ID;
-import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
+import static io.github.gms.common.util.Constants.*;
 
 /**
  * @author Peter Szrnka
@@ -36,6 +33,8 @@ public class SystemService {
 	private final Environment environment;
 	private final UserRepository userRepository;
 	private final Clock clock;
+	private final SystemPropertyService systemPropertyService;
+
 	@Setter
     @Value("${config.auth.type}")
 	private String authType;
@@ -49,6 +48,8 @@ public class SystemService {
 		builder.withBuilt(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
 		builder.withContainerHostType(getContainerHostType());
 		builder.withContainerId(getContainerId());
+
+		setAutomaticLogoutTimeInMinutes(builder);
 
 		if (!SELECTED_AUTH_DB.equals(authType)) {
 			return builder.withStatus(OK).build();
@@ -85,5 +86,13 @@ public class SystemService {
 
 	private ZonedDateTime getBuildTime() {
 		return buildProperties != null ? buildProperties.getTime().atZone(clock.getZone()) : ZonedDateTime.now(clock);
+	}
+
+	private void setAutomaticLogoutTimeInMinutes(SystemStatusDto.SystemStatusDtoBuilder builder) {
+		if (!systemPropertyService.getBoolean(SystemProperty.ENABLE_AUTOMATIC_LOGOUT)) {
+			return;
+		}
+
+		builder.withAutomaticLogoutTimeInMinutes(systemPropertyService.getInteger(SystemProperty.AUTOMATIC_LOGOUT_TIME_IN_MINUTES));
 	}
 }

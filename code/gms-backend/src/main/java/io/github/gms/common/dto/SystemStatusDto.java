@@ -30,4 +30,6 @@ public class SystemStatusDto implements Serializable {
 	private String built;
 	private ContainerHostType containerHostType;
 	private String containerId;
+	// If the automatic logout is not enabled, the value will be null
+	private Integer automaticLogoutTimeInMinutes;
 }

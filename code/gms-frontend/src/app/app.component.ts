@@ -99,6 +99,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (routerEvent instanceof NavigationStart) {
       this.splashScreenStateService.start();
     } else if (this.isNavigationEndInstance(routerEvent)) {
+      this.sharedDataService.resetAutomaticLogoutTimer();
        this.splashScreenStateService.stop();
     }
   }

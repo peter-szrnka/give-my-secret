@@ -11,16 +11,17 @@ import { StatusToggleComponent } from "./status-toggle/status-toggle.component";
 import { PipesModule } from "./pipes/pipes.module";
 import { NavBackComponent } from "./nav-back/nav-back.component";
 import { CommonModule } from "@angular/common";
+import { AutomaticLogoutComponent } from "./automatic-logout/automatic-logout.component";
 
 /**
  * @author Peter Szrnka
  */
 @NgModule({
     declarations: [
-        ConfirmDeleteDialog, InfoDialog, SplashComponent, StatusToggleComponent, NavBackComponent
+        ConfirmDeleteDialog, InfoDialog, SplashComponent, StatusToggleComponent, NavBackComponent, AutomaticLogoutComponent
     ],
     exports: [
-        ConfirmDeleteDialog, InfoDialog, SplashComponent, StatusToggleComponent, NavBackComponent
+        ConfirmDeleteDialog, InfoDialog, SplashComponent, StatusToggleComponent, NavBackComponent, AutomaticLogoutComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     imports: [

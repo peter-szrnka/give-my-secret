@@ -50,7 +50,10 @@ export const PROPERTY_TEXT_MAP: any = {
   'MESSAGE_CLEANUP_RUNNER_CONTAINER_ID' : { text: 'Main container ID for message cleanup job', displayMode: 'text' },
   'SECRET_ROTATION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for secret rotation job', displayMode: 'text' },
   'USER_DELETION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running user deletion job', displayMode: 'text' },
-  'ENABLE_MULTI_NODE' : { text: 'Multi-node usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' }
+  'ENABLE_MULTI_NODE' : { text: 'Multi-node usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
+
+  'ENABLE_AUTOMATIC_LOGOUT' : { text: 'Automatic logout is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
+  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES' : { text: 'Automatic logout is performed after T minutes', displayMode: 'text' }
 };
 
 interface SystemPropertyElement extends SystemProperty {
@@ -113,12 +116,12 @@ export class SystemPropertyListComponent {
     return resultList.map((property: SystemProperty) => {
       return {
         ...property,
-        textDescription: PROPERTY_TEXT_MAP[property.key].text,
-        valueSet: PROPERTY_TEXT_MAP[property.key].valueSet || [],
+        textDescription: PROPERTY_TEXT_MAP[property.key]?.text,
+        valueSet: PROPERTY_TEXT_MAP[property.key]?.valueSet || [],
         mode: undefined,
         inputType: TYPE_MAP[property.type],
-        hint: PROPERTY_TEXT_MAP[property.key].hint || undefined,
-        displayMode: PROPERTY_TEXT_MAP[property.key].displayMode
+        hint: PROPERTY_TEXT_MAP[property.key]?.hint || undefined,
+        displayMode: PROPERTY_TEXT_MAP[property.key]?.displayMode
       };
     }) as SystemPropertyElement[];
   }

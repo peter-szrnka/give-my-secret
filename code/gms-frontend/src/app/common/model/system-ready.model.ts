@@ -4,5 +4,6 @@
 export interface SystemReadyData {
     ready : boolean,
     status: number,
-    authMode : string
+    authMode : string,
+    automaticLogoutTimeInMinutes?: number
 }

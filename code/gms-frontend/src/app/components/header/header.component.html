@@ -9,11 +9,14 @@
 
       @if (isProd === false) {
         <span class="label_env show-large">Development mode</span>
-      }
-      @if (isProd === false) {
         <span class="label_env show-small">Dev</span>
       }
-      <span class="label_user">{{currentUser?.username}}</span>
+      <span class="label_user">
+        @if (automaticLogoutTimeInMinutes() > 0) {
+          <automatic-logout [automaticLogoutTimeInMinutes]="automaticLogoutTimeInMinutes()" />
+        }
+        {{currentUser?.username}}
+      </span>
       <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Context menu">
         @if (unreadMessageCount > 0) {
           <mat-icon matBadge="i" matBadgeColor="warn" aria-hidden="false">person</mat-icon>

@@ -32,7 +32,9 @@ public enum SystemProperty {
 	LDAP_SYNC_RUNNER_CONTAINER_ID(PropertyType.STRING, ""),
 	MESSAGE_CLEANUP_RUNNER_CONTAINER_ID(PropertyType.STRING, ""),
 	SECRET_ROTATION_RUNNER_CONTAINER_ID(PropertyType.STRING, ""),
-	USER_DELETION_RUNNER_CONTAINER_ID(PropertyType.STRING, ""),;
+	USER_DELETION_RUNNER_CONTAINER_ID(PropertyType.STRING, ""),
+	ENABLE_AUTOMATIC_LOGOUT(PropertyType.BOOLEAN, "false"),
+	AUTOMATIC_LOGOUT_TIME_IN_MINUTES(PropertyType.INTEGER, "10"),;
 
 	SystemProperty(PropertyType type, String defaultValue) {
 		this.type = type;
