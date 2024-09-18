@@ -1,16 +1,16 @@
+import { HttpErrorResponse } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { EMPTY, Observable, of, Subject, throwError } from "rxjs";
-import { User } from "../../components/user/model/user.model";
 import { SetupService } from "../../components/setup/service/setup-service";
-import { SharedDataService } from "./shared-data-service";
-import { Router } from "@angular/router";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { User } from "../../components/user/model/user.model";
+import { SystemReadyData } from "../model/system-ready.model";
 import { SystemStatus } from "../model/system-status.model";
 import { AuthService } from "./auth-service";
-import { HttpErrorResponse } from "@angular/common/http";
-import { SystemReadyData } from "../model/system-ready.model";
 import { InformationService } from "./info-service";
+import { SharedDataService } from "./shared-data-service";
 
 /**
  * @author Peter Szrnka
@@ -90,6 +90,14 @@ describe('SharedDataService', () => {
     // act
     configureTestBed();
     service.clearData();
+  });
+
+  it('should refresh current user info', () => {
+    // arrange
+    configureTestBed();
+
+    // act
+    service.resetAutomaticLogoutTimer();
   });
 
   it.each([

@@ -40,6 +40,7 @@ describe('HeaderComponent', () => {
     let eventEmitter: EventEmitter<number>;
     let menuEmitter: EventEmitter<boolean>;
     let mockSubject: ReplaySubject<any>;
+    let mockSystemReadySubject: ReplaySubject<any> = new ReplaySubject<any>();
     let currentUser: User | any;
 
     // Fixtures
@@ -54,6 +55,7 @@ describe('HeaderComponent', () => {
             logout: jest.fn(),
             messageCountUpdateEvent: eventEmitter,
             showLargeMenuEvent: menuEmitter,
+            systemReadySubject$: mockSystemReadySubject,
             userSubject$: mockSubject,
             getAllUnread : jest.fn()
         };
@@ -84,6 +86,7 @@ describe('HeaderComponent', () => {
         fixture = TestBed.createComponent(HeaderComponent);
         component = fixture.componentInstance;
         mockSubject.next(currentUser);
+        mockSystemReadySubject.next({ automaticLogoutTimeInMinutes: 1});
         fixture.detectChanges();
         component.ngOnDestroy();
     });
@@ -97,6 +100,7 @@ describe('HeaderComponent', () => {
             username: "test1",
             id: 1
         };
+        mockSystemReadySubject.next({});
         mockSubject.next(currentUser);
         fixture.detectChanges();
         menuEmitter.emit(true);
@@ -121,6 +125,7 @@ describe('HeaderComponent', () => {
             id: 1
         };
         mockSubject.next(currentUser);
+        mockSystemReadySubject.next({ automaticLogoutTimeInMinutes: 1});
         fixture.detectChanges();
         menuEmitter.emit(true);
         eventEmitter.emit(2);
