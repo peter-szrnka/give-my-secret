@@ -15,10 +15,6 @@ import { InfoDialog } from "../info-dialog/info-dialog.component";
 export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
     @Input() automaticLogoutTimeInMs: number;
-    @Input() warningBeforeLogoutInMs?: number = 30000;
-    timerValue: number = 1000;
-    timerStep: number = 1000;
-
     timeLeft: Observable<number>;
     timeLeftSubscription: Subscription;
     logoutComing: boolean = false;
@@ -33,22 +29,17 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.timeLeftSubscription.unsubscribe();
+        this.timeLeftSubscription?.unsubscribe();
     }
 
-    private initiateTimer(): void {
-        console.info("initiate timer: timerValue = " + this.timerValue + ", automaticLogoutTimeInMs = " + this.automaticLogoutTimeInMs);
-        this.timeLeft = timer(0, this.timerValue).pipe(
-            map(n => {
-                console.info("n = " + n);
-                return (this.automaticLogoutTimeInMs) - (n * this.timerStep);
-            }),
+    initiateTimer(): void {
+        this.timeLeft = timer(0, 1000).pipe(
+            map(n => this.automaticLogoutTimeInMs - (n * 1000)),
             takeWhile(n => n >= 0) 
         );
 
         this.timeLeftSubscription = this.timeLeft.subscribe(n => {
-            console.info("time left: " + n);
-            if (n === this.warningBeforeLogoutInMs) {
+            if (n === 30000) {
                 this.logoutComing = true;
             }
             
