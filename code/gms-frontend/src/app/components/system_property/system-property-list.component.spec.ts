@@ -13,7 +13,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
-import { PROPERTY_TEXT_MAP, SystemPropertyListComponent } from "./system-property-list.component";
+import { SystemPropertyListComponent } from "./system-property-list.component";
 
 /**
  * @author Peter Szrnka
@@ -149,7 +149,26 @@ describe('SystemPropertyListComponent', () => {
         // assert
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
-        expect(router.navigate).toBeCalledWith(['/system_property/list']);
+        expect(router.navigate).toHaveBeenCalledWith(['/system_property/list']);
+    });
+
+    it('Should save succeed with callback', () => {
+        // arrange
+        configureTestBed();
+
+        expect(component).toBeTruthy();
+
+        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
+        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
+
+        // act
+        component.onFetch({ pageSize: 10 });
+        component.save({ key : 'X', value : 'value', type : 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
+
+        // assert
+        expect(component.dialog.open).toHaveBeenCalled();
+        expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledWith(['/system_property/list']);
     });
 
     it('Should delete an item', () => {
@@ -167,7 +186,7 @@ describe('SystemPropertyListComponent', () => {
         expect(service.delete).toHaveBeenCalled();
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
-        expect(router.navigate).toBeCalledWith(['/system_property/list']);
+        expect(router.navigate).toHaveBeenCalledWith(['/system_property/list']);
     });
 
     it('Should cancel dialog after delete', () => {

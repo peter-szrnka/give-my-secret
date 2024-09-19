@@ -34,14 +34,12 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
     initiateTimer(): void {
         this.timeLeft = timer(0, 1000).pipe(
-            map(n => (this.automaticLogoutTimeInMinutes*60000) - (n * 1000)),
+            map(n => (this.automaticLogoutTimeInMinutes*1000*60) - (n * 1000)),
             takeWhile(n => n >= 0) 
         );
 
         this.timeLeftSubscription = this.timeLeft.subscribe(n => {
-            if (n === 30000) {
-                this.logoutComing = true;
-            }
+            this.logoutComing = (n <= 30000);
             
             if (n === 0) {
                 this.dialog.open(InfoDialog, { data: { title: 'Automatic Logout', text: 'You have been logged out due to inactivity.', type: 'information' } });

@@ -48,7 +48,7 @@ describe('AutomaticLogoutComponent', () => {
     });
   
     it('should set logoutComing to true on warning before logout', async () => {
-      component.automaticLogoutTimeInMs = 60000; // Example time for testing
+      component.automaticLogoutTimeInMinutes = 1; // Example time for testing
       expect(component).toBeTruthy();
 
       component.ngOnInit();
