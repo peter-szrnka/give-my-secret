@@ -51,8 +51,7 @@ export const PROPERTY_TEXT_MAP: any = {
   'SECRET_ROTATION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for secret rotation job', displayMode: 'text' },
   'USER_DELETION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running user deletion job', displayMode: 'text' },
   'ENABLE_MULTI_NODE' : { text: 'Multi-node usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-
-  'ENABLE_AUTOMATIC_LOGOUT' : { text: 'Automatic logout is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
+  'ENABLE_AUTOMATIC_LOGOUT' : { text: 'Automatic logout is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list', callbackMethod: 'checkSystemReady' },
   'AUTOMATIC_LOGOUT_TIME_IN_MINUTES' : { text: 'Automatic logout is performed after T minutes', displayMode: 'text' }
 };
 
@@ -121,7 +120,8 @@ export class SystemPropertyListComponent {
         mode: undefined,
         inputType: TYPE_MAP[property.type],
         hint: PROPERTY_TEXT_MAP[property.key]?.hint || undefined,
-        displayMode: PROPERTY_TEXT_MAP[property.key]?.displayMode
+        displayMode: PROPERTY_TEXT_MAP[property.key]?.displayMode,
+        callbackMethod: PROPERTY_TEXT_MAP[property.key]?.callbackMethod
       };
     }) as SystemPropertyElement[];
   }
@@ -137,6 +137,8 @@ export class SystemPropertyListComponent {
     this.service.save(element).subscribe({
       next: () => {
         this.openInformationDialog("System property has been saved!", true, 'information');
+        this.executeCallbackMethod(element.callbackMethod);
+        void this.router.navigate(['/system_property/list']);
       },
       error: (err) => {
         this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
@@ -175,5 +177,15 @@ export class SystemPropertyListComponent {
 
   private initDefaultDataTable() {
     this.datasource = new ArrayDataSource<SystemPropertyElement>([]);
+  }
+
+  private executeCallbackMethod(callbackMethod?: string) {
+    if (!callbackMethod) {
+      return;
+    }
+
+    if (callbackMethod === 'checkSystemReady') {
+      this.sharedData.checkSystemReady();
+    }
   }
 }

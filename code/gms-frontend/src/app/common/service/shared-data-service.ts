@@ -62,21 +62,25 @@ export class SharedDataService {
 
     public check() {
         if (this.systemReady === undefined) {
-            this.setupService.checkReady().pipe(catchError(() => {
-                return of({ status: 'FAIL' } as SystemStatus);
-            })).subscribe(response => {
-                if (response.status === "FAIL") {
-                    this.systemReadySubject$.next({ ready: false, status: 0, authMode: response.authMode });
-                    return;
-                }
-
-                this.systemReady = "OK" === response.status;
-                this.authModeSubject$.next(response.authMode);
-                this.authMode = response.authMode;
-                this.systemReadySubject$.next({ ready: this.systemReady, status: 200, authMode: response.authMode, automaticLogoutTimeInMinutes: response.automaticLogoutTimeInMinutes });
-                this.refreshCurrentUserInfo();
-            });
+            this.checkSystemReady();
         }
+    }
+
+    public checkSystemReady() {
+        this.setupService.checkReady().pipe(catchError(() => {
+            return of({ status: 'FAIL' } as SystemStatus);
+        })).subscribe(response => {
+            if (response.status === "FAIL") {
+                this.systemReadySubject$.next({ ready: false, status: 0, authMode: response.authMode });
+                return;
+            }
+
+            this.systemReady = "OK" === response.status;
+            this.authModeSubject$.next(response.authMode);
+            this.authMode = response.authMode;
+            this.systemReadySubject$.next({ ready: this.systemReady, status: 200, authMode: response.authMode, automaticLogoutTimeInMinutes: response.automaticLogoutTimeInMinutes });
+            this.refreshCurrentUserInfo();
+        });
     }
 
     resetAutomaticLogoutTimer() {

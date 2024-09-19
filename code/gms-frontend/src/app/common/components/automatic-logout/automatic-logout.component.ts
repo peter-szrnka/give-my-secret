@@ -14,7 +14,7 @@ import { InfoDialog } from "../info-dialog/info-dialog.component";
 })
 export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
-    @Input() automaticLogoutTimeInMs: number;
+    @Input() automaticLogoutTimeInMinutes: number;
     timeLeft: Observable<number>;
     timeLeftSubscription: Subscription;
     logoutComing: boolean = false;
@@ -34,7 +34,7 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
     initiateTimer(): void {
         this.timeLeft = timer(0, 1000).pipe(
-            map(n => this.automaticLogoutTimeInMs - (n * 1000)),
+            map(n => (this.automaticLogoutTimeInMinutes*60000) - (n * 1000)),
             takeWhile(n => n >= 0) 
         );
 
