@@ -22,6 +22,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.gms.util.LogAssertionUtils.assertLogEqualsIgnoreCase;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -101,7 +102,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
-		assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equalsIgnoreCase("Login failed")));
+		assertLogEqualsIgnoreCase(logAppender, "Login failed");
 		verify(userLoginAttemptManagerService).isBlocked("user");
 		verify(userLoginAttemptManagerService).updateLoginAttempt("user");
 	}
@@ -178,7 +179,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		service.logout();
 
 		// assert
-		assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equalsIgnoreCase("User logged out")));
+		assertLogEqualsIgnoreCase(logAppender, "User logged out");
 	}
 
 	private static Object[][] nonMfaTestData() {

@@ -28,7 +28,9 @@ import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
-import static io.github.gms.util.TestUtils.*;
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
+import static io.github.gms.util.TestUtils.MOCK_ACCESS_TOKEN;
+import static io.github.gms.util.TestUtils.MOCK_REFRESH_TOKEN;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;

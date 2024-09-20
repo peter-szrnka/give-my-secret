@@ -1,7 +1,7 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
@@ -52,7 +52,7 @@ export const PROPERTY_TEXT_MAP: any = {
   'USER_DELETION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running user deletion job', displayMode: 'text' },
   'ENABLE_MULTI_NODE' : { text: 'Multi-node usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'ENABLE_AUTOMATIC_LOGOUT' : { text: 'Automatic logout is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list', callbackMethod: 'checkSystemReady' },
-  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES' : { text: 'Automatic logout is performed after T minutes', displayMode: 'text' }
+  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES' : { text: 'Automatic logout is performed after T minutes', displayMode: 'text', hint: 'Minimum value is 1 minute', callbackMethod: 'checkSystemReady' }
 };
 
 interface SystemPropertyElement extends SystemProperty {
@@ -138,26 +138,29 @@ export class SystemPropertyListComponent {
       next: () => {
         this.openInformationDialog("System property has been saved!", true, 'information');
         this.executeCallbackMethod(element.callbackMethod);
-        void this.router.navigate(['/system_property/list']);
       },
       error: (err) => {
         this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
+        this.reloadPage();
       }
     });
   }
 
-  public promptDelete(key: string) {
+  public promptDelete(element: SystemProperty) {
     const dialogRef = this.dialog.open(ConfirmDeleteDialog, {
       width: '250px',
       data: true,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result !== true) {
         return;
       }
 
-      this.service.delete(key).subscribe(() => void this.router.navigate(['/system_property/list']));
+      this.service.delete(element.key).subscribe(() => {
+        this.executeCallbackMethod(element.callbackMethod);
+        this.reloadPage();
+      });
     });
   }
 
@@ -171,7 +174,7 @@ export class SystemPropertyListComponent {
         return;
       }
 
-      void this.router.navigate(['/system_property/list']);
+      this.reloadPage();
     });
   }
 
@@ -187,5 +190,14 @@ export class SystemPropertyListComponent {
     if (callbackMethod === 'checkSystemReady') {
       this.sharedData.checkSystemReady();
     }
+  }
+
+  private reloadPage() {
+    const queryParams: Params = { t: new Date().getTime() };
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams,
+        queryParamsHandling: 'merge'
+      });
   }
 }

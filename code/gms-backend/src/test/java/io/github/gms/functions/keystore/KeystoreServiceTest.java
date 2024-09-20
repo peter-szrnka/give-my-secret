@@ -49,7 +49,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static io.github.gms.util.TestUtils.assertLogContains;
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;

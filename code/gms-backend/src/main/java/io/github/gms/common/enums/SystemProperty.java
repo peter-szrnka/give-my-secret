@@ -12,9 +12,9 @@ import java.util.Optional;
  */
 @Getter
 public enum SystemProperty {
-	ACCESS_JWT_EXPIRATION_TIME_SECONDS(PropertyType.LONG, "900"),
+	ACCESS_JWT_EXPIRATION_TIME_SECONDS(PropertyType.LONG, "900", value -> Integer.parseInt(value) > 0),
 	ACCESS_JWT_ALGORITHM(PropertyType.STRING, "HS512"),
-	REFRESH_JWT_EXPIRATION_TIME_SECONDS(PropertyType.LONG, "86400"),
+	REFRESH_JWT_EXPIRATION_TIME_SECONDS(PropertyType.LONG, "86400", value -> Integer.parseInt(value) > 0),
 	REFRESH_JWT_ALGORITHM(PropertyType.STRING, "HS512"),
 	ORGANIZATION_NAME(PropertyType.STRING, "NA"),
 	ORGANIZATION_CITY(PropertyType.STRING, "NA"),
@@ -34,15 +34,22 @@ public enum SystemProperty {
 	SECRET_ROTATION_RUNNER_CONTAINER_ID(PropertyType.STRING, ""),
 	USER_DELETION_RUNNER_CONTAINER_ID(PropertyType.STRING, ""),
 	ENABLE_AUTOMATIC_LOGOUT(PropertyType.BOOLEAN, "false"),
-	AUTOMATIC_LOGOUT_TIME_IN_MINUTES(PropertyType.INTEGER, "10"),;
+	AUTOMATIC_LOGOUT_TIME_IN_MINUTES(PropertyType.INTEGER, "15", value -> Integer.parseInt(value) >= 15);
 
 	SystemProperty(PropertyType type, String defaultValue) {
 		this.type = type;
 		this.defaultValue = defaultValue;
 	}
 
+	SystemProperty(PropertyType type, String defaultValue, PropertyTypeValidator validator) {
+		this.type = type;
+		this.defaultValue = defaultValue;
+		this.validator = validator;
+	}
+
 	private final String defaultValue;
 	private final PropertyType type;
+	private PropertyTypeValidator validator = value -> true;
 
 	private static final Map<String, SystemProperty> keyMap = new HashMap<>();
 
@@ -54,5 +61,10 @@ public enum SystemProperty {
 
 	public static Optional<SystemProperty> getByKey(String key) {
 		return Optional.ofNullable(keyMap.get(key));
+	}
+
+	@FunctionalInterface
+	public interface PropertyTypeValidator {
+		boolean validate(String value);
 	}
 }

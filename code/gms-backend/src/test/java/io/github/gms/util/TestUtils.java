@@ -1,7 +1,5 @@
 package io.github.gms.util;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Sets;
@@ -62,7 +60,6 @@ import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.API_KEY_HEADER;
 import static io.github.gms.util.DemoData.USER_3_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Szrnka
@@ -597,14 +594,6 @@ public class TestUtils {
 		entity.setKeystoreAliasId(1L);
 		entity.setType(type);
 		return entity;
-	}
-
-	public static void assertLogContains(ListAppender<ILoggingEvent> appender, String expectedMessage) {
-		assertTrue(appender.list.stream().anyMatch(event -> event.getFormattedMessage().contains(expectedMessage)));
-	}
-
-	public static void assertLogMissing(ListAppender<ILoggingEvent> appender, String expectedMessage) {
-		assertTrue(appender.list.stream().noneMatch(event -> event.getFormattedMessage().contains(expectedMessage)));
 	}
 
 	public static <T extends Exception> void assertException(Executable executable, String expectedMessage) {

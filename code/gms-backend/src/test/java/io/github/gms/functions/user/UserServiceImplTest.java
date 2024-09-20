@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -75,8 +76,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 		// assert
 		assertNotNull(response);
-		assertTrue(logAppender.list.stream()
-				.anyMatch(log -> log.getFormattedMessage().contains("service saveUser called")));
+		assertLogContains(logAppender, "service saveUser called");
 		verify(converter).toNewEntity(any(SaveUserRequestDto.class), eq(true));
 		ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
 		verify(repository).save(userEntityArgumentCaptor.capture());
@@ -135,8 +135,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 		// assert
 		assertEquals("User not found!", exception.getMessage());
-		assertTrue(logAppender.list.stream()
-				.anyMatch(log -> log.getFormattedMessage().contains("User not found")));
+		assertLogContains(logAppender, "User not found");
 		verify(repository).findById(1L);
 	}
 

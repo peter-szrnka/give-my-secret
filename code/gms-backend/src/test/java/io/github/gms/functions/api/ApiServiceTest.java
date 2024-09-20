@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static io.github.gms.common.util.Constants.VALUE;
-import static io.github.gms.util.TestUtils.assertLogContains;
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;

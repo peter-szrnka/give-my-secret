@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -49,7 +50,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 		
 		// act & assert
 	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "java.io.EOFException");
-	    assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().contains("Keystore cannot be loaded!")));
+		assertLogContains(logAppender, "Keystore cannot be loaded!");
 	}
 	
 	@Test
@@ -74,7 +75,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 		
 		// act & assert
 	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "java.security.UnrecoverableKeyException: Cannot recover key");
-	    TestUtils.assertLogContains(logAppender, "Keystore cannot be loaded!");
+	    assertLogContains(logAppender, "Keystore cannot be loaded!");
 	}
 	
 	@Test

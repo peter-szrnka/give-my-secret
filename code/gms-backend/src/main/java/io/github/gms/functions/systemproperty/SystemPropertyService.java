@@ -29,7 +29,13 @@ public class SystemPropertyService {
 
 	@CacheEvict(allEntries = true)
 	public void save(SystemPropertyDto dto) {
-		SystemPropertyEntity entity = repository.findByKey(getSystemPropertyByName(dto.getKey()));
+		SystemProperty systemProperty = getSystemPropertyByName(dto.getKey());
+		SystemPropertyEntity entity = repository.findByKey(systemProperty);
+
+		if (!systemProperty.getValidator().validate(dto.getValue())) {
+			throw new GmsException("Invalid value for system property!", ErrorCode.GMS_027);
+		}
+
 		repository.save(converter.toEntity(entity, dto));
 	}
 

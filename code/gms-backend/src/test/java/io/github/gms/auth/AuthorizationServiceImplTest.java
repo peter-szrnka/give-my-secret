@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.Map;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
+import static io.github.gms.util.LogAssertionUtils.assertLogEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -82,7 +84,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		AuthorizationResponse response = service.authorize(req);
 		
 		// assert
-		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().contains("Authorization failed: ")));
+		assertLogContains(logAppender, "Authorization failed: ");
 		assertEquals("Authorization failed!", response.getErrorMessage());
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
 		verify(jwtService).parseJwt(anyString(), anyString());
@@ -106,7 +108,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		AuthorizationResponse response = service.authorize(req);
 		
 		// assert
-		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("Authentication failed: JWT token has expired!")));
+		assertLogEquals(logAppender, "Authentication failed: JWT token has expired!");
 		assertEquals("JWT token has expired!", response.getErrorMessage());
 		assertEquals(HttpStatus.BAD_REQUEST, response.getResponseStatus());
 		
@@ -132,7 +134,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		AuthorizationResponse response = service.authorize(req);
 		
 		// assert
-		assertTrue(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("User is blocked")));
+		assertLogEquals(logAppender, "User is blocked");
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
 		assertEquals("User is blocked", response.getErrorMessage());
 
@@ -164,7 +166,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		AuthorizationResponse response = service.authorize(req);
 		
 		// assert
-		assertFalse(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().equals("Authentication failed: JWT token has expired!")));
+		assertLogEquals(logAppender, "Authentication failed: JWT token has expired!");
 		assertEquals(HttpStatus.OK, response.getResponseStatus());
 		assertTrue(response.getJwtPair().toString().contains("REFRESH_JWT=REFRESH_JWT"));
 		assertTrue(response.getJwtPair().toString().contains("ACCESS_JWT=ACCESS_JWT"));

@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static io.github.gms.util.TestUtils.assertLogContains;
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
