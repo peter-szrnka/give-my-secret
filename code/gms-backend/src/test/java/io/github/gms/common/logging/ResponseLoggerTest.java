@@ -12,6 +12,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 
+import static io.github.gms.util.LogAssertionUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -61,7 +62,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
         // assert
         verify(sensitiveLoggingObjectMapper).writeValueAsString(body);
         verify(objectMapper, never()).writeValueAsString(body);
-        assertTrue(logAppender.list.stream().anyMatch(logEvent -> logEvent.getFormattedMessage().startsWith("Response logged: body")));
+        assertLogStartsWith(logAppender, "Response logged: body");
     }
 
     @Test
@@ -81,7 +82,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
 
         // assert
         verify(sensitiveLoggingObjectMapper, never()).writeValueAsString(body);
-        assertTrue(logAppender.list.stream().anyMatch(logEvent -> logEvent.getFormattedMessage().startsWith("Response logged: body")));
+        assertLogStartsWith(logAppender, "Response logged: body");
         verify(objectMapper).writeValueAsString(body);
     }
 
@@ -101,7 +102,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
 
         // assert
         verify(objectMapper, never()).writeValueAsString(body);
-        assertTrue(logAppender.list.isEmpty());
+        assertLogEmpty(logAppender);
     }
 
     @Test
@@ -120,6 +121,6 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
 
         // assert
         verify(sensitiveLoggingObjectMapper).writeValueAsString(body);
-        assertTrue(logAppender.list.stream().anyMatch(logEvent -> logEvent.getFormattedMessage().contains("Error while logging response")));
+        assertLogContains(logAppender, "Error while logging response");
     }
 }

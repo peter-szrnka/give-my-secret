@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.Set;
 
-import static io.github.gms.util.TestUtils.assertLogContains;
-import static io.github.gms.util.TestUtils.assertLogMissing;
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
+import static io.github.gms.util.LogAssertionUtils.assertLogMissing;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 

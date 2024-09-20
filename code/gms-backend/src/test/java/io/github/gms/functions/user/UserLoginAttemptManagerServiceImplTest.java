@@ -13,8 +13,8 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.Optional;
 
-import static io.github.gms.util.TestUtils.assertLogContains;
-import static io.github.gms.util.TestUtils.assertLogMissing;
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
+import static io.github.gms.util.LogAssertionUtils.assertLogMissing;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;

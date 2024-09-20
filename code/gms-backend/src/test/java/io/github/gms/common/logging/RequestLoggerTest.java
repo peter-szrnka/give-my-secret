@@ -12,6 +12,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 
 import java.lang.reflect.Type;
 
+import static io.github.gms.util.LogAssertionUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -68,7 +69,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         // assert
         verify(sensitiveLoggingObjectMapper, never()).writeValueAsString(body);
         verify(objectMapper).writeValueAsString(body);
-        assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equals("Request logged: body")));
+        assertLogEquals(logAppender, "Request logged: body");
     }
 
     @Test
@@ -87,7 +88,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         // assert
         verify(sensitiveLoggingObjectMapper).writeValueAsString(body);
         verify(objectMapper, never()).writeValueAsString(body);
-        assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equals("Request logged: body")));
+        assertLogEquals(logAppender, "Request logged: body");
     }
 
     @Test
@@ -123,7 +124,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         assertEquals(body, requestLogger.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType));
 
         // assert
-        assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().startsWith("Error while logging request")));
+        assertLogStartsWith(logAppender, "Error while logging request");
     }
 
     @Test
@@ -139,6 +140,6 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         assertEquals(body, requestLogger.handleEmptyBody(body, inputMessage, methodParameter, targetType, converterType));
 
         // assert
-        assertTrue(logAppender.list.isEmpty());
+        assertLogEmpty(logAppender);
     }
 }

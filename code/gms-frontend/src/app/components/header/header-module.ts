@@ -6,6 +6,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { HeaderComponent } from "./header.component";
 import { NavMenuModule } from "../menu/nav-menu.module";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 /**
  * @author Peter Szrnka
@@ -15,13 +16,14 @@ import { NavMenuModule } from "../menu/nav-menu.module";
       HeaderComponent
     ],
     imports: [
-        AngularMaterialModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        AppRoutingModule,
-        NavMenuModule
-    ],
+    AngularMaterialModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    NavMenuModule,
+    GmsComponentsModule
+],
     providers: [],
     exports : [ HeaderComponent ]
   })

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -29,6 +30,9 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class RequestInitializationFilter extends OncePerRequestFilter {
 
+    @Value("${config.log.response.time.disabled:false}")
+    private boolean logResponseTimeDisabled;
+
     private final Clock clock;
 
     @Override
@@ -41,9 +45,16 @@ public class RequestInitializationFilter extends OncePerRequestFilter {
         response.addHeader("X-CORRELATION-ID", MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
 
         filterChain.doFilter(request, response);
-
-        log.info("Request: {} took {} ms", kv("uri", request.getRequestURI()), kv("duration", clock.millis() - startTime));
+        logResponseTime(request, startTime);
 
         MDC.remove(MdcParameter.CORRELATION_ID.getDisplayName());
+    }
+
+    private void logResponseTime(HttpServletRequest request, long startTime) {
+        if (logResponseTimeDisabled) {
+            return;
+        }
+
+        log.info("Request: {} took {} ms", kv("uri", request.getRequestURI()), kv("duration", clock.millis() - startTime));
     }
 }

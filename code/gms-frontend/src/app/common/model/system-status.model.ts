@@ -8,4 +8,5 @@ export interface SystemStatus {
     built: string;
     containerHostType: string;
     containerId?: string;
+    automaticLogoutTimeInMinutes?: number;
 }

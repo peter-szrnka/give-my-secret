@@ -10,8 +10,8 @@ import org.springframework.http.client.ClientHttpResponse;
 import java.io.IOException;
 import java.net.URI;
 
-import static io.github.gms.util.TestUtils.assertLogContains;
-import static io.github.gms.util.TestUtils.assertLogMissing;
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
+import static io.github.gms.util.LogAssertionUtils.assertLogMissing;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 

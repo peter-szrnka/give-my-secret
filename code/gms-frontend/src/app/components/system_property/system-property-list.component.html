@@ -19,7 +19,9 @@
               <span>{{element.value}}</span>
             }
             @if (element.mode === 'EDIT' && element.displayMode === 'text') {
-              <input name="value" type="{{element.inputType}}" [(ngModel)]="element.value" />
+              <mat-form-field class="example-full-width">
+                <input matInput name="value" type="{{element.inputType}}" [(ngModel)]="element.value" />
+              </mat-form-field>
             }
             @if (element.mode === 'EDIT' && element.displayMode === 'list') {
               <mat-select name="value" [(ngModel)]="element.value">
@@ -52,8 +54,6 @@
                 (click)="element.mode=undefined">
                 <mat-icon aria-hidden="false">undo</mat-icon>
               </button>
-            }
-            @if (element.mode === 'EDIT') {
               <button mat-icon-button color="primary"
                 (click)="save(element)">
                 <mat-icon aria-hidden="false">save</mat-icon>
@@ -61,7 +61,7 @@
             }
             @if (!element.mode && element.factoryValue === false) {
               <button mat-icon-button color="warn"
-                (click)="promptDelete(element.key)">
+                (click)="promptDelete(element)">
                 <mat-icon aria-hidden="false">delete</mat-icon>
               </button>
             }

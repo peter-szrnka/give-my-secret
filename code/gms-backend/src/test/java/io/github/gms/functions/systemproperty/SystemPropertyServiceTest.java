@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -42,6 +43,23 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 		converter = mock(SystemPropertyConverter.class);
 		repository = mock(SystemPropertyRepository.class);
 		service = new SystemPropertyService(converter, repository);
+	}
+
+	@Test
+	void shouldNotSaveNewSystemProperty() {
+		// arrange
+		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
+		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("0").build();
+		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(mockEntity);
+
+		//act
+		GmsException exception = assertThrows(GmsException.class, () -> service.save(inputDto));
+
+		// assert
+		assertThat(exception).hasMessage("Invalid value for system property!");
+		verify(repository).findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
+		verify(converter, never()).toEntity(mockEntity, inputDto);
+		verify(repository, never()).save(mockEntity);
 	}
 	
 	@Test

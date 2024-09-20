@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static io.github.gms.util.TestUtils.assertLogContains;
+import static io.github.gms.util.LogAssertionUtils.assertLogContains;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;

@@ -39,6 +39,7 @@ public enum ErrorCode {
     GMS_025("GMS-025", "the given resource is not a global IP restriction"),
     // System property
     GMS_026("GMS-026", "Unknown system property"),
+    GMS_027("GMS-027", "Invalid value for system property"),
     ;
 
     private final String code;

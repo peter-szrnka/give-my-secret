@@ -7,15 +7,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 import org.slf4j.MDC;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.time.Clock;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static io.github.gms.util.LogAssertionUtils.assertLogEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -37,8 +39,11 @@ class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
         addAppender(RequestInitializationFilter.class);
     }
 
-    @Test
-    void testDoFilterInternal() throws ServletException, IOException {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testDoFilterInternal(boolean logResponseTimeDisabled) throws ServletException, IOException {
+        ReflectionTestUtils.setField(filter, "logResponseTimeDisabled", logResponseTimeDisabled);
+
         try (MockedStatic<MDC> mdcMockedStatic = mockStatic(MDC.class)) {
             // arrange
             AtomicBoolean atomicInteger = new AtomicBoolean(false);
@@ -51,7 +56,9 @@ class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
                 }
             });
             HttpServletRequest request = mock(HttpServletRequest.class);
-            when(request.getRequestURI()).thenReturn("/test");
+            if (!logResponseTimeDisabled) {
+                when(request.getRequestURI()).thenReturn("/test");
+            }
             HttpServletResponse response = mock(HttpServletResponse.class);
             FilterChain filterChain = mock(FilterChain.class);
             mdcMockedStatic.when(() -> MDC.get(MdcParameter.CORRELATION_ID.getDisplayName())).thenReturn("MOCK_CORRELATION_ID");
@@ -65,8 +72,11 @@ class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
             mdcMockedStatic.verify(() -> MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
             mdcMockedStatic.verify(() -> MDC.put(eq(MdcParameter.CORRELATION_ID.getDisplayName()), anyString()));
             mdcMockedStatic.verify(() -> MDC.remove(MdcParameter.CORRELATION_ID.getDisplayName()));
-            verify(clock, times(2)).millis();
-            assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equals("Request: uri=/test took duration=100 ms")));
+            verify(clock, times(logResponseTimeDisabled ? 1 : 2)).millis();
+
+            if (!logResponseTimeDisabled) {
+                assertLogEquals(logAppender, "Request: uri=/test took duration=100 ms");
+            }
         }
     }
 }

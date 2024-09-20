@@ -69,7 +69,8 @@ describe('AppComponent', () => {
             systemReadySubject$ : mockSystemReadySubject,
             getUserInfo : jest.fn(),
             clearData : jest.fn(),
-            navigationChangeEvent: mockNavigationEmitter
+            navigationChangeEvent: mockNavigationEmitter,
+            resetAutomaticLogoutTimer: jest.fn()
         };
 
         splashScreenStateService = {
@@ -132,7 +133,7 @@ describe('AppComponent', () => {
 
     it('System is not ready', () => {
         configureTestBed();
-        mockSystemReadySubject.next({ ready: false, status: 200, authMode : 'db' });
+        mockSystemReadySubject.next({ ready: false, status: 200, authMode : 'db', automaticLogoutTimeInMinutes: 1 });
         fixture.autoDetectChanges();
 
         // act & assert
