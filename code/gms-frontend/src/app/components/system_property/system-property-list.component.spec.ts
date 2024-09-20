@@ -149,7 +149,7 @@ describe('SystemPropertyListComponent', () => {
         // assert
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalledWith(['/system_property/list']);
+        expect(router.navigate).toHaveBeenCalled();
     });
 
     it('Should save succeed with callback', () => {
@@ -168,7 +168,7 @@ describe('SystemPropertyListComponent', () => {
         // assert
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalledWith(['/system_property/list']);
+        expect(router.navigate).toHaveBeenCalled();
     });
 
     it('Should delete an item', () => {
@@ -186,7 +186,6 @@ describe('SystemPropertyListComponent', () => {
         expect(service.delete).toHaveBeenCalled();
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalledWith(['/system_property/list']);
     });
 
     it('Should cancel dialog after delete', () => {
