@@ -22,7 +22,7 @@ public enum SystemProperty {
 	ENABLE_GLOBAL_MFA(PropertyType.BOOLEAN, "false"),
 	// MFA is enabled for users to use
 	ENABLE_MFA(PropertyType.BOOLEAN, "false"),
-	FAILED_ATTEMPTS_LIMIT(PropertyType.INTEGER, "3"),
+	FAILED_ATTEMPTS_LIMIT(PropertyType.INTEGER, "3", value -> Integer.parseInt(value) > 0),
 	// Job configurations
 	JOB_OLD_MESSAGE_LIMIT(PropertyType.STRING, "90;d"),
 	JOB_OLD_EVENT_LIMIT(PropertyType.STRING, "180;d"),

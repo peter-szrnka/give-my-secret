@@ -52,7 +52,7 @@ export const PROPERTY_TEXT_MAP: any = {
   'USER_DELETION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running user deletion job', displayMode: 'text' },
   'ENABLE_MULTI_NODE' : { text: 'Multi-node usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'ENABLE_AUTOMATIC_LOGOUT' : { text: 'Automatic logout is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list', callbackMethod: 'checkSystemReady' },
-  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES' : { text: 'Automatic logout is performed after T minutes', displayMode: 'text', hint: 'Minimum value is 1 minute', callbackMethod: 'checkSystemReady' }
+  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES' : { text: 'Automatic logout is performed after T minutes', displayMode: 'text', hint: 'Minimum value is 15 minutes', callbackMethod: 'checkSystemReady' }
 };
 
 interface SystemPropertyElement extends SystemProperty {
