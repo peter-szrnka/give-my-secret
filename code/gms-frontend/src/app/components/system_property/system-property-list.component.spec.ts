@@ -181,7 +181,7 @@ describe('SystemPropertyListComponent', () => {
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
 
         // act
-        component.promptDelete('REFRESH_JWT_ALGORITHM');
+        component.promptDelete({ key : 'REFRESH_JWT_ALGORITHM', value : 'value', type : 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
 
         expect(service.delete).toHaveBeenCalled();
         expect(component.dialog.open).toHaveBeenCalled();
@@ -199,7 +199,7 @@ describe('SystemPropertyListComponent', () => {
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
 
         // act
-        component.promptDelete('REFRESH_JWT_ALGORITHM');
+        component.promptDelete({ key : 'REFRESH_JWT_ALGORITHM', value : 'value', type : 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
 
         // assert
         expect(service.delete).toHaveBeenCalledTimes(0);

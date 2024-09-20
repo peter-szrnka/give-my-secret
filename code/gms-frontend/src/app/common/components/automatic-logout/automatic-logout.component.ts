@@ -4,6 +4,8 @@ import { map, Observable, Subscription, takeWhile, timer } from "rxjs";
 import { SharedDataService } from "../../service/shared-data-service";
 import { InfoDialog } from "../info-dialog/info-dialog.component";
 
+export const WARNING_THRESHOLD = 60000;
+
 /**
  * @author Peter Szrnka
  */
@@ -39,7 +41,7 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
         );
 
         this.timeLeftSubscription = this.timeLeft.subscribe(n => {
-            this.logoutComing = (n <= 30000);
+            this.logoutComing = (n <= WARNING_THRESHOLD);
             
             if (n === 0) {
                 this.dialog.open(InfoDialog, { data: { title: 'Automatic Logout', text: 'You have been logged out due to inactivity.', type: 'information' } });

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { ReplaySubject } from "rxjs";
 import { SharedDataService } from "../../service/shared-data-service";
-import { AutomaticLogoutComponent } from "./automatic-logout.component";
+import { AutomaticLogoutComponent, WARNING_THRESHOLD } from "./automatic-logout.component";
 import { InfoDialog } from "../info-dialog/info-dialog.component";
 
 /**
@@ -48,7 +48,7 @@ describe('AutomaticLogoutComponent', () => {
     });
   
     it('should set logoutComing to true on warning before logout', async () => {
-      component.automaticLogoutTimeInMinutes = 1; // Example time for testing
+      component.automaticLogoutTimeInMinutes = 2;
       expect(component).toBeTruthy();
 
       component.ngOnInit();
@@ -56,9 +56,9 @@ describe('AutomaticLogoutComponent', () => {
       expect(component.logoutComing).toBeFalsy();
 
       fixture.detectChanges();
-      jest.advanceTimersByTime(30000);
+      jest.advanceTimersByTime(WARNING_THRESHOLD);
 
-      jest.advanceTimersByTime(30000);
+      jest.advanceTimersByTime(WARNING_THRESHOLD);
   
       expect(component.logoutComing).toBeTruthy();
       expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { title: 'Automatic Logout', text: 'You have been logged out due to inactivity.', type: 'information' } });
