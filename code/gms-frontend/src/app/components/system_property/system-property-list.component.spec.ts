@@ -181,11 +181,12 @@ describe('SystemPropertyListComponent', () => {
         jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
 
         // act
-        component.promptDelete({ key : 'REFRESH_JWT_ALGORITHM', value : 'value', type : 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
+        component.promptDelete({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         expect(service.delete).toHaveBeenCalled();
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalled();
     });
 
     it('Should cancel dialog after delete', () => {
