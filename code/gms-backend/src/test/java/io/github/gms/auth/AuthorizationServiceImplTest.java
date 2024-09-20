@@ -24,8 +24,7 @@ import java.util.Date;
 import java.util.Map;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.util.LogAssertionUtils.assertLogContains;
-import static io.github.gms.util.LogAssertionUtils.assertLogEquals;
+import static io.github.gms.util.LogAssertionUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -166,7 +165,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		AuthorizationResponse response = service.authorize(req);
 		
 		// assert
-		assertLogEquals(logAppender, "Authentication failed: JWT token has expired!");
+		assertLogMissing(logAppender, "Authentication failed: JWT token has expired!");
 		assertEquals(HttpStatus.OK, response.getResponseStatus());
 		assertTrue(response.getJwtPair().toString().contains("REFRESH_JWT=REFRESH_JWT"));
 		assertTrue(response.getJwtPair().toString().contains("ACCESS_JWT=ACCESS_JWT"));
