@@ -51,7 +51,7 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
         }
 
         const timeLeftObservable: Observable<number> = timer(0, 1000).pipe(
-            map(n => this.timeLeftValue - (n * 1000)),
+            map(n => this.timeLeftValue - 1000),
             takeWhile(n => n >= 0) 
         );
 
