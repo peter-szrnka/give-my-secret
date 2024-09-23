@@ -12,13 +12,14 @@ describe('AutomaticLogoutComponent', () => {
     let component: AutomaticLogoutComponent;
     let fixture: ComponentFixture<AutomaticLogoutComponent>;
     let sharedData: any;
-    let mockSubject: ReplaySubject<void> = new ReplaySubject<void>();
+    let mockSubject: ReplaySubject<number | undefined> = new ReplaySubject<number | undefined>();
     let dialog: Partial<MatDialog>;
   
     beforeEach(async () => {
         sharedData = {
             resetTimerSubject$: mockSubject,
-            logout: jest.fn()
+            logout: jest.fn(),
+            setStartTime: jest.fn()
         };
   
       dialog = {
@@ -52,7 +53,7 @@ describe('AutomaticLogoutComponent', () => {
       expect(component).toBeTruthy();
 
       component.ngOnInit();
-      mockSubject.next();
+      mockSubject.next(1000);
       expect(component.logoutComing).toBeFalsy();
 
       fixture.detectChanges();

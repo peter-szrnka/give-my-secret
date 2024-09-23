@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostListener, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { map, Observable, Subscription, takeWhile, timer } from "rxjs";
 import { SharedDataService } from "../../service/shared-data-service";
@@ -17,15 +17,17 @@ export const WARNING_THRESHOLD = 60000;
 export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
     @Input() automaticLogoutTimeInMinutes: number;
-    timeLeft: Observable<number>;
+    timeLeftValue?: number;
     timeLeftSubscription: Subscription;
     logoutComing: boolean = false;
 
     constructor(private sharedData: SharedDataService, private dialog: MatDialog) { }
 
     ngOnInit(): void {
-        this.sharedData.resetTimerSubject$.subscribe(() => {
+        this.timeLeftValue = undefined;
+        this.sharedData.resetTimerSubject$.subscribe((oldStartTime) => {
             this.timeLeftSubscription?.unsubscribe();
+            this.timeLeftValue = (this.automaticLogoutTimeInMinutes*1000*60) - ((Date.now() - (oldStartTime ?? (Date.now()))));
             this.initiateTimer();
         });
     }
@@ -34,14 +36,30 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
         this.timeLeftSubscription?.unsubscribe();
     }
 
+    @HostListener('document:visibilitychange', ['$event'])
+    visibilitychange(): void {
+        if (!document.hidden) {
+            this.sharedData.resetAutomaticLogoutTimer(false);
+        }
+    }
+
     initiateTimer(): void {
-        this.timeLeft = timer(0, 1000).pipe(
-            map(n => (this.automaticLogoutTimeInMinutes*1000*60) - (n * 1000)),
+        this.sharedData.setStartTime(Date.now());
+        let timeLeft = this.timeLeftValue ?? (this.automaticLogoutTimeInMinutes * 1000 * 60);
+
+        if (timeLeft <= 0) {
+            this.sharedData.logout();
+            return;
+        }
+
+        const timeLeftObservable: Observable<number> = timer(0, 1000).pipe(
+            map(n => timeLeft - (n * 1000)),
             takeWhile(n => n >= 0) 
         );
 
-        this.timeLeftSubscription = this.timeLeft.subscribe(n => {
+        this.timeLeftSubscription = timeLeftObservable.subscribe(n => {
             this.logoutComing = (n <= WARNING_THRESHOLD);
+            this.timeLeftValue = n;
             
             if (n === 0) {
                 this.dialog.open(InfoDialog, { data: { title: 'Automatic Logout', text: 'You have been logged out due to inactivity.', type: 'information' } });

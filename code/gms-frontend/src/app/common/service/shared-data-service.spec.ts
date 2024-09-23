@@ -162,6 +162,9 @@ describe('SharedDataService', () => {
 
     // act
     service.check();
+
+    service.setStartTime(Date.now());
+    service.setStartTime(Date.now());
   });
 
   it('should run check and handle error', () => {
