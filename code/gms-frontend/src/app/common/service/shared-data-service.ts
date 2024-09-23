@@ -42,6 +42,7 @@ export class SharedDataService {
     }
 
     public clearData() {
+        this.startTime = undefined;
         this.userSubject$.next(undefined);
     }
 
@@ -90,11 +91,11 @@ export class SharedDataService {
         }
     }
 
-    resetAutomaticLogoutTimer(clearStartTime: boolean = false) {
+    resetAutomaticLogoutTimer(clearStartTime: boolean = true) {
         this.resetTimerSubject$.next(this.startTime);
 
         if (clearStartTime) {
-            this.startTime = undefined
+            this.startTime = undefined;
         }
     }
 

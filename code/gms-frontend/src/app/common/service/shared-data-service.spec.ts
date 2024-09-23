@@ -167,6 +167,28 @@ describe('SharedDataService', () => {
     service.setStartTime(Date.now());
   });
 
+  it('should check startTime usage', () => {
+    // arrange
+    /*const jwtData = {
+      userId: "test1",
+      userName: "test1",
+      exp: new Date().getTime() + 100000,
+      roles: ["ROLE_USER"]
+    };
+
+    configureTestBed();
+    mockSubject.next(currentUser);
+
+    mockSubject.subscribe(res => expect(res).toEqual(jwtData));
+    mockSystemReadySubject.subscribe(res => expect(res.ready).toEqual(true));*/
+
+    // act
+    service.setStartTime(Date.now());
+    service.setStartTime(Date.now());
+
+    service.resetAutomaticLogoutTimer(true);
+  });
+
   it('should run check and handle error', () => {
     // arrange
     const jwtData = {

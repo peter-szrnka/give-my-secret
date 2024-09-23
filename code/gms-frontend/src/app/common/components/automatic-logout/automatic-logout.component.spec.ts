@@ -19,7 +19,8 @@ describe('AutomaticLogoutComponent', () => {
         sharedData = {
             resetTimerSubject$: mockSubject,
             logout: jest.fn(),
-            setStartTime: jest.fn()
+            setStartTime: jest.fn(),
+            resetAutomaticLogoutTimer: jest.fn()
         };
   
       dialog = {
@@ -53,7 +54,7 @@ describe('AutomaticLogoutComponent', () => {
       expect(component).toBeTruthy();
 
       component.ngOnInit();
-      mockSubject.next(1000);
+      mockSubject.next(undefined);
       expect(component.logoutComing).toBeFalsy();
 
       fixture.detectChanges();
@@ -63,6 +64,26 @@ describe('AutomaticLogoutComponent', () => {
   
       expect(component.logoutComing).toBeTruthy();
       expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { title: 'Automatic Logout', text: 'You have been logged out due to inactivity.', type: 'information' } });
+      expect(sharedData.logout).toHaveBeenCalled();
+    });
+
+    it('should logout when time expired and app was in the background', async () => {
+      component.automaticLogoutTimeInMinutes = 2;
+      expect(component).toBeTruthy();
+
+      component.ngOnInit();
+      mockSubject.next(undefined);
+      expect(component.logoutComing).toBeFalsy();
+
+      fixture.detectChanges();
+      jest.advanceTimersByTime(WARNING_THRESHOLD);
+
+      mockSubject.next(120001);
+
+      jest.advanceTimersByTime(WARNING_THRESHOLD);
+
+      expect(component.logoutComing).toBeTruthy();
+      //expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { title: 'Automatic Logout', text: 'You have been logged out due to inactivity.', type: 'information' } });
       expect(sharedData.logout).toHaveBeenCalled();
     });
   });
