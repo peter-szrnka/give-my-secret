@@ -37,7 +37,7 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
     }
 
     @HostListener('document:visibilitychange', ['$event'])
-    visibilitychange(): void {
+    resetLogoutTimer(): void {
         if (!document.hidden) {
             this.sharedData.resetAutomaticLogoutTimer(false);
         }
