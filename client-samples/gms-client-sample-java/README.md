@@ -1,6 +1,6 @@
-# Give My Secret Client - Java (Deprecated)
+# Give My Secret Client - Pure Java (Deprecated)
 
-**This solution is deprecated, please try to use the Maven library**
+**NOTE: This solution is deprecated, please try to use the Maven library**!
 
 The page contains details about the Java client.
 
@@ -30,4 +30,4 @@ You have to specify the same hashing function and padding scheme that you used t
 
 ## Step 4: Run the app
 
-Just simply start **Main.java** as a Java application in your preferred IDE.
+Just simply start **LoadSecretWithKeystore.java** as a Java application in your preferred IDE.

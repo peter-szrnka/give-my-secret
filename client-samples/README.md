@@ -6,15 +6,18 @@ The page contains the list of available samples for several programming language
 
 # Java
 
+**IMPORTANT: For Java I recommend to use the official Maven artifact**!
+
 ## Prerequisites
 
-- Java 11
+- Java 17
 - Maven 3
 - JKS/PKCS12 based keystore with an RSA private key
 
-A simple implementation created with Java 11(HTTP client, Keystore readers, etc.)
+Client implementations:
 
-[Details](gms-client-sample-java/README.md)
+- **[Official Maven client library example](gms-client-sample-java-client-lib/README.md)**
+- [Pure Java client sample (DEPRECATED)](gms-client-sample-java/README.md)
 
 # Python
 

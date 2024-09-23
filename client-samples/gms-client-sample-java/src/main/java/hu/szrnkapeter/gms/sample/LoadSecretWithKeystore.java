@@ -13,8 +13,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -25,9 +25,7 @@ import java.util.Properties;
 @Slf4j
 public class LoadSecretWithKeystore {
 	
-	private static final String URL = "https://localhost:8443/api/secret/";
-	private static final String AP_KEY = "xBpFOEEjfZWpSXSuOXpGoGt3PVvuGTYq";
-	private static final String SECRET_ID = "secret1";
+	private static final String URL_SUFFIX = "/api/secret/";
 	private static final Gson GSON = new GsonBuilder().create();
 
 	public static void main(String[] args) throws Exception {
@@ -38,12 +36,12 @@ public class LoadSecretWithKeystore {
 		TrustManager[] trustAllCerts = new TrustManager[] {
 				new X509TrustManager() {
 					@Override
-					public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+					public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
 
 					}
 
 					@Override
-					public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+					public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
 
 					}
 
@@ -54,22 +52,27 @@ public class LoadSecretWithKeystore {
 				}
 		};
 		sslContext.init(null, trustAllCerts, new SecureRandom());
-		HttpClient httpClient = HttpClient.newBuilder().sslContext(sslContext).build();
+		try (HttpClient httpClient = HttpClient.newBuilder().sslContext(sslContext).build()) {
 
-		HttpRequest request = HttpRequest.newBuilder()
-		  .header("X-API-KEY", AP_KEY).uri(new URI(URL + SECRET_ID)).build();
-		
-		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-		
-		log.info("Status code: {}", response.statusCode());
-		
-		if (response.statusCode() != 200) {
-			log.info("Response: {}", response.body());
-			return;
+			HttpRequest request = HttpRequest.newBuilder()
+					.header("X-API-KEY", System.getenv("API_KEY")).uri(new URI(getBaseUrl() + URL_SUFFIX + System.getenv("SECRET_ID"))).build();
+
+			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+			log.info("Status code: {}", response.statusCode());
+
+			if (response.statusCode() != 200) {
+				log.info("Response: {}", response.body());
+				return;
+			}
+
+			ApiResponseDto responseBody = GSON.fromJson(response.body(), ApiResponseDto.class);
+			log.info("Encoded response: {}", responseBody.getValue());
+			log.info("Decoded message: {}", DecryptionService.decryptMessage(responseBody.getValue()));
 		}
+	}
 
-		ApiResponseDto responseBody = GSON.fromJson(response.body(), ApiResponseDto.class);
-		log.info("Encoded response: {}", responseBody.getValue());
-		log.info("Decoded message: {}", DecryptionService.decryptMessage(responseBody.getValue()));
+	private static String getBaseUrl() {
+		return Optional.ofNullable(System.getenv("GMS_BASE_URL")).orElse("https://localhost:8443");
 	}
 }

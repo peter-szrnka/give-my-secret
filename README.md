@@ -2,34 +2,16 @@
 
 Give My Secret is a credential storage application, that stores secrets, passwords and other text based credentials in a secure and reliable way by encrypting them with keystores that you provide. It's easy to configure, numerous ready-to-go configurations available for all supported databases.
 
-| Code QL                                                      | Code coverage                                                | Sonarcloud                                                   |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [![CodeQL](https://github.com/peter-szrnka/give-my-secret/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/peter-szrnka/give-my-secret/actions/workflows/github-code-scanning/codeql) | Backend:&nbsp;&nbsp;&nbsp; ![Code coverage](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-backend&metric=coverage) <br /> Frontend:&nbsp;&nbsp; [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret-frontend) | Backend:&nbsp;&nbsp;&nbsp; [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=peter-szrnka_give-my-secret-backend) <br/>Frontend:&nbsp;&nbsp; [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=peter-szrnka_give-my-secret-frontend) |
-
-# Tech stack
-
-- Java 21 (Microsoft OpenJDK)
-- Maven
-- Spring Boot 3.3.2
-- Angular 17
-- Docker
-- Flyway (DB migration)
-
-# Usage
+# Getting started
 
 Give My Secret is available as a Docker image, you can easily pull it from **GitHub Container Registry**(ghcr.io) by running the following command:
 > docker pull ghcr.io/peter-szrnka/give-my-secret:latest
 
-To start a new container, you have to set up a bunch of **[environment properties](PROPERTIES.md)**. I recommend to not utilize the Docker image from scratch, if you open the "**[batch-files](batch-files/README.md)**" sub folder, you can find many ready-to-go configurations for all available database providers written in Docker Compose format.
+To start a new container instance, you have to set up a bunch of **[environment properties](PROPERTIES.md)**. I recommend to not utilize the Docker image from scratch, if you open the "**[batch-files](batch-files/README.md)**" sub folder, you can find many ready-to-go configurations for all available database providers written in Docker Compose format.
 
 # Features
 
-## Protocol
-
-- HTTPS (by default) on port 8443
-- HTTP  on port 8080
-
-## DB
+## Databases
 
 - [MariaDb](db/mariadb/README.md)
 - [PostgreSql](db/postgresql/README.md)
@@ -51,6 +33,7 @@ For further information & sample configurations, please check the sub folders un
 
 - [Database](batch-files/db-authentication)
 - [LDAP](batch-files/ldap-authentication)
+- Keycloak SSO
 
 Sample configurations can be found under "batch-files" folder.
 
@@ -66,11 +49,11 @@ Currently only AES encryption is supported.  In the future this will be configur
 ## Logging
 - Console
 - File
-- Logstash (in ELK stack)
+- [Logstash (in ELK stack)](batch-files/elk-sample-configuration/README.md)
 
 ## Observation
-- Zipkin
-- Prometheus (with Grafana)
+- [Zipkin](batch-files/zipkin-integration)
+- [Prometheus (with Grafana)](batch-files/prometheus-configuration/README.md)
 
 ## Support matrix
 
@@ -86,6 +69,21 @@ Currently only AES encryption is supported.  In the future this will be configur
 # Code samples
 
 You can find client code examples for Java, Go, Python and Node.js **[here](client-samples/README.md).**
+
+# Code quality metrics
+
+| CodeQL                                                       | Code coverage                                                | Sonarcloud                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| [![CodeQL](https://github.com/peter-szrnka/give-my-secret/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/peter-szrnka/give-my-secret/actions/workflows/github-code-scanning/codeql) | Backend:&nbsp;&nbsp;&nbsp; ![Code coverage](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-backend&metric=coverage) <br /> Frontend:&nbsp;&nbsp; [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=szrnka-peter_give-my-secret-frontend) | Backend:&nbsp;&nbsp;&nbsp; [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=peter-szrnka_give-my-secret-backend) <br/>Frontend:&nbsp;&nbsp; [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=peter-szrnka_give-my-secret-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=peter-szrnka_give-my-secret-frontend) |
+
+# Tech stack
+
+- Java 21 (Microsoft OpenJDK)
+- Maven
+- Spring Boot 3.3.2
+- Angular 17
+- Docker
+- Flyway (DB migration)
 
 
 # Donate

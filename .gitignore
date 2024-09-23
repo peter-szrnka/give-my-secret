@@ -99,3 +99,5 @@ client-samples/gms-client-sample-go/go.sum
 /batch-files/elk-sample-configuration/mounted-data
 /code/gms-backend/keystores
 code/gms-frontend/gms-frontend.iml
+/client-samples/gms-client-sample-java/src/main/resources/test.jks
+/client-samples/gms-client-sample-java/src/main/resources/test.p12
