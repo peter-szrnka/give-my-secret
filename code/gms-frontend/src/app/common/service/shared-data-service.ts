@@ -18,9 +18,10 @@ export class SharedDataService {
     userSubject$: ReplaySubject<User | undefined> = new ReplaySubject<User | undefined>();
     systemReadySubject$: ReplaySubject<SystemReadyData> = new ReplaySubject<SystemReadyData>();
     authModeSubject$: ReplaySubject<string> = new ReplaySubject<string>();
-    resetTimerSubject$: ReplaySubject<void> = new ReplaySubject<void>();
+    resetTimerSubject$: ReplaySubject<number | undefined> = new ReplaySubject<number | undefined>();
     systemReady?: boolean = undefined;
     authMode: string;
+    startTime?: number;
 
     @Output() messageCountUpdateEvent = new EventEmitter<number>();
     @Output() showLargeMenuEvent = new EventEmitter<boolean>();
@@ -41,6 +42,7 @@ export class SharedDataService {
     }
 
     public clearData() {
+        this.startTime = undefined;
         this.userSubject$.next(undefined);
     }
 
@@ -83,8 +85,18 @@ export class SharedDataService {
         });
     }
 
-    resetAutomaticLogoutTimer() {
-        this.resetTimerSubject$.next();
+    setStartTime(currentTime?: number) {
+        if (!this.startTime) {
+            this.startTime = currentTime;
+        }
+    }
+
+    resetAutomaticLogoutTimer(clearStartTime: boolean = true) {
+        this.resetTimerSubject$.next(this.startTime);
+
+        if (clearStartTime) {
+            this.startTime = undefined;
+        }
     }
 
     async getUserInfo(): Promise<User | undefined> {
