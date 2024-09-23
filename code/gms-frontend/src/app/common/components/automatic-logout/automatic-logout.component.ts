@@ -17,14 +17,13 @@ export const WARNING_THRESHOLD = 60000;
 export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
     @Input() automaticLogoutTimeInMinutes: number;
-    timeLeftValue?: number;
+    timeLeftValue: number;
     timeLeftSubscription: Subscription;
     logoutComing: boolean = false;
 
     constructor(private sharedData: SharedDataService, private dialog: MatDialog) { }
 
     ngOnInit(): void {
-        this.timeLeftValue = undefined;
         this.sharedData.resetTimerSubject$.subscribe((oldStartTime) => {
             this.timeLeftSubscription?.unsubscribe();
             this.timeLeftValue = (this.automaticLogoutTimeInMinutes*1000*60) - ((Date.now() - (oldStartTime ?? (Date.now()))));
@@ -45,15 +44,14 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
     initiateTimer(): void {
         this.sharedData.setStartTime(Date.now());
-        let timeLeft = this.timeLeftValue ?? (this.automaticLogoutTimeInMinutes * 1000 * 60);
 
-        if (timeLeft <= 0) {
+        if (this.timeLeftValue <= 0) {
             this.sharedData.logout();
             return;
         }
 
         const timeLeftObservable: Observable<number> = timer(0, 1000).pipe(
-            map(n => timeLeft - (n * 1000)),
+            map(n => this.timeLeftValue - (n * 1000)),
             takeWhile(n => n >= 0) 
         );
 
