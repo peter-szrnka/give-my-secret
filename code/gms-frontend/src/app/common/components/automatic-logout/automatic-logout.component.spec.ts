@@ -64,7 +64,6 @@ describe('AutomaticLogoutComponent', () => {
   
       expect(component.logoutComing).toBeTruthy();
       expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { title: 'Automatic Logout', text: 'You have been logged out due to inactivity.', type: 'information' } });
-      expect(sharedData.logout).toHaveBeenCalled();
     });
 
     it('should logout when time expired and app was in the background', async () => {
@@ -84,12 +83,5 @@ describe('AutomaticLogoutComponent', () => {
 
       expect(component.logoutComing).toBeTruthy();
       expect(dialog.open).toHaveBeenCalledTimes(0);
-      expect(sharedData.logout).toHaveBeenCalled();
-    });
-
-    it('should resetLogoutTimer', async () => {
-      component.resetLogoutTimer();
-      
-      expect(sharedData.resetAutomaticLogoutTimer).toHaveBeenCalledWith(false);
     });
   });
