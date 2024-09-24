@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { map, Observable, Subscription, takeWhile, timer } from "rxjs";
 import { SharedDataService } from "../../service/shared-data-service";
@@ -18,13 +18,14 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
     @Input() automaticLogoutTimeInMinutes: number;
     timeLeftValue: number;
+    resetTimerSubscription: Subscription;
     timeLeftSubscription: Subscription;
     logoutComing: boolean = false;
 
     constructor(private sharedData: SharedDataService, private dialog: MatDialog) { }
 
     ngOnInit(): void {
-        this.sharedData.resetTimerSubject$.subscribe((oldStartTime) => {
+        this.resetTimerSubscription = this.sharedData.resetTimerSubject$.subscribe((oldStartTime) => {
             this.timeLeftSubscription?.unsubscribe();
             this.timeLeftValue = (this.automaticLogoutTimeInMinutes*1000*60) - ((Date.now() - (oldStartTime ?? (Date.now()))));
             this.initiateTimer();
@@ -33,22 +34,15 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.timeLeftSubscription?.unsubscribe();
-    }
-
-    @HostListener('document:visibilitychange', ['$event'])
-    resetLogoutTimer(): void {
-        if (!document.hidden) {
-            this.sharedData.resetAutomaticLogoutTimer(false);
-        }
+        this.resetTimerSubscription?.unsubscribe();
     }
 
     initiateTimer(): void {
-        this.sharedData.setStartTime(Date.now());
-
         if (this.timeLeftValue <= 0) {
-            this.sharedData.logout();
             return;
         }
+
+        this.sharedData.setStartTime(Date.now());
 
         const timeLeftObservable: Observable<number> = timer(0, 1000).pipe(
             map(n => this.timeLeftValue - 1000),
