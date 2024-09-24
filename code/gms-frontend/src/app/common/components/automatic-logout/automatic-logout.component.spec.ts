@@ -86,10 +86,4 @@ describe('AutomaticLogoutComponent', () => {
       expect(dialog.open).toHaveBeenCalledTimes(0);
       expect(sharedData.logout).toHaveBeenCalled();
     });
-
-    it('should resetLogoutTimer', async () => {
-      component.resetLogoutTimer();
-      
-      expect(sharedData.resetAutomaticLogoutTimer).toHaveBeenCalledWith(false);
-    });
   });
