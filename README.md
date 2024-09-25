@@ -1,13 +1,13 @@
-# Give My Secret (under development!)
+# Give My Secret
 
-Give My Secret is a credential storage application, that stores secrets, passwords and other text based credentials in a secure and reliable way by encrypting them with keystores that you provide. It's easy to configure, numerous ready-to-go configurations available for all supported databases.
+Give My Secret is a super simple credential storage application that stores secrets, passwords and other text based credentials in a secure and reliable way by encrypting them with keystores that you provide - or you can generate if you need. It's easy to configure, numerous ready-to-go configurations available for all supported databases.
 
 # Getting started
 
-Give My Secret is available as a Docker image, you can easily pull it from **GitHub Container Registry**(ghcr.io) by running the following command:
+Give My Secret is available as a Docker image, you can pull it from **GitHub Container Registry**(ghcr.io) by running the following command:
 > docker pull ghcr.io/peter-szrnka/give-my-secret:latest
 
-To start a new container instance, you have to set up a bunch of **[environment properties](PROPERTIES.md)**. I recommend to not utilize the Docker image from scratch, if you open the "**[batch-files](batch-files/README.md)**" sub folder, you can find many ready-to-go configurations for all available database providers written in Docker Compose format.
+To start a new container instance, you have to set up a bunch of **[environment properties](PROPERTIES.md)**. I recommend to not utilize the Docker image from scratch, if you open the "**[batch-files](batch-files/README.md)**" sub folder, you can find many configurations for all available database providers written in Docker Compose format.
 
 # Features
 
@@ -55,18 +55,7 @@ Currently only AES encryption is supported.  In the future this will be configur
 - [Zipkin](batch-files/zipkin-integration)
 - [Prometheus (with Grafana)](batch-files/prometheus-configuration/README.md)
 
-## Support matrix
-
-| DB provider |      Db auth       |     ldap auth      |
-| ----------- | :----------------: | :----------------: |
-| IBM DB2     | :white_check_mark: | :white_check_mark: |
-| MariaDb     | :white_check_mark: | :white_check_mark: |
-| MySql       | :white_check_mark: | :white_check_mark: |
-| MsSql       | :white_check_mark: | :white_check_mark: |
-| Oracle      | :white_check_mark: | :white_check_mark: |
-| PostgreSql  | :white_check_mark: | :white_check_mark: |
-
-# Code samples
+# Client code samples
 
 You can find client code examples for Java, Go, Python and Node.js **[here](client-samples/README.md).**
 
