@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, InjectionToken, NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
@@ -42,56 +42,49 @@ export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-  declarations: [ 
-    AppComponent
-   ],
-  imports: [
-    AngularMaterialModule,
-    FormsModule,
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    }),
-    BrowserAnimationsModule,
-    PipesModule,
-    GmsComponentsModule,
-    
-    // Main application modules
-    NavMenuModule,
-    HomeModule,
-    SetupModule,
-    LoginModule,
-    RequestPasswordResetModule,
-    HeaderModule,
-    ServiceModule,
-    KeystoreModule,
-    ApiKeyModule,
-    SecretModule,
-    UserModule,
-    EventModule,
-    AnnouncementModule,
-    SettingsModule,
-    MessageModule,
-    ApiTestingModule,
-    SystemPropertyModule,
-    VerifyModule,
-    IpRestrictionModule,
-    HelpModule
-  ],
-  providers: [ 
-    provideHttpClient(),
-    { provide: ENV_CONFIG, useValue: environment },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: MockInterceptor, multi: true },
-    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500 }},
-  ],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
-})
+@NgModule({ declarations: [
+        AppComponent
+    ],
+    bootstrap: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
+        FormsModule,
+        BrowserModule,
+        AppRoutingModule,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+            enabled: environment.production,
+            // Register the ServiceWorker as soon as the application is stable
+            // or after 30 seconds (whichever comes first).
+            registrationStrategy: 'registerWhenStable:30000'
+        }),
+        BrowserAnimationsModule,
+        PipesModule,
+        GmsComponentsModule,
+        // Main application modules
+        NavMenuModule,
+        HomeModule,
+        SetupModule,
+        LoginModule,
+        RequestPasswordResetModule,
+        HeaderModule,
+        ServiceModule,
+        KeystoreModule,
+        ApiKeyModule,
+        SecretModule,
+        UserModule,
+        EventModule,
+        AnnouncementModule,
+        SettingsModule,
+        MessageModule,
+        ApiTestingModule,
+        SystemPropertyModule,
+        VerifyModule,
+        IpRestrictionModule,
+        HelpModule], providers: [
+        provideHttpClient(),
+        { provide: ENV_CONFIG, useValue: environment },
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: MockInterceptor, multi: true },
+        { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule { }

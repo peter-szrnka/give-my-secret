@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -13,23 +13,17 @@ import { SystemPropertyListResolver } from "./resolver/system-property-list.reso
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      SystemPropertyListComponent
-     ],
-    imports: [
-        AngularMaterialModule,
+@NgModule({ declarations: [
+        SystemPropertyListComponent
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         ReactiveFormsModule,
         FormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule
-    ],
-    providers: [ 
-      SystemPropertyService, SystemPropertyListResolver
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+        PipesModule], providers: [
+        SystemPropertyService, SystemPropertyListResolver,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
   export class SystemPropertyModule { }

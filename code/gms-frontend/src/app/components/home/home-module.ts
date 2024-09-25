@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -11,18 +11,11 @@ import { HomeService } from "./service/home.service";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      HomeComponent
-    ],
-    imports: [
-        AngularMaterialModule,
+@NgModule({ declarations: [
+        HomeComponent
+    ], imports: [AngularMaterialModule,
         BrowserModule,
         BrowserAnimationsModule,
-        HttpClientModule,
         AppRoutingModule,
-        PipesModule
-    ],
-    providers: [ HomeService ]
-  })
+        PipesModule], providers: [HomeService, provideHttpClient(withInterceptorsFromDi())] })
   export class HomeModule { }

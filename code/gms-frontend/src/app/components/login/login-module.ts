@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -10,19 +10,12 @@ import { LoginComponent } from "./login.component";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      LoginComponent
+@NgModule({ declarations: [
+        LoginComponent
     ],
-    imports: [
-        AngularMaterialModule,
+    exports: [LoginComponent], imports: [AngularMaterialModule,
         BrowserModule,
         BrowserAnimationsModule,
-        HttpClientModule,
         AppRoutingModule,
-        FormsModule
-    ],
-    providers: [],
-    exports : [ LoginComponent ]
-  })
+        FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
   export class LoginModule { }

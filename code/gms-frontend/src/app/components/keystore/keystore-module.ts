@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -15,22 +15,16 @@ import { KeystoreDetailResolver } from "./resolver/keystore-detail.resolver";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      KeystoreListComponent, KeystoreDetailComponent
-     ],
-    imports: [
-        AngularMaterialModule,
+@NgModule({ declarations: [
+        KeystoreListComponent, KeystoreDetailComponent
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule
-    ],
-    providers: [ 
-      KeystoreService, KeystoreListResolver, KeystoreDetailResolver
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+        PipesModule], providers: [
+        KeystoreService, KeystoreListResolver, KeystoreDetailResolver,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
   export class KeystoreModule { }

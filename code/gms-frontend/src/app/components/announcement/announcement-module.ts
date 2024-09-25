@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -15,22 +15,16 @@ import { AnnouncementListResolver } from "./resolver/announcement-list.resolver"
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
+@NgModule({ declarations: [
         AnnouncementListComponent, AnnouncementDetailComponent
-     ],
-    imports: [
-        AngularMaterialModule,
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule
-    ],
-    providers: [ 
-      AnnouncementService, AnnouncementListResolver, AnnouncementDetailResolver
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+        PipesModule], providers: [
+        AnnouncementService, AnnouncementListResolver, AnnouncementDetailResolver,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AnnouncementModule {}
