@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -16,22 +16,16 @@ import { IprestrictionDetailComponent } from "./ip-restriction-detail.component"
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [
-      IpRestrictionListComponent, IprestrictionDetailComponent
-     ],
-    imports: [
-        AngularMaterialModule,
+@NgModule({ declarations: [
+        IpRestrictionListComponent, IprestrictionDetailComponent
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule
-    ],
-    providers: [ 
-      SharedDataService, IpRestrictionService, IpRestrictionListResolver, IpRestrictionDetailResolver
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+        PipesModule], providers: [
+        SharedDataService, IpRestrictionService, IpRestrictionListResolver, IpRestrictionDetailResolver,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
   export class IpRestrictionModule { }

@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -13,21 +13,13 @@ import { EventListResolver } from "./resolver/event-list.resolver";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      EventListComponent
-     ],
-    imports: [
-        AngularMaterialModule,
+@NgModule({ declarations: [
+        EventListComponent
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule
-    ],
-    providers: [ EventService, EventListResolver
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+        PipesModule], providers: [EventService, EventListResolver, provideHttpClient(withInterceptorsFromDi())] })
   export class EventModule { }

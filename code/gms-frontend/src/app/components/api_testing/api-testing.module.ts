@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -11,19 +11,12 @@ import { ApiTestingService } from "./service/api-testing-service";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
+@NgModule({ declarations: [
         ApiTestingComponent
     ],
-    imports: [
-        AngularMaterialModule,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
-        GmsComponentsModule
-    ],
-    providers: [ApiTestingService],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+        GmsComponentsModule], providers: [ApiTestingService, provideHttpClient(withInterceptorsFromDi())] })
   export class ApiTestingModule { }

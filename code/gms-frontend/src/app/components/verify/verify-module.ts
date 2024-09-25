@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -10,19 +10,12 @@ import { VerifyComponent } from "./verify.component";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      VerifyComponent
+@NgModule({ declarations: [
+        VerifyComponent
     ],
-    imports: [
-        AngularMaterialModule,
+    exports: [VerifyComponent], imports: [AngularMaterialModule,
         BrowserModule,
         BrowserAnimationsModule,
-        HttpClientModule,
         AppRoutingModule,
-        FormsModule
-    ],
-    providers: [],
-    exports : [ VerifyComponent ]
-  })
+        FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
   export class VerifyModule { }

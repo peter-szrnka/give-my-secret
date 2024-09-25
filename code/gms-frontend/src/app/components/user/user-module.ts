@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -15,22 +15,16 @@ import { UserDetailResolver } from "./resolver/user-detail.resolver";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      UserListComponent, UserDetailComponent
-     ],
-    imports: [
-        AngularMaterialModule,
+@NgModule({ declarations: [
+        UserListComponent, UserDetailComponent
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule
-    ],
-    providers: [ 
-      UserService, UserListResolver, UserDetailResolver
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+        PipesModule], providers: [
+        UserService, UserListResolver, UserDetailResolver,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
   export class UserModule { }

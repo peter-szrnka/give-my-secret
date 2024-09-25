@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -9,19 +9,13 @@ import { SettingsSummaryComponent } from "./settings-summary.component";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      SettingsSummaryComponent
-     ],
-    imports: [
-        AngularMaterialModule,
+@NgModule({ declarations: [
+        SettingsSummaryComponent
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
-        HttpClientModule,
-        AppRoutingModule
-    ],
-    providers: [ 
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+        AppRoutingModule], providers: [
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class SettingsModule {}

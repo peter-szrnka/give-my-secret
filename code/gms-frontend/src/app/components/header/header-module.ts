@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -11,20 +11,13 @@ import { GmsComponentsModule } from "../../common/components/gms-components-modu
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      HeaderComponent
+@NgModule({ declarations: [
+        HeaderComponent
     ],
-    imports: [
-    AngularMaterialModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    AppRoutingModule,
-    NavMenuModule,
-    GmsComponentsModule
-],
-    providers: [],
-    exports : [ HeaderComponent ]
-  })
+    exports: [HeaderComponent], imports: [AngularMaterialModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        NavMenuModule,
+        GmsComponentsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
   export class HeaderModule { }

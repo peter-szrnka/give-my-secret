@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { AuthService } from "./auth-service";
 import { SharedDataService } from "./shared-data-service";
@@ -11,16 +11,9 @@ import { LoggerService } from "./logger-service";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      
-     ],
-    imports: [
-        HttpClientModule,
-    ],
-    providers: [ 
-      SharedDataService, AuthService, SplashScreenStateService, SecureStorageService, ClipboardService, InformationService, LoggerService
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+@NgModule({ declarations: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [], providers: [
+        SharedDataService, AuthService, SplashScreenStateService, SecureStorageService, ClipboardService, InformationService, LoggerService,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
   export class ServiceModule { }

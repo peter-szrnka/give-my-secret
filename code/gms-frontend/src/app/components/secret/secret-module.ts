@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -15,22 +15,16 @@ import { SecretService } from "./service/secret-service";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      SecretListComponent, SecretDetailComponent
-     ],
-    imports: [
-        AngularMaterialModule,
+@NgModule({ declarations: [
+        SecretListComponent, SecretDetailComponent
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule
-    ],
-    providers: [ 
-      SecretService, SecretListResolver, SecretDetailResolver
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+        PipesModule], providers: [
+        SecretService, SecretListResolver, SecretDetailResolver,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
   export class SecretModule { }

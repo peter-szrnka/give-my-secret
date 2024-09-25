@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -12,19 +12,12 @@ import { ErrorCodeResolver } from "./resolver/error-code.resolver";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      HelpComponent
+@NgModule({ declarations: [
+        HelpComponent
     ],
-    imports: [
-        AngularMaterialModule,
+    exports: [HelpComponent], imports: [AngularMaterialModule,
         BrowserModule,
         BrowserAnimationsModule,
-        HttpClientModule,
         AppRoutingModule,
-        NavMenuModule
-    ],
-    providers: [ErrorCodeService, ErrorCodeResolver],
-    exports : [ HelpComponent ]
-  })
+        NavMenuModule], providers: [ErrorCodeService, ErrorCodeResolver, provideHttpClient(withInterceptorsFromDi())] })
   export class HelpModule { }

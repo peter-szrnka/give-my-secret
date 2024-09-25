@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -16,22 +16,16 @@ import { ApiKeyListResolver } from "./resolver/apikey-list.resolver";
 /**
  * @author Peter Szrnka
  */
-@NgModule({
-    declarations: [ 
-      ApiKeyListComponent, ApiKeyDetailComponent
-     ],
-    imports: [
-        AngularMaterialModule,
+@NgModule({ declarations: [
+        ApiKeyListComponent, ApiKeyDetailComponent
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule
-    ],
-    providers: [ 
-      SharedDataService, ApiKeyService, ApiKeyListResolver, ApiKeyDetailResolver
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  })
+        PipesModule], providers: [
+        SharedDataService, ApiKeyService, ApiKeyListResolver, ApiKeyDetailResolver,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
   export class ApiKeyModule { }
