@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Subscription } from "rxjs";
+import { CommonModule } from "@angular/common";
+import { Component, OnInit } from "@angular/core";
+import { Observable } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { PipesModule } from "../../common/components/pipes/pipes.module";
 import { SystemStatus } from "../../common/model/system-status.model";
@@ -10,23 +11,18 @@ import { SetupService } from "../setup/service/setup-service";
  */
 @Component({
     standalone: true,
-    imports: [ AngularMaterialModule, PipesModule ],
+    imports: [ AngularMaterialModule, CommonModule , PipesModule ],
     selector: 'about',
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.scss']
 })
-export class AboutComponent implements OnInit, OnDestroy {
+export class AboutComponent implements OnInit {
 
-    systemStatus?: SystemStatus;
-    subscription: Subscription;
+    systemStatus$: Observable<SystemStatus>;
 
     constructor(private setupService: SetupService) {}
 
     ngOnInit(): void {
-        this.subscription = this.setupService.checkReady().subscribe(systemStatus => this.systemStatus = systemStatus);
-    }
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.systemStatus$ = this.setupService.checkReady();
     }
 }

@@ -1,7 +1,7 @@
 <mat-card class="about-card">
     <mat-card-title>About Give My Secret</mat-card-title>
     <mat-card-content>
-        @if (systemStatus) {
+        @if (systemStatus$ | async; as systemStatus) {
             <ul>
                 <li>Application version: <b>{{systemStatus.version}}</b></li>
                 <li>Built time: <b>{{ systemStatus.built | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}</b></li>

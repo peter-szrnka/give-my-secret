@@ -5,6 +5,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { SystemStatus } from "../../common/model/system-status.model";
 import { SetupService } from "../setup/service/setup-service";
 import { AboutComponent } from "./about.component";
+import { CommonModule } from "@angular/common";
 
 /**
  * @author Peter Szrnka
@@ -23,7 +24,7 @@ describe('AboutComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports: [AngularMaterialModule, AboutComponent],
+            imports: [AngularMaterialModule, CommonModule, AboutComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide: SetupService, useValue: setupService }
@@ -36,7 +37,6 @@ describe('AboutComponent', () => {
 
     it('should load component', () => {
         expect(component).toBeTruthy();
-        expect(component.systemStatus).toEqual(mockStatus);
         expect(setupService.checkReady).toHaveBeenCalled();
     });
 });
