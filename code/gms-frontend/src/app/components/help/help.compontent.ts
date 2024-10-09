@@ -1,12 +1,15 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { ErrorCode } from "./model/error-code.model";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
+    standalone: true,
+    imports: [ AngularMaterialModule ],
     selector: 'help',
     templateUrl: './help.component.html',
     styleUrls: ['./help.component.scss']

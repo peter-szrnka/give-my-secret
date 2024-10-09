@@ -5,12 +5,12 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { UserDetailResolver } from "./resolver/user-detail.resolver";
+import { UserListResolver } from "./resolver/user-list.resolver";
 import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
 import { UserListComponent } from "./user-list.component";
-import { UserListResolver } from "./resolver/user-list.resolver";
-import { UserDetailResolver } from "./resolver/user-detail.resolver";
 
 /**
  * @author Peter Szrnka
@@ -18,12 +18,15 @@ import { UserDetailResolver } from "./resolver/user-detail.resolver";
 @NgModule({ declarations: [
         UserListComponent, UserDetailComponent
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], 
+    imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule], providers: [
+        MomentPipe
+    ], 
+    providers: [
         UserService, UserListResolver, UserDetailResolver,
         provideHttpClient(withInterceptorsFromDi())
     ] })

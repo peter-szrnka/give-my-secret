@@ -5,12 +5,13 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { SecretDetailResolver } from "./resolver/secret-detail.resolver";
+import { SecretListResolver } from "./resolver/secret-list.resolver";
 import { SecretDetailComponent } from "./secret-detail.component";
 import { SecretListComponent } from "./secret-list.component";
-import { SecretListResolver } from "./resolver/secret-list.resolver";
-import { SecretDetailResolver } from "./resolver/secret-detail.resolver";
 import { SecretService } from "./service/secret-service";
+import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
 
 /**
  * @author Peter Szrnka
@@ -18,12 +19,17 @@ import { SecretService } from "./service/secret-service";
 @NgModule({ declarations: [
         SecretListComponent, SecretDetailComponent
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], 
+    imports: [
+        AngularMaterialModule,
         FormsModule,
         BrowserModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule], providers: [
+        MomentPipe,
+        NavButtonVisibilityPipe
+    ], 
+    providers: [
         SecretService, SecretListResolver, SecretDetailResolver,
         provideHttpClient(withInterceptorsFromDi())
     ] })

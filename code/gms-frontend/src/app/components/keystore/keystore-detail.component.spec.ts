@@ -5,18 +5,17 @@ import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { KeystoreService } from "./service/keystore-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { KeystoreDetailComponent } from "./keystore-detail.component";
 import { KeystoreAlias } from "./model/keystore-alias.model";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { KeystoreService } from "./service/keystore-service";
 
 /**
  * @author Peter Szrnka
@@ -37,7 +36,7 @@ describe('KeystoreDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ FormsModule, BrowserAnimationsModule, AngularMaterialModule, PipesModule ],
+            imports : [ FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe ],
             declarations : [KeystoreDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

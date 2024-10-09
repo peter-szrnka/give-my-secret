@@ -5,13 +5,14 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { IpRestrictionService } from "./service/ip-restriction.service";
-import { IpRestrictionListResolver } from "./resolver/ip-restriction-list.resolver";
-import { IpRestrictionDetailResolver } from "./resolver/ip-restriction-detail.resolver";
-import { IpRestrictionListComponent } from "./ip-restriction-list.component";
 import { IprestrictionDetailComponent } from "./ip-restriction-detail.component";
+import { IpRestrictionListComponent } from "./ip-restriction-list.component";
+import { IpRestrictionDetailResolver } from "./resolver/ip-restriction-detail.resolver";
+import { IpRestrictionListResolver } from "./resolver/ip-restriction-list.resolver";
+import { IpRestrictionService } from "./service/ip-restriction.service";
+import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
 
 /**
  * @author Peter Szrnka
@@ -19,12 +20,16 @@ import { IprestrictionDetailComponent } from "./ip-restriction-detail.component"
 @NgModule({ declarations: [
         IpRestrictionListComponent, IprestrictionDetailComponent
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], 
+    imports: [
+        AngularMaterialModule,
         FormsModule,
         BrowserModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule], providers: [
+        MomentPipe,
+        NavButtonVisibilityPipe
+    ], providers: [
         SharedDataService, IpRestrictionService, IpRestrictionListResolver, IpRestrictionDetailResolver,
         provideHttpClient(withInterceptorsFromDi())
     ] })

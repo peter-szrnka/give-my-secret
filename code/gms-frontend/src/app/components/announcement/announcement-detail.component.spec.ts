@@ -4,16 +4,16 @@ import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { User } from "../user/model/user.model";
-import { AnnouncementService } from "./service/announcement-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { AnnouncementDetailComponent } from "./announcement-detail.component";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { User } from "../user/model/user.model";
+import { AnnouncementDetailComponent } from "./announcement-detail.component";
+import { AnnouncementService } from "./service/announcement-service";
 
 /**
  * @author Peter Szrnka
@@ -72,7 +72,7 @@ describe('AnnouncementDetailComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, PipesModule ],
+            imports : [ BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe ],
             declarations : [AnnouncementDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

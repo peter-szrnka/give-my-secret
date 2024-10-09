@@ -5,11 +5,11 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "../user/model/user.model";
-import { KeystoreService } from "./service/keystore-service";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { User } from "../user/model/user.model";
 import { KeystoreListComponent } from "./keystore-list.component";
+import { KeystoreService } from "./service/keystore-service";
 
 /**
  * @author Peter Szrnka
@@ -30,7 +30,7 @@ describe('KeystoreListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            imports : [ AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
             declarations : [KeystoreListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

@@ -1,13 +1,13 @@
 import { Component, Inject } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
 import { AuthenticationPhase, LoginResponse, VerifyLogin } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { WINDOW_TOKEN } from "../../window.provider";
-import { firstValueFrom } from "rxjs";
 
 /**
  * @author Peter Szrnka
@@ -22,12 +22,12 @@ export class VerifyComponent extends BaseLoginComponent {
     constructor(
         @Inject(WINDOW_TOKEN) private window: Window,
         protected override route: ActivatedRoute,
-        protected override router: Router,
+        protected router: Router,
         private authService: AuthService,
         protected override sharedDataService: SharedDataService,
         protected override splashScreenStateService: SplashScreenStateService,
         protected override dialog: MatDialog) {
-            super(route, router, sharedDataService, dialog, splashScreenStateService);      
+            super(route, sharedDataService, dialog, splashScreenStateService);      
     }
 
     formModel: VerifyLogin = {

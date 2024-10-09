@@ -5,11 +5,11 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "../user/model/user.model";
-import { EventService } from "./service/event-service";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { User } from "../user/model/user.model";
 import { EventListComponent } from "./event-list.component";
+import { EventService } from "./service/event-service";
 
 /**
  * @author Peter Szrnka
@@ -30,7 +30,7 @@ describe('EventListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            imports : [ AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
             declarations : [EventListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

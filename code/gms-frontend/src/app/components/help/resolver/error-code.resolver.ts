@@ -8,7 +8,7 @@ import { ErrorCodeService } from "../service/error-code.service";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ErrorCodeResolver {
 
     constructor(private splashScreenStateService: SplashScreenStateService, private service: ErrorCodeService) {

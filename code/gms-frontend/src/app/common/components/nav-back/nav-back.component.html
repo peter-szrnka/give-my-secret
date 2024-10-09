@@ -1,14 +1,15 @@
 <div>
   @if (backToHome === true) {
-    <button mat-raised-button [routerLink]="''">Back to home</button>
+  <button mat-raised-button [routerLink]="''">Back to home</button>
   }
   @for (button of buttonConfig!! | navButtonVisibility; track button) {
-    <button
-      color="{{button.primary ? 'primary':'default'}}"
-      mat-button
-      mat-raised-button
-      [disabled]="button.enabled === false"
-      (click)="button.callFunction()"
+  @if (button.callFunction) {
+  <button color="{{button.primary ? 'primary':'default'}}" mat-button mat-raised-button
+    [disabled]="button.enabled === false" (click)="button.callFunction()"
     [routerLink]="button.url">{{button.label}}</button>
+  } @else {
+  <button color="{{button.primary ? 'primary':'default'}}" mat-button mat-raised-button
+    [disabled]="button.enabled === false" [routerLink]="button.url">{{button.label}}</button>
+  }
   }
 </div>

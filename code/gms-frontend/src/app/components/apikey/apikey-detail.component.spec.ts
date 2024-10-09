@@ -10,7 +10,7 @@ import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
@@ -34,7 +34,7 @@ describe('ApiKeyDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, PipesModule ],
+            imports : [RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe ],
             declarations : [ApiKeyDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

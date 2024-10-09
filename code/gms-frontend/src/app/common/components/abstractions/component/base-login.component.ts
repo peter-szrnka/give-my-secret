@@ -1,14 +1,14 @@
 import { Directive, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { ActivatedRoute } from "@angular/router";
 import { Observable, of } from "rxjs";
+import { User } from "../../../../components/user/model/user.model";
+import { checker } from "../../../interceptor/role-guard";
+import { SharedDataService } from "../../../service/shared-data-service";
+import { SplashScreenStateService } from "../../../service/splash-screen-service";
+import { ROLE_ROUTE_MAP } from "../../../utils/route-utils";
 import { DialogData } from "../../info-dialog/dialog-data.model";
 import { InfoDialog } from "../../info-dialog/info-dialog.component";
-import { MatDialog } from "@angular/material/dialog";
-import { SplashScreenStateService } from "../../../service/splash-screen-service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { SharedDataService } from "../../../service/shared-data-service";
-import { checker } from "../../../interceptor/role-guard";
-import { User } from "../../../../components/user/model/user.model";
-import { ROLE_ROUTE_MAP } from "../../../utils/route-utils";
 
 /**
  * @author Peter Szrnka
@@ -18,7 +18,6 @@ export abstract class BaseLoginComponent implements OnInit {
 
     constructor(
         protected route: ActivatedRoute,
-        protected router: Router,
         protected sharedDataService: SharedDataService,
         protected dialog: MatDialog,
         protected splashScreenStateService: SplashScreenStateService

@@ -1,9 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AngularMaterialModule } from "../../../angular-material-module";
+import { MomentPipe } from "../pipes/date-formatter.pipe";
+import { NavButtonVisibilityPipe } from "../pipes/nav-button-visibility.pipe";
 import { NavBackComponent } from "./nav-back.component";
-import { PipesModule } from "../pipes/pipes.module";
 
 /**
  * @author Peter Szrnka
@@ -16,7 +16,7 @@ describe('NavBackComponent', () => {
 
     beforeEach(() => {
        TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, PipesModule ],
+            imports : [ AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe ],
             declarations : [NavBackComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA]
         });

@@ -5,10 +5,10 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { EventListComponent } from "./event-list.component";
-import { EventService } from "./service/event-service";
 import { EventListResolver } from "./resolver/event-list.resolver";
+import { EventService } from "./service/event-service";
 
 /**
  * @author Peter Szrnka
@@ -16,10 +16,12 @@ import { EventListResolver } from "./resolver/event-list.resolver";
 @NgModule({ declarations: [
         EventListComponent
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [
+        AngularMaterialModule,
         FormsModule,
         BrowserModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule], providers: [EventService, EventListResolver, provideHttpClient(withInterceptorsFromDi())] })
+        MomentPipe
+    ], providers: [EventService, EventListResolver, provideHttpClient(withInterceptorsFromDi())] })
   export class EventModule { }

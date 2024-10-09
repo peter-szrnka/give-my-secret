@@ -4,21 +4,21 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { Data, ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
+import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { IdNamePair } from "../../common/model/id-name-pair.model";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
+import { IdNamePair } from "../../common/model/id-name-pair.model";
+import { SharedDataService } from "../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { ApiKeyService } from "../apikey/service/apikey-service";
 import { KeystoreService } from "../keystore/service/keystore-service";
-import { SecretService } from "./service/secret-service";
-import { SharedDataService } from "../../common/service/shared-data-service";
 import { SecretDetailComponent } from "./secret-detail.component";
-import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { SecretService } from "./service/secret-service";
 
 /**
  * @author Peter Szrnka
@@ -41,7 +41,7 @@ describe('SecretDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, FormsModule, BrowserAnimationsModule, AngularMaterialModule, PipesModule ],
+            imports : [RouterTestingModule, FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe ],
             declarations : [SecretDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

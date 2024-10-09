@@ -6,12 +6,12 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "../user/model/user.model";
-import { SecretService } from "./service/secret-service";
-import { SharedDataService } from "../../common/service/shared-data-service";
-import { COPY_SECRET_ID_MESSAGE, SecretListComponent } from "./secret-list.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { ClipboardService } from "../../common/service/clipboard-service";
+import { SharedDataService } from "../../common/service/shared-data-service";
+import { User } from "../user/model/user.model";
+import { COPY_SECRET_ID_MESSAGE, SecretListComponent } from "./secret-list.component";
+import { SecretService } from "./service/secret-service";
 
 /**
  * @author Peter Szrnka
@@ -33,7 +33,7 @@ describe('SecretListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            imports : [RouterTestingModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
             declarations : [SecretListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

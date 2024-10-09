@@ -1,16 +1,16 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/compiler";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { ConfirmDeleteDialogData } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { MessageListComponent, SelectionStatus } from "./message-list.component";
 import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
-import { MatDialog } from "@angular/material/dialog";
-import { ConfirmDeleteDialogData } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 
 /**
  * @author Peter Szrnka
@@ -25,7 +25,7 @@ describe('MessageListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, NoopAnimationsModule, PipesModule ],
+            imports : [ AngularMaterialModule, NoopAnimationsModule, MomentPipe ],
             declarations : [MessageListComponent],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
             providers: [

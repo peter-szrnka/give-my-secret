@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SystemStatus } from "../../common/model/system-status.model";
 import { SetupService } from "../setup/service/setup-service";
 
@@ -11,7 +11,7 @@ import { SetupService } from "../setup/service/setup-service";
  */
 @Component({
     standalone: true,
-    imports: [ AngularMaterialModule, CommonModule , PipesModule ],
+    imports: [ AngularMaterialModule, CommonModule , MomentPipe ],
     selector: 'about',
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.scss']

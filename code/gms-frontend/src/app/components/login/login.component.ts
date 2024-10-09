@@ -26,12 +26,12 @@ export class LoginComponent extends BaseLoginComponent {
 
     constructor(
         protected override route: ActivatedRoute,
-        protected override router: Router,
+        protected router: Router,
         private authService: AuthService,
         protected override sharedDataService: SharedDataService,
         protected override splashScreenStateService: SplashScreenStateService,
         protected override dialog: MatDialog) {
-            super(route, router, sharedDataService, dialog, splashScreenStateService)
+            super(route, sharedDataService, dialog, splashScreenStateService)
     }
 
     login(): void {

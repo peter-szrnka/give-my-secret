@@ -4,7 +4,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { GmsComponentsModule } from "../../common/components/gms-components-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { MessageListComponent } from "./message-list.component";
 import { MessageService } from "./service/message-service";
 
@@ -14,9 +14,15 @@ import { MessageService } from "./service/message-service";
 @NgModule({ declarations: [
         MessageListComponent
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA], imports: [AngularMaterialModule,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA], 
+    imports: [
+        AngularMaterialModule,
         BrowserModule,
         AppRoutingModule,
         GmsComponentsModule,
-        PipesModule], providers: [MessageService, provideHttpClient(withInterceptorsFromDi())] })
+        MomentPipe
+    ], providers: [
+        MessageService, provideHttpClient(withInterceptorsFromDi())
+    ]
+})
   export class MessageModule { }

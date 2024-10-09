@@ -4,12 +4,12 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatTableModule } from "@angular/material/table";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { ReplaySubject, of, throwError } from "rxjs";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "./model/user.model";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { User } from "./model/user.model";
 import { UserService } from "./service/user-service";
 import { UserListComponent } from "./user-list.component";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -32,7 +32,7 @@ describe('UserListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ MatTableModule, PipesModule ],
+            imports : [ MatTableModule, MomentPipe ],
             declarations : [UserListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

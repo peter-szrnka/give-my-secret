@@ -8,7 +8,7 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
@@ -34,7 +34,7 @@ describe('SystemPropertyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, PipesModule ],
+            imports : [RouterTestingModule, ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
             declarations : [SystemPropertyListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

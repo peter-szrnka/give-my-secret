@@ -4,11 +4,11 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatTableModule } from "@angular/material/table";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "../user/model/user.model";
-import { AnnouncementService } from "./service/announcement-service";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { User } from "../user/model/user.model";
 import { AnnouncementListComponent } from "./announcement-list.component";
+import { AnnouncementService } from "./service/announcement-service";
 
 /**
  * @author Peter Szrnka
@@ -29,7 +29,7 @@ describe('AnnouncementListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [MatTableModule, PipesModule ],
+            imports : [MatTableModule, MomentPipe ],
             declarations : [AnnouncementListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

@@ -4,7 +4,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { HomeComponent } from "./home.component";
 import { HomeService } from "./service/home.service";
 
@@ -13,9 +13,11 @@ import { HomeService } from "./service/home.service";
  */
 @NgModule({ declarations: [
         HomeComponent
-    ], imports: [AngularMaterialModule,
+    ], imports: [
+        AngularMaterialModule,
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
-        PipesModule], providers: [HomeService, provideHttpClient(withInterceptorsFromDi())] })
+        MomentPipe
+    ], providers: [HomeService, provideHttpClient(withInterceptorsFromDi())] })
   export class HomeModule { }

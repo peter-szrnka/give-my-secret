@@ -1,9 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, InjectionToken, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -13,7 +10,6 @@ import { AppComponent } from './app.component';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { AngularMaterialModule } from './angular-material-module';
 import { GmsComponentsModule } from './common/components/gms-components-module';
-import { PipesModule } from './common/components/pipes/pipes.module';
 import { AuthInterceptor } from './common/interceptor/auth-interceptor';
 import { MockInterceptor } from './common/interceptor/mock-interceptor';
 import { ServiceModule } from './common/service/service-module';
@@ -22,7 +18,6 @@ import { ApiTestingModule } from './components/api_testing/api-testing.module';
 import { ApiKeyModule } from './components/apikey/apikey-module';
 import { EventModule } from './components/event/event-module';
 import { HeaderModule } from './components/header/header-module';
-import { HelpModule } from './components/help/help-module';
 import { HomeModule } from './components/home/home-module';
 import { IpRestrictionModule } from './components/ip_restriction/ip-restriction-module';
 import { KeystoreModule } from './components/keystore/keystore-module';
@@ -46,9 +41,9 @@ export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
         AppComponent
     ],
     bootstrap: [AppComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
-        FormsModule,
-        BrowserModule,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], 
+    imports: [
+        AngularMaterialModule,
         AppRoutingModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
             enabled: environment.production,
@@ -56,8 +51,6 @@ export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
             // or after 30 seconds (whichever comes first).
             registrationStrategy: 'registerWhenStable:30000'
         }),
-        BrowserAnimationsModule,
-        PipesModule,
         GmsComponentsModule,
         // Main application modules
         NavMenuModule,
@@ -78,8 +71,9 @@ export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
         ApiTestingModule,
         SystemPropertyModule,
         VerifyModule,
-        IpRestrictionModule,
-        HelpModule], providers: [
+        IpRestrictionModule
+    ], 
+    providers: [
         provideHttpClient(),
         { provide: ENV_CONFIG, useValue: environment },
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
