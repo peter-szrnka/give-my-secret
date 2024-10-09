@@ -11,7 +11,7 @@ import { InformationService } from "./info-service";
 /**
  * @author Peter Szrnka
  */
-@Injectable({ providedIn: 'any' })
+@Injectable({ providedIn: 'root' })
 export class SharedDataService {
 
     currentUser: User | undefined;

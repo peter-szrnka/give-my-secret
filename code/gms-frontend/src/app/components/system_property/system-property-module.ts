@@ -4,8 +4,9 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
-import { GmsComponentsModule } from "../../common/components/gms-components-module";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { SplashComponent } from "../../common/components/splash/splash.component";
 import { SystemPropertyListResolver } from "./resolver/system-property-list.resolver";
 import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
@@ -23,8 +24,9 @@ import { SystemPropertyListComponent } from "./system-property-list.component";
         FormsModule,
         BrowserModule,
         AppRoutingModule,
-        GmsComponentsModule,
-        MomentPipe
+        SplashComponent,
+        MomentPipe,
+        NavBackComponent
     ], 
     providers: [
         SystemPropertyService, SystemPropertyListResolver,

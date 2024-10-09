@@ -1,7 +1,8 @@
+import { NgFor, NgIf } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 import { AngularMaterialModule } from "../../../angular-material-module";
-import { MomentPipe } from "../pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "../pipes/nav-button-visibility.pipe";
 import { NavBackComponent } from "./nav-back.component";
 
@@ -16,8 +17,14 @@ describe('NavBackComponent', () => {
 
     beforeEach(() => {
        TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe ],
-            declarations : [NavBackComponent],
+            imports : [ NavBackComponent, AngularMaterialModule,
+                NavButtonVisibilityPipe,
+                NgIf, NgFor,
+                RouterLink
+            ],
+            providers : [
+                { provide: ActivatedRoute, useValue: { snapshot: { url: [ { path: 'test' } ] } } }
+            ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA]
         });
 
@@ -27,8 +34,6 @@ describe('NavBackComponent', () => {
     });
 
     it('Should create component', () => {
-        
-
         component.backToHome = true;
         component.buttonConfig = [
             { label : "Button1", primary : false, url : "http://localhost:8080/" },

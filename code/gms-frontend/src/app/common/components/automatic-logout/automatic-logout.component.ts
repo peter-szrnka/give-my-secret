@@ -1,6 +1,8 @@
+import { DatePipe, NgClass } from "@angular/common";
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { map, Observable, Subscription, takeWhile, timer } from "rxjs";
+import { AngularMaterialModule } from "../../../angular-material-module";
 import { SharedDataService } from "../../service/shared-data-service";
 import { InfoDialog } from "../info-dialog/info-dialog.component";
 
@@ -10,6 +12,12 @@ export const WARNING_THRESHOLD = 60000;
  * @author Peter Szrnka
  */
 @Component({
+    standalone: true,
+    imports: [
+        AngularMaterialModule,
+        DatePipe,
+        NgClass
+    ],
     selector: 'automatic-logout',
     templateUrl: './automatic-logout.component.html',
     styleUrls: ['./automatic-logout.component.scss']

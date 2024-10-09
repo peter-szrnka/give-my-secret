@@ -7,6 +7,7 @@ import { GmsComponentsModule } from "../../common/components/gms-components-modu
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { MessageListComponent } from "./message-list.component";
 import { MessageService } from "./service/message-service";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 
 /**
  * @author Peter Szrnka
@@ -20,7 +21,8 @@ import { MessageService } from "./service/message-service";
         BrowserModule,
         AppRoutingModule,
         GmsComponentsModule,
-        MomentPipe
+        MomentPipe,
+        NavBackComponent
     ], providers: [
         MessageService, provideHttpClient(withInterceptorsFromDi())
     ]

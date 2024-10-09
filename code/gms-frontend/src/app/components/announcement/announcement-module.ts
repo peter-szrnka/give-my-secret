@@ -4,14 +4,14 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
-import { GmsComponentsModule } from "../../common/components/gms-components-module";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 import { AnnouncementListComponent } from "./announcement-list.component";
 import { AnnouncementDetailResolver } from "./resolver/announcement-detail.resolver";
 import { AnnouncementListResolver } from "./resolver/announcement-list.resolver";
 import { AnnouncementService } from "./service/announcement-service";
-import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
 
 /**
  * @author Peter Szrnka
@@ -24,8 +24,8 @@ import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-butto
         FormsModule,
         BrowserModule,
         AppRoutingModule,
-        GmsComponentsModule,
         MomentPipe,
+        NavBackComponent,
         NavButtonVisibilityPipe
     ], providers: [
         AnnouncementService, AnnouncementListResolver, AnnouncementDetailResolver,
