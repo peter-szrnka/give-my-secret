@@ -24,19 +24,19 @@
         </mat-expansion-panel-header>
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Current password</mat-label>
-          <input type="password" matInput name="oldCredential" required minlength="8"
+          <input type="current-password" matInput name="oldCredential" required minlength="8"
             [(ngModel)]="credentialData.oldCredential">
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>New password</mat-label>
-            <input type="password" matInput name="newCredential1" required minlength="8"
+            <input type="new-password" matInput name="newCredential1" required minlength="8"
               [(ngModel)]="credentialData.newCredential1">
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
               <mat-label>Verify new password</mat-label>
-              <input type="password" matInput name="newCredential2" required minlength="8"
+              <input type="new-password" matInput name="newCredential2" required minlength="8"
                 [(ngModel)]="credentialData.newCredential2">
               </mat-form-field>
 

@@ -8,7 +8,7 @@ import { getHeaders } from '../utils/header-utils';
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
     constructor(private http : HttpClient) { }
