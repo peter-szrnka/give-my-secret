@@ -6,6 +6,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { UserService } from "../user/service/user-service";
 import { environment } from "../../../environments/environment";
+import { DialogService } from "../../common/service/dialog-service";
 
 export interface PasswordSettings {
   oldCredential: string | undefined,
@@ -37,7 +38,7 @@ export class SettingsSummaryComponent implements OnInit {
   constructor(
     private sharedData : SharedDataService,
     private userService: UserService,
-    public dialog: MatDialog,
+    public dialogService: DialogService,
     private splashScreenService : SplashScreenStateService) { }
 
   ngOnInit(): void {
@@ -53,14 +54,11 @@ export class SettingsSummaryComponent implements OnInit {
       newCredential: this.credentialData.newCredential1
     }).subscribe({
       next: () => {
-        this.dialog.open(InfoDialog, { data: { text : "Password has been updated successfully!", type : "information" } });
+        this.dialogService.openInfoDialog("Password updated", "Password has been updated successfully!");
+        this.splashScreenService.stop();
       },
       error: (err) => {
-        this.dialog.open(InfoDialog, { data: { text : "Unexpected error occurred: " + getErrorMessage(err), type : "warning" } });
-        this.splashScreenService.stop();
-      },
-      complete: () => {
-        this.splashScreenService.stop();
+        this.openWarning(err);
       }
     });
   }
@@ -69,15 +67,17 @@ export class SettingsSummaryComponent implements OnInit {
     this.splashScreenService.start();
     this.userService.toggleMfa(this.mfaEnabled).subscribe({
       next: () => {
-        this.dialog.open(InfoDialog, { data: { text : "MFA toggle updated successfully!", type : "information" } });
+        this.dialogService.openInfoDialog("MFA toggle updated", "MFA toggle updated successfully!");
+        this.splashScreenService.stop();
       },
       error: (err) => {
-        this.dialog.open(InfoDialog, { data: { text : "Unexpected error occurred: " + getErrorMessage(err), type : "warning" } });
-        this.splashScreenService.stop();
-      },
-      complete: () => {
-        this.splashScreenService.stop();
+        this.openWarning(err);
       }
     });
+  }
+
+  private openWarning(error: any): void {
+    this.dialogService.openWarningDialog("Unexpected error occurred: " + getErrorMessage(error));
+    this.splashScreenService.stop();
   }
 }

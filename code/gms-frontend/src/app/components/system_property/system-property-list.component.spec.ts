@@ -5,11 +5,11 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
@@ -29,12 +29,13 @@ describe('SystemPropertyListComponent', () => {
     let dialog : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
+    let splashScreenService: any = {};
     // Fixtures
     let fixture : ComponentFixture<SystemPropertyListComponent>;
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
+            imports : [ ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
             declarations : [SystemPropertyListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -42,7 +43,8 @@ describe('SystemPropertyListComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SystemPropertyService, useValue : service },
                 { provide : MatDialog, useValue : dialog },
-                { provide : ActivatedRoute, useClass : activatedRoute }
+                { provide : ActivatedRoute, useClass : activatedRoute },
+                { provide : SplashScreenStateService, useValue : splashScreenService }
             ]
         });
 
@@ -90,6 +92,10 @@ describe('SystemPropertyListComponent', () => {
         service = {
             save : jest.fn().mockReturnValue(of("")),
             delete : jest.fn().mockReturnValue(of("OK"))
+        };
+
+        splashScreenService = {
+            start : jest.fn()
         };
     });
 
@@ -169,6 +175,7 @@ describe('SystemPropertyListComponent', () => {
         expect(component.dialog.open).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
+        expect(splashScreenService.start).toHaveBeenCalled();
     });
 
     it('Should delete an item', () => {

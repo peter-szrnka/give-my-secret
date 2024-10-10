@@ -1,12 +1,11 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormBuilder, FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, ReplaySubject, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { FORM_GROUP_MOCK } from "../../common/form-helper.spec";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { UserService } from "../user/service/user-service";
@@ -29,11 +28,11 @@ describe('SettingsSummaryComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule ],
+            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule ],
             declarations : [SettingsSummaryComponent],
             providers: [
                 { provide : UserService, useValue : userService },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialog },
                 { provide : FormBuilder, useValue : formBuilder },
                 { provide : SplashScreenStateService, useValue : splashScreenService },
                 { provide : SharedDataService, useValue : sharedData }
@@ -47,7 +46,8 @@ describe('SettingsSummaryComponent', () => {
 
     beforeEach(() => {
         dialog = {
-            open : jest.fn()
+            openInfoDialog : jest.fn(),
+            openWarningDialog : jest.fn()
         };
         userService = {
             changeCredentials : jest.fn().mockImplementation(() : Observable<void> => {
@@ -87,8 +87,7 @@ describe('SettingsSummaryComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialog.openWarningDialog).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
     });
@@ -119,8 +118,7 @@ describe('SettingsSummaryComponent', () => {
         component.toggleMfa();
 
         // assert
-        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialog.openWarningDialog).toHaveBeenCalled();
         expect(userService.toggleMfa).toHaveBeenCalledWith(true);
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();

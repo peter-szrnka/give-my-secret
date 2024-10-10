@@ -11,6 +11,7 @@ import { checkRights } from "../../common/utils/permission-utils";
 import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
@@ -89,7 +90,8 @@ export class SystemPropertyListComponent {
     public sharedData: SharedDataService,
     protected service: SystemPropertyService,
     public dialog: MatDialog,
-    protected activatedRoute: ActivatedRoute) { }
+    protected activatedRoute: ActivatedRoute,
+    private readonly splashScreenService: SplashScreenStateService) { }
 
   ngOnInit(): void {
     this.fetchData();
@@ -187,6 +189,7 @@ export class SystemPropertyListComponent {
       return;
     }
 
+    this.splashScreenService.start();
     if (callbackMethod === 'checkSystemReady') {
       this.sharedData.checkSystemReady();
     }

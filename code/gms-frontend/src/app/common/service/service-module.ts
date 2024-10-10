@@ -7,13 +7,14 @@ import { SecureStorageService } from "./secure-storage.service";
 import { ClipboardService } from "./clipboard-service";
 import { InformationService } from "./info-service";
 import { LoggerService } from "./logger-service";
+import { DialogService } from "./dialog-service";
 
 /**
  * @author Peter Szrnka
  */
 @NgModule({ declarations: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [], providers: [
-        SharedDataService, AuthService, SplashScreenStateService, SecureStorageService, ClipboardService, InformationService, LoggerService,
+        SharedDataService, AuthService, SplashScreenStateService, SecureStorageService, ClipboardService, InformationService, LoggerService, DialogService,
         provideHttpClient(withInterceptorsFromDi())
     ] })
   export class ServiceModule { }

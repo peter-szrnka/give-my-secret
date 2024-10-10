@@ -1,10 +1,9 @@
 import { DatePipe, NgClass } from "@angular/common";
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA, OnDestroy, OnInit } from "@angular/core";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { map, Observable, Subscription, takeWhile, timer } from "rxjs";
-import { AngularMaterialModule } from "../../../angular-material-module";
+import { DialogService } from "../../service/dialog-service";
 import { SharedDataService } from "../../service/shared-data-service";
-import { InfoDialog } from "../info-dialog/info-dialog.component";
 
 export const WARNING_THRESHOLD = 60000;
 
@@ -14,10 +13,11 @@ export const WARNING_THRESHOLD = 60000;
 @Component({
     standalone: true,
     imports: [
-        AngularMaterialModule,
+        MatTooltipModule,
         DatePipe,
         NgClass
     ],
+    schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     selector: 'automatic-logout',
     templateUrl: './automatic-logout.component.html',
     styleUrls: ['./automatic-logout.component.scss']
@@ -30,7 +30,7 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
     timeLeftSubscription: Subscription;
     logoutComing: boolean = false;
 
-    constructor(private sharedData: SharedDataService, private dialog: MatDialog) { }
+    constructor(private readonly sharedData: SharedDataService, private readonly dialogService: DialogService) {}
 
     ngOnInit(): void {
         this.resetTimerSubscription = this.sharedData.resetTimerSubject$.subscribe((oldStartTime) => {
@@ -53,7 +53,7 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
         this.sharedData.setStartTime(Date.now());
 
         const timeLeftObservable: Observable<number> = timer(0, 1000).pipe(
-            map(n => this.timeLeftValue - 1000),
+            map(() => this.timeLeftValue - 1000),
             takeWhile(n => n >= 0) 
         );
 
@@ -62,7 +62,7 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
             this.timeLeftValue = n;
             
             if (n === 0) {
-                this.dialog.open(InfoDialog, { data: { title: 'Automatic Logout', text: 'You have been logged out due to inactivity.', type: 'information' } });
+                this.dialogService.openInfoDialog('Automatic Logout', 'You have been logged out due to inactivity.');
                 this.sharedData.logout();
             }
         });
