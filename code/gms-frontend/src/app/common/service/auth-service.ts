@@ -11,7 +11,7 @@ import { getHeaders } from '../utils/header-utils';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-    constructor(private http : HttpClient) { }
+    constructor(private readonly http : HttpClient) { }
 
     login(data : Login) : Observable<LoginResponse> {
         return this.http.post<LoginResponse>(environment.baseUrl + 'authenticate', data, { withCredentials : true, headers : getHeaders() });

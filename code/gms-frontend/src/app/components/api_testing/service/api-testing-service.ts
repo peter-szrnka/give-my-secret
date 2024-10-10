@@ -10,7 +10,7 @@ import { CredentialApiResponse } from "../../secret/model/credential-api-respons
 @Injectable({providedIn : "root"})
 export class ApiTestingService {
 
-    constructor(private http : HttpClient) {}
+    constructor(private readonly http : HttpClient) {}
 
     getSecretValue(secretId : string, apiKey : string): Observable<CredentialApiResponse | { [key:string] : string } > {
         return this.http.get<CredentialApiResponse | { [key:string] : string }>(environment.baseUrl + 'api/secret/' + secretId, { 

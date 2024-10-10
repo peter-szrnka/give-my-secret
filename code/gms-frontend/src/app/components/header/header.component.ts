@@ -28,7 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     constructor(
         public router: Router, 
         public sharedDataService: SharedDataService, 
-        private messageService : MessageService) {
+        private readonly messageService : MessageService) {
     }
 
     ngOnDestroy(): void {
@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.sharedDataService.systemReadySubject$.subscribe((data) => this.automaticLogoutTimeInMinutes.set(data.automaticLogoutTimeInMinutes ?? 0));
         this.userSubscription = this.sharedDataService.userSubject$.subscribe(user => this.currentUser = user);
         this.router.events.pipe(filter(event => (event instanceof NavigationEnd))).subscribe((event) => {
-            if (this.currentUser === undefined || (event as NavigationEnd).url !== "/") {
+            if (this.currentUser === undefined || event.url !== "/") {
                 return;
             }
 
