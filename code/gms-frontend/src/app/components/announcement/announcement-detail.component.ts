@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Announcement, PAGE_CONFIG_ANNOUNCEMENT } from "./model/announcement.model";
-import { PageConfig } from "../../common/model/common.model";
-import { AnnouncementService } from "./service/announcement-service";
-import { SharedDataService } from "../../common/service/shared-data-service";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
+import { PageConfig } from "../../common/model/common.model";
+import { DialogService } from "../../common/service/dialog-service";
+import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { Announcement, PAGE_CONFIG_ANNOUNCEMENT } from "./model/announcement.model";
+import { AnnouncementService } from "./service/announcement-service";
 
 /**
  * @author Peter Szrnka
@@ -22,10 +22,10 @@ export class AnnouncementDetailComponent extends BaseSaveableDetailComponent<Ann
     override router : Router,
     override sharedData : SharedDataService, 
     override service : AnnouncementService,
-    public override dialog: MatDialog,
+    public override dialogService: DialogService,
     override activatedRoute: ActivatedRoute,
     protected override splashScreenStateService: SplashScreenStateService) {
-      super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);
+      super(router, sharedData, service, dialogService, activatedRoute, splashScreenStateService);
   }
 
   getPageConfig(): PageConfig {

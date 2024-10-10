@@ -17,6 +17,18 @@ export class DialogService {
         });
     }
 
+    openCustomDialogWithErrorCode(text: string, type: string, errorCode?: string) : MatDialogRef<InfoDialog, any> {
+        return this.dialog.open(InfoDialog, {
+            data: { text: text, type: type, errorCode: errorCode }
+        });
+    }
+
+    openInfoDialogWithoutTitle(text: string): MatDialogRef<InfoDialog, any> {
+        return this.dialog.open(InfoDialog, {
+            data: { text: text, type: 'information' }
+        });
+    }
+
     openInfoDialog(title: string, text: string): MatDialogRef<InfoDialog, any> {
         return this.dialog.open(InfoDialog, {
             data: { title: title, text: text, type: 'information' }

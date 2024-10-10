@@ -3,16 +3,14 @@ import { NO_ERRORS_SCHEMA } from "@angular/compiler";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
-import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
-import { ApiTestingService } from "./service/api-testing-service";
+import { DialogService } from "../../common/service/dialog-service";
+import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { ApiTestingComponent } from "./api-testing.component";
-import { SecureStorageService } from "../../common/service/secure-storage.service";
+import { ApiTestingService } from "./service/api-testing-service";
 
 /**
  * @author Peter Szrnka
@@ -22,7 +20,7 @@ describe('ApiTestingComponent', () => {
     let component : ApiTestingComponent;
     let service : any;
     let splashScreenService : any;
-    let dialog : any;
+    let dialogService : any;
     let secureStorageService : any;
 
     // Fixtures
@@ -34,7 +32,7 @@ describe('ApiTestingComponent', () => {
             declarations : [ ApiTestingComponent ],
             providers : [
                 { provide : ApiTestingService, useValue : service },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialogService },
                 { provide : SplashScreenStateService, useValue : splashScreenService },
                 { provide : SecureStorageService, useValue : secureStorageService }
             ],
@@ -52,14 +50,13 @@ describe('ApiTestingComponent', () => {
                 return of({ value : "my-secret-value" });
             })
         };
-        dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
-        }
+        dialogService = {
+            openWarningDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+        };
         splashScreenService = {
             start : jest.fn(),
             stop : jest.fn()
         };
-        //formBuilder = FORM_GROUP_MOCK;
         secureStorageService = {
             getItem : jest.fn().mockImplementation((key) => "apiKey" === key ? "test" : "secret1"),
             setItem : jest.fn()
@@ -100,6 +97,7 @@ describe('ApiTestingComponent', () => {
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
         expect(secureStorageService.setItem).toHaveBeenCalled();
+        expect(dialogService.openWarningDialog).not.toHaveBeenCalled();
     });
 
     it('should throw error', () => {
@@ -117,8 +115,7 @@ describe('ApiTestingComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledTimes(1);
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Unexpected error occurred: OOPS!", type: "warning" } as DialogData });
+        expect(dialogService.openWarningDialog).toHaveBeenCalledTimes(1);
         expect(splashScreenService.start).toHaveBeenCalled();
     });
 });

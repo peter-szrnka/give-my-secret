@@ -1,11 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
-import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
-import { ApiTestingService } from "./service/api-testing-service";
+import { DialogService } from "../../common/service/dialog-service";
+import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
-import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { CredentialApiResponse } from "../secret/model/credential-api-response.model";
+import { ApiTestingService } from "./service/api-testing-service";
 /**
  * @author Peter Szrnka
  */
@@ -22,7 +21,7 @@ export class ApiTestingComponent implements OnInit {
 
     constructor(
         private service: ApiTestingService,
-        private dialog: MatDialog,
+        private dialogService: DialogService,
         private splashScreenService: SplashScreenStateService,
         private secureStorageService : SecureStorageService
     ) { }
@@ -46,7 +45,7 @@ export class ApiTestingComponent implements OnInit {
                     this.splashScreenService.stop();
                 },
                 error: (err: any) => {
-                    this.dialog.open(InfoDialog, { data: { text: "Unexpected error occurred: " + getErrorMessage(err), type : "warning" } });
+                    this.dialogService.openWarningDialog("Unexpected error occurred: " + getErrorMessage(err));
                     this.splashScreenService.stop();
                 }
             });

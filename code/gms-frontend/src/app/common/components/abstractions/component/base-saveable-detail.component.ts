@@ -1,14 +1,15 @@
 import { Directive, OnInit } from "@angular/core";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
+import { BaseDetail } from "../../../model/base-detail.model";
 import { BaseList } from "../../../model/base-list";
 import { PageConfig } from "../../../model/common.model";
+import { DialogService } from "../../../service/dialog-service";
 import { SharedDataService } from "../../../service/shared-data-service";
+import { SplashScreenStateService } from "../../../service/splash-screen-service";
 import { getErrorCode, getErrorMessage } from "../../../utils/error-utils";
 import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { SaveServiceBase } from "../service/save-service-base";
-import { SplashScreenStateService } from "../../../service/splash-screen-service";
-import { BaseDetail } from "../../../model/base-detail.model";
 
 /**
  * @author Peter Szrnka
@@ -23,7 +24,7 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         protected router : Router,
         protected sharedData : SharedDataService, 
         protected service : S,
-        public dialog: MatDialog,
+        public dialogService: DialogService,
         protected activatedRoute: ActivatedRoute,
         protected splashScreenStateService: SplashScreenStateService) {}
 
@@ -66,9 +67,7 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
     }
 
     public openInformationDialog(message : string, navigateToList : boolean, type : string, errorCode?: string) {
-        const dialogRef : MatDialogRef<InfoDialog, any> = this.dialog.open(InfoDialog, {
-          data: { text: message, type : type, errorCode: errorCode },
-        });
+        const dialogRef : MatDialogRef<InfoDialog, any> = this.dialogService.openCustomDialogWithErrorCode(message, type, errorCode);
     
         dialogRef.afterClosed().subscribe(() => {
           if (navigateToList === false) {

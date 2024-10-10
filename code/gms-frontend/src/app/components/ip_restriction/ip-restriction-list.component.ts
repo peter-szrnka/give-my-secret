@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
 import { PageConfig } from "../../common/model/common.model";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { IpRestriction, PAGE_CONFIG_IP_RESTRICTION } from "./model/ip-restriction.model";
 import { IpRestrictionService } from "./service/ip-restriction.service";
@@ -25,9 +25,9 @@ export class IpRestrictionListComponent extends BaseListComponent<IpRestriction,
         override router: Router,
         override sharedData: SharedDataService,
         public override service: IpRestrictionService,
-        public override dialog: MatDialog,
+        public override dialogService: DialogService,
         override activatedRoute: ActivatedRoute) {
-        super(router, sharedData, service, dialog, activatedRoute);
+        super(router, sharedData, service, dialogService, activatedRoute);
     }
 
     getPageConfig(): PageConfig {

@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, ElementRef, ViewChild } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
+import { environment } from "../../../environments/environment";
 import { BaseDetailComponent } from "../../common/components/abstractions/component/base-detail.component";
 import { PageConfig } from "../../common/model/common.model";
-import { Keystore, PAGE_CONFIG_KEYSTORE } from "./model/keystore.model";
-import { KeystoreService } from "./service/keystore-service";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { KeystoreAlias } from "./model/keystore-alias.model";
-import { ArrayDataSource } from "@angular/cdk/collections";
-import { environment } from "../../../environments/environment";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { Keystore, PAGE_CONFIG_KEYSTORE } from "./model/keystore.model";
+import { KeystoreService } from "./service/keystore-service";
 
 const ENABLED_ALGORITHMS : string[] = [
   "MD2WITHRSA",
@@ -59,7 +59,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
     protected override router: Router,
     protected override sharedData: SharedDataService,
     protected override service: KeystoreService,
-    public override dialog: MatDialog,
+    public override dialog: DialogService,
     protected override activatedRoute: ActivatedRoute,
     protected override splashScreenStateService: SplashScreenStateService) {
     super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);

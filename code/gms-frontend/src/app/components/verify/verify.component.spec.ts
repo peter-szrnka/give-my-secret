@@ -136,10 +136,10 @@ describe('VerifyComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
+        expect(authService.verifyLogin).toHaveBeenCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(sharedDataService.refreshCurrentUserInfo).toBeCalledTimes(0);
+        expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalledTimes(0);
     });
 
     it('Should MFA verification succeed', async () => {
@@ -208,7 +208,7 @@ describe('VerifyComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(authService.verifyLogin).toBeCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
+        expect(authService.verifyLogin).toHaveBeenCalledWith({ username: "user-1", verificationCode : "123456" } as VerifyLogin);
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
         expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalledTimes(0);

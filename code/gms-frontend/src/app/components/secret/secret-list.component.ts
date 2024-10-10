@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
+import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
 import { PageConfig } from "../../common/model/common.model";
+import { ClipboardService } from "../../common/service/clipboard-service";
+import { DialogService } from "../../common/service/dialog-service";
+import { SharedDataService } from "../../common/service/shared-data-service";
 import { PAGE_CONFIG_SECRET, Secret } from "./model/secret.model";
 import { SecretService } from "./service/secret-service";
-import { SharedDataService } from "../../common/service/shared-data-service";
-import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
-import { ClipboardService } from "../../common/service/clipboard-service";
 
 export const COPY_SECRET_ID_MESSAGE = "Secret ID copied to clipboard!";
 
@@ -25,10 +25,10 @@ export class SecretListComponent extends BaseListComponent<Secret, SecretService
       override router : Router,
       override sharedData : SharedDataService, 
       override service : SecretService,
-      public override dialog: MatDialog,
+      public override dialogService: DialogService,
       override activatedRoute: ActivatedRoute,
       private readonly clipboardService: ClipboardService) {
-        super(router, sharedData, service, dialog, activatedRoute);
+        super(router, sharedData, service, dialogService, activatedRoute);
     }
 
     getPageConfig(): PageConfig {

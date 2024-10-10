@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog as DialogService } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -23,7 +23,7 @@ describe('SecretListComponent', () => {
     };
     // Injected services
     let service : any;
-    let dialog : any = {};
+    let dialogService : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
     let clipboardService : any;
@@ -40,7 +40,7 @@ describe('SecretListComponent', () => {
                 { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SecretService, useValue : service },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialogService },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : ClipboardService, useValue : clipboardService}
             ]
@@ -57,8 +57,8 @@ describe('SecretListComponent', () => {
             refreshCurrentUserInfo: jest.fn()
         };
 
-        dialog = {
-            open : jest.fn()
+        dialogService = {
+            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true) })
         }
         
         activatedRoute = class {
@@ -125,11 +125,11 @@ describe('SecretListComponent', () => {
         expect(component).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
-        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
 
         component.promptDelete(1);
 
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openConfirmDeleteDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
@@ -139,11 +139,11 @@ describe('SecretListComponent', () => {
         expect(component).toBeTruthy();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
-        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
 
         component.promptDelete(1);
 
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openConfirmDeleteDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 

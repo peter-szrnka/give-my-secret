@@ -1,9 +1,9 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
 import { PageConfig } from "../../common/model/common.model";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { Event } from "../event/model/event.model";
@@ -45,11 +45,11 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
     protected override router: Router,
     protected override sharedData: SharedDataService,
     protected override service: UserService,
-    public override dialog: MatDialog,
+    public override dialogService: DialogService,
     protected override activatedRoute: ActivatedRoute,
     public eventService : EventService,
     protected override splashScreenStateService: SplashScreenStateService) {
-    super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);
+    super(router, sharedData, service, dialogService, activatedRoute, splashScreenStateService);
   }
 
   override async ngOnInit(): Promise<void> {

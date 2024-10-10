@@ -1,13 +1,12 @@
 import { Component } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { PageConfig } from "../../common/model/common.model";
-import { UserData, PAGE_CONFIG_USER } from "./model/user-data.model";
-import { SharedDataService } from "../../common/service/shared-data-service";
-import { UserService } from "./service/user-service";
 import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
-import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
+import { PageConfig } from "../../common/model/common.model";
+import { DialogService } from "../../common/service/dialog-service";
+import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { PAGE_CONFIG_USER, UserData } from "./model/user-data.model";
+import { UserService } from "./service/user-service";
 
 /**
  * @author Peter Szrnka
@@ -26,10 +25,10 @@ export class UserListComponent extends BaseListComponent<UserData, UserService> 
         override router: Router,
         override sharedData: SharedDataService,
         override service: UserService,
-        public override dialog: MatDialog,
+        public override dialogService: DialogService,
         override activatedRoute: ActivatedRoute,
         private readonly splashScreenService: SplashScreenStateService) {
-        super(router, sharedData, service, dialog, activatedRoute);
+        super(router, sharedData, service, dialogService, activatedRoute);
     }
 
     override async ngOnInit(): Promise<void> {
@@ -53,10 +52,7 @@ export class UserListComponent extends BaseListComponent<UserData, UserService> 
 
     handleLdapSyncResult(): void {
         this.splashScreenService.stop();
-        const dialogRef = this.dialog.open(InfoDialog, {
-            width: '250px',
-            data: { type: "information", text: "LDAP users synchronized successfully!" }
-        });
+        const dialogRef = this.dialogService.openInfoDialogWithoutTitle("LDAP users synchronized successfully!");
 
         dialogRef.afterClosed().subscribe(() => this.reloadPage());
     }

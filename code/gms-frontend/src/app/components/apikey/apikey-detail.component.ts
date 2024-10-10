@@ -1,14 +1,14 @@
 import { Component } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ButtonConfig } from "../../common/components/nav-back/button-config";
-import { ApiKey, PAGE_CONFIG_API_KEY } from "./model/apikey.model";
-import { PageConfig } from "../../common/model/common.model";
-import { ApiKeyService } from "./service/apikey-service";
-import { SharedDataService } from "../../common/service/shared-data-service";
 import randomstring from "randomstring";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
+import { ButtonConfig } from "../../common/components/nav-back/button-config";
+import { PageConfig } from "../../common/model/common.model";
+import { DialogService } from "../../common/service/dialog-service";
+import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { ApiKey, PAGE_CONFIG_API_KEY } from "./model/apikey.model";
+import { ApiKeyService } from "./service/apikey-service";
 
 /**
  * @author Peter Szrnka
@@ -28,10 +28,10 @@ export class ApiKeyDetailComponent extends BaseSaveableDetailComponent<ApiKey, A
         protected override router: Router,
         protected override sharedData: SharedDataService,
         protected override service: ApiKeyService,
-        public override dialog: MatDialog,
+        public override dialogService: DialogService,
         protected override activatedRoute: ActivatedRoute,
         protected override splashScreenStateService: SplashScreenStateService) {
-        super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);
+        super(router, sharedData, service, dialogService, activatedRoute, splashScreenStateService);
     }
 
     override getPageConfig(): PageConfig {

@@ -1,11 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { EventListComponent } from "./event-list.component";
@@ -21,7 +21,7 @@ describe('EventListComponent', () => {
     };
     // Injected services
     let service : any;
-    let dialog : any = {};
+    let dialogService : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
     let router : any;
@@ -37,7 +37,7 @@ describe('EventListComponent', () => {
                 { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : EventService, useValue : service },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialogService },
                 { provide : ActivatedRoute, useClass : activatedRoute }
             ]
         });
@@ -49,8 +49,8 @@ describe('EventListComponent', () => {
             refreshCurrentUserInfo: jest.fn()
         };
 
-        dialog = {
-            open : jest.fn()
+        dialogService = {
+            openConfirmDeleteDialog : jest.fn()
         }
         
         activatedRoute = class {
@@ -121,11 +121,11 @@ describe('EventListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
 
         component.promptDelete(1);
 
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openConfirmDeleteDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
@@ -136,11 +136,11 @@ describe('EventListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
 
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openConfirmDeleteDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 });

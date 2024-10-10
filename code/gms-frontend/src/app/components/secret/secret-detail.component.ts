@@ -1,23 +1,23 @@
-import { ENTER, COMMA } from "@angular/cdk/keycodes";
+import { ArrayDataSource } from "@angular/cdk/collections";
+import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { MatChipInputEvent } from "@angular/material/chips";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { BaseDetailComponent } from "../../common/components/abstractions/component/base-detail.component";
+import { ButtonConfig } from "../../common/components/nav-back/button-config";
 import { PageConfig } from "../../common/model/common.model";
 import { IdNamePair } from "../../common/model/id-name-pair.model";
-import { PAGE_CONFIG_SECRET, Secret } from "./model/secret.model";
-import { ApiKeyService } from "../apikey/service/apikey-service";
-import { KeystoreService } from "../keystore/service/keystore-service";
-import { SecretService } from "./service/secret-service";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { getErrorMessage } from "../../common/utils/error-utils";
-import { ArrayDataSource } from "@angular/cdk/collections";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { getErrorMessage } from "../../common/utils/error-utils";
+import { ApiKeyService } from "../apikey/service/apikey-service";
 import { IpRestriction } from "../ip_restriction/model/ip-restriction.model";
-import { ButtonConfig } from "../../common/components/nav-back/button-config";
+import { KeystoreService } from "../keystore/service/keystore-service";
+import { PAGE_CONFIG_SECRET, Secret } from "./model/secret.model";
+import { SecretService } from "./service/secret-service";
 
 interface KeyValuePair {
     key: string,
@@ -67,7 +67,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         protected override router: Router,
         protected override sharedData: SharedDataService,
         protected override service: SecretService,
-        public override dialog: MatDialog,
+        public override dialog: DialogService,
         protected override activatedRoute: ActivatedRoute,
         private readonly keystoreService: KeystoreService,
         private readonly apiKeyService: ApiKeyService,

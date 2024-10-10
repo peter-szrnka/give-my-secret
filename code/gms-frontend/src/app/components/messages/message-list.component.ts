@@ -1,9 +1,8 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { catchError, of } from "rxjs";
-import { ConfirmDeleteDialog, ConfirmDeleteDialogData } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 import { Paging } from "../../common/model/paging.model";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { MessageList } from "./model/message-list.model";
 import { Message } from "./model/message.model";
@@ -42,7 +41,7 @@ export class MessageListComponent implements OnInit {
     constructor(
         private readonly service: MessageService,
         private readonly sharedDataService: SharedDataService,
-        public dialog: MatDialog
+        public dialogService: DialogService
     ) {
     }
 
@@ -90,13 +89,7 @@ export class MessageListComponent implements OnInit {
     }
 
     promptDeleteAll(ids: number[], inputMessage: string) {
-        const dialogRef = this.dialog.open(ConfirmDeleteDialog, {
-            width: '250px',
-            data: {
-                result: true,
-                confirmMessage: inputMessage
-            } as ConfirmDeleteDialogData,
-        });
+        const dialogRef = this.dialogService.openConfirmDeleteDialog(inputMessage);
 
         dialogRef.afterClosed().subscribe(response => {
             if (response?.result !== true) {
@@ -139,17 +132,19 @@ export class MessageListComponent implements OnInit {
             size: this.tableConfig.pageSize
         } as Paging)
             .pipe(catchError((err) => of({ totalElements: 0, resultList: [], error: err.error.message } as MessageList)))
-            .subscribe(response => {
-                this.tableConfig.count = response.totalElements;
-                this.tableConfig.pageSize = response.resultList.length;
-                this.results = response.resultList;
-                this.datasource = new ArrayDataSource<Message>(this.results);
-                this.count = response.totalElements;
-                this.error = response.error;
-                this.sharedDataService.messageCountUpdateEvent.emit(this.count);
-                this.markAllAsReadEnabled = this.results.some(message => !message.opened);
-                this.selectionStatus = SelectionStatus.NONE;
-                this.unreadCount = this.results.filter(message => message.opened === false).length;
-            });
+            .subscribe(response => this.handleResponse(response));
+    }
+
+    private handleResponse(response: MessageList): void {
+        this.tableConfig.count = response.totalElements;
+        this.tableConfig.pageSize = response.resultList.length;
+        this.results = response.resultList;
+        this.datasource = new ArrayDataSource<Message>(this.results);
+        this.count = response.totalElements;
+        this.error = response.error;
+        this.sharedDataService.messageCountUpdateEvent.emit(this.count);
+        this.markAllAsReadEnabled = this.results.some(message => !message.opened);
+        this.selectionStatus = SelectionStatus.NONE;
+        this.unreadCount = this.results.filter(message => message.opened === false).length;
     }
 }

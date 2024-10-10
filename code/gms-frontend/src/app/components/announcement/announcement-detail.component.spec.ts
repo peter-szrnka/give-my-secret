@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { Observable, of } from "rxjs";
@@ -9,6 +8,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { User } from "../user/model/user.model";
@@ -26,7 +26,7 @@ describe('AnnouncementDetailComponent', () => {
     // Injected services
     let router : any;
     let service : any;
-    let dialog : any = {};
+    let dialogService : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
     let splashScreenStateService: any = {};
@@ -37,10 +37,9 @@ describe('AnnouncementDetailComponent', () => {
         router = {
 
         };
-
-        dialog = {
-            open : jest.fn()
-        }
+        dialogService = {
+            openCustomDialogWithErrorCode : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
+        };
         sharedDataService = {
             getUserInfo : jest.fn().mockReturnValue(currentUser),
             refreshCurrentUserInfo: jest.fn()
@@ -79,7 +78,7 @@ describe('AnnouncementDetailComponent', () => {
                 { provide : Router, useValue : router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : AnnouncementService, useValue : service },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialogService },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService }
             ]
@@ -101,9 +100,9 @@ describe('AnnouncementDetailComponent', () => {
 
         expect(component).toBeTruthy();
 
-        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        jest.spyOn(dialogService, 'openCustomDialogWithErrorCode').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
 
         component.save();
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openCustomDialogWithErrorCode).toHaveBeenCalled();
     });
 });
