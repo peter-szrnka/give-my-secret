@@ -4,11 +4,12 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
-import { GmsComponentsModule } from "../../common/components/gms-components-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { SplashComponent } from "../../common/components/splash/splash.component";
 import { EventListComponent } from "./event-list.component";
-import { EventService } from "./service/event-service";
 import { EventListResolver } from "./resolver/event-list.resolver";
+import { EventService } from "./service/event-service";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 
 /**
  * @author Peter Szrnka
@@ -16,10 +17,17 @@ import { EventListResolver } from "./resolver/event-list.resolver";
 @NgModule({ declarations: [
         EventListComponent
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], 
+    imports: [
+        AngularMaterialModule,
         FormsModule,
         BrowserModule,
         AppRoutingModule,
-        GmsComponentsModule,
-        PipesModule], providers: [EventService, EventListResolver, provideHttpClient(withInterceptorsFromDi())] })
+        SplashComponent,
+        MomentPipe,
+        NavBackComponent
+    ], providers: [
+        EventService, EventListResolver, provideHttpClient(withInterceptorsFromDi())
+    ]
+})
   export class EventModule { }

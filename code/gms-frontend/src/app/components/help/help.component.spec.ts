@@ -18,8 +18,7 @@ describe('HelpComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [AngularMaterialModule],
-            declarations : [HelpComponent],
+            imports: [AngularMaterialModule, HelpComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : ActivatedRoute, useClass : activatedRoute }

@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SplashScreenStateService {
 
     public splashScreenSubject$ = new Subject<boolean>();

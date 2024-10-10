@@ -2,13 +2,13 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { EMPTY_USER } from "../user/model/user.model";
@@ -23,7 +23,7 @@ describe('LoginComponent', () => {
     // Injected services
     let router : any;
     let authService : any;
-    let dialog : any = {};
+    let dialogService : any = {};
     let sharedDataService : any;
     let splashScreenStateService : any;
     let mockLocation: any;
@@ -38,7 +38,7 @@ describe('LoginComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
                 { provide : AuthService, useValue : authService },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialogService },
                 { provide : Location, useValue: mockLocation },
                 { provide : ActivatedRoute, useValue : activatedRoute }
             ],
@@ -60,8 +60,8 @@ describe('LoginComponent', () => {
             systemReady: true
         };
 
-        dialog = {
-            open : jest.fn()
+        dialogService = {
+            openWarningDialog : jest.fn()
         };
 
         splashScreenStateService = {

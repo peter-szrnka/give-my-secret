@@ -1,13 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, ReplaySubject, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { Event } from "../event/model/event.model";
@@ -26,7 +26,7 @@ describe('UserDetailComponent', () => {
     let router : any;
     let eventServiceMock : any;
     let serviceMock : any;
-    let dialog : any = {};
+    let dialogService : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
     let authModeSubject: ReplaySubject<string>;
@@ -41,7 +41,7 @@ describe('UserDetailComponent', () => {
                 { provide : Router, useValue : router},
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : UserService, useValue : serviceMock },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialogService },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : EventService, useValue : eventServiceMock },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService }
@@ -63,8 +63,8 @@ describe('UserDetailComponent', () => {
             authModeSubject$: authModeSubject
         };
 
-        dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of()) })
+        dialogService = {
+            openCustomDialogWithErrorCode : jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of()) })
         }
         
         activatedRoute = class {
@@ -120,7 +120,7 @@ describe('UserDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalled();
+        expect(dialogService.openCustomDialogWithErrorCode).toHaveBeenCalled();
     });
 
     it('should save details', () => {
@@ -133,6 +133,6 @@ describe('UserDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalled();
+        expect(dialogService.openCustomDialogWithErrorCode).toHaveBeenCalled();
     });
 });

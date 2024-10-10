@@ -33,7 +33,7 @@ const MOCK_MAP : any = {
 @Injectable()
 export class MockInterceptor implements HttpInterceptor {
 
-    constructor(@Inject(ENV_CONFIG) private env: Environment, private logger: LoggerService) {}
+    constructor(@Inject(ENV_CONFIG) private readonly env: Environment, private readonly logger: LoggerService) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const path = this.getPath(req.url);

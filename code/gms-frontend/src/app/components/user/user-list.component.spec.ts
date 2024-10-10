@@ -1,15 +1,15 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog } from "@angular/material/dialog";
 import { MatTableModule } from "@angular/material/table";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { ReplaySubject, of, throwError } from "rxjs";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { User } from "./model/user.model";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { User } from "./model/user.model";
 import { UserService } from "./service/user-service";
 import { UserListComponent } from "./user-list.component";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
 /**
  * @author Peter Szrnka
@@ -21,7 +21,7 @@ describe('UserListComponent', () => {
     };
     // Injected services
     let service : any;
-    let dialog : any = {};
+    let dialogService : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
     let router : any;
@@ -32,14 +32,14 @@ describe('UserListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ MatTableModule, PipesModule ],
+            imports : [ MatTableModule, MomentPipe ],
             declarations : [UserListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : UserService, useValue : service },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialogService },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : SplashScreenStateService, useValue: splashScreenService }
             ]
@@ -59,8 +59,9 @@ describe('UserListComponent', () => {
             stop: jest.fn()
         };
 
-        dialog = {
-            open : jest.fn()
+        dialogService = {
+            openConfirmDeleteDialog : jest.fn(),
+            openInfoDialogWithoutTitle : jest.fn()
         }
         
         activatedRoute = class {
@@ -137,11 +138,11 @@ describe('UserListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
 
         component.promptDelete(1);
 
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openConfirmDeleteDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
@@ -154,12 +155,13 @@ describe('UserListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        jest.spyOn(dialogService, 'openInfoDialogWithoutTitle').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
         component.manualLdapUserSync();
 
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openConfirmDeleteDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(service.manualLdapUserSync).toHaveBeenCalledTimes(0);
     });
@@ -172,11 +174,11 @@ describe('UserListComponent', () => {
         authModeSubject.next("ldap");
         expect(component).toBeTruthy();
 
-        jest.spyOn(component.dialog, 'open').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        jest.spyOn(dialogService, 'openInfoDialogWithoutTitle').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.manualLdapUserSync();
 
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openInfoDialogWithoutTitle).toHaveBeenCalled();
         expect(component.router.navigateByUrl).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();

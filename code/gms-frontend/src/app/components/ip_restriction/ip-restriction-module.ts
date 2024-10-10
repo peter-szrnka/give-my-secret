@@ -4,14 +4,17 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
-import { GmsComponentsModule } from "../../common/components/gms-components-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
+import { SplashComponent } from "../../common/components/splash/splash.component";
+import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { SharedDataService } from "../../common/service/shared-data-service";
-import { IpRestrictionService } from "./service/ip-restriction.service";
-import { IpRestrictionListResolver } from "./resolver/ip-restriction-list.resolver";
-import { IpRestrictionDetailResolver } from "./resolver/ip-restriction-detail.resolver";
-import { IpRestrictionListComponent } from "./ip-restriction-list.component";
 import { IprestrictionDetailComponent } from "./ip-restriction-detail.component";
+import { IpRestrictionListComponent } from "./ip-restriction-list.component";
+import { IpRestrictionDetailResolver } from "./resolver/ip-restriction-detail.resolver";
+import { IpRestrictionListResolver } from "./resolver/ip-restriction-list.resolver";
+import { IpRestrictionService } from "./service/ip-restriction.service";
 
 /**
  * @author Peter Szrnka
@@ -19,12 +22,18 @@ import { IprestrictionDetailComponent } from "./ip-restriction-detail.component"
 @NgModule({ declarations: [
         IpRestrictionListComponent, IprestrictionDetailComponent
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], 
+    imports: [
+        AngularMaterialModule,
         FormsModule,
         BrowserModule,
         AppRoutingModule,
-        GmsComponentsModule,
-        PipesModule], providers: [
+        SplashComponent,
+        MomentPipe,
+        NavBackComponent,
+        NavButtonVisibilityPipe,
+        StatusToggleComponent
+    ], providers: [
         SharedDataService, IpRestrictionService, IpRestrictionListResolver, IpRestrictionDetailResolver,
         provideHttpClient(withInterceptorsFromDi())
     ] })

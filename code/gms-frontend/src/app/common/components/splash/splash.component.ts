@@ -1,10 +1,17 @@
 import { Component } from "@angular/core";
+import { AngularMaterialModule } from "../../../angular-material-module";
 import { SplashScreenStateService } from "../../service/splash-screen-service";
+import { NgStyle } from "@angular/common";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
+    standalone: true,
+    imports: [
+      AngularMaterialModule,
+      NgStyle
+    ],
     selector: 'splash-screen',
     templateUrl: './splash.component.html',
     styleUrls : ['./splash.component.scss']

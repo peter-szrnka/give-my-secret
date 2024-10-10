@@ -15,7 +15,7 @@ export class NavMenuComponent {
     @Input() enableBottomToggle : boolean = false;
     @Input() admin: boolean = false;
 
-    constructor(private sharedDataService : SharedDataService) {
+    constructor(private readonly sharedDataService : SharedDataService) {
     }
 
     handleClick() : void {

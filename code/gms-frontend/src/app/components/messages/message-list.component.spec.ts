@@ -4,13 +4,13 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { ConfirmDeleteDialogData } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { MessageListComponent, SelectionStatus } from "./message-list.component";
 import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
-import { MatDialog } from "@angular/material/dialog";
-import { ConfirmDeleteDialogData } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 
 /**
  * @author Peter Szrnka
@@ -21,17 +21,17 @@ describe('MessageListComponent', () => {
     // Injected services
     let sharedDataService : any;
     let service : any;
-    let dialog : any;
+    let dialogService : any;
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, NoopAnimationsModule, PipesModule ],
+            imports : [ AngularMaterialModule, NoopAnimationsModule, MomentPipe ],
             declarations : [MessageListComponent],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
             providers: [
                 { provide : MessageService, useValue : service },
                 { provide : SharedDataService, useValue : sharedDataService },
-                { provide : MatDialog, useValue : dialog }
+                { provide : DialogService, useValue : dialogService }
             ]
         });
 
@@ -58,8 +58,8 @@ describe('MessageListComponent', () => {
         sharedDataService = {
             messageCountUpdateEvent : { emit : jest.fn() }
         };
-        dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true } as ConfirmDeleteDialogData)) })
+        dialogService = {
+            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true } as ConfirmDeleteDialogData)) })
         };
     });
 
@@ -106,17 +106,17 @@ describe('MessageListComponent', () => {
         configureTestBed();
 
         const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of({ result: true } as ConfirmDeleteDialogData)) };
-        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
         component.deleteMessage(1);
 
         component.selectAll();
 
         const mockDialogRef2 : any = { afterClosed : jest.fn().mockReturnValue(of(undefined)) };
-        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef2);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef2);
         component.deleteMessages();
 
         expect(component).toBeTruthy();
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openConfirmDeleteDialog).toHaveBeenCalled();
     });
 
     it('should delete messages', () => {

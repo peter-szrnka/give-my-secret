@@ -1,8 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { StatusToggleComponent } from "./status-toggle.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { NgIf } from "@angular/common";
+import { AngularMaterialModule } from "../../../angular-material-module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 /**
  * @author Peter Szrnka
@@ -19,8 +21,7 @@ describe('StatusToggleComponent', () => {
             open : jest.fn()
         };
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule ],
-            declarations : [StatusToggleComponent],
+            imports : [ StatusToggleComponent, AngularMaterialModule, NgIf, NoopAnimationsModule ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers : [
                 {

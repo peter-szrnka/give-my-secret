@@ -1,14 +1,13 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Directive, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { User } from "../../../../components/user/model/user.model";
 import { BaseList } from "../../../model/base-list";
 import { PageConfig } from "../../../model/common.model";
+import { DialogService } from "../../../service/dialog-service";
 import { SharedDataService } from "../../../service/shared-data-service";
 import { checkRights } from "../../../utils/permission-utils";
-import { ConfirmDeleteDialog } from "../../confirm-delete/confirm-delete-dialog.component";
 import { ServiceBase } from "../service/service-base";
 
 /**
@@ -31,7 +30,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     protected router: Router,
     protected sharedData: SharedDataService,
     protected service: S,
-    public dialog: MatDialog,
+    public dialogService: DialogService,
     protected activatedRoute: ActivatedRoute) { }
 
   async ngOnInit(): Promise<void> {
@@ -70,13 +69,10 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
   }
 
   public promptDelete(id: number) {
-    const dialogRef = this.dialog.open(ConfirmDeleteDialog, {
-      width: '250px',
-      data: true,
-    });
+    const dialogRef = this.dialogService.openConfirmDeleteDialog();
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result !== true) {
+    dialogRef.afterClosed().subscribe(data => {
+      if (data.result !== true) {
         return;
       }
 

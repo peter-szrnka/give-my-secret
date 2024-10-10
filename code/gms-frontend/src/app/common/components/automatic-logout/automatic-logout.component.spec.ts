@@ -1,87 +1,94 @@
+import { DatePipe, NgClass } from "@angular/common";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog } from "@angular/material/dialog";
-import { ReplaySubject } from "rxjs";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { Observable, of, ReplaySubject } from "rxjs";
+import { DialogService } from "../../service/dialog-service";
 import { SharedDataService } from "../../service/shared-data-service";
 import { AutomaticLogoutComponent, WARNING_THRESHOLD } from "./automatic-logout.component";
-import { InfoDialog } from "../info-dialog/info-dialog.component";
 
 /**
  * @author Peter Szrnka
  */
 describe('AutomaticLogoutComponent', () => {
-    let component: AutomaticLogoutComponent;
-    let fixture: ComponentFixture<AutomaticLogoutComponent>;
-    let sharedData: any;
-    let mockSubject: ReplaySubject<number | undefined> = new ReplaySubject<number | undefined>();
-    let dialog: Partial<MatDialog>;
-  
-    beforeEach(async () => {
-        sharedData = {
-            resetTimerSubject$: mockSubject,
-            logout: jest.fn(),
-            setStartTime: jest.fn(),
-            resetAutomaticLogoutTimer: jest.fn()
-        };
-  
-      dialog = {
-        open: jest.fn()
-      };
-  
-      await TestBed.configureTestingModule({
-        declarations: [ AutomaticLogoutComponent ],
-        providers: [
-          { provide: SharedDataService, useValue: sharedData },
-          { provide: MatDialog, useValue: dialog }
-        ]
-      })
-      .compileComponents();
-      jest.useFakeTimers();
+  let component: AutomaticLogoutComponent;
+  let fixture: ComponentFixture<AutomaticLogoutComponent>;
+  let sharedData: any;
+  let mockSubject: ReplaySubject<number | undefined> = new ReplaySubject<number | undefined>();
+  let dialogService: any;
 
-      fixture = TestBed.createComponent(AutomaticLogoutComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
+  beforeEach(() => {
+    sharedData = {
+      resetTimerSubject$: mockSubject,
+      logout: jest.fn(),
+      setStartTime: jest.fn()
+    };
+
+    dialogService = {
+      openInfoDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of() })
+    };
+
+     TestBed.configureTestingModule({
+      imports: [AutomaticLogoutComponent, MatTooltipModule, NoopAnimationsModule, DatePipe, NgClass],
+      providers: [
+        { provide: SharedDataService, useValue: sharedData },
+        { provide: DialogService, useValue: dialogService }
+      ],
+      schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     });
-  
-    afterEach(() => {
-      // Clean up any subscriptions or timers
-      if (component.timeLeftSubscription) {
-        component.timeLeftSubscription.unsubscribe();
-      }
-    });
-  
-    it('should set logoutComing to true on warning before logout', async () => {
-      component.automaticLogoutTimeInMinutes = 2;
-      expect(component).toBeTruthy();
+    jest.useFakeTimers();
 
-      component.ngOnInit();
-      mockSubject.next(undefined);
-      expect(component.logoutComing).toBeFalsy();
-
-      fixture.detectChanges();
-      jest.advanceTimersByTime(WARNING_THRESHOLD);
-
-      jest.advanceTimersByTime(WARNING_THRESHOLD);
-  
-      expect(component.logoutComing).toBeTruthy();
-      expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { title: 'Automatic Logout', text: 'You have been logged out due to inactivity.', type: 'information' } });
-    });
-
-    it('should logout when time expired and app was in the background', async () => {
-      component.automaticLogoutTimeInMinutes = 2;
-      expect(component).toBeTruthy();
-
-      component.ngOnInit();
-      mockSubject.next(undefined);
-      expect(component.logoutComing).toBeFalsy();
-
-      fixture.detectChanges();
-      jest.advanceTimersByTime(WARNING_THRESHOLD);
-
-      mockSubject.next(120001);
-
-      jest.advanceTimersByTime(WARNING_THRESHOLD);
-
-      expect(component.logoutComing).toBeTruthy();
-      expect(dialog.open).toHaveBeenCalledTimes(0);
-    });
+    fixture = TestBed.createComponent(AutomaticLogoutComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
+
+  it('should set logoutComing to true on warning before logout', () => {
+    jest.useFakeTimers();
+
+    component.automaticLogoutTimeInMinutes = 2;
+    expect(component).toBeTruthy();
+
+    component.ngOnInit();
+    mockSubject.next(undefined);
+    expect(component.logoutComing).toBeFalsy();
+
+    fixture.detectChanges();
+    jest.advanceTimersByTime(WARNING_THRESHOLD);
+
+    jest.advanceTimersByTime(WARNING_THRESHOLD);
+
+    expect(component.logoutComing).toBeTruthy();
+    expect(dialogService.openInfoDialog).toHaveBeenCalledWith('Automatic Logout', 'You have been logged out due to inactivity.');
+
+    component.ngOnDestroy();
+
+    jest.clearAllTimers();
+  });
+
+  it('should logout when time expired and app was in the background', () => {
+    jest.useFakeTimers();
+
+    component.automaticLogoutTimeInMinutes = 2;
+    expect(component).toBeTruthy();
+
+    component.ngOnInit();
+    mockSubject.next(undefined);
+    expect(component.logoutComing).toBeFalsy();
+
+    fixture.detectChanges();
+    jest.advanceTimersByTime(WARNING_THRESHOLD);
+
+    mockSubject.next(120001);
+
+    jest.advanceTimersByTime(WARNING_THRESHOLD);
+
+    component.ngOnDestroy();
+
+    expect(component.logoutComing).toBeTruthy();
+    expect(dialogService.openInfoDialog).toHaveBeenCalledTimes(0);
+
+    jest.clearAllTimers();
+  });
+});

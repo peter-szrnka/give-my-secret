@@ -8,7 +8,7 @@ import { ErrorCodeList } from "../model/error-code-list.model";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ErrorCodeService {
 
     constructor(protected http : HttpClient) {}

@@ -1,10 +1,10 @@
 import { Component } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 
@@ -26,12 +26,12 @@ export class LoginComponent extends BaseLoginComponent {
 
     constructor(
         protected override route: ActivatedRoute,
-        protected override router: Router,
+        protected router: Router,
         private authService: AuthService,
         protected override sharedDataService: SharedDataService,
         protected override splashScreenStateService: SplashScreenStateService,
-        protected override dialog: MatDialog) {
-            super(route, router, sharedDataService, dialog, splashScreenStateService)
+        protected override dialogService: DialogService) {
+            super(route, sharedDataService, dialogService, splashScreenStateService)
     }
 
     login(): void {

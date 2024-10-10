@@ -1,11 +1,13 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component } from "@angular/core";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { checkRights } from "../../common/utils/permission-utils";
 import { User } from "../user/model/user.model";
@@ -78,6 +80,9 @@ export class SystemPropertyListComponent {
   public datasource: ArrayDataSource<SystemPropertyElement>;
   protected count = 0;
 
+  public confirmDeleteDialogRef: MatDialogRef<ConfirmDeleteDialog, any>;
+  public infoDialogRef: MatDialogRef<InfoDialog, any>;
+
   public tableConfig = {
     count : 0,
     pageIndex : 0,
@@ -88,8 +93,9 @@ export class SystemPropertyListComponent {
     protected router: Router,
     public sharedData: SharedDataService,
     protected service: SystemPropertyService,
-    public dialog: MatDialog,
-    protected activatedRoute: ActivatedRoute) { }
+    public dialogService: DialogService,
+    protected activatedRoute: ActivatedRoute,
+    private readonly splashScreenService: SplashScreenStateService) { }
 
   ngOnInit(): void {
     this.fetchData();
@@ -147,13 +153,10 @@ export class SystemPropertyListComponent {
   }
 
   public promptDelete(element: SystemProperty) {
-    const dialogRef = this.dialog.open(ConfirmDeleteDialog, {
-      width: '250px',
-      data: true,
-    });
+    this.confirmDeleteDialogRef = this.dialogService.openConfirmDeleteDialog();
 
-    dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result !== true) {
+    this.confirmDeleteDialogRef.afterClosed().subscribe((data: any) => {
+      if (data.result !== true) {
         return;
       }
 
@@ -165,11 +168,9 @@ export class SystemPropertyListComponent {
   }
 
   openInformationDialog(message: string, navigateToList: boolean, dialogType: string) {
-    const dialogRef: MatDialogRef<InfoDialog, any> = this.dialog.open(InfoDialog, {
-      data: { text: message, type: dialogType },
-    });
+    this.infoDialogRef = this.dialogService.openCustomDialog(message, dialogType);
 
-    dialogRef.afterClosed().subscribe(() => {
+    this.infoDialogRef.afterClosed().subscribe(() => {
       if (navigateToList === false) {
         return;
       }
@@ -187,6 +188,7 @@ export class SystemPropertyListComponent {
       return;
     }
 
+    this.splashScreenService.start();
     if (callbackMethod === 'checkSystemReady') {
       this.sharedData.checkSystemReady();
     }

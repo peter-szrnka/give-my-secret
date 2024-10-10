@@ -2,23 +2,21 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { Data, ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
-import { IdNamePair } from "../../common/model/id-name-pair.model";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
+import { IdNamePair } from "../../common/model/id-name-pair.model";
+import { DialogService } from "../../common/service/dialog-service";
+import { SharedDataService } from "../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { ApiKeyService } from "../apikey/service/apikey-service";
 import { KeystoreService } from "../keystore/service/keystore-service";
-import { SecretService } from "./service/secret-service";
-import { SharedDataService } from "../../common/service/shared-data-service";
 import { SecretDetailComponent } from "./secret-detail.component";
-import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { SecretService } from "./service/secret-service";
 
 /**
  * @author Peter Szrnka
@@ -29,7 +27,7 @@ describe('SecretDetailComponent', () => {
     // Injected services
     let router : any;
     let serviceMock : any;
-    let dialog : any = {};
+    let dialogService : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
     let keystoreService = {};
@@ -41,14 +39,14 @@ describe('SecretDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, FormsModule, BrowserAnimationsModule, AngularMaterialModule, PipesModule ],
+            imports : [RouterTestingModule, FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe ],
             declarations : [SecretDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue : router},
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SecretService, useValue : serviceMock },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialogService },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : KeystoreService, useValue : keystoreService },
                 { provide : ApiKeyService, useValue : apiKeyService },
@@ -69,8 +67,8 @@ describe('SecretDetailComponent', () => {
             refreshCurrentUserInfo: jest.fn()
         };
 
-        dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+        dialogService = {
+            openCustomDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
         }
         
         activatedRoute = class {
@@ -130,7 +128,7 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledTimes(0);
+        expect(dialogService.openCustomDialog).toHaveBeenCalledTimes(0);
     });
 
     it('Should not save secret | HTTP error', () => {
@@ -142,22 +140,21 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning" } as DialogData });
+        expect(dialogService.openCustomDialog).toHaveBeenCalledWith( "Error: OOPS!", "warning");
     });
 
     it('Should not save secret | unkown error', () => {
         serviceMock.save = jest.fn().mockReturnValue(throwError(() => new Error("OOPS!")));
-        dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () => of(false) })
-        };
         configureTestBed();
+
+        jest.spyOn(dialogService, 'openCustomDialog').mockReturnValue({ afterClosed : () => of(false) });
 
         // act
         component.save();
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning" } as DialogData });
+        expect(dialogService.openCustomDialog).toHaveBeenCalledWith("Error: OOPS!", "warning");
     });
 
     it('Should save secret', () => {
@@ -183,7 +180,7 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Secret has been saved!", type: "information" } as DialogData });
+        expect(dialogService.openCustomDialog).toHaveBeenCalledWith("Secret has been saved!", "information");
     });
 
     it('Should save secret with username password pair', () => {
@@ -232,7 +229,7 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toBeCalledWith(InfoDialog, { data: { text: "Secret has been saved!", type: "information" } as DialogData });
+        expect(dialogService.openCustomDialog).toHaveBeenCalledWith("Secret has been saved!", "information");
     });
 
     it('Should save secret when all api keys allowed', () => {
@@ -249,7 +246,7 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Secret has been saved!", type: "information" } as DialogData });
+        expect(dialogService.openCustomDialog).toHaveBeenCalledWith("Secret has been saved!", "information");
     });
 
     it('Should show secret value for username and password', () => {
@@ -312,7 +309,7 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Unexpected error occurred: OOPS!", type: "warning" } as DialogData });
+        expect(dialogService.openCustomDialog).toHaveBeenCalledWith("Unexpected error occurred: OOPS!", "warning");
     });
 
     it('Should not rotate secret | unknown error', () => {
@@ -324,7 +321,7 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Unexpected error occurred: OOPS!", type: "warning" } as DialogData });
+        expect(dialogService.openCustomDialog).toHaveBeenCalledWith("Unexpected error occurred: OOPS!", "warning");
     });
     
     it('Should rotate secret', () => {
@@ -335,6 +332,6 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalled();
+        expect(dialogService.openCustomDialog).toHaveBeenCalledWith("Secret has been rotated successfully!", "information");
     });
 });

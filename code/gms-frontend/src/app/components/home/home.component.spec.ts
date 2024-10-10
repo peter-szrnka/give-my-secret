@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ReplaySubject, Subscription, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { PipesModule } from "../../common/components/pipes/pipes.module";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { HomeComponent } from "./home.component";
@@ -25,7 +25,7 @@ describe('HomeComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule, AngularMaterialModule, PipesModule],
+            imports: [RouterTestingModule, AngularMaterialModule, MomentPipe],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [HomeComponent],
             providers: [

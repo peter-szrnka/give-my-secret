@@ -1,15 +1,15 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
+import { DialogService } from "../../common/service/dialog-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { RequestPasswordResetComponent } from "./request-password-reset.component";
 import { ResetPasswordRequestService } from "./service/request-password-reset.service";
-import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * @author Peter Szrnka
@@ -21,7 +21,7 @@ describe('RequestPasswordResetComponent', () => {
     // Injected services
     let router : any;
     let service : any;
-    let dialog : any = {};
+    let dialogService : any = {};
     let splashScreenStateService : any;
 
     const configTestBed = () => {
@@ -31,7 +31,7 @@ describe('RequestPasswordResetComponent', () => {
             providers: [
                 { provide : Router, useValue: router },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialogService },
                 { provide : ResetPasswordRequestService, useValue : service }
             ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ]
@@ -47,8 +47,8 @@ describe('RequestPasswordResetComponent', () => {
             navigate : jest.fn().mockReturnValue(of(true))
         };
 
-        dialog = {
-            open : jest.fn()
+        dialogService = {
+            openCustomDialog : jest.fn()
         };
 
         service = {
@@ -77,7 +77,7 @@ describe('RequestPasswordResetComponent', () => {
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(service.requestPasswordReset).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(dialog.open).toHaveBeenCalled();
+        expect(dialogService.openCustomDialog).toHaveBeenCalled();
     });
 
     it('Should request reset password', () => {
@@ -91,6 +91,6 @@ describe('RequestPasswordResetComponent', () => {
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(service.requestPasswordReset).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
-        expect(dialog.open).toHaveBeenCalled();
+        expect(dialogService.openCustomDialog).toHaveBeenCalled();
     });
 });
