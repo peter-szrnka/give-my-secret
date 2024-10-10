@@ -69,8 +69,8 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         protected override service: SecretService,
         public override dialog: MatDialog,
         protected override activatedRoute: ActivatedRoute,
-        private keystoreService: KeystoreService,
-        private apiKeyService: ApiKeyService,
+        private readonly keystoreService: KeystoreService,
+        private readonly apiKeyService: ApiKeyService,
         protected override splashScreenStateService: SplashScreenStateService) {
         super(router, sharedData, service, dialog, activatedRoute, splashScreenStateService);
     }

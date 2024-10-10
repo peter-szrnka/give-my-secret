@@ -20,7 +20,7 @@ export class AboutComponent implements OnInit {
 
     systemStatus$: Observable<SystemStatus>;
 
-    constructor(private setupService: SetupService) {}
+    constructor(private readonly setupService: SetupService) {}
 
     ngOnInit(): void {
         this.systemStatus$ = this.setupService.checkReady();

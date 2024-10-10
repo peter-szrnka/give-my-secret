@@ -27,7 +27,7 @@ export class ApiKeyListComponent extends BaseListComponent<ApiKey, ApiKeyService
         public override service: ApiKeyService,
         public override dialog: MatDialog,
         override activatedRoute: ActivatedRoute,
-        private clipboardService: ClipboardService) {
+        private readonly clipboardService: ClipboardService) {
         super(router, sharedData, service, dialog, activatedRoute);
     }
 

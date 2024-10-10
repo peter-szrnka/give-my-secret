@@ -9,7 +9,7 @@ import { InfoDialog } from "../components/info-dialog/info-dialog.component";
 @Injectable({ providedIn: 'root' })
 export class DialogService {
 
-    constructor(private dialog: MatDialog) { }
+    constructor(private readonly dialog: MatDialog) { }
 
     openCustomDialog(text: string, type: string) : MatDialogRef<InfoDialog, any> {
         return this.dialog.open(InfoDialog, {

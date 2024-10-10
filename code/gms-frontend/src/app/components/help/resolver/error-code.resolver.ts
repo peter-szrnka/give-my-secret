@@ -11,7 +11,9 @@ import { ErrorCodeService } from "../service/error-code.service";
 @Injectable({ providedIn: 'root' })
 export class ErrorCodeResolver {
 
-    constructor(private splashScreenStateService: SplashScreenStateService, private service: ErrorCodeService) {
+    constructor(
+        private readonly splashScreenStateService: SplashScreenStateService, 
+        private readonly service: ErrorCodeService) {
     }
 
     public resolve(snapshot: ActivatedRouteSnapshot): Observable<ErrorCodeList> {

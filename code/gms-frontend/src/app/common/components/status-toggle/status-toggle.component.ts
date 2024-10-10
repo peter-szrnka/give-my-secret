@@ -26,7 +26,7 @@ export class StatusToggleComponent {
     @Input() status? : string;
     @Input() doNotToggle? : boolean = false;
 
-    constructor(private snackbar : MatSnackBar) {}
+    constructor(private readonly snackbar : MatSnackBar) {}
 
     public toggle() {
         if (this.doNotToggle === true) {

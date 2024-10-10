@@ -28,7 +28,7 @@ export class UserListComponent extends BaseListComponent<UserData, UserService> 
         override service: UserService,
         public override dialog: MatDialog,
         override activatedRoute: ActivatedRoute,
-        private splashScreenService: SplashScreenStateService) {
+        private readonly splashScreenService: SplashScreenStateService) {
         super(router, sharedData, service, dialog, activatedRoute);
     }
 

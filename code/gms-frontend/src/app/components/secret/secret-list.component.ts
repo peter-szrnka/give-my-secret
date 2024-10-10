@@ -27,7 +27,7 @@ export class SecretListComponent extends BaseListComponent<Secret, SecretService
       override service : SecretService,
       public override dialog: MatDialog,
       override activatedRoute: ActivatedRoute,
-      private clipboardService: ClipboardService) {
+      private readonly clipboardService: ClipboardService) {
         super(router, sharedData, service, dialog, activatedRoute);
     }
 

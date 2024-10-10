@@ -21,7 +21,7 @@ export class HelpComponent implements OnInit {
     columns: string[] = ['code', 'description'];
     public datasource: ArrayDataSource<ErrorCode>;
 
-    constructor(private activatedRoute: ActivatedRoute) { }
+    constructor(private readonly activatedRoute: ActivatedRoute) { }
 
     ngOnInit(): void {
         this.activatedRoute.data.subscribe((response: any) => this.datasource = new ArrayDataSource<ErrorCode>(response.data.errorCodeList));

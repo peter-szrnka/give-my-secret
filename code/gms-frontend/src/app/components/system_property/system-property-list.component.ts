@@ -1,18 +1,18 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component } from "@angular/core";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { checkRights } from "../../common/utils/permission-utils";
 import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { DialogService } from "../../common/service/dialog-service";
 
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'

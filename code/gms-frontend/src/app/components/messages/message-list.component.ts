@@ -40,8 +40,8 @@ export class MessageListComponent implements OnInit {
     };
 
     constructor(
-        private service: MessageService,
-        private sharedDataService: SharedDataService,
+        private readonly service: MessageService,
+        private readonly sharedDataService: SharedDataService,
         public dialog: MatDialog
     ) {
     }

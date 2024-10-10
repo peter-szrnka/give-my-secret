@@ -16,10 +16,10 @@ export class RequestPasswordResetComponent {
     username: string;
 
     constructor(
-        private router: Router,
-        private service : ResetPasswordRequestService, 
-        private splashScreenStateService: SplashScreenStateService, 
-        private dialog: MatDialog) {}
+        private readonly router: Router,
+        private readonly service : ResetPasswordRequestService, 
+        private readonly splashScreenStateService: SplashScreenStateService, 
+        private readonly dialog: MatDialog) {}
 
     requestReset() : void {
         this.splashScreenStateService.start();

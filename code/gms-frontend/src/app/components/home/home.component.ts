@@ -40,8 +40,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     constructor(
         public router: Router,
-        private sharedData: SharedDataService,
-        private homeService: HomeService,
+        private readonly sharedData: SharedDataService,
+        private readonly homeService: HomeService,
     ) {
     }
 

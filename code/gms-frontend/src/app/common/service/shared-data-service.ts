@@ -28,10 +28,10 @@ export class SharedDataService {
     @Output() navigationChangeEvent = new EventEmitter<string>();
 
     constructor(
-        private router: Router,
-        private setupService: SetupService,
-        private authService: AuthService,
-        private infoService: InformationService
+        private readonly router: Router,
+        private readonly setupService: SetupService,
+        private readonly authService: AuthService,
+        private readonly infoService: InformationService
     ) { }
 
     public refreshCurrentUserInfo(): void {

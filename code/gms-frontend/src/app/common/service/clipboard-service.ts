@@ -8,7 +8,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 @Injectable()
 export class ClipboardService {
 
-    constructor(private clipboard: Clipboard, private snackbar : MatSnackBar) { }
+    constructor(private readonly clipboard: Clipboard, private readonly snackbar : MatSnackBar) { }
 
     public copyValue(value: string, snackbarMessage : string) {
         const pending = this.clipboard.beginCopy(value);

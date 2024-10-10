@@ -1,12 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { MatDialog } from '@angular/material/dialog';
-import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
+import { environment } from "../../../environments/environment";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { UserService } from "../user/service/user-service";
-import { environment } from "../../../environments/environment";
-import { DialogService } from "../../common/service/dialog-service";
 
 export interface PasswordSettings {
   oldCredential: string | undefined,

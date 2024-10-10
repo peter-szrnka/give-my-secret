@@ -26,10 +26,10 @@ export class AppComponent implements OnInit, OnDestroy {
   isAdmin: boolean;
 
   constructor(
-    private location: Location,
-    private router: Router, 
+    private readonly location: Location,
+    private readonly router: Router, 
     public sharedDataService: SharedDataService, 
-    private splashScreenStateService: SplashScreenStateService,
+    private readonly splashScreenStateService: SplashScreenStateService,
     ) {
   }
 

@@ -11,7 +11,7 @@ import { firstValueFrom } from "rxjs";
 @Injectable()
 export class InformationService {
 
-    constructor(private http : HttpClient) {}
+    constructor(private readonly http : HttpClient) {}
 
     getUserInfo() : Promise<User> {
         return firstValueFrom(this.http.get<User>(environment.baseUrl + 'info/me', { withCredentials : true, headers : getHeaders() }));
