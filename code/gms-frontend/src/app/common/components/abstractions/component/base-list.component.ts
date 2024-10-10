@@ -8,7 +8,6 @@ import { PageConfig } from "../../../model/common.model";
 import { DialogService } from "../../../service/dialog-service";
 import { SharedDataService } from "../../../service/shared-data-service";
 import { checkRights } from "../../../utils/permission-utils";
-import { ConfirmDeleteDialog } from "../../confirm-delete/confirm-delete-dialog.component";
 import { ServiceBase } from "../service/service-base";
 
 /**

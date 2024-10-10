@@ -21,9 +21,9 @@ export class ApiTestingComponent implements OnInit {
 
     constructor(
         private service: ApiTestingService,
-        private dialogService: DialogService,
-        private splashScreenService: SplashScreenStateService,
-        private secureStorageService : SecureStorageService
+        private readonly dialogService: DialogService,
+        private readonly splashScreenService: SplashScreenStateService,
+        private readonly secureStorageService : SecureStorageService
     ) { }
 
     ngOnInit(): void {
