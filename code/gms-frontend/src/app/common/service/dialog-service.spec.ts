@@ -32,6 +32,18 @@ describe('DialogService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('Should open custom dialog', () => {
+        // arrange
+        const text = "Text";
+
+        // act
+        const result = service.openCustomDialog(text, 'information');
+
+        // assert
+        expect(result).toBeTruthy();
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: text, type: 'information' } });
+    });
+
     it('Should open info dialog', () => {
         // arrange
         const title = "Title";

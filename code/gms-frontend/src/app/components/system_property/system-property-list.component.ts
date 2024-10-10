@@ -12,6 +12,7 @@ import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { DialogService } from "../../common/service/dialog-service";
 
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
@@ -79,6 +80,9 @@ export class SystemPropertyListComponent {
   public datasource: ArrayDataSource<SystemPropertyElement>;
   protected count = 0;
 
+  public confirmDeleteDialogRef: MatDialogRef<ConfirmDeleteDialog, any>;
+  public infoDialogRef: MatDialogRef<InfoDialog, any>;
+
   public tableConfig = {
     count : 0,
     pageIndex : 0,
@@ -89,7 +93,7 @@ export class SystemPropertyListComponent {
     protected router: Router,
     public sharedData: SharedDataService,
     protected service: SystemPropertyService,
-    public dialog: MatDialog,
+    public dialogService: DialogService,
     protected activatedRoute: ActivatedRoute,
     private readonly splashScreenService: SplashScreenStateService) { }
 
@@ -149,13 +153,10 @@ export class SystemPropertyListComponent {
   }
 
   public promptDelete(element: SystemProperty) {
-    const dialogRef = this.dialog.open(ConfirmDeleteDialog, {
-      width: '250px',
-      data: true,
-    });
+    this.confirmDeleteDialogRef = this.dialogService.openConfirmDeleteDialog();
 
-    dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result !== true) {
+    this.confirmDeleteDialogRef.afterClosed().subscribe((data: any) => {
+      if (data.result !== true) {
         return;
       }
 
@@ -167,11 +168,9 @@ export class SystemPropertyListComponent {
   }
 
   openInformationDialog(message: string, navigateToList: boolean, dialogType: string) {
-    const dialogRef: MatDialogRef<InfoDialog, any> = this.dialog.open(InfoDialog, {
-      data: { text: message, type: dialogType },
-    });
+    this.infoDialogRef = this.dialogService.openCustomDialog(message, dialogType);
 
-    dialogRef.afterClosed().subscribe(() => {
+    this.infoDialogRef.afterClosed().subscribe(() => {
       if (navigateToList === false) {
         return;
       }

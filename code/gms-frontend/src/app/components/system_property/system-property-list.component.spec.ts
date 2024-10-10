@@ -2,12 +2,12 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { User } from "../user/model/user.model";
@@ -26,7 +26,7 @@ describe('SystemPropertyListComponent', () => {
     // Injected services
     let router : any;
     let service : any;
-    let dialog : any = {};
+    let dialogService : any = {};
     let sharedDataService : any;
     let activatedRoute : any = {};
     let splashScreenService: any = {};
@@ -42,7 +42,7 @@ describe('SystemPropertyListComponent', () => {
                 { provide : Router, useValue : router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SystemPropertyService, useValue : service },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialogService },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : SplashScreenStateService, useValue : splashScreenService }
             ]
@@ -63,8 +63,9 @@ describe('SystemPropertyListComponent', () => {
             refreshCurrentUserInfo: jest.fn()
         };
 
-        dialog = {
-            open : jest.fn()
+        dialogService = {
+            openCustomDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) }),
+            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) }),
         }
         
         activatedRoute = class {
@@ -128,14 +129,11 @@ describe('SystemPropertyListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
-        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
-
         // act
         component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         // assert
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openCustomDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
@@ -145,15 +143,12 @@ describe('SystemPropertyListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
-        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
-
         // act
         component.onFetch({ pageSize: 10 });
         component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         // assert
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openCustomDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
     });
@@ -164,15 +159,12 @@ describe('SystemPropertyListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
-        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
-
         // act
         component.onFetch({ pageSize: 10 });
         component.save({ key : 'X', value : 'value', type : 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
 
         // assert
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openCustomDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();
@@ -181,36 +173,32 @@ describe('SystemPropertyListComponent', () => {
     it('Should delete an item', () => {
         // arrange
         configureTestBed();
-
         expect(component).toBeTruthy();
-
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
-        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true }) )});
 
         // act
         component.promptDelete({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         expect(service.delete).toHaveBeenCalled();
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openConfirmDeleteDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
     });
 
     it('Should cancel dialog after delete', () => {
         // arrange
+        dialogService.openConfirmDeleteDialog = jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) });
         configureTestBed();
 
         expect(component).toBeTruthy();
-
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
-        jest.spyOn(component.dialog, 'open').mockReturnValue(mockDialogRef);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: false }) )});
 
         // act
         component.promptDelete({ key : 'REFRESH_JWT_ALGORITHM', value : 'value', type : 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
 
         // assert
         expect(service.delete).toHaveBeenCalledTimes(0);
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(dialogService.openConfirmDeleteDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 });

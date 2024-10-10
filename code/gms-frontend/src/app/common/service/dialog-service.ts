@@ -11,6 +11,12 @@ export class DialogService {
 
     constructor(private dialog: MatDialog) { }
 
+    openCustomDialog(text: string, type: string) : MatDialogRef<InfoDialog, any> {
+        return this.dialog.open(InfoDialog, {
+            data: { text: text, type: type }
+        });
+    }
+
     openInfoDialog(title: string, text: string): MatDialogRef<InfoDialog, any> {
         return this.dialog.open(InfoDialog, {
             data: { title: title, text: text, type: 'information' }
@@ -18,12 +24,10 @@ export class DialogService {
     }
 
     openWarningDialog(text: string): MatDialogRef<InfoDialog, any> {
-        return this.dialog.open(InfoDialog, {
-            data: { text: text, type: 'warning' }
-        });
+        return this.openCustomDialog(text, 'warning');
     }
 
-    openConfirmDeleteDialog(confirmMessage: string): MatDialogRef<ConfirmDeleteDialog, any> {
+    openConfirmDeleteDialog(confirmMessage?: string): MatDialogRef<ConfirmDeleteDialog, any> {
         return this.dialog.open(ConfirmDeleteDialog, {
             data: {
                 result: true,
