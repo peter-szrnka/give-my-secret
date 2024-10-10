@@ -20,10 +20,10 @@ export class SetupComponent {
     public errorMessage : string | undefined = undefined;
 
     constructor(
-        @Inject(WINDOW_TOKEN) private window: Window,
-        private router : Router, 
-        private splashScreenService : SplashScreenStateService,
-        private setupService : SetupService) {}
+        @Inject(WINDOW_TOKEN) private readonly window: Window,
+        private readonly router : Router, 
+        private readonly splashScreenService : SplashScreenStateService,
+        private readonly setupService : SetupService) {}
 
     saveAdminUser() {
         this.splashScreenService.start();

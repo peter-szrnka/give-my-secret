@@ -20,7 +20,7 @@ export class ApiTestingComponent implements OnInit {
     apiResponse: string | undefined;
 
     constructor(
-        private service: ApiTestingService,
+        private readonly service: ApiTestingService,
         private readonly dialogService: DialogService,
         private readonly splashScreenService: SplashScreenStateService,
         private readonly secureStorageService : SecureStorageService

@@ -10,7 +10,7 @@ import { SharedDataService } from "../service/shared-data-service";
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
     
-    constructor(private sharedData : SharedDataService) { }
+    constructor(private readonly sharedData : SharedDataService) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (req.url.lastIndexOf("/authenticate") !== -1) {

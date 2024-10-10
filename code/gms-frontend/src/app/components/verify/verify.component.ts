@@ -20,7 +20,7 @@ import { WINDOW_TOKEN } from "../../window.provider";
 export class VerifyComponent extends BaseLoginComponent {
 
     constructor(
-        @Inject(WINDOW_TOKEN) private window: Window,
+        @Inject(WINDOW_TOKEN) private readonly window: Window,
         protected override route: ActivatedRoute,
         protected router: Router,
         private readonly authService: AuthService,

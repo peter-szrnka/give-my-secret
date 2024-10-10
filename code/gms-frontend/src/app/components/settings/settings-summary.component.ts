@@ -34,10 +34,10 @@ export class SettingsSummaryComponent implements OnInit {
   showQrCode = false;
 
   constructor(
-    private sharedData : SharedDataService,
-    private userService: UserService,
+    private readonly sharedData : SharedDataService,
+    private readonly userService: UserService,
     public dialogService: DialogService,
-    private splashScreenService : SplashScreenStateService) { }
+    private readonly splashScreenService : SplashScreenStateService) { }
 
   ngOnInit(): void {
     this.sharedData.authModeSubject$.subscribe(authMode => this.authMode = authMode);

@@ -15,7 +15,7 @@ import { UserData } from "../../user/model/user-data.model";
 })
 export class SetupService {
 
-    constructor(private http : HttpClient) { }
+    constructor(private readonly http : HttpClient) { }
 
     public checkReady() : Observable<SystemStatus> {
         return this.http.get <SystemStatus>(environment.baseUrl + 'system/status', { headers : getHeaders() });

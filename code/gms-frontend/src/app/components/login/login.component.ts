@@ -27,7 +27,7 @@ export class LoginComponent extends BaseLoginComponent {
     constructor(
         protected override route: ActivatedRoute,
         protected router: Router,
-        private authService: AuthService,
+        private readonly authService: AuthService,
         protected override sharedDataService: SharedDataService,
         protected override splashScreenStateService: SplashScreenStateService,
         protected override dialogService: DialogService) {
