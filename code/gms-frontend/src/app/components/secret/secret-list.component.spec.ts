@@ -1,17 +1,24 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog as DialogService } from "@angular/material/dialog";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { FormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
+import { AppRoutingModule } from "../../app-routing.module";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
+import { SplashComponent } from "../../common/components/splash/splash.component";
+import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { ClipboardService } from "../../common/service/clipboard-service";
+import { ServiceModule } from "../../common/service/service-module";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { COPY_SECRET_ID_MESSAGE, SecretListComponent } from "./secret-list.component";
 import { SecretService } from "./service/secret-service";
+import { DialogService } from "../../common/service/dialog-service";
 
 /**
  * @author Peter Szrnka
@@ -23,7 +30,7 @@ describe('SecretListComponent', () => {
     };
     // Injected services
     let service : any;
-    let dialogService : any = {};
+    let dialogService : any;
     let sharedDataService : any;
     let activatedRoute : any = {};
     let clipboardService : any;
@@ -33,7 +40,18 @@ describe('SecretListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
+            imports : [
+                AngularMaterialModule,
+                FormsModule,
+                BrowserModule,
+                NoopAnimationsModule,
+                AppRoutingModule,
+                SplashComponent,
+                NavBackComponent,
+                MomentPipe,
+                NavButtonVisibilityPipe,
+                StatusToggleComponent,
+                ServiceModule ],
             declarations : [SecretListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -44,7 +62,7 @@ describe('SecretListComponent', () => {
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : ClipboardService, useValue : clipboardService}
             ]
-        });
+        }).compileComponents();
 
         fixture = TestBed.createComponent(SecretListComponent);
         component = fixture.componentInstance;
@@ -58,8 +76,8 @@ describe('SecretListComponent', () => {
         };
 
         dialogService = {
-            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true) })
-        }
+            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) })
+        };
         
         activatedRoute = class {
             data : Data = of({
@@ -124,8 +142,7 @@ describe('SecretListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true }) )});
 
         component.promptDelete(1);
 
@@ -134,12 +151,11 @@ describe('SecretListComponent', () => {
     });
 
     it('Should cancel dialog', () => {
+        dialogService.openConfirmDeleteDialog = jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: false })) });
         configureTestBed();
 
         expect(component).toBeTruthy();
-
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: false }) )});
 
         component.promptDelete(1);
 

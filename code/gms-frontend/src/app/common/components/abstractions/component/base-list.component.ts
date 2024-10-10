@@ -72,8 +72,8 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
   public promptDelete(id: number) {
     const dialogRef = this.dialogService.openConfirmDeleteDialog();
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result !== true) {
+    dialogRef.afterClosed().subscribe(data => {
+      if (data.result !== true) {
         return;
       }
 

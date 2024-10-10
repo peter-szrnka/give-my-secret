@@ -5,7 +5,6 @@ import { of } from "rxjs";
 import { InfoDialog } from "../components/info-dialog/info-dialog.component";
 import { ConfirmDeleteDialog } from "../components/confirm-delete/confirm-delete-dialog.component";
 
-
 /**
  * @author Peter Szrnka
  */
@@ -44,6 +43,18 @@ describe('DialogService', () => {
         expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: text, type: 'information' } });
     });
 
+    it('Should open custom dialog with errorcode', () => {
+        // arrange
+        const text = "Text";
+
+        // act
+        const result = service.openCustomDialogWithErrorCode(text, 'information', 'GMS-018');
+
+        // assert
+        expect(result).toBeTruthy();
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: text, type: 'information', errorCode: 'GMS-018' } });
+    });
+
     it('Should open info dialog', () => {
         // arrange
         const title = "Title";
@@ -55,6 +66,18 @@ describe('DialogService', () => {
         // assert
         expect(result).toBeTruthy();
         expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { title: title, text: text, type: 'information' } });
+    });
+
+    it('Should open info dialog without title', () => {
+        // arrange
+        const text = "Text";
+
+        // act
+        const result = service.openInfoDialogWithoutTitle(text);
+
+        // assert
+        expect(result).toBeTruthy();
+        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: text, type: 'information' } });
     });
 
     it('Should open warning dialog', () => {

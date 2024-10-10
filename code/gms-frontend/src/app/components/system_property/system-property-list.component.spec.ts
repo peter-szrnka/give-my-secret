@@ -64,8 +64,8 @@ describe('SystemPropertyListComponent', () => {
         };
 
         dialogService = {
-            openCustomDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) }),
-            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) }),
+            openCustomDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) }),
+            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) }),
         }
         
         activatedRoute = class {
@@ -187,7 +187,7 @@ describe('SystemPropertyListComponent', () => {
 
     it('Should cancel dialog after delete', () => {
         // arrange
-        dialogService.openConfirmDeleteDialog = jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) });
+        dialogService.openConfirmDeleteDialog = jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: false })) });
         configureTestBed();
 
         expect(component).toBeTruthy();
