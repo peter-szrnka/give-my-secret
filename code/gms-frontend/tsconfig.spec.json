@@ -20,6 +20,6 @@
   ],
   "exclude": [
     "src/app/common/model/**",
-    "src/mocks/**"
+    "src/assets/**"
   ]
 }

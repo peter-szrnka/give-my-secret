@@ -3,7 +3,7 @@
   "version": "1.0.6-SNAPSHOT",
   "scripts": {
     "ng": "ng",
-    "start": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve --configuration localHttp",
     "startHttps": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve --configuration localHttps",
     "mockHttp": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve --configuration mockHttp",
     "build": "ng build --output-hashing none",
