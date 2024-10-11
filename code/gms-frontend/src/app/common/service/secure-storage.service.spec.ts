@@ -21,7 +21,7 @@ describe('SecureStorageService', () => {
         configureTestBed();
 
         // act
-        service.setItem('testKey', 'value');
+        service.setItem('userId', 'testKey', 'value');
 
         // assert
         expect(localStorage.getItem('testKey')).toBeDefined();
@@ -34,7 +34,7 @@ describe('SecureStorageService', () => {
         configureTestBed();
 
         // act
-        const response : string = service.getItem('testKey');
+        const response : string = service.getItem('userId', 'testKey');
 
         // assert
         expect(response).toEqual('');
@@ -44,14 +44,14 @@ describe('SecureStorageService', () => {
 
     it('Should get key', () => {
         // arrange
-        localStorage.setItem('testKey', 'tmTRpmy9eoJIwTsSprlmBw==');
+        localStorage.setItem('userIdtestKey', 'njjsrXS//GsOKcSRak5kRQ==');
         configureTestBed();
 
         // act
-        const response : string = service.getItem('testKey');
+        const response : string = service.getItem('userId', 'testKey');
 
         // assert
-        expect(response).toEqual('test');
+        expect(response).toEqual('value');
 
         localStorage.clear();
     });

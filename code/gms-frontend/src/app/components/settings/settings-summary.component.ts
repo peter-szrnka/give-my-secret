@@ -17,8 +17,7 @@ export interface PasswordSettings {
  */
 @Component({
   selector: 'settings-summary-component',
-  templateUrl: './settings-summary.component.html',
-  styleUrls: ['./settings-summary.component.scss']
+  templateUrl: './settings-summary.component.html'
 })
 export class SettingsSummaryComponent implements OnInit {
 

@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser-esbuild",
           "options": {
-            "allowedCommonJsDependencies": ["crypto-js", "moment"],
+            "allowedCommonJsDependencies": ["crypto-js", "moment","randomstring"],
             "outputPath": "dist/gms-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -47,7 +47,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-				  "maximumError": "5mb"
+				          "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -63,6 +63,19 @@
               ],
               "outputHashing": "all"
             },
+            "localHttp" : {
+              "buildOptimizer": false,
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/app/common/interceptor/mock-interceptor.ts",
+                  "with": "src/app/common/interceptor/mock-empty-interceptor.ts"
+                }
+              ]
+            },
             "localHttps" : {
               "buildOptimizer": false,
               "optimization": false,
@@ -73,6 +86,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.local.https.ts"
+                },
+                {
+                  "replace": "src/app/common/interceptor/mock-interceptor.ts",
+                  "with": "src/app/common/interceptor/mock-empty-interceptor.ts"
                 }
               ]
             },
@@ -107,6 +124,9 @@
             },
             "development": {
               "buildTarget": "gms-frontend:build:development"
+            },
+            "localHttp": {
+              "buildTarget": "gms-frontend:build:localHttp"
             },
             "localHttps": {
               "buildTarget": "gms-frontend:build:localHttps"

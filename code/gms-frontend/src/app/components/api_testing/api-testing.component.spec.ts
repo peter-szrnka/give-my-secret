@@ -8,7 +8,9 @@ import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { DialogService } from "../../common/service/dialog-service";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
+import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { User } from "../user/model/user.model";
 import { ApiTestingComponent } from "./api-testing.component";
 import { ApiTestingService } from "./service/api-testing-service";
 
@@ -18,6 +20,7 @@ import { ApiTestingService } from "./service/api-testing-service";
 describe('ApiTestingComponent', () => {
 
     let component : ApiTestingComponent;
+    let sharedData: any;
     let service : any;
     let splashScreenService : any;
     let dialogService : any;
@@ -31,6 +34,7 @@ describe('ApiTestingComponent', () => {
             imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule ],
             declarations : [ ApiTestingComponent ],
             providers : [
+                { provide : SharedDataService, useValue: sharedData },
                 { provide : ApiTestingService, useValue : service },
                 { provide : DialogService, useValue : dialogService },
                 { provide : SplashScreenStateService, useValue : splashScreenService },
@@ -45,6 +49,10 @@ describe('ApiTestingComponent', () => {
     };
 
     beforeEach(() => {
+        sharedData = {
+            getUserInfo : jest.fn().mockResolvedValue({ id: 1, role: 'USER', username: 'test' } as User)
+        };
+
         service = {
             getSecretValue : jest.fn().mockImplementation(() : Observable<any> => {
                 return of({ value : "my-secret-value" });
@@ -58,16 +66,18 @@ describe('ApiTestingComponent', () => {
             stop : jest.fn()
         };
         secureStorageService = {
-            getItem : jest.fn().mockImplementation((key) => "apiKey" === key ? "test" : "secret1"),
+            getItem : jest.fn().mockImplementation((_username, key) => "apiKey" === key ? "test" : "secret1"),
             setItem : jest.fn()
         };
     });
 
-    it('should return secret value with saved credentials', () => {
+    it('should return secret value with saved credentials', async() => {
         // arrange
+        sharedData.getUserInfo = jest.fn().mockResolvedValue(undefined);
         configTestBed();
 
         // act
+        await component.ngOnInit();
         component.callApi();
 
         // assert
@@ -81,7 +91,7 @@ describe('ApiTestingComponent', () => {
         expect(secureStorageService.setItem).toHaveBeenCalled();
     });
 
-    it('should return secret value', () => {
+    it('should return secret value', async() => {
         // arrange
         configTestBed();
 
@@ -89,6 +99,7 @@ describe('ApiTestingComponent', () => {
         component.secretId = "secret-id1";
 
         // act
+        await component.ngOnInit();
         component.callApi();
 
         // assert
@@ -111,6 +122,7 @@ describe('ApiTestingComponent', () => {
         component.secretId = "secret-id2";
 
         // act
+        component.ngOnInit();
         component.callApi();
 
         // assert

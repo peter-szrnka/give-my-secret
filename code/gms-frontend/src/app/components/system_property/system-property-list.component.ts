@@ -70,8 +70,7 @@ interface SystemPropertyElement extends SystemProperty {
  */
 @Component({
   selector: 'system-property',
-  templateUrl: './system-property-list.component.html',
-  styleUrls: ['./system-property-list.component.scss']
+  templateUrl: './system-property-list.component.html'
 })
 export class SystemPropertyListComponent {
   columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];

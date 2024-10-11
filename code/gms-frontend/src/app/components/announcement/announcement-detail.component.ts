@@ -13,8 +13,7 @@ import { AnnouncementService } from "./service/announcement-service";
  */
 @Component({
     selector: 'announcement-detail',
-    templateUrl: './announcement-detail.component.html',
-    styleUrls : ['./announcement-detail.component.scss']
+    templateUrl: './announcement-detail.component.html'
 })
 export class AnnouncementDetailComponent extends BaseSaveableDetailComponent<Announcement, AnnouncementService> {
 

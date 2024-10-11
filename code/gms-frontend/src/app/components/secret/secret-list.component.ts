@@ -15,8 +15,7 @@ export const COPY_SECRET_ID_MESSAGE = "Secret ID copied to clipboard!";
  */
 @Component({
     selector: 'secret-list',
-    templateUrl: './secret-list.component.html',
-    styleUrls : ['./secret-list.component.scss']
+    templateUrl: './secret-list.component.html'
 })
 export class SecretListComponent extends BaseListComponent<Secret, SecretService> {
     secretColumns: string[] = ['id', 'secretId', 'status', 'lastUpdated', 'lastRotated', 'rotationPeriod', 'operations'];

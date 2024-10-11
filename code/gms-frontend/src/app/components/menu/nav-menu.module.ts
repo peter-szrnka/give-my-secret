@@ -1,5 +1,4 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { NavMenuComponent } from "./nav-menu.component";
@@ -16,7 +15,6 @@ import { NavMenuComponent } from "./nav-menu.component";
     ],
     imports: [
         AngularMaterialModule,
-        BrowserModule,
         AppRoutingModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

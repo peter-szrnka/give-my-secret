@@ -35,6 +35,10 @@ body {
     min-width: 500px;
 }
 
+.margin-r10 {
+    margin-right: 10px;
+}
+
 .warning {
     padding: 15px;
     margin: 10px 0 10px 0;
@@ -59,14 +63,14 @@ body {
     margin-top: 10px;
 }
 
-.simple-margin-top {
-    margin-top: 10px;
-}
-
 .with-margin-top {
     margin: 0 auto;
     margin-top: 10px;
 }
+
+.margin-top {
+    margin-top: 10px !important;
+  }
 
 .messages-0 {
     color: #aaaaaa;
@@ -81,10 +85,94 @@ body {
     margin: 10px 0 10px 0;
 }
 
-.center-footer > a:link {
+.center-footer>a:link {
     text-decoration: none;
 }
 
-.center-footer > a:hover {
+.center-footer>a:hover {
     text-decoration: underline;
+}
+
+.margin-btm, .margin-bottom {
+    margin-bottom: 10px;
+}
+
+/** Form related */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #f6f6f6 inset !important;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.container>.box {
+    min-width: 30%;
+    height: 250px;
+}
+
+.form-control {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.gms-login-header {
+    background-color: #3f51b5;
+    color: #fff;
+    margin-bottom: 10px !important;
+    padding-bottom: 16px !important;
+}
+
+/** Datatables */
+table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+table td, th {
+    padding: 10px !important;
+}
+
+tr th {
+    text-align: left !important;
+}
+
+td {
+    padding-right: 8px !important;
+}
+/* FIXME
+.mat-toolbar-single-row {
+    height: auto !important;
+    background: transparent;
+}
+
+.mat-toolbar-single-row button {
+    width: 200px;
+}*/
+
+.mat-form-field {
+    width: 100%;
+}
+
+/** Error & messages */
+.error {
+    border: 1px solid #ff0000;
+}
+
+@media screen and (max-width: 899px) {
+    .show-large {
+        display: none !important;
+    }
+}
+
+@media screen and (min-width: 900px) {
+    .show-small {
+        display: none !important;
+    }
 }

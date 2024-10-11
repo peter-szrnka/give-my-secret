@@ -2,7 +2,7 @@ import { HttpRequest, HttpResponse } from "@angular/common/http";
 import { firstValueFrom, of } from "rxjs";
 import { MockInterceptor } from "./mock-interceptor";
 
-import * as infoMe from "../../mock/info.me.json";
+import * as infoMe from "../../../assets/mock/info.me.json";
 
 /**
  * @author Peter Szrnka

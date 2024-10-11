@@ -7,14 +7,15 @@ import { LoggerService } from "../service/logger-service";
 // mocks
 import { Environment } from "../../../environments/environment.default";
 import { ENV_CONFIG } from "../../app.module";
-import * as errorCodes from "../../mock/error.codes.json";
-import * as eventList from "../../mock/event-list.json";
-import * as infoMe from "../../mock/info.me.json";
-import * as mockHomeData from "../../mock/secure.home.json";
-import * as messages from "../../mock/secure.messages.json";
-import * as systemPropertyList from "../../mock/system-property-list.json";
-import * as systemStatus from "../../mock/system.status.json";
-import * as unreadMessages from "../../mock/unread.messages.json";
+import * as errorCodes from "../../../assets/mock/error.codes.json";
+//"../../../assets/mock/error-codes.json";
+import * as eventList from "../../../assets/mock/event-list.json";
+import * as infoMe from "../../../assets/mock/info.me.json";
+import * as mockHomeData from "../../../assets/mock/secure.home.json";
+import * as messages from "../../../assets/mock/secure.messages.json";
+import * as systemPropertyList from "../../../assets/mock/system-property-list.json";
+import * as systemStatus from "../../../assets/mock/system.status.json";
+import * as unreadMessages from "../../../assets/mock/unread.messages.json";
 
 const MOCK_MAP : any = {
     "system/status" : systemStatus,
