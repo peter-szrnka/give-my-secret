@@ -1,12 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { DialogService } from "../../common/service/dialog-service";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
+import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { CredentialApiResponse } from "../secret/model/credential-api-response.model";
 import { ApiTestingService } from "./service/api-testing-service";
-import { SharedDataService } from "../../common/service/shared-data-service";
-import { User } from "../user/model/user.model";
 /**
  * @author Peter Szrnka
  */
