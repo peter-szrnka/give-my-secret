@@ -73,6 +73,7 @@ describe('ApiTestingComponent', () => {
 
     it('should return secret value with saved credentials', async() => {
         // arrange
+        sharedData.getUserInfo = jest.fn().mockResolvedValue(undefined);
         configTestBed();
 
         // act
