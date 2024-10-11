@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser-esbuild",
           "options": {
-            "allowedCommonJsDependencies": ["crypto-js", "moment"],
+            "allowedCommonJsDependencies": ["crypto-js", "moment","randomstring"],
             "outputPath": "dist/gms-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
