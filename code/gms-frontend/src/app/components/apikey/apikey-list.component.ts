@@ -15,8 +15,7 @@ export const COPY_MESSAGE = "Api key value copied to clipboard!";
  */
 @Component({
     selector: 'apikey-list',
-    templateUrl: './apikey-list.component.html',
-    styleUrls: ['./apikey-list.component.scss']
+    templateUrl: './apikey-list.component.html'
 })
 export class ApiKeyListComponent extends BaseListComponent<ApiKey, ApiKeyService> {
     apiKeyColumns: string[] = ['id', 'name', 'status', 'creationDate', 'operations'];

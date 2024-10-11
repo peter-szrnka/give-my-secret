@@ -11,8 +11,7 @@ import { UserData, EMPTY_USER_DATA } from "../user/model/user-data.model";
  */
 @Component({
     selector: 'setup-component',
-    templateUrl: './setup.component.html',
-    styleUrls: ['./setup.component.scss']
+    templateUrl: './setup.component.html'
 })
 export class SetupComponent {
 

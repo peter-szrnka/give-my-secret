@@ -10,8 +10,7 @@ import { ApiTestingService } from "./service/api-testing-service";
  */
 @Component({
     selector: 'api-testing-component',
-    templateUrl: './api-testing.component.html',
-    styleUrls: ['./api-testing.component.scss']
+    templateUrl: './api-testing.component.html'
 })
 export class ApiTestingComponent implements OnInit {
 

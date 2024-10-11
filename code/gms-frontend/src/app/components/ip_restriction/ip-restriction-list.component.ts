@@ -14,8 +14,7 @@ export const COPY_MESSAGE = "Api key value copied to clipboard!";
  */
 @Component({
     selector: 'ip-restriction-list',
-    templateUrl: './ip-restriction-list.component.html',
-    styleUrls: ['./ip-restriction-list.component.scss']
+    templateUrl: './ip-restriction-list.component.html'
 })
 export class IpRestrictionListComponent extends BaseListComponent<IpRestriction, IpRestrictionService> {
 

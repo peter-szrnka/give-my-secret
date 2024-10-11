@@ -12,8 +12,7 @@ import { KeystoreService } from "./service/keystore-service";
  */
 @Component({
     selector: 'keystore-list',
-    templateUrl: './keystore-list.component.html',
-    styleUrls : ['./keystore-list.component.scss']
+    templateUrl: './keystore-list.component.html'
 })
 export class KeystoreListComponent extends BaseListComponent<Keystore, KeystoreService> {
     keystoreColumns: string[] = ['id', 'name', 'type', 'status', 'creationDate', 'operations'];

@@ -1,19 +1,5 @@
 @import "../../../globals.scss";
 
-table {
-  width: 100%;
-  margin-top: 10px;
-}
-
-table td,
-th {
-  padding: 10px;
-}
-
-tr th {
-  text-align: left;
-}
-
 .stat-item {
   margin: 0 16px 0 16px;
   vertical-align: super;
