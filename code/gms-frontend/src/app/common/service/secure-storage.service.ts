@@ -17,7 +17,6 @@ export class SecureStorageService {
 
     setItem(username: string, key : string, data : string) : void {
         const encryptedData = CryptoJS.AES.encrypt(data, secret_key, options).toString();
-        console.info('Encrypted data: ' + encryptedData);
         localStorage.setItem(username + key, encryptedData);
     }
 }

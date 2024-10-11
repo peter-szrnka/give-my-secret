@@ -71,10 +71,6 @@
               "namedChunks": true,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.local.https.ts"
-                },
-                {
                   "replace": "src/app/common/interceptor/mock-interceptor.ts",
                   "with": "src/app/common/interceptor/mock-empty-interceptor.ts"
                 }
