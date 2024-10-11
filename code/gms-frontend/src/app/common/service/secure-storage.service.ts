@@ -10,13 +10,14 @@ const options = { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 };
 @Injectable()
 export class SecureStorageService {
 
-    getItem(key : string) : string {
-        return CryptoJS.AES.decrypt(CryptoJS.lib.CipherParams.create({ciphertext: CryptoJS.enc.Base64.parse(localStorage.getItem(key) ?? '')}), secret_key, options)
+    getItem(username: string, key : string) : string {
+        return CryptoJS.AES.decrypt(CryptoJS.lib.CipherParams.create({ciphertext: CryptoJS.enc.Base64.parse(localStorage.getItem(username + key) ?? '')}), secret_key, options)
             .toString(CryptoJS.enc.Utf8)
     }
 
-    setItem(key : string, data : string) : void {
+    setItem(username: string, key : string, data : string) : void {
         const encryptedData = CryptoJS.AES.encrypt(data, secret_key, options).toString();
-        localStorage.setItem(key, encryptedData);
+        console.info('Encrypted data: ' + encryptedData);
+        localStorage.setItem(username + key, encryptedData);
     }
 }
