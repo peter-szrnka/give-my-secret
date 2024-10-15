@@ -11,11 +11,11 @@ import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
+import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_LDAP;
 
 @Slf4j
 @Component
-@Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
+@Profile(CONFIG_AUTH_TYPE_LDAP)
 public class LdapUserSyncJob extends AbstractJob {
 
     private final LdapSyncService service;
