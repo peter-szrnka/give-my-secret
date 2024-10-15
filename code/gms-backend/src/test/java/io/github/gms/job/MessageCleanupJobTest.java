@@ -40,9 +40,23 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
+	void execute_whenJobIsDisabled_thenSkipExecution() {
+		// arrange
+		when(systemPropertyService.getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED)).thenReturn(false);
+
+		// act
+		job.execute();
+
+		// assert
+		assertTrue(logAppender.list.isEmpty());
+		verify(systemPropertyService).getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED);
+	}
+
+	@Test
 	void execute_whenAppIsNotRunningInMainContainer_thenSkipExecution() {
 		// arrange
 		when(systemService.getContainerId()).thenReturn("ab123457");
+		when(systemPropertyService.getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
@@ -53,6 +67,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		assertTrue(logAppender.list.isEmpty());
 		verify(systemService).getContainerId();
 		verify(systemPropertyService).get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService).getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED);
 	}
 	
 	@Test
@@ -60,6 +75,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		// arrange
 		setupClock(clock);
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
+		when(systemPropertyService.getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_MESSAGE_LIMIT)).thenReturn("1;d");
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(false);
 
@@ -71,6 +87,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_MESSAGE_LIMIT);
 		verify(systemPropertyService, never()).get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService).getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED);
 	}
 	
 	@Test
@@ -78,6 +95,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		// arrange
 		setupClock(clock);
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
+		when(systemPropertyService.getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_MESSAGE_LIMIT)).thenReturn("1;d");
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(false);
 		
@@ -90,5 +108,6 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_MESSAGE_LIMIT);
 		verify(systemPropertyService, never()).get(SystemProperty.MESSAGE_CLEANUP_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService).getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED);
 	}
 }

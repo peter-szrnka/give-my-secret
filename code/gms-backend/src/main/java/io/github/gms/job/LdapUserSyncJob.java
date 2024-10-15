@@ -6,25 +6,22 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
-import static io.github.gms.common.util.Constants.TRUE;
 
 @Slf4j
 @Component
 @Profile(CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO)
-@ConditionalOnProperty(value = "config.job.ldapUserSyncJob.enabled", havingValue = TRUE)
 public class LdapUserSyncJob extends AbstractJob {
 
     private final LdapSyncService service;
 
     public LdapUserSyncJob(SystemService systemService, SystemPropertyService systemPropertyService, LdapSyncService service) {
-        super(systemService, systemPropertyService);
+        super(systemService, systemPropertyService, SystemProperty.LDAP_SYNC_JOB_ENABLED);
         this.service = service;
     }
 

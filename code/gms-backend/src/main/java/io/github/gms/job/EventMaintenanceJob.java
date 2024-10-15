@@ -6,13 +6,10 @@ import io.github.gms.functions.event.EventRepository;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
-
-import static io.github.gms.common.util.Constants.TRUE;
 
 /**
  * @author Peter Szrnka
@@ -20,13 +17,12 @@ import static io.github.gms.common.util.Constants.TRUE;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "config.job.eventMaintenance.enabled", havingValue = TRUE, matchIfMissing = true)
 public class EventMaintenanceJob extends AbstractLimitBasedJob {
 
 	private final EventRepository eventRepository;
 
 	public EventMaintenanceJob(SystemService systemService, Clock clock, EventRepository eventRepository, SystemPropertyService systemPropertyService) {
-		super(systemService, clock, systemPropertyService);
+		super(systemService, clock, systemPropertyService, SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED);
 		this.eventRepository = eventRepository;
 	}
 

@@ -6,11 +6,8 @@ import io.github.gms.functions.keystore.KeystoreFileService;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import static io.github.gms.common.util.Constants.TRUE;
 
 /**
  * @author Peter Szrnka
@@ -18,13 +15,12 @@ import static io.github.gms.common.util.Constants.TRUE;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "config.job.generatedKeystoreCleanup.enabled", havingValue = TRUE, matchIfMissing = true)
 public class GeneratedKeystoreCleanupJob extends AbstractJob {
 
     private final KeystoreFileService service;
 
     public GeneratedKeystoreCleanupJob(SystemService systemService, SystemPropertyService systemPropertyService, KeystoreFileService service) {
-        super(systemService, systemPropertyService);
+        super(systemService, systemPropertyService, SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED);
         this.service = service;
     }
 

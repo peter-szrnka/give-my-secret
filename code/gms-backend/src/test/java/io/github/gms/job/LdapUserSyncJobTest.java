@@ -42,9 +42,23 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
+    void execute_whenJobIsDisabled_thenSkipExecution() {
+        // arrange
+        when(systemPropertyService.getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED)).thenReturn(false);
+
+        // act
+        job.execute();
+
+        // assert
+        assertTrue(logAppender.list.isEmpty());
+        verify(systemPropertyService).getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED);
+    }
+
+    @Test
     void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
         // arrange
         when(systemService.getContainerId()).thenReturn("ab123457");
+        when(systemPropertyService.getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED)).thenReturn(true);
         when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
         when(systemPropertyService.get(SystemProperty.LDAP_SYNC_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
@@ -61,6 +75,7 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
     @ValueSource(ints = {1, 2})
     void shouldProcess(int deletedUserCount) {
         // arrange
+        when(systemPropertyService.getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED)).thenReturn(true);
         when(service.synchronizeUsers()).thenReturn(Pair.of(2, deletedUserCount));
 
         // act

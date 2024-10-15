@@ -39,9 +39,23 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
+    void execute_whenJobIsDisabled_thenSkipExecution() {
+        // arrange
+        when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(false);
+
+        // act
+        job.execute();
+
+        // assert
+        assertTrue(logAppender.list.isEmpty());
+        verify(systemPropertyService).getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED);
+    }
+
+    @Test
     void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
         // arrange
         when(systemService.getContainerId()).thenReturn("ab123457");
+        when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(true);
         when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
         when(systemPropertyService.get(SystemProperty.KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
@@ -51,6 +65,7 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
         // assert
         assertTrue(logAppender.list.isEmpty());
         verify(systemService).getContainerId();
+        verify(systemPropertyService).getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED);
         verify(systemPropertyService).get(SystemProperty.KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID);
         verify(service, never()).deleteTempKeystoreFiles();
     }
@@ -58,6 +73,7 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
     @Test
     void shouldNotProcess() {
         // arrange
+        when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(true);
         when(service.deleteTempKeystoreFiles()).thenReturn(0L);
 
         // act
@@ -71,6 +87,7 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
     @Test
     void shouldProcess() {
         // arrange
+        when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(true);
         when(service.deleteTempKeystoreFiles()).thenReturn(1L);
 
         // act

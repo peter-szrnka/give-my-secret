@@ -16,8 +16,9 @@ public abstract class AbstractLimitBasedJob extends AbstractJob {
 
 	protected final Clock clock;
 
-	protected AbstractLimitBasedJob(SystemService systemService, Clock clock, SystemPropertyService systemPropertyService) {
-		super(systemService, systemPropertyService);
+	protected AbstractLimitBasedJob(
+			SystemService systemService, Clock clock, SystemPropertyService systemPropertyService, SystemProperty enableProperty) {
+		super(systemService, systemPropertyService, enableProperty);
         this.clock = clock;
     }
 

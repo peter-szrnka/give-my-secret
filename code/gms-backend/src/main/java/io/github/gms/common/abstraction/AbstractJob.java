@@ -15,8 +15,17 @@ public abstract class AbstractJob {
 
     private final SystemService systemService;
     protected final SystemPropertyService systemPropertyService;
+    private final SystemProperty enableProperty;
 
     protected boolean skipJobExecution(SystemProperty systemProperty) {
+        return jobDisabled() || multiNodeEnabled(systemProperty);
+    }
+
+    private boolean jobDisabled() {
+        return !systemPropertyService.getBoolean(enableProperty);
+    }
+
+    private boolean multiNodeEnabled(SystemProperty systemProperty) {
         return multiNodeEnabled() && !StringUtils.equals(systemPropertyService.get(systemProperty), systemService.getContainerId());
     }
 

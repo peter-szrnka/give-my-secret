@@ -47,9 +47,23 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
+	void execute_whenJobIsDisabled_thenSkipExecution() {
+		// arrange
+		when(systemPropertyService.getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED)).thenReturn(false);
+
+		// act
+		job.execute();
+
+		// assert
+		assertTrue(logAppender.list.isEmpty());
+		verify(systemPropertyService).getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED);
+	}
+
+	@Test
 	void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
 		// arrange
 		when(systemService.getContainerId()).thenReturn("ab123457");
+		when(systemPropertyService.getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
@@ -59,12 +73,14 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 		// assert
 		assertTrue(logAppender.list.isEmpty());
 		verify(systemPropertyService).get(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService).getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED);
 		verify(service, never()).rotateSecret(any(SecretEntity.class));
 	}
 
 	@Test
 	void shouldNotProcess() {
 		// arrange
+		when(systemPropertyService.getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED)).thenReturn(true);
 		Clock mockClock = Clock.fixed(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());
 		when(secretRepository.findAllOldRotated(any(ZonedDateTime.class)))
 			.thenReturn(Lists.newArrayList(TestUtils.createSecretEntity(RotationPeriod.MONTHLY, ZonedDateTime.now(mockClock).minusDays(10L))));
@@ -77,12 +93,14 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 		// assert
 		verify(service, never()).rotateSecret(any(SecretEntity.class));
 		verify(secretRepository).findAllOldRotated(any(ZonedDateTime.class));
+		verify(systemPropertyService).getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED);
 		assertTrue(logAppender.list.isEmpty());
 	}
 	
 	@Test
 	void shouldProcess() {
 		// arrange
+		when(systemPropertyService.getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED)).thenReturn(true);
 		Clock mockClock = Clock.fixed(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());
 		when(secretRepository.findAllOldRotated(any(ZonedDateTime.class)))
 			.thenReturn(Lists.newArrayList(
@@ -97,6 +115,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
 		// assert
 		verify(service, times(1)).rotateSecret(any(SecretEntity.class));
+		verify(systemPropertyService).getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED);
 		verify(secretRepository).findAllOldRotated(any(ZonedDateTime.class));
 		assertFalse(logAppender.list.isEmpty());
 		assertEquals("1 entities updated", logAppender.list.getFirst().getFormattedMessage());
