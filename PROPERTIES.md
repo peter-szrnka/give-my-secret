@@ -51,16 +51,9 @@ Give My Secret (GMS) provides more than 40 external properties that you can use 
 | 38   | ENABLE_REDIS_CACHE                | Boolean      | false, true                                   | This flag determines whether Redis caching enabled or not.   |
 | 39   | REDIS_HOST                        | String       |                                               | Redis host URL.                                              |
 | 40   | REDIS_PORT                        | Number       |                                               | Redis host port.                                             |
-|      | **Job settings**                  |              |                                               |                                                              |
-| 41   | ENABLE_SECRET_ROTATION            | Boolean      | false, true (default true)                    | This flag determines whether secret rotator job enabled or not. |
-| 42   | ENABLE_EVENT_MAINTENANCE          | Boolean      | false, true (default true)                    | This flag determines whether event maintenance job enabled or not. |
-| 43   | ENABLE_MESSAGE_CLEANUP            | Boolean      | false, true (default true)                    | This flag determines whether message cleanup job enabled or not. |
-| 44   | ENABLE_GENERATE_KEYSTORE_CLEANUP  | Boolean      | false, true (default true)                    | This flag determines whether temp keystore cleanup job enabled or not. |
-| 45   | ENABLE_LDAP_SYNC                  | Boolean      | false, true (default false)                   | This flag determines whether LDAP sync job enabled or not.   |
-| 46   | ENABLE_USER_DELETION              | Boolean      | false, true (default true)                    | This flag determines whether GDPR user deletion job enabled or not. |
 |      | **Tracing / Zipkin**              |              |                                               |                                                              |
-| 47   | ZIPKIN_URL                        | String       | -                                             | Zipkin host url.                                             |
+| 41   | ZIPKIN_URL                        | String       | -                                             | Zipkin host url.                                             |
 |      | **Other**                         |              |                                               |                                                              |
-| 48   | CONFIG_RESOURCE_HANDLER_DISABLED  | Boolean      | true, false                                   | *This parameter is not necessary for production Docker images.* |
-| 49   | COMPOSE_CONVERT_WINDOWS_PATHS     | Number       | 0, 1                                          | Required only by Windows!                                    |
+| 42   | CONFIG_RESOURCE_HANDLER_DISABLED  | Boolean      | true, false                                   | *This parameter is not necessary for production Docker images.* |
+| 43   | COMPOSE_CONVERT_WINDOWS_PATHS     | Number       | 0, 1                                          | Required only by Windows!                                    |
 

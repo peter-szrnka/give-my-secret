@@ -65,6 +65,7 @@ public class SystemPropertyConverter {
 				.key(property.name())
 				.value(value)
 				.type(property.getType())
+				.category(property.getCategory())
 				.lastModified(lastModified)
 				.factoryValue(factoryValue)
 				.build();

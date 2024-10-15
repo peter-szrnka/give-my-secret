@@ -74,12 +74,14 @@ describe('SystemPropertyListComponent', () => {
                     resultList : [
                         {
                             key : "REFRESH_JWT_ALGORITHM",
+                            category : "JWT_TOKEN",
                             value : "HS512",
                             factoryValue : true,
                             lastModified : new Date()
                         },
                         {
                             key : "JOB_OLD_EVENT_LIMIT",
+                            category : "JOB",
                             value : "1;d",
                             factoryValue : true,
                             lastModified : new Date()
@@ -135,6 +137,17 @@ describe('SystemPropertyListComponent', () => {
         // assert
         expect(dialogService.openCustomDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
+    });
+
+    it('Should filter table', async() => {
+        // arrange
+        configureTestBed();
+
+        expect(component).toBeTruthy();
+
+        // act
+        component.ngOnInit();
+        component.applyFilter({ target: { value: 'JWT_TOKEN' }});
     });
 
     it('Should save succeed', () => {

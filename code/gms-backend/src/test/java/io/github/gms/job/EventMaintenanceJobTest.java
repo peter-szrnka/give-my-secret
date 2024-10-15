@@ -46,9 +46,23 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
+	void execute_whenJobIsDisabled_thenSkipExecution() {
+		// arrange
+		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(false);
+
+		// act
+		job.execute();
+
+		// assert
+		assertTrue(logAppender.list.isEmpty());
+		verify(systemPropertyService).getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED);
+	}
+
+	@Test
 	void execute_whenAppIsNotRunningInMainContainer_thenSkipExecution() {
 		// arrange
 		when(systemService.getContainerId()).thenReturn("ab123457");
+		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
@@ -58,12 +72,13 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		// assert
 		assertTrue(logAppender.list.isEmpty());
 		verify(systemService).getContainerId();
-		verify(systemPropertyService/*, times(2)*/).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
+		verify(systemPropertyService).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
 	}
 
 	@Test
 	void shouldNotProcess() {
 		// arrange
+		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn(null);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
@@ -87,6 +102,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	@Test
 	void execute_whenMultiNodeDisabled_thenShouldNotProcess() {
 		// arrange
+		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(false);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
@@ -110,6 +126,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	void shouldProcess() {
 		// arrange
 		when(systemService.getContainerId()).thenReturn("ab123456");
+		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");

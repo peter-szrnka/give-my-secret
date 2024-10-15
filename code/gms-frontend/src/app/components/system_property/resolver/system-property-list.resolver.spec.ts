@@ -19,8 +19,8 @@ describe('SystemPropertyListResolver', () => {
     let sharedData: any;
 
     const mockResponse: SystemProperty[] = [
-        { key: 'PROPERTY1', value: 'true', type: 'boolean', factoryValue: false },
-        { key: 'PROPERTY2', value: '10', type: 'long', factoryValue: true }
+        { key: 'PROPERTY1', value: 'true', type: 'boolean', factoryValue: false, category: 'GENERAL' },
+        { key: 'PROPERTY2', value: '10', type: 'long', factoryValue: true, category: 'GENERAL' }
     ];
 
     const configureTestBed = () => {

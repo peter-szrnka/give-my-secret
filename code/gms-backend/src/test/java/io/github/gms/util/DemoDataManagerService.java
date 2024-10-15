@@ -15,6 +15,8 @@ import io.github.gms.functions.message.MessageEntity;
 import io.github.gms.functions.message.MessageRepository;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
+import io.github.gms.functions.systemproperty.SystemPropertyDto;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +57,8 @@ public class DemoDataManagerService {
 	private IpRestrictionRepository ipRestrictionRepository;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private SystemPropertyService systemPropertyService;
 
 	public void initTestData() {
 		// User
@@ -86,9 +90,27 @@ public class DemoDataManagerService {
 
 		// IP Restrictions
 		ipRestrictionRepository.save(createGlobalIpRestriction());
-		
+
+		// System properties
+		disableJob(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED);
+		disableJob(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED);
+		disableJob(SystemProperty.LDAP_SYNC_JOB_ENABLED);
+		disableJob(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED);
+		disableJob(SystemProperty.SECRET_ROTATION_JOB_ENABLED);
+		disableJob(SystemProperty.USER_DELETION_JOB_ENABLED);
+
 		// End
 		log.info("Test data's have been configured!");
+	}
+
+	private void disableJob(SystemProperty systemProperty) {
+		systemPropertyService.save(SystemPropertyDto.builder()
+				.key(systemProperty.name())
+				.value("false")
+				.type(PropertyType.BOOLEAN)
+				.category(SystemPropertyCategory.JOB)
+				.lastModified(ZonedDateTime.now())
+				.build());
 	}
 
 	private IpRestrictionEntity createGlobalIpRestriction() {

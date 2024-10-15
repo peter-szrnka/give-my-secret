@@ -1,6 +1,6 @@
-import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
+import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
@@ -46,11 +46,17 @@ export const PROPERTY_TEXT_MAP: any = {
   'FAILED_ATTEMPTS_LIMIT' : { text: 'Limit after users should be blocked', displayMode: 'text' },
   'JOB_OLD_EVENT_LIMIT' : { text: 'Limit of deletion of the old events', hint: 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"', displayMode: 'text' },
   'JOB_OLD_MESSAGE_LIMIT' : { text: 'Limit of deletion of the old messages', hint: 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"', displayMode: 'text' },
+  'EVENT_MAINTENANCE_JOB_ENABLED': { text: 'Event maintenance job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'EVENT_MAINTENANCE_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running event maintenance job', displayMode: 'text' },
+  'KEYSTORE_CLEANUP_JOB_ENABLED' : { text: 'Keystore maintenance job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running keystore maintenance job', displayMode: 'text' },
+  'LDAP_SYNC_JOB_ENABLED' : { text: 'LDAP sync job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'LDAP_SYNC_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running LDAP sync runner job', displayMode: 'text' },
+  'MESSAGE_CLEANUP_JOB_ENABLED' : { text: 'Message cleanup job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'MESSAGE_CLEANUP_RUNNER_CONTAINER_ID' : { text: 'Main container ID for message cleanup job', displayMode: 'text' },
+  'SECRET_ROTATION_JOB_ENABLED' : { text: 'Secret rotation job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'SECRET_ROTATION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for secret rotation job', displayMode: 'text' },
+  'USER_DELETION_JOB_ENABLED' : { text: 'User deletion job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'USER_DELETION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running user deletion job', displayMode: 'text' },
   'ENABLE_MULTI_NODE' : { text: 'Multi-node usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'ENABLE_AUTOMATIC_LOGOUT' : { text: 'Automatic logout is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list', callbackMethod: 'checkSystemReady' },
@@ -76,7 +82,7 @@ export class SystemPropertyListComponent {
   columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];
   timeUnits: any[] = TIME_UNITS;
 
-  public datasource: ArrayDataSource<SystemPropertyElement>;
+  public datasource: MatTableDataSource<SystemPropertyElement> = new MatTableDataSource<SystemPropertyElement>([]);
   protected count = 0;
 
   public confirmDeleteDialogRef: MatDialogRef<ConfirmDeleteDialog, any>;
@@ -112,11 +118,16 @@ export class SystemPropertyListComponent {
       .pipe(catchError(async () => this.initDefaultDataTable()))
       .subscribe((response: any) => {
         this.count = response.data.totalElements;
-        this.datasource = new ArrayDataSource<SystemPropertyElement>(this.convertToElements(response.data.resultList));
+        this.datasource = new MatTableDataSource<SystemPropertyElement>(this.convertToElements(response.data.resultList));
       });
   }
 
-  private convertToElements(resultList: SystemProperty[]): readonly SystemPropertyElement[] {
+  applyFilter(event: any) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.datasource.filter = filterValue.trim().toLowerCase();
+  }
+
+  private convertToElements(resultList: SystemProperty[]): SystemPropertyElement[] {
     return resultList.map((property: SystemProperty) => {
       return {
         ...property,
@@ -179,7 +190,7 @@ export class SystemPropertyListComponent {
   }
 
   private initDefaultDataTable() {
-    this.datasource = new ArrayDataSource<SystemPropertyElement>([]);
+    this.datasource = new MatTableDataSource<SystemPropertyElement>([]);
   }
 
   private executeCallbackMethod(callbackMethod?: string) {

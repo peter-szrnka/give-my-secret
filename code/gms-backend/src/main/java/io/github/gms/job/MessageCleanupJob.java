@@ -6,13 +6,10 @@ import io.github.gms.functions.message.MessageRepository;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
-
-import static io.github.gms.common.util.Constants.TRUE;
 
 /**
  * @author Peter Szrnka
@@ -20,13 +17,12 @@ import static io.github.gms.common.util.Constants.TRUE;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "config.job.messageCleanup.enabled", havingValue = TRUE, matchIfMissing = true)
 public class MessageCleanupJob extends AbstractLimitBasedJob {
 
 	private final MessageRepository messageRepository;
 
 	public MessageCleanupJob(SystemService systemService, Clock clock, MessageRepository messageRepository, SystemPropertyService systemPropertyService) {
-		super(systemService, clock, systemPropertyService);
+		super(systemService, clock, systemPropertyService, SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED);
 		this.messageRepository = messageRepository;
 	}
 	

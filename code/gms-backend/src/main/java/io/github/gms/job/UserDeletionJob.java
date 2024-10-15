@@ -7,13 +7,10 @@ import io.github.gms.functions.gdpr.UserDeletionService;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
-
-import static io.github.gms.common.util.Constants.TRUE;
 
 /**
  * @author Peter Szrnka
@@ -21,14 +18,13 @@ import static io.github.gms.common.util.Constants.TRUE;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "config.job.userDeletion.enabled", havingValue = TRUE, matchIfMissing = true)
 public class UserDeletionJob extends AbstractJob {
 
     private final UserDeletionService userDeletionService;
     private final UserAssetDeletionService userAssetDeletionService;
 
     public UserDeletionJob(SystemService systemService, SystemPropertyService systemPropertyService, UserDeletionService userDeletionService, UserAssetDeletionService userAssetDeletionService) {
-        super(systemService, systemPropertyService);
+        super(systemService, systemPropertyService, SystemProperty.USER_DELETION_JOB_ENABLED);
         this.userDeletionService = userDeletionService;
         this.userAssetDeletionService = userAssetDeletionService;
     }

@@ -9,7 +9,6 @@ import io.github.gms.functions.secret.SecretRotationService;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,15 +17,12 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static io.github.gms.common.util.Constants.TRUE;
-
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "config.job.secretRotation.enabled", havingValue = TRUE, matchIfMissing = true)
 public class SecretRotationJob extends AbstractJob {
 	
 	private static final long DELAY_SECONDS = 55L;
@@ -40,7 +36,7 @@ public class SecretRotationJob extends AbstractJob {
 			Clock clock,
 			SecretRepository secretRepository,
 			SecretRotationService service) {
-		super(systemService, systemPropertyService);
+		super(systemService, systemPropertyService, SystemProperty.SECRET_ROTATION_JOB_ENABLED);
         this.clock = clock;
 		this.secretRepository = secretRepository;
 		this.service = service;
