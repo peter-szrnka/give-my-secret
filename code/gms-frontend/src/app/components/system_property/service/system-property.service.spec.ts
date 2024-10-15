@@ -10,7 +10,8 @@ const TEST_SYSTEM_PROPERTY : SystemProperty = {
     key : '',
     value : '',
     type : '',
-    factoryValue : true
+    factoryValue : true,
+    category : 'GENERAL'
 };
 
 /**

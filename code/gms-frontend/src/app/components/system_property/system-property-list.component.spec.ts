@@ -145,6 +145,7 @@ describe('SystemPropertyListComponent', () => {
 
         // act
         component.onFetch({ pageSize: 10 });
+        component.applyFilter({ target: { value: 'REFRESH_JWT_ALGORITHM' }});
         component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         // assert

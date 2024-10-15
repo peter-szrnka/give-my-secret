@@ -1,6 +1,7 @@
 package io.github.gms.common.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import static io.github.gms.common.enums.SystemPropertyCategory.*;
  * @since 1.0
  */
 @Getter
+@RequiredArgsConstructor
 public enum SystemProperty {
 	ACCESS_JWT_EXPIRATION_TIME_SECONDS(JWT_TOKEN, LONG, "900", value -> Integer.parseInt(value) > 0),
 	ACCESS_JWT_ALGORITHM(JWT_TOKEN, STRING, "HS512"),
@@ -46,12 +48,6 @@ public enum SystemProperty {
 	ENABLE_AUTOMATIC_LOGOUT(GENERAL, BOOLEAN, "false"),
 	AUTOMATIC_LOGOUT_TIME_IN_MINUTES(GENERAL, INTEGER, "15", value -> Integer.parseInt(value) >= 15);
 
-	SystemProperty(SystemPropertyCategory category, PropertyType type, String defaultValue) {
-		this.category = category;
-		this.type = type;
-		this.defaultValue = defaultValue;
-	}
-
 	SystemProperty(SystemPropertyCategory category, PropertyType type, String defaultValue, PropertyTypeValidator validator) {
 		this.category = category;
 		this.type = type;
@@ -59,9 +55,9 @@ public enum SystemProperty {
 		this.validator = validator;
 	}
 
-	private final String defaultValue;
+	private final SystemPropertyCategory category;
 	private final PropertyType type;
-	private SystemPropertyCategory category = SystemPropertyCategory.GENERAL;
+	private final String defaultValue;
 	private PropertyTypeValidator validator = value -> true;
 
 	private static final Map<String, SystemProperty> keyMap = new HashMap<>();
