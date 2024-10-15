@@ -82,7 +82,7 @@ export class SystemPropertyListComponent {
   columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];
   timeUnits: any[] = TIME_UNITS;
 
-  public datasource: MatTableDataSource<SystemPropertyElement>;
+  public datasource: MatTableDataSource<SystemPropertyElement> = new MatTableDataSource<SystemPropertyElement>([]);
   protected count = 0;
 
   public confirmDeleteDialogRef: MatDialogRef<ConfirmDeleteDialog, any>;
