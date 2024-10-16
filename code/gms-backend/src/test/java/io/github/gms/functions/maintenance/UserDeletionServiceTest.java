@@ -1,8 +1,9 @@
-package io.github.gms.functions.gdpr;
+package io.github.gms.functions.maintenance;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.abstraction.UserMaintenanceService;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.functions.gdpr.model.BatchUserOperationDto;
+import io.github.gms.functions.maintenance.model.BatchUserOperationDto;
 import io.github.gms.functions.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class UserDeletionServiceTest extends AbstractLoggingUnitTest {
         super.setup();
         userRepository = mock(UserRepository.class);
         service = new UserDeletionService(userRepository);
-        addAppender(UserDeletionService.class);
+        addAppender(UserMaintenanceService.class);
     }
 
     @Test
@@ -38,7 +39,7 @@ class UserDeletionServiceTest extends AbstractLoggingUnitTest {
         Set<Long> userIds = Set.of(1L);
 
         // act
-        service.requestUserDeletion(BatchUserOperationDto.builder().requestId("requestID").userIds(userIds).build());
+        service.requestProcess(BatchUserOperationDto.builder().requestId("requestID").userIds(userIds).build());
 
         // assert
         verify(userRepository).batchUpdateStatus(userIds, EntityStatus.DELETE_REQUESTED);
@@ -52,7 +53,7 @@ class UserDeletionServiceTest extends AbstractLoggingUnitTest {
         when(userRepository.findAllByStatus(EntityStatus.DELETE_REQUESTED)).thenReturn(userIds);
 
         // act
-        Set<Long> response = service.getRequestedUserDeletionIds();
+        Set<Long> response = service.getRequestedUserIds();
 
         // arrange
         assertNotNull(response);
@@ -66,7 +67,7 @@ class UserDeletionServiceTest extends AbstractLoggingUnitTest {
         Set<Long> userIds = Set.of(1L);
 
         // act
-        service.executeRequestedUserDeletion(userIds);
+        service.process(userIds);
 
         // assert
         verify(userRepository).deleteAllByUserId(userIds);

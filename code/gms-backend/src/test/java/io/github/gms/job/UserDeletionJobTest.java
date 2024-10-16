@@ -2,8 +2,8 @@ package io.github.gms.job;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.functions.gdpr.UserAssetDeletionService;
-import io.github.gms.functions.gdpr.UserDeletionService;
+import io.github.gms.functions.maintenance.UserAssetDeletionService;
+import io.github.gms.functions.maintenance.UserDeletionService;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +68,7 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
         // assert
         assertTrue(logAppender.list.isEmpty());
         verify(systemPropertyService).get(SystemProperty.USER_DELETION_RUNNER_CONTAINER_ID);
-        verify(userDeletionService, never()).getRequestedUserDeletionIds();
+        verify(userDeletionService, never()).getRequestedUserIds();
         verify(systemPropertyService).getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED);
     }
 
@@ -76,13 +76,13 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
     void shouldSkipProcessing() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED)).thenReturn(true);
-        when(userDeletionService.getRequestedUserDeletionIds()).thenReturn(Collections.emptySet());
+        when(userDeletionService.getRequestedUserIds()).thenReturn(Collections.emptySet());
 
         // act
         job.execute();
 
         // assert
-        verify(userDeletionService).getRequestedUserDeletionIds();
+        verify(userDeletionService).getRequestedUserIds();
         verify(systemPropertyService).getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED);
         assertLogMissing(logAppender, "Deleting requested user assets(API keys, secrets, keystore resources,etc.");
     }
@@ -92,15 +92,15 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
         // arrange
         Set<Long> userIds = Set.of(1L, 2L);
         when(systemPropertyService.getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED)).thenReturn(true);
-        when(userDeletionService.getRequestedUserDeletionIds()).thenReturn(userIds);
+        when(userDeletionService.getRequestedUserIds()).thenReturn(userIds);
 
         // act
         job.execute();
 
         // assert
-        verify(userDeletionService).getRequestedUserDeletionIds();
+        verify(userDeletionService).getRequestedUserIds();
         verify(userAssetDeletionService).executeRequestedUserAssetDeletion(userIds);
-        verify(userDeletionService).executeRequestedUserDeletion(userIds);
+        verify(userDeletionService).process(userIds);
         verify(systemPropertyService).getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED);
         assertLogContains(logAppender, "2 user(s) requested to delete");
         assertLogContains(logAppender, "Deleting requested user assets(API keys, secrets, keystore resources,etc.");

@@ -1,4 +1,4 @@
-package io.github.gms.functions.gdpr.model;
+package io.github.gms.functions.maintenance.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

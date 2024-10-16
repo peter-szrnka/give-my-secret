@@ -1,4 +1,4 @@
-package io.github.gms.functions.gdpr;
+package io.github.gms.functions.maintenance;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.functions.apikey.ApiKeyService;

@@ -1,7 +1,7 @@
-package io.github.gms.functions.gdpr;
+package io.github.gms.functions.maintenance;
 
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.functions.gdpr.model.BatchUserOperationDto;
+import io.github.gms.functions.maintenance.model.BatchUserOperationDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,29 @@ import static org.mockito.Mockito.verify;
  */
 class MaintenanceControllerTest extends AbstractUnitTest {
 
+    private UserAnonymizationService userAnonymizationService;
     private UserDeletionService userDeletionService;
     private MaintenanceController controller;
 
     @BeforeEach
     void setupTest() {
+        userAnonymizationService = mock(UserAnonymizationService.class);
         userDeletionService = mock(UserDeletionService.class);
-        controller = new MaintenanceController(userDeletionService);
+        controller = new MaintenanceController(userAnonymizationService, userDeletionService);
+    }
+
+    @Test
+    void shouldRequestUserAnonymization() {
+        // arrange
+        BatchUserOperationDto input = BatchUserOperationDto.builder().build();
+
+        // act
+        ResponseEntity<Void> response = controller.requestUserAnonymization(input);
+
+        // assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(userAnonymizationService).requestProcess(input);
     }
 
     @Test
@@ -39,6 +55,6 @@ class MaintenanceControllerTest extends AbstractUnitTest {
         // assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(userDeletionService).requestUserDeletion(input);
+        verify(userDeletionService).requestProcess(input);
     }
 }

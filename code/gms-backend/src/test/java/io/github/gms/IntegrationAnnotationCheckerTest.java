@@ -106,7 +106,7 @@ class IntegrationAnnotationCheckerTest {
         private boolean skip;
     }
 
-    private static Map<String, ClassData> getAllControllerClasses(boolean securityTestCheck) throws Exception {
+    private static Map<String, ClassData> getAllControllerClasses(boolean securityTestCheck) {
         Map<String, ClassData> resultMap = new HashMap<>();
         Set<Class<?>> controllers = getAllSubClasses(GmsController.class);
 
@@ -174,7 +174,9 @@ class IntegrationAnnotationCheckerTest {
 
     private static Set<Class<?>> getAllSubClasses(Class<?> inputClazz) {
         Reflections reflections = new Reflections("io.github.gms");
-        return reflections.getSubTypesOf(inputClazz).stream().filter(cls -> !Modifier.isAbstract(cls.getModifiers())).collect(Collectors.toSet());
+        return reflections.getSubTypesOf(inputClazz).stream()
+                .filter(cls -> !cls.getSimpleName().endsWith("$$SpringCGLIB$$0"))
+                .filter(cls -> !Modifier.isAbstract(cls.getModifiers())).collect(Collectors.toSet());
     }
 
     private static void assertController(

@@ -65,4 +65,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 	@Query("SELECT u.id from UserEntity u where u.status=:status")
 	Set<Long> findAllByStatus(@Param("status") EntityStatus status);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE UserEntity u set u.name='**',u.username='**',u.credential='**',u.email='**',u.status='ANONYMIZED' where u.id in :userIds")
+    void batchUpdateUserPersonalInfo(@Param("userIds") Set<Long> userIds);
 }

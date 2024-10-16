@@ -1,7 +1,7 @@
-package io.github.gms.functions.gdpr;
+package io.github.gms.functions.maintenance;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
-import io.github.gms.functions.gdpr.model.BatchUserOperationDto;
+import io.github.gms.functions.maintenance.model.BatchUserOperationDto;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -25,6 +25,19 @@ class MaintenanceIntegrationTest extends AbstractIntegrationTest {
     public void setup() {
         gmsUser = TestUtils.createGmsAdminUser();
         jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
+    }
+
+    @Test
+    void shouldRequestUserAnonymization() {
+        // arrange
+
+        // act
+        BatchUserOperationDto input = BatchUserOperationDto.builder().build();
+        HttpEntity<BatchUserOperationDto> requestEntity = new HttpEntity<>(input, TestUtils.getHttpHeaders(jwt));
+        ResponseEntity<Void> response = executeHttpPost("/secure/maintenance/request_user_anonymization", requestEntity, Void.class);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
