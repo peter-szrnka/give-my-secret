@@ -19,7 +19,7 @@ const EVENT_LIST_FILTER = {
 };
 
 const ALL_ROLES: string[] = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN','ROLE_TECHNICAL'];
-const ALL_STATUS: string[] = [ 'ACTIVE', 'BLOCKED', 'DISABLED', 'DELETE_REQUESTED', 'TO_BE_DELETED', 'TO_BE_ANONYMIZED', 'ANONYMIZED' ];
+const ALL_STATUS: string[] = [ 'ACTIVE', 'BLOCKED', 'DISABLED', 'DELETE_REQUESTED', 'TO_BE_DELETED', 'ANONYMIZATION_REQUESTED', 'ANONYMIZED' ];
 
 @Component({
   selector: 'user-detail-component',

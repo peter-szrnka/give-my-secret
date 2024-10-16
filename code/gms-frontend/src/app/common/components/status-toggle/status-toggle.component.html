@@ -6,6 +6,12 @@
     <mat-icon (click)="toggle()" class="disabled" matTooltip="{{status}}">block</mat-icon>
   }
   @if (status === 'DELETE_REQUESTED' || status === 'TO_BE_DELETED') {
-    <mat-icon (click)="toggle()" class="disabled" matTooltip="{{status}}">delete_forever</mat-icon>
+    <mat-icon (click)="toggle()" class="disabled" matTooltip="{{status}}">schedule</mat-icon>
+  }
+  @if (status === 'ANONYMIZATION_REQUESTED') {
+    <mat-icon (click)="toggle()" class="pending" matTooltip="{{status}}">schedule</mat-icon>
+  }
+  @if (status === 'ANONYMIZED') {
+    <mat-icon (click)="toggle()" matTooltip="{{status}}">close</mat-icon>
   }
 </ng-container>

@@ -21,11 +21,11 @@ public abstract class UserMaintenanceService {
 
     public void requestProcess(BatchUserOperationDto dto) {
         log.info("Batch user {} requested. requestId={}", userMaintenanceConfig.scope(), dto.getRequestId());
-        userRepository.batchUpdateStatus(dto.getUserIds(), userMaintenanceConfig.newStatus());
+        userRepository.batchUpdateStatus(dto.getUserIds(), userMaintenanceConfig.status());
     }
 
     public Set<Long> getRequestedUserIds() {
-        return userRepository.findAllByStatus(userMaintenanceConfig.newStatus());
+        return userRepository.findAllByStatus(userMaintenanceConfig.status());
     }
 
     public abstract void process(Set<Long> userIds);
