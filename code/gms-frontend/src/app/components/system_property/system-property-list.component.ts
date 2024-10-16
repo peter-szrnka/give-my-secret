@@ -56,6 +56,8 @@ export const PROPERTY_TEXT_MAP: any = {
   'MESSAGE_CLEANUP_RUNNER_CONTAINER_ID' : { text: 'Main container ID for message cleanup job', displayMode: 'text' },
   'SECRET_ROTATION_JOB_ENABLED' : { text: 'Secret rotation job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'SECRET_ROTATION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for secret rotation job', displayMode: 'text' },
+  'USER_ANONYMIZATION_JOB_ENABLED' : { text: 'User anonymization job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
+  'USER_ANONYMIZATION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running user anonymization job', displayMode: 'text' },
   'USER_DELETION_JOB_ENABLED' : { text: 'User deletion job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
   'USER_DELETION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running user deletion job', displayMode: 'text' },
   'ENABLE_MULTI_NODE' : { text: 'Multi-node usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },

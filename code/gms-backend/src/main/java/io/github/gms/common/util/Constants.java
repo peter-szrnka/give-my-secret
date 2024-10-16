@@ -22,6 +22,7 @@ public final class Constants {
 	public static final String ALL_ROLE = "hasAnyRole('ROLE_ADMIN','ROLE_USER','ROLE_VIEWER')";
 	public static final String ROLE_USER_OR_VIEWER = "hasAnyRole('ROLE_USER','ROLE_VIEWER')";
 	public static final String ROLE_ADMIN_OR_USER = "hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')";
+	public static final String ROLE_ADMIN_OR_TECHNICAL = "hasAnyRole('ROLE_ADMIN','ROLE_TECHNICAL')";
 	public static final String ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
 	public static final String ROLE_USER = "hasRole('ROLE_USER')";
 	

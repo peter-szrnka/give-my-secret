@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 public enum EntityStatus {
 
 	ACTIVE,
+	ANONYMIZATION_REQUESTED,
+	ANONYMIZED,
 	BLOCKED,
 	DELETE_REQUESTED,
 	DISABLED,

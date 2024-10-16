@@ -2,8 +2,8 @@ package io.github.gms.job;
 
 import io.github.gms.common.abstraction.AbstractJob;
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.functions.gdpr.UserAssetDeletionService;
-import io.github.gms.functions.gdpr.UserDeletionService;
+import io.github.gms.functions.maintenance.UserAssetDeletionService;
+import io.github.gms.functions.maintenance.UserDeletionService;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class UserDeletionJob extends AbstractJob {
             return;
         }
 
-        Set<Long> userIds = userDeletionService.getRequestedUserDeletionIds();
+        Set<Long> userIds = userDeletionService.getRequestedUserIds();
 
         if (userIds.isEmpty()) {
             return;
@@ -47,6 +47,6 @@ public class UserDeletionJob extends AbstractJob {
         userAssetDeletionService.executeRequestedUserAssetDeletion(userIds);
 
         log.info("Deleting requested users");
-        userDeletionService.executeRequestedUserDeletion(userIds);
+        userDeletionService.process(userIds);
     }
 }
