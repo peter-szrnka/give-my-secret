@@ -41,9 +41,7 @@ public class UserAnonymizationJob extends AbstractJob {
             return;
         }
 
-        log.info("{} user(s) requested to anonymize", userIds.size());
-
-        log.info("Anonymizing requested users");
+        log.info("Anonymizing {} requested users", userIds.size());
         userAnonymizationService.process(userIds);
     }
 }
