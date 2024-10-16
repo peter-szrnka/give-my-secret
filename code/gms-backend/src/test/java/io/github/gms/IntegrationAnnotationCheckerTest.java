@@ -53,7 +53,7 @@ class IntegrationAnnotationCheckerTest {
     }
 
     @Test
-    void shouldControllerHaveProperIntegrationTests() throws Exception {
+    void shouldControllerHaveProperIntegrationTests() {
         controllers = getAllControllerClasses(false);
         AtomicInteger skipCounter = new AtomicInteger(0);
         controllers.forEach((k, v) -> assertController(skipCounter, k, v));
@@ -63,7 +63,7 @@ class IntegrationAnnotationCheckerTest {
     }
 
     @Test
-    void shouldControllerHaveProperSecurityTests() throws Exception {
+    void shouldControllerHaveProperSecurityTests() {
         controllers = getAllControllerClasses(true);
         AtomicInteger skipCounter = new AtomicInteger(0);
         Set<String> missingSecurityTests = new HashSet<>();
@@ -137,15 +137,15 @@ class IntegrationAnnotationCheckerTest {
         return resultMap;
     }
 
-    private static Map<String, TestClassData> getAllIntegrationTestClasses() throws Exception {
+    private static Map<String, TestClassData> getAllIntegrationTestClasses() {
         return getAllSpecificTestClasses(GmsControllerIntegrationTest.class);
     }
 
-    private static Map<String, TestClassData> getAllSecurityTestClasses() throws Exception {
+    private static Map<String, TestClassData> getAllSecurityTestClasses() {
         return getAllSpecificTestClasses(GmsControllerSecurityTest.class);
     }
 
-    private static Map<String, TestClassData> getAllSpecificTestClasses(Class<?> clazz) throws Exception {
+    private static Map<String, TestClassData> getAllSpecificTestClasses(Class<?> clazz) {
         Map<String, TestClassData> resultMap = new HashMap<>();
         Set<Class<?>> testClasses = getAllSubClasses(clazz);
 
@@ -200,10 +200,7 @@ class IntegrationAnnotationCheckerTest {
 
     private static String printUncoveredTestMethods(Map<String, Set<String>> missingSecurityTestMethods) {
         StringBuilder sb = new StringBuilder("\r\n");
-        missingSecurityTestMethods.forEach((k, v) -> {
-            sb.append(k).append(": ").append(v).append("\r\n");
-        });
-
+        missingSecurityTestMethods.forEach((k, v) -> sb.append(k).append(": ").append(v).append("\r\n"));
         return sb.toString();
     }
 }
