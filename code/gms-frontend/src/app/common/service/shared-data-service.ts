@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable, Output } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom, Observable, of, ReplaySubject } from "rxjs";
+import { firstValueFrom, ReplaySubject } from "rxjs";
 import { SetupService } from "../../components/setup/service/setup-service";
 import { User } from "../../components/user/model/user.model";
 import { SystemReadyData } from "../model/system-ready.model";
