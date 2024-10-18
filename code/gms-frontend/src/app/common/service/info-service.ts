@@ -13,6 +13,10 @@ export class InformationService {
 
     constructor(private readonly http : HttpClient) {}
 
+    healthCheck() : Promise<string> {
+        return firstValueFrom(this.http.get<string>(environment.baseUrl + 'healthcheck', {}));
+    }
+
     getUserInfo() : Promise<User> {
         return firstValueFrom(this.http.get<User>(environment.baseUrl + 'info/me', { withCredentials : true, headers : getHeaders() }));
     }

@@ -131,6 +131,17 @@ describe('AppComponent', () => {
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
+    it('System is offline', () => {
+        configureTestBed();
+        mockSystemReadySubject.next({ ready: false, status: 0, authMode : '' });
+        fixture.autoDetectChanges();
+
+        // act & assert
+        expect(router.navigate).toHaveBeenCalledTimes(1);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
+        expect(splashScreenStateService.stop).toHaveBeenCalled();
+    });
+
     it('System is not ready', () => {
         configureTestBed();
         mockSystemReadySubject.next({ ready: false, status: 200, authMode : 'db', automaticLogoutTimeInMinutes: 1 });

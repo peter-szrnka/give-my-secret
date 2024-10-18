@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ReplaySubject, Subscription, of } from "rxjs";
+import { ReplaySubject, Subscription, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
-import { HomeComponent } from "./home.component";
+import { HomeComponent, PageStatus } from "./home.component";
 import { HomeData } from "./model/home-data.model";
 import { HomeService } from "./service/home.service";
 
@@ -57,6 +57,15 @@ describe('HomeComponent', () => {
         };
     });
 
+    it('should handle errors', async() => {
+        homeService.getData = jest.fn().mockReturnValue(throwError(() => new Error("error")));
+        configTestBed();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.data).toBeUndefined();
+    });
+
     it('should load component for admin', () => {
         const currentUser = {
             role: "ROLE_ADMIN",
@@ -86,12 +95,12 @@ describe('HomeComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(component.eventDataSource).toBeDefined();
+        expect(component.data).toBeDefined();
+        
+        component.ngOnDestroy();
     });
 
     it('should not load component for unknown user', () => {
-        mockSubject.subscribe = jest.fn().mockReturnValue(new Subscription());
-        authModeSubject.subscribe = jest.fn().mockReturnValue(new Subscription());
         mockHomeData = {
             events: {
                 resultList: [{ id: 1, target: 'apikey', username: 'user-1', operation: 'save', eventDate: new Date() }],
@@ -102,7 +111,6 @@ describe('HomeComponent', () => {
                 totalElements: 0
             },
             userCount: 1,
-            role: 'ROLE_ADMIN',
             apiKeyCount: 0,
             keystoreCount: 0,
             announcementCount: 0,
@@ -115,8 +123,6 @@ describe('HomeComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(component.eventDataSource).toBeDefined();
-
-        component.ngOnDestroy();
+        expect(component.data).toBeDefined();
     });
 });
