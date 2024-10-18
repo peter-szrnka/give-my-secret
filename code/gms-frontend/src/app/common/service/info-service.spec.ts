@@ -8,22 +8,41 @@ import { User } from "../../components/user/model/user.model";
  * @author Peter Szrnka
  */
 describe('InformationService', () => {
-    let service : InformationService;
-    let httpMock : HttpTestingController;
+    let service: InformationService;
+    let httpMock: HttpTestingController;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-          imports: [HttpClientTestingModule],
-          providers : [InformationService]
+            imports: [HttpClientTestingModule],
+            providers: [InformationService]
         });
         service = TestBed.inject(InformationService);
         httpMock = TestBed.inject(HttpTestingController);
-      });
+    });
+
+    it('Should execute healthcheck', () => {
+        // arrange
+        const expectedUrl = environment.baseUrl + "healthcheck";
+        const mockResponse = "OK";
+
+
+        //act
+        service.healthCheck().then(response => {
+            expect(response).toEqual(mockResponse);
+        });
+
+        // assert
+        const req = httpMock.expectOne(expectedUrl);
+        expect(req.request.method).toBe('GET');
+        req.flush(mockResponse);
+
+        httpMock.verify();
+    });
 
     it('Should provide null userinfo', () => {
         // arrange
         const expectedUrl = environment.baseUrl + "info/me";
-        const mockResponse: User  = {
+        const mockResponse: User = {
             id: 1,
             username: 'test',
             role: "ROLE_USER"
@@ -39,7 +58,7 @@ describe('InformationService', () => {
         const req = httpMock.expectOne(expectedUrl);
         expect(req.request.method).toBe('GET');
         req.flush(mockResponse);
-        
+
         httpMock.verify();
     });
 });

@@ -21,6 +21,7 @@ export class LoginComponent extends BaseLoginComponent {
         username: undefined,
         credential: undefined
     };
+    loginAttempt: boolean = false;
     showPassword: boolean = false;
 
     constructor(
@@ -35,10 +36,12 @@ export class LoginComponent extends BaseLoginComponent {
 
     login(): void {
         this.splashScreenStateService.start();
+        this.loginAttempt = true;
 
         this.authService.login(this.formModel)
             .pipe(catchError((err) => this.handleError(err)))
             .subscribe((response : LoginResponse) => {
+                this.loginAttempt = false;
                 this.splashScreenStateService.stop();
                 if (response === null) {
                     this.displayErrorModal();

@@ -41,6 +41,7 @@ import { UserListResolver } from './components/user/resolver/user-list.resolver'
 import { UserDetailComponent } from './components/user/user-detail.component';
 import { UserListComponent } from './components/user/user-list.component';
 import { VerifyComponent } from './components/verify/verify.component';
+import { ErrorComponent } from './components/error/error.component';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 
@@ -64,6 +65,7 @@ const detailRouteBuilder = (scope: string, component: Type<any>, resolver: Type<
 };
 
 const routes: Routes = [
+  { path: 'error', component: ErrorComponent },
   { path: 'setup', component: SetupComponent },
   { path: 'login', component: LoginComponent },
   { path: 'verify', component: VerifyComponent },

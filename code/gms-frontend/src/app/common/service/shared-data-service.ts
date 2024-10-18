@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable, Output } from "@angular/core";
 import { Router } from "@angular/router";
-import { catchError, Observable, of, ReplaySubject } from "rxjs";
+import { firstValueFrom, Observable, of, ReplaySubject } from "rxjs";
 import { SetupService } from "../../components/setup/service/setup-service";
 import { User } from "../../components/user/model/user.model";
 import { SystemReadyData } from "../model/system-ready.model";
@@ -20,7 +20,6 @@ export class SharedDataService {
     authModeSubject$: ReplaySubject<string> = new ReplaySubject<string>();
     resetTimerSubject$: ReplaySubject<number | undefined> = new ReplaySubject<number | undefined>();
     systemReady?: boolean = undefined;
-    authMode: string;
     startTime?: number;
 
     @Output() messageCountUpdateEvent = new EventEmitter<number>();
@@ -69,20 +68,18 @@ export class SharedDataService {
     }
 
     public checkSystemReady() {
-        this.setupService.checkReady().pipe(catchError(() => {
-            return of({ status: 'FAIL' } as SystemStatus);
-        })).subscribe(response => {
-            if (response.status === "FAIL") {
-                this.systemReadySubject$.next({ ready: false, status: 0, authMode: response.authMode });
-                return;
-            }
-
-            this.systemReady = "OK" === response.status;
-            this.authModeSubject$.next(response.authMode);
-            this.authMode = response.authMode;
-            this.systemReadySubject$.next({ ready: this.systemReady, status: 200, authMode: response.authMode, automaticLogoutTimeInMinutes: response.automaticLogoutTimeInMinutes });
-            this.refreshCurrentUserInfo();
-        });
+        firstValueFrom(this.setupService.checkReady())
+            .then((response: SystemStatus) => {
+                this.systemReady = "OK" === response.status;
+                this.authModeSubject$.next(response.authMode);
+                this.systemReadySubject$.next({ ready: this.systemReady, status: 200, authMode: response.authMode, automaticLogoutTimeInMinutes: response.automaticLogoutTimeInMinutes });
+                this.refreshCurrentUserInfo();
+            })
+            .catch(() => {
+                const authMode = 'N/A';
+                this.systemReadySubject$.next({ ready: false, status: 0, authMode: authMode });
+                this.systemReady = false;
+            });
     }
 
     setStartTime(currentTime?: number) {

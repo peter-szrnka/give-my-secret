@@ -21,7 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   unsubscribe = new Subject<void>();
   currentUser: User | undefined;
-  systemReady: boolean;
+  //systemReady: boolean;
   showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') ?? 'true');
   isAdmin: boolean;
 
@@ -40,6 +40,12 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe((routerEvent) => this.checkRouterEvent(routerEvent as RouterEvent));
 
       this.sharedDataService.systemReadySubject$.subscribe(readyData => {
+
+        if (readyData.status === 0 && readyData.ready === false) {
+          this.router.navigate(['/error']);
+          return;
+        }
+
         if (readyData.status !== 200) {
           return;
         }
@@ -48,8 +54,6 @@ export class AppComponent implements OnInit, OnDestroy {
           void this.router.navigate(['/setup']);
           return;
         }
-  
-        this.systemReady = readyData.ready;
 
         this.processUserSubject();
       });
