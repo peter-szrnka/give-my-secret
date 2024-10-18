@@ -23,8 +23,8 @@ export class ErrorComponent {
   skipInterval = false;
 
   constructor(
-    private router: Router, 
-    private sharedDataService: SharedDataService,
+    private readonly router: Router, 
+    private readonly sharedDataService: SharedDataService,
     private readonly informationService: InformationService) { }
 
   public ngOnInit(): void {
