@@ -18,51 +18,62 @@ const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
 ];
 
-const TYPE_MAP : any = {
-  'LONG' : 'number',
-  'STRING' : 'text',
+const TYPE_MAP: any = {
+  'LONG': 'number',
+  'STRING': 'text',
   'BOOLEAN': 'boolean',
 }
 
-const TIME_UNITS : any = [
-  { 'key' : 'm', value : 'minute' },
-  { 'key' : 'd', value : 'day' },
-  { 'key' : 'M', value : 'month' },
-  { 'key' : 'y', value : 'year' },
-  { 'key' : 'w', value : 'week' }
+const TIME_UNITS: any = [
+  { 'key': 'm', value: 'minute' },
+  { 'key': 'd', value: 'day' },
+  { 'key': 'M', value: 'month' },
+  { 'key': 'y', value: 'year' },
+  { 'key': 'w', value: 'week' }
 ];
 
-const BOOL_VALUE_SET : string[] = ['true','false'];
+const BOOL_VALUE_SET: string[] = ['true', 'false'];
+
+const createBoolConfig = (text: string, callbackMethod?: string) => {
+  return {
+    text: text,
+    valueSet: BOOL_VALUE_SET,
+    displayMode: 'list',
+    callbackMethod: callbackMethod
+  };
+};
+const createAlgorithmConfig = (text: string) => { return { text: text, valueSet: ALGORITHM_SET, displayMode: 'list' } };
+const createTextConfig = (text: string, hint?: string) => { return { text: text, displayMode: 'text', hint: hint } };
 
 export const PROPERTY_TEXT_MAP: any = {
-  'ACCESS_JWT_EXPIRATION_TIME_SECONDS': { text: 'Access JWT expiration time in seconds', displayMode: 'text' },
-  'ACCESS_JWT_ALGORITHM': { text: 'Access JWT Algorithom', valueSet: ALGORITHM_SET, displayMode: 'list' },
-  'REFRESH_JWT_EXPIRATION_TIME_SECONDS': { text: 'Refresh JWT expiration time in seconds', displayMode: 'text' },
-  'REFRESH_JWT_ALGORITHM': { text: 'Refresh JWT Algorithom', valueSet: ALGORITHM_SET, displayMode: 'list' },
-  'ORGANIZATION_NAME' : { text: 'Organization / Company name', displayMode: 'text' },
-  'ORGANIZATION_CITY' : { text: 'Location (city) of the organization', displayMode: 'text' },
-  'ENABLE_GLOBAL_MFA' : { text: 'Global MFA usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-	'ENABLE_MFA': { text: 'MFA usage is enabled or not for the users', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-  'FAILED_ATTEMPTS_LIMIT' : { text: 'Limit after users should be blocked', displayMode: 'text' },
-  'JOB_OLD_EVENT_LIMIT' : { text: 'Limit of deletion of the old events', hint: 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"', displayMode: 'text' },
-  'JOB_OLD_MESSAGE_LIMIT' : { text: 'Limit of deletion of the old messages', hint: 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"', displayMode: 'text' },
-  'EVENT_MAINTENANCE_JOB_ENABLED': { text: 'Event maintenance job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-  'EVENT_MAINTENANCE_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running event maintenance job', displayMode: 'text' },
-  'KEYSTORE_CLEANUP_JOB_ENABLED' : { text: 'Keystore maintenance job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-  'KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running keystore maintenance job', displayMode: 'text' },
-  'LDAP_SYNC_JOB_ENABLED' : { text: 'LDAP sync job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-  'LDAP_SYNC_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running LDAP sync runner job', displayMode: 'text' },
-  'MESSAGE_CLEANUP_JOB_ENABLED' : { text: 'Message cleanup job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-  'MESSAGE_CLEANUP_RUNNER_CONTAINER_ID' : { text: 'Main container ID for message cleanup job', displayMode: 'text' },
-  'SECRET_ROTATION_JOB_ENABLED' : { text: 'Secret rotation job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-  'SECRET_ROTATION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for secret rotation job', displayMode: 'text' },
-  'USER_ANONYMIZATION_JOB_ENABLED' : { text: 'User anonymization job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-  'USER_ANONYMIZATION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running user anonymization job', displayMode: 'text' },
-  'USER_DELETION_JOB_ENABLED' : { text: 'User deletion job is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-  'USER_DELETION_RUNNER_CONTAINER_ID' : { text: 'Main container ID for running user deletion job', displayMode: 'text' },
-  'ENABLE_MULTI_NODE' : { text: 'Multi-node usage is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list' },
-  'ENABLE_AUTOMATIC_LOGOUT' : { text: 'Automatic logout is enabled or not', valueSet: BOOL_VALUE_SET, displayMode: 'list', callbackMethod: 'checkSystemReady' },
-  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES' : { text: 'Automatic logout is performed after T minutes', displayMode: 'text', hint: 'Minimum value is 15 minutes', callbackMethod: 'checkSystemReady' }
+  'ACCESS_JWT_EXPIRATION_TIME_SECONDS': createTextConfig('Access JWT expiration time in seconds'),
+  'ACCESS_JWT_ALGORITHM': createAlgorithmConfig('Access JWT Algorithom'),
+  'REFRESH_JWT_EXPIRATION_TIME_SECONDS': createTextConfig('Refresh JWT expiration time in seconds'),
+  'REFRESH_JWT_ALGORITHM': createAlgorithmConfig('Refresh JWT Algorithom'),
+  'ORGANIZATION_NAME': createTextConfig('Organization / Company name'),
+  'ORGANIZATION_CITY': createTextConfig('Location (city) of the organization'),
+  'ENABLE_GLOBAL_MFA': createBoolConfig('Global MFA usage is enabled or not'),
+  'ENABLE_MFA': createBoolConfig('MFA usage is enabled or not for the users'),
+  'FAILED_ATTEMPTS_LIMIT': createTextConfig('Limit of failed login attempts before blocking the user'),
+  'JOB_OLD_EVENT_LIMIT': createTextConfig('Limit of deletion of the old events', 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"'),
+  'JOB_OLD_MESSAGE_LIMIT': createTextConfig('Limit of deletion of the old messages', 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"'),
+  'EVENT_MAINTENANCE_JOB_ENABLED': createBoolConfig('Event maintenance job is enabled or not'),
+  'EVENT_MAINTENANCE_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running event maintenance job'),
+  'KEYSTORE_CLEANUP_JOB_ENABLED': createBoolConfig('Keystore maintenance job is enabled or not'),
+  'KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running keystore maintenance job'),
+  'LDAP_SYNC_JOB_ENABLED': createBoolConfig('LDAP sync job is enabled or not'),
+  'LDAP_SYNC_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running LDAP sync runner job'),
+  'MESSAGE_CLEANUP_JOB_ENABLED': createBoolConfig('Message cleanup job is enabled or not'),
+  'MESSAGE_CLEANUP_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for message cleanup job'),
+  'SECRET_ROTATION_JOB_ENABLED': createBoolConfig('Secret rotation job is enabled or not'),
+  'SECRET_ROTATION_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for secret rotation job'),
+  'USER_ANONYMIZATION_JOB_ENABLED': createBoolConfig('User anonymization job is enabled or not'),
+  'USER_ANONYMIZATION_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running user anonymization job'),
+  'USER_DELETION_JOB_ENABLED': createBoolConfig('User deletion job is enabled or not'),
+  'USER_DELETION_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running user deletion job'),
+  'ENABLE_MULTI_NODE': createBoolConfig('Multi-node usage is enabled or not'),
+  'ENABLE_AUTOMATIC_LOGOUT': createBoolConfig('Automatic logout is enabled or not', 'checkSystemReady'),
+  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES': createBoolConfig('Automatic logout is performed after T minutes', 'checkSystemReady')
 };
 
 interface SystemPropertyElement extends SystemProperty {
@@ -91,9 +102,9 @@ export class SystemPropertyListComponent {
   public infoDialogRef: MatDialogRef<InfoDialog, any>;
 
   public tableConfig = {
-    count : 0,
-    pageIndex : 0,
-    pageSize : localStorage.getItem("system_property_pageSize") ?? 25
+    count: 0,
+    pageIndex: 0,
+    pageSize: localStorage.getItem("system_property_pageSize") ?? 25
   };
 
   constructor(
@@ -144,7 +155,7 @@ export class SystemPropertyListComponent {
     }) as SystemPropertyElement[];
   }
 
-  public onFetch(event : any) {
+  public onFetch(event: any) {
     localStorage.setItem("system_property_pageSize", event.pageSize);
     this.fetchData();
   }
@@ -208,10 +219,10 @@ export class SystemPropertyListComponent {
 
   private reloadPage() {
     const queryParams: Params = { t: new Date().getTime() };
-      this.router.navigate([], {
-        relativeTo: this.activatedRoute,
-        queryParams,
-        queryParamsHandling: 'merge'
-      });
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams,
+      queryParamsHandling: 'merge'
+    });
   }
 }
