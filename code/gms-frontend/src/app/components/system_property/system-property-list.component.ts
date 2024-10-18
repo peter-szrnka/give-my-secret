@@ -43,7 +43,12 @@ const createBoolConfig = (text: string, callbackMethod?: string) => {
   };
 };
 const createAlgorithmConfig = (text: string) => { return { text: text, valueSet: ALGORITHM_SET, displayMode: 'list' } };
-const createTextConfig = (text: string, hint?: string) => { return { text: text, displayMode: 'text', hint: hint } };
+const createTextConfig = (text: string, hint?: string, callbackMethod?: string) => { return { 
+  text: text, 
+  displayMode: 'text', 
+  hint: hint,
+  callbackMethod: callbackMethod 
+} };
 
 export const PROPERTY_TEXT_MAP: any = {
   'ACCESS_JWT_EXPIRATION_TIME_SECONDS': createTextConfig('Access JWT expiration time in seconds'),
@@ -73,7 +78,7 @@ export const PROPERTY_TEXT_MAP: any = {
   'USER_DELETION_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running user deletion job'),
   'ENABLE_MULTI_NODE': createBoolConfig('Multi-node usage is enabled or not'),
   'ENABLE_AUTOMATIC_LOGOUT': createBoolConfig('Automatic logout is enabled or not', 'checkSystemReady'),
-  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES': createBoolConfig('Automatic logout is performed after T minutes', 'checkSystemReady')
+  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES': createTextConfig('Automatic logout is performed after T minutes', undefined, 'checkSystemReady')
 };
 
 interface SystemPropertyElement extends SystemProperty {
