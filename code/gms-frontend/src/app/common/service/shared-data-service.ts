@@ -53,14 +53,6 @@ export class SharedDataService {
         this.authService.logout().subscribe(() => this.clearData());
     }
 
-    /**
-     * @deprecated
-     */
-    public clearDataAndReturn(data: any): Observable<any> {
-        this.clearData();
-        return of(data);
-    }
-
     public check() {
         if (this.systemReady === undefined) {
             this.checkSystemReady();

@@ -124,27 +124,6 @@ describe('SharedDataService', () => {
     expect(infoService.getUserInfo).toHaveBeenCalled();
   });
 
-  it('should clear data and return', () => {
-    mockSubject.subscribe(res => expect(res).toEqual({
-      userId: undefined,
-      userName: undefined
-    }));
-
-    // act
-    configureTestBed();
-    mockSubject.next(currentUser);
-    service.clearDataAndReturn({ value: 'mock' }).subscribe(data => {
-      expect(data).toEqual({ value: 'mock' });
-    });
-
-    // assert
-    authService.logout().subscribe(() => {
-      expect(localStorage.removeItem('currentUser')).toHaveBeenCalled();
-    });
-    expect(authService.logout).toHaveBeenCalled();
-    //
-  });
-
   it('should run check', () => {
     // arrange
     const jwtData = {
