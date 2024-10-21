@@ -10,12 +10,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
+import static io.github.gms.util.TestUtils.createJobEntity;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -31,6 +33,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	private EventMaintenanceJob job;
 	private Clock clock;
 	private SystemPropertyService systemPropertyService;
+	private JobRepository jobRepository;
 	
 	@Override
 	@BeforeEach
@@ -41,17 +44,22 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		systemService = mock(SystemService.class);
 		eventRepository = mock(EventRepository.class);
 		systemPropertyService = mock(SystemPropertyService.class);
-		job = new EventMaintenanceJob(systemService, clock, eventRepository, systemPropertyService);
+		jobRepository = mock(JobRepository.class);
+		job = new EventMaintenanceJob(eventRepository);
+		ReflectionTestUtils.setField(job, "systemService", systemService);
+		ReflectionTestUtils.setField(job, "systemPropertyService", systemPropertyService);
+		ReflectionTestUtils.setField(job, "clock", clock);
+		ReflectionTestUtils.setField(job, "jobRepository", jobRepository);
 		addAppender(EventMaintenanceJob.class);
 	}
 
 	@Test
-	void execute_whenJobIsDisabled_thenSkipExecution() {
+	void run_whenJobIsDisabled_thenSkipExecution() {
 		// arrange
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(false);
 
 		// act
-		job.execute();
+		job.run();
 
 		// assert
 		assertTrue(logAppender.list.isEmpty());
@@ -59,7 +67,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void execute_whenAppIsNotRunningInMainContainer_thenSkipExecution() {
+	void run_whenAppIsNotRunningInMainContainer_thenSkipExecution() {
 		// arrange
 		when(systemService.getContainerId()).thenReturn("ab123457");
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
@@ -67,7 +75,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
 		// act
-		job.execute();
+		job.run();
 
 		// assert
 		assertTrue(logAppender.list.isEmpty());
@@ -85,9 +93,11 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-		
+		when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
+		when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
+
 		// act
-		job.execute();
+		job.run();
 		
 		// assert
 		assertTrue(logAppender.list.isEmpty());
@@ -97,10 +107,12 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
 		verify(systemPropertyService).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_EVENT_LIMIT);
+		verify(jobRepository, times(2)).save(any(JobEntity.class));
+		verify(jobRepository).findById(anyLong());
 	}
 
 	@Test
-	void execute_whenMultiNodeDisabled_thenShouldNotProcess() {
+	void run_whenMultiNodeDisabled_thenShouldNotProcess() {
 		// arrange
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(false);
@@ -108,9 +120,11 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
+		when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
 
 		// act
-		job.execute();
+		job.run();
 
 		// assert
 		assertTrue(logAppender.list.isEmpty());
@@ -120,6 +134,8 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
 		verify(systemPropertyService, never()).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_EVENT_LIMIT);
+		verify(jobRepository, times(2)).save(any(JobEntity.class));
+		verify(jobRepository).findById(anyLong());
 	}
 
 	@Test
@@ -135,9 +151,11 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		MockedStatic<TimeUnit> mockedTimeUnit = mockStatic(TimeUnit.class);
 		mockedTimeUnit.when(() -> TimeUnit.getByCode("d")).thenReturn(TimeUnit.DAY);
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
-		
+		when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
+		when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
+
 		// act
-		job.execute();
+		job.run();
 		
 		// assert
 		assertFalse(logAppender.list.isEmpty());
@@ -153,5 +171,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
 		mockedTimeUnit.close();
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_EVENT_LIMIT);
+		verify(jobRepository, times(2)).save(any(JobEntity.class));
+		verify(jobRepository).findById(anyLong());
 	}
 }

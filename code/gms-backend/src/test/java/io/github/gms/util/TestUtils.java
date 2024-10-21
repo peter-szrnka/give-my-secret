@@ -33,6 +33,7 @@ import io.github.gms.functions.systemproperty.SystemPropertyDto;
 import io.github.gms.functions.systemproperty.SystemPropertyEntity;
 import io.github.gms.functions.systemproperty.SystemPropertyListDto;
 import io.github.gms.functions.user.*;
+import io.github.gms.job.JobEntity;
 import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -750,4 +751,14 @@ public class TestUtils {
 		dto.setVerificationCode("123456");
         return dto;
     }
+
+	public static JobEntity createJobEntity() {
+		return JobEntity.builder()
+				.id(1L)
+				.name("job")
+				.status(JobStatus.COMPLETED)
+				.creationDate(ZonedDateTime.now())
+				.startTime(ZonedDateTime.now())
+				.build();
+	}
 }

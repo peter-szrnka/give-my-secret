@@ -24,6 +24,7 @@ import io.github.gms.functions.secret.ApiKeyRestrictionRepository;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyRepository;
 import io.github.gms.functions.user.UserRepository;
+import io.github.gms.job.JobRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jackson.JsonComponentModule;
@@ -67,6 +68,7 @@ import static io.github.gms.common.util.Constants.LOGGING_OBJECT_MAPPER;
 		ApiKeyRestrictionRepository.class,
 		EventRepository.class,
 		IpRestrictionRepository.class,
+		JobRepository.class,
 		KeystoreAliasRepository.class,
 		KeystoreRepository.class,
 		MessageRepository.class,

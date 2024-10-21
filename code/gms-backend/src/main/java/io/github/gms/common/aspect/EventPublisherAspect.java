@@ -39,7 +39,7 @@ public class EventPublisherAspect {
 	public void audited() {
 		// only a pointcut registration
 	}
-	
+
 	@Around("(audited() || restController()) && allMethod()")
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
