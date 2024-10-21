@@ -64,6 +64,10 @@ public abstract class AbstractJob {
         MdcUtils.remove(MdcParameter.JOB_ID);
     }
 
+    protected boolean skipJobExecution() {
+        return jobDisabled() || multiNodeEnabled();
+    }
+
     private void createJobExecution() {
         JobEntity newEntity = jobRepository.save(JobEntity.builder()
                 .name(getClass().getSimpleName())
@@ -88,10 +92,6 @@ public abstract class AbstractJob {
         }
 
         jobRepository.save(entity);
-    }
-
-    private boolean skipJobExecution() {
-        return jobDisabled() || multiNodeEnabled();
     }
 
     private boolean jobDisabled() {
