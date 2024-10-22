@@ -11,7 +11,7 @@ import { JobDetailList } from "../model/job-detail-list.model";
   providedIn: 'root'
 })
 export class JobDetailService {
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   list(paging: Paging): Observable<JobDetailList> {
     return this.http.get<JobDetailList>(environment.baseUrl + `secure/job/list?direction=${paging.direction}&property=${paging.property}&page=${paging.page}&size=${paging.size}`, 

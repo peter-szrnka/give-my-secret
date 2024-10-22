@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
-import { JobDetail } from "./model/job.-detail.model";
+import { JobDetail } from "./model/job-detail.model";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 
 /**
@@ -18,7 +18,7 @@ import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 })
 export class JobDetailListComponent implements OnInit {
 
-    columns: string[] = ['id', 'name', 'status', 'creationDate'];
+    columns: string[] = ['id', 'name', 'status', 'duration', 'creationDate', 'message'];
 
     loading = true;
     public datasource: ArrayDataSource<JobDetail>;
