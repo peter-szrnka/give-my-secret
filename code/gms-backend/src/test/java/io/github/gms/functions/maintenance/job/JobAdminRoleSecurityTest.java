@@ -14,7 +14,7 @@ import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
  */
 @Tag(TAG_SECURITY_TEST)
 @TestedClass(JobMaintenanceController.class)
-public class JobAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
+class JobAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     public JobAdminRoleSecurityTest() {
         super("/secure/job");

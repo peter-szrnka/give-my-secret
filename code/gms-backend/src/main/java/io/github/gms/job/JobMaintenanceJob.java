@@ -18,7 +18,7 @@ import static io.github.gms.common.enums.SystemProperty.JOB_MAINTENANCE_RUNNER_C
 public class JobMaintenanceJob extends AbstractLimitBasedJob {
 
     @Override
-    @Scheduled(cron = "30 * * * * *")
+    @Scheduled(cron = "0 30 * * * *")
     public void run() {
         if (skipJobExecution()) {
             return;

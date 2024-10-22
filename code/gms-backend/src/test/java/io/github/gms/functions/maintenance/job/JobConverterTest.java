@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class JobConverterTest extends AbstractUnitTest {
+class JobConverterTest extends AbstractUnitTest {
     
     private final JobConverter converter = new JobConverter();
 
