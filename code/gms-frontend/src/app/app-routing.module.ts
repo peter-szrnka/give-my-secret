@@ -12,6 +12,7 @@ import { ApiKeyDetailComponent } from './components/apikey/apikey-detail.compone
 import { ApiKeyListComponent } from './components/apikey/apikey-list.component';
 import { ApiKeyDetailResolver } from './components/apikey/resolver/apikey-detail.resolver';
 import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.resolver';
+import { ErrorComponent } from './components/error/error.component';
 import { EventListComponent } from './components/event/event-list.component';
 import { EventListResolver } from './components/event/resolver/event-list.resolver';
 import { HelpComponent } from './components/help/help.compontent';
@@ -21,6 +22,8 @@ import { IprestrictionDetailComponent } from './components/ip_restriction/ip-res
 import { IpRestrictionListComponent } from './components/ip_restriction/ip-restriction-list.component';
 import { IpRestrictionDetailResolver } from './components/ip_restriction/resolver/ip-restriction-detail.resolver';
 import { IpRestrictionListResolver } from './components/ip_restriction/resolver/ip-restriction-list.resolver';
+import { JobDetailListComponent } from './components/job/job-detail-list.component';
+import { JobDetailListResolver } from './components/job/resolver/job-detail-list.resolver';
 import { KeystoreDetailComponent } from './components/keystore/keystore-detail.component';
 import { KeystoreListComponent } from './components/keystore/keystore-list.component';
 import { KeystoreDetailResolver } from './components/keystore/resolver/keystore-detail.resolver';
@@ -41,8 +44,6 @@ import { UserListResolver } from './components/user/resolver/user-list.resolver'
 import { UserDetailComponent } from './components/user/user-detail.component';
 import { UserListComponent } from './components/user/user-list.component';
 import { VerifyComponent } from './components/verify/verify.component';
-import { ErrorComponent } from './components/error/error.component';
-
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 
 const routeBuilder = (routePath: string, resolveKey: string, component: Type<any>, resolver: Type<any>): Route => {
@@ -93,6 +94,7 @@ const routes: Routes = [
   listRouteBuilder('system_property', SystemPropertyListComponent, SystemPropertyListResolver),
   listRouteBuilder('ip_restriction', IpRestrictionListComponent, IpRestrictionListResolver),
   detailRouteBuilder('ip_restriction', IprestrictionDetailComponent, IpRestrictionDetailResolver),
+  listRouteBuilder('job', JobDetailListComponent, JobDetailListResolver),
 
   // Common functions
   { path: 'messages', component: MessageListComponent },

@@ -19,5 +19,6 @@ export const ROLE_ROUTE_MAP: any = {
   'system_property/:id': ROLES_ADMIN,
   'ip_restriction/list': ROLES_ADMIN,
   'ip_restriction/:id': ROLES_ADMIN,
-  'messages' : ROLES_ALL
+  'messages' : ROLES_ALL,
+  'job/list': ROLES_ADMIN
 };

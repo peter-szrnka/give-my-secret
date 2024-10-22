@@ -16,7 +16,7 @@ public class JobConverter implements GmsConverter<JobListDto, JobEntity> {
     @Override
     public JobListDto toDtoList(Page<JobEntity> resultList) {
         List<JobDto> results = resultList.toList().stream().map(this::toDto).toList();
-        return JobListDto.builder().resultList(results).totalElements(results.size()).build();
+        return JobListDto.builder().resultList(results).totalElements(resultList.getTotalElements()).build();
     }
 
     private JobDto toDto(JobEntity entity) {

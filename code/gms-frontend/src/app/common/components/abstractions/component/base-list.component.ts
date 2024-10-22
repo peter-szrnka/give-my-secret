@@ -31,7 +31,9 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     protected sharedData: SharedDataService,
     protected service: S,
     public dialogService: DialogService,
-    protected activatedRoute: ActivatedRoute) { }
+    protected activatedRoute: ActivatedRoute) {
+      this.tableConfig.pageIndex = this.activatedRoute.snapshot.queryParams['page'] ?? 0;
+    }
 
   async ngOnInit(): Promise<void> {
     this.sharedData.refreshCurrentUserInfo();
