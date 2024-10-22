@@ -3,13 +3,14 @@ package io.github.gms.job;
 import io.github.gms.common.abstraction.AbstractLimitBasedJob;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.event.EventRepository;
-import io.github.gms.functions.system.SystemService;
-import io.github.gms.functions.systemproperty.SystemPropertyService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.Clock;
+import static io.github.gms.common.enums.SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED;
+import static io.github.gms.common.enums.SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID;
 
 /**
  * @author Peter Szrnka
@@ -17,25 +18,27 @@ import java.time.Clock;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class EventMaintenanceJob extends AbstractLimitBasedJob {
 
-	private final EventRepository eventRepository;
+    private final EventRepository eventRepository;
 
-	public EventMaintenanceJob(SystemService systemService, Clock clock, EventRepository eventRepository, SystemPropertyService systemPropertyService) {
-		super(systemService, clock, systemPropertyService, SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED);
-		this.eventRepository = eventRepository;
-	}
+    @Override
+    @Scheduled(cron = "0 15 * * * ?")
+    public void run() {
+        execute(this::businessLogic);
+    }
 
-	@Scheduled(cron = "0 15 * * * ?")
-	public void execute() {
-		if (skipJobExecution(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)) {
-			return;
-		}
+    @Override
+    protected Pair<SystemProperty, SystemProperty> systemPropertyConfigs() {
+        return Pair.of(EVENT_MAINTENANCE_JOB_ENABLED, EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
+    }
 
-		int result = eventRepository.deleteAllEventDateOlderThan(processConfig(SystemProperty.JOB_OLD_EVENT_LIMIT));
+    private void businessLogic() {
+        int result = eventRepository.deleteAllEventDateOlderThan(processConfig(SystemProperty.JOB_OLD_EVENT_LIMIT));
 
-		if (result > 0) {
-			log.info("{} event(s) deleted", result);
-		}
-	}
+        if (result > 0) {
+            log.info("{} event(s) deleted", result);
+        }
+    }
 }

@@ -89,7 +89,12 @@ describe('SystemPropertyListComponent', () => {
                     ],
                     totalElements : 2
                 }
-            })
+            });
+            snapshot = {
+                queryParams : {
+                    page : 0
+                }
+            }
         };
 
         service = {

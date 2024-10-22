@@ -25,6 +25,9 @@ import io.github.gms.functions.iprestriction.IpRestrictionDto;
 import io.github.gms.functions.iprestriction.IpRestrictionEntity;
 import io.github.gms.functions.iprestriction.IpRestrictionListDto;
 import io.github.gms.functions.keystore.*;
+import io.github.gms.functions.maintenance.job.JobDto;
+import io.github.gms.functions.maintenance.job.JobEntity;
+import io.github.gms.functions.maintenance.job.JobListDto;
 import io.github.gms.functions.message.MessageDto;
 import io.github.gms.functions.message.MessageEntity;
 import io.github.gms.functions.message.MessageListDto;
@@ -443,7 +446,20 @@ public class TestUtils {
 		return new ErrorResponseDto("GmsAuthenticationEntryPoint: " + e.getMessage(), "1234", null, ErrorCode.GMS_000.getCode());
     }
 
-    @Data
+	public static JobListDto createJobListDto() {
+		return JobListDto.builder().resultList(List.of(JobDto.builder()
+						.id(1L)
+						.name("job")
+						.creationDate(ZonedDateTime.now())
+						.startTime(ZonedDateTime.now())
+						.endTime(ZonedDateTime.now())
+						.duration(1L)
+						.status(JobStatus.COMPLETED)
+						.message("message")
+				.build())).totalElements(1L).build();
+	}
+
+	@Data
 	@AllArgsConstructor
 	public static class ValueHolder {
 		KeyStoreValueType valueType;
@@ -750,4 +766,16 @@ public class TestUtils {
 		dto.setVerificationCode("123456");
         return dto;
     }
+
+	public static JobEntity createJobEntity() {
+		return JobEntity.builder()
+				.id(1L)
+				.name("job")
+				.status(JobStatus.COMPLETED)
+				.creationDate(ZonedDateTime.now())
+				.startTime(ZonedDateTime.now())
+				.duration(100L)
+				.message("test")
+				.build();
+	}
 }

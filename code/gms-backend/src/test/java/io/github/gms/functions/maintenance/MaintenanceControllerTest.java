@@ -2,6 +2,8 @@ package io.github.gms.functions.maintenance;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.functions.maintenance.model.BatchUserOperationDto;
+import io.github.gms.functions.maintenance.user.UserAnonymizationService;
+import io.github.gms.functions.maintenance.user.UserDeletionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

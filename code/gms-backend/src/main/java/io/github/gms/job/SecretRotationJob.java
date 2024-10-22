@@ -6,13 +6,12 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.secret.SecretRotationService;
-import io.github.gms.functions.system.SystemService;
-import io.github.gms.functions.systemproperty.SystemPropertyService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -23,33 +22,27 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class SecretRotationJob extends AbstractJob {
 	
 	private static final long DELAY_SECONDS = 55L;
-    private final Clock clock;
 	private final SecretRepository secretRepository;
 	private final SecretRotationService service;
 
-	public SecretRotationJob(
-			SystemService systemService,
-			SystemPropertyService systemPropertyService,
-			Clock clock,
-			SecretRepository secretRepository,
-			SecretRotationService service) {
-		super(systemService, systemPropertyService, SystemProperty.SECRET_ROTATION_JOB_ENABLED);
-        this.clock = clock;
-		this.secretRepository = secretRepository;
-		this.service = service;
+	@Override
+	@Scheduled(cron = "0 * * * * ?")
+	public void run() {
+		execute(this::businessLogic);
 	}
 
-	@Scheduled(cron = "0 * * * * ?")
-	public void execute() {
-		if (skipJobExecution(SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID)) {
-			return;
-		}
+	@Override
+	protected Pair<SystemProperty, SystemProperty> systemPropertyConfigs() {
+		return Pair.of(SystemProperty.SECRET_ROTATION_JOB_ENABLED, SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID);
+	}
 
+	private void businessLogic() {
 		List<SecretEntity> resultList = secretRepository.findAllOldRotated(ZonedDateTime.now(clock).minusSeconds(DELAY_SECONDS));
-		
+
 		AtomicLong counter = new AtomicLong(0L);
 		resultList.forEach(secretEntity -> {
 			if (shouldNotRotate(secretEntity)) {
@@ -59,7 +52,7 @@ public class SecretRotationJob extends AbstractJob {
 			service.rotateSecret(secretEntity);
 			counter.incrementAndGet();
 		});
-		
+
 		if (counter.get() > 0) {
 			log.info("{} entities updated", counter.get());
 		}

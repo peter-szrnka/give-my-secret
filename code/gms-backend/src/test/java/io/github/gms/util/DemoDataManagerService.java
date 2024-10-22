@@ -11,6 +11,8 @@ import io.github.gms.functions.keystore.KeystoreAliasEntity;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.keystore.KeystoreEntity;
 import io.github.gms.functions.keystore.KeystoreRepository;
+import io.github.gms.functions.maintenance.job.JobEntity;
+import io.github.gms.functions.maintenance.job.JobRepository;
 import io.github.gms.functions.message.MessageEntity;
 import io.github.gms.functions.message.MessageRepository;
 import io.github.gms.functions.secret.SecretEntity;
@@ -59,6 +61,8 @@ public class DemoDataManagerService {
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private SystemPropertyService systemPropertyService;
+	@Autowired
+	private JobRepository jobRepository;
 
 	public void initTestData() {
 		// User
@@ -98,6 +102,11 @@ public class DemoDataManagerService {
 		disableJob(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED);
 		disableJob(SystemProperty.SECRET_ROTATION_JOB_ENABLED);
 		disableJob(SystemProperty.USER_DELETION_JOB_ENABLED);
+
+		// Job logs
+		JobEntity jobEntity = TestUtils.createJobEntity();
+		jobEntity.setId(null);
+		jobRepository.save(jobEntity);
 
 		// End
 		log.info("Test data's have been configured!");

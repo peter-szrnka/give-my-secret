@@ -3,12 +3,20 @@ package io.github.gms.job;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.keystore.KeystoreFileService;
+import io.github.gms.functions.maintenance.job.JobEntity;
+import io.github.gms.functions.maintenance.job.JobRepository;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static io.github.gms.util.LogAssertionUtils.assertLogContains;
+import static io.github.gms.util.TestUtils.createJobEntity;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -20,7 +28,9 @@ import static org.mockito.Mockito.*;
 class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
 
     private SystemService systemService;
+    private Clock clock;
     private SystemPropertyService systemPropertyService;
+    private JobRepository jobRepository;
     private KeystoreFileService service;
     private GeneratedKeystoreCleanupJob job;
 
@@ -33,18 +43,25 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
         systemService = mock(SystemService.class);
         systemPropertyService = mock(SystemPropertyService.class);
         service = mock(KeystoreFileService.class);
-        job = new GeneratedKeystoreCleanupJob(systemService, systemPropertyService, service);
+        clock = mock(Clock.class);
+        jobRepository = mock(JobRepository.class);
+        job = new GeneratedKeystoreCleanupJob(service);
+
+        ReflectionTestUtils.setField(job, "systemService", systemService);
+        ReflectionTestUtils.setField(job, "systemPropertyService", systemPropertyService);
+        ReflectionTestUtils.setField(job, "clock", clock);
+        ReflectionTestUtils.setField(job, "jobRepository", jobRepository);
 
         addAppender(GeneratedKeystoreCleanupJob.class);
     }
 
     @Test
-    void execute_whenJobIsDisabled_thenSkipExecution() {
+    void run_whenJobIsDisabled_thenSkipExecution() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(false);
 
         // act
-        job.execute();
+        job.run();
 
         // assert
         assertTrue(logAppender.list.isEmpty());
@@ -52,7 +69,7 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
+    void run_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
         // arrange
         when(systemService.getContainerId()).thenReturn("ab123457");
         when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(true);
@@ -60,7 +77,7 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
         when(systemPropertyService.get(SystemProperty.KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
         // act
-        job.execute();
+        job.run();
 
         // assert
         assertTrue(logAppender.list.isEmpty());
@@ -75,13 +92,19 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(true);
         when(service.deleteTempKeystoreFiles()).thenReturn(0L);
+        when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
+        when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
+        when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
         // act
-        job.execute();
+        job.run();
 
         // assert
         assertTrue(logAppender.list.isEmpty());
         verify(service).deleteTempKeystoreFiles();
+        verify(jobRepository, times(2)).save(any(JobEntity.class));
+        verify(jobRepository).findById(anyLong());
     }
 
     @Test
@@ -89,13 +112,19 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(true);
         when(service.deleteTempKeystoreFiles()).thenReturn(1L);
+        when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
+        when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
+        when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
         // act
-        job.execute();
+        job.run();
 
         // assert
         assertFalse(logAppender.list.isEmpty());
         assertLogContains(logAppender, "1 temporary keystore(s) deleted");
         verify(service).deleteTempKeystoreFiles();
+        verify(jobRepository, times(2)).save(any(JobEntity.class));
+        verify(jobRepository).findById(anyLong());
     }
 }

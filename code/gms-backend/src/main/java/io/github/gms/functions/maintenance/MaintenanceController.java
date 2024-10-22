@@ -5,6 +5,8 @@ import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
 import io.github.gms.functions.maintenance.model.BatchUserOperationDto;
+import io.github.gms.functions.maintenance.user.UserAnonymizationService;
+import io.github.gms.functions.maintenance.user.UserDeletionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

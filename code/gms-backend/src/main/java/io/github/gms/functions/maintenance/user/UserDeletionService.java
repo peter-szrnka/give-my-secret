@@ -1,4 +1,4 @@
-package io.github.gms.functions.maintenance;
+package io.github.gms.functions.maintenance.user;
 
 import io.github.gms.common.abstraction.UserMaintenanceService;
 import io.github.gms.common.enums.EntityStatus;

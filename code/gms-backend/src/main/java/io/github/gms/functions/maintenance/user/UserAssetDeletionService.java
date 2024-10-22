@@ -1,4 +1,4 @@
-package io.github.gms.functions.maintenance;
+package io.github.gms.functions.maintenance.user;
 
 import io.github.gms.functions.apikey.ApiKeyService;
 import io.github.gms.functions.event.EventService;

@@ -11,14 +11,15 @@ import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
-import io.github.gms.common.logging.GmsJacksonAnnotationIntrospector;
 import io.github.gms.common.interceptor.HttpClientResponseLoggingInterceptor;
+import io.github.gms.common.logging.GmsJacksonAnnotationIntrospector;
 import io.github.gms.functions.announcement.AnnouncementRepository;
 import io.github.gms.functions.apikey.ApiKeyRepository;
 import io.github.gms.functions.event.EventRepository;
 import io.github.gms.functions.iprestriction.IpRestrictionRepository;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
 import io.github.gms.functions.keystore.KeystoreRepository;
+import io.github.gms.functions.maintenance.job.JobRepository;
 import io.github.gms.functions.message.MessageRepository;
 import io.github.gms.functions.secret.ApiKeyRestrictionRepository;
 import io.github.gms.functions.secret.SecretRepository;
@@ -67,6 +68,7 @@ import static io.github.gms.common.util.Constants.LOGGING_OBJECT_MAPPER;
 		ApiKeyRestrictionRepository.class,
 		EventRepository.class,
 		IpRestrictionRepository.class,
+		JobRepository.class,
 		KeystoreAliasRepository.class,
 		KeystoreRepository.class,
 		MessageRepository.class,

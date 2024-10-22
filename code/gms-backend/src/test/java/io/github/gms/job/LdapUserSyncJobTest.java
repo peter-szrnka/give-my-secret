@@ -3,6 +3,8 @@ package io.github.gms.job;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.ldap.LdapSyncService;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.functions.maintenance.job.JobEntity;
+import io.github.gms.functions.maintenance.job.JobRepository;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,8 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.data.util.Pair;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static io.github.gms.util.LogAssertionUtils.assertLogContains;
+import static io.github.gms.util.TestUtils.createJobEntity;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -25,6 +33,8 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
     private SystemService systemService;
     private SystemPropertyService systemPropertyService;
     private LdapSyncService service;
+    private Clock clock;
+    private JobRepository jobRepository;
     private LdapUserSyncJob job;
 
     @Override
@@ -36,18 +46,25 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
         systemService = mock(SystemService.class);
         systemPropertyService = mock(SystemPropertyService.class);
         service = mock(LdapSyncService.class);
-        job = new LdapUserSyncJob(systemService, systemPropertyService, service);
+        clock = mock(Clock.class);
+        jobRepository = mock(JobRepository.class);
+        job = new LdapUserSyncJob(service);
+
+        ReflectionTestUtils.setField(job, "systemService", systemService);
+        ReflectionTestUtils.setField(job, "systemPropertyService", systemPropertyService);
+        ReflectionTestUtils.setField(job, "clock", clock);
+        ReflectionTestUtils.setField(job, "jobRepository", jobRepository);
 
         addAppender(LdapUserSyncJob.class);
     }
 
     @Test
-    void execute_whenJobIsDisabled_thenSkipExecution() {
+    void run_whenJobIsDisabled_thenSkipExecution() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED)).thenReturn(false);
 
         // act
-        job.execute();
+        job.run();
 
         // assert
         assertTrue(logAppender.list.isEmpty());
@@ -55,7 +72,7 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void execute_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
+    void run_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
         // arrange
         when(systemService.getContainerId()).thenReturn("ab123457");
         when(systemPropertyService.getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED)).thenReturn(true);
@@ -63,7 +80,7 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
         when(systemPropertyService.get(SystemProperty.LDAP_SYNC_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 
         // act
-        job.execute();
+        job.run();
 
         // assert
         assertTrue(logAppender.list.isEmpty());
@@ -77,14 +94,20 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED)).thenReturn(true);
         when(service.synchronizeUsers()).thenReturn(Pair.of(2, deletedUserCount));
+        when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
+        when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
+        when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
         // act
-        job.execute();
+        job.run();
 
         // assert
         assertFalse(logAppender.list.isEmpty());
         assertLogContains(logAppender, "2 user(s) synchronized and " + deletedUserCount + " of them ha" + (deletedUserCount == 1 ? "s" : "ve")
                 + " been marked as deletable.");
         verify(service).synchronizeUsers();
+        verify(jobRepository, times(2)).save(any(JobEntity.class));
+        verify(jobRepository).findById(anyLong());
     }
 }

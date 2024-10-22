@@ -2,10 +2,10 @@ package io.github.gms.job;
 
 import io.github.gms.common.abstraction.AbstractJob;
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.functions.maintenance.UserAnonymizationService;
-import io.github.gms.functions.system.SystemService;
-import io.github.gms.functions.systemproperty.SystemPropertyService;
+import io.github.gms.functions.maintenance.user.UserAnonymizationService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -17,24 +17,23 @@ import java.util.Set;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class UserAnonymizationJob extends AbstractJob {
 
     private final UserAnonymizationService userAnonymizationService;
 
-    public UserAnonymizationJob(
-            SystemService systemService,
-            SystemPropertyService systemPropertyService,
-            UserAnonymizationService userAnonymizationService) {
-        super(systemService, systemPropertyService, SystemProperty.USER_ANONYMIZATION_JOB_ENABLED);
-        this.userAnonymizationService = userAnonymizationService;
+    @Override
+    @Scheduled(cron = "0 */5 * * * ?")
+    public void run() {
+       execute(this::businessLogic);
     }
 
-    @Scheduled(cron = "0 */5 * * * ?")
-    public void execute() {
-        if (skipJobExecution(SystemProperty.USER_ANONYMIZATION_RUNNER_CONTAINER_ID)) {
-            return;
-        }
+    @Override
+    protected Pair<SystemProperty, SystemProperty> systemPropertyConfigs() {
+        return Pair.of(SystemProperty.USER_ANONYMIZATION_JOB_ENABLED, SystemProperty.USER_ANONYMIZATION_RUNNER_CONTAINER_ID);
+    }
 
+    private void businessLogic() {
         Set<Long> userIds = userAnonymizationService.getRequestedUserIds();
 
         if (userIds.isEmpty()) {

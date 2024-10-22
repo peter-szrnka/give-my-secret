@@ -11,6 +11,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { IpRestrictionListComponent } from "./ip-restriction-list.component";
 import { IpRestrictionService } from "./service/ip-restriction.service";
+import { query } from "express";
 
 /**
  * @author Peter Szrnka
@@ -79,7 +80,12 @@ describe('IpRestrictionListComponent', () => {
                     ],
                     totalElements : 1
                 }
-            })
+            });
+            snapshot = {
+                queryParams : {
+                    page : 0
+                }
+            }
         };
 
         service = {
@@ -98,7 +104,8 @@ describe('IpRestrictionListComponent', () => {
 
     it('Should handle resolver error', () => {
         activatedRoute = class {
-            data : Data = throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"}))
+            data : Data = throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"}));
+            snapshot = { queryParams : { page : 0 } };
         };
         configureTestBed();
 
