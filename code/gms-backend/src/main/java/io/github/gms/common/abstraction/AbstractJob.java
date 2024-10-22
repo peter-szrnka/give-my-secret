@@ -16,6 +16,7 @@ import org.springframework.data.util.Pair;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 import static io.github.gms.common.enums.JobStatus.COMPLETED;
 import static io.github.gms.common.enums.JobStatus.FAILED;
@@ -51,6 +52,7 @@ public abstract class AbstractJob {
             return;
         }
 
+        MdcUtils.put(MdcParameter.CORRELATION_ID, UUID.randomUUID().toString());
         createJobExecution();
 
         try {
@@ -62,6 +64,7 @@ public abstract class AbstractJob {
         }
 
         MdcUtils.remove(MdcParameter.JOB_ID);
+        MdcUtils.remove(MdcParameter.CORRELATION_ID);
     }
 
     protected boolean skipJobExecution() {
@@ -71,6 +74,7 @@ public abstract class AbstractJob {
     private void createJobExecution() {
         JobEntity newEntity = jobRepository.save(JobEntity.builder()
                 .name(getClass().getSimpleName())
+                .correlationId(MdcUtils.get(MdcParameter.CORRELATION_ID))
                 .status(JobStatus.COMPLETED)
                 .creationDate(ZonedDateTime.now(clock))
                 .startTime(ZonedDateTime.now(clock))

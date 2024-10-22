@@ -141,6 +141,7 @@ CREATE TABLE gms_job (
 	name VARCHAR(255) NOT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',,
 	status VARCHAR(255) NOT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',,
 	message VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	correlation_id VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	PRIMARY KEY (id) USING BTREE
 )
 COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;

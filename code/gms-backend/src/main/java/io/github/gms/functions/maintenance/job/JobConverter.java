@@ -23,6 +23,7 @@ public class JobConverter implements GmsConverter<JobListDto, JobEntity> {
         return JobDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
+                .correlationId(entity.getCorrelationId())
                 .creationDate(entity.getCreationDate())
                 .startTime(entity.getStartTime())
                 .endTime(entity.getEndTime())

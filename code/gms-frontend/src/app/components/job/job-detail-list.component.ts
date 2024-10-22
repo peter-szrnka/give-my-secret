@@ -1,11 +1,11 @@
-import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
-import { JobDetail } from "./model/job-detail.model";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { JobDetail } from "./model/job-detail.model";
 
 /**
  * @author Peter Szrnka
@@ -18,10 +18,10 @@ import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 })
 export class JobDetailListComponent implements OnInit {
 
-    columns: string[] = ['id', 'name', 'status', 'duration', 'creationDate', 'message'];
+    columns: string[] = ['id', 'name', 'correlationId', 'status', 'duration', 'creationDate', 'message'];
 
     loading = true;
-    public datasource: ArrayDataSource<JobDetail>;
+    public datasource: MatTableDataSource<JobDetail>;
     public error?: string;
 
     public tableConfig = {
@@ -41,14 +41,19 @@ export class JobDetailListComponent implements OnInit {
             .pipe(catchError(async () => this.initDefaultDataTable()))
             .subscribe((response: any) => {
                 this.tableConfig.count = response.data.totalElements;
-                this.datasource = new ArrayDataSource<JobDetail>(response.data.resultList);
+                this.datasource = new MatTableDataSource<JobDetail>(response.data.resultList);
                 this.error = response.data.error;
                 this.loading = false;
             });
     }
 
     private initDefaultDataTable() {
-        this.datasource = new ArrayDataSource<JobDetail>([]);
+        this.datasource = new MatTableDataSource<JobDetail>([]);
+    }
+
+    applyFilter(event: any) {
+        const filterValue = (event.target as HTMLInputElement).value;
+        this.datasource.filter = filterValue.trim().toLowerCase();
     }
 
     public onFetch(event: any) {
@@ -59,7 +64,7 @@ export class JobDetailListComponent implements OnInit {
 
     reloadPage(): void {
         this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-          this.router.navigate(["/job/list"], { queryParams: { "page": this.tableConfig.pageIndex } });
+            this.router.navigate(["/job/list"], { queryParams: { "page": this.tableConfig.pageIndex } });
         });
-      }
+    }
 }

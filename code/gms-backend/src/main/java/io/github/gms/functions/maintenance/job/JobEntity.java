@@ -30,6 +30,9 @@ public class JobEntity extends AbstractGmsEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "correlation_id")
+    private String correlationId;
+
     @Column(name = "creation_date")
     private ZonedDateTime creationDate;
 

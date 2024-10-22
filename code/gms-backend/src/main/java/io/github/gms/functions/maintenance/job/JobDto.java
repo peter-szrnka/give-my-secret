@@ -18,6 +18,7 @@ public class JobDto {
 
     private Long id;
     private String name;
+    private String correlationId;
     private ZonedDateTime creationDate;
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;

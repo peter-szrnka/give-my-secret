@@ -71,6 +71,7 @@ describe('JobDetailListComponent', () => {
         configureTestBed();
 
         component.onFetch({ pageSize : 25, pageIndex : 1 });
+        component.applyFilter({ target: { value: 'a' }});
         expect(component).toBeTruthy();
         expect(router.navigateByUrl).toHaveBeenCalled();
     });

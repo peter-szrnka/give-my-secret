@@ -4,6 +4,7 @@
 export interface JobDetail {
     id: number;
     name: string;
+    correlationId: string;
     status: string;
     creationDate: Date;
     startTime: Date;

@@ -118,7 +118,8 @@ CREATE TABLE gms_job (
 	duration INT NULL,
 	name VARCHAR(255) NOT NULL,
 	status VARCHAR(255) NOT NULL,
-	message VARCHAR(255) NULL
+	message VARCHAR(255) NULL,
+	correlation_id VARCHAR(255) NULL
 );
 
 CREATE INDEX idx_gms_user ON gms_user(id);

@@ -118,5 +118,6 @@ CREATE TABLE gms_job (
     duration SMALLINT DEFAULT NULL,
     name VARCHAR(255) NOT NULL,
     status VARCHAR(255) NOT NULL,
-    message VARCHAR(255) DEFAULT NULL
+    message VARCHAR(255) DEFAULT NULL,
+    correlation_id VARCHAR(255) NOT NULL
 );

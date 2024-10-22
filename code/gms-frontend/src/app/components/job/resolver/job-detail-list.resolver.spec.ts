@@ -33,6 +33,7 @@ describe('JobDetailListResolver', () => {
     const mockResponse: JobDetail[] = [{
         id: 1,
         name: 'name',
+        correlationId: 'correlationId',
         status: 'COMPLETED',
         duration: 100,
         creationDate: new Date(),
