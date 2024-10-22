@@ -28,7 +28,7 @@ describe("JobDetailService", () => {
     it('Should list results', () => {
       // arrange
       const expectedUrl = environment.baseUrl + "secure/job/list?direction=asc&property=id&page=0&size=10";
-      const mockResponse : JobDetail[] = [ { id:1, name:'TestJob', duration:20, status:'COMPLETED', creationDate: new Date(), startTime: new Date() } ];
+      const mockResponse : JobDetail[] = [ { id:1, name:'TestJob', correlationId:'123456', duration:20, status:'COMPLETED', creationDate: new Date(), startTime: new Date() } ];
 
       // act
       const request : Paging = {
