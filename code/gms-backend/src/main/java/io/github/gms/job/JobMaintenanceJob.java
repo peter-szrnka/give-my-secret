@@ -2,9 +2,6 @@ package io.github.gms.job;
 
 import io.github.gms.common.abstraction.AbstractLimitBasedJob;
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.functions.maintenance.job.JobRepository;
-import io.github.gms.functions.maintenance.job.JobEntity;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,10 +14,7 @@ import static io.github.gms.common.enums.SystemProperty.JOB_MAINTENANCE_RUNNER_C
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class JobMaintenanceJob extends AbstractLimitBasedJob {
-
-    private final JobRepository jobRepository;
 
     @Override
     @Scheduled(cron = "30 * * * * *")

@@ -41,10 +41,11 @@ class JobMaintenanceJobTest extends AbstractLoggingUnitTest {
         systemService = mock(SystemService.class);
         systemPropertyService = mock(SystemPropertyService.class);
         jobRepository = mock(JobRepository.class);
-        job = new JobMaintenanceJob(jobRepository);
+        job = new JobMaintenanceJob();
         ReflectionTestUtils.setField(job, "systemService", systemService);
         ReflectionTestUtils.setField(job, "systemPropertyService", systemPropertyService);
         ReflectionTestUtils.setField(job, "clock", clock);
+        ReflectionTestUtils.setField(job, "jobRepository", jobRepository);
         addAppender(JobMaintenanceJob.class);
     }
 
