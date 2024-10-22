@@ -2,7 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/compiler";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { ActivatedRoute, Data } from "@angular/router";
+import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
@@ -16,6 +16,7 @@ describe('JobDetailListComponent', () => {
     let component : JobDetailListComponent;
     let fixture : ComponentFixture<JobDetailListComponent>;
     // Injected services
+    let router: any;
     let activatedRoute : any = {};
 
     const configureTestBed = () => {
@@ -23,6 +24,7 @@ describe('JobDetailListComponent', () => {
             imports : [ AngularMaterialModule, NoopAnimationsModule, MomentPipe, JobDetailListComponent ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
             providers: [
+                { provide : Router, useValue : router },
                 { provide : ActivatedRoute, useClass : activatedRoute }
             ]
         });
@@ -34,6 +36,10 @@ describe('JobDetailListComponent', () => {
 
 
     beforeEach(() => {
+        router = {
+            navigateByUrl: jest.fn().mockResolvedValue(true),
+            navigate: jest.fn()
+        };
         activatedRoute = class {
             data : Data = of({
                 data : {
@@ -65,6 +71,9 @@ describe('JobDetailListComponent', () => {
     it('Should return empty table', () => {
         configureTestBed();
 
+        component.onFetch({ pageSize : 25, pageIndex : 1 });
         expect(component).toBeTruthy();
+        expect(router.navigateByUrl).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalled();
     });
 });
