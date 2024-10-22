@@ -38,6 +38,6 @@ public class JobConverterTest extends AbstractUnitTest {
         assertEquals("job", entity.getName());
         assertEquals(JobStatus.COMPLETED, entity.getStatus());
         assertEquals(100L, entity.getDuration());
-        assertEquals("message", entity.getMessage());
+        assertEquals("test", entity.getMessage());
     }
 }

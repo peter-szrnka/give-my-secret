@@ -68,7 +68,12 @@ describe('AnnouncementListComponent', () => {
                     ],
                     totalElements : 1
                 }
-            })
+            });
+            snapshot = {
+                queryParams : {
+                    page : 0
+                }
+            }
         };
 
         service = {
