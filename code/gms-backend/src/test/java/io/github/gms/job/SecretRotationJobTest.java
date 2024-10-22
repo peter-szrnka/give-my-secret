@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.functions.maintenance.job.JobEntity;
+import io.github.gms.functions.maintenance.job.JobRepository;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.secret.SecretRotationService;

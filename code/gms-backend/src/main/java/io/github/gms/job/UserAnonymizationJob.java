@@ -2,7 +2,7 @@ package io.github.gms.job;
 
 import io.github.gms.common.abstraction.AbstractJob;
 import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.functions.maintenance.UserAnonymizationService;
+import io.github.gms.functions.maintenance.user.UserAnonymizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;

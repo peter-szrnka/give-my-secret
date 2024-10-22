@@ -1,4 +1,4 @@
-package io.github.gms.job;
+package io.github.gms.functions.maintenance.job;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

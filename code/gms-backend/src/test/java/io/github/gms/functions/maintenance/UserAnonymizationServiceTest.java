@@ -4,6 +4,7 @@ import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.abstraction.UserMaintenanceService;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.functions.maintenance.model.BatchUserOperationDto;
+import io.github.gms.functions.maintenance.user.UserAnonymizationService;
 import io.github.gms.functions.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

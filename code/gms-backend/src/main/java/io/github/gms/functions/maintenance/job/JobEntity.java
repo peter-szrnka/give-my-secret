@@ -1,4 +1,4 @@
-package io.github.gms.job;
+package io.github.gms.functions.maintenance.job;
 
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.enums.JobStatus;

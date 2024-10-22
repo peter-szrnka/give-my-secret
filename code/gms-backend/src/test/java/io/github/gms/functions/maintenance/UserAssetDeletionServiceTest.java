@@ -5,6 +5,7 @@ import io.github.gms.functions.apikey.ApiKeyService;
 import io.github.gms.functions.event.EventService;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.keystore.KeystoreService;
+import io.github.gms.functions.maintenance.user.UserAssetDeletionService;
 import io.github.gms.functions.message.MessageService;
 import io.github.gms.functions.secret.ApiKeyRestrictionRepository;
 import io.github.gms.functions.secret.SecretService;

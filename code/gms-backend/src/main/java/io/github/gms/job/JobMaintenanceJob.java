@@ -2,6 +2,8 @@ package io.github.gms.job;
 
 import io.github.gms.common.abstraction.AbstractLimitBasedJob;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.functions.maintenance.job.JobRepository;
+import io.github.gms.functions.maintenance.job.JobEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
