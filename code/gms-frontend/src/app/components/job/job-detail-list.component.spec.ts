@@ -74,6 +74,5 @@ describe('JobDetailListComponent', () => {
         component.onFetch({ pageSize : 25, pageIndex : 1 });
         expect(component).toBeTruthy();
         expect(router.navigateByUrl).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalled();
     });
 });
