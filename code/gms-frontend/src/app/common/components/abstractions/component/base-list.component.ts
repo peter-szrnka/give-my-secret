@@ -32,7 +32,6 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     protected service: S,
     public dialogService: DialogService,
     protected activatedRoute: ActivatedRoute) {
-      this.tableConfig.pageIndex = this.activatedRoute.snapshot.queryParams['page'] ?? 0;
     }
 
   async ngOnInit(): Promise<void> {
@@ -53,6 +52,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
   }
 
   protected async fetchData(): Promise<void> {
+    this.tableConfig.pageIndex = this.activatedRoute.snapshot.queryParams['page'] ?? 0;
     const user: User | undefined = await this.sharedData.getUserInfo();
 
     if (checkRights(user)) {

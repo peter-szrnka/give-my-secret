@@ -6,6 +6,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 import { JobDetail } from "../model/job-detail.model";
 import { JobDetailService } from "../service/job-detail.service";
 import { JobDetailListResolver } from "./job-detail-list.resolver";
+
 /**
  * @author Peter Szrnka
  */
@@ -79,7 +80,7 @@ describe('JobDetailListResolver', () => {
         });
     });
 
-    it('should handle error', async () => {
+    it('should handle error 2', async () => {
         activatedRouteSnapshot = {
             "params": {
                 "id": "1"
@@ -108,9 +109,7 @@ describe('JobDetailListResolver', () => {
             "params": {
                 "id": "1"
             },
-            "queryParams": {
-                "page": "0"
-            }
+            "queryParams": {}
         };
         configureTestBed();
 

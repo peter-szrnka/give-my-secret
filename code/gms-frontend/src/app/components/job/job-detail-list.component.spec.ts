@@ -51,9 +51,7 @@ describe('JobDetailListComponent', () => {
                 }
             });
             snapshot = {
-                queryParams : {
-                    page : 0
-                }
+                queryParams : {}
             }
         };
     });
@@ -61,11 +59,20 @@ describe('JobDetailListComponent', () => {
     it('Should handle resolver error', () => {
         activatedRoute = class {
             data : Data = throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"}));
-            snapshot = { queryParams : { page : 0 } };
+            snapshot = { queryParams : { "page" : 0 } };
         };
         configureTestBed();
 
         expect(component).toBeTruthy();
+    });
+
+    it('Should load component without page index', () => {
+        activatedRoute.snapshot = { queryParams : { "page": 1 } };
+        configureTestBed();
+
+        component.onFetch({ pageSize : 25, pageIndex : 1 });
+        expect(component).toBeTruthy();
+        expect(router.navigateByUrl).toHaveBeenCalled();
     });
 
     it('Should return empty table', () => {

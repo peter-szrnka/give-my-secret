@@ -33,10 +33,10 @@ export class JobDetailListComponent implements OnInit {
     constructor(
         private readonly router: Router,
         private readonly activatedRoute: ActivatedRoute) {
-            this.tableConfig.pageIndex = this.activatedRoute.snapshot.queryParams['page'] ?? 0;
     }
 
     ngOnInit(): void {
+        this.tableConfig.pageIndex = this.activatedRoute.snapshot.queryParams['page'] ?? 0;
         this.activatedRoute.data
             .pipe(catchError(async () => this.initDefaultDataTable()))
             .subscribe((response: any) => {

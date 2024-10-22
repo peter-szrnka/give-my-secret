@@ -111,7 +111,7 @@ describe('ApiKeyListComponent', () => {
     it('Should handle resolver error', () => {
         activatedRoute = class {
             data : Data = throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"}));
-            snapshot = { queryParams : { page : 0 } };
+            snapshot = { queryParams : { } };
         };
         configureTestBed();
 
