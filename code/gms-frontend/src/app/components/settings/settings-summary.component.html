@@ -1,71 +1,92 @@
-<h2>Settings</h2>
+<h2>{{ 'settings.title' | translate }}</h2>
 
 <div>
   <form #form="ngForm">
     <mat-accordion>
       @if (authMode === 'ldap') {
-        <div class="information">
-          Your password is managed in LDAP
-        </div>
+      <div class="information">
+        {{ 'settings.info.ldap' | translate }}
+      </div>
       }
       @if (authMode === 'sso') {
-        <div class="information">
-          Your password is managed in SSO
-        </div>
+      <div class="information">
+        {{ 'settings.info.sso' | translate }}
+      </div>
       }
       <mat-expansion-panel hideToggle [disabled]="authMode !== 'db'">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Password
+            {{ 'settings.password' | translate }}
           </mat-panel-title>
           <mat-panel-description>
-            Click here to update your credential
+            {{ 'settings.password.description' | translate }}
           </mat-panel-description>
         </mat-expansion-panel-header>
         <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Current password</mat-label>
+          <mat-label>{{ 'settings.password.current' | translate }}</mat-label>
           <input type="current-password" matInput name="oldCredential" required minlength="8"
             [(ngModel)]="credentialData.oldCredential">
-          </mat-form-field>
+        </mat-form-field>
 
-          <mat-form-field appearance="fill" class="full-width">
-            <mat-label>New password</mat-label>
-            <input type="new-password" matInput name="newCredential1" required minlength="8"
-              [(ngModel)]="credentialData.newCredential1">
-            </mat-form-field>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>{{ 'settings.password.new' | translate }}</mat-label>
+          <input type="new-password" matInput name="newCredential1" required minlength="8"
+            [(ngModel)]="credentialData.newCredential1">
+        </mat-form-field>
 
-            <mat-form-field appearance="fill" class="full-width">
-              <mat-label>Verify new password</mat-label>
-              <input type="new-password" matInput name="newCredential2" required minlength="8"
-                [(ngModel)]="credentialData.newCredential2">
-              </mat-form-field>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>{{ 'settings.password.confirm' | translate }}</mat-label>
+          <input type="new-password" matInput name="newCredential2" required minlength="8"
+            [(ngModel)]="credentialData.newCredential2">
+        </mat-form-field>
 
-              <button mat-button color="primary" [disabled]="form.status ==='INVALID'" (click)="save()">Save</button>
-            </mat-expansion-panel>
-            <mat-expansion-panel hideToggle [disabled]="authMode !== 'db'">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  Multi-Factor Authentication
-                </mat-panel-title>
-                <mat-panel-description>
-                  Enable or disable MFA
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <mat-checkbox  name="mfaEnabled" [(ngModel)]="mfaEnabled" [checked]="mfaEnabled === true" (change)="toggleMfa()" />
-              Multi-Factor Authentication enabled
+        <button mat-button color="primary" [disabled]="form.status ==='INVALID'" (click)="save()">{{
+          'settings.password.save' | translate }}</button>
+      </mat-expansion-panel>
+      <mat-expansion-panel hideToggle [disabled]="authMode !== 'db'">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ 'settings.mfa' | translate }}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ 'settings.mfa.description' | translate }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-checkbox name="mfaEnabled" [(ngModel)]="mfaEnabled" [checked]="mfaEnabled === true"
+          (change)="toggleMfa()" />
+        {{ 'settings.mfa.checkbox' | translate }}
 
-              @if (showQrCode) {
-                <div>
-                  <img src="{{imageBaseUrl}}secure/user/mfa_qr_code" alt="MFA QR code" /> <br/>
-                  Scan this QR code with your preferred/supported Authenticator app.
-                </div>
-              }
-              @if (!showQrCode) {
-                <div>
-                  <button mat-raised-button color="primary" (click)="showQrCode = !showQrCode">Show QR code</button>
-                </div>
-              }
-            </mat-expansion-panel>
-          </mat-accordion>
-        </form>
-      </div>
+        @if (showQrCode) {
+        <div>
+          <img src="{{imageBaseUrl}}secure/user/mfa_qr_code" alt="MFA QR code" /> <br />
+          {{ 'settings.mfa.qr' | translate }}
+        </div>
+        }
+        @else {
+        <div>
+          <button mat-raised-button color="primary" (click)="showQrCode = !showQrCode">{{ 'settings.mfa.showQrCode' |
+            translate }}</button>
+        </div>
+        }
+      </mat-expansion-panel>
+      <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ 'settings.language' | translate }}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ 'settings.language.description' | translate }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>{{ 'settings.language.select' | translate }}</mat-label>
+          <mat-select (selectionChange)="saveLanguage()" [(ngModel)]="language">
+            <mat-option [value]="'en'">{{ 'settings.language.en' | translate }}</mat-option>
+            <mat-option [value]="'hu'">{{ 'settings.language.hu' | translate }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </form>
+</div>

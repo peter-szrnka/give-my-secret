@@ -2,7 +2,7 @@
   <form #form="ngForm" novalidate autocomplete="off">
     <mat-card class="box">
       <mat-card-header class="gms-login-header">
-        <mat-card-title>Login</mat-card-title>
+        <mat-card-title>{{ 'login.login' | translate }}</mat-card-title>
       </mat-card-header>
 
       <mat-card-content>
@@ -16,13 +16,13 @@
           <mat-label>{{ 'login.password' | translate }}</mat-label>
           <input [type]="showPassword ? 'text' : 'password'" matInput placeholder="Password" autocomplete="off"
             name="credential" required [(ngModel)]="formModel.credential">
-          <mat-icon matSuffix class="w-pointer" (click)="togglePasswordDisplay()" alt="Toggle password">{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          <mat-icon matSuffix class="w-pointer" (click)="togglePasswordDisplay()" [title]="'login.togglePassword' | translate">{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
         </mat-form-field>
         <button [disabled]="form.status ==='INVALID'" (click)="login()"
-          mat-raised-button color="primary" class="btn-block" [disabled]="loginAttempt">Login</button>
+          mat-raised-button color="primary" class="btn-block" [disabled]="loginAttempt">{{ 'login.login' | translate }}</button>
       </mat-card-content>
       <mat-card-footer class="center-footer">
-        <a [routerLink]="'/password_reset'">Forgot password?</a>
+        <a [routerLink]="'/password_reset'">{{ 'login.forgotPassword' | translate }}</a>
       </mat-card-footer>
     </mat-card>
   </form>

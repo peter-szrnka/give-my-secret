@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { VerifyComponent } from "./verify.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -17,5 +18,6 @@ import { VerifyComponent } from "./verify.component";
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
-        FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+        FormsModule,
+    TranslatorModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
   export class VerifyModule { }

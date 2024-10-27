@@ -5,6 +5,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { RequestPasswordResetComponent } from "./request-password-reset.component";
 import { ResetPasswordRequestService } from "./service/request-password-reset.service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -14,5 +15,5 @@ import { ResetPasswordRequestService } from "./service/request-password-reset.se
     ],
     exports: [RequestPasswordResetComponent], imports: [AngularMaterialModule,
         AppRoutingModule,
-        FormsModule], providers: [ResetPasswordRequestService, provideHttpClient(withInterceptorsFromDi())] })
+        FormsModule, TranslatorModule], providers: [ResetPasswordRequestService, provideHttpClient(withInterceptorsFromDi())] })
   export class RequestPasswordResetModule { }

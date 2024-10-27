@@ -10,6 +10,8 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { UserService } from "../user/service/user-service";
 import { SettingsSummaryComponent } from "./settings-summary.component";
+import { TranslatorService } from "../../common/service/translator-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -25,17 +27,19 @@ describe('SettingsSummaryComponent', () => {
     let splashScreenService : any;
     let sharedData : any;
     let mockSubject : ReplaySubject<string>;
+    let translatorService : any;
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule ],
+            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
             declarations : [SettingsSummaryComponent],
             providers: [
                 { provide : UserService, useValue : userService },
                 { provide : DialogService, useValue : dialog },
                 { provide : FormBuilder, useValue : formBuilder },
                 { provide : SplashScreenStateService, useValue : splashScreenService },
-                { provide : SharedDataService, useValue : sharedData }
+                { provide : SharedDataService, useValue : sharedData },
+                { provide : TranslatorService, useValue : translatorService }
             ]
         });
 
@@ -61,6 +65,10 @@ describe('SettingsSummaryComponent', () => {
         splashScreenService = {
             start : jest.fn(),
             stop : jest.fn()
+        };
+
+        translatorService = {
+            translate : jest.fn().mockReturnValue('translated')
         };
 
         mockSubject = new ReplaySubject<string>();

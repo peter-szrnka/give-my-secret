@@ -11,7 +11,7 @@
         <mat-list-item class="side-menu-list-item" role="listitem" [routerLink]="item.link" (click)="handleClick()">
           <mat-icon matListIcon>{{ item.icon }}</mat-icon>
           @if (showTexts) {
-            <span matLine> {{item.text}} </span>
+            <span matLine> {{item.text | translate }} </span>
           }
         </mat-list-item>
       }

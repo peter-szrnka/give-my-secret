@@ -5,6 +5,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { SettingsSummaryComponent } from "./settings-summary.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -15,7 +16,9 @@ import { SettingsSummaryComponent } from "./settings-summary.component";
     schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
         FormsModule,
         BrowserModule,
-        AppRoutingModule], providers: [
+        AppRoutingModule,
+        TranslatorModule
+    ], providers: [
         provideHttpClient(withInterceptorsFromDi())
     ] })
 export class SettingsModule {}

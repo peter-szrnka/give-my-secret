@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 
 import translations from '../../../assets/i18n/translations.json';
 
-export const TRANSLATION_NOT_FOUND = 'Translation not found';
+export const TRANSLATION_NOT_FOUND = 'Translation not found: %s';
 
 /**
  * @author Peter Szrnka
@@ -15,7 +15,7 @@ export class TranslatorService {
     }
 
     private getResolvedValue(key: string): string {
-        return this.getLanguageMap()[key] ?? TRANSLATION_NOT_FOUND;
+        return this.getLanguageMap()[key] ?? TRANSLATION_NOT_FOUND.replace("%s", key);
     }
 
     private getLanguageMap(): any {
