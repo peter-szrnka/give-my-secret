@@ -1,8 +1,9 @@
 import { Component } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
-import { InformationService } from "../../common/service/info-service";
-import { Router } from "@angular/router";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { Router } from "@angular/router";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { InformationService } from "../../common/service/info-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 
 /**
@@ -10,7 +11,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
  */
 @Component({
   standalone: true,
-  imports: [MatIconModule, MatProgressBarModule],
+  imports: [MatIconModule, MatProgressBarModule, TranslatorModule],
   selector: 'error',
   templateUrl: './error.component.html',
   styleUrls: ['./error.component.scss']

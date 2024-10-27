@@ -19,7 +19,6 @@
     "src/**/*.spec.ts"
   ],
   "exclude": [
-    "src/app/common/model/**",
-    "src/assets/**"
+    "src/app/common/model/**"
   ]
 }

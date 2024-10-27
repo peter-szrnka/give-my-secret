@@ -1,6 +1,7 @@
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslatorModule } from '../../common/components/pipes/translator/translator.module';
 import { SharedDataService } from '../../common/service/shared-data-service';
-import { LoginComponent } from '../login/login.component';
 import { NavMenuComponent } from './nav-menu.component';
 
 describe('NavMenuComponent', () => {
@@ -11,10 +12,12 @@ describe('NavMenuComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            declarations : [LoginComponent],
+            imports: [TranslatorModule],
+            declarations : [NavMenuComponent],
             providers: [
                 { provide : SharedDataService, useValue : sharedDataService }
-            ]
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
         });
 
         fixture = TestBed.createComponent(NavMenuComponent);

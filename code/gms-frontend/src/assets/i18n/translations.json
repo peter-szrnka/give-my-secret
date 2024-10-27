@@ -1,0 +1,16 @@
+{
+    "en": {
+        "error.attempt.to.reload": "Attempt to reload the page..",
+        "error.unable.to.reload": "Unable to load the page, retry in $s seconds...",
+        "sidemenu.home": "Home",
+        "login.username": "Username",
+        "login.password": "Password"
+    },
+    "hu": {
+        "error.attempt.to.reload": "Oldal frissítése..",
+        "error.unable.to.reload": "Oldal frissítése sikertelen volt, ismételt próba $s másodperc múlva...",
+        "sidemenu.home": "Nyitólap",
+        "login.username": "Felhasználónév",
+        "login.password": "Jelszó"
+    }
+}

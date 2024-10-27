@@ -1,13 +1,13 @@
 <div layout="row" layout-align="center center">
     <div class="error-icon">
         @if(retry) {
-            Attempt to reload the page..<br/>
+            {{ 'error.attempt.to.reload' | translate }}<br/>
             <mat-progress-bar mode="indeterminate"></mat-progress-bar>
         } 
         @else {
             <mat-icon class="mat-icon-rtl-mirror">error_outline</mat-icon>
             <br />
-            Unable to load the page, retry in {{treshold-counter}} seconds..
+            {{ 'error.unable.to.reload' | translate: treshold-counter }}<br />
         }
     </div>
 </div>
