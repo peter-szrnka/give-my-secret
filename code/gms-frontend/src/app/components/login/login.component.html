@@ -7,13 +7,13 @@
 
       <mat-card-content>
         <mat-form-field appearance="fill" class="form-control">
-          <mat-label>Username</mat-label>
+          <mat-label>{{ 'login.username' | translate }}</mat-label>
           <input matInput placeholder="Username" name="username" required
             [(ngModel)]="formModel.username">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="form-control">
-          <mat-label>Password</mat-label>
+          <mat-label>{{ 'login.password' | translate }}</mat-label>
           <input [type]="showPassword ? 'text' : 'password'" matInput placeholder="Password" autocomplete="off"
             name="credential" required [(ngModel)]="formModel.credential">
           <mat-icon matSuffix class="w-pointer" (click)="togglePasswordDisplay()" alt="Toggle password">{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>

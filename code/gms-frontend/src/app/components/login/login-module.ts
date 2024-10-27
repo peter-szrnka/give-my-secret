@@ -5,6 +5,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { LoginComponent } from "./login.component";
 
 /**
@@ -14,8 +15,8 @@ import { LoginComponent } from "./login.component";
         LoginComponent
     ],
     exports: [LoginComponent], imports: [AngularMaterialModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        AppRoutingModule,
-        FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    FormsModule, TranslatorModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
   export class LoginModule { }

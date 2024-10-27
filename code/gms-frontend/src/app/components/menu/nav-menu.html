@@ -3,7 +3,7 @@
     <mat-list-item class="side-menu-list-item" [routerLink]="'/'">
       <mat-icon matListIcon>home</mat-icon>
       @if (showTexts) {
-        <span matLine (click)="handleClick()"> Home </span>
+        <span matLine (click)="handleClick()"> {{ 'sidemenu.home' | translate }} </span>
       }
     </mat-list-item>
     @for (item of navMenuItems; track $index) {
