@@ -5,6 +5,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { ApiTestingComponent } from "./api-testing.component";
 import { ApiTestingService } from "./service/api-testing-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -16,6 +17,7 @@ import { ApiTestingService } from "./service/api-testing-service";
     imports: [
         AngularMaterialModule,
         FormsModule,
-        AppRoutingModule
+        AppRoutingModule,
+        TranslatorModule
     ], providers: [ApiTestingService, provideHttpClient(withInterceptorsFromDi())] })
   export class ApiTestingModule { }

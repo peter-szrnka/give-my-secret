@@ -12,6 +12,7 @@ import { AnnouncementListComponent } from "./announcement-list.component";
 import { AnnouncementDetailResolver } from "./resolver/announcement-detail.resolver";
 import { AnnouncementListResolver } from "./resolver/announcement-list.resolver";
 import { AnnouncementService } from "./service/announcement-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -26,7 +27,8 @@ import { AnnouncementService } from "./service/announcement-service";
         AppRoutingModule,
         MomentPipe,
         NavBackComponent,
-        NavButtonVisibilityPipe
+        NavButtonVisibilityPipe,
+        TranslatorModule
     ], providers: [
         AnnouncementService, AnnouncementListResolver, AnnouncementDetailResolver,
         provideHttpClient(withInterceptorsFromDi())

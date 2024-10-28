@@ -9,6 +9,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { AnnouncementListComponent } from "./announcement-list.component";
 import { AnnouncementService } from "./service/announcement-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -29,7 +30,7 @@ describe('AnnouncementListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [MatTableModule, MomentPipe ],
+            imports : [MatTableModule, MomentPipe, TranslatorModule ],
             declarations : [AnnouncementListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

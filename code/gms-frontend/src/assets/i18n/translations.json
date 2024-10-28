@@ -1,6 +1,11 @@
 {
     "en": {
         "navback.home": "Back to home",
+        "navback.create": "Create+",
+        "navback.back2List": "Back to list",
+
+        "buttons.save": "Save",
+
         "error.attempt.to.reload": "Attempt to reload the page..",
         "error.unable.to.reload": "Unable to load the page, retry in $s seconds...",
 
@@ -86,10 +91,43 @@
         "messages.delete": "Delete message",
         "messages.deleteSelected": "Delete selected messages",
         "messages.deleteAll": "Delete all selected messages",
-        "messages.selectAllNone": "Select all/none"
+        "messages.selectAllNone": "Select all/none",
+
+        "tables.title" : "Title",
+        "tables.description" : "Description",
+        "tables.operations" : "Operations",
+        "tables.operation" : "Operation",
+        "tables.edit" : "Edit",
+        "tables.delete" : "Delete",
+        "tables.name" : "Name",
+        "tables.value": "Value",
+        "tables.status": "Status",
+        "tables.creationDate" : "Creation date",
+        "tables.username" : "Username",
+
+        "announcements.title": "Announcements",
+        "announcements.date" : "Announcement date",
+
+        "apitesting.title": "API Testing",
+        "apitesting.description": "You can test your secret here. Type in your preferred api key value and the ID of your secret.",
+        "apitesting.httpHeader": "HTTP header",
+        "apitesting.pathVariable": "Path variable",
+        "apitesting.call" : "Call API endpoint",
+        "apitesting.response" : "Response from API",
+
+        "apikey.generateRandom" : "Generate random value",
+
+        "event.title" : "Events",
+        "event.target" : "Target",
+        "event.date" : "Event date"
     },
     "hu": {
         "navback.home": "Vissza a főoldalra",
+        "navback.create": "Létrehozás+",
+        "navback.back2List": "Vissza a listához",
+
+        "buttons.save": "Mentés",
+
         "error.attempt.to.reload": "Oldal frissítése..",
         "error.unable.to.reload": "Oldal frissítése sikertelen volt, ismételt próba $s másodperc múlva...",
 
@@ -173,6 +211,34 @@
         "messages.delete": "Üzenet törlése",
         "messages.deleteSelected": "Kijelölt üzenetek törlése",
         "messages.deleteAll": "Összes kijelölt üzenet törlése",
-        "messages.selectAllNone": "Összes kijelölése/egyik sem"
+        "messages.selectAllNone": "Összes kijelölése/egyik sem",
+
+        "tables.title" : "Megnevezés",
+        "tables.description" : "Leírás",
+        "tables.operations" : "Műveletek",
+        "tables.operation" : "Művelet",
+        "tables.edit" : "Szerkesztés",
+        "tables.delete" : "Törlés",
+        "tables.name" : "Név",
+        "tables.value": "Érték",
+        "tables.status": "Állapot",
+        "tables.creationDate" : "Létrehozás dátuma",
+        "tables.username" : "Felhasználónév",
+
+        "announcements.title": "Bejelentések",
+        "announcements.date" : "Bejelentés dátuma",
+
+        "apitesting.title": "API tesztelés",
+        "apitesting.description": "Itt tesztelheted a lekérdezést. Add meg a kívánt API kulcs értékét és a secret azonosítóját.",
+        "apitesting.httpHeader": "HTTP fejléc",
+        "apitesting.pathVariable": "Path változó",
+        "apitesting.call" : "API végpont hívása",
+        "apitesting.response" : "Válasz az API-tól",
+
+        "apikey.generateRandom" : "Véletlen érték generálása",
+
+        "event.title" : "Események",
+        "event.target" : "Cél",
+        "event.date" : "Esemény dátuma"
     }
 }

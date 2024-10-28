@@ -15,6 +15,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { ApiKeyDetailComponent } from "./apikey-detail.component";
 import { ApiKey } from "./model/apikey.model";
 import { ApiKeyService } from "./service/apikey-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -32,7 +33,7 @@ describe('ApiKeyDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe ],
+            imports : [RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
             declarations : [ApiKeyDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

@@ -15,6 +15,7 @@ import { ApiKeyListComponent } from "./apikey-list.component";
 import { ApiKeyDetailResolver } from "./resolver/apikey-detail.resolver";
 import { ApiKeyListResolver } from "./resolver/apikey-list.resolver";
 import { ApiKeyService } from "./service/apikey-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -32,7 +33,8 @@ import { ApiKeyService } from "./service/apikey-service";
         NavBackComponent,
         MomentPipe,
         NavButtonVisibilityPipe,
-        StatusToggleComponent
+        StatusToggleComponent,
+        TranslatorModule
     ], providers: [
         SharedDataService, ApiKeyService, ApiKeyListResolver, ApiKeyDetailResolver,
         provideHttpClient(withInterceptorsFromDi())
