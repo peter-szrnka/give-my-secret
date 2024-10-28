@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AngularMaterialModule } from '../../../angular-material-module';
 import { NavButtonVisibilityPipe } from '../pipes/nav-button-visibility.pipe';
 import { ButtonConfig } from './button-config';
+import { TranslatorModule } from '../pipes/translator/translator.module';
 
 /**
  * @author Peter Szrnka
@@ -14,7 +15,8 @@ import { ButtonConfig } from './button-config';
         AngularMaterialModule,
         NavButtonVisibilityPipe,
         NgIf, NgFor,
-        RouterLink
+        RouterLink,
+        TranslatorModule
     ],
     selector: 'nav-back',
     templateUrl: './nav-back.component.html',

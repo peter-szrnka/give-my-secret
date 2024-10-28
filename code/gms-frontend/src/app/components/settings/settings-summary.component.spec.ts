@@ -12,6 +12,8 @@ import { UserService } from "../user/service/user-service";
 import { SettingsSummaryComponent } from "./settings-summary.component";
 import { TranslatorService } from "../../common/service/translator-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { SecureStorageService } from "../../common/service/secure-storage.service";
+import { Router } from "express";
 
 /**
  * @author Peter Szrnka
@@ -21,6 +23,7 @@ describe('SettingsSummaryComponent', () => {
     let fixture : ComponentFixture<SettingsSummaryComponent>;
 
     // Injected services
+    let router : any;
     let userService : any;
     let dialog : any = {};
     let formBuilder : any;
@@ -28,18 +31,21 @@ describe('SettingsSummaryComponent', () => {
     let sharedData : any;
     let mockSubject : ReplaySubject<string>;
     let translatorService : any;
+    let storageService: any;
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
             imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
             declarations : [SettingsSummaryComponent],
             providers: [
+                { provide : Router, useValue : router },
                 { provide : UserService, useValue : userService },
                 { provide : DialogService, useValue : dialog },
                 { provide : FormBuilder, useValue : formBuilder },
                 { provide : SplashScreenStateService, useValue : splashScreenService },
                 { provide : SharedDataService, useValue : sharedData },
-                { provide : TranslatorService, useValue : translatorService }
+                { provide : TranslatorService, useValue : translatorService },
+                { provide : SecureStorageService, useValue : storageService }
             ]
         });
 
@@ -76,6 +82,14 @@ describe('SettingsSummaryComponent', () => {
             authMode : 'db',
             authModeSubject$ : mockSubject
         };
+        storageService = {
+            getItemWithoutEncryption : jest.fn().mockReturnValue('en'),
+            setItemWithoutEncryption : jest.fn(),
+            removeItemWithoutEncryption : jest.fn()
+        };
+        router = {
+            navigate : jest.fn().mockResolvedValue(true)
+        }
 
         mockSubject.next('db');
 
@@ -142,5 +156,18 @@ describe('SettingsSummaryComponent', () => {
 
         // assert
         expect(userService.toggleMfa).toHaveBeenCalledWith(true);
+    });
+
+    it('Should save language', () => {
+        // arrange
+        configTestBed();
+        component.language = 'en';
+
+        // act
+        component.saveLanguage();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(storageService.setItemWithoutEncryption).toHaveBeenCalledWith('language', 'en');
     });
 });

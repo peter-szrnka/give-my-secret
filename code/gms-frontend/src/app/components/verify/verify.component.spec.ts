@@ -15,6 +15,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { WINDOW_TOKEN } from "../../window.provider";
 import { User } from "../user/model/user.model";
 import { VerifyComponent } from "./verify.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -35,7 +36,7 @@ describe('VerifyComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule ],
+            imports : [ RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
             declarations : [VerifyComponent],
             providers: [
                 { provide : WINDOW_TOKEN, useValue : mockWindow },

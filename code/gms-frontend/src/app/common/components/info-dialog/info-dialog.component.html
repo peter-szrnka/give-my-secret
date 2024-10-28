@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{TITLE_MAP[data.type]}}</h1>
+<h1 mat-dialog-title>{{data.title ?? TITLE_MAP[data.type]}}</h1>
 <div mat-dialog-content>
   <p class="{{data.type}}">
     @if (data.type === 'warning') {

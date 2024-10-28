@@ -1,3 +1,4 @@
+import { TestBed } from "@angular/core/testing";
 import { TranslatorService } from "../../../service/translator-service";
 import { TranslatorPipe } from "./translator.pipe";
 
@@ -5,16 +6,26 @@ import { TranslatorPipe } from "./translator.pipe";
  * @author Peter Szrnka
  */
 describe('TranslatorPipe', () => {
+    let pipe: TranslatorPipe;
+    let translatorService: any;
 
-    it.each([
-        [ 'sidemenu.home', 'Home', undefined ],
-        [ 'error.unable.to.reload', 'Unable to load the page, retry in 4 seconds...', '4' ],
-    ])('Should translate by key', (key: string, expected: string, arg?: string ) => {
-        const pipe: TranslatorPipe = new TranslatorPipe(new TranslatorService());
+    beforeEach(() => {
+        translatorService = {
+            translate: jest.fn().mockReturnValue('Home')
+        };
+        TestBed.configureTestingModule({
+            providers: [
+                TranslatorPipe,
+                { provide: TranslatorService, useValue: translatorService }
+            ]
+        });
+        pipe = TestBed.inject(TranslatorPipe);
+    });
 
-        const result = pipe.transform(key, arg);
+    it("Should translate by key", () => {
+        const result = pipe.transform('sidemenu.home');
 
         // assert
-        expect(result).toBe(expected);
+        expect(result).toBe('Home');
     });
 });

@@ -3,13 +3,14 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { ErrorCode } from "./model/error-code.model";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
     standalone: true,
-    imports: [ AngularMaterialModule ],
+    imports: [ AngularMaterialModule, TranslatorModule ],
     selector: 'help',
     templateUrl: './help.component.html',
     styleUrls: ['./help.component.scss']

@@ -81,8 +81,8 @@
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>{{ 'settings.language.select' | translate }}</mat-label>
-          <mat-select (selectionChange)="saveLanguage()" [(ngModel)]="language">
-            <mat-option [value]="'en'">{{ 'settings.language.en' | translate }}</mat-option>
+          <mat-select (selectionChange)="saveLanguage()" matInput name="language" [(ngModel)]="language">
+            <mat-option [value]="'en'" selected="{{language === 'en'}}">{{ 'settings.language.en' | translate }}</mat-option>
             <mat-option [value]="'hu'">{{ 'settings.language.hu' | translate }}</mat-option>
           </mat-select>
         </mat-form-field>

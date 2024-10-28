@@ -8,6 +8,7 @@ import { User } from "../user/model/user.model";
 import { MessageService } from "../messages/service/message-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { HeaderComponent } from "./header.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -65,7 +66,7 @@ describe('HeaderComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports: [BrowserAnimationsModule, AngularMaterialModule],
+            imports: [BrowserAnimationsModule, AngularMaterialModule, TranslatorModule ],
             declarations: [HeaderComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

@@ -6,12 +6,24 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { UserService } from "../user/service/user-service";
 import { TranslatorService } from "../../common/service/translator-service";
+import { SecureStorageService } from "../../common/service/secure-storage.service";
+import { Router } from "@angular/router";
 
 export interface PasswordSettings {
   oldCredential: string | undefined,
   newCredential1: string | undefined,
   newCredential2: string | undefined
 }
+
+const LANGUAGE_SETTINGS_EN = [
+  { key: 'en', value: 'English' },
+  { key: 'hu', value: 'Hungarian' }
+];
+
+const LANGUAGE_SETTINGS_HU = [
+  { key: 'en', value: 'Angol' },
+  { key: 'hu', value: 'Magyar' }
+];
 
 /**
  * @author Peter Szrnka
@@ -35,13 +47,17 @@ export class SettingsSummaryComponent implements OnInit {
   showQrCode = false;
 
   constructor(
+    private readonly router: Router,
     private readonly sharedData: SharedDataService,
     private readonly userService: UserService,
     public dialogService: DialogService,
     private readonly splashScreenService: SplashScreenStateService,
-    private readonly translatorService: TranslatorService) { }
+    private readonly translatorService: TranslatorService,
+    private readonly storageService: SecureStorageService) {
+    }
 
   ngOnInit(): void {
+    this.language = this.storageService.getItemWithoutEncryption('language','en');
     this.sharedData.authModeSubject$.subscribe(authMode => this.authMode = authMode);
     this.userService.isMfaActive().subscribe(response => this.mfaEnabled = response);
   }
@@ -62,7 +78,8 @@ export class SettingsSummaryComponent implements OnInit {
   }
 
   saveLanguage() {
-    console.info(this.language);
+    this.storageService.setItemWithoutEncryption('language', this.language);
+    void this.router.navigate(['/settings']);
   }
 
   toggleMfa() {

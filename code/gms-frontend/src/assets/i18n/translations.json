@@ -1,9 +1,10 @@
 {
     "en": {
+        "navback.home": "Back to home",
         "error.attempt.to.reload": "Attempt to reload the page..",
         "error.unable.to.reload": "Unable to load the page, retry in $s seconds...",
 
-        "login.login": "Login",
+        "login.header": "Login",
         "login.username": "Username",
         "login.password": "Password",
         "login.togglePassword": "Toggle password",
@@ -57,14 +58,42 @@
         "settings.language": "Language",
         "settings.language.select" : "Select language",
         "settings.language.description": "Select your preferred language",
-
         "settings.language.en": "English",
-        "settings.language.hu": "Hungarian"
+        "settings.language.hu": "Hungarian",
+
+        "about.title" : "About Give My Secret",
+        "about.appVersion": "Application version",
+        "about.builtTime": "Built time",
+        "about.authMode": "Authentication mode",
+        "about.status" : "Status",
+        "about.containerId" : "Container ID",
+        "about.podId": "Pod ID",
+
+        "help.errorCodes.title": "Error codes",
+        "help.errorCodes" : "You can find the list of currently used error codes that Give My Secret application throws in case of any error.",
+        "help.errorCodes.code": "Code",
+        "help.errorCodes.key": "Key",
+        "help.website" : "Website",
+        "help.tutorials": "Tutorials, command line tools, examples",
+
+        "messages.title": "Messages",
+        "messages.error": "System error",
+        "messages.message" : "Message",
+        "messages.creationDate": "Creation date",
+        "messages.markAllAsRead": "Mark all selected messages as read",
+        "messages.markAsRead": "Mark as read",
+        "messages.markAsUnread": "Mark as unread",
+        "messages.delete": "Delete message",
+        "messages.deleteSelected": "Delete selected messages",
+        "messages.deleteAll": "Delete all selected messages",
+        "messages.selectAllNone": "Select all/none"
     },
     "hu": {
+        "navback.home": "Vissza a főoldalra",
         "error.attempt.to.reload": "Oldal frissítése..",
         "error.unable.to.reload": "Oldal frissítése sikertelen volt, ismételt próba $s másodperc múlva...",
 
+        "login.header": "Bejelentkezés",
         "login.username": "Felhasználónév",
         "login.password": "Jelszó",
         "login.togglePassword": "Jelszó megjelenítése",
@@ -116,8 +145,34 @@
         "settings.language": "Nyelv",
         "settings.language.select" : "Nyelv kiválasztása",
         "settings.language.description": "Válassza ki a kívánt nyelvet",
-
         "settings.language.en": "Angol",
-        "settings.language.hu": "Magyar"
+        "settings.language.hu": "Magyar",
+
+        "about.title" : "Az alkalmazásról",
+        "about.appVersion": "Alkalmazás verzió",
+        "about.builtTime": "Készítés ideje",
+        "about.authMode": "Hitelesítési mód",
+        "about.status" : "Állapot",
+        "about.containerId" : "Konténer azonosító",
+        "about.podId": "Pod azonosító",
+
+        "help.errorCodes.title": "Hibakódok",
+        "help.errorCodes" : "Itt találod az alkalmazás által dobott hibakódok listáját, ha bármilyen hiba történik.",
+        "help.errorCodes.code": "Kód",
+        "help.errorCodes.key": "Kulcs",
+        "help.website" : "Weboldal",
+        "help.tutorials": "Útmutatók, parancssori eszközök, példák",
+
+        "messages.title": "Üzenetek",
+        "messages.error": "Rendszerhiba",
+        "messages.message" : "Üzenet",
+        "messages.creationDate": "Létrehozás dátuma",
+        "messages.markAllAsRead": "Összes kijelölt üzenet olvasottá tétele",
+        "messages.markAsRead": "Olvasottá tétel",
+        "messages.markAsUnread": "Olvasatlanná tétel",
+        "messages.delete": "Üzenet törlése",
+        "messages.deleteSelected": "Kijelölt üzenetek törlése",
+        "messages.deleteAll": "Összes kijelölt üzenet törlése",
+        "messages.selectAllNone": "Összes kijelölése/egyik sem"
     }
 }

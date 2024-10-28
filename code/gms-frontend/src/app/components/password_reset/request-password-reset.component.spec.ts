@@ -10,6 +10,7 @@ import { DialogService } from "../../common/service/dialog-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { RequestPasswordResetComponent } from "./request-password-reset.component";
 import { ResetPasswordRequestService } from "./service/request-password-reset.service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -26,7 +27,7 @@ describe('RequestPasswordResetComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule ],
+            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
             declarations : [RequestPasswordResetComponent],
             providers: [
                 { provide : Router, useValue: router },
