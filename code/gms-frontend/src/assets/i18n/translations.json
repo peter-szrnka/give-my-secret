@@ -93,6 +93,7 @@
         "messages.deleteAll": "Delete all selected messages",
         "messages.selectAllNone": "Select all/none",
 
+        "tables.filter" : "Filter",
         "tables.title" : "Title",
         "tables.description" : "Description",
         "tables.operations" : "Operations",
@@ -101,9 +102,12 @@
         "tables.delete" : "Delete",
         "tables.name" : "Name",
         "tables.value": "Value",
+        "tables.key" : "Key",
+        "tables.type" : "Type",
         "tables.status": "Status",
         "tables.creationDate" : "Creation date",
         "tables.username" : "Username",
+        "tables.lastModified" : "Last modified",
 
         "announcements.title": "Announcements",
         "announcements.date" : "Announcement date",
@@ -119,7 +123,12 @@
 
         "event.title" : "Events",
         "event.target" : "Target",
-        "event.date" : "Event date"
+        "event.date" : "Event date",
+
+        "job.title" : "Jobs",
+        "job.duration" : "Duration (ms)",
+
+        "systemProperties.title": "System properties"
     },
     "hu": {
         "navback.home": "Vissza a főoldalra",
@@ -213,6 +222,7 @@
         "messages.deleteAll": "Összes kijelölt üzenet törlése",
         "messages.selectAllNone": "Összes kijelölése/egyik sem",
 
+        "tables.filter" : "Szűrő",
         "tables.title" : "Megnevezés",
         "tables.description" : "Leírás",
         "tables.operations" : "Műveletek",
@@ -221,9 +231,12 @@
         "tables.delete" : "Törlés",
         "tables.name" : "Név",
         "tables.value": "Érték",
+        "tables.key" : "Kulcs",
+        "tables.type" : "Típus",
         "tables.status": "Állapot",
         "tables.creationDate" : "Létrehozás dátuma",
         "tables.username" : "Felhasználónév",
+        "tables.lastModified" : "Utoljára módosítva",
 
         "announcements.title": "Bejelentések",
         "announcements.date" : "Bejelentés dátuma",
@@ -239,6 +252,9 @@
 
         "event.title" : "Események",
         "event.target" : "Cél",
-        "event.date" : "Esemény dátuma"
+        "event.date" : "Esemény dátuma",
+
+        "job.title" : "Munkafolyamatok",
+        "job.duration" : "Futásidő (ms)"
     }
 }

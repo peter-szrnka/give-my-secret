@@ -6,13 +6,14 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { JobDetail } from "./model/job-detail.model";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
     standalone: true,
-    imports: [AngularMaterialModule, NavBackComponent, MomentPipe],
+    imports: [AngularMaterialModule, NavBackComponent, MomentPipe, TranslatorModule],
     selector: 'job-detail-list',
     templateUrl: './job-detail-list.component.html'
 })

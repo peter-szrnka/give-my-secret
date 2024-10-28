@@ -14,6 +14,7 @@ import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -35,7 +36,7 @@ describe('SystemPropertyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
+            imports : [ ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
             declarations : [SystemPropertyListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

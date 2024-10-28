@@ -10,6 +10,7 @@ import { SplashComponent } from "../../common/components/splash/splash.component
 import { SystemPropertyListResolver } from "./resolver/system-property-list.resolver";
 import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -26,7 +27,8 @@ import { SystemPropertyListComponent } from "./system-property-list.component";
         AppRoutingModule,
         SplashComponent,
         MomentPipe,
-        NavBackComponent
+        NavBackComponent,
+        TranslatorModule
     ], 
     providers: [
         SystemPropertyService, SystemPropertyListResolver,

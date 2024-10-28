@@ -32,7 +32,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	@Override
 	public SaveEntityResponseDto save(SaveAnnouncementDto dto) {
 		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
-		AnnouncementEntity entity = repository.findById(dto.getId()).orElseGet(AnnouncementEntity::new);
+		AnnouncementEntity entity = new AnnouncementEntity();
+
+		if (dto.getId() != null) {
+			entity = repository.findById(dto.getId()).orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND, GMS_002));
+		}
 
 		if (dto.getId() != null) {
 			entity.setId(dto.getId());
