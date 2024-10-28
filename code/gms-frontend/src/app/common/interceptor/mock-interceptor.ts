@@ -8,7 +8,6 @@ import { LoggerService } from "../service/logger-service";
 import { Environment } from "../../../environments/environment.default";
 import { ENV_CONFIG } from "../../app.module";
 import * as errorCodes from "../../../assets/mock/error.codes.json";
-//"../../../assets/mock/error-codes.json";
 import * as eventList from "../../../assets/mock/event-list.json";
 import * as infoMe from "../../../assets/mock/info.me.json";
 import * as mockHomeData from "../../../assets/mock/secure.home.json";

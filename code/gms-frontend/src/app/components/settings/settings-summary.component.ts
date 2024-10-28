@@ -101,7 +101,7 @@ export class SettingsSummaryComponent implements OnInit {
   }
 
   private translate(key: string): string {
-    return this.translatorService.translate(key);
+    return this.translatorService.translate("translations", key);
   }
 
   private openWarning(error: any): void {
