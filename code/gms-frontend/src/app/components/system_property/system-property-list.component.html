@@ -16,7 +16,7 @@
         <ng-container matColumnDef="key">
           <th mat-header-cell *matHeaderCellDef>{{ 'tables.key' | translate }}</th>
           <td mat-cell *matCellDef="let element"> {{element.textDescription}}<br/>
-            <sub>Category: <b>{{element.category}}</b>@if (element.hint) { {{' | ' + element.hint}} }</sub>
+            <sub>{{ 'systemProperties.category' | translate }}: <b>{{element.category}}</b>@if (element.hint) { {{' | ' + element.hint}} }</sub>
           </td>
         </ng-container>
         <ng-container matColumnDef="value">

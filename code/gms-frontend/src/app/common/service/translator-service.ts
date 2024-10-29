@@ -8,7 +8,7 @@ export const TRANSLATION_NOT_FOUND = 'Translation not found: $s';
 /**
  * @author Peter Szrnka
  */
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class TranslatorService {
 
     constructor(private readonly storageService: SecureStorageService) {}

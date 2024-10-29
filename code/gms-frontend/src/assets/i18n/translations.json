@@ -128,7 +128,7 @@
         "job.title" : "Jobs",
         "job.duration" : "Duration (ms)",
 
-        "systemProperties.title": "System properties"
+        "systemProperties.category": "Category"
     },
     "hu": {
         "navback.home": "Vissza a főoldalra",
@@ -255,6 +255,8 @@
         "event.date" : "Esemény dátuma",
 
         "job.title" : "Munkafolyamatok",
-        "job.duration" : "Futásidő (ms)"
+        "job.duration" : "Futásidő (ms)",
+
+        "systemProperties.category": "Kategória"
     }
 }

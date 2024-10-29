@@ -74,8 +74,8 @@ describe('SystemPropertyListComponent', () => {
                 data : {
                     resultList : [
                         {
-                            key : "REFRESH_JWT_ALGORITHM",
-                            category : "JWT_TOKEN",
+                            key : "ENABLE_GLOBAL_MFA",
+                            category : "JWT",
                             value : "HS512",
                             factoryValue : true,
                             lastModified : new Date()
@@ -86,9 +86,16 @@ describe('SystemPropertyListComponent', () => {
                             value : "1;d",
                             factoryValue : true,
                             lastModified : new Date()
+                        },
+                        {
+                            key : "AUTOMATIC_LOGOUT_TIME_IN_MINUTES",
+                            category : "GENERAL",
+                            value : "15;m",
+                            factoryValue : true,
+                            lastModified : new Date()
                         }
                     ],
-                    totalElements : 2
+                    totalElements : 3
                 }
             });
             snapshot = {
