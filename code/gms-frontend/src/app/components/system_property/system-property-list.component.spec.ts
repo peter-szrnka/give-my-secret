@@ -93,6 +93,13 @@ describe('SystemPropertyListComponent', () => {
                             value : "15;m",
                             factoryValue : true,
                             lastModified : new Date()
+                        },
+                        {
+                            key : "UNKNOWN_PROPERTY",
+                            category : "GENERAL",
+                            value : "15;m",
+                            factoryValue : true,
+                            lastModified : new Date()
                         }
                     ],
                     totalElements : 3

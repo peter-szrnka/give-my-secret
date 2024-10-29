@@ -43,12 +43,12 @@ const createBoolConfig = (callbackMethod?: string) => {
     callbackMethod: callbackMethod
   };
 };
+
 const createAlgorithmConfig = () => { return { valueSet: ALGORITHM_SET, displayMode: 'list' } };
-const createTextConfig = (hint?: string, callbackMethod?: string) => { return { 
-  displayMode: 'text', 
-  hint: hint,
-  callbackMethod: callbackMethod 
+const createTextConfig = () => { return { 
+  displayMode: 'text'
 } };
+
 const createUnitBasedTextConfig = (callbackMethod?: string) => { return { 
   displayMode: 'text', 
   hint: 'UNITS',
@@ -240,8 +240,8 @@ export class SystemPropertyListComponent {
     });
   }
 
-  private getResolvedPropertyText(key: string, defaultValue: string = "N/A"): string {
-    return this.getSystemPropertyMap()[key] ?? defaultValue;
+  private getResolvedPropertyText(key: string): string {
+    return this.getSystemPropertyMap()[key] ?? "N/A";
   }
 
   private getSystemPropertyMap(): any {
