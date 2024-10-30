@@ -17,6 +17,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { IprestrictionDetailComponent } from "./ip-restriction-detail.component";
 import { IpRestriction } from "./model/ip-restriction.model";
 import { IpRestrictionService } from "./service/ip-restriction.service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -34,7 +35,7 @@ describe('IprestrictionDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe ],
+            imports : [RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
             declarations : [IprestrictionDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

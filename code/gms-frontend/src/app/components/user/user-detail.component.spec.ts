@@ -15,6 +15,7 @@ import { EventService } from "../event/service/event-service";
 import { UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -34,7 +35,7 @@ describe('UserDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, AngularMaterialModule, NoopAnimationsModule, FormsModule ],
+            imports : [RouterTestingModule, AngularMaterialModule, NoopAnimationsModule, FormsModule, TranslatorModule ],
             declarations : [UserDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

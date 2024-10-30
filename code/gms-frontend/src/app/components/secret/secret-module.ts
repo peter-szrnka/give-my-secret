@@ -14,6 +14,7 @@ import { SecretListComponent } from "./secret-list.component";
 import { SecretService } from "./service/secret-service";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -31,7 +32,8 @@ import { StatusToggleComponent } from "../../common/components/status-toggle/sta
         NavBackComponent,
         MomentPipe,
         NavButtonVisibilityPipe,
-        StatusToggleComponent
+        StatusToggleComponent,
+        TranslatorModule
     ], 
     providers: [
         SecretService, SecretListResolver, SecretDetailResolver,

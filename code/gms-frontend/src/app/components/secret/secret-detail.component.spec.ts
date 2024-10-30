@@ -17,6 +17,7 @@ import { ApiKeyService } from "../apikey/service/apikey-service";
 import { KeystoreService } from "../keystore/service/keystore-service";
 import { SecretDetailComponent } from "./secret-detail.component";
 import { SecretService } from "./service/secret-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -39,7 +40,7 @@ describe('SecretDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe ],
+            imports : [RouterTestingModule, FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
             declarations : [SecretDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

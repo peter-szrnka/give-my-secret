@@ -10,6 +10,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { User } from "./model/user.model";
 import { UserService } from "./service/user-service";
 import { UserListComponent } from "./user-list.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -32,7 +33,7 @@ describe('UserListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ MatTableModule, MomentPipe ],
+            imports : [ MatTableModule, MomentPipe, TranslatorModule ],
             declarations : [UserListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

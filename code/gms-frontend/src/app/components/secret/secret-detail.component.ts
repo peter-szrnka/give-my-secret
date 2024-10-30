@@ -35,7 +35,7 @@ interface KeyValuePair {
 export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretService> {
 
     buttonConfig: ButtonConfig[] = [
-        { primary: true, url: '/secret/list', label: 'Back to list' }
+        { primary: true, url: '/secret/list', label: 'navback.back2List' }
     ];
 
     rotationPeriods: string[] = [

@@ -1,36 +1,36 @@
 <div class="with-margin-top">
 
-  <nav-back [buttonConfig]="[{url:'/user/list', label:'Back to user list', primary : true}]"></nav-back>
+  <nav-back [buttonConfig]="[{url:'/user/list', label:'navback.back2List', primary : true}]"></nav-back>
 
   @if (error) {
-    <div class="warning"><b>System error:</b> {{error}}</div>
+    <div class="warning"><b>{{ 'messages.error' | translate }}:</b> {{error}}</div>
   }
   @if (!error) {
     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-      <mat-tab label="User data">
+      <mat-tab label="{{ 'users.tab.userData' | translate }}">
         <form #form="ngForm" autocomplete="off">
           <mat-card class="with-margin-top">
             <mat-card-content>
               <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Full name</mat-label>
+                <mat-label>{{ 'users.fullName' | translate }}</mat-label>
                 <input matInput name="name" required [(ngModel)]="data.name" [disabled]="editEnabled === false">
               </mat-form-field>
               <mat-form-field appearance="fill" class="full-width">
-                <mat-label>User name</mat-label>
+                <mat-label>{{ 'users.userName' | translate }}</mat-label>
                 <input matInput name="userName" autocomplete="off" required [(ngModel)]="data.username" [disabled]="editEnabled === false">
               </mat-form-field>
               <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Email</mat-label>
+                <mat-label>{{ 'users.email' | translate }}</mat-label>
                 <input matInput type="email" autocomplete="off" name="email" [email]="true" required
                   [(ngModel)]="data.email" [disabled]="editEnabled === false">
                 </mat-form-field>
                 <mat-form-field appearance="fill" class="full-width">
-                  <mat-label>Credential</mat-label>
+                  <mat-label>{{ 'users.credential' | translate }}</mat-label>
                   <input type="password" matInput autocomplete="new-password" name="credential" required="{{!data.id}}"
                     [(ngModel)]="data.credential" [disabled]="editEnabled === false">
                   </mat-form-field>
                   <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Status</mat-label>
+                    <mat-label>{{ 'tables.status' | translate }}</mat-label>
                     <mat-select [(ngModel)]="data.status" name="status" required [disabled]="editEnabled === false">
                       @for (status of selectableStatuses; track status) {
                         <mat-option [value]="status">{{status}}</mat-option>
@@ -38,7 +38,7 @@
                     </mat-select>
                   </mat-form-field>
                   <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Role</mat-label>
+                    <mat-label>{{ 'users.role' | translate }}</mat-label>
                     <mat-select [(ngModel)]="data.role" name="role" required [disabled]="editEnabled === false">
                       @for (role of selectableRoles; track role) {
                         <mat-option [value]="role">{{role}}</mat-option>
@@ -48,13 +48,13 @@
                 </mat-card-content>
                 <mat-card-actions>
                   <button [disabled]="form.status ==='INVALID' || editEnabled === false" mat-raised-button color="primary"
-                  (click)="save()">Save</button>
+                  (click)="save()">{{ 'buttons.save' | translate }}</button>
                 </mat-card-actions>
               </mat-card>
             </form>
           </mat-tab>
           @if (data.id !== undefined) {
-            <mat-tab label="Events">
+            <mat-tab label="{{ 'users.tab.events' | translate }}">
               <mat-card class="with-margin-top">
                 <mat-card-content>
                   <table mat-table [dataSource]="datasource" class="width100-and-margin-top">
@@ -65,15 +65,15 @@
                       <td mat-cell *matCellDef="let element"> {{element.id}} </td>
                     </ng-container>
                     <ng-container matColumnDef="operation">
-                      <th mat-header-cell *matHeaderCellDef>Operation</th>
+                      <th mat-header-cell *matHeaderCellDef>{{ 'tables.operation' | translate }}</th>
                       <td mat-cell *matCellDef="let element"> {{element.operation}} </td>
                     </ng-container>
                     <ng-container matColumnDef="target">
-                      <th mat-header-cell *matHeaderCellDef>Target</th>
+                      <th mat-header-cell *matHeaderCellDef>{{ 'event.target' | translate }}</th>
                       <td mat-cell *matCellDef="let element"> {{element.target}} </td>
                     </ng-container>
                     <ng-container matColumnDef="eventDate">
-                      <th mat-header-cell *matHeaderCellDef>Event date</th>
+                      <th mat-header-cell *matHeaderCellDef>{{ 'event.date' | translate }}</th>
                       <td mat-cell *matCellDef="let element">{{element.eventDate | momentPipe:'yyyy.MM.DD. HH:mm:ss' }} </td>
                     </ng-container>
                   </table>

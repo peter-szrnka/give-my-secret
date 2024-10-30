@@ -12,6 +12,7 @@ import { User } from "../user/model/user.model";
 import { IpRestrictionListComponent } from "./ip-restriction-list.component";
 import { IpRestrictionService } from "./service/ip-restriction.service";
 import { query } from "express";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -32,7 +33,7 @@ describe('IpRestrictionListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
+            imports : [ AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
             declarations : [IpRestrictionListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

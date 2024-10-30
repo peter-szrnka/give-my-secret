@@ -16,6 +16,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { KeystoreDetailComponent } from "./keystore-detail.component";
 import { KeystoreAlias } from "./model/keystore-alias.model";
 import { KeystoreService } from "./service/keystore-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -36,7 +37,7 @@ describe('KeystoreDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe ],
+            imports : [ FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
             declarations : [KeystoreDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

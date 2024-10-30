@@ -14,6 +14,7 @@ import { KeystoreListComponent } from "./keystore-list.component";
 import { KeystoreDetailResolver } from "./resolver/keystore-detail.resolver";
 import { KeystoreListResolver } from "./resolver/keystore-list.resolver";
 import { KeystoreService } from "./service/keystore-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -31,7 +32,8 @@ import { KeystoreService } from "./service/keystore-service";
         NavBackComponent,
         MomentPipe,
         NavButtonVisibilityPipe,
-        StatusToggleComponent
+        StatusToggleComponent,
+        TranslatorModule
     ], providers: [
         KeystoreService, KeystoreListResolver, KeystoreDetailResolver,
         provideHttpClient(withInterceptorsFromDi())
