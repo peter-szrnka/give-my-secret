@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>Confirmation</h1>
+<h1 mat-dialog-title>{{ 'dialog.confirm' | translate }}</h1>
 <div mat-dialog-content>
   <p>{{message}}</p>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+  <button mat-button (click)="onNoClick()">{{ 'dialog.noThanks' | translate }}</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>{{ 'dialog.ok' | translate }}</button>
 </div>

@@ -9,6 +9,7 @@ import { User } from "../user/model/user.model";
 import { HomeComponent, PageStatus } from "./home.component";
 import { HomeData } from "./model/home-data.model";
 import { HomeService } from "./service/home.service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -25,7 +26,7 @@ describe('HomeComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule, AngularMaterialModule, MomentPipe],
+            imports: [RouterTestingModule, AngularMaterialModule, MomentPipe, TranslatorModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [HomeComponent],
             providers: [

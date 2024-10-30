@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{data.title ?? TITLE_MAP[data.type]}}</h1>
+<h1 mat-dialog-title>{{data.title ?? (TITLE_MAP[data.type] | translate) }}</h1>
 <div mat-dialog-content>
   <p class="{{data.type}}">
     @if (data.type === 'warning') {
@@ -14,5 +14,5 @@
   }
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="closeDialog()">Close</button>
+  <button mat-button (click)="closeDialog()">{{ 'dialog.close' | translate }}</button>
 </div>

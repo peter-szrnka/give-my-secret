@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { RouterTestingModule } from "@angular/router/testing";
 import { InfoDialog } from "./info-dialog.component";
+import { TranslatorModule } from "../pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -15,7 +16,7 @@ describe('InfoDialog', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, MatDialogModule ],
+            imports : [RouterTestingModule, MatDialogModule, TranslatorModule ],
             declarations : [InfoDialog],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

@@ -13,6 +13,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { WINDOW_TOKEN } from "../../window.provider";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -30,7 +31,7 @@ describe('SetupComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, FormsModule, BrowserModule, BrowserAnimationsModule ],
+            imports : [ AngularMaterialModule, FormsModule, BrowserModule, BrowserAnimationsModule, TranslatorModule ],
             declarations : [SetupComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

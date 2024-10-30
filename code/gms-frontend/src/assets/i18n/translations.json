@@ -1,5 +1,12 @@
 {
     "en": {
+        "dialog.confirm": "Confirmation",
+        "dialog.ok": "Ok",
+        "dialog.noThanks": "No thanks",
+        "dialog.close": "Close",
+        "dialog.information": "Information",
+        "dialog.warning": "Warning",
+
         "navback.home": "Back to home",
         "navback.create": "Create+",
         "navback.back2List": "Back to list",
@@ -8,6 +15,26 @@
 
         "error.attempt.to.reload": "Attempt to reload the page..",
         "error.unable.to.reload": "Unable to load the page, retry in $s seconds...",
+
+        "label.warning" : "Warning",
+
+        "home.apiKeys": "API keys",
+        "home.keystores": "Keystores",
+        "home.secrets": "Secrets",
+        "home.createNewApiKey" : "Create a new API key...",
+        "home.createNewKeystore" : "Create a new keystore...",
+        "home.createNewSecret" : "Create a new secret...",
+        "home.noAnnouncements": "No announcements found!",
+        "home.users": "User management",
+        "home.users.subtitle": "Manage your users",
+        "home.noUsersRegistered" : " No user registered yet!",
+        "home.nrOfUsers": "Number of users",
+        "home.users.create": "Create new user +",
+        "home.users.show": "Show users",
+        "home.event.last10" : "These are the latest 10 events.",
+        "home.event.viewAll": "View all",
+        "home.systemAnnouncements": "System announcements",
+        "home.systemAnnouncements.subtitle": "You can find here the latest news regarding to Give My Secret application.",
 
         "login.header": "Login",
         "login.username": "Username",
@@ -128,9 +155,28 @@
         "job.title" : "Jobs",
         "job.duration" : "Duration (ms)",
 
-        "systemProperties.category": "Category"
+        "systemProperties.category": "Category",
+
+        "setup.title" : "Setup application",
+        "setup.description" : "In order to make the application works, you must create an admin user. Please fill in the next form.",
+        "setup.succeeded" : "Application has been configured successfully!",
+        "setup.failed" : "Unexpected error occurred: $s",
+        "setup.fullName" : "Full name",
+        "setup.userName" : "User name",
+        "setup.email" : "Email",
+        "setup.credential" : "Credential",
+        "setup.saveAdminUserButton" : "Save admin user",
+        "setup.retrySetup" : "Retry setup",
+        "setup.goToMainPage" : "Go to main page"
     },
     "hu": {
+        "dialog.confirm": "Megerősítés",
+        "dialog.ok": "Ok",
+        "dialog.noThanks": "Nem, köszönöm",
+        "dialog.close": "Bezárás",
+        "dialog.information": "Információ",
+        "dialog.warning": "Figyelmeztetés",
+
         "navback.home": "Vissza a főoldalra",
         "navback.create": "Létrehozás+",
         "navback.back2List": "Vissza a listához",
@@ -139,6 +185,26 @@
 
         "error.attempt.to.reload": "Oldal frissítése..",
         "error.unable.to.reload": "Oldal frissítése sikertelen volt, ismételt próba $s másodperc múlva...",
+
+        "label.warning" : "Figyelmeztetés",
+
+        "home.apiKeys": "API kulcsok",
+        "home.keystores": "Kulcstárak",
+        "home.secrets": "Secret-ek",
+        "home.createNewApiKey" : "Új API kulcs létrehozása...",
+        "home.createNewKeystore" : "Új kulcstár létrehozása...",
+        "home.createNewSecret" : "Új secret létrohozása...",
+        "home.noAnnouncements": "Nincs bejelentés!",
+        "home.users": "Felhasználó menedzsment",
+        "home.users.subtitle": "Kezeld a felhasználóit",
+        "home.noUsersRegistered" : " Nincs még regisztrált felhasználó!",
+        "home.nrOfUsers": "Felhasználók száma",
+        "home.users.create": "Új felhasználó létrehozása +",
+        "home.users.show": "Felhasználók megtekintése",
+        "home.event.last10" : "Az utolsó 10 esemény.",
+        "home.event.viewAll": "Összes megtekintése",
+        "home.systemAnnouncements": "Rendszer bejelentések",
+        "home.systemAnnouncements.subtitle": "Itt találhatod az alkalmazás legfrissebb híreit.",
 
         "login.header": "Bejelentkezés",
         "login.username": "Felhasználónév",
@@ -257,6 +323,18 @@
         "job.title" : "Munkafolyamatok",
         "job.duration" : "Futásidő (ms)",
 
-        "systemProperties.category": "Kategória"
+        "systemProperties.category": "Kategória",
+
+        "setup.title" : "Alkalmazás beállítása",
+        "setup.description" : "Az alkalmazás működéséhez egy adminisztrátor felhasználót kell létrehoznia. Kérjük töltse ki a következő űrlapot.",
+        "setup.succeeded" : "Az alkalmazás sikeresen konfigurálva!",
+        "setup.failed" : "Váratlan hiba történt: $s",
+        "setup.fullName" : "Teljes név",
+        "setup.userName" : "Felhasználónév",
+        "setup.email" : "Email cím",
+        "setup.credential" : "Jelszó",
+        "setup.saveAdminUserButton" : "Adminisztrátor felhasználó mentése",
+        "setup.retrySetup" : "Újrapróbálkozás",
+        "setup.goToMainPage" : "Nyitóoldalra lépés"
     }
 }

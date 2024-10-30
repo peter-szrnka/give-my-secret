@@ -13,8 +13,8 @@ import { DialogData } from "./dialog-data.model";
   export class InfoDialog {
 
     TITLE_MAP : any = {
-      'information' : 'Information',
-      'warning' : 'Warning'
+      'information' : 'dialog.information',
+      'warning' : 'dialog.warning'
     };
 
     constructor(

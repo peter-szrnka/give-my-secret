@@ -1,38 +1,40 @@
 <form #form="ngForm">
   <mat-card class="with-margin-top">
     <mat-card-title>
-      Setup application
+      {{ 'setup.title' | translate }}
     </mat-card-title>
     <mat-card-content>
       @if (errorMessage === '') {
         <div>
-          Application has been configured successfully!
+          {{ 'setup.succeeded' | translate }}
         </div>
       }
 
       @if (errorMessage && errorMessage.length > 0) {
         <div class="warning">
-          Unexpected error occurred: {{errorMessage}}
+          {{ 'setup.failed' | translate: errorMessage }}
         </div>
       }
 
       @if (errorMessage === undefined) {
         <div>
-          In order to make the application works, you must create an admin user. Please fill in the next form.
+          <p class="information">
+            {{ 'setup.description' | translate }}
+          </p>
           <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Full name</mat-label>
+            <mat-label>{{ 'setup.fullName' | translate }}</mat-label>
             <input matInput name="name" [(ngModel)]="userData.name" required>
           </mat-form-field>
           <mat-form-field appearance="fill" class="full-width">
-            <mat-label>User name</mat-label>
+            <mat-label>{{ 'setup.userName' | translate }}</mat-label>
             <input matInput name="userName" [(ngModel)]="userData.username" required>
           </mat-form-field>
           <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Email</mat-label>
+            <mat-label>{{ 'setup.email' | translate }}</mat-label>
             <input matInput type="email" name="email" [(ngModel)]="userData.email" [email]="true" required>
           </mat-form-field>
           <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Credential</mat-label>
+            <mat-label>{{ 'setup.credential' | translate }}</mat-label>
             <input matInput type="password" name="credential" [(ngModel)]="userData.credential" required
               minlength="8">
             </mat-form-field>
@@ -42,17 +44,16 @@
       <mat-card-actions>
         @if (errorMessage === undefined) {
           <button mat-raised-button color="primary" (click)="saveAdminUser()"
-          [disabled]="form.status ==='INVALID'">Save admin user</button>
+          [disabled]="form.status ==='INVALID'">{{ 'setup.saveAdminUserButton' | translate }}</button>
         }
 
         @if (errorMessage && errorMessage.length > 0) {
           <button mat-raised-button color="primary"
-          (click)="retrySetup()">Retry setup</button>
+          (click)="retrySetup()">{{ 'setup.retrySetup' | translate }}</button>
         }
 
         @if (errorMessage === '') {
-          <button mat-raised-button color="primary" (click)="navigateToHome()">Go to main
-          page</button>
+          <button mat-raised-button color="primary" (click)="navigateToHome()">{{ 'setup.goToMainPage' | translate }}</button>
         }
       </mat-card-actions>
     </mat-card>
