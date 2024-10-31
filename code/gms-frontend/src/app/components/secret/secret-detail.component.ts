@@ -150,7 +150,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
                 this.openInformationDialog("dialog.secret.rotate", false, 'information');
             },
             error: (err) => {
-                this.openInformationDialog("Unexpected error occurred: " + getErrorMessage(err), false, 'warning');
+                this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err));
             }
         });
     }

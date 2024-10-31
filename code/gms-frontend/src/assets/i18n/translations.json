@@ -312,6 +312,8 @@
         "passwordreset.submit" : "Küldés",
         "passwordreset.back" : "Vissza a bejelentkezéshez",
         "verify.title": "Bejelentkezés ellenőrzése",
+        "verify.description" : "Kérjük nyissa meg az Authenticator alkalmazást a mobil eszközén és írja be a ellenőrző kódot",
+        "verify.login" : "Bejelentkezés ellenőrzése",
 
         "sidemenu.home": "Nyitólap",
         "sidemenu.users" : "Felhasználók",
