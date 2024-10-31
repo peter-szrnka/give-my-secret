@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { DialogService } from "./dialog-service";
 import { of } from "rxjs";
-import { InfoDialog } from "../components/info-dialog/info-dialog.component";
 import { ConfirmDeleteDialog } from "../components/confirm-delete/confirm-delete-dialog.component";
+import { InfoDialog } from "../components/info-dialog/info-dialog.component";
+import { DialogService } from "./dialog-service";
 
 /**
  * @author Peter Szrnka
@@ -93,17 +93,14 @@ describe('DialogService', () => {
     });
 
     it('Should open confirm delete dialog', () => {
-        // arrange
-        const text = "?";
-
         // act
-        const result = service.openConfirmDeleteDialog(text);
+        const result = service.openConfirmDeleteDialog({ confirmMessageKey: "dialog.delete.user" });
 
         // assert
         expect(result).toBeTruthy();
         expect(dialog.open).toHaveBeenCalledWith(ConfirmDeleteDialog, { data: {
             result: true,
-            confirmMessage: text
+            confirmMessage: "dialog.delete.user"
         } });
     });
 });

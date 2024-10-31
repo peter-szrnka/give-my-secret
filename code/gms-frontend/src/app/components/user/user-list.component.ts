@@ -52,7 +52,7 @@ export class UserListComponent extends BaseListComponent<UserData, UserService> 
 
     handleLdapSyncResult(): void {
         this.splashScreenService.stop();
-        const dialogRef = this.dialogService.openInfoDialogWithoutTitle("LDAP users synchronized successfully!");
+        const dialogRef = this.dialogService.openInfoDialogWithoutTitle("dialog.ldapSync.succeeded");
 
         dialogRef.afterClosed().subscribe(() => this.reloadPage());
     }

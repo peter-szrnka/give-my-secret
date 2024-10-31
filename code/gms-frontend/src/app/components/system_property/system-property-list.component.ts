@@ -45,15 +45,19 @@ const createBoolConfig = (callbackMethod?: string) => {
 };
 
 const createAlgorithmConfig = () => { return { valueSet: ALGORITHM_SET, displayMode: 'list' } };
-const createTextConfig = () => { return { 
-  displayMode: 'text'
-} };
+const createTextConfig = () => {
+  return {
+    displayMode: 'text'
+  }
+};
 
-const createUnitBasedTextConfig = (callbackMethod?: string) => { return { 
-  displayMode: 'text', 
-  hint: 'UNITS',
-  callbackMethod: callbackMethod 
-} };
+const createUnitBasedTextConfig = (callbackMethod?: string) => {
+  return {
+    displayMode: 'text',
+    hint: 'UNITS',
+    callbackMethod: callbackMethod
+  }
+};
 
 export const PROPERTY_TEXT_MAP: any = {
   'ACCESS_JWT_EXPIRATION_TIME_SECONDS': createTextConfig(),
@@ -190,7 +194,7 @@ export class SystemPropertyListComponent {
   }
 
   public promptDelete(element: SystemProperty) {
-    this.confirmDeleteDialogRef = this.dialogService.openConfirmDeleteDialog();
+    this.confirmDeleteDialogRef = this.dialogService.openConfirmDeleteDialog({ confirmMessageKey: 'dialog.deleteSystemProperty' });
 
     this.confirmDeleteDialogRef.afterClosed().subscribe((data: any) => {
       if (data.result !== true) {
@@ -245,10 +249,10 @@ export class SystemPropertyListComponent {
   }
 
   private getSystemPropertyMap(): any {
-      return systemPropertyList[this.getLanguage() as keyof typeof systemPropertyList];
+    return systemPropertyList[this.getLanguage() as keyof typeof systemPropertyList];
   }
 
   private getLanguage(): string {
-      return localStorage.getItem('language') ?? 'en';
+    return localStorage.getItem('language') ?? 'en';
   }
 }

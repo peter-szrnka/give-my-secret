@@ -66,7 +66,19 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         });
     }
 
-    public openInformationDialog(message : string, navigateToList : boolean, type : string, errorCode?: string) {
+    openInformationDialogNew(key: string, navigateToList: boolean, type: string, errorCode?: string) {
+        const dialogRef : MatDialogRef<InfoDialog, any> = this.dialogService.openCustomDialogWithErrorCode(key, type, errorCode);
+    
+        dialogRef.afterClosed().subscribe(() => {
+          if (navigateToList === false) {
+            return;
+          }
+
+          void this.router.navigate(['/' + this.getPageConfig().scope + '/list']);
+        });
+    }
+
+    openInformationDialog(message : string, navigateToList : boolean, type : string, errorCode?: string) {
         const dialogRef : MatDialogRef<InfoDialog, any> = this.dialogService.openCustomDialogWithErrorCode(message, type, errorCode);
     
         dialogRef.afterClosed().subscribe(() => {

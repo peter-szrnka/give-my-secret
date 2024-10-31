@@ -3,6 +3,6 @@
   <p>{{message}}</p>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">{{ 'dialog.noThanks' | translate }}</button>
+  <button mat-button [mat-dialog-close]="noData">{{ 'dialog.noThanks' | translate }}</button>
   <button mat-button [mat-dialog-close]="data" cdkFocusInitial>{{ 'dialog.ok' | translate }}</button>
 </div>

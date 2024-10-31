@@ -88,20 +88,8 @@ export class MessageListComponent implements OnInit {
         this.service.markAsRead(ids, true).subscribe(() => this.fetchData());
     }
 
-    promptDeleteAll(ids: number[], inputMessage: string) {
-        const dialogRef = this.dialogService.openConfirmDeleteDialog(inputMessage);
-
-        dialogRef.afterClosed().subscribe(response => {
-            if (response?.result !== true) {
-                return;
-            }
-
-            this.service.deleteAllByIds(ids).subscribe(() => this.fetchData());
-        });
-    }
-
     deleteMessage(id: number): void {
-        this.promptDeleteAll([id], 'Do you really want to delete this message?');
+        this.promptDeleteAll([id], 'dialog.deleteMessage');
     }
 
     deleteMessages(): void {
@@ -110,7 +98,19 @@ export class MessageListComponent implements OnInit {
         }
 
         const ids: number[] = this.results.filter(message => message.selected === true).map(message => message.id) as number[];
-        this.promptDeleteAll(ids, `Do you really want to delete the ${ids.length} selected messages?`);
+        this.promptDeleteAll(ids, "dialog.deleteSelectedMessages", ids.length);
+    }
+
+    private promptDeleteAll(ids: number[], key: string, arg?: any): void {
+        const dialogRef = this.dialogService.openConfirmDeleteDialog({ confirmMessageKey: key, arg: arg });
+
+        dialogRef.afterClosed().subscribe(response => {
+            if (response?.result !== true) {
+                return;
+            }
+
+            this.service.deleteAllByIds(ids).subscribe(() => this.fetchData());
+        });
     }
 
     private calculateSelectionStatus(): void {
