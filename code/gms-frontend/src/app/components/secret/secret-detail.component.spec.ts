@@ -310,7 +310,7 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialogService.openNewDialog).toHaveBeenCalledWith({"text": "Unexpected error occurred: OOPS!", "type": "warning"});
+        expect(dialogService.openNewDialog).toHaveBeenCalledWith({"text": "dialog.save.error", "type": "warning", arg: "OOPS!"});
     });
 
     it('Should not rotate secret | unknown error', () => {
@@ -322,7 +322,7 @@ describe('SecretDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialogService.openNewDialog).toHaveBeenCalledWith({"text": "Unexpected error occurred: OOPS!", "type": "warning"});
+        expect(dialogService.openNewDialog).toHaveBeenCalledWith({"text": "dialog.save.error", "type": "warning", arg: "OOPS!"});
     });
     
     it('Should rotate secret', () => {
