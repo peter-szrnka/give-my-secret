@@ -65,7 +65,7 @@ describe('UserDetailComponent', () => {
         };
 
         dialogService = {
-            openCustomDialogWithErrorCode : jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of()) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of()) })
         }
         
         activatedRoute = class {
@@ -121,7 +121,7 @@ describe('UserDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialogService.openCustomDialogWithErrorCode).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
     });
 
     it('should save details', () => {
@@ -134,6 +134,6 @@ describe('UserDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialogService.openCustomDialogWithErrorCode).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
     });
 });

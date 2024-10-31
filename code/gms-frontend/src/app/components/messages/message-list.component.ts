@@ -102,7 +102,7 @@ export class MessageListComponent implements OnInit {
     }
 
     private promptDeleteAll(ids: number[], key: string, arg?: any): void {
-        const dialogRef = this.dialogService.openConfirmDeleteDialog({ confirmMessageKey: key, arg: arg });
+        const dialogRef = this.dialogService.openConfirmDeleteDialog({ result: true, key: key, arg: arg });
 
         dialogRef.afterClosed().subscribe(response => {
             if (response?.result !== true) {

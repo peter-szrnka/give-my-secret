@@ -60,7 +60,7 @@ describe('ApiKeyDetailComponent', () => {
         };
 
         dialogService = {
-            openCustomDialogWithErrorCode : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
         }
         
         activatedRoute = class {
@@ -91,7 +91,7 @@ describe('ApiKeyDetailComponent', () => {
             save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : { message: "OOPS!", errorCode: "GMS-018" }, status : 500, statusText: "OOPS!"})))
         };
         dialogService = {
-            openCustomDialogWithErrorCode : jest.fn().mockReturnValue({ afterClosed : () => of(false) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(false) })
         };
         configureTestBed();
 
@@ -100,7 +100,7 @@ describe('ApiKeyDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialogService.openCustomDialogWithErrorCode).toHaveBeenCalledWith("Error: OOPS!", "warning", "GMS-018");
+        expect(dialogService.openNewDialog).toHaveBeenCalledWith({"errorCode": "GMS-018", "text": "Error: OOPS!", "type": "warning"});
     });
 
     it('Should fail at form validation 2', () => {
@@ -108,7 +108,7 @@ describe('ApiKeyDetailComponent', () => {
             save : jest.fn().mockReturnValue(throwError(() => { return { message: "OOPS!", errorCode: "GMS-018" }; }))
         };
         dialogService = {
-            openCustomDialogWithErrorCode : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
         };
         configureTestBed();
 
@@ -129,6 +129,6 @@ describe('ApiKeyDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialogService.openCustomDialogWithErrorCode).toHaveBeenCalledWith("API key has been saved!", "information", undefined);
+        expect(dialogService.openNewDialog).toHaveBeenCalledWith({"errorCode": undefined, "text": "dialog.save.apikey", "type": "information"});
     });
 });

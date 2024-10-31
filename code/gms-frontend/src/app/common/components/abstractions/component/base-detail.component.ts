@@ -44,8 +44,8 @@ export abstract class BaseDetailComponent<T extends BaseDetail, S extends Servic
     });
   }
 
-  public openInformationDialog(message: string, navigateToList: boolean, dialogType : string) {
-    const dialogRef: MatDialogRef<InfoDialog, any> = this.dialog.openCustomDialog(message, dialogType);
+  public openInformationDialog(key: string, navigateToList: boolean, dialogType : string, arg?: any, errorCode?: string) {
+    const dialogRef: MatDialogRef<InfoDialog, any> = this.dialog.openNewDialog({ text: key, arg: arg, type: dialogType, errorCode: errorCode });
 
     dialogRef.afterClosed().subscribe(() => {
       if (navigateToList === false) {

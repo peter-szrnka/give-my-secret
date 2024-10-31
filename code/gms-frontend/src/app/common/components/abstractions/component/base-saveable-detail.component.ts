@@ -46,7 +46,7 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         .subscribe({
             next: () => {
                 this.splashScreenStateService.stop();
-                this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
+                this.openInformationDialog("dialog.save." + this.getPageConfig().scope, true, 'information');
             },
             error: (err) => {
                 this.splashScreenStateService.stop();
@@ -66,21 +66,9 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         });
     }
 
-    openInformationDialogNew(key: string, navigateToList: boolean, type: string, errorCode?: string) {
-        const dialogRef : MatDialogRef<InfoDialog, any> = this.dialogService.openCustomDialogWithErrorCode(key, type, errorCode);
-    
-        dialogRef.afterClosed().subscribe(() => {
-          if (navigateToList === false) {
-            return;
-          }
+    openInformationDialog(key: string, navigateToList: boolean, type: string, errorCode?: string) {
+        const dialogRef : MatDialogRef<InfoDialog, any> = this.dialogService.openNewDialog({ text: key, type: type, errorCode: errorCode });
 
-          void this.router.navigate(['/' + this.getPageConfig().scope + '/list']);
-        });
-    }
-
-    openInformationDialog(message : string, navigateToList : boolean, type : string, errorCode?: string) {
-        const dialogRef : MatDialogRef<InfoDialog, any> = this.dialogService.openCustomDialogWithErrorCode(message, type, errorCode);
-    
         dialogRef.afterClosed().subscribe(() => {
           if (navigateToList === false) {
             return;

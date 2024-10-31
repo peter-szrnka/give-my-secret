@@ -7,4 +7,5 @@ export interface DialogData {
     text : string,
     type : string,
     errorCode?: string;
+    arg?: string;
 }

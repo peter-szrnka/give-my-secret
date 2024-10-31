@@ -35,16 +35,9 @@ describe('ConfirmDeleteDialog', () => {
         fixture.detectChanges();
     };
 
-    it.each([
-       "Test confirm message",
-       undefined
-    ])('Should create component and close', (inputConfirmMessage: string | undefined) => {
-        confirmMessage = inputConfirmMessage;
+    it('Should create component', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        component.onNoClick();
-
-        expect(component.dialogRef.close).toHaveBeenCalled();
     });
 });

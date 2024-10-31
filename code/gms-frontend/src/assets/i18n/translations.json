@@ -17,6 +17,19 @@
         "dialog.delete.secret": "Do you really want to delete this secret?",
         "dialog.delete.ip_restriction": "Do you really want to delete this IP restriction?",
         "dialog.ldapSync.succeeded" : "LDAP users synchronized successfully!",
+        "dialog.save.error": "Unexpected error occurred: $s",
+        "dialog.save.apikey": "API key saved successfully!",
+        "dialog.save.keystore": "Keystore saved successfully!",
+        "dialog.save.secret": "Secret saved successfully!",
+        "dialog.save.systemProperty": "System property saved successfully!",
+        "dialog.save.user": "User saved successfully!",
+        "dialog.save.ip_restriction": "IP restriction saved successfully!",
+        "dialog.passwordRequestSent" : "Password request sent to admins!",
+        "dialog.failedToSendPasswordReset" : "Failed to request password reset!",
+        "dialog.secret.rotate": "Secret rotated successfully!",
+    
+        "automaticLogout.title" : "Automatic Logout",
+        "automaticLogout.logout" : "You have been logged out due to inactivity.",
 
         "navback.home": "Back to home",
         "navback.create": "Create+",
@@ -159,6 +172,7 @@
         "apitesting.response" : "Response from API",
 
         "apikey.generateRandom" : "Generate random value",
+        "apikey.copied": "API key copied!",
 
         "event.title" : "Events",
         "event.target" : "Target",
@@ -223,7 +237,9 @@
         "keystores.aliasWarning": "You must define at least one active keystore alias!",
         "keystores.alias": "Alias",
         "keystores.aliasCredential": "Alias credential",
-        "keystores.algorithm": "Algorithm"
+        "keystores.algorithm": "Algorithm",
+
+        "entity.status.changed" : "Entity status changed!"
     },
     "hu": {
         "dialog.confirm": "Megerősítés",
@@ -243,6 +259,19 @@
         "dialog.delete.secret": "Biztosan törölni szeretnéd ezt a secret-et?",
         "dialog.delete.ip_restriction": "Biztosan törölni szeretnéd ezt az IP korlátozást?",
         "dialog.ldapSync.succeeded" : "LDAP felhasználók sikeresen szinkronizálva!",
+        "dialog.save.error": "Váratlan hiba történt: $s",
+        "dialog.save.apikey": "Az API kulcs sikeresen mentve!",
+        "dialog.save.keystore": "A kulcstár sikeresen mentve!",
+        "dialog.save.secret": "A secret sikeresen mentve!",
+        "dialog.save.systemProperty": "A rendszer tulajdonság sikeresen mentve!",
+        "dialog.save.user": "A felhasználó sikeresen mentve!",
+        "dialog.save.ip_restriction": "Az IP korlátozás sikeresen mentve!",
+        "dialog.passwordRequestSent" : "Jelszó visszaállítás kérés elküldve az adminisztrátoroknak!",
+        "dialog.failedToSendPasswordReset" : "Jelszó visszaállítás kérés sikertelen!",
+        "dialog.secret.rotate": "Secret sikeresen rotálva!",
+
+        "automaticLogout.title" : "Automatikus kijelentkezés",
+        "automaticLogout.logout" : "Ki lettél léptetve inaktivitás miatt.",
 
         "navback.home": "Vissza a főoldalra",
         "navback.create": "Létrehozás+",
@@ -383,6 +412,7 @@
         "apitesting.response" : "Válasz az API-tól",
 
         "apikey.generateRandom" : "Véletlen érték generálása",
+        "apikey.copied": "API kulcs másolva!",
 
         "event.title" : "Események",
         "event.target" : "Cél",
@@ -447,6 +477,8 @@
         "keystores.aliasWarning": "Legalább egy aktív kulcstár alias-t meg kell adnod!",
         "keystores.alias": "Alias",
         "keystores.aliasCredential": "Alias jelszó",
-        "keystores.algorithm": "Algoritmus"
+        "keystores.algorithm": "Algoritmus",
+
+        "entity.status.changed" : "Az entitás állapota megváltozott!"
     }
 }

@@ -62,7 +62,7 @@ describe('UserListComponent', () => {
 
         dialogService = {
             openConfirmDeleteDialog : jest.fn(),
-            openInfoDialogWithoutTitle : jest.fn()
+            openNewDialog : jest.fn()
         }
         
         activatedRoute = class {
@@ -162,7 +162,7 @@ describe('UserListComponent', () => {
         expect(component).toBeTruthy();
 
         jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
-        jest.spyOn(dialogService, 'openInfoDialogWithoutTitle').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
         component.manualLdapUserSync();
@@ -180,11 +180,11 @@ describe('UserListComponent', () => {
         authModeSubject.next("ldap");
         expect(component).toBeTruthy();
 
-        jest.spyOn(dialogService, 'openInfoDialogWithoutTitle').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.manualLdapUserSync();
 
-        expect(dialogService.openInfoDialogWithoutTitle).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
         expect(component.router.navigateByUrl).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();

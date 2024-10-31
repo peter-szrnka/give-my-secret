@@ -65,7 +65,7 @@ describe('SystemPropertyListComponent', () => {
         };
 
         dialogService = {
-            openCustomDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) }),
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) }),
             openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) }),
         }
         
@@ -155,7 +155,7 @@ describe('SystemPropertyListComponent', () => {
         component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         // assert
-        expect(dialogService.openCustomDialog).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
@@ -181,7 +181,7 @@ describe('SystemPropertyListComponent', () => {
         component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         // assert
-        expect(dialogService.openCustomDialog).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
     });
@@ -197,7 +197,7 @@ describe('SystemPropertyListComponent', () => {
         component.save({ key : 'X', value : 'value', type : 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
 
         // assert
-        expect(dialogService.openCustomDialog).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();

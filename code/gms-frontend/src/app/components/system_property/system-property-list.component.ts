@@ -194,7 +194,10 @@ export class SystemPropertyListComponent {
   }
 
   public promptDelete(element: SystemProperty) {
-    this.confirmDeleteDialogRef = this.dialogService.openConfirmDeleteDialog({ confirmMessageKey: 'dialog.deleteSystemProperty' });
+    this.confirmDeleteDialogRef = this.dialogService.openConfirmDeleteDialog({
+      key: 'dialog.deleteSystemProperty',
+      result: true
+    });
 
     this.confirmDeleteDialogRef.afterClosed().subscribe((data: any) => {
       if (data.result !== true) {
@@ -209,7 +212,7 @@ export class SystemPropertyListComponent {
   }
 
   openInformationDialog(message: string, navigateToList: boolean, dialogType: string) {
-    this.infoDialogRef = this.dialogService.openCustomDialog(message, dialogType);
+    this.infoDialogRef = this.dialogService.openNewDialog({ text: message, type: dialogType });
 
     this.infoDialogRef.afterClosed().subscribe(() => {
       if (navigateToList === false) {

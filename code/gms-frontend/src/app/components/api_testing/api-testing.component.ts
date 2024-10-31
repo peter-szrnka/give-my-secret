@@ -6,6 +6,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { CredentialApiResponse } from "../secret/model/credential-api-response.model";
 import { ApiTestingService } from "./service/api-testing-service";
+
 /**
  * @author Peter Szrnka
  */
@@ -49,7 +50,7 @@ export class ApiTestingComponent implements OnInit {
                     this.splashScreenService.stop();
                 },
                 error: (err: any) => {
-                    this.dialogService.openWarningDialog("Unexpected error occurred: " + getErrorMessage(err));
+                    this.dialogService.openNewDialog({ text: "dialog.save.error", type: "warning", arg: getErrorMessage(err) });
                     this.splashScreenService.stop();
                 }
             });

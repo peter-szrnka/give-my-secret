@@ -117,12 +117,13 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         this.validateForm();
         this.cleanOptionalFields();
 
-        this.service.save(this.data).subscribe({
+        this.service.save(this.data)
+        .subscribe({
             next: () => {
-                this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
+                this.openInformationDialog("dialog.save." + this.getPageConfig().scope, true, 'information');
             },
             error: (err) => {
-                this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
+                this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err));
             },
             complete: () => {
                 this.splashScreenStateService.stop();
@@ -146,7 +147,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     rotateSecret(): void {
         this.service.rotate(this.data.id).subscribe({
             next: () => {
-                this.openInformationDialog("Secret has been rotated successfully!", false, 'information');
+                this.openInformationDialog("dialog.secret.rotate", false, 'information');
             },
             error: (err) => {
                 this.openInformationDialog("Unexpected error occurred: " + getErrorMessage(err), false, 'warning');

@@ -60,7 +60,7 @@ describe('ApiTestingComponent', () => {
             })
         };
         dialogService = {
-            openWarningDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
         };
         splashScreenService = {
             start : jest.fn(),
@@ -110,7 +110,7 @@ describe('ApiTestingComponent', () => {
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
         expect(secureStorageService.setItem).toHaveBeenCalled();
-        expect(dialogService.openWarningDialog).not.toHaveBeenCalled();
+        expect(dialogService.openNewDialog).not.toHaveBeenCalled();
     });
 
     it('should throw error', () => {
@@ -129,7 +129,7 @@ describe('ApiTestingComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialogService.openWarningDialog).toHaveBeenCalledTimes(1);
+        expect(dialogService.openNewDialog).toHaveBeenCalledTimes(1);
         expect(splashScreenService.start).toHaveBeenCalled();
     });
 });

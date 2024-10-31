@@ -62,7 +62,7 @@ describe('LoginComponent', () => {
         };
 
         dialogService = {
-            openWarningDialog : jest.fn()
+            openNewDialog : jest.fn()
         };
 
         splashScreenStateService = {

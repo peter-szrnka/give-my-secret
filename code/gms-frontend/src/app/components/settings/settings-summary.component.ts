@@ -1,13 +1,13 @@
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { environment } from "../../../environments/environment";
 import { DialogService } from "../../common/service/dialog-service";
+import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { TranslatorService } from "../../common/service/translator-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { UserService } from "../user/service/user-service";
-import { TranslatorService } from "../../common/service/translator-service";
-import { SecureStorageService } from "../../common/service/secure-storage.service";
-import { Router } from "@angular/router";
 
 export interface PasswordSettings {
   oldCredential: string | undefined,
@@ -15,7 +15,7 @@ export interface PasswordSettings {
   newCredential2: string | undefined
 }
 
-const LANGUAGE_SETTINGS_EN = [
+/*const LANGUAGE_SETTINGS_EN = [
   { key: 'en', value: 'English' },
   { key: 'hu', value: 'Hungarian' }
 ];
@@ -23,7 +23,7 @@ const LANGUAGE_SETTINGS_EN = [
 const LANGUAGE_SETTINGS_HU = [
   { key: 'en', value: 'Angol' },
   { key: 'hu', value: 'Magyar' }
-];
+];*/
 
 /**
  * @author Peter Szrnka
@@ -94,18 +94,11 @@ export class SettingsSummaryComponent implements OnInit {
   }
 
   private openInfoDialog(titleKey: string, textKey: string): void {
-    this.dialogService.openInfoDialog(
-      this.translate(titleKey),
-      this.translate(textKey)
-    );
-  }
-
-  private translate(key: string): string {
-    return this.translatorService.translate("translations", key);
+    this.dialogService.openNewDialog({ title: titleKey, text: textKey, type: "information" });
   }
 
   private openWarning(error: any): void {
-    this.dialogService.openWarningDialog(this.translatorService.translate("settings.error", getErrorMessage(error)));
+    this.dialogService.openNewDialog({ text: "settings.error", type: "warning", arg: getErrorMessage(error) });
     this.splashScreenService.stop();
   }
 }

@@ -56,8 +56,7 @@ describe('SettingsSummaryComponent', () => {
 
     beforeEach(() => {
         dialog = {
-            openInfoDialog : jest.fn(),
-            openWarningDialog : jest.fn()
+            openNewDialog : jest.fn()
         };
         userService = {
             changeCredentials : jest.fn().mockImplementation(() : Observable<void> => {
@@ -109,7 +108,7 @@ describe('SettingsSummaryComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.openWarningDialog).toHaveBeenCalled();
+        expect(dialog.openNewDialog).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
     });
@@ -140,7 +139,7 @@ describe('SettingsSummaryComponent', () => {
         component.toggleMfa();
 
         // assert
-        expect(dialog.openWarningDialog).toHaveBeenCalled();
+        expect(dialog.openNewDialog).toHaveBeenCalled();
         expect(userService.toggleMfa).toHaveBeenCalledWith(true);
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();

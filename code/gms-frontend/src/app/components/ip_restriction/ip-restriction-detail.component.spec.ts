@@ -2,7 +2,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -11,13 +10,14 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { IprestrictionDetailComponent } from "./ip-restriction-detail.component";
 import { IpRestriction } from "./model/ip-restriction.model";
 import { IpRestrictionService } from "./service/ip-restriction.service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -41,7 +41,7 @@ describe('IprestrictionDetailComponent', () => {
             providers: [
                 { provide : Router, useValue : router},
                 { provide : SharedDataService, useValue : sharedDataService },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialog },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : IpRestrictionService, useValue : service },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService }
@@ -62,7 +62,7 @@ describe('IprestrictionDetailComponent', () => {
         };
 
         dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
         }
         
         activatedRoute = class {
@@ -88,7 +88,7 @@ describe('IprestrictionDetailComponent', () => {
             save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : { message: "OOPS!", errorCode: "GMS-018" }, status : 500, statusText: "OOPS!"})))
         };
         dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () => of(false) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(false) })
         };
         configureTestBed();
 
@@ -97,7 +97,7 @@ describe('IprestrictionDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning", errorCode: "GMS-018" } as DialogData });
+        expect(dialog.openNewDialog).toHaveBeenCalledWith({"errorCode": "GMS-018", "text": "Error: OOPS!", "type": "warning"});
     });
 
     it('Should fail at form validation 2', () => {
@@ -105,7 +105,7 @@ describe('IprestrictionDetailComponent', () => {
             save : jest.fn().mockReturnValue(throwError(() => { return { message: "OOPS!", errorCode: "GMS-018" } }))
         };
         dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
         };
         configureTestBed();
 
@@ -124,6 +124,6 @@ describe('IprestrictionDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "IP restriction has been saved!", type: "information" } as DialogData });
+        expect(dialog.openNewDialog).toHaveBeenCalledWith({ text: "dialog.save.ip_restriction", type: "information" });
     });
 });

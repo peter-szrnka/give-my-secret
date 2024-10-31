@@ -39,7 +39,7 @@ describe('AnnouncementDetailComponent', () => {
 
         };
         dialogService = {
-            openCustomDialogWithErrorCode : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
         };
         sharedDataService = {
             getUserInfo : jest.fn().mockReturnValue(currentUser),
@@ -101,9 +101,9 @@ describe('AnnouncementDetailComponent', () => {
 
         expect(component).toBeTruthy();
 
-        jest.spyOn(dialogService, 'openCustomDialogWithErrorCode').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
 
         component.save();
-        expect(dialogService.openCustomDialogWithErrorCode).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
     });
 });

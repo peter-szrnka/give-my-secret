@@ -2,21 +2,19 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, ElementRef, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
-import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
+import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { KeystoreDetailComponent } from "./keystore-detail.component";
 import { KeystoreAlias } from "./model/keystore-alias.model";
 import { KeystoreService } from "./service/keystore-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -44,7 +42,7 @@ describe('KeystoreDetailComponent', () => {
                 { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : KeystoreService, useValue : service },
-                { provide : MatDialog, useValue : dialog },
+                { provide : DialogService, useValue : dialog },
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide: ElementRef, useValue: mockElementRef },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService }
@@ -66,7 +64,7 @@ describe('KeystoreDetailComponent', () => {
         };
 
         dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of() })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
         };
         
         activatedRoute = class {
@@ -100,7 +98,7 @@ describe('KeystoreDetailComponent', () => {
 
     it('Should save keystore', () => {
         dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
         };
         
         mockAliases = [
@@ -116,12 +114,12 @@ describe('KeystoreDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Keystore has been saved!", type: "information" } as DialogData });
+        expect(dialog.openNewDialog).toHaveBeenCalledWith({ text: "dialog.save.keystore", type: "information" });
     });
 
     it('Should save new generated keystore', () => {
         dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
         };
         
         mockAliases = [
@@ -138,7 +136,7 @@ describe('KeystoreDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Keystore has been saved!", type: "information" } as DialogData });
+        expect(dialog.openNewDialog).toHaveBeenCalledWith({ text: "dialog.save.keystore", type: "information" });
     });
 
     it('Should fail on save keystore | HTTP error', () => {
@@ -146,7 +144,7 @@ describe('KeystoreDetailComponent', () => {
             save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
         };
         dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
         };
         configureTestBed();
 
@@ -155,7 +153,7 @@ describe('KeystoreDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning" } as DialogData });
+        expect(dialog.openNewDialog).toHaveBeenCalledWith({ text: "dialog.save.error", type: "warning", arg: "OOPS!" });
         expect(splashScreenStateService.stop).toHaveBeenCalled();
     });
 
@@ -164,7 +162,7 @@ describe('KeystoreDetailComponent', () => {
             save : jest.fn().mockReturnValue(throwError(() => new Error("OOPS!")))
         };
         dialog = {
-            open : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(false) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(false) })
         };
         configureTestBed();
 
@@ -173,7 +171,7 @@ describe('KeystoreDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.open).toHaveBeenCalledWith(InfoDialog, { data: { text: "Error: OOPS!", type: "warning" } as DialogData });
+        expect(dialog.openNewDialog).toHaveBeenCalledWith({ text: "dialog.save.error", type: "warning", arg: "OOPS!" });
     });
 
     it('should upload file', () => {

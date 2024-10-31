@@ -7,8 +7,7 @@ import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { ApiKey, PAGE_CONFIG_API_KEY } from "./model/apikey.model";
 import { ApiKeyService } from "./service/apikey-service";
-
-export const COPY_MESSAGE = "Api key value copied to clipboard!";
+import { TranslatorService } from "../../common/service/translator-service";
 
 /**
  * @author Peter Szrnka
@@ -26,7 +25,8 @@ export class ApiKeyListComponent extends BaseListComponent<ApiKey, ApiKeyService
         public override service: ApiKeyService,
         public override dialogService: DialogService,
         override activatedRoute: ActivatedRoute,
-        private readonly clipboardService: ClipboardService) {
+        private readonly clipboardService: ClipboardService,
+        private readonly translatorService: TranslatorService) {
         super(router, sharedData, service, dialogService, activatedRoute);
     }
 
@@ -39,6 +39,6 @@ export class ApiKeyListComponent extends BaseListComponent<ApiKey, ApiKeyService
      * @param value Input value
      */
     public copyApiKeyValue(value: string) {
-        this.clipboardService.copyValue(value, COPY_MESSAGE);
+        this.clipboardService.copyValue(value, this.translatorService.translate('apikey.copied'));
     }
 }
