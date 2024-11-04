@@ -62,7 +62,7 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
             this.timeLeftValue = n;
             
             if (n === 0) {
-                this.dialogService.openInfoDialog('Automatic Logout', 'You have been logged out due to inactivity.');
+                this.dialogService.openNewDialog({ title: "automaticLogout.title", text: "automaticLogout.logout", type: "information" });
                 this.sharedData.logout();
             }
         });

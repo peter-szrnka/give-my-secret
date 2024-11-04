@@ -5,6 +5,7 @@ import { of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { HelpComponent } from "./help.compontent";
 import { ErrorCode } from "./model/error-code.model";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -18,7 +19,7 @@ describe('HelpComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [AngularMaterialModule, HelpComponent],
+            imports: [AngularMaterialModule, HelpComponent, TranslatorModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : ActivatedRoute, useClass : activatedRoute }

@@ -22,13 +22,13 @@ export class RequestPasswordResetComponent {
         this.splashScreenStateService.start();
         this.service.requestPasswordReset(this.username).subscribe({
             next: () => {
-                this.dialogService.openCustomDialog("Password request sent to admins!", "information");
+                this.dialogService.openNewDialog({ text: "dialog.passwordRequestSent", type: "information" });
                 this.splashScreenStateService.stop();
                 this.router.navigate(['/login']);
             },
             error: () => {
                 this.splashScreenStateService.stop();
-                this.dialogService.openCustomDialog("Failed to request password reset!", "warning");
+                this.dialogService.openNewDialog({ text: "dialog.failedToSendPasswordReset", type: "warning" });
             },
         });
     }

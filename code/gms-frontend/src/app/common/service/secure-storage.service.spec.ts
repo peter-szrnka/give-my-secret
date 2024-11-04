@@ -55,4 +55,31 @@ describe('SecureStorageService', () => {
 
         localStorage.clear();
     });
+
+    it('Should save without encryption', () => {
+        // arrange
+        configureTestBed();
+
+        // act
+        service.setItemWithoutEncryption('testKey', 'value');
+
+        // assert
+        expect(localStorage.getItem('testKey')).toEqual('value');
+
+        localStorage.clear();
+    });
+
+    it('Should get without encryption', () => {
+        // arrange
+        localStorage.setItem('testKey', 'value');
+        configureTestBed();
+
+        // act
+        const response : string = service.getItemWithoutEncryption('testKey', 'defaultValue');
+
+        // assert
+        expect(response).toEqual('value');
+
+        localStorage.clear();
+    });
 });

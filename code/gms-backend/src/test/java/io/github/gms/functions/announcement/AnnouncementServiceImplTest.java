@@ -23,16 +23,10 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -97,6 +91,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 				.description("description")
 				.title("title")
 				.build();
+		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createAnnouncementEntity(1L)));
 		when(repository.save(any(AnnouncementEntity.class))).thenReturn(TestUtils.createAnnouncementEntity(2L));
 
 		// act
@@ -107,6 +102,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		assertEquals(2L, response.getEntityId());
 
 		ArgumentCaptor<AnnouncementEntity> entityCaptor = ArgumentCaptor.forClass(AnnouncementEntity.class);
+		verify(repository).findById(anyLong());
 		verify(repository).save(entityCaptor.capture());
 
 		AnnouncementEntity capturedValue = entityCaptor.getValue();
@@ -114,7 +110,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		assertEquals("title", capturedValue.getTitle());
 		assertEquals("description", capturedValue.getDescription());
 		assertEquals(1L, capturedValue.getAuthorId());
-		assertNull(capturedValue.getAnnouncementDate());
+		assertNotNull(capturedValue.getAnnouncementDate());
 
 		MDC.clear();
 	}

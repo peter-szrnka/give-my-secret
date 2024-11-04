@@ -63,10 +63,7 @@ class SystemControllerTest {
 
         // arrange
         assertNotNull(response);
-        response.getErrorCodeList().forEach(errorCodeDto -> {
-            assertNotNull(errorCodeDto.getCode());
-            assertNotNull(errorCodeDto.getDescription());
-        });
+        response.getErrorCodeList().forEach(errorCodeDto -> assertNotNull(errorCodeDto.getCode()));
         assertEquals(ErrorCode.values().length, Stream.of(ErrorCode.values()).filter(item -> codes.contains(item.getCode())).count());
     }
 }

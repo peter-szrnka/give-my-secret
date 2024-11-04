@@ -8,6 +8,7 @@ import { ConfirmDeleteDialog } from "./confirm-delete/confirm-delete-dialog.comp
 import { InfoDialog } from "./info-dialog/info-dialog.component";
 import { MomentPipe } from "./pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "./pipes/nav-button-visibility.pipe";
+import { TranslatorModule } from "./pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -26,7 +27,8 @@ import { NavButtonVisibilityPipe } from "./pipes/nav-button-visibility.pipe";
         FormsModule,
         AppRoutingModule,
         MomentPipe,
-        NavButtonVisibilityPipe
+        NavButtonVisibilityPipe,
+        TranslatorModule
     ]
 })
   export class GmsComponentsModule { }

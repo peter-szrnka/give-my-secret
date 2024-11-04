@@ -26,7 +26,7 @@ describe('AutomaticLogoutComponent', () => {
     };
 
     dialogService = {
-      openInfoDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of() })
+      openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
     };
 
      TestBed.configureTestingModule({
@@ -60,7 +60,7 @@ describe('AutomaticLogoutComponent', () => {
     jest.advanceTimersByTime(WARNING_THRESHOLD);
 
     expect(component.logoutComing).toBeTruthy();
-    expect(dialogService.openInfoDialog).toHaveBeenCalledWith('Automatic Logout', 'You have been logged out due to inactivity.');
+    expect(dialogService.openNewDialog).toHaveBeenCalledWith({ title: "automaticLogout.title", text: "automaticLogout.logout", type: "information" });
 
     component.ngOnDestroy();
 
@@ -87,7 +87,7 @@ describe('AutomaticLogoutComponent', () => {
     component.ngOnDestroy();
 
     expect(component.logoutComing).toBeTruthy();
-    expect(dialogService.openInfoDialog).toHaveBeenCalledTimes(0);
+    expect(dialogService.openNewDialog).toHaveBeenCalledTimes(0);
 
     jest.clearAllTimers();
   });

@@ -13,6 +13,7 @@ import { UserListResolver } from "./resolver/user-list.resolver";
 import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
 import { UserListComponent } from "./user-list.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -28,7 +29,8 @@ import { UserListComponent } from "./user-list.component";
         SplashComponent,
         MomentPipe,
         NavBackComponent,
-        StatusToggleComponent
+        StatusToggleComponent,
+        TranslatorModule
     ], 
     providers: [
         UserService, UserListResolver, UserDetailResolver,

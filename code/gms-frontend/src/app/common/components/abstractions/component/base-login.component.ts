@@ -26,7 +26,7 @@ export abstract class BaseLoginComponent implements OnInit {
     }
     
     private showErrorModal() {
-        this.dialogService.openWarningDialog("Login failed!");
+        this.dialogService.openNewDialog({ text: "login.failed", type: "warning" });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

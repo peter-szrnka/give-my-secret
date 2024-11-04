@@ -35,6 +35,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 		AnnouncementEntity entity = new AnnouncementEntity();
 
 		if (dto.getId() != null) {
+			entity = repository.findById(dto.getId()).orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND, GMS_002));
+		}
+
+		if (dto.getId() != null) {
 			entity.setId(dto.getId());
 		} else {
 			entity.setAnnouncementDate(ZonedDateTime.now(clock));

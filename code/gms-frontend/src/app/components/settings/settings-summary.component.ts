@@ -1,8 +1,11 @@
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { environment } from "../../../environments/environment";
 import { DialogService } from "../../common/service/dialog-service";
+import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { TranslatorService } from "../../common/service/translator-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { UserService } from "../user/service/user-service";
 
@@ -11,6 +14,16 @@ export interface PasswordSettings {
   newCredential1: string | undefined,
   newCredential2: string | undefined
 }
+
+/*const LANGUAGE_SETTINGS_EN = [
+  { key: 'en', value: 'English' },
+  { key: 'hu', value: 'Hungarian' }
+];
+
+const LANGUAGE_SETTINGS_HU = [
+  { key: 'en', value: 'Angol' },
+  { key: 'hu', value: 'Magyar' }
+];*/
 
 /**
  * @author Peter Szrnka
@@ -28,17 +41,23 @@ export class SettingsSummaryComponent implements OnInit {
     newCredential1: undefined,
     newCredential2: undefined
   };
+  language = 'en';
   authMode = '';
   mfaEnabled = false;
   showQrCode = false;
 
   constructor(
-    private readonly sharedData : SharedDataService,
+    private readonly router: Router,
+    private readonly sharedData: SharedDataService,
     private readonly userService: UserService,
     public dialogService: DialogService,
-    private readonly splashScreenService : SplashScreenStateService) { }
+    private readonly splashScreenService: SplashScreenStateService,
+    private readonly translatorService: TranslatorService,
+    private readonly storageService: SecureStorageService) {
+    }
 
   ngOnInit(): void {
+    this.language = this.storageService.getItemWithoutEncryption('language','en');
     this.sharedData.authModeSubject$.subscribe(authMode => this.authMode = authMode);
     this.userService.isMfaActive().subscribe(response => this.mfaEnabled = response);
   }
@@ -51,30 +70,35 @@ export class SettingsSummaryComponent implements OnInit {
       newCredential: this.credentialData.newCredential1
     }).subscribe({
       next: () => {
-        this.dialogService.openInfoDialog("Password updated", "Password has been updated successfully!");
+        this.openInfoDialog("settings.password.dialog.title", "settings.password.dialog.text");
         this.splashScreenService.stop();
       },
-      error: (err) => {
-        this.openWarning(err);
-      }
+      error: (err) => this.openWarning(err)
     });
+  }
+
+  saveLanguage() {
+    this.storageService.setItemWithoutEncryption('language', this.language);
+    void this.router.navigate(['/settings']);
   }
 
   toggleMfa() {
     this.splashScreenService.start();
     this.userService.toggleMfa(this.mfaEnabled).subscribe({
       next: () => {
-        this.dialogService.openInfoDialog("MFA toggle updated", "MFA toggle updated successfully!");
+        this.openInfoDialog("settings.mfa.dialog.title", "settings.mfa.dialog.text");
         this.splashScreenService.stop();
       },
-      error: (err) => {
-        this.openWarning(err);
-      }
+      error: (err) => this.openWarning(err)
     });
   }
 
+  private openInfoDialog(titleKey: string, textKey: string): void {
+    this.dialogService.openNewDialog({ title: titleKey, text: textKey, type: "information" });
+  }
+
   private openWarning(error: any): void {
-    this.dialogService.openWarningDialog("Unexpected error occurred: " + getErrorMessage(error));
+    this.dialogService.openNewDialog({ text: "settings.error", type: "warning", arg: getErrorMessage(error) });
     this.splashScreenService.stop();
   }
 }

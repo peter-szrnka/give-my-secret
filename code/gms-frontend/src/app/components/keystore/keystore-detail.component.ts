@@ -80,11 +80,11 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
     this.service.save(this.data, (this.data.generated === true) ? undefined : this.file)
       .subscribe({
         next: () => {
-          this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
+          this.openInformationDialog("dialog.save." + this.getPageConfig().scope, true, 'information');
         },
         error: (err) => {
           this.splashScreenStateService.stop();
-          this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
+          this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err));
         },
         complete: () => {
             this.splashScreenStateService.stop();

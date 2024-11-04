@@ -8,7 +8,7 @@
       <span class="spacer"></span>
 
       @if (isProd === false) {
-        <span class="label_env show-large">Development mode</span>
+        <span class="label_env show-large">{{ 'header.devMode' | translate }}</span>
         <span class="label_env show-small">Dev</span>
       }
       <span class="label_user">
@@ -28,7 +28,7 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item [routerLink]="'/settings'">
           <mat-icon aria-hidden="false">settings</mat-icon>
-          <span>Settings</span>
+          <span>{{ 'header.settings' | translate }}</span>
         </button>
         <button mat-menu-item [routerLink]="'/messages'">
           @if (unreadMessageCount > 0) {
@@ -37,19 +37,19 @@
           @if (unreadMessageCount === 0) {
             <mat-icon aria-hidden="false" matListIcon class="messages-0">drafts</mat-icon>
           }
-          <span>Messages</span>
+          <span>{{ 'header.messages' | translate }}</span>
         </button>
         <button mat-menu-item [routerLink]="'/about'">
           <mat-icon aria-hidden="false">info</mat-icon>
-          <span>About</span>
+          <span>{{ 'header.about' | translate }}</span>
         </button>
         <button mat-menu-item [routerLink]="'/help'">
           <mat-icon aria-hidden="false">help</mat-icon>
-          <span>Help</span>
+          <span>{{ 'header.help' | translate }}</span>
         </button>
         <button mat-menu-item (click)="logout()">
           <mat-icon aria-hidden="false" aria-label="Logout">exit_to_app</mat-icon>
-          <span>Logout</span>
+          <span>{{ 'header.logout' | translate }}</span>
         </button>
       </mat-menu>
     </mat-toolbar>

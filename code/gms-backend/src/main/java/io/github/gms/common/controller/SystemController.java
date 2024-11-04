@@ -34,7 +34,7 @@ public class SystemController implements GmsController {
 	public ErrorCodeListDto getErrorCodes() {
 		return new ErrorCodeListDto(Stream.of(ErrorCode.values())
 				.sorted(Comparator.comparing(ErrorCode::getCode))
-				.map(errorCode -> new ErrorCodeDto(errorCode.getCode(), errorCode.getDescription()))
+				.map(errorCode -> new ErrorCodeDto(errorCode.getCode()))
 				.toList());
 	}
 }

@@ -31,7 +31,7 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
     abstract getPageConfig() : PageConfig;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected dataLoadingCallback(data : T) : void {
+    protected dataLoadingCallback(_data : T) : void {
         // Empty implementation
     }
 
@@ -46,11 +46,11 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         .subscribe({
             next: () => {
                 this.splashScreenStateService.stop();
-                this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
+                this.openInformationDialog("dialog.save." + this.getPageConfig().scope, true, 'information');
             },
             error: (err) => {
                 this.splashScreenStateService.stop();
-                this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning', getErrorCode(err));
+                this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err), getErrorCode(err));
             },
             complete: () => {
                 this.splashScreenStateService.stop();
@@ -66,9 +66,9 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         });
     }
 
-    public openInformationDialog(message : string, navigateToList : boolean, type : string, errorCode?: string) {
-        const dialogRef : MatDialogRef<InfoDialog, any> = this.dialogService.openCustomDialogWithErrorCode(message, type, errorCode);
-    
+    openInformationDialog(key: string, navigateToList: boolean, type: string, errorMessage?: string, errorCode?: string) {
+        const dialogRef : MatDialogRef<InfoDialog, any> = this.dialogService.openNewDialog({ text: key, type: type, arg: errorMessage, errorCode: errorCode });
+
         dialogRef.afterClosed().subscribe(() => {
           if (navigateToList === false) {
             return;

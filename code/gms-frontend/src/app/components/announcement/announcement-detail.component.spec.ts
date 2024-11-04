@@ -14,6 +14,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { User } from "../user/model/user.model";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 import { AnnouncementService } from "./service/announcement-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -38,7 +39,7 @@ describe('AnnouncementDetailComponent', () => {
 
         };
         dialogService = {
-            openCustomDialogWithErrorCode : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
         };
         sharedDataService = {
             getUserInfo : jest.fn().mockReturnValue(currentUser),
@@ -71,7 +72,7 @@ describe('AnnouncementDetailComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports : [ BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe ],
+            imports : [ BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe, TranslatorModule ],
             declarations : [AnnouncementDetailComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -100,9 +101,9 @@ describe('AnnouncementDetailComponent', () => {
 
         expect(component).toBeTruthy();
 
-        jest.spyOn(dialogService, 'openCustomDialogWithErrorCode').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
 
         component.save();
-        expect(dialogService.openCustomDialogWithErrorCode).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
     });
 });

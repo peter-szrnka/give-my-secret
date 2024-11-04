@@ -6,6 +6,7 @@ import { SetupComponent } from "./setup.component";
 import { FormsModule } from "@angular/forms";
 import { WINDOW_TOKEN } from "../../window.provider";
 import { SetupService } from "./service/setup-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -18,7 +19,8 @@ import { SetupService } from "./service/setup-service";
         AngularMaterialModule,
         BrowserModule,
         FormsModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        TranslatorModule
     ],
     providers: [{ provide: WINDOW_TOKEN, useValue: window }, SetupService],
     schemas : [ CUSTOM_ELEMENTS_SCHEMA ]

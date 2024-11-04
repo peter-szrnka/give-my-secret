@@ -12,7 +12,7 @@ import { IdNamePair } from "../../common/model/id-name-pair.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { getErrorMessage } from "../../common/utils/error-utils";
+import { getErrorCode, getErrorMessage } from "../../common/utils/error-utils";
 import { ApiKeyService } from "../apikey/service/apikey-service";
 import { IpRestriction } from "../ip_restriction/model/ip-restriction.model";
 import { KeystoreService } from "../keystore/service/keystore-service";
@@ -35,7 +35,7 @@ interface KeyValuePair {
 export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretService> {
 
     buttonConfig: ButtonConfig[] = [
-        { primary: true, url: '/secret/list', label: 'Back to list' }
+        { primary: true, url: '/secret/list', label: 'navback.back2List' }
     ];
 
     rotationPeriods: string[] = [
@@ -117,12 +117,13 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         this.validateForm();
         this.cleanOptionalFields();
 
-        this.service.save(this.data).subscribe({
+        this.service.save(this.data)
+        .subscribe({
             next: () => {
-                this.openInformationDialog(this.getPageConfig().label + " has been saved!", true, 'information');
+                this.openInformationDialog("dialog.save." + this.getPageConfig().scope, true, 'information');
             },
             error: (err) => {
-                this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
+                this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err), getErrorCode(err));
             },
             complete: () => {
                 this.splashScreenStateService.stop();
@@ -146,10 +147,10 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     rotateSecret(): void {
         this.service.rotate(this.data.id).subscribe({
             next: () => {
-                this.openInformationDialog("Secret has been rotated successfully!", false, 'information');
+                this.openInformationDialog("dialog.secret.rotate", false, 'information');
             },
             error: (err) => {
-                this.openInformationDialog("Unexpected error occurred: " + getErrorMessage(err), false, 'warning');
+                this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err), getErrorCode(err));
             }
         });
     }

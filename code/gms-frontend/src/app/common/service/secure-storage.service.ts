@@ -7,7 +7,7 @@ const options = { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 };
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SecureStorageService {
 
     getItem(username: string, key : string) : string {
@@ -15,8 +15,16 @@ export class SecureStorageService {
             .toString(CryptoJS.enc.Utf8)
     }
 
+    getItemWithoutEncryption(key : string, defaultValue: string) : string {
+        return localStorage.getItem(key) ?? defaultValue;
+    }
+
     setItem(username: string, key : string, data : string) : void {
         const encryptedData = CryptoJS.AES.encrypt(data, secret_key, options).toString();
         localStorage.setItem(username + key, encryptedData);
+    }
+
+    setItemWithoutEncryption(key : string, data : string) : void {
+        localStorage.setItem(key, data);
     }
 }

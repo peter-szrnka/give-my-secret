@@ -8,6 +8,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { JobDetailListComponent } from "./job-detail-list.component";
 import { JobDetail } from "./model/job-detail.model";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -21,7 +22,7 @@ describe('JobDetailListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, NoopAnimationsModule, MomentPipe, JobDetailListComponent ],
+            imports : [ AngularMaterialModule, NoopAnimationsModule, MomentPipe, JobDetailListComponent, TranslatorModule ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
             providers: [
                 { provide : Router, useValue : router },

@@ -19,7 +19,7 @@ import { IpRestrictionService } from "./service/ip-restriction.service";
 export class IprestrictionDetailComponent extends BaseSaveableDetailComponent<IpRestriction, IpRestrictionService> {
 
     buttonConfig: ButtonConfig[] = [
-        { primary: true, url: '/ip_restriction/list', label: 'Back to list' }
+        { primary: true, url: '/ip_restriction/list', label: 'navback.back2List' }
     ];
 
     constructor(

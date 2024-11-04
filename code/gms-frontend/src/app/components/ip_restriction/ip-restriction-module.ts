@@ -15,6 +15,7 @@ import { IpRestrictionListComponent } from "./ip-restriction-list.component";
 import { IpRestrictionDetailResolver } from "./resolver/ip-restriction-detail.resolver";
 import { IpRestrictionListResolver } from "./resolver/ip-restriction-list.resolver";
 import { IpRestrictionService } from "./service/ip-restriction.service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -32,7 +33,8 @@ import { IpRestrictionService } from "./service/ip-restriction.service";
         MomentPipe,
         NavBackComponent,
         NavButtonVisibilityPipe,
-        StatusToggleComponent
+        StatusToggleComponent,
+        TranslatorModule
     ], providers: [
         SharedDataService, IpRestrictionService, IpRestrictionListResolver, IpRestrictionDetailResolver,
         provideHttpClient(withInterceptorsFromDi())

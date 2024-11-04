@@ -19,6 +19,7 @@ import { User } from "../user/model/user.model";
 import { COPY_SECRET_ID_MESSAGE, SecretListComponent } from "./secret-list.component";
 import { SecretService } from "./service/secret-service";
 import { DialogService } from "../../common/service/dialog-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -51,7 +52,8 @@ describe('SecretListComponent', () => {
                 MomentPipe,
                 NavButtonVisibilityPipe,
                 StatusToggleComponent,
-                ServiceModule ],
+                ServiceModule,
+                TranslatorModule ],
             declarations : [SecretListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

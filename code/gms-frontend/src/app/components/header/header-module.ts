@@ -8,6 +8,7 @@ import { AutomaticLogoutComponent } from "../../common/components/automatic-logo
 import { SplashComponent } from "../../common/components/splash/splash.component";
 import { NavMenuModule } from "../menu/nav-menu.module";
 import { HeaderComponent } from "./header.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -23,7 +24,8 @@ import { HeaderComponent } from "./header.component";
         AppRoutingModule,
         NavMenuModule,
         AutomaticLogoutComponent,
-        SplashComponent
+        SplashComponent,
+        TranslatorModule
     ], 
     providers: [provideHttpClient(withInterceptorsFromDi())] })
   export class HeaderModule { }

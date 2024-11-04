@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { of, throwError } from "rxjs";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
-import { ErrorCode } from "../model/error-code.model";
+import { ErrorCodeList } from "../model/error-code-list.model";
 import { ErrorCodeService } from "../service/error-code.service";
 import { ErrorCodeResolver } from "./error-code.resolver";
 
@@ -16,9 +16,12 @@ describe('ErrorCodeResolver', () => {
     let splashScreenStateService: any;
     let service: any;
 
-    const mockResponse: ErrorCode[] = [
-        { code: "GMS-001", description: "Test 1" }
-    ];
+    const mockResponse: ErrorCodeList = {
+        errorCodeList: [
+            { code: "GMS-001" },
+            { code: "GMS-100" }
+        ]
+    };
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -60,6 +63,9 @@ describe('ErrorCodeResolver', () => {
             "queryParams": {
                 "page": "0"
             }
+        };
+        service = {
+            list: jest.fn().mockReturnValue(of(mockResponse))
         };
         configureTestBed();
 

@@ -13,6 +13,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { User } from "../user/model/user.model";
 import { ApiTestingComponent } from "./api-testing.component";
 import { ApiTestingService } from "./service/api-testing-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -31,7 +32,7 @@ describe('ApiTestingComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule ],
+            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
             declarations : [ ApiTestingComponent ],
             providers : [
                 { provide : SharedDataService, useValue: sharedData },
@@ -59,7 +60,7 @@ describe('ApiTestingComponent', () => {
             })
         };
         dialogService = {
-            openWarningDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
         };
         splashScreenService = {
             start : jest.fn(),
@@ -67,7 +68,8 @@ describe('ApiTestingComponent', () => {
         };
         secureStorageService = {
             getItem : jest.fn().mockImplementation((_username, key) => "apiKey" === key ? "test" : "secret1"),
-            setItem : jest.fn()
+            setItem : jest.fn(),
+            getItemWithoutEncryption: jest.fn().mockReturnValue('en')
         };
     });
 
@@ -108,7 +110,7 @@ describe('ApiTestingComponent', () => {
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
         expect(secureStorageService.setItem).toHaveBeenCalled();
-        expect(dialogService.openWarningDialog).not.toHaveBeenCalled();
+        expect(dialogService.openNewDialog).not.toHaveBeenCalled();
     });
 
     it('should throw error', () => {
@@ -127,7 +129,7 @@ describe('ApiTestingComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialogService.openWarningDialog).toHaveBeenCalledTimes(1);
+        expect(dialogService.openNewDialog).toHaveBeenCalledTimes(1);
         expect(splashScreenService.start).toHaveBeenCalled();
     });
 });

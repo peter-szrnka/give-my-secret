@@ -1,10 +1,10 @@
 <div>
-  <h2>Announcements</h2>
+  <h2>{{ 'announcements.title' | translate }}</h2>
 
-  <nav-back [buttonConfig]="[{url:'/announcement/new', label:'Create +', primary : true}]"></nav-back>
+  <nav-back [buttonConfig]="[{url:'/announcement/new', label:'navback.create', primary : true}]"></nav-back>
 
   @if (error) {
-    <div class="warning"><b>System error:</b> {{error}}</div>
+    <div class="warning"><b>{{ 'messages.error' | translate }}:</b> {{error}}</div>
   }
   @if (!error) {
     <mat-card class="margin-top">
@@ -17,15 +17,15 @@
             <td mat-cell *matCellDef="let element"> {{element.id}} </td>
           </ng-container>
           <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef>Title</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'tables.title' | translate }}</th>
             <td mat-cell *matCellDef="let element"> {{element.title}} </td>
           </ng-container>
           <ng-container matColumnDef="announcementDate">
-            <th mat-header-cell *matHeaderCellDef class="show-large">Announcement date</th>
+            <th mat-header-cell *matHeaderCellDef class="show-large">{{ 'announcements.date' | translate }}</th>
             <td mat-cell *matCellDef="let element" class="show-large"> {{element.announcementDate | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
           </ng-container>
           <ng-container matColumnDef="operations">
-            <th mat-header-cell *matHeaderCellDef>Operations</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'tables.operations' | translate }}</th>
             <td mat-cell *matCellDef="let element">
               <button mat-icon-button color="primary" class="show-large" [routerLink]="['/announcement/' + element.id]">
                 <mat-icon aria-hidden="false">edit</mat-icon>
@@ -33,18 +33,17 @@
               <button mat-icon-button color="warn" class="show-large" (click)="promptDelete(element.id)">
                 <mat-icon aria-hidden="false">delete</mat-icon>
               </button>
-              <button mat-icon-button class="show-small" [matMenuTriggerFor]="menu"
-                aria-label="Operations menu">
+              <button mat-icon-button class="show-small" [matMenuTriggerFor]="menu" aria-label="Operations menu">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu" class="show-small">
                 <button mat-menu-item color="primary" [routerLink]="'/announcement/' + element.id">
                   <mat-icon aria-hidden="false">edit</mat-icon>
-                  <span>Edit</span>
+                  <span>{{ 'tables.edit' | translate }}</span>
                 </button>
                 <button mat-menu-item color="warn" (click)="promptDelete(element.id)">
                   <mat-icon aria-hidden="false">delete</mat-icon>
-                  <span>Delete</span>
+                  <span>{{ 'tables.delete' | translate }}</span>
                 </button>
               </mat-menu>
             </td>

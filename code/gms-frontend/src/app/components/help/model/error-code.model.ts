@@ -1,5 +1,5 @@
 
 export interface ErrorCode {
-    code: string,
-    description: string;
+    code: string;
+    description?: string;
 }

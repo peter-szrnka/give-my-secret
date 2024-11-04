@@ -2,6 +2,8 @@ import { NgIf } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AngularMaterialModule } from '../../../angular-material-module';
+import { TranslatorModule } from '../pipes/translator/translator.module';
+import { TranslatorService } from '../../service/translator-service';
 
 /**
  * @author Peter Szrnka
@@ -10,7 +12,8 @@ import { AngularMaterialModule } from '../../../angular-material-module';
     standalone: true,
     imports: [
         AngularMaterialModule,
-        NgIf
+        NgIf,
+        TranslatorModule
     ],
     providers: [
         MatSnackBar
@@ -26,13 +29,16 @@ export class StatusToggleComponent {
     @Input() status? : string;
     @Input() doNotToggle? : boolean = false;
 
-    constructor(private readonly snackbar : MatSnackBar) {}
+    constructor(
+        private readonly snackbar : MatSnackBar,
+        private readonly translatorService : TranslatorService
+    ) {}
 
     public toggle() {
         if (this.doNotToggle === true) {
             return;
         }
 
-        this.snackbar.open("Entity status changed!");
+        this.snackbar.open(this.translatorService.translate('entity.status.changed'));
     }
 }

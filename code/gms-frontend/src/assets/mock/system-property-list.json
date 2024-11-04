@@ -5,8 +5,16 @@
             "type" : "LONG",
             "value" : "900",
             "lastModified" : "2024-06-01T12:34:56.000",
-            "factoryValue": true
+            "factoryValue": true,
+            "category" : "JWT"
+        },
+        {
+            "key" : "AUTOMATIC_LOGOUT_TIME_IN_MINUTES",
+            "type" : "STRING",
+            "value" : "1;d",
+            "factoryValue": true,
+            "category" : "GENERAL"
         }
     ],
-    "totalElements": 0
+    "totalElements": 2
 }

@@ -10,6 +10,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { EventListComponent } from "./event-list.component";
 import { EventService } from "./service/event-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -30,7 +31,7 @@ describe('EventListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
+            imports : [ AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
             declarations : [EventListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

@@ -14,6 +14,8 @@ import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 
+import * as systemPropertyList from '../../../assets/i18n/system-properties.json';
+
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
 ];
@@ -34,54 +36,61 @@ const TIME_UNITS: any = [
 
 const BOOL_VALUE_SET: string[] = ['true', 'false'];
 
-const createBoolConfig = (text: string, callbackMethod?: string) => {
+const createBoolConfig = (callbackMethod?: string) => {
   return {
-    text: text,
     valueSet: BOOL_VALUE_SET,
     displayMode: 'list',
     callbackMethod: callbackMethod
   };
 };
-const createAlgorithmConfig = (text: string) => { return { text: text, valueSet: ALGORITHM_SET, displayMode: 'list' } };
-const createTextConfig = (text: string, hint?: string, callbackMethod?: string) => { return { 
-  text: text, 
-  displayMode: 'text', 
-  hint: hint,
-  callbackMethod: callbackMethod 
-} };
+
+const createAlgorithmConfig = () => { return { valueSet: ALGORITHM_SET, displayMode: 'list' } };
+const createTextConfig = () => {
+  return {
+    displayMode: 'text'
+  }
+};
+
+const createUnitBasedTextConfig = (callbackMethod?: string) => {
+  return {
+    displayMode: 'text',
+    hint: 'UNITS',
+    callbackMethod: callbackMethod
+  }
+};
 
 export const PROPERTY_TEXT_MAP: any = {
-  'ACCESS_JWT_EXPIRATION_TIME_SECONDS': createTextConfig('Access JWT expiration time in seconds'),
-  'ACCESS_JWT_ALGORITHM': createAlgorithmConfig('Access JWT Algorithom'),
-  'REFRESH_JWT_EXPIRATION_TIME_SECONDS': createTextConfig('Refresh JWT expiration time in seconds'),
-  'REFRESH_JWT_ALGORITHM': createAlgorithmConfig('Refresh JWT Algorithom'),
-  'ORGANIZATION_NAME': createTextConfig('Organization / Company name'),
-  'ORGANIZATION_CITY': createTextConfig('Location (city) of the organization'),
-  'ENABLE_GLOBAL_MFA': createBoolConfig('Global MFA usage is enabled or not'),
-  'ENABLE_MFA': createBoolConfig('MFA usage is enabled or not for the users'),
-  'FAILED_ATTEMPTS_LIMIT': createTextConfig('Limit of failed login attempts before blocking the user'),
-  'JOB_OLD_EVENT_LIMIT': createTextConfig('Limit of deletion of the old events', 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"'),
-  'JOB_OLD_MESSAGE_LIMIT': createTextConfig('Limit of deletion of the old messages', 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"'),
-  'OLD_JOB_ENTRY_LIMIT': createTextConfig('Limit of deletion of the old job entries', 'Units: m=minute, d=day, M=month, y=year, w=week. Format: "1;d"'),
-  'EVENT_MAINTENANCE_JOB_ENABLED': createBoolConfig('Event maintenance job is enabled or not'),
-  'EVENT_MAINTENANCE_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running event maintenance job'),
-  'JOB_MAINTENANCE_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running job maintenance job'),
-  'JOB_MAINTENANCE_JOB_ENABLED': createBoolConfig('Job maintenance job is enabled or not'),
-  'KEYSTORE_CLEANUP_JOB_ENABLED': createBoolConfig('Keystore maintenance job is enabled or not'),
-  'KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running keystore maintenance job'),
-  'LDAP_SYNC_JOB_ENABLED': createBoolConfig('LDAP sync job is enabled or not'),
-  'LDAP_SYNC_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running LDAP sync runner job'),
-  'MESSAGE_CLEANUP_JOB_ENABLED': createBoolConfig('Message cleanup job is enabled or not'),
-  'MESSAGE_CLEANUP_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for message cleanup job'),
-  'SECRET_ROTATION_JOB_ENABLED': createBoolConfig('Secret rotation job is enabled or not'),
-  'SECRET_ROTATION_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for secret rotation job'),
-  'USER_ANONYMIZATION_JOB_ENABLED': createBoolConfig('User anonymization job is enabled or not'),
-  'USER_ANONYMIZATION_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running user anonymization job'),
-  'USER_DELETION_JOB_ENABLED': createBoolConfig('User deletion job is enabled or not'),
-  'USER_DELETION_RUNNER_CONTAINER_ID': createTextConfig('Main container ID for running user deletion job'),
-  'ENABLE_MULTI_NODE': createBoolConfig('Multi-node usage is enabled or not'),
-  'ENABLE_AUTOMATIC_LOGOUT': createBoolConfig('Automatic logout is enabled or not', 'checkSystemReady'),
-  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES': createTextConfig('Automatic logout is performed after T minutes', undefined, 'checkSystemReady')
+  'ACCESS_JWT_EXPIRATION_TIME_SECONDS': createTextConfig(),
+  'ACCESS_JWT_ALGORITHM': createAlgorithmConfig(),
+  'REFRESH_JWT_EXPIRATION_TIME_SECONDS': createTextConfig(),
+  'REFRESH_JWT_ALGORITHM': createAlgorithmConfig(),
+  'ORGANIZATION_NAME': createTextConfig(),
+  'ORGANIZATION_CITY': createTextConfig(),
+  'ENABLE_GLOBAL_MFA': createBoolConfig(),
+  'ENABLE_MFA': createBoolConfig(),
+  'FAILED_ATTEMPTS_LIMIT': createTextConfig(),
+  'JOB_OLD_EVENT_LIMIT': createUnitBasedTextConfig(),
+  'JOB_OLD_MESSAGE_LIMIT': createUnitBasedTextConfig(),
+  'OLD_JOB_ENTRY_LIMIT': createUnitBasedTextConfig(),
+  'EVENT_MAINTENANCE_JOB_ENABLED': createBoolConfig(),
+  'EVENT_MAINTENANCE_RUNNER_CONTAINER_ID': createTextConfig(),
+  'JOB_MAINTENANCE_RUNNER_CONTAINER_ID': createTextConfig(),
+  'JOB_MAINTENANCE_JOB_ENABLED': createBoolConfig(),
+  'KEYSTORE_CLEANUP_JOB_ENABLED': createBoolConfig(),
+  'KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID': createTextConfig(),
+  'LDAP_SYNC_JOB_ENABLED': createBoolConfig(),
+  'LDAP_SYNC_RUNNER_CONTAINER_ID': createTextConfig(),
+  'MESSAGE_CLEANUP_JOB_ENABLED': createBoolConfig(),
+  'MESSAGE_CLEANUP_RUNNER_CONTAINER_ID': createTextConfig(),
+  'SECRET_ROTATION_JOB_ENABLED': createBoolConfig(),
+  'SECRET_ROTATION_RUNNER_CONTAINER_ID': createTextConfig(),
+  'USER_ANONYMIZATION_JOB_ENABLED': createBoolConfig(),
+  'USER_ANONYMIZATION_RUNNER_CONTAINER_ID': createTextConfig(),
+  'USER_DELETION_JOB_ENABLED': createBoolConfig(),
+  'USER_DELETION_RUNNER_CONTAINER_ID': createTextConfig(),
+  'ENABLE_MULTI_NODE': createBoolConfig(),
+  'ENABLE_AUTOMATIC_LOGOUT': createBoolConfig('checkSystemReady'),
+  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES': createUnitBasedTextConfig('checkSystemReady')
 };
 
 interface SystemPropertyElement extends SystemProperty {
@@ -150,13 +159,14 @@ export class SystemPropertyListComponent {
 
   private convertToElements(resultList: SystemProperty[]): SystemPropertyElement[] {
     return resultList.map((property: SystemProperty) => {
+      const hint = PROPERTY_TEXT_MAP[property.key]?.hint;
       return {
         ...property,
-        textDescription: PROPERTY_TEXT_MAP[property.key]?.text,
+        textDescription: this.getResolvedPropertyText(property.key),
         valueSet: PROPERTY_TEXT_MAP[property.key]?.valueSet || [],
         mode: undefined,
         inputType: TYPE_MAP[property.type],
-        hint: PROPERTY_TEXT_MAP[property.key]?.hint || undefined,
+        hint: hint ? this.getResolvedPropertyText(hint) : undefined,
         displayMode: PROPERTY_TEXT_MAP[property.key]?.displayMode,
         callbackMethod: PROPERTY_TEXT_MAP[property.key]?.callbackMethod
       };
@@ -173,18 +183,21 @@ export class SystemPropertyListComponent {
     element.valueSet = undefined;
     this.service.save(element).subscribe({
       next: () => {
-        this.openInformationDialog("System property has been saved!", true, 'information');
+        this.openInformationDialog("dialog.save.systemProperty", true, 'information');
         this.executeCallbackMethod(element.callbackMethod);
       },
       error: (err) => {
-        this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
+        this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err));
         this.reloadPage();
       }
     });
   }
 
   public promptDelete(element: SystemProperty) {
-    this.confirmDeleteDialogRef = this.dialogService.openConfirmDeleteDialog();
+    this.confirmDeleteDialogRef = this.dialogService.openConfirmDeleteDialog({
+      key: 'dialog.deleteSystemProperty',
+      result: true
+    });
 
     this.confirmDeleteDialogRef.afterClosed().subscribe((data: any) => {
       if (data.result !== true) {
@@ -198,8 +211,8 @@ export class SystemPropertyListComponent {
     });
   }
 
-  openInformationDialog(message: string, navigateToList: boolean, dialogType: string) {
-    this.infoDialogRef = this.dialogService.openCustomDialog(message, dialogType);
+  openInformationDialog(message: string, navigateToList: boolean, dialogType: string, errorMessage?: string) {
+    this.infoDialogRef = this.dialogService.openNewDialog({ text: message, type: dialogType, arg: errorMessage });
 
     this.infoDialogRef.afterClosed().subscribe(() => {
       if (navigateToList === false) {
@@ -232,5 +245,17 @@ export class SystemPropertyListComponent {
       queryParams,
       queryParamsHandling: 'merge'
     });
+  }
+
+  private getResolvedPropertyText(key: string): string {
+    return this.getSystemPropertyMap()[key] ?? "N/A";
+  }
+
+  private getSystemPropertyMap(): any {
+    return systemPropertyList[this.getLanguage() as keyof typeof systemPropertyList];
+  }
+
+  private getLanguage(): string {
+    return localStorage.getItem('language') ?? 'en';
   }
 }

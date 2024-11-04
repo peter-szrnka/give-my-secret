@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { ConfirmDeleteDialog } from "../components/confirm-delete/confirm-delete-dialog.component";
+import { ConfirmDeleteDialog, ConfirmDeleteDialogData } from "../components/confirm-delete/confirm-delete-dialog.component";
+import { DialogData } from "../components/info-dialog/dialog-data.model";
 import { InfoDialog } from "../components/info-dialog/info-dialog.component";
 
 /**
@@ -11,40 +12,11 @@ export class DialogService {
 
     constructor(private readonly dialog: MatDialog) { }
 
-    openCustomDialog(text: string, type: string) : MatDialogRef<InfoDialog, any> {
-        return this.dialog.open(InfoDialog, {
-            data: { text: text, type: type }
-        });
+    openNewDialog(data: DialogData): MatDialogRef<InfoDialog, any> {
+        return this.dialog.open(InfoDialog, { data: data });
     }
 
-    openCustomDialogWithErrorCode(text: string, type: string, errorCode?: string) : MatDialogRef<InfoDialog, any> {
-        return this.dialog.open(InfoDialog, {
-            data: { text: text, type: type, errorCode: errorCode }
-        });
-    }
-
-    openInfoDialogWithoutTitle(text: string): MatDialogRef<InfoDialog, any> {
-        return this.dialog.open(InfoDialog, {
-            data: { text: text, type: 'information' }
-        });
-    }
-
-    openInfoDialog(title: string, text: string): MatDialogRef<InfoDialog, any> {
-        return this.dialog.open(InfoDialog, {
-            data: { title: title, text: text, type: 'information' }
-        });
-    }
-
-    openWarningDialog(text: string): MatDialogRef<InfoDialog, any> {
-        return this.openCustomDialog(text, 'warning');
-    }
-
-    openConfirmDeleteDialog(confirmMessage?: string): MatDialogRef<ConfirmDeleteDialog, any> {
-        return this.dialog.open(ConfirmDeleteDialog, {
-            data: {
-                result: true,
-                confirmMessage: confirmMessage
-            }
-        });
+    openConfirmDeleteDialog(data: ConfirmDeleteDialogData): MatDialogRef<ConfirmDeleteDialog, any> {
+        return this.dialog.open(ConfirmDeleteDialog, { data: data });
     }
 }

@@ -14,6 +14,7 @@ import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -35,7 +36,7 @@ describe('SystemPropertyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
+            imports : [ ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
             declarations : [SystemPropertyListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -64,7 +65,7 @@ describe('SystemPropertyListComponent', () => {
         };
 
         dialogService = {
-            openCustomDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) }),
+            openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) }),
             openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) }),
         }
         
@@ -73,8 +74,8 @@ describe('SystemPropertyListComponent', () => {
                 data : {
                     resultList : [
                         {
-                            key : "REFRESH_JWT_ALGORITHM",
-                            category : "JWT_TOKEN",
+                            key : "ENABLE_GLOBAL_MFA",
+                            category : "JWT",
                             value : "HS512",
                             factoryValue : true,
                             lastModified : new Date()
@@ -85,9 +86,23 @@ describe('SystemPropertyListComponent', () => {
                             value : "1;d",
                             factoryValue : true,
                             lastModified : new Date()
+                        },
+                        {
+                            key : "AUTOMATIC_LOGOUT_TIME_IN_MINUTES",
+                            category : "GENERAL",
+                            value : "15;m",
+                            factoryValue : true,
+                            lastModified : new Date()
+                        },
+                        {
+                            key : "UNKNOWN_PROPERTY",
+                            category : "GENERAL",
+                            value : "15;m",
+                            factoryValue : true,
+                            lastModified : new Date()
                         }
                     ],
-                    totalElements : 2
+                    totalElements : 3
                 }
             });
             snapshot = {
@@ -140,7 +155,7 @@ describe('SystemPropertyListComponent', () => {
         component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         // assert
-        expect(dialogService.openCustomDialog).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
@@ -166,7 +181,7 @@ describe('SystemPropertyListComponent', () => {
         component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
 
         // assert
-        expect(dialogService.openCustomDialog).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
     });
@@ -182,7 +197,7 @@ describe('SystemPropertyListComponent', () => {
         component.save({ key : 'X', value : 'value', type : 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
 
         // assert
-        expect(dialogService.openCustomDialog).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();

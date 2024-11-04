@@ -8,7 +8,6 @@ import { LoggerService } from "../service/logger-service";
 import { Environment } from "../../../environments/environment.default";
 import { ENV_CONFIG } from "../../app.module";
 import * as errorCodes from "../../../assets/mock/error.codes.json";
-//"../../../assets/mock/error-codes.json";
 import * as eventList from "../../../assets/mock/event-list.json";
 import * as infoMe from "../../../assets/mock/info.me.json";
 import * as mockHomeData from "../../../assets/mock/secure.home.json";
@@ -24,7 +23,7 @@ const MOCK_MAP : any = {
     "secure/message/unread" : unreadMessages,
     "secure/message/list?direction=DESC&property=creationDate&page=0&size=10": messages,
     "error_codes" : errorCodes,
-    "secure/system_property/list?direction=DESC&property=key&page=0&size=25" : systemPropertyList,
+    "secure/system_property/list?direction=DESC&property=key&page=0&size=50" : systemPropertyList,
     "secure/event/list?direction=DESC&property=eventDate&page=0&size=25" : eventList
 };
 

@@ -1,11 +1,12 @@
 import { Component, Inject } from "@angular/core";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
-const DEFAULT_DELETE_MESSAGE = 'Do you really want to delete this entity?';
+const DEFAULT_DELETE_MESSAGE = 'dialog.defaultDeleteMessage';
 
 export interface ConfirmDeleteDialogData {
-  confirmMessage?: string;
   result: boolean;
+  key?: string;
+  arg?: string;
 }
 
 /**
@@ -17,16 +18,13 @@ export interface ConfirmDeleteDialogData {
 })
 export class ConfirmDeleteDialog {
 
-  message: string;
+  key: string;
+  noData: ConfirmDeleteDialogData = { key: 'noKey', result: false };
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDeleteDialog>,
     @Inject(MAT_DIALOG_DATA) public data: ConfirmDeleteDialogData
   ) {
-    this.message = data.confirmMessage ?? DEFAULT_DELETE_MESSAGE;
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
+    this.key = data.key ?? DEFAULT_DELETE_MESSAGE;
   }
 }

@@ -1,9 +1,9 @@
 import { Observable } from "rxjs";
-import { ServiceBase } from "./service-base";
 import { environment } from "../../../../../environments/environment";
 import { BaseList } from "../../../model/base-list";
 import { IEntitySaveResponseDto } from "../../../model/entity-save-response.model";
 import { getHeaders } from "../../../utils/header-utils";
+import { ServiceBase } from "./service-base";
 
 /**
  * @author Peter Szrnka

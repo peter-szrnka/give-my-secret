@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { ConfirmDeleteDialog } from "./confirm-delete-dialog.component";
+import { TranslatorModule } from "../pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -15,7 +16,7 @@ describe('ConfirmDeleteDialog', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ MatDialogModule ],
+            imports : [ MatDialogModule, TranslatorModule ],
             declarations : [ConfirmDeleteDialog],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -34,16 +35,9 @@ describe('ConfirmDeleteDialog', () => {
         fixture.detectChanges();
     };
 
-    it.each([
-       "Test confirm message",
-       undefined
-    ])('Should create component and close', (inputConfirmMessage: string | undefined) => {
-        confirmMessage = inputConfirmMessage;
+    it('Should create component', () => {
         configureTestBed();
 
         expect(component).toBeTruthy();
-        component.onNoClick();
-
-        expect(component.dialogRef.close).toHaveBeenCalled();
     });
 });

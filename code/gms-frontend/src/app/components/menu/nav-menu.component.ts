@@ -9,16 +9,16 @@ export interface NavMenuItem {
 }
 
 export const NAV_MENU_ITEMS: NavMenuItem[] = [
-    { text: "Users", icon: "face", link: "user/list", admin: true },
-    { text: "System properties", icon: "settings", link: "system_property/list", admin: true },
-    { text: "IP restrictions", icon: "http", link: "ip_restriction/list", admin: true },
-    { text: "Jobs", icon: "watch_later", link: "job/list", admin: true },
-    { text: "Announcements", icon: "announcement", link: "announcement/list", admin: true },
-    { text: "Events", icon: "event", link: "event/list", admin: true },
-    { text: "Secrets", icon: "key", link: "/secret/list", admin: false },
-    { text: "API keys", icon: "security", link: "/apikey/list", admin: false },
-    { text: "Keystores", icon: "widgets", link: "/keystore/list", admin: false },
-    { text: "API Testing", icon: "speaker_phone", link: "api-testing", admin: false }
+    { text: "sidemenu.users", icon: "face", link: "user/list", admin: true },
+    { text: "sidemenu.systemProperties", icon: "settings", link: "system_property/list", admin: true },
+    { text: "sidemenu.ipRestrictions", icon: "http", link: "ip_restriction/list", admin: true },
+    { text: "sidemenu.jobs", icon: "watch_later", link: "job/list", admin: true },
+    { text: "sidemenu.announcements", icon: "announcement", link: "announcement/list", admin: true },
+    { text: "sidemenu.events", icon: "event", link: "event/list", admin: true },
+    { text: "sidemenu.secrets", icon: "key", link: "/secret/list", admin: false },
+    { text: "sidemenu.apiKeys", icon: "security", link: "/apikey/list", admin: false },
+    { text: "sidemenu.keystores", icon: "widgets", link: "/keystore/list", admin: false },
+    { text: "sidemenu.apiTesting", icon: "speaker_phone", link: "api-testing", admin: false }
 ];
 
 /**

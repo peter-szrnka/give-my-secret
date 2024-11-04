@@ -10,6 +10,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { User } from "./model/user.model";
 import { UserService } from "./service/user-service";
 import { UserListComponent } from "./user-list.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -32,7 +33,7 @@ describe('UserListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ MatTableModule, MomentPipe ],
+            imports : [ MatTableModule, MomentPipe, TranslatorModule ],
             declarations : [UserListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -61,7 +62,7 @@ describe('UserListComponent', () => {
 
         dialogService = {
             openConfirmDeleteDialog : jest.fn(),
-            openInfoDialogWithoutTitle : jest.fn()
+            openNewDialog : jest.fn()
         }
         
         activatedRoute = class {
@@ -161,7 +162,7 @@ describe('UserListComponent', () => {
         expect(component).toBeTruthy();
 
         jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
-        jest.spyOn(dialogService, 'openInfoDialogWithoutTitle').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
         component.manualLdapUserSync();
@@ -179,11 +180,11 @@ describe('UserListComponent', () => {
         authModeSubject.next("ldap");
         expect(component).toBeTruthy();
 
-        jest.spyOn(dialogService, 'openInfoDialogWithoutTitle').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
 
         component.manualLdapUserSync();
 
-        expect(dialogService.openInfoDialogWithoutTitle).toHaveBeenCalled();
+        expect(dialogService.openNewDialog).toHaveBeenCalled();
         expect(component.router.navigateByUrl).toHaveBeenCalled();
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();

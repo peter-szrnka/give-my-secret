@@ -1,38 +1,36 @@
 <div>
-  <h2>API Testing</h2>
+  <h2>{{ 'apitesting.title' | translate }}</h2>
 
   <nav-back></nav-back>
 
   <form #form="ngForm" novalidate class="form-control">
     <mat-card class="margin-top">
       <mat-card-content>
-        <div class="information">
-          You can test your secret here. Type in your preferred api key value and the ID of your secret.
-        </div>
+        <div class="information">{{ 'apitesting.description' | translate }}</div>
 
         <p>
           <mat-form-field appearance="fill" class="full-width">
-            <mat-label>x-api-key (HTTP header)</mat-label>
+            <mat-label>x-api-key ({{ 'apitesting.httpHeader' | translate }})</mat-label>
             <input name="apiKey" required minLength="1" matInput [(ngModel)]="apiKey" />
           </mat-form-field>
         </p>
 
         <p>
           <mat-form-field appearance="fill" class="full-width">
-            <mat-label>secretId (Path Variable)</mat-label>
+            <mat-label>secretId ({{ 'apitesting.pathVariable' | translate }})</mat-label>
             <input name="secretId" required minLength="1" matInput [(ngModel)]="secretId" />
           </mat-form-field>
         </p>
       </mat-card-content>
       <mat-card-actions>
         <button [disabled]="form.status ==='INVALID'" mat-raised-button color="primary"
-        (click)="callApi()">Call API endpoint</button>
+        (click)="callApi()">{{ 'apitesting.call' | translate }}</button>
       </mat-card-actions>
     </mat-card>
     @if (apiResponse !== undefined) {
       <mat-card class="margin-top">
         <mat-card-header>
-          <mat-card-title>Response from API</mat-card-title>
+          <mat-card-title>{{ 'apitesting.response' | translate }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <mat-form-field appearance="fill" class="full-width">

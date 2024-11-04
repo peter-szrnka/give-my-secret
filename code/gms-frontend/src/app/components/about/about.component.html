@@ -1,16 +1,16 @@
 <mat-card class="about-card">
-    <mat-card-title>About Give My Secret</mat-card-title>
+    <mat-card-title>{{ 'about.title' | translate }}</mat-card-title>
     <mat-card-content>
         @if (systemStatus$ | async; as systemStatus) {
             <ul>
-                <li>Application version: <b>{{systemStatus.version}}</b></li>
-                <li>Built time: <b>{{ systemStatus.built | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}</b></li>
-                <li>Authentication mode: <b>{{systemStatus.authMode}}</b></li>
-                <li>Status: <b>{{systemStatus.status}}</b></li>
+                <li>{{ 'about.appVersion' | translate }}: <b>{{systemStatus.version}}</b></li>
+                <li>{{ 'about.builtTime' | translate }}: <b>{{ systemStatus.built | momentPipe:'yyyy.MM.DD. HH:mm:ss'}}</b></li>
+                <li>{{ 'about.authMode' | translate }}: <b>{{systemStatus.authMode}}</b></li>
+                <li>{{ 'about.status' | translate }}: <b>{{systemStatus.status}}</b></li>
                 @if (systemStatus.containerHostType === 'DOCKER' || systemStatus.containerHostType === 'SWARM' || systemStatus.containerHostType === 'UNKNOWN') {
-                    <li>Container ID: <b>{{systemStatus.containerId}}</b></li>
+                    <li>{{ 'about.containerId' | translate }}: <b>{{systemStatus.containerId}}</b></li>
                 } @else if (systemStatus.containerHostType === 'KUBERNETES' || systemStatus.containerHostType === 'OPENSHIFT') {
-                    <li>Pod ID: <b>{{systemStatus.containerId}}</b></li>
+                    <li>{{ 'about.podId' | translate }}: <b>{{systemStatus.containerId}}</b></li>
                 }
             </ul>
         } @else {

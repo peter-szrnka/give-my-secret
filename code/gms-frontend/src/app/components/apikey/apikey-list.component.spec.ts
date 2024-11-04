@@ -6,11 +6,12 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { ClipboardService } from "../../common/service/clipboard-service";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
-import { ApiKeyListComponent, COPY_MESSAGE } from "./apikey-list.component";
+import { ApiKeyListComponent } from "./apikey-list.component";
 import { ApiKeyService } from "./service/apikey-service";
 
 /**
@@ -33,7 +34,7 @@ describe('ApiKeyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, BrowserAnimationsModule, MomentPipe ],
+            imports : [ AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
             declarations : [ApiKeyListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -172,6 +173,6 @@ describe('ApiKeyListComponent', () => {
         component.copyApiKeyValue('value');
 
         // assert
-        expect(clipboardService.copyValue).toHaveBeenCalledWith('value', COPY_MESSAGE);
+        expect(clipboardService.copyValue).toHaveBeenCalled();
     });
 });

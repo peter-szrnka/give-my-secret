@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing";
-import { TRANSLATION_NOT_FOUND, TranslatorService } from "./translator-service";
+import { TranslatorService } from "./translator-service";
+import { SecureStorageService } from "./secure-storage.service";
 
 /**
  * @author Peter Szrnka
@@ -9,7 +10,10 @@ describe("TranslatorService", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [TranslatorService]
+            providers: [
+                TranslatorService,
+                { provide: SecureStorageService, useValue: { getItemWithoutEncryption: jest.fn().mockReturnValue("en") } }
+            ]
         });
         service = TestBed.inject(TranslatorService);
     });
@@ -27,6 +31,6 @@ describe("TranslatorService", () => {
     });
 
     it("should return the translation missing text", () => {
-        expect(service.translate("notExistingKey")).toBe(TRANSLATION_NOT_FOUND);
+        expect(service.translate("notExistingKey")).toBe("Translation not found: notExistingKey");
     });
 });

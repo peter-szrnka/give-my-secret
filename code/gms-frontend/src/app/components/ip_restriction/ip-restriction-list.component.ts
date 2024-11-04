@@ -7,8 +7,6 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { IpRestriction, PAGE_CONFIG_IP_RESTRICTION } from "./model/ip-restriction.model";
 import { IpRestrictionService } from "./service/ip-restriction.service";
 
-export const COPY_MESSAGE = "Api key value copied to clipboard!";
-
 /**
  * @author Peter Szrnka
  */

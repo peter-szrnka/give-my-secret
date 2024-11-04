@@ -1,0 +1,70 @@
+{
+    "en" : {
+        "GMS-000" : "Default error code",
+        "GMS-001" : "Unexpected IO error",
+        "GMS-002" : "Entity does not exist",
+        "GMS-003" : "User already exists",
+        "GMS-004" : "Old credential is not valid",
+        "GMS-005" : "New credential is not valid",
+
+        "GMS-006" : "Keystore alias is not available",
+        "GMS-007" : "Invalid keystore",
+        "GMS-008" : "Invalid keystore alias",
+        "GMS-009" : "Keystore file name must be unique",
+        "GMS-010" : "At least one keystore alias must be defined",
+        "GMS-011" : "User cannot upload a keystore along with a generated keystore, only one can be selected",
+        "GMS-012" : "Keystore file must be provided!",
+        "GMS-013" : "Keystore name must be unique!",
+        "GMS-014" : "Keystore file does not exist",
+        "GMS-015" : "Please provide an active keystore",
+
+        "GMS-016" : "Wrong API key",
+        "GMS-017" : "It is not allowed to use this API key for this secret",
+        "GMS-018" : "API key name must be unique",
+        "GMS-019" : "API key value must be unique",
+
+        "GMS-020" : "Secret ID name must be unique",
+        "GMS-021" : "Username password pair is invalid in secret",
+        "GMS-022" : "Secret is not available",
+        "GMS-023" : "It is not allowed to get this secret from your IP address",
+        "GMS-024" : "Only global IP restrictions allowed to save with this service",
+        "GMS-025" : "The given resource is not a global IP restriction",
+
+        "GMS-026" : "Unknown system property",
+        "GMS-027" : "Invalid value for system property"
+    },
+    "hu" : {
+        "GMS-000" : "Alapértelmezett hibakód",
+        "GMS-001" : "Váratlan IO hiba",
+        "GMS-002" : "Entitás nem létezik",
+        "GMS-003" : "A felhasználó már létezik",
+        "GMS-004" : "A régi jelszó nem érvényes",
+        "GMS-005" : "Az új jelszó nem érvényes",
+
+        "GMS-006" : "A kulcs tároló alias nem elérhető",
+        "GMS-007" : "Érvénytelen kulcs tároló",
+        "GMS-008" : "Érvénytelen kulcs tároló alias",
+        "GMS-009" : "A kulcs tároló fájl nevének egyedinek kell lennie",
+        "GMS-010" : "Legalább egy kulcs tároló aliasnak lennie kell",
+        "GMS-011" : "A felhasználó nem tölthet fel egy kulcs tárolót egy generált kulcs tárolóval együtt, csak egyet lehet kiválasztani",
+        "GMS-012" : "A kulcs tároló fájlt meg kell adni!",
+        "GMS-013" : "A kulcs tároló nevének egyedinek kell lennie!",
+        "GMS-014" : "A kulcs tároló fájl nem létezik",
+        "GMS-015" : "Kérlek adj meg egy aktív kulcs tárolót",
+
+        "GMS-016" : "Érvénytelen API kulcs",
+        "GMS-017" : "Ezt az API kulcsot nem lehet használni ehhez a secret-hez",
+        "GMS-018" : "Az API kulcs nevének egyedinek kell lennie",
+        "GMS-019" : "Az API kulcs értékének egyedinek kell lennie",
+
+        "GMS-020" : "A Secret azonosító nevének egyedinek kell lennie",
+        "GMS-021" : "A felhasználónév jelszó páros érvénytelen a Secret-ben",
+        "GMS-022" : "A Secret nem elérhető",
+        "GMS-023" : "A Secret nem lekérdezhető az IP címedről",
+        "GMS-024" : "Csakis globális IP korlátozások menthetők ezzel a szolgáltatással",
+        "GMS-025" : "A megadott erőforrás nem globális IP korlátozás",
+
+        "GMS-026" : "Ismeretlen rendszer tulajdonság",
+        "GMS-027" : "Érvénytelen érték a rendszer tulajdonság beállításához"
+    }
+}

@@ -8,6 +8,7 @@ import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { MessageListComponent } from "./message-list.component";
 import { MessageService } from "./service/message-service";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -22,7 +23,8 @@ import { NavBackComponent } from "../../common/components/nav-back/nav-back.comp
         AppRoutingModule,
         GmsComponentsModule,
         MomentPipe,
-        NavBackComponent
+        NavBackComponent,
+        TranslatorModule
     ], providers: [
         MessageService, provideHttpClient(withInterceptorsFromDi())
     ]
