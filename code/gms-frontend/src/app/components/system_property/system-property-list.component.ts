@@ -187,7 +187,7 @@ export class SystemPropertyListComponent {
         this.executeCallbackMethod(element.callbackMethod);
       },
       error: (err) => {
-        this.openInformationDialog("Error: " + getErrorMessage(err), false, 'warning');
+        this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err));
         this.reloadPage();
       }
     });
@@ -211,8 +211,8 @@ export class SystemPropertyListComponent {
     });
   }
 
-  openInformationDialog(message: string, navigateToList: boolean, dialogType: string) {
-    this.infoDialogRef = this.dialogService.openNewDialog({ text: message, type: dialogType });
+  openInformationDialog(message: string, navigateToList: boolean, dialogType: string, errorMessage?: string) {
+    this.infoDialogRef = this.dialogService.openNewDialog({ text: message, type: dialogType, arg: errorMessage });
 
     this.infoDialogRef.afterClosed().subscribe(() => {
       if (navigateToList === false) {

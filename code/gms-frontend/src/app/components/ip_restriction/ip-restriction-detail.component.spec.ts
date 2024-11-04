@@ -97,7 +97,7 @@ describe('IprestrictionDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialog.openNewDialog).toHaveBeenCalledWith({"errorCode": "GMS-018", "text": "Error: OOPS!", "type": "warning"});
+        expect(dialog.openNewDialog).toHaveBeenCalledWith({"errorCode": "GMS-018", "text": "dialog.save.error", "type": "warning", "arg": "OOPS!"});
     });
 
     it('Should fail at form validation 2', () => {

@@ -100,7 +100,7 @@ describe('ApiKeyDetailComponent', () => {
 
         // assert
         expect(component).toBeTruthy();
-        expect(dialogService.openNewDialog).toHaveBeenCalledWith({"errorCode": "GMS-018", "text": "Error: OOPS!", "type": "warning"});
+        expect(dialogService.openNewDialog).toHaveBeenCalledWith({"errorCode": "GMS-018", "text": "dialog.save.error", "type": "warning", "arg": "OOPS!"});
     });
 
     it('Should fail at form validation 2', () => {
