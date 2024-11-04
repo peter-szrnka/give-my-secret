@@ -3,7 +3,7 @@ import { DialogService } from "../../common/service/dialog-service";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { getErrorCode, getErrorMessage } from "../../common/utils/error-utils";
+import { getErrorCode } from "../../common/utils/error-utils";
 import { CredentialApiResponse } from "../secret/model/credential-api-response.model";
 import { ApiTestingService } from "./service/api-testing-service";
 
