@@ -7,11 +7,13 @@
     @if (data.type === 'information') {
       <mat-icon class="v-bottom">info</mat-icon>
     }
-    {{ data.text | translate: data.arg }}
+    @if (data.errorCode) {
+      {{ 'dialog.label.errorCode.' + data.errorCode | translate }}
+    }
+    @else {
+      {{ data.text | translate: data.arg }}
+    }
   </p>
-  @if (data.errorCode) {
-    <p><b>{{ 'dialog.label.errorCode' | translate }}: {{data.errorCode}}</b></p>
-  }
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]="noData">{{ 'dialog.close' | translate }}</button>
