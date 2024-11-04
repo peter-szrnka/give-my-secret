@@ -33,7 +33,7 @@
                     <mat-label>{{ 'tables.status' | translate }}</mat-label>
                     <mat-select [(ngModel)]="data.status" name="status" required [disabled]="editEnabled === false">
                       @for (status of selectableStatuses; track status) {
-                        <mat-option [value]="status">{{status}}</mat-option>
+                        <mat-option [value]="status">{{'dropdown.'+status | translate}}</mat-option>
                       }
                     </mat-select>
                   </mat-form-field>

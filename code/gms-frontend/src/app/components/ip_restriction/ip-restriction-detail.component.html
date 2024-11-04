@@ -21,15 +21,15 @@
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>{{ 'iprestriction.allowed' | translate }}</mat-label>
             <mat-select required [(ngModel)]="data.allow" name="allow">
-              <mat-option [value]="true">true</mat-option>
-              <mat-option [value]="false">false</mat-option>
+              <mat-option [value]="true">{{ 'dropdown.true' | translate }}</mat-option>
+                <mat-option [value]="false">{{ 'dropdown.false' | translate }}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>{{ 'tables.status' | translate }}</mat-label>
             <mat-select [(ngModel)]="data.status" name="status" required>
-              <mat-option [value]="'ACTIVE'">ACTIVE</mat-option>
-              <mat-option [value]="'DISABLED'">DISABLED</mat-option>
+              <mat-option [value]="'ACTIVE'">{{ 'dropdown.ACTIVE' | translate }}</mat-option>
+              <mat-option [value]="'DISABLED'">{{ 'dropdown.DISABLED' | translate }}</mat-option>
             </mat-select>
           </mat-form-field>
           @if (data.id !== undefined) {

@@ -25,8 +25,8 @@
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>{{ 'tables.status' | translate }}</mat-label>
             <mat-select [(ngModel)]="data.status" name="status" required>
-              <mat-option [value]="'ACTIVE'">ACTIVE</mat-option>
-              <mat-option [value]="'DISABLED'">DISABLED</mat-option>
+              <mat-option [value]="'ACTIVE'">{{ 'dropdown.ACTIVE' | translate }}</mat-option>
+              <mat-option [value]="'DISABLED'">{{ 'dropdown.DISABLED' | translate }}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field appearance="fill" class="full-width">

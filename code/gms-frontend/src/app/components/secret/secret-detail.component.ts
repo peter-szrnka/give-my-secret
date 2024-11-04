@@ -12,7 +12,7 @@ import { IdNamePair } from "../../common/model/id-name-pair.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { getErrorMessage } from "../../common/utils/error-utils";
+import { getErrorCode, getErrorMessage } from "../../common/utils/error-utils";
 import { ApiKeyService } from "../apikey/service/apikey-service";
 import { IpRestriction } from "../ip_restriction/model/ip-restriction.model";
 import { KeystoreService } from "../keystore/service/keystore-service";
@@ -123,7 +123,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
                 this.openInformationDialog("dialog.save." + this.getPageConfig().scope, true, 'information');
             },
             error: (err) => {
-                this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err));
+                this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err), getErrorCode(err));
             },
             complete: () => {
                 this.splashScreenStateService.stop();
@@ -150,7 +150,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
                 this.openInformationDialog("dialog.secret.rotate", false, 'information');
             },
             error: (err) => {
-                this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err));
+                this.openInformationDialog("dialog.save.error", false, 'warning', getErrorMessage(err), getErrorCode(err));
             }
         });
     }

@@ -27,6 +27,17 @@
         "dialog.passwordRequestSent" : "Password request sent to admins!",
         "dialog.failedToSendPasswordReset" : "Failed to request password reset!",
         "dialog.secret.rotate": "Secret rotated successfully!",
+
+        "dropdown.true": "True",
+        "dropdown.false": "False",
+
+        "dropdown.ACTIVE": "Active",
+        "dropdown.DISABLED": "Disabled",
+        "dropdown.BLOCKED": "Blocked",
+        "dropdown.DELETE_REQUESTED": "Delete requested",
+        "dropdown.TO_BE_DELETED": "To be deleted",
+        "dropdown.ANONYMIZATION_REQUESTED": "Anonymization requested",
+        "dropdown.ANONYMIZED": "Anonymized",
     
         "automaticLogout.title" : "Automatic Logout",
         "automaticLogout.logout" : "You have been logged out due to inactivity.",
@@ -300,6 +311,17 @@
         "dialog.failedToSendPasswordReset" : "Jelszó visszaállítás kérés sikertelen!",
         "dialog.secret.rotate": "Secret sikeresen rotálva!",
 
+        "dropdown.true": "Igen",
+        "dropdown.false": "Nem",
+
+        "dropdown.ACTIVE": "Aktív",
+        "dropdown.DISABLED": "Tiltott",
+        "dropdown.BLOCKED": "Blokkolt",
+        "dropdown.DELETE_REQUESTED": "Törlés kérve",
+        "dropdown.TO_BE_DELETED": "Törlésre vár",
+        "dropdown.ANONYMIZATION_REQUESTED": "Anonimizálás kérve",
+        "dropdown.ANONYMIZED": "Anonimizált",
+
         "automaticLogout.title" : "Automatikus kijelentkezés",
         "automaticLogout.logout" : "Ki lettél léptetve inaktivitás miatt.",
 
@@ -482,7 +504,7 @@
         "secrets.copy" : "Secret másolása",
         "secrets.id" : "Secret ID",
         "secrets.keystoreId" : "Kulcstár ID",
-        "secrets.keystoreAlias" : "Keystore alias",
+        "secrets.keystoreAlias" : "Kulcstár alias",
         "secrets.info" : "Fontos: Ha meg akarod változtatni a kapcsolódó kulcstárat, először le kell kérdezned az értéket a \"Érték megjelenítése\" gomb megnyomásával.",
         "secrets.type" : "Típus",
         "secrets.showValue": "Érték megjelenítése",

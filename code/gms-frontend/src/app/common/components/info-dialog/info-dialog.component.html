@@ -8,7 +8,7 @@
       <mat-icon class="v-bottom">info</mat-icon>
     }
     @if (data.errorCode) {
-      {{ 'dialog.label.errorCode.' + data.errorCode | translate }}
+      <b>{{ data.errorCode }}:</b> {{ 'dialog.label.errorCode.' + data.errorCode | translate }}
     }
     @else {
       {{ data.text | translate: data.arg }}
