@@ -183,7 +183,7 @@ export class SystemPropertyListComponent {
     element.valueSet = undefined;
     this.service.save(element).subscribe({
       next: () => {
-        this.openInformationDialog("System property has been saved!", true, 'information');
+        this.openInformationDialog("dialog.save.systemProperty", true, 'information');
         this.executeCallbackMethod(element.callbackMethod);
       },
       error: (err) => {
