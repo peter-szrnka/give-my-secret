@@ -122,6 +122,12 @@ CREATE TABLE gms_job (
 	correlation_id VARCHAR(255) NULL
 );
 
+CREATE TABLE gms_system_attribute (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    value VARCHAR(4000) NOT NULL
+);
+
 CREATE INDEX idx_gms_user ON gms_user(id);
 CREATE INDEX idx_gms_api_key ON gms_api_key(id);
 CREATE INDEX idx_gms_event ON gms_event(id);
@@ -134,6 +140,7 @@ CREATE INDEX idx_gms_api_kr ON gms_api_key_restriction(id);
 CREATE INDEX idx_gms_sys_prop ON gms_system_property(id);
 CREATE INDEX idx_gms_ip_restr ON gms_ip_restriction(id);
 CREATE INDEX idx_gms_job ON gms_job(id);
+CREATE INDEX idx_gms_sys_attr ON gms_system_attribute(id);
 
 CREATE UNIQUE INDEX idx_unq_gms_user ON gms_user(id);
 CREATE UNIQUE INDEX idx_unq_gms_api_key ON gms_api_key(id);
@@ -147,4 +154,6 @@ CREATE UNIQUE INDEX idx_unq_gms_api_kr ON gms_api_key_restriction(id);
 CREATE UNIQUE INDEX idx_unq_gms_sys_prop ON gms_system_property(id);
 CREATE UNIQUE INDEX idx_unq_gms_ip_restr ON gms_ip_restriction(id);
 CREATE UNIQUE INDEX idx_unq_gms_job ON gms_job(id);
+CREATE UNIQUE INDEX idx_unq_gms_sys_attr ON gms_system_attribute(name);
 
+INSERT INTO gms_system_attribute (name, value) VALUES ('SYSTEM_STATUS', 'NEED_SETUP');

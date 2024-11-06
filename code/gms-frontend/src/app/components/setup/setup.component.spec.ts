@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -24,6 +24,7 @@ describe('SetupComponent', () => {
 
     // Injected services
     let router : any;
+    let route: any;
     let splashScreenStateService : any;
     let dialog : any;
     let setupService : any;
@@ -37,6 +38,7 @@ describe('SetupComponent', () => {
             providers: [
                 { provide : WINDOW_TOKEN, useValue : mockWindow },
                 { provide : Router, useValue: router },
+                { provide : ActivatedRoute, useValue: route },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
                 { provide : MatDialog, useValue : dialog },
                 { provide : SetupService, useValue : setupService }
@@ -57,6 +59,10 @@ describe('SetupComponent', () => {
 
         router = {
             navigate : jest.fn().mockReturnValue(of(true))
+        };
+
+        route = {
+            queryParams : of({ systemStatus : 'NEED_ADMIN_USER' })
         };
 
         splashScreenStateService = {
@@ -117,6 +123,9 @@ describe('SetupComponent', () => {
 
     it('should save setup settings', () => {
         // arrange
+        route = {
+            queryParams : of({ systemStatus : 'NEED_SETUP' })
+        };
         configTestBed();
 
         component.userData = {

@@ -25,11 +25,13 @@ public class SystemController implements GmsController {
 
 	private final SystemService systemService;
 
+	// TODO Move to {@link InfoController}
 	@GetMapping("/system/status")
 	public SystemStatusDto status() {
 		return systemService.getSystemStatus();
 	}
 
+	// TODO Move to {@link InfoController}
 	@GetMapping("/error_codes")
 	public ErrorCodeListDto getErrorCodes() {
 		return new ErrorCodeListDto(Stream.of(ErrorCode.values())

@@ -74,4 +74,15 @@ public class SystemPropertyService {
 	public Integer getInteger(SystemProperty key) {
 		return Integer.parseInt(get(key));
 	}
+
+	public void updateSystemProperty(SystemPropertyDto systemPropertyDto) {
+		SystemProperty systemProperty = getSystemPropertyByName(systemPropertyDto.getKey());
+		SystemPropertyEntity entity = repository.findByKey(systemProperty);
+
+		if (!systemProperty.getValidator().validate(systemPropertyDto.getValue())) {
+			throw new GmsException("Invalid value for system property!", ErrorCode.GMS_027);
+		}
+
+		repository.save(converter.toEntity(entity, systemPropertyDto));
+	}
 }

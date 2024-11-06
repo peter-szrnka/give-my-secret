@@ -64,12 +64,18 @@ export class SharedDataService {
             .then((response: SystemStatus) => {
                 this.systemReady = "OK" === response.status;
                 this.authModeSubject$.next(response.authMode);
-                this.systemReadySubject$.next({ ready: this.systemReady, status: 200, authMode: response.authMode, automaticLogoutTimeInMinutes: response.automaticLogoutTimeInMinutes });
+                this.systemReadySubject$.next({ 
+                    ready: this.systemReady, 
+                    systemStatus: response.status,
+                    status: 200, 
+                    authMode: response.authMode, 
+                    automaticLogoutTimeInMinutes: response.automaticLogoutTimeInMinutes 
+                });
                 this.refreshCurrentUserInfo();
             })
             .catch(() => {
                 const authMode = 'N/A';
-                this.systemReadySubject$.next({ ready: false, status: 0, authMode: authMode });
+                this.systemReadySubject$.next({ ready: false, systemStatus: 'FAILURE', status: 0, authMode: authMode });
                 this.systemReady = false;
             });
     }

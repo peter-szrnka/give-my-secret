@@ -4,6 +4,7 @@ import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.enums.ContainerHostType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
+import io.github.gms.functions.setup.SystemAttributeRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.functions.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,8 @@ public class SystemService {
 	private final UserRepository userRepository;
 	private final Clock clock;
 	private final SystemPropertyService systemPropertyService;
+	@Autowired
+	private SystemAttributeRepository systemAttributeRepository;
 
 	@Setter
     @Value("${config.auth.type}")
@@ -48,15 +51,11 @@ public class SystemService {
 		builder.withBuilt(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
 		builder.withContainerHostType(getContainerHostType());
 		builder.withContainerId(getContainerId());
+		builder.withStatus(systemAttributeRepository.getSystemStatus().orElseThrow().getValue()).build();
 
 		setAutomaticLogoutTimeInMinutes(builder);
 
-		if (!SELECTED_AUTH_DB.equals(authType)) {
-			return builder.withStatus(OK).build();
-		}
-
-		long result = userRepository.countExistingAdmins();
-		return builder.withStatus(result > 0 ? OK : "NEED_SETUP").build();
+		return builder.build();
 	}
 
 	@Autowired(required = false)

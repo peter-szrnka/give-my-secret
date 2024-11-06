@@ -23,6 +23,7 @@ import io.github.gms.functions.maintenance.job.JobRepository;
 import io.github.gms.functions.message.MessageRepository;
 import io.github.gms.functions.secret.ApiKeyRestrictionRepository;
 import io.github.gms.functions.secret.SecretRepository;
+import io.github.gms.functions.setup.SystemAttributeRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyRepository;
 import io.github.gms.functions.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -73,9 +74,9 @@ import static io.github.gms.common.util.Constants.LOGGING_OBJECT_MAPPER;
 		KeystoreRepository.class,
 		MessageRepository.class,
 		SecretRepository.class,
+		SystemAttributeRepository.class,
 		SystemPropertyRepository.class,
 		UserRepository.class
-
 })
 public class ApplicationConfig implements WebMvcConfigurer {
 

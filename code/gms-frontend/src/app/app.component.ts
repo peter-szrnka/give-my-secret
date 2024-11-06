@@ -21,7 +21,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   unsubscribe = new Subject<void>();
   currentUser: User | undefined;
-  //systemReady: boolean;
   showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') ?? 'true');
   isAdmin: boolean;
 
@@ -51,7 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
 
         if (!readyData.ready && ['ldap'].indexOf(readyData.authMode) < 0) {
-          void this.router.navigate(['/setup']);
+          void this.router.navigate(['/setup'], { queryParams: { systemStatus: readyData.systemStatus } });
           return;
         }
 

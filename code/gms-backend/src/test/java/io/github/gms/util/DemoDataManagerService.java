@@ -17,6 +17,7 @@ import io.github.gms.functions.message.MessageEntity;
 import io.github.gms.functions.message.MessageRepository;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
+import io.github.gms.functions.setup.SystemAttributeRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyDto;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.functions.user.UserEntity;
@@ -63,6 +64,8 @@ public class DemoDataManagerService {
 	private SystemPropertyService systemPropertyService;
 	@Autowired
 	private JobRepository jobRepository;
+	@Autowired
+	private SystemAttributeRepository systemAttributeRepository;
 
 	public void initTestData() {
 		// User
@@ -107,6 +110,9 @@ public class DemoDataManagerService {
 		JobEntity jobEntity = TestUtils.createJobEntity();
 		jobEntity.setId(null);
 		jobRepository.save(jobEntity);
+
+		// System status
+		systemAttributeRepository.save(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP));
 
 		// End
 		log.info("Test data's have been configured!");

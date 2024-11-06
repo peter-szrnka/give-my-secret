@@ -28,7 +28,9 @@ import java.util.List;
 @Slf4j
 public abstract class AbstractSecurityConfig {
 
-    private static final String[] FILTER_URL = new String[]{"/", "/system/status", "/healthcheck", "/setup/**",
+    private static final String[] FILTER_URL = new String[]{"/", "/system/status", "/healthcheck",
+            "/setup/vm_options", "/setup/step_back", "/setup/initial", "/setup/user",
+            "/setup/properties", "/setup/org_data", "/setup/current_super_admin", "/setup/complete",
             "/login", "/authenticate", "/verify", "/logoutUser", "/api/**", "/info/me", "/actuator/**",
             "/gms-app/**", "/favicon.ico", "/assets/**", "/index.html**", "/*.js**", "/*.css**", "/*.json**",
             "/manifest.webmanifest", "/reset_password", "/error_codes"};
