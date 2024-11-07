@@ -1,22 +1,53 @@
 <form #form="ngForm">
-  <mat-card class="with-margin-top">
-    <mat-card-title>
+  <mat-card class="with-margin-top" style="padding: 10px;">
+    <mat-card-title style="margin-left: 10px;">
       {{ 'setup.title' | translate }}
     </mat-card-title>
     <mat-card-content>
-      @if (errorMessage === '') {
-        <div>
-          {{ 'setup.succeeded' | translate }}
+      @if (loading) {
+        <mat-spinner style="margin:0 auto;" mode="indeterminate"></mat-spinner>
+      } @else {
+        <div class="steps">
+          <div [class]="'step' + (currentStep === 0 ? ' step-active': ' step-passed')">{{ 'setup.step1' | translate }}</div>
+          <div [class]="'step' + (currentStep === 1 ? ' step-active': (currentStep < 1) ? ' step-upcoming':  ' step-passed')">{{ 'setup.step2' | translate }}</div>
+          <div [class]="'step' + (currentStep === 2 ? ' step-active': (currentStep < 2) ? ' step-upcoming':  ' step-passed')">{{ 'setup.step3' | translate }}</div>
+          <div [class]="'step' + (currentStep === 3 ? ' step-active': (currentStep < 3) ? ' step-upcoming':  ' step-passed')">{{ 'setup.step4' | translate }}</div>
+          <div [class]="'step' + (currentStep === 4 ? ' step-active': (currentStep < 4) ? ' step-upcoming':  ' step-passed')">{{ 'setup.step5' | translate }}</div>
         </div>
-      }
+        @if(systemStatus === 'NEED_SETUP') {
+        <div class="information">
+          {{ 'setup.intro' | translate }}
+        </div>
 
-      @if (errorMessage && errorMessage.length > 0) {
+        <mat-accordion>
+          @for (vmOption of vmOptions; track $index) {
+          <mat-expansion-panel [hideToggle]="vmOption.value.length <= 100">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{ vmOption.key }}
+              </mat-panel-title>
+              <mat-panel-description>
+                @if (vmOption.value.length > 100) {
+                ...
+                } @else {
+                {{ vmOption.value }}
+                }
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            {{ vmOption.value }}
+          </mat-expansion-panel>
+          }
+        </mat-accordion>
+        }
+        @else if(systemStatus === 'NEED_ADMIN_USER') {
+        @if (errorMessage) {
         <div class="warning">
           {{ 'setup.failed' | translate: errorMessage }}
         </div>
-      }
+        }
 
-      @if (errorMessage === undefined) {
+        @if (errorMessage === undefined) {
         <div>
           <p class="information">
             {{ 'setup.description' | translate }}
@@ -35,26 +66,79 @@
           </mat-form-field>
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>{{ 'tables.credential' | translate }}</mat-label>
-            <input matInput type="password" name="credential" [(ngModel)]="userData.credential" required
-              minlength="8">
-            </mat-form-field>
+            <input matInput type="password" name="credential" [(ngModel)]="userData.credential" required minlength="8">
+          </mat-form-field>
+        </div>
+        }
+        }
+        @else if (systemStatus === 'NEED_AUTH_CONFIG') {
+        <div>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Failed login attempt limit</mat-label>
+            <input type="number" matInput name="failedLoginLimit" [(ngModel)]="systemPropertyData.FAILED_ATTEMPTS_LIMIT">
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Enable automatic logout</mat-label>
+            <mat-select name="enableAutomaticLogout" [(ngModel)]="systemPropertyData.ENABLE_AUTOMATIC_LOGOUT">
+              <mat-option [value]="true">{{ 'dropdown.true' | translate }}</mat-option>
+              <mat-option [value]="false">{{ 'dropdown.false' | translate }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Automatic logout time in minutes (default=15)</mat-label>
+            <input type="number" matInput name="automaticLogoutTimeInMinutes"
+              [(ngModel)]="systemPropertyData.AUTOMATIC_LOGOUT_TIME_IN_MINUTES">
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Enable Multi Factor Authentication</mat-label>
+            <mat-select name="enableMfa" [(ngModel)]="systemPropertyData.ENABLE_MFA">
+              <mat-option [value]="true">{{ 'dropdown.true' | translate }}</mat-option>
+              <mat-option [value]="false">{{ 'dropdown.false' | translate }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        } @else if (systemStatus === 'NEED_ORG_DATA') {
+        <div>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>{{ 'setup.name' | translate }}</mat-label>
+            <input matInput name="organizationName" [(ngModel)]="systemPropertyData.ORGANIZATION_NAME">
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>{{ 'setup.city' | translate }}</mat-label>
+            <input matInput name="organizationCity" [(ngModel)]="systemPropertyData.ORGANIZATION_CITY">
+          </mat-form-field>
+        </div>
+        } @else if(systemStatus === 'COMPLETE') {
+          <div class="information">
+            {{ 'setup.succeeded' | translate }}
           </div>
         }
-      </mat-card-content>
+      }
+    </mat-card-content>
+    @if (loading !== true) {
       <mat-card-actions>
+        @if(systemStatus === 'NEED_SETUP') {
+          <button mat-raised-button color="primary" (click)="saveInitialStep()">{{ 'setup.next' | translate }}</button>
+        } @else if(systemStatus === 'NEED_ADMIN_USER') {
         @if (errorMessage === undefined) {
-          <button mat-raised-button color="primary" (click)="saveAdminUser()"
-          [disabled]="form.status ==='INVALID'">{{ 'setup.saveAdminUserButton' | translate }}</button>
+          <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
+          <button mat-raised-button color="primary" (click)="saveAdminUser()" [disabled]="form.status ==='INVALID'">{{
+          'setup.saveAdminUserButton' | translate }}</button>
         }
 
-        @if (errorMessage && errorMessage.length > 0) {
-          <button mat-raised-button color="primary"
-          (click)="retrySetup()">{{ 'setup.retrySetup' | translate }}</button>
-        }
-
-        @if (errorMessage === '') {
+        } @else if (systemStatus === 'NEED_AUTH_CONFIG') {
+          <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
+          <button mat-raised-button color="primary" [disabled]="form.status ==='INVALID'"
+          (click)="saveSystemProperties()">{{ 'setup.next' | translate }}</button>
+        } @else if (systemStatus === 'NEED_ORG_DATA') {
+          <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
+          <button mat-raised-button color="primary" [disabled]="form.status ==='INVALID'"
+          (click)="saveOrganizationData()">{{ 'setup.next' | translate }}</button>
+        } @else if(systemStatus === 'COMPLETE') {
+          <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
           <button mat-raised-button color="primary" (click)="navigateToHome()">{{ 'setup.goToMainPage' | translate }}</button>
         }
       </mat-card-actions>
-    </mat-card>
-  </form>
+    }
+  </mat-card>
+</form>

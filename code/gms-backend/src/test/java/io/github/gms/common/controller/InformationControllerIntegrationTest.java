@@ -4,6 +4,7 @@ import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
+import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.util.DemoData;
@@ -14,7 +15,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import static io.github.gms.common.enums.SystemStatus.NEED_SETUP;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
+import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,4 +62,35 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
         assertEquals(DemoData.USERNAME1, result.getUsername());
         assertEquals(UserRole.ROLE_USER, result.getRole());
 	}
+
+    @Test
+    @TestedMethod("status")
+    void shouldSystemStatusOK() {
+
+        // act
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+        ResponseEntity<SystemStatusDto> response = executeHttpGet("/info/status", requestEntity, SystemStatusDto.class);
+
+        // assert
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(NEED_SETUP.name(), response.getBody().getStatus());
+        assertNotNull(response.getBody().getVersion());
+        assertEquals(SELECTED_AUTH_DB, response.getBody().getAuthMode());
+    }
+
+    @Test
+    @TestedMethod("getErrorCodes")
+    void shouldGetErrorCodes() {
+
+        // act
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+        ResponseEntity<String> response = executeHttpGet("/info/error_codes", requestEntity, String.class);
+
+        // assert
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
 }

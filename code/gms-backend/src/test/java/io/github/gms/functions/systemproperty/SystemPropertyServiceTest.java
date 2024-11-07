@@ -204,4 +204,41 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 		assertEquals(value, response);
 		verify(repository).getValueByKey(SystemProperty.ENABLE_GLOBAL_MFA);
 	}
+
+	@Test
+	void shouldUpdateSystemProperty() {
+		// arrange
+		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
+		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("900").build();
+		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(mockEntity);
+		when(converter.toEntity(mockEntity, inputDto)).thenReturn(mockEntity);
+
+		//act
+		assertDoesNotThrow(() -> service.updateSystemProperty(inputDto));
+
+		// assert
+		verify(repository).findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
+		ArgumentCaptor<SystemPropertyEntity> captor = ArgumentCaptor.forClass(SystemPropertyEntity.class);
+		verify(converter).toEntity(mockEntity, inputDto);
+		verify(repository).save(captor.capture());
+		SystemPropertyEntity captured = captor.getValue();
+		assertEquals("SystemPropertyEntity(id=null, key=ACCESS_JWT_EXPIRATION_TIME_SECONDS, value=900, lastModified=null)", captured.toString());
+	}
+
+	@Test
+	void shouldThrowErrorWhenValueIsInvalid() {
+		// arrange
+		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
+		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("0").build();
+		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(mockEntity);
+
+		//act
+		GmsException exception = assertThrows(GmsException.class, () -> service.updateSystemProperty(inputDto));
+
+		// assert
+		assertThat(exception).hasMessage("Invalid value for system property!");
+		verify(repository).findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
+		verify(converter, never()).toEntity(mockEntity, inputDto);
+		verify(repository, never()).save(mockEntity);
+	}
 }

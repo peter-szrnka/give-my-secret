@@ -100,7 +100,7 @@ describe('AppComponent', () => {
         };
         router.url = '/user/list';
         mockSubject.next(currentUser);
-        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
         configureTestBed();
         
         // act & assert
@@ -120,7 +120,7 @@ describe('AppComponent', () => {
         };
         configureTestBed();
         mockSubject.next(currentUser);
-        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode: 'db', systemStatus: 'OK' });
         component.toggleTextMenuVisibility();
 
         // act & assert
@@ -133,7 +133,7 @@ describe('AppComponent', () => {
 
     it('System is offline', () => {
         configureTestBed();
-        mockSystemReadySubject.next({ ready: false, status: 0, authMode : '' });
+        mockSystemReadySubject.next({ ready: false, status: 0, authMode : '', systemStatus: 'NEED_SETUP' });
         fixture.autoDetectChanges();
 
         // act & assert
@@ -144,7 +144,7 @@ describe('AppComponent', () => {
 
     it('System is not ready', () => {
         configureTestBed();
-        mockSystemReadySubject.next({ ready: false, status: 200, authMode : 'db', automaticLogoutTimeInMinutes: 1 });
+        mockSystemReadySubject.next({ ready: false, status: 200, authMode : 'db', automaticLogoutTimeInMinutes: 1, systemStatus: 'NEED_SETUP' });
         fixture.autoDetectChanges();
 
         // act & assert
@@ -155,7 +155,7 @@ describe('AppComponent', () => {
 
     it('Unexpected error during ready data query', () => {
         configureTestBed();
-        mockSystemReadySubject.next({ ready: true, status: 500, authMode : 'db' });
+        mockSystemReadySubject.next({ ready: true, status: 500, authMode : 'db', systemStatus: 'OK' });
         fixture.autoDetectChanges();
 
         // act & assert
@@ -168,7 +168,7 @@ describe('AppComponent', () => {
         router.url = '/api_key/list';
         configureTestBed();
         mockSubject.next(undefined); 
-        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
         fixture.detectChanges();
 
         // act & assert
@@ -183,7 +183,7 @@ describe('AppComponent', () => {
         mockLocation.path = jest.fn().mockReturnValue("");
         configureTestBed();
         mockSubject.next(undefined); 
-        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
         fixture.detectChanges();
 
         // act & assert
@@ -196,7 +196,7 @@ describe('AppComponent', () => {
         sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
         configureTestBed();
         mockSubject.next(undefined);
-        mockSystemReadySubject.next({ ready: false, status: 500, authMode : 'db' });
+        mockSystemReadySubject.next({ ready: false, status: 500, authMode : 'db', systemStatus: 'NEED_SETUP' });
         fixture.detectChanges();
 
         // act & assert
@@ -213,7 +213,7 @@ describe('AppComponent', () => {
         };
         router.url = '/login';
         mockSubject.next(currentUser);
-        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
         configureTestBed();
         
         // act & assert
@@ -230,7 +230,7 @@ describe('AppComponent', () => {
         };
         router.url = '/login';
         mockSubject.next(currentUser);
-        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db' });
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
         mockNavigationEmitter.emit('/apikey/list');
         configureTestBed();
         

@@ -32,6 +32,7 @@ import io.github.gms.functions.message.MessageDto;
 import io.github.gms.functions.message.MessageEntity;
 import io.github.gms.functions.message.MessageListDto;
 import io.github.gms.functions.secret.*;
+import io.github.gms.functions.setup.SystemAttributeEntity;
 import io.github.gms.functions.systemproperty.SystemPropertyDto;
 import io.github.gms.functions.systemproperty.SystemPropertyEntity;
 import io.github.gms.functions.systemproperty.SystemPropertyListDto;
@@ -459,7 +460,15 @@ public class TestUtils {
 				.build())).totalElements(1L).build();
 	}
 
-	@Data
+    public static SystemAttributeEntity createSystemAttributeEntity(SystemStatus status) {
+		SystemAttributeEntity entity = new SystemAttributeEntity();
+		entity.setName("SYSTEM_STATUS");
+		entity.setValue(status.name());
+
+		return entity;
+    }
+
+    @Data
 	@AllArgsConstructor
 	public static class ValueHolder {
 		KeyStoreValueType valueType;

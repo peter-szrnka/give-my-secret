@@ -36,7 +36,7 @@ class GmsExceptionHandlerIntegrationTest extends AbstractIntegrationTest {
         when(systemService.getSystemStatus()).thenThrow(new GmsException("Test exception", ErrorCode.GMS_026));
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
-        ResponseEntity<SystemStatusDto> response = executeHttpGet("/system/status", requestEntity, SystemStatusDto.class);
+        ResponseEntity<SystemStatusDto> response = executeHttpGet("/info/status", requestEntity, SystemStatusDto.class);
 
         // assert
         assertNotNull(response);
@@ -50,7 +50,7 @@ class GmsExceptionHandlerIntegrationTest extends AbstractIntegrationTest {
         when(systemService.getSystemStatus()).thenThrow(new AccessDeniedException("Access denied"));
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
-        ResponseEntity<SystemStatusDto> response = executeHttpGet("/system/status", requestEntity, SystemStatusDto.class);
+        ResponseEntity<SystemStatusDto> response = executeHttpGet("/info/status", requestEntity, SystemStatusDto.class);
 
         // assert
         assertNotNull(response);

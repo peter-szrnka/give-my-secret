@@ -5,21 +5,23 @@ import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.enums.ContainerHostType;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.enums.SystemStatus;
+import io.github.gms.functions.setup.SystemAttributeRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
-import io.github.gms.functions.user.UserRepository;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mockito;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.core.env.Environment;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,8 +36,8 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
     private Environment environment;
     private Clock clock;
     private SystemPropertyService systemPropertyService;
-    private UserRepository userRepository;
     private BuildProperties buildProperties;
+    private SystemAttributeRepository systemAttributeRepository;
     private SystemService service;
 
     @Override
@@ -46,11 +48,11 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
 
         environment = mock(Environment.class);
         clock = mock(Clock.class);
-        userRepository = mock(UserRepository.class, Mockito.RETURNS_SMART_NULLS);
         buildProperties = mock(BuildProperties.class);
         systemPropertyService = mock(SystemPropertyService.class);
+        systemAttributeRepository = mock(SystemAttributeRepository.class);
 
-        service = new SystemService(environment, userRepository, clock, systemPropertyService);
+        service = new SystemService(environment, clock, systemPropertyService, systemAttributeRepository);
         service.setAuthType("db");
     }
 
@@ -62,15 +64,14 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
         service.setBuildProperties(buildProperties);
         when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
         when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-
-        when(userRepository.countExistingAdmins()).thenReturn(OK.equals(mockResponse) ? 1L : 0L);
+        when(systemAttributeRepository.getSystemStatus())
+                .thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.valueOf(mockResponse))));
 
         // act
         SystemStatusDto response = service.getSystemStatus();
 
         // assert
         Assertions.assertEquals(mockResponse, response.getStatus());
-        verify(userRepository).countExistingAdmins();
         assertEquals("db", response.getAuthMode());
         assertEquals("2023-06-29T02:00:00.000+0200", response.getBuilt());
     }
@@ -81,6 +82,8 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
         // arrange
         service.setAuthType(selectedAuth);
         service.setBuildProperties(buildProperties);
+        when(systemAttributeRepository.getSystemStatus())
+                .thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
         when(environment.getProperty(CONTAINER_HOST_TYPE)).thenReturn(containerHostType.name());
         if (containerHostType == ContainerHostType.DOCKER || containerHostType == ContainerHostType.SWARM) {
@@ -99,10 +102,6 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
             when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
         }
 
-        if (selectedAuth.equals(SELECTED_AUTH_DB)) {
-            when(userRepository.countExistingAdmins()).thenReturn(1L);
-        }
-
         // act
         SystemStatusDto response = service.getSystemStatus();
 
@@ -118,7 +117,6 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
         } else if(containerHostType == ContainerHostType.KUBERNETES || containerHostType == ContainerHostType.OPENSHIFT) {
             verify(environment).getProperty(POD_ID, N_A);
         }
-        verify(userRepository, times(selectedAuth.equals(SELECTED_AUTH_DB) ? 1 : 0)).countExistingAdmins();
 
         if (hasBuildProperties) {
             verify(buildProperties).getTime();
@@ -132,9 +130,10 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
         service.setBuildProperties(buildProperties);
         when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
         when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-        when(userRepository.countExistingAdmins()).thenReturn(1L);
         when(systemPropertyService.getBoolean(SystemProperty.ENABLE_AUTOMATIC_LOGOUT)).thenReturn(true);
         when(systemPropertyService.getInteger(SystemProperty.AUTOMATIC_LOGOUT_TIME_IN_MINUTES)).thenReturn(30);
+        when(systemAttributeRepository.getSystemStatus())
+                .thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
         // act
         SystemStatusDto response = service.getSystemStatus();

@@ -1,0 +1,30 @@
+@import '../../../globals.scss';
+
+.steps {
+    margin-bottom: 10px;
+}
+
+.steps > .step {
+    display: inline-block;
+    width: 20%;
+    padding: 20px 0 20px 0;
+    border: 0;
+    text-align: center;
+}
+
+.steps > .step-passed {
+    background-color: $success !important;
+    color: $success_dark;
+    font-weight: bold;
+}
+
+.steps > .step-active {
+    background-color: $information !important;
+    font-weight: bold;
+    color: white;
+}
+
+.steps > .step-upcoming {
+    background-color: #f0f0f0 !important;
+    color: darkgray;
+}

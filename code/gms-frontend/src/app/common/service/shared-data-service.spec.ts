@@ -61,7 +61,7 @@ describe('SharedDataService', () => {
       userName: "test1",
       userId: 1
     };
-    mockSystemReadySubject.next({ ready: true, status: 200, authMode: 'db' });
+    mockSystemReadySubject.next({ ready: true, status: 200, authMode: 'db', systemStatus: "OK" });
 
     
     infoService = {

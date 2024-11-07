@@ -63,14 +63,14 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public SaveEntityResponseDto saveAdminUser(SaveUserRequestDto dto) {
 		log.info("service saveUser called");
-		return saveUser(dto, true);
+		return saveUser(dto, true, false);
 	}
 
 	@Override
 	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveUserRequestDto dto) {
 		boolean isAdmin = Boolean.parseBoolean(MDC.get(MdcParameter.IS_ADMIN.getDisplayName()));
-		return saveUser(dto, isAdmin);
+		return saveUser(dto, isAdmin, true);
 	}
 
 	@Override
@@ -167,8 +167,10 @@ public class UserServiceImpl implements UserService {
 			.build();
 	}
 
-	private SaveEntityResponseDto saveUser(SaveUserRequestDto dto, boolean roleChangeEnabled) {
-		validateUserExistence(dto);
+	private SaveEntityResponseDto saveUser(SaveUserRequestDto dto, boolean roleChangeEnabled, boolean validationEnabled) {
+		if (validationEnabled) {
+			validateUserExistence(dto);
+		}
 
 		UserEntity entity;
 

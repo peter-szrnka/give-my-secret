@@ -195,7 +195,8 @@
 
         "systemProperties.category": "Category",
 
-        "setup.title" : "Setup application",
+        "setup.intro": "Welcome to Give My Secret application! In order to make the application works, you must walk through the setup wizard. Please check the list of JVM properties, then click on the Continue button below.",
+        "setup.title" : "Application setup wizard",
         "setup.description" : "In order to make the application works, you must create an admin user. Please fill in the next form.",
         "setup.succeeded" : "Application has been configured successfully!",
         "setup.failed" : "Unexpected error occurred: $s",
@@ -205,6 +206,15 @@
         "setup.saveAdminUserButton" : "Save admin user",
         "setup.retrySetup" : "Retry setup",
         "setup.goToMainPage" : "Go to main page",
+        "setup.back": "Back",
+        "setup.next": "Next",
+        "setup.step1": "Step 1: Introduction",
+        "setup.step2": "Step 2: Admin user setup",
+        "setup.step3": "Step 3: Authentication configuration",
+        "setup.step4": "Step 4: Organization information configuration",
+        "setup.step5": "Step 5: Complete",
+        "setup.name": "Name",
+        "setup.city": "City",
 
         "iprestriction.pattern": "IP pattern",
         "iprestriction.allowed" : "Allowed/blocked",
@@ -478,8 +488,9 @@
 
         "systemProperties.category": "Kategória",
 
-        "setup.title" : "Alkalmazás beállítása",
-        "setup.description" : "Az alkalmazás működéséhez egy adminisztrátor felhasználót kell létrehoznia. Kérjük töltse ki a következő űrlapot.",
+        "setup.intro": "Üdvözöljük a Give My Secret alkalmazásban! Az alkalmazás működéséhez végig kell menned a beállítás varázslón. Kérlek ellenőrizd a JVM tulajdonságok listáját, majd kattints a lenti Folytatás gombra.",
+        "setup.title" : "Alkalmazás beállítás varázsló",
+        "setup.description" : "Az alkalmazás működéséhez egy adminisztrátor felhasználót kell létrehozni. Kérlek töltsd ki a következő űrlapot.",
         "setup.succeeded" : "Az alkalmazás sikeresen konfigurálva!",
         "setup.failed" : "Váratlan hiba történt: $s",
         "setup.fullName" : "Teljes név",
@@ -488,6 +499,15 @@
         "setup.saveAdminUserButton" : "Adminisztrátor felhasználó mentése",
         "setup.retrySetup" : "Újrapróbálkozás",
         "setup.goToMainPage" : "Nyitóoldalra lépés",
+        "setup.back": "Vissza",
+        "setup.next": "Következő",
+        "setup.step1": "1. lépés: Bevezetés",
+        "setup.step2": "2. lépés: Adminisztrátor felhasználó beállítása",
+        "setup.step3": "3. lépés: Hitelesítés beállítása",
+        "setup.step4": "4. lépés: Szervezeti információk beállítása",
+        "setup.step5": "5. lépés: Véglegesítés",
+        "setup.name": "Név",
+        "setup.city": "Város",
 
         "iprestriction.pattern": "IP minta",
         "iprestriction.allowed" : "Engedélyezett/blokkolt",
