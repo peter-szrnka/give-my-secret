@@ -33,7 +33,7 @@ import static org.springframework.test.util.AssertionErrors.*;
  */
 class IntegrationAnnotationCheckerTest {
     // Test settings
-    private static final int FAILURE_THRESHOLD = 3;
+    private static final int FAILURE_THRESHOLD = 0;
     private static final boolean SKIP_ENABLED = false;
 
     private static final Set<String> IGNORED_METHODS = Set.of(
@@ -59,7 +59,7 @@ class IntegrationAnnotationCheckerTest {
         controllers.forEach((k, v) -> assertController(skipCounter, k, v));
 
         // Threshold for the number of classes & methods that is skipped temporarily
-        assertThat(skipCounter.get()).isLessThan(FAILURE_THRESHOLD);
+        assertThat(skipCounter.get()).isLessThanOrEqualTo(FAILURE_THRESHOLD);
     }
 
     @Test
@@ -87,7 +87,7 @@ class IntegrationAnnotationCheckerTest {
         });
 
         // Threshold for the number of classes & methods that is skipped temporarily
-        assertThat(skipCounter.get()).isLessThan(FAILURE_THRESHOLD);
+        assertThat(skipCounter.get()).isLessThanOrEqualTo(FAILURE_THRESHOLD);
         assertTrue("Missing security tests: " + String.join(", \r\n", missingSecurityTests), missingSecurityTests.isEmpty());
         assertTrue("Missing security test methods: " + printUncoveredTestMethods(missingSecurityTestMethods), missingSecurityTestMethods.isEmpty());
     }

@@ -17,7 +17,7 @@ export class SetupService {
     constructor(private readonly http : HttpClient) { }
 
     public checkReady() : Observable<SystemStatus> {
-        return this.http.get<SystemStatus>(environment.baseUrl + 'system/status', { headers : getHeaders() });
+        return this.http.get<SystemStatus>(environment.baseUrl + 'info/status', { headers : getHeaders() });
     }
 
     public getVmOptions() : Observable<{ [key: string]: string }> {

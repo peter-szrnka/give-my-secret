@@ -5,5 +5,5 @@
  */
 export const MockConfig : any = {
     enable : false,
-    "system/status" : "OK"
+    "info/status" : "OK"
 };

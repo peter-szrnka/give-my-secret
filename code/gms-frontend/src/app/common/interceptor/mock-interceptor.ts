@@ -17,12 +17,12 @@ import * as systemStatus from "../../../assets/mock/system.status.json";
 import * as unreadMessages from "../../../assets/mock/unread.messages.json";
 
 const MOCK_MAP : any = {
-    "system/status" : systemStatus,
+    "info/status" : systemStatus,
     "info/me" : infoMe,
     "secure/home/" : mockHomeData,
     "secure/message/unread" : unreadMessages,
     "secure/message/list?direction=DESC&property=creationDate&page=0&size=10": messages,
-    "error_codes" : errorCodes,
+    "info/error_codes" : errorCodes,
     "secure/system_property/list?direction=DESC&property=key&page=0&size=50" : systemPropertyList,
     "secure/event/list?direction=DESC&property=eventDate&page=0&size=25" : eventList
 };
