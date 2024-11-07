@@ -6,7 +6,6 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
 import io.github.gms.functions.setup.SystemAttributeRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
-import io.github.gms.functions.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -32,11 +31,9 @@ import static io.github.gms.common.util.Constants.*;
 public class SystemService {
 
 	private final Environment environment;
-	private final UserRepository userRepository;
 	private final Clock clock;
 	private final SystemPropertyService systemPropertyService;
-	@Autowired
-	private SystemAttributeRepository systemAttributeRepository;
+	private final SystemAttributeRepository systemAttributeRepository;
 
 	@Setter
     @Value("${config.auth.type}")

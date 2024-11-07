@@ -17,14 +17,13 @@ export class SetupService {
     constructor(private readonly http : HttpClient) { }
 
     public checkReady() : Observable<SystemStatus> {
-        return this.http.get <SystemStatus>(environment.baseUrl + 'system/status', { headers : getHeaders() });
+        return this.http.get<SystemStatus>(environment.baseUrl + 'system/status', { headers : getHeaders() });
     }
 
-    public getVmOptions() : Observable<any> {
-        return this.http.get<any>(environment.baseUrl + 'setup/vm_options', { headers : getHeaders() });
+    public getVmOptions() : Observable<{ [key: string]: string }> {
+        return this.http.get<{ [key: string]: string }>(environment.baseUrl + 'setup/vm_options', { headers : getHeaders() });
     }
 
-    // TODO Get saved admin data if exists
     public getAdminUserData() : Observable<UserData> {
         return this.http.get<UserData>(environment.baseUrl + 'setup/current_super_admin', { headers : getHeaders() });
     }
@@ -42,7 +41,7 @@ export class SetupService {
     }
 
     public saveSystemProperties(properties: SystemProperty[]) : Observable<any> {
-        return this.http.post<any>(environment.baseUrl + 'setup/props', { properties: properties }, { headers : getHeaders() });
+        return this.http.post<any>(environment.baseUrl + 'setup/properties', { properties: properties }, { headers : getHeaders() });
     }
 
     public saveOrganizationData(properties: SystemProperty[]) : Observable<any> {

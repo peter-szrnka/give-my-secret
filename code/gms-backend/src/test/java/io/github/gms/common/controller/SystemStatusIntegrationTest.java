@@ -11,7 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static io.github.gms.common.util.Constants.OK;
+import static io.github.gms.common.enums.SystemStatus.NEED_SETUP;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,7 +37,7 @@ class SystemStatusIntegrationTest extends AbstractIntegrationTest implements Gms
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(OK, response.getBody().getStatus());
+		assertEquals(NEED_SETUP.name(), response.getBody().getStatus());
 		assertNotNull(response.getBody().getVersion());
 		assertEquals(SELECTED_AUTH_DB, response.getBody().getAuthMode());
 	}

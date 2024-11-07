@@ -58,7 +58,8 @@ describe('SetupComponent', () => {
         };
 
         router = {
-            navigate : jest.fn().mockReturnValue(of(true))
+            navigate : jest.fn().mockReturnValue(of(true)),
+            navigateByUrl : jest.fn().mockReturnValue(of(true))
         };
 
         route = {
@@ -73,15 +74,42 @@ describe('SetupComponent', () => {
         setupService = {
             saveAdminUser : jest.fn().mockImplementation(() : Observable<IEntitySaveResponseDto> => {
                 return of({ entityId : 1, success : true } as IEntitySaveResponseDto);
-            })
+            }),
+            getVmOptions : jest.fn().mockReturnValue(of([])),
+            stepBack : jest.fn().mockReturnValue(of('NEED_SETUP')),
+            getAdminUserData : jest.fn().mockReturnValue(of({ username : 'admin', credential : 'testPassword', role : 'ROLE_ADMIN' })),
+            saveInitialStep : jest.fn().mockReturnValue(of('NEED_ADMIN_USER')),
+            saveSystemProperties: jest.fn().mockReturnValue(of({ success : true })),
+            saveOrganizationData : jest.fn().mockReturnValue(of({ success : true })),
+            completeSetup : jest.fn().mockReturnValue(of({ success : true }))
         };
     });
 
-    it('should throw error 404', () => {
+    it('should saveAdminUser throw error 404', async () => {
         // arrange
-        setupService = {
-            saveAdminUser : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 404, statusText: "Not exists"})))
-        }
+        setupService.saveAdminUser = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 404, statusText: "Not exists"})));
+
+        configTestBed();
+
+        component.userData = {
+            username : "admin",
+            credential : "testPassword",
+            role: 'ROLE_ADMIN'
+        };
+        const navigateSpy = jest.spyOn(router,'navigate');
+
+        // act
+        component.saveAdminUser();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(setupService.saveAdminUser).toHaveBeenCalledWith(component.userData);
+        expect(navigateSpy).toHaveBeenCalledWith(['']);
+    });
+
+    it('should saveAdminUser throw error 500', () => {
+        // arrange
+        setupService.saveAdminUser = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
         component.userData = {
@@ -96,14 +124,12 @@ describe('SetupComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(setupService.saveAdminUser).toHaveBeenCalledWith(component.userData);
-        expect(router.navigate).toBeCalledWith(['']);
+        expect(router.navigate).toHaveBeenCalledTimes(0);
     });
 
-    it('should throw error 500', () => {
+    it('should save admin user', () => {
         // arrange
-        setupService = {
-            saveAdminUser : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})))
-        }
+        route.queryParams = of({ systemStatus : 'NEED_ADMIN_USER' });
         configTestBed();
 
         component.userData = {
@@ -118,43 +144,131 @@ describe('SetupComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(setupService.saveAdminUser).toHaveBeenCalledWith(component.userData);
-        expect(router.navigate).toBeCalledTimes(0);
     });
 
-    it('should save setup settings', () => {
+    it('should step back throw error 500', () => {
         // arrange
-        route = {
-            queryParams : of({ systemStatus : 'NEED_SETUP' })
-        };
+        setupService.stepBack = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
-        component.userData = {
-            username : "admin",
-            credential : "testPassword",
-            role: 'ROLE_ADMIN'
-        };
-
         // act
-        component.saveAdminUser();
+        component.stepBack();
 
         // assert
         expect(component).toBeTruthy();
-        expect(component.errorMessage).toEqual('');
-        expect(setupService.saveAdminUser).toHaveBeenCalledWith(component.userData);
+        expect(setupService.stepBack).toHaveBeenCalled();
+        expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
     });
 
-    it('should retry setup', () => {
+    it('should getCurrentAdminUserData throw error 500', () => {
         // arrange
+        setupService.getAdminUserData = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
-        component.errorMessage = 'Test error';
+        // act
+        component.getCurrentAdminUserData();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(setupService.getAdminUserData).toHaveBeenCalled();
+        expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
+    });
+
+    it('should step back', () => {
+        // arrange
+        route.queryParams = of();
+        setupService.stepBack = jest.fn().mockReturnValue(of('NEED_SETUP'));
+        configTestBed();
 
         // act
-        component.retrySetup();
+        component.stepBack();
 
-        // arrange
+        // assert
         expect(component).toBeTruthy();
-        expect(component.errorMessage).toBeUndefined();
+        expect(setupService.stepBack).toHaveBeenCalled();
+        expect(router.navigateByUrl).toHaveBeenCalledWith('/setup?systemStatus=NEED_SETUP');
+    });
+
+    it('should save initial step', () => {
+        // arrange
+        setupService.saveInitialStep = jest.fn().mockReturnValue(of('NEED_ADMIN_USER'));
+        configTestBed();
+
+        // act
+        component.saveInitialStep();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(setupService.saveInitialStep).toHaveBeenCalled();
+        expect(router.navigateByUrl).toHaveBeenCalledWith('/setup?systemStatus=NEED_ADMIN_USER');
+    });
+
+    it('should save initial step throw error 500', () => {
+        // arrange
+        setupService.saveInitialStep = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
+        configTestBed();
+
+        // act
+        component.saveInitialStep();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(setupService.saveInitialStep).toHaveBeenCalled();
+        expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
+    });
+
+    it('should save system properties', () => {
+        // arrange
+        setupService.saveSystemProperties = jest.fn().mockReturnValue(of({ success : true }));
+        configTestBed();
+
+        // act
+        component.saveSystemProperties();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(setupService.saveSystemProperties).toHaveBeenCalled();
+    });
+
+    it('should save system properties throw error 500', () => {
+        // arrange
+        setupService.saveSystemProperties = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
+        configTestBed();
+
+        // act
+        component.saveSystemProperties();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(setupService.saveSystemProperties).toHaveBeenCalled();
+        expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
+    });
+
+    it('should save organization data'  , () => {
+        // arrange
+        setupService.saveOrganizationData = jest.fn().mockReturnValue(of({ success : true }));
+        configTestBed();
+
+        // act
+        component.saveOrganizationData();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(setupService.saveOrganizationData).toHaveBeenCalled();
+    });
+
+    it('should save organization data throw error 500', () => {
+        // arrange
+        setupService.saveOrganizationData = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
+        configTestBed();
+
+        // act
+        component.saveOrganizationData();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(setupService.saveOrganizationData).toHaveBeenCalled();
+        expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
     });
 
     it('should navigate to home', () => {
@@ -168,5 +282,19 @@ describe('SetupComponent', () => {
         // arrange
         expect(component).toBeTruthy();
         expect(mockWindow.location.reload).toHaveBeenCalled();
+    });
+
+    it('should navigate to home throw error 404', () => {
+        // arrange
+        setupService.completeSetup = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 404, statusText: "Not exists"})));
+        configTestBed();
+
+        // act
+        component.navigateToHome();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(setupService.completeSetup).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledWith(['']);
     });
 });

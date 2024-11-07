@@ -121,26 +121,22 @@
           <button mat-raised-button color="primary" (click)="saveInitialStep()">{{ 'setup.next' | translate }}</button>
         } @else if(systemStatus === 'NEED_ADMIN_USER') {
         @if (errorMessage === undefined) {
-        <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
-        <button mat-raised-button color="primary" (click)="saveAdminUser()" [disabled]="form.status ==='INVALID'">{{
+          <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
+          <button mat-raised-button color="primary" (click)="saveAdminUser()" [disabled]="form.status ==='INVALID'">{{
           'setup.saveAdminUserButton' | translate }}</button>
         }
 
-        @if (errorMessage && errorMessage.length > 0) {
-        <button mat-raised-button color="primary" (click)="retrySetup()">{{ 'setup.retrySetup' | translate }}</button>
-        }
         } @else if (systemStatus === 'NEED_AUTH_CONFIG') {
-        <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
-        <button mat-raised-button color="primary" [disabled]="form.status ==='INVALID'"
+          <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
+          <button mat-raised-button color="primary" [disabled]="form.status ==='INVALID'"
           (click)="saveSystemProperties()">{{ 'setup.next' | translate }}</button>
         } @else if (systemStatus === 'NEED_ORG_DATA') {
-        <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
-        <button mat-raised-button color="primary" [disabled]="form.status ==='INVALID'"
+          <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
+          <button mat-raised-button color="primary" [disabled]="form.status ==='INVALID'"
           (click)="saveOrganizationData()">{{ 'setup.next' | translate }}</button>
         } @else if(systemStatus === 'COMPLETE') {
-        <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
-        <button mat-raised-button color="primary" (click)="navigateToHome()">{{ 'setup.goToMainPage' | translate
-          }}</button>
+          <button mat-raised-button color="primary" (click)="stepBack()" class="margin-r10">{{ 'setup.back' | translate }}</button>
+          <button mat-raised-button color="primary" (click)="navigateToHome()">{{ 'setup.goToMainPage' | translate }}</button>
         }
       </mat-card-actions>
     }

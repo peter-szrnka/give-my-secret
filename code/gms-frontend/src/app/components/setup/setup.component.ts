@@ -12,7 +12,7 @@ interface VmOption {
     value: string;
 }
 
-const SYSTEM_STATUS_LEVEL: {[key:string] :number} = {
+const SYSTEM_STATUS_INDEX: {[key:string] :number} = {
     "NEED_SETUP": 0,
     "NEED_ADMIN_USER": 1,
     "NEED_AUTH_CONFIG": 2,
@@ -55,92 +55,69 @@ export class SetupComponent implements OnInit {
     ngOnInit(): void {
         this.route.queryParams.subscribe(params => {
             this.systemStatus = params['systemStatus'];
-            this.currentStep = SYSTEM_STATUS_LEVEL[this.systemStatus] ?? 0;
+            this.currentStep = SYSTEM_STATUS_INDEX[this.systemStatus];
 
             if (this.systemStatus === 'NEED_ADMIN_USER') {
                 this.getCurrentAdminUserData();
             }
         });
+
         this.getVmOptions();
     }
 
-    // Step 0
     getVmOptions() {
-        this.loading = true;
-        this.splashScreenService.start();
-        this.setupService.getVmOptions()
-        .subscribe({
-            next: (data) => {
+        this.prepareHttpCall();
+
+        this.setupService.getVmOptions().subscribe(data => {
                 this.splashScreenService.stop();
-                Object.keys(data).forEach(key => {
-                    this.vmOptions.push({key: key, value: data[key]});
-                });
+                Object.keys(data).forEach(key => this.vmOptions.push({key: key, value: data[key]}) );
                 this.loading = false;
-            },
-            error: (err) => this.handleError(err)
         });
     }
 
     stepBack() {
-        this.loading = true;
-        this.splashScreenService.start();
+        this.prepareHttpCall();
+
         this.setupService.stepBack().subscribe({
-            next: (newStatus) => {
-                void this.router.navigateByUrl('/setup?systemStatus=' + newStatus);
-                this.loading = false;
-            },
+            next: (newStatus) => this.handleNextStep(newStatus),
             error: (err) => this.handleError(err)
         });
     }
 
     getCurrentAdminUserData() {
-        this.loading = true;
-        this.splashScreenService.start();
-        this.setupService.getAdminUserData()
-        .subscribe({
+        this.prepareHttpCall();
+
+        this.setupService.getAdminUserData().subscribe({
             next: (data) => {
                 this.splashScreenService.stop();
-                this.userData = data ?? EMPTY_USER_DATA;
+                this.userData = data;
                 this.loading = false;
             },
             error: (err) => this.handleError(err)
         });
     }
 
-    // Step 1
     saveInitialStep() {
-        this.loading = true;
-        this.splashScreenService.start();
-        this.setupService.saveInitialStep()
-        .subscribe({
-            next: () => {
-                this.splashScreenService.stop();
-                void this.router.navigateByUrl('/setup?systemStatus=NEED_ADMIN_USER');
-                this.loading = false;
-            },
+        this.prepareHttpCall();
+
+        this.setupService.saveInitialStep().subscribe({
+            next: () => this.handleNextStep('NEED_ADMIN_USER'),
             error: (err) => this.handleError(err)
         });
     }
 
-    // Step 2
     saveAdminUser() {
-        this.loading = true;
-        this.splashScreenService.start();
+        this.prepareHttpCall();
         this.userData.role = 'ROLE_ADMIN';
-        this.setupService.saveAdminUser(this.userData)
-        .subscribe({
-            next: () => {
-                this.splashScreenService.stop();
-                void this.router.navigateByUrl('/setup?systemStatus=NEED_AUTH_CONFIG');
-                this.loading = false;
-            },
+
+        this.setupService.saveAdminUser(this.userData).subscribe({
+            next: () => this.handleNextStep('NEED_AUTH_CONFIG'),
             error: (err) => this.handleError(err)
         });
     }
 
     saveSystemProperties() {
-        this.loading = true;
-        this.splashScreenService.start();
+        this.prepareHttpCall();
         const systemProperties: SystemProperty[] = [];
 
         systemProperties.push(this.initPropertyData("FAILED_ATTEMPTS_LIMIT"));
@@ -148,38 +125,23 @@ export class SetupComponent implements OnInit {
         systemProperties.push(this.initPropertyData("AUTOMATIC_LOGOUT_TIME_IN_MINUTES"));
         systemProperties.push(this.initPropertyData("ENABLE_MFA"));
 
-        this.setupService.saveSystemProperties(systemProperties)
-        .subscribe({
-            next: () => {
-                this.splashScreenService.stop();
-                void this.router.navigateByUrl('/setup?systemStatus=NEED_ORG_DATA');
-                this.loading = false;
-            },
+        this.setupService.saveSystemProperties(systemProperties).subscribe({
+            next: () => this.handleNextStep('NEED_ORG_DATA'),
             error: (err) => this.handleError(err)
         });
     }
 
     saveOrganizationData() {
-        this.loading = true;
-        this.splashScreenService.start();
+        this.prepareHttpCall();
         const systemProperties: SystemProperty[] = [];
 
         systemProperties.push(this.initPropertyData("ORGANIZATION_NAME"));
         systemProperties.push(this.initPropertyData("ORGANIZATION_CITY"));
 
-        this.setupService.saveOrganizationData(systemProperties)
-        .subscribe({
-            next: () => {
-                this.splashScreenService.stop();
-                void this.router.navigateByUrl('/setup?systemStatus=COMPLETE');
-                this.loading = false;
-            },
+        this.setupService.saveOrganizationData(systemProperties).subscribe({
+            next: () => this.handleNextStep('COMPLETE'),
             error: (err) => this.handleError(err)
         });
-    }
-
-    retrySetup() : void {
-        this.errorMessage = undefined;
     }
 
     navigateToHome() : void {
@@ -187,6 +149,17 @@ export class SetupComponent implements OnInit {
             next: () => this.window.location.reload(),
             error: (err) => this.handleError(err)
         });
+    }
+
+    private prepareHttpCall(): void {
+        this.loading = true;
+        this.splashScreenService.start();
+    }
+
+    private handleNextStep(newStatus: string): void {
+        this.splashScreenService.stop();
+        void this.router.navigateByUrl('/setup?systemStatus=' + newStatus);
+        this.loading = false;
     }
 
     private handleError(err: any): void {
