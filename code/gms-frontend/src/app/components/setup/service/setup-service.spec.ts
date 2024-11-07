@@ -27,7 +27,7 @@ describe('SetupService', () => {
     });
 
     it('should return OK', () => {
-      const expectedUrl = environment.baseUrl + 'system/status';
+      const expectedUrl = environment.baseUrl + 'info/status';
   
       service.checkReady()
         .subscribe((res) => expect(res).toBe("OK"));
