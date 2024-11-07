@@ -21,3 +21,10 @@ Run `npm run start` to start the webapp in HTTP mode.
 
 ### HTTPS mode
 TODO Complete
+
+### "Local" production
+
+#### Prerequisite:
+> npm install http-server -g
+
+You can run your production ready webapp bundle with `npm run startLocal` after you executed `npm run buildLocal`. This mode can help to get rid of unnecessary running of an IDE + the webapplication together when you want to work only on the backend side code but you need a frontend quickly.
