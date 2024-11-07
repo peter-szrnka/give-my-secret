@@ -15,6 +15,7 @@ You need to run `npm run buildLocal`.
 The webapp can be started in many ways:
 - HTTP or
 - HTTPS mode
+- Local production mode
 
 ### HTTP mode
 Run `npm run start` to start the webapp in HTTP mode.
