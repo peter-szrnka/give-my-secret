@@ -7,7 +7,7 @@ Welcome to GMS frontend code!
 Production ready bundle can be built by running `ng build` or `npm run build`.
 
 ### "Local" production
-This configuration can be used to build the application bundle in production mide but connected to http://localhost:8080
+This configuration can be used to build the application bundle in production mode but connected to http://localhost:8080.
 
 You need to run `npm run buildLocal`.
 
@@ -24,8 +24,13 @@ Run `npm run start` to start the webapp in HTTP mode.
 TODO Complete
 
 ### "Local" production
+You can run your production ready webapp bundle with `npm run startLocal` after you executed `npm run buildLocal`.
 
-#### Prerequisite:
+This mode can help to get rid of unnecessary running of an IDE + the web application together when you want to work only on the backend side code but you need a frontend quickly.
+
+#### Prerequisite
+In order to run the bundle, you need to install http-server NPM library:
 > npm install http-server -g
 
-You can run your production ready webapp bundle with `npm run startLocal` after you executed `npm run buildLocal`. This mode can help to get rid of unnecessary running of an IDE + the webapplication together when you want to work only on the backend side code but you need a frontend quickly.
+#### Resources
+- [https://www.npmjs.com/package/http-server](https://www.npmjs.com/package/http-server)
