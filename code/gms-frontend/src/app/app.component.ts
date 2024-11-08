@@ -92,7 +92,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private navigateToLogin(): void {
     const locationPath = this.location.path();
 
-    if (locationPath === '') {
+    if (locationPath === '' || locationPath.indexOf('setup?systemStatus=') > -1) {
       void this.router.navigate([LOGIN_CALLBACK_URL]);
     } else {
       void this.router.navigate([LOGIN_CALLBACK_URL], { queryParams: { previousUrl: locationPath } });
