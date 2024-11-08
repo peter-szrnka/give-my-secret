@@ -21,7 +21,7 @@ The webapp can be started in many ways:
 Run `npm run start` to start the webapp in HTTP mode.
 
 ### HTTPS mode
-TODO Complete
+If you run the backend code on HTTPS port, you need to use this mode by running `npm run startHttps`.
 
 ### "Local" production
 You can run your production ready webapp bundle with `npm run startLocal` after you executed `npm run buildLocal`.
