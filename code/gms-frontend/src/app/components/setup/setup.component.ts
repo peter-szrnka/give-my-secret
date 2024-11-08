@@ -4,7 +4,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { WINDOW_TOKEN } from "../../window.provider";
 import { SystemProperty } from "../system_property/model/system-property.model";
-import { EMPTY_USER_DATA, UserData } from "../user/model/user-data.model";
+import { UserData } from "../user/model/user-data.model";
 import { SetupService } from "./service/setup-service";
 
 interface VmOption {
@@ -20,6 +20,12 @@ const SYSTEM_STATUS_INDEX: {[key:string] :number} = {
     "COMPLETE": 4
 };
 
+export const EMPTY_ADMIN_DATA : UserData = {
+    status: 'ACTIVE',
+    credential: undefined,
+    role: 'ROLE_ADMIN'
+};
+
 /**
  * @author Peter Szrnka
  */
@@ -33,7 +39,7 @@ export class SetupComponent implements OnInit {
     loading: boolean = true;
     systemStatus: string = '';
     currentStep: number = 0;
-    userData : UserData = EMPTY_USER_DATA;
+    userData : UserData = EMPTY_ADMIN_DATA;
     public errorMessage : string | undefined = undefined;
     vmOptions: VmOption[] = [];
     systemPropertyData: any = {
@@ -90,7 +96,7 @@ export class SetupComponent implements OnInit {
         this.setupService.getAdminUserData().subscribe({
             next: (data) => {
                 this.splashScreenService.stop();
-                this.userData = data;
+                this.userData = data ?? EMPTY_ADMIN_DATA;
                 this.loading = false;
             },
             error: (err) => this.handleError(err)

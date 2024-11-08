@@ -63,6 +63,27 @@
               ],
               "outputHashing": "all"
             },
+            "productionLocal": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+				          "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/app/common/interceptor/mock-interceptor.ts",
+                  "with": "src/app/common/interceptor/mock-empty-interceptor.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
             "localHttp" : {
               "buildOptimizer": false,
               "optimization": false,
@@ -121,6 +142,9 @@
           "configurations": {
             "production": {
               "buildTarget": "gms-frontend:build:production"
+            },
+            "productionLocal": {
+              "buildTarget": "gms-frontend:build:productionLocal"
             },
             "development": {
               "buildTarget": "gms-frontend:build:development"

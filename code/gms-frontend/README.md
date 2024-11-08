@@ -1,27 +1,36 @@
-# GmsFrontend
+# Give My Secret Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.5.
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Welcome to GMS frontend code!
 
 ## Build
+### Production
+Production ready bundle can be built by running `ng build` or `npm run build`.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### "Local" production
+This configuration can be used to build the application bundle in production mode but connected to http://localhost:8080.
 
-## Running unit tests
+You need to run `npm run buildLocal`.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Run
+The webapp can be started in many ways:
+- HTTP or
+- HTTPS mode
+- Local production mode
 
-## Running end-to-end tests
+### HTTP mode
+Run `npm run start` to start the webapp in HTTP mode.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### HTTPS mode
+If you run the backend code on HTTPS port, you need to use this mode by running `npm run startHttps`.
 
-## Further help
+### "Local" production
+You can run your production ready webapp bundle with `npm run startLocal` after you executed `npm run buildLocal`.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+This mode can help to get rid of unnecessary running of an IDE + the web application together when you want to work only on the backend side code but you need a frontend quickly.
+
+#### Prerequisite
+In order to run the bundle, you need to install http-server NPM library:
+> npm install http-server -g
+
+#### Resources
+- [https://www.npmjs.com/package/http-server](https://www.npmjs.com/package/http-server)
