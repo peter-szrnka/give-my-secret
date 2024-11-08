@@ -8,7 +8,7 @@
     "mockHttp": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve --configuration mockHttp",
     "build": "ng build --output-hashing none",
     "buildLocal": "ng build --output-hashing none --configuration productionLocal",
-    "startLocal": "http-server dist/gms-frontend -p 4200",
+    "startLocal": "angular-http-server dist/gms-frontend -p 4200 --baseHref gms-app --rootFile dist/gms-frontend/index.html",
     "watch": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --watch --configuration development",
     "watchHttps": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --watch --configuration localHttps",
     "test": "jest --config=jest.config.js --silent=false --maxWorkers=25% --maxConcurrency=8",
