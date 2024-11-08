@@ -64,7 +64,7 @@ CREATE TABLE gms_secret (
 	status VARCHAR(255) DEFAULT NULL,
 	secret_type VARCHAR(255) NOT NULL,
 	user_id BIGINT NOT NULL,
-	value VARCHAR(512) NOT NULL
+	value CLOB NOT NULL
 );
 
 CREATE TABLE gms_announcement (
@@ -121,3 +121,11 @@ CREATE TABLE gms_job (
     message VARCHAR(255) DEFAULT NULL,
     correlation_id VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE gms_system_attribute (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    value VARCHAR(255) NOT NULL
+);
+
+INSERT INTO gms_system_attribute (name, value) VALUES ('SYSTEM_STATUS', 'NEED_SETUP');

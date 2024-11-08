@@ -64,7 +64,7 @@ CREATE TABLE gms_secret (
     status VARCHAR2(255),
     secret_type VARCHAR2(255) NOT NULL,
     user_id NUMBER NOT NULL,
-    value VARCHAR2(512) NOT NULL
+    value CLOB NOT NULL
 );
 
 CREATE TABLE gms_announcement (
