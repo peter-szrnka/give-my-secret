@@ -248,6 +248,7 @@
         "secrets.allIpAddresses" : "Secret can be used from all IP addresses.",
         "secrets.lastUpdated" : "Last updated",
         "secrets.lastRotated" : "Last rotated",
+        "secrets.capacityWarning": "The number of saveable key-value pairs depends on the used keystore algorithm and the capacity of the database system. For instance, in case of RSA-2048 it will be ~ 245 bytes.",
 
         "keystores.upload": "Upload",
         "keystores.generate": "Generate",
@@ -541,6 +542,7 @@
         "secrets.allIpAddresses" : "A secret minden IP címről használható.",
         "secrets.lastUpdated" : "Utoljára frissítve",
         "secrets.lastRotated" : "Utoljára rotálva",
+        "secrets.capacityWarning": "A menthető kulcs-érték párok száma az alkalmazott kulcstár algoritmusától függ és az adatbázis rendszer kapacitásától. Például RSA-2048 esetén ~ 245 bájt lesz elmentve.",
 
         "keystores.upload": "Feltöltés",
         "keystores.generate": "Generálás",

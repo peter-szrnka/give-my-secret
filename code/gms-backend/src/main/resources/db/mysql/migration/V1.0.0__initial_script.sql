@@ -75,7 +75,7 @@ CREATE TABLE gms_secret (
 	status VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	secret_type VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	user_id BIGINT NOT NULL,
-	value VARCHAR(512) NOT NULL COLLATE 'utf8mb4_general_ci',
+	value LONGTEXT NOT NULL COLLATE 'utf8mb4_general_ci',
 	PRIMARY KEY (id) USING BTREE
 )
 COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
@@ -134,15 +134,24 @@ CREATE TABLE gms_ip_restriction (
 COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 CREATE TABLE gms_job (
+    id BIGINT NOT NULL AUTO_INCREMENT,
 	creation_date TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	start_time TIMESTAMP NOT NULL DEFAULT current_timestamp(),
 	end_time TIMESTAMP NULL,
-	duration TINYINT NULL,
-	name VARCHAR(255) NOT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',,
-	status VARCHAR(255) NOT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',,
+	duration BIGINT NULL,
+	name VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	status VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	message VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	correlation_id VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	PRIMARY KEY (id) USING BTREE
+)
+COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
+
+CREATE TABLE gms_system_attribute (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+    value VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+    PRIMARY KEY (id) USING BTREE
 )
 COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
@@ -158,6 +167,7 @@ CREATE INDEX idx_gms_api_kr ON gms_api_key_restriction(id);
 CREATE INDEX idx_gms_sys_prop ON gms_system_property(id);
 CREATE INDEX idx_gms_ip_restr ON gms_ip_restriction(id);
 CREATE INDEX idx_gms_job ON gms_job(id);
+CREATE INDEX idx_gms_sys_attr ON gms_system_attribute(id);
 
 CREATE UNIQUE INDEX idx_unq_gms_user ON gms_user(id);
 CREATE UNIQUE INDEX idx_unq_gms_api_key ON gms_api_key(id);
@@ -171,3 +181,6 @@ CREATE UNIQUE INDEX idx_unq_gms_api_kr ON gms_api_key_restriction(id);
 CREATE UNIQUE INDEX idx_unq_gms_sys_prop ON gms_system_property(id);
 CREATE UNIQUE INDEX idx_unq_gms_ip_restr ON gms_ip_restriction(id);
 CREATE UNIQUE INDEX idx_unq_gms_job ON gms_job(id);
+CREATE UNIQUE INDEX idx_unq_gms_sys_attr ON gms_system_attribute(name);
+
+INSERT INTO gms_system_attribute (name, value) VALUES ('SYSTEM_STATUS', 'NEED_SETUP');

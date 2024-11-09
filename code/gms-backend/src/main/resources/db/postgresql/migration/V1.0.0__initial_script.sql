@@ -64,7 +64,7 @@ CREATE TABLE gms_secret (
 	status VARCHAR(255) NULL DEFAULT NULL,
 	secret_type VARCHAR(255) NOT NULL,
 	user_id BIGINT NOT NULL,
-	value VARCHAR(512) NOT NULL
+	value TEXT NOT NULL
 );
 
 CREATE TABLE gms_announcement (
@@ -125,7 +125,7 @@ CREATE TABLE gms_job (
 CREATE TABLE gms_system_attribute (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    value VARCHAR(4000) NOT NULL
+    value VARCHAR(255) NOT NULL
 );
 
 CREATE INDEX idx_gms_user ON gms_user(id);
