@@ -3,12 +3,12 @@
         "id" : 10,
         "title" : "i18n support",
         "description" : "The application has a built-in i18n support.",
-        "created" : "2024-??-??"
+        "created" : "2024-11-04"
     }, {
         "id" : 9,
         "title" : "Job execution UI",
         "description" : "Administrators can check all background job executions on a new UI.",
-        "created" : "2024-??-??"
+        "created" : "2024-10-22"
     }, {
         "id" : 8,
         "title" : "Enhanced messages page",
