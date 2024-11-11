@@ -15,6 +15,6 @@ If you select SQLite as a database to your GMS instance, you don't need to perfo
 
 To validate your database has been created successfully, I recommend to use DbVisualizer:
 
-![image](assets/dbvisualizer.png)
+![image](assets/dbvisualizer.PNG)
 
-![image](assets/dbvisualizer2.png)
+![image](assets/dbvisualizer2.PNG)
