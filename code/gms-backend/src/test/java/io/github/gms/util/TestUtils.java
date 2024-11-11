@@ -44,6 +44,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.function.Executable;
+import org.reflections.Reflections;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
@@ -51,6 +52,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -786,5 +788,12 @@ public class TestUtils {
 				.duration(100L)
 				.message("test")
 				.build();
+	}
+
+	public static Set<Class<?>> getAllSubClasses(Class<?> inputClazz) {
+		Reflections reflections = new Reflections("io.github.gms");
+		return reflections.getSubTypesOf(inputClazz).stream()
+				.filter(cls -> !cls.getSimpleName().endsWith("$$SpringCGLIB$$0"))
+				.filter(cls -> !Modifier.isAbstract(cls.getModifiers())).collect(Collectors.toSet());
 	}
 }

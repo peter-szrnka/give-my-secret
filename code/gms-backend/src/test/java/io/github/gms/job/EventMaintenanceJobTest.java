@@ -2,12 +2,15 @@ package io.github.gms.job;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.enums.TimeUnit;
 import io.github.gms.functions.event.EventRepository;
 import io.github.gms.functions.maintenance.job.JobEntity;
 import io.github.gms.functions.maintenance.job.JobRepository;
+import io.github.gms.functions.setup.SystemAttributeRepository;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
+import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,6 +21,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 import static io.github.gms.util.TestUtils.createJobEntity;
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,6 +40,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	private Clock clock;
 	private SystemPropertyService systemPropertyService;
 	private JobRepository jobRepository;
+	private SystemAttributeRepository systemAttributeRepository;
 	
 	@Override
 	@BeforeEach
@@ -47,18 +52,34 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		eventRepository = mock(EventRepository.class);
 		systemPropertyService = mock(SystemPropertyService.class);
 		jobRepository = mock(JobRepository.class);
+		systemAttributeRepository = mock(SystemAttributeRepository.class);
 		job = new EventMaintenanceJob(eventRepository);
 		ReflectionTestUtils.setField(job, "systemService", systemService);
 		ReflectionTestUtils.setField(job, "systemPropertyService", systemPropertyService);
 		ReflectionTestUtils.setField(job, "clock", clock);
 		ReflectionTestUtils.setField(job, "jobRepository", jobRepository);
+		ReflectionTestUtils.setField(job, "systemAttributeRepository", systemAttributeRepository);
 		addAppender(EventMaintenanceJob.class);
+	}
+
+	@Test
+	void run_whenSystemIsNotReady_thenSkipExecution() {
+		// arrange
+		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
+
+		// act
+		job.run();
+
+		// assert
+		assertTrue(logAppender.list.isEmpty());
+		verify(systemAttributeRepository).getSystemStatus();
 	}
 
 	@Test
 	void run_whenJobIsDisabled_thenSkipExecution() {
 		// arrange
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(false);
+		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
 		// act
 		job.run();
@@ -75,6 +96,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
+		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
 		// act
 		job.run();
@@ -97,6 +119,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
 		when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
+		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
 		// act
 		job.run();
@@ -124,6 +147,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
 		when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
+		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
 		// act
 		job.run();
@@ -155,6 +179,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
 		when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
 		when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
+		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
 		// act
 		job.run();

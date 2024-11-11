@@ -10,3 +10,4 @@ DELETE FROM gms_api_restriction;
 DELETE FROM gms_system_property;
 DELETE FROM gms_ip_restriction;
 DELETE FROM gms_job;
+DELETE FROM gms_system_attribute;

@@ -10,7 +10,6 @@ import io.github.gms.common.types.SkipSecurityTestCheck;
 import lombok.Getter;
 import lombok.Setter;
 import org.junit.jupiter.api.Test;
-import org.reflections.Reflections;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -22,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.gms.util.TestUtils.getAllSubClasses;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.AssertionErrors.*;
 
@@ -170,13 +170,6 @@ class IntegrationAnnotationCheckerTest {
         }
 
         return resultMap;
-    }
-
-    private static Set<Class<?>> getAllSubClasses(Class<?> inputClazz) {
-        Reflections reflections = new Reflections("io.github.gms");
-        return reflections.getSubTypesOf(inputClazz).stream()
-                .filter(cls -> !cls.getSimpleName().endsWith("$$SpringCGLIB$$0"))
-                .filter(cls -> !Modifier.isAbstract(cls.getModifiers())).collect(Collectors.toSet());
     }
 
     private static void assertController(

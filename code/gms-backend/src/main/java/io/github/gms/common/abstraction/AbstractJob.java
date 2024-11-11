@@ -3,11 +3,14 @@ package io.github.gms.common.abstraction;
 import io.github.gms.common.enums.JobStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.util.MdcUtils;
-import io.github.gms.functions.system.SystemService;
-import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.functions.maintenance.job.JobEntity;
 import io.github.gms.functions.maintenance.job.JobRepository;
+import io.github.gms.functions.setup.SystemAttributeEntity;
+import io.github.gms.functions.setup.SystemAttributeRepository;
+import io.github.gms.functions.system.SystemService;
+import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
@@ -37,6 +40,8 @@ public abstract class AbstractJob {
     protected Clock clock;
     @Autowired
     protected JobRepository jobRepository;
+    @Autowired
+    protected SystemAttributeRepository systemAttributeRepository;
 
     public abstract void run();
 
@@ -68,7 +73,7 @@ public abstract class AbstractJob {
     }
 
     protected boolean skipJobExecution() {
-        return jobDisabled() || multiNodeEnabled();
+        return systemIsNotReady() || jobDisabled() || multiNodeEnabled();
     }
 
     private void createJobExecution() {
@@ -96,6 +101,11 @@ public abstract class AbstractJob {
         }
 
         jobRepository.save(entity);
+    }
+
+    private boolean systemIsNotReady() {
+        SystemAttributeEntity systemAttribute = systemAttributeRepository.getSystemStatus().orElseThrow();
+        return !SystemStatus.OK.name().equals(systemAttribute.getValue());
     }
 
     private boolean jobDisabled() {
