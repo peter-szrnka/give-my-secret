@@ -12,7 +12,7 @@ To start a new container instance, you have to set up a bunch of **[environment 
 # Features
 
 ## Databases
-
+- [SQLite](db/sqlite/README.md),
 - [MariaDb](db/mariadb/README.md)
 - [PostgreSql](db/postgresql/README.md)
 - [MySql](db/mysql/README.md)
