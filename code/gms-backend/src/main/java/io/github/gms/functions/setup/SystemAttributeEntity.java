@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
+
 import static io.github.gms.common.util.Constants.ID;
 
 /**
@@ -16,6 +18,9 @@ import static io.github.gms.common.util.Constants.ID;
 @Table(name = "gms_system_attribute")
 @EqualsAndHashCode(callSuper = false)
 public class SystemAttributeEntity extends AbstractGmsEntity {
+
+    @Serial
+    private static final long serialVersionUID = 730967290534538229L;
 
     @Id
     @Column(name = ID)

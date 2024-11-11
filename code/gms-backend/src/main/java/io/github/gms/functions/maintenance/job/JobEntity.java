@@ -5,6 +5,7 @@ import io.github.gms.common.enums.JobStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serial;
 import java.time.ZonedDateTime;
 
 import static io.github.gms.common.util.Constants.ID;
@@ -21,6 +22,9 @@ import static io.github.gms.common.util.Constants.ID;
 @Table(name = "gms_job")
 @EqualsAndHashCode(callSuper = false)
 public class JobEntity extends AbstractGmsEntity {
+
+    @Serial
+    private static final long serialVersionUID = -8314144664162636450L;
 
     @Id
     @Column(name = ID)
