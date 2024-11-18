@@ -38,22 +38,28 @@ Give My Secret (GMS) provides more than 40 external properties that you can use 
 | 27   | DB_USERNAME                       | String       | -                                             | Database user.                                               |
 | 28   | DB_CREDENTIAL                     | String       | -                                             | Database user credentials                                    |
 | 29   | DB_MAX_LIFETIME                   | Number       | 580000 (by default)                           |                                                              |
+|      | **Hikari Connection Pool**        |              |                                               |                                                              |
+| 30   | DS_HIKARI_MAX_POOL_SIZE           | Number       | 10 (by default)                               | Determines the maximum number of connections that the HikariCP pool can maintain. |
+| 31   | DS_HIKARI_MIN_IDLE                | Number       | 10 (by default)                               | Specifies the minimum number of idle connections that HikariCP tries to maintain in the pool. |
+| 32   | DS_HIKARI_IDLE_TIMEOUT            | Number       | 60000 (by default)                            | The maximum amount of time (in milliseconds) that a connection is allowed to sit idle in the pool. |
+| 33   | DS_HIKARI_MAX_LIFETIME            | Number       | 1800000 (by default)                          | The maximum lifetime (in milliseconds) of a connection in the pool. |
+| 34   | DS_HIKARI_CONNECTION_TIMEOUT      | Number       | 30000 (by default)                            | The maximum time (in milliseconds) that a client will wait for a connection to become available before throwing an exception. |
 |      | **Logging**                       |              |                                               |                                                              |
-| 30   | LOG_TYPE                          | String       | console, file, logstash                       | You can configure where should Logback logging library send the logs: to a file, or to Logstash (**You can find more info in [ELK configuration](batch-files/elk-sample-configuration/README.md)**) |
-| 31   | LOG_FOLDER                        | String       | -                                             | Output folder of the logs in case of file based logging.     |
-| 32   | LOGSTASH_URL                      | String       |                                               | Logstash instance URL. **You can find more info in [ELK configuration](batch-files/elk-sample-configuration/README.md)** |
-| 33   | HTTP_CLIENT_LOGGING_ENABLED       | Boolean      | false, true                                   | This flag determines whether HTTP client calls logged or not. |
-| 34   | ARCHIVED_LOG_FOLDER               | String       | -                                             | Folder where the archived logs should be moved.              |
-| 35   | REQUEST_LOGGING_ENABLED           | Boolean      | false (default), true                         | The flag determines whether logging of incoming request bodies enabled or not. |
-| 36   | RESPONSE_LOGGING_ENABLED          | Boolean      | false (default), true                         | The flag determines whether logging of outgoing response bodies enabled or not. |
-| 37   | SENSITIVE_DATA_MASKING_ENABLED    | Boolean      | false, true (default)                         | The flag determines whether the sensitive data masking in request and response bodies enabled or not. |
+| 35   | LOG_TYPE                          | String       | console, file, logstash                       | You can configure where should Logback logging library send the logs: to a file, or to Logstash (**You can find more info in [ELK configuration](batch-files/elk-sample-configuration/README.md)**) |
+| 36   | LOG_FOLDER                        | String       | -                                             | Output folder of the logs in case of file based logging.     |
+| 37   | LOGSTASH_URL                      | String       |                                               | Logstash instance URL. **You can find more info in [ELK configuration](batch-files/elk-sample-configuration/README.md)** |
+| 38   | HTTP_CLIENT_LOGGING_ENABLED       | Boolean      | false, true                                   | This flag determines whether HTTP client calls logged or not. |
+| 39   | ARCHIVED_LOG_FOLDER               | String       | -                                             | Folder where the archived logs should be moved.              |
+| 40   | REQUEST_LOGGING_ENABLED           | Boolean      | false (default), true                         | The flag determines whether logging of incoming request bodies enabled or not. |
+| 41   | RESPONSE_LOGGING_ENABLED          | Boolean      | false (default), true                         | The flag determines whether logging of outgoing response bodies enabled or not. |
+| 42   | SENSITIVE_DATA_MASKING_ENABLED    | Boolean      | false, true (default)                         | The flag determines whether the sensitive data masking in request and response bodies enabled or not. |
 |      | **Caching / Redis**               |              |                                               |                                                              |
-| 38   | ENABLE_REDIS_CACHE                | Boolean      | false, true                                   | This flag determines whether Redis caching enabled or not.   |
-| 39   | REDIS_HOST                        | String       |                                               | Redis host URL.                                              |
-| 40   | REDIS_PORT                        | Number       |                                               | Redis host port.                                             |
+| 43   | ENABLE_REDIS_CACHE                | Boolean      | false, true                                   | This flag determines whether Redis caching enabled or not.   |
+| 44   | REDIS_HOST                        | String       |                                               | Redis host URL.                                              |
+| 45   | REDIS_PORT                        | Number       |                                               | Redis host port.                                             |
 |      | **Tracing / Zipkin**              |              |                                               |                                                              |
-| 41   | ZIPKIN_URL                        | String       | -                                             | Zipkin host url.                                             |
+| 46   | ZIPKIN_URL                        | String       | -                                             | Zipkin host url.                                             |
 |      | **Other**                         |              |                                               |                                                              |
-| 42   | CONFIG_RESOURCE_HANDLER_DISABLED  | Boolean      | true, false                                   | *This parameter is not necessary for production Docker images.* |
-| 43   | COMPOSE_CONVERT_WINDOWS_PATHS     | Number       | 0, 1                                          | Required only by Windows!                                    |
+| 47   | CONFIG_RESOURCE_HANDLER_DISABLED  | Boolean      | true, false                                   | *This parameter is not necessary for production Docker images.* |
+| 48   | COMPOSE_CONVERT_WINDOWS_PATHS     | Number       | 0, 1                                          | Required only by Windows!                                    |
 
