@@ -75,7 +75,10 @@ describe('SetupComponent', () => {
             saveAdminUser : jest.fn().mockImplementation(() : Observable<IEntitySaveResponseDto> => {
                 return of({ entityId : 1, success : true } as IEntitySaveResponseDto);
             }),
-            getVmOptions : jest.fn().mockReturnValue(of([])),
+            getVmOptions : jest.fn().mockReturnValue(of({
+                'key1' : 'value1',
+                'key2' : 'value2'
+            })),
             stepBack : jest.fn().mockReturnValue(of('NEED_SETUP')),
             getAdminUserData : jest.fn().mockReturnValue(of({ username : 'admin', credential : 'testPassword', role : 'ROLE_ADMIN' })),
             saveInitialStep : jest.fn().mockReturnValue(of('NEED_ADMIN_USER')),
