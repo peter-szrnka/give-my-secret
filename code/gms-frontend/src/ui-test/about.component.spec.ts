@@ -2,9 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('About component', () => {
 
-  test.beforeEach(async ({ page }) => {
-    await page.goto(`/about`);
-  });
+  test.beforeEach(async ({ page }) => await page.goto(`/about`));
 
   test('should load main texts', async ({ page }) => {
     await expect(page.getByText('About Give My Secret')).toBeVisible();
