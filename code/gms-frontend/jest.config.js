@@ -7,9 +7,10 @@ module.exports = {
     tsconfig: 'tsconfig.spec.json'
   },
   testEnvironment: "jsdom",
+  testMatch: ["<rootDir>/src/app/**/*.spec.ts"],
 
   collectCoverage : true,
-  collectCoverageFrom : [ "src/**/*.ts" ],
+  collectCoverageFrom : [ "<rootDir>/src/app/**/*.ts" ],
   coveragePathIgnorePatterns : [
     ".module.ts",
     "<rootDir>/src/main.ts",
