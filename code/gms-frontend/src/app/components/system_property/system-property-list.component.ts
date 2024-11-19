@@ -39,7 +39,7 @@ const BOOL_VALUE_SET: string[] = ['true', 'false'];
 const createBoolConfig = (callbackMethod?: string) => {
   return {
     valueSet: BOOL_VALUE_SET,
-    displayMode: 'list',
+    displayMode: 'toggle',
     callbackMethod: callbackMethod
   };
 };

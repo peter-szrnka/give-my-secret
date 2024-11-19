@@ -21,9 +21,9 @@ const MOCK_MAP : any = {
     "info/me" : infoMe,
     "secure/home/" : mockHomeData,
     "secure/message/unread" : unreadMessages,
-    "secure/message/list?direction=DESC&property=creationDate&page=0&size=10": messages,
+    "secure/message/list?direction=DESC&property=creationDate&page=0&size=25": messages,
     "info/error_codes" : errorCodes,
-    "secure/system_property/list?direction=DESC&property=key&page=0&size=50" : systemPropertyList,
+    "secure/system_property/list?direction=DESC&property=key&page=0&size=25" : systemPropertyList,
     "secure/event/list?direction=DESC&property=eventDate&page=0&size=25" : eventList
 };
 

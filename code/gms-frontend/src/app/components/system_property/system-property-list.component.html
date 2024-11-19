@@ -22,13 +22,18 @@
         <ng-container matColumnDef="value">
           <th mat-header-cell *matHeaderCellDef>{{ 'tables.value' | translate }}</th>
           <td mat-cell *matCellDef="let element">
-            @if (element.mode === undefined) {
+            @if (element.mode === undefined && element.displayMode !== 'toggle') {
               <span>{{element.value}}</span>
+            } @else if (element.mode === undefined && element.displayMode === 'toggle') {
+              <mat-slide-toggle [(ngModel)]="element.value" [checked]="element.value" [disabled]="true"></mat-slide-toggle>
             }
             @if (element.mode === 'EDIT' && element.displayMode === 'text') {
               <mat-form-field class="example-full-width">
                 <input matInput name="value" type="{{element.inputType}}" [(ngModel)]="element.value" />
               </mat-form-field>
+            }
+            @if (element.mode === 'EDIT' && element.displayMode === 'toggle') {
+              <mat-slide-toggle [(ngModel)]="element.value" [checked]="element.value"></mat-slide-toggle>
             }
             @if (element.mode === 'EDIT' && element.displayMode === 'list') {
               <mat-select name="value" [(ngModel)]="element.value">
