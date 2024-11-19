@@ -34,3 +34,20 @@ In order to run the bundle, you need to install http-server NPM library:
 
 #### Resources
 - [https://www.npmjs.com/package/angular-http-server](https://www.npmjs.com/package/angular-http-server)
+
+## Testing
+
+### Unit tests
+
+> npm run test
+
+### UI Tests (PlayWright)
+
+UI tests will run on localhost:4199.
+
+#### Run
+> npm run uiTest
+
+#### Run report
+
+> npm run showUiReport
