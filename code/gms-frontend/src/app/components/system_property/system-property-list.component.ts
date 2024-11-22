@@ -179,8 +179,12 @@ export class SystemPropertyListComponent {
     this.fetchData();
   }
 
+  private convertBackToString(element: SystemProperty): string {
+    return element.value ? 'true' : 'false';
+  }
+
   public save(element: SystemProperty) {
-    element.value = "BOOLEAN" === element.type ? element.value ? 'true' : 'false' : element.value;
+    element.value = "BOOLEAN" === element.type ? this.convertBackToString(element) : element.value;
     element.mode = undefined;
     element.valueSet = undefined;
     this.service.save(element).subscribe({
