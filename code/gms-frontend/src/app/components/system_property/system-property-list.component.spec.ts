@@ -77,29 +77,40 @@ describe('SystemPropertyListComponent', () => {
                             key : "ENABLE_GLOBAL_MFA",
                             category : "JWT",
                             value : "HS512",
+                            factoryValue : false,
+                            lastModified : new Date(),
+                            type : "BOOLEAN"
+                        },
+                        {
+                            key : "ENABLE_AUTOMATIC_LOGOUT",
+                            category : "GENERAL",
                             factoryValue : true,
-                            lastModified : new Date()
+                            lastModified : new Date(),
+                            type : "BOOLEAN"
                         },
                         {
                             key : "JOB_OLD_EVENT_LIMIT",
                             category : "JOB",
                             value : "1;d",
                             factoryValue : true,
-                            lastModified : new Date()
+                            lastModified : new Date(),
+                            type : "STRING"
                         },
                         {
                             key : "AUTOMATIC_LOGOUT_TIME_IN_MINUTES",
                             category : "GENERAL",
                             value : "15;m",
                             factoryValue : true,
-                            lastModified : new Date()
+                            lastModified : new Date(),
+                            type : "STRING"
                         },
                         {
                             key : "UNKNOWN_PROPERTY",
                             category : "GENERAL",
                             value : "15;m",
                             factoryValue : true,
-                            lastModified : new Date()
+                            lastModified : new Date(),
+                            type : "STRING"
                         }
                     ],
                     totalElements : 3
@@ -194,7 +205,9 @@ describe('SystemPropertyListComponent', () => {
 
         // act
         component.onFetch({ pageSize: 10 });
-        component.save({ key : 'X', value : 'value', type : 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
+        component.save({ key : 'X', value : 'value', type : 'STRING', callbackMethod: 'checkSystemReady' } as SystemProperty);
+        component.save({ key : 'ENABLE_GLOBAL_MFA', value : 'true', type : 'BOOLEAN' } as SystemProperty);
+        component.save({ key : 'ENABLE_AUTOMATIC_LOGOUT', value : 'false', type : 'BOOLEAN' } as SystemProperty);
 
         // assert
         expect(dialogService.openNewDialog).toHaveBeenCalled();
