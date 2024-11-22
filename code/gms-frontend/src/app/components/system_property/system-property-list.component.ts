@@ -39,7 +39,7 @@ const BOOL_VALUE_SET: string[] = ['true', 'false'];
 const createBoolConfig = (callbackMethod?: string) => {
   return {
     valueSet: BOOL_VALUE_SET,
-    displayMode: 'list',
+    displayMode: 'toggle',
     callbackMethod: callbackMethod
   };
 };
@@ -164,6 +164,7 @@ export class SystemPropertyListComponent {
         ...property,
         textDescription: this.getResolvedPropertyText(property.key),
         valueSet: PROPERTY_TEXT_MAP[property.key]?.valueSet || [],
+        value: "BOOLEAN" === property.type ? property.value === 'true' : property.value,
         mode: undefined,
         inputType: TYPE_MAP[property.type],
         hint: hint ? this.getResolvedPropertyText(hint) : undefined,

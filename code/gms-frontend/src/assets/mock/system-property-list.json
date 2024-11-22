@@ -14,6 +14,13 @@
             "value" : "1;d",
             "factoryValue": true,
             "category" : "GENERAL"
+        },
+        {
+            "key" : "ENABLE_AUTOMATIC_LOGOUT",
+            "type" : "BOOLEAN",
+            "value" : "false",
+            "factoryValue": false,
+            "category" : "GENERAL"
         }
     ],
     "totalElements": 2
