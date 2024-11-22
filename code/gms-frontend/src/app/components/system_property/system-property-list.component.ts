@@ -164,6 +164,7 @@ export class SystemPropertyListComponent {
         ...property,
         textDescription: this.getResolvedPropertyText(property.key),
         valueSet: PROPERTY_TEXT_MAP[property.key]?.valueSet || [],
+        value: "BOOLEAN" === property.type ? property.value === 'true' : property.value,
         mode: undefined,
         inputType: TYPE_MAP[property.type],
         hint: hint ? this.getResolvedPropertyText(hint) : undefined,
@@ -179,6 +180,7 @@ export class SystemPropertyListComponent {
   }
 
   public save(element: SystemProperty) {
+    element.value = "BOOLEAN" === element.type ? element.value ? 'true' : 'false' : element.value;
     element.mode = undefined;
     element.valueSet = undefined;
     this.service.save(element).subscribe({
