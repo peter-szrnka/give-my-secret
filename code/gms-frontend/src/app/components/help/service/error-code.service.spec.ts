@@ -32,7 +32,7 @@ describe("ErrorCodeService", () => {
 
     it('Should list results', () => {
       // arrange
-      const expectedUrl = environment.baseUrl + "error_codes";
+      const expectedUrl = environment.baseUrl + "info/error_codes";
       const mockResponse : ErrorCodeList = { errorCodeList: [TEST_CODE] };
 
       // act

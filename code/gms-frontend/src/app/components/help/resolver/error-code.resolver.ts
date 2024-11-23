@@ -32,14 +32,14 @@ export class ErrorCodeResolver {
     }
 
     private mapItems(errorCodes: ErrorCodeList): ErrorCodeList {
-        errorCodes.errorCodeList = errorCodes.errorCodeList.map((errorCode: ErrorCode) => {
+        const updatedErrorCodes: ErrorCode[] = errorCodes.errorCodeList.map((errorCode: ErrorCode) => {
             return {
                 code: errorCode.code,
                 description: this.getResolvedError(errorCode.code)
             }
         });
 
-        return errorCodes;
+        return { errorCodeList: updatedErrorCodes };
     }
 
     private getResolvedError(key: string): string {

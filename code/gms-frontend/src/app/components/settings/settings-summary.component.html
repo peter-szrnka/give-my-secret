@@ -40,7 +40,7 @@
             [(ngModel)]="credentialData.newCredential2">
         </mat-form-field>
 
-        <button mat-button color="primary" [disabled]="form.status ==='INVALID'" (click)="save()">{{
+        <button name="savePassword" mat-button color="primary" [disabled]="form.status ==='INVALID'" (click)="save()">{{
           'settings.password.save' | translate }}</button>
       </mat-expansion-panel>
       <mat-expansion-panel hideToggle [disabled]="authMode !== 'db'">

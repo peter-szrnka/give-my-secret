@@ -24,6 +24,14 @@ jobs:
       - name: Build with NPM
         working-directory: ./code/gms-frontend
         run: npm install
+      - name: Install PlayWright
+        run: npx playwright install --with-deps
       - name: Run tests
         working-directory: ./code/gms-frontend
         run: npm run uiTest
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

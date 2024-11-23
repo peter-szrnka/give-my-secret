@@ -85,6 +85,7 @@
         "verify.title": "Login verification",
         "verify.description" : "Please open your Authenticator application on your mobile device and type the verification code",
         "verify.login" : "Verify login",
+        "verify.code" : "Verification code",
 
         "sidemenu.home": "Home",
         "sidemenu.users" : "Users",
@@ -380,6 +381,7 @@
         "verify.title": "Bejelentkezés ellenőrzése",
         "verify.description" : "Kérjük nyissa meg az Authenticator alkalmazást a mobil eszközén és írja be a ellenőrző kódot",
         "verify.login" : "Bejelentkezés ellenőrzése",
+        "verify.code" : "Ellenőrző kód",
 
         "sidemenu.home": "Nyitólap",
         "sidemenu.users" : "Felhasználók",

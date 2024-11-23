@@ -14,6 +14,6 @@ export class ErrorCodeService {
     constructor(protected http : HttpClient) {}
 
     list(): Observable<ErrorCodeList> {
-        return this.http.get<ErrorCodeList>(environment.baseUrl + 'error_codes', { withCredentials: true, headers : getHeaders() });
+        return this.http.get<ErrorCodeList>(environment.baseUrl + 'info/error_codes', { withCredentials: true, headers : getHeaders() });
     }
 }
