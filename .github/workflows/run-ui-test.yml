@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: 
-      - '*/**/gms-frontend/*'
+      - './code/gms-frontend/*'
       - '!README.md'
       - '!*/**/*.md'
       - '!*/**/*.png'
