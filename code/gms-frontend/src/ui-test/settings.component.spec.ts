@@ -10,11 +10,15 @@ test.describe('Settings component', () => {
     await expect(page.getByText('New password')).toBeVisible();
     await expect(page.getByText('Confirm password')).toBeVisible();
 
+    await expect(page.locator('input[name="oldCredential"]')).toBeVisible();
+    await expect(page.locator('input[name="newCredential1"]')).toBeVisible();
+    await expect(page.locator('input[name="newCredential2"]')).toBeVisible();
+
     await page.locator('input[name="oldCredential"]').fill('password');
     await page.locator('input[name="newCredential1"]').fill('newpassword');
     await page.locator('input[name="newCredential2"]').fill('newpassword');
 
-    await page.locator('button[name="savePassword"]').click();
+    await page.locator('button').getByText('Save').click();
 
     await page.waitForTimeout(300);
 
@@ -37,6 +41,7 @@ test.describe('Settings component', () => {
 
     await expect(page.locator('mat-select[name="language"]')).toBeVisible();
 
-    await page.locator('mat-select[name="language"]').selectOption({ label: 'English' });
+    await page.locator('mat-select[name="language"]').click();
+    await page.locator('mat-option').getByText('English').click();
   });
 });

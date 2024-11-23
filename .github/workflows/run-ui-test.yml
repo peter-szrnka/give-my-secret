@@ -24,6 +24,8 @@ jobs:
       - name: Build with NPM
         working-directory: ./code/gms-frontend
         run: npm install
+      - name: Install PlayWright
+        run: npx playwright install
       - name: Run tests
         working-directory: ./code/gms-frontend
         run: npm run uiTest
