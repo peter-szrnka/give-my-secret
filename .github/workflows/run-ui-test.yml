@@ -1,0 +1,29 @@
+name: Run UI tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: 
+      - './code/gms-frontend/*'
+      - '!README.md'
+      - '!*/**/*.md'
+      - '!*/**/*.png'
+jobs:
+  run_frontend_ui_tests:
+    name: Frontend
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-skip')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build with NPM
+        working-directory: ./code/gms-frontend
+        run: npm install
+      - name: Run tests
+        working-directory: ./code/gms-frontend
+        run: npm run uiTest
