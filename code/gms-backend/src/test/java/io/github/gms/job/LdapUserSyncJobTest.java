@@ -112,7 +112,7 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 2})
-    void shouldProcess(int deletedUserCount) {
+    void run_whenAllConditionsMet_thenProcess(int deletedUserCount) {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED)).thenReturn(true);
         when(service.synchronizeUsers()).thenReturn(Pair.of(2, deletedUserCount));

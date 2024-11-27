@@ -33,7 +33,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void testAnnotationTargetOnClass() {
+	void test_whenAnnotationIsOnTargetClass_thenReturnOk() {
 		// arrange
 		ReflectionTestUtils.setField(aspect, "service", service);
 		
@@ -57,7 +57,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void testAnnotationTargetOnMethod() {
+	void test_whenAnnotationIsOnTargetMethod_thenReturnOk() {
 		// arrange
 		ReflectionTestUtils.setField(aspect, "service", service);
 		
@@ -80,7 +80,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void testAnnotationsMissing() {
+	void test_whenAnnotationIsMissing_thenReturnOk() {
 		// arrange
 		ReflectionTestUtils.setField(aspect, "service", service);
 		

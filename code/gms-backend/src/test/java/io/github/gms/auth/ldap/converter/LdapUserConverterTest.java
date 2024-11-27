@@ -39,7 +39,7 @@ class LdapUserConverterTest extends AbstractUnitTest {
 
     @ParameterizedTest
     @MethodSource("newUserTestData")
-    void shouldConvertUserDetailsWithNewUser(boolean storeLdapCredential, String expectedResponse) {
+    void toEntity_whenUserDoesNotExists_thenConvertToEntity(boolean storeLdapCredential, String expectedResponse) {
         // arrange
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -66,7 +66,7 @@ class LdapUserConverterTest extends AbstractUnitTest {
 
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
-    void shouldConvertUserDetailsWithExistingUser(boolean storeLdapCredential) {
+    void toEntity_whenUserAlreadyExists_thenConvertToEntity(boolean storeLdapCredential) {
         // arrange
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);

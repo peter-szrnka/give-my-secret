@@ -50,7 +50,7 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-	void shouldVerifyThrowsAnError() {
+	void verify_whenUserNotFound_thenReturnFailed() {
 		// arrange
 		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
@@ -65,7 +65,7 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldVerifyFailWhenUserIsBlocked() {
+	void verify_whenUserIsBlocked_thenReturnBlocked() {
 		// arrange
 		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(true);
 
@@ -79,7 +79,7 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldVerifyFailWhenUserIsLockedInLdap() {
+	void verify_whenUserIsLockedInLdap_thenReturnBlocked() {
 		// arrange
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setAccountNonLocked(false);
@@ -96,7 +96,7 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldVerifyFail() {
+	void verify_whenCodeIsNotValid_thenReturnBlocked() {
 		// arrange
 		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
@@ -119,7 +119,7 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldVerify() {
+	void verify_whenCodeIsValid_thenSucceed() {
 		// arrange
 		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();

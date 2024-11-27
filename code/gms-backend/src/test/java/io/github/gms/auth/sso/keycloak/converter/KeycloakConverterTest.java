@@ -48,7 +48,7 @@ class KeycloakConverterTest {
 
     @ParameterizedTest
     @MethodSource("toUserDetailsData")
-    void shouldReturnUserDetails(String active, EntityStatus expectedStatus) {
+    void toUserDetails_whenInputProvided_thenReturnUserDetails(String active, EntityStatus expectedStatus) {
         GmsUserDetails userDetails = converter.toUserDetails(IntrospectResponse.builder()
                 .email("email@email")
                 .name("My Name")
@@ -67,7 +67,7 @@ class KeycloakConverterTest {
     }
 
     @Test
-    void shouldReturnUserInfo() {
+    void toUserInfoDto_whenInputProvided_thenReturnUserInfoDto() {
         // act
         UserInfoDto response = converter.toUserInfoDto(IntrospectResponse.builder()
                 .email("email@email")
@@ -89,7 +89,7 @@ class KeycloakConverterTest {
     }
 
     @Test
-    void shouldReturnNewEntity() {
+    void toEntity_whenEntityDoesNotExist_thenReturnNewEntity() {
         try (MockedStatic<ZonedDateTime> mockedZonedDateTime = mockStatic(ZonedDateTime.class)) {
             mockedZonedDateTime.when(() -> ZonedDateTime.now(clock)).thenReturn(zonedDateTime);
             // arrange
@@ -121,7 +121,7 @@ class KeycloakConverterTest {
     }
 
     @Test
-    void shouldReturnExistingEntity() {
+    void toEntity_whenEntityExists_thenReturnEntity() {
         // arrange
         UserEntity mockEntity = TestUtils.createAdminUser();
         mockEntity.setStatus(null);

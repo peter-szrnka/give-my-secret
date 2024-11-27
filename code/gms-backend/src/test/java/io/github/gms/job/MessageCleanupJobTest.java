@@ -107,7 +107,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldNotProcess() {
+	void run_whenNoMessagesDeleted_thenSkipLogging() {
 		// arrange
 		setupClock(clock);
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
@@ -134,7 +134,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldProcess() {
+	void run_whenAllConditionsMet_thenProcess() {
 		// arrange
 		setupClock(clock);
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);

@@ -19,6 +19,7 @@ import static io.github.gms.common.enums.SystemStatus.NEED_SETUP;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.URL_INFO_STATUS;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -69,7 +70,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
-        ResponseEntity<SystemStatusDto> response = executeHttpGet("/info/status", requestEntity, SystemStatusDto.class);
+        ResponseEntity<SystemStatusDto> response = executeHttpGet(URL_INFO_STATUS, requestEntity, SystemStatusDto.class);
 
         // assert
         assertNotNull(response);

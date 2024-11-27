@@ -110,7 +110,7 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldNotProcess() {
+    void run_whenNoKeystoreFileDeleted_thenSKipLogging() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(true);
         when(service.deleteTempKeystoreFiles()).thenReturn(0L);
@@ -131,7 +131,7 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldProcess() {
+    void run_whenAllConditionsMet_thenProcess() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(true);
         when(service.deleteTempKeystoreFiles()).thenReturn(1L);

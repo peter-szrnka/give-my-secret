@@ -66,7 +66,7 @@ class LdapSyncServiceTest extends AbstractLoggingUnitTest {
 
 	@ParameterizedTest
 	@MethodSource("testData")
-	void shouldSyncAllUsers(String username, boolean findUser) {
+	void synchronizeUsers_whenAllConditionsMet_thenSyncAllUsers(String username, boolean findUser) {
 		// arrange
 		service.setAuthType("ldap");
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
@@ -103,7 +103,7 @@ class LdapSyncServiceTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSyncAllUsers() {
+	void synchronizeUsers_whenUserNotFound_thenSkipSync() {
 		// arrange
 		service.setAuthType("ldap");
 		GmsUserDetails mockUser = TestUtils.createGmsUser();

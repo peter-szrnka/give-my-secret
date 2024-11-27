@@ -110,7 +110,7 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSkipProcessing() {
+    void run_whenNoUsersRequested_thenSkipExecution() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED)).thenReturn(true);
         when(userDeletionService.getRequestedUserIds()).thenReturn(Collections.emptySet());
@@ -132,7 +132,7 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldProcess() {
+    void run_whenAllConditionsMet_thenProcess() {
         // arrange
         Set<Long> userIds = Set.of(1L, 2L);
         when(systemPropertyService.getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED)).thenReturn(true);

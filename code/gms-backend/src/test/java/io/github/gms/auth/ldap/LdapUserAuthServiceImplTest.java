@@ -48,7 +48,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldNotFoundUser() {
+	void loadUserByUsername_whenUserNotFound_thenThrowUsernameNotFoundException() {
 		// arrange
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of());
 		
@@ -61,7 +61,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldFoundMoreUser() {
+	void loadUserByUsername_whenMultipleUsersFound_thenThrowUsernameNotFoundException() {
 		// arrange
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(TestUtils.createGmsUser(), TestUtils.createGmsUser()));
 		
@@ -74,7 +74,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldFoundOneUser() {
+	void loadUserByUsername_whenOneUserFound_thenLoadUserDetails() {
 		// arrange
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(mockUser));

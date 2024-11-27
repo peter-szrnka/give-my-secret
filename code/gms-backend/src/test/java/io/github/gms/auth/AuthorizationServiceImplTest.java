@@ -58,7 +58,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void jwtTokenIsMissing() {
+	void authorize_whenJwtTokenIsMissing_thenReturnForbidden() {
 		// arrange
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		when(req.getCookies()).thenReturn(new Cookie[] {});
@@ -72,7 +72,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void jwtIsInvalid() {
+	void authorize_whenJwtIsInvalid_thenReturnForbidden() {
 		// arrange
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(ACCESS_JWT_TOKEN, "invalid_token")});
@@ -91,7 +91,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void jwtHasExpired() {
+	void authorize_whenJwtHasExpired_thenReturnBadRequest() {
 		// arrange
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		Claims claims = mock(Claims.class);
@@ -116,7 +116,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void userIsBlocked() {
+	void authorize_whenUserIsBlocked_thenReturnForbidden() {
 		// arrange
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		Claims claims = mock(Claims.class);
@@ -142,7 +142,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void jwtIsValid() {
+	void authorize_whenJwtIsValid_thenReturnOk() {
 		// arrange
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		Claims claims = mock(Claims.class);

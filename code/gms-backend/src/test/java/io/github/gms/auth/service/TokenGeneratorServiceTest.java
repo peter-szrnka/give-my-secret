@@ -38,7 +38,7 @@ class TokenGeneratorServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    void testGetAuthenticationDetails() {
+    void getAuthenticationDetails_whenAllConditionsMet_thenProvideMap() {
         // arrange
         GmsUserDetails user = TestUtils.createGmsUser();
         when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.REFRESH_JWT), eq(user.getUsername()), any())).thenReturn(TestUtils.createJwtUserRequest(user));

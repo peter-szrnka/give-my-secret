@@ -39,7 +39,7 @@ class KeycloakIntrospectServiceTest {
     }
 
     @Test
-    void test() {
+    void getUserDetails_whenInputProvided_thenReturnOK() {
         // arrange
         when(keycloakSettings.getClientId()).thenReturn("clientId");
         when(keycloakSettings.getClientSecret()).thenReturn("clientSecret");

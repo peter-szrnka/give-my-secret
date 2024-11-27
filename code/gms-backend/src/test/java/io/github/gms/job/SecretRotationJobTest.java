@@ -111,7 +111,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotProcess() {
+	void shouldNotProcess() { // TODO: Rename this method to something more descriptive
 		// arrange
 		when(systemPropertyService.getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED)).thenReturn(true);
 		Clock mockClock = Clock.fixed(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());
@@ -136,7 +136,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldProcess() {
+	void run_whenAllConditionsMet_thenProcess() {
 		// arrange
 		when(systemPropertyService.getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED)).thenReturn(true);
 		Clock mockClock = Clock.fixed(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());

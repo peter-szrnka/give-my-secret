@@ -34,7 +34,7 @@ class DbUserAuthServiceImplTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldNotFoundUser() {
+	void loadUserByUsername_whenUserNotFound_thenThrowException() {
 		when(repository.findByUsername(anyString())).thenReturn(Optional.empty());
 		
 		// act
@@ -46,7 +46,7 @@ class DbUserAuthServiceImplTest extends AbstractUnitTest {
 	
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
-	void shouldFoundUser(boolean isActive) {
+	void loadUserByUsername_whenUserIsAvailble_thenLoadUser(boolean isActive) {
 		// arrange
 		UserEntity user = TestUtils.createUserWithStatus(isActive? EntityStatus.ACTIVE : EntityStatus.DISABLED);
 		user.setMfaEnabled(true);
