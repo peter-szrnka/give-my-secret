@@ -12,10 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -35,7 +32,7 @@ class SetupFilterTest extends AbstractUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldSetupEnabled() {
+	void doFilterInternal_whenSystemIsNotReady_thenSetupRequired() {
 		SystemStatusDto mock = SystemStatusDto.builder().withStatus("NEED_SETUP").build();
 		when(service.getSystemStatus()).thenReturn(mock);
 
@@ -54,7 +51,7 @@ class SetupFilterTest extends AbstractUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldBeOk() {
+	void doFilterInternal_whenSystemIsReady_thenReturnNotFound() {
 		SystemStatusDto mock = SystemStatusDto.builder().withStatus("OK").build();
 		when(service.getSystemStatus()).thenReturn(mock);
 

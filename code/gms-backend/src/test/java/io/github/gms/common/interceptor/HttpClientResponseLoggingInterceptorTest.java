@@ -33,7 +33,7 @@ class HttpClientResponseLoggingInterceptorTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldNotLogResponse() throws IOException {
+    void intercept_whenLoggingDisabled_thenSkipLoggingResponse() throws IOException {
         // arrange
         interceptor = new HttpClientResponseLoggingInterceptor(false);
         HttpRequest request = mock(HttpRequest.class);
@@ -49,7 +49,7 @@ class HttpClientResponseLoggingInterceptorTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldLogHttpClientResponse() throws IOException {
+    void intercept_whenLoggingEnabled_thenLogResponse() throws IOException {
         // arrange
         HttpRequest request = mock(HttpRequest.class);
         when(request.getURI()).thenReturn(URI.create("http://localhost:5555/api/get"));

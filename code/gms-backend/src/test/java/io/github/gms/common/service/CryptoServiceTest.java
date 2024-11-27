@@ -43,7 +43,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldNotValidateKeyStoreFile() {
+	void validateKeyStoreFile_whenKeyIsInvalid_thenThrowGmsException() {
 		// arrange
 	    MockMultipartFile sampleFile = getMockMultipartFile("wrong key".getBytes());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -55,7 +55,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldNotFindAlias() {
+	void validateKeyStoreFile_whenAliasIsInvalid_thenThrowGmsException() {
 		// arrange
 		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -67,7 +67,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldNot2ValidateKeyStoreFile() {
+	void validateKeyStoreFile_whenAliasCredentialIsInvalid_thenThrowGmsException() {
 		// arrange
 		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -80,7 +80,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldValidateKeyStoreFile() {
+	void validateKeyStoreFile_whenDataIsValid_thenLogMessage() {
 		// arrange
 		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -94,7 +94,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldNotDecrypt() {
+	void service_whenDataIsInvalid_thenThrowGmsException() {
 		// arrange
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenThrow(new IllegalArgumentException("Wrong!"));
 		
@@ -104,7 +104,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldDecrypt() {
+	void service_whenDataIsDecryptable_thenDecrypt() {
 		// arrange
 		KeystorePair mockPair = new KeystorePair(TestUtils.createKeystoreAliasEntity(), createKeyStore());
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenReturn(mockPair);
@@ -120,7 +120,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldNotEncrypt() {
+	void encrypt_whenKeystoreEntityIsInvalid_thenThrowIllegalArgumentException() {
 		// arrange
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenThrow(new IllegalArgumentException("Wrong!"));
 		
@@ -134,7 +134,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldEncrypt() {
+	void encrypt_whenEntityIsValid_thenEncryptData() {
 		// arrange
 		KeystorePair mockPair = new KeystorePair(TestUtils.createKeystoreAliasEntity(), createKeyStore());
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenReturn(mockPair);

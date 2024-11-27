@@ -30,7 +30,7 @@ class JwtClaimServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldReturnClaims() {
+	void getClaims_whenValidJwtProvided_thenReturnClaims() {
         // arrange
         Claims mockClaims = mock(Claims.class);
 

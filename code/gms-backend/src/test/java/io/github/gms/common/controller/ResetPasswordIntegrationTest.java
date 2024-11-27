@@ -23,7 +23,7 @@ class ResetPasswordIntegrationTest extends AbstractIntegrationTest implements Gm
 
     @Test
     @TestedMethod(value = "resetPassword")
-    void shouldResetPassword() {
+    void resetPassword_whenDataIsValid_thenResetPassword() {
         // arrange
         HttpHeaders headers = new HttpHeaders();
         ResetPasswordRequestDto dto = new ResetPasswordRequestDto();

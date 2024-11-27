@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class HealthcheckControllerTest {
 
     @Test
-    void shouldReturnOk() {
+    void healthcheck_whenCalled_thenReturnOk() {
         // arrange
         HealthcheckController controller = new HealthcheckController();
 

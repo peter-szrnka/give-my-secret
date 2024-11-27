@@ -20,9 +20,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -43,7 +41,7 @@ class InformationControllerTest {
     }
 
     @Test
-    void shouldReturnHttp200() {
+    void getUserInfo_whenUserInfoAvailable_thenReturnDto() {
         // arrange
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(userInfoService.getUserInfo(request)).thenReturn(TestUtils.createUserInfoDto());
@@ -57,7 +55,7 @@ class InformationControllerTest {
     }
 
     @Test
-    void shouldReturnSecret() {
+    void status_whenCalled_thenShouldReturnSystemStatus() {
         SystemStatusDto mockResponseDto = SystemStatusDto.builder()
                 .withAuthMode("db")
                 .withStatus("OK")
@@ -79,7 +77,7 @@ class InformationControllerTest {
     }
 
     @Test
-    void shouldReturnErrorCodes() {
+    void getErrorCodes_whenCalled_thenShouldReturnAllErrorCodes() {
         // act
         ErrorCodeListDto response = controller.getErrorCodes();
         List<String> codes = response.getErrorCodeList().stream().map(ErrorCodeDto::getCode).toList();

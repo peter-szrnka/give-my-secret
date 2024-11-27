@@ -50,7 +50,7 @@ class LdapSyncServiceTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSkipLdapUserSync() {
+	void synchronizeUsers_whenAuthTypeIsDb_thenSkipSync() {
 		// arrange
 		service.setAuthType("db");
 

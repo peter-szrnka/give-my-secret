@@ -15,18 +15,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class FileUtilsTest extends AbstractUnitTest {
 
     @Test
-    void shouldTestPrivateConstructor() {
+    void test_whenConstructorCalled_thenSuccessfullyInstantiated() {
         assertPrivateConstructor(FileUtils.class);
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    void shouldFail(String input) {
+    void validatePath_whenInputIsInvalid_thenFail(String input) {
         assertThrows(GmsException.class, () -> FileUtils.validatePath(input));
     }
 
     @Test
-    void shouldPass() {
+    void validatePath_whenInputIsValid_thenPass() {
         assertDoesNotThrow(() -> FileUtils.validatePath("correctpath/correctfile.txt"));
     }
 

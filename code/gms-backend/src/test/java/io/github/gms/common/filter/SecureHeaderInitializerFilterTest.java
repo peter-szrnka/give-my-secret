@@ -58,7 +58,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldSkip() {
+	void doFilterInternal_whenUrlIsAnIgnoredOne_thenSkipAuthorization() {
 		// arrange
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		HttpServletResponse response = mock(HttpServletResponse.class);
@@ -76,7 +76,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldSendError() {
+	void doFilterInternal_whenAuthorizationFail_thenReturnBadRequest() {
 		// arrange
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		HttpServletResponse response = mock(HttpServletResponse.class);
@@ -99,7 +99,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 	@ParameterizedTest
 	@MethodSource("testData")
 	@SneakyThrows
-	void shouldPass(UserRole role, boolean admin) {
+	void doFilterInternal_whenAllDataProvided_thenPass(UserRole role, boolean admin) {
 		// arrange
 		try (MockedStatic<MDC>  mockedMDC = mockStatic(MDC.class)) {
 			filter = new SecureHeaderInitializerFilter(authorizationService, systemPropertyService, true);

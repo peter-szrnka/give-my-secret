@@ -57,13 +57,6 @@ class LdapUserConverterTest extends AbstractUnitTest {
         verify(secretGenerator).generate();
     }
 
-    private static Object[][] newUserTestData() {
-        return new Object[][] {
-                { true, "UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=null, credential=test, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=secret!, failedAttempts=0)" },
-                { false, "UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=null, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=secret!, failedAttempts=0)" }
-        };
-    }
-
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
     void toEntity_whenUserAlreadyExists_thenConvertToEntity(boolean storeLdapCredential) {
@@ -83,5 +76,12 @@ class LdapUserConverterTest extends AbstractUnitTest {
         assertEquals("secret!", response.getMfaSecret());
         assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
         verify(secretGenerator).generate();
+    }
+
+    private static Object[][] newUserTestData() {
+        return new Object[][] {
+                { true, "UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=null, credential=test, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=secret!, failedAttempts=0)" },
+                { false, "UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=null, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=secret!, failedAttempts=0)" }
+        };
     }
 }

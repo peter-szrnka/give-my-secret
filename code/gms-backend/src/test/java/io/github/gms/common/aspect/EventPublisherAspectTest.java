@@ -103,7 +103,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void testPointcutsDoNothing() {
+	void test_whenMethodsCalled_thenPointcutsDoNothing() {
 		assertDoesNotThrow(() -> aspect.allMethod());
 		assertDoesNotThrow(() -> aspect.audited());
 		assertDoesNotThrow(() -> aspect.restController());

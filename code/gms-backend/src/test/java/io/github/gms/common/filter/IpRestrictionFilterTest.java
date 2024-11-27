@@ -16,10 +16,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -41,7 +38,7 @@ class IpRestrictionFilterTest extends AbstractUnitTest {
 
     @Test
     @SneakyThrows
-    void shouldRun() {
+    void doFilterInternal_whenAddressIsNotBlocked_thenReturnOk() {
         // arrange
         when(ipRestrictionService.checkGlobalIpRestrictions()).thenReturn(new IpRestrictionPatterns(List.of()));
 
@@ -60,7 +57,7 @@ class IpRestrictionFilterTest extends AbstractUnitTest {
 
     @Test
     @SneakyThrows
-    void shouldHandleError() {
+    void doFilterInternal_whenAddressIsBlocked_thenReturnForbidden() {
         // arrange
         when(ipRestrictionService.checkGlobalIpRestrictions()).thenReturn(new IpRestrictionPatterns(List.of()));
         when(validator.isIpAddressBlocked(anyList())).thenReturn(true);

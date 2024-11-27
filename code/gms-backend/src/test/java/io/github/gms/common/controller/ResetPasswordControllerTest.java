@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 class ResetPasswordControllerTest {
 
     @Test
-    void shouldReturnOk() {
+    void resetPassword_whenInputIsValid_thenResetPassword() {
         // arrange
         ResetPasswordService service = mock(ResetPasswordService.class);
         ResetPasswordController controller = new ResetPasswordController(service);

@@ -20,7 +20,7 @@ class GmsJacksonAnnotationIntrospectorTest extends AbstractUnitTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void testFindSerializer(boolean sensitive) {
+    void findSerializer_whenAnnotationIsAvailableOrNot_thenReturnResult(boolean sensitive) {
         // arrange
         Annotated am = mock(Annotated.class);
         Sensitive mockSensitive = mock(Sensitive.class);

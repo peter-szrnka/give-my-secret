@@ -33,7 +33,7 @@ class VerificationIntegrationTest extends AbstractIntegrationTest implements Gms
 
     @Test
     @TestedMethod("verify")
-    void shouldVerify() {
+    void verify_whenVerificationCodeIsValid_thenReturnOk() {
         // arrange
         HttpHeaders headers = new HttpHeaders();
         LoginVerificationRequestDto request = new LoginVerificationRequestDto();

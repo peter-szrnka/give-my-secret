@@ -14,12 +14,12 @@ import static org.mockito.Mockito.*;
 class HttpUtilsTest extends AbstractUnitTest {
 
     @Test
-    void shouldTestPrivateConstructor() {
+    void test_whenConstructorCalled_thenSuccessfullyInstantiated() {
         assertPrivateConstructor(HttpUtils.class);
     }
 
     @Test
-    void shouldRetrieveRemoteAddressFromHeaders() {
+    void getClientIpAddress_whenIpAddressIsInHeader_thenReturnIpAddressFromHeader() {
         // arrange
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader(anyString())).thenReturn(null);
@@ -34,7 +34,7 @@ class HttpUtilsTest extends AbstractUnitTest {
     }
 
     @Test
-    void shouldReturnRemoteAddress() {
+    void getClientIpAddress_whenIpAddressIsInServletRequest_thenReturnIpAddress() {
         // arrange
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRemoteAddr()).thenReturn("127.0.0.1");

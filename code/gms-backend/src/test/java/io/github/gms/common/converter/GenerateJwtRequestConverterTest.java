@@ -13,9 +13,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -34,7 +32,7 @@ class GenerateJwtRequestConverterTest extends AbstractUnitTest {
     }
 
     @Test
-    void shouldConvertToRequest() {
+    void toRequest_whenProperInputProvided_thenConvertToRequest() {
         // arrange
         Map<String, Object> claims = Map.of("A", 1L);
         when(systemPropertyService.get(any(SystemProperty.class))).thenReturn("RSA");

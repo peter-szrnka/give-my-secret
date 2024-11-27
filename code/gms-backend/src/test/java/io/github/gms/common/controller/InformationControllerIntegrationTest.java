@@ -32,7 +32,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
     @Test
     @TestedMethod("getUserInfo")
-	void shouldReturnHttp200WithEmptyResponse() {
+	void infoMe_whenJwtIsMissing_thenEmptyResponse() {
 		// act
 		ResponseEntity<UserInfoDto> response = executeHttpGet("/info/me", new HttpEntity<>(null), UserInfoDto.class);
 		
@@ -43,7 +43,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
     @Test
     @TestedMethod("getUserInfo")
-	void shouldReturnHttp200() {
+	void infoMe_whenJwtIsValid_thenReturnUserInfo() {
         // arrange
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie", ACCESS_JWT_TOKEN + "=" + jwt);
@@ -66,8 +66,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
     @Test
     @TestedMethod("status")
-    void shouldSystemStatusOK() {
-
+    void systemStatus_whenSystemIsNotReady_thenReturnNeedSetup() {
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
         ResponseEntity<SystemStatusDto> response = executeHttpGet(URL_INFO_STATUS, requestEntity, SystemStatusDto.class);
@@ -83,8 +82,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
     @Test
     @TestedMethod("getErrorCodes")
-    void shouldGetErrorCodes() {
-
+    void errorCodes_whenCalled_thenShouldReturnAllErrorCodes() {
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
         ResponseEntity<String> response = executeHttpGet("/info/error_codes", requestEntity, String.class);

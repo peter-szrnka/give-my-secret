@@ -36,7 +36,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testSupports() {
+    void supports_whenCalled_thenReturnTrue() {
         // arrange
         MethodParameter methodParameter = mock(MethodParameter.class);
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
@@ -46,7 +46,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testBeforeBodyWrite() throws JsonProcessingException {
+    void beforeBodyWrite_whenCalled_thenReturnBody() throws JsonProcessingException {
         // arrange
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
@@ -66,7 +66,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testBeforeBodyWrite_whenMaskingDisabled() throws JsonProcessingException {
+    void beforeBodyWrite_whenMaskingDisabled_thenReturnUnmaskedData() throws JsonProcessingException {
         // arrange
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
@@ -87,7 +87,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testBeforeBodyWrite_whenLoggingTurnedOff() throws JsonProcessingException {
+    void beforeBodyWrite_whenLoggingTurnedOff_thenLoggingSkipped() throws JsonProcessingException {
         // arrange
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
@@ -106,7 +106,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testBeforeBodyWrite_whenExceptionOccurs() throws JsonProcessingException {
+    void beforeBodyWrite_whenExceptionOccurs_thenLogException() throws JsonProcessingException {
         // arrange
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;

@@ -22,16 +22,10 @@ import java.util.Objects;
 
 import static io.github.gms.common.util.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link LoginController}
@@ -53,7 +47,7 @@ class LoginControllerTest {
     }
 
     @Test
-    void shouldLoginFail() {
+    void loginAuthentication_whenAuthenticationFailed_thenReturnHttp401() {
         try (MockedStatic<CookieUtils> cookieUtilsMockedStatic = mockStatic(CookieUtils.class)) {
             // arrange
             AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
@@ -79,7 +73,7 @@ class LoginControllerTest {
     }
 
     @Test
-    void shouldLogin() {
+    void loginAuthentication_whenUserIsActive_thenReturnJwtAndCookies() {
         // arrange
         AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
 
@@ -124,7 +118,7 @@ class LoginControllerTest {
     }
 
     @Test
-    void shouldLoginRequireMfa() {
+    void loginAuthentication_whenUserIsMfaEnabled_thenReturnMfaRequired() {
         // arrange
         AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
 
@@ -147,7 +141,7 @@ class LoginControllerTest {
     }
 
     @Test
-    void shouldLogout() {
+    void logout_whenCalled_thenDeleteCookies() {
         // act
         ResponseEntity<Void> response = controller.logout();
     
