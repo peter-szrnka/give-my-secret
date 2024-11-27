@@ -49,7 +49,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldSaveNewEntity() {
+	void save_whenEntityIsNew_thenReturnOk() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -82,7 +82,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldSaveExistingEntity() {
+	void save_whenAlreadyExists_thenReturnOk() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		SaveAnnouncementDto dto = SaveAnnouncementDto.builder()
@@ -116,7 +116,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldReturnList() {
+	void list_whenInputProvided_thenReturnOk() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -145,7 +145,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldNotFindById() {
+	void getById_whenEntityDoesNotExist_thenThrowGmsException() {
 		// arrange
 		when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -158,7 +158,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldFindById() {
+	void getById_whenEntityExists_thenReturnEntity() {
 		// arrange
 		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createAnnouncementEntity(1L)));
 
@@ -171,7 +171,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldDelete() {
+	void delete_whenInputProvided_thenReturnOk() {
 		// act
 		service.delete(1L);
 
@@ -180,7 +180,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldReturnCount() {
+	void count_whenInputProvided_thenReturnOk() {
 		// arrange
 		when(repository.count()).thenReturn(3L);
 

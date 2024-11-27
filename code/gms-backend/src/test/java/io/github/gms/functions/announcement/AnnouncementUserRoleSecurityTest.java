@@ -24,20 +24,20 @@ class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     @Test
     @TestedMethod("save")
-    void testSaveFailWithHttp403() {
+    void save_whenAuthenticationFails_thenReturnHttp403() {
         shouldSaveFailWith403(TestUtils.createSaveAnnouncementDto());
     }
 
     @Test
     @TestedMethod("list")
-    void testListFailWithHttp403() {
+    void list_whenAuthenticationFails_thenReturnHttp403() {
         jwt = null;
         shouldListFailWith403(AnnouncementListDto.class);
     }
 
     @Test
     @TestedMethod("getById")
-    void testGetByIdFailWithHttp403() {
+    void getById_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
         shouldGetByIdFailWith403(AnnouncementDto.class, DemoData.USER_1_ID);
@@ -45,7 +45,7 @@ class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     @Test
     @TestedMethod("delete")
-    void testDeleteFailWithHttp403() {
+    void delete_whenAuthenticationFails_thenReturnHttp403() {
         shouldDeleteFailWith403(DemoData.ANNOUNCEMENT_ID);
     }
 }
