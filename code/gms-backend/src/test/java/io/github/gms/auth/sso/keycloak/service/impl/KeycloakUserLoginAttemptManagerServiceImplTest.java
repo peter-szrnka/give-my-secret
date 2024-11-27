@@ -25,7 +25,7 @@ class KeycloakUserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnit
     }
 
     @Test
-    void shouldNotUpdateLoginAttempt() {
+    void updateLoginAttempt_whenCalled_thenPrintLogMessage() {
         service.updateLoginAttempt(DemoData.USERNAME1);
 
         // assert
@@ -33,7 +33,7 @@ class KeycloakUserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnit
     }
 
     @Test
-    void shouldNotResetLoginAttempt() {
+    void resetLoginAttempt_whenCalled_thenPrintLogMessage() {
         service.resetLoginAttempt(DemoData.USERNAME1);
 
         // assert
