@@ -44,7 +44,7 @@ class KeystoreValidatorServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldKeystoreAliasMissing() {
+    void validateSecretKeystore_whenKeystoreAliasMissing_thenThrowGmsException() {
         // arrange
         when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
         SecretEntity secretEntity = TestUtils.createSecretEntity();
@@ -58,7 +58,7 @@ class KeystoreValidatorServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldKeystoreMissing() {
+    void validateSecretKeystore_whenKeystoreIsMissing_thenThrowGmsException() {
         // arrange
         when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.empty());
@@ -74,7 +74,7 @@ class KeystoreValidatorServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSucceed() {
+    void validateSecretKeystore_whenDataIsValid_thenReturn() {
         // arrange
         when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));

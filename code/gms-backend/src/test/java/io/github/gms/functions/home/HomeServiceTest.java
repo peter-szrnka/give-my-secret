@@ -24,9 +24,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -55,7 +53,7 @@ class HomeServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    void shouldReturnAdminData() {
+    void getHomeData_whenUserIsAnAdmin_thenReturnAdminData() {
         // arrange
         MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), "true");
         when(announcementService.count()).thenReturn(new LongValueDto(2L));
@@ -81,7 +79,7 @@ class HomeServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    void shouldReturnUserData() {
+    void getHomeData_whenUserIsAUser_thenReturnUserData() {
         // arrange
         MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), "false");
         when(apiKeyService.count()).thenReturn(new LongValueDto(4L));

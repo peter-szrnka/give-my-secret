@@ -26,7 +26,7 @@ class HomeControllerTest {
     }
 
     @Test
-    void shouldDeleteEntity() {
+    void getHomeData_whenCorrectInputProvided_thenReturnHomeData() {
         // arrange
         HomeDataResponseDto dto = new HomeDataResponseDto();
         dto.setAnnouncementCount(0L);

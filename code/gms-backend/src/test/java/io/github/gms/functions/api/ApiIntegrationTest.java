@@ -33,7 +33,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest implements GmsControlle
 
     @Test
 	@TestedMethod("getSecret")
-	void testGetSecret() {
+	void getSecret_whenInputIsValid_thenReturnData() {
 		// arrange
 		apiKeyRepository.save(TestUtils.createApiKey(DemoData.API_KEY_3_ID, DemoData.API_KEY_CREDENTIAL3));
 		keystoreAliasRepository.save(TestUtils.createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS3_ID, DemoData.KEYSTORE_ID));
@@ -56,7 +56,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest implements GmsControlle
 	}
 
 	@Test
-	void shouldReturnHttp400WhenHeaderIsMissing() {
+	void getSecret_whenHeaderIsMissing_thenReturnBadRequest() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(null));
 		ResponseEntity<String> response = executeHttpGet("/api/secret/" + DemoData.SECRET_ID3, requestEntity, String.class);
@@ -66,7 +66,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest implements GmsControlle
 	}
 
 	@Test
-	void shouldReturnHttp500WhenApiKeyIsInvalid() {
+	void getSecret_whenApiKeyIsInvalid_thenReturnInternalServerError() {
 		// arrange
 		apiKeyRepository.save(TestUtils.createApiKey(DemoData.API_KEY_3_ID, DemoData.API_KEY_CREDENTIAL3));
 

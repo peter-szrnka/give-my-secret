@@ -22,7 +22,7 @@ class JobAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 
     @Test
     @TestedMethod("list")
-    void testListFailWithHttp403() {
+    void list_whenAuthenticationFails_thenReturnHttp403() {
         shouldListFailWith403(JobListDto.class);
     }
 }
