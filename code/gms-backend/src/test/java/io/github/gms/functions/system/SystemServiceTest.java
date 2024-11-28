@@ -58,7 +58,7 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"NEED_SETUP", OK})
-    void shouldReturnSystemStatus(String mockResponse) {
+    void getSystemStatus_whenInputProvided_thenReturnDto(String mockResponse) {
         // arrange
         service.setAuthType("db");
         service.setBuildProperties(buildProperties);
@@ -78,7 +78,7 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @MethodSource("inputData")
-    void shouldReturnOkWithDifferentAuthMethod(String selectedAuth, boolean hasBuildProperties, String expectedVersion, ContainerHostType containerHostType, String expectedContainerId) {
+    void getSystemStatus_whenCustomInputProvided_thenReturnOkWithDifferentAuthMethod(String selectedAuth, boolean hasBuildProperties, String expectedVersion, ContainerHostType containerHostType, String expectedContainerId) {
         // arrange
         service.setAuthType(selectedAuth);
         service.setBuildProperties(buildProperties);
@@ -125,7 +125,7 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSetAutomaticLogoutTimeInMinutes() {
+    void getSystemStatus_whenAutomaticLogoutEnabled_thenReturnAutomaticLogoutData() {
         // arrange
         service.setBuildProperties(buildProperties);
         when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
