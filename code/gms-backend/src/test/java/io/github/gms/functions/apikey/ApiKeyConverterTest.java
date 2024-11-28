@@ -37,7 +37,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithoutParameters() {
+	void toEntity_whenNotParametersProvided_thenConvert() {
 		// arrange
 		SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
 		dto.setValue(null);
@@ -57,7 +57,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithParameters() {
+	void toEntity_whenParametersProvided_thenConvert() {
 		// arrange
 		SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
 		dto.setId(3L);
@@ -77,7 +77,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToNewEntity() {
+	void toNewEntity_whenDtoProvided_thenConvertToNewEntity() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -98,7 +98,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToList() {
+	void toDtoList_whenEntityListProvided_thenConvertToDto() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);

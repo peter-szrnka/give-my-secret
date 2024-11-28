@@ -11,7 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
+import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -27,26 +27,26 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 	}
 
 	@Test
-	@TestedMethod("save")
-	void testSaveFailWithHttp403() {
+	@TestedMethod(SAVE)
+	void save_whenAuthenticationFails_thenReturnHttp403() {
 		shouldSaveFailWith403(TestUtils.createSaveApiKeyRequestDto());
 	}
 	
 	@Test
-	@TestedMethod("getById")
-	void testGetByIdFailWithHttp403() {
+	@TestedMethod(GET_BY_ID)
+	void getById_whenAuthenticationFails_thenReturnHttp403() {
 		shouldGetByIdFailWith403(ApiKeyDto.class, DemoData.API_KEY_1_ID);
 	}
 	
 	@Test
-	@TestedMethod("list")
-	void testListFailWithHttp403() {
+	@TestedMethod(LIST)
+	void list_whenAuthenticationFails_thenReturnHttp403() {
 		shouldListFailWith403(ApiKeyListDto.class);
 	}
 	
 	@Test
-	@TestedMethod("getValue")
-	void testGetValueFailWithHttp403() {
+	@TestedMethod(GET_VALUE)
+	void getValue_whenAuthenticationFails_thenReturnHttp403() {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
 		// act
@@ -57,20 +57,20 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 	}
 	
 	@Test
-	@TestedMethod("delete")
-	void testDeleteFailWithHttp403() {
+	@TestedMethod(DELETE)
+	void delete_whenAuthenticationFails_thenReturnHttp403() {
 		shouldDeleteFailWith403(DemoData.API_KEY_2_ID);
 	}
 	
 	@Test
-	@TestedMethod("toggle")
-	void testToggleStatusFailWithHttp403() {
+	@TestedMethod(TOGGLE)
+	void toggleStatus_whenAuthenticationFails_thenReturnHttp403() {
 		shouldToggleFailWith403(DemoData.API_KEY_1_ID);
 	}
 
 	@Test
 	@TestedMethod("getAllApiKeyNames")
-	void testListAllApiKeyNamesFailWithHttp403() {
+	void listAllApiKeyNames_whenAuthenticationFails_thenReturnHttp403() {
 		shouldListingFailWith403("/secure/apikey/list_names");
 	}
 }

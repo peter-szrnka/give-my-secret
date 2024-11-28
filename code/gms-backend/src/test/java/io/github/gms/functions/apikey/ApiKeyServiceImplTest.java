@@ -51,7 +51,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSaveNewEntity() {
+	void save_WhenApiKeyIsNew_thenReturnOk() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "2");
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
@@ -79,7 +79,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSaveExistingEntity() {
+	void save_WhenApiKeyAlreadyExists_thenReturnOk() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "2");
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
@@ -101,7 +101,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldNotSaveNewEntityWhenApiKeyNameIsNotUnique() {
+	void save_WhenApiKeyNameIsNotUnique_thenThrowGmsException() {
 		// arrange
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
@@ -119,7 +119,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldNotSaveNewEntityWhenApiKeyValueIsNotUnique() {
+	void save_WhenNewEntityValueIsNotUnique_thenThrowGmsException() {
 		// arrange
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
@@ -137,7 +137,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotFindById() {
+	void getById_whenEntityDoesNotExist_thenThrowGmsException() {
 		// arrange
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
@@ -151,7 +151,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldFindById() {
+	void getById_whenEntityExists_thenReturnEntity() {
 		// arrange
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createApiKey()));
 		when(converter.toDto(any())).thenReturn(new ApiKeyDto());
@@ -166,7 +166,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldReturnEmptyList() {
+	void list_whenDaoReturnsError_thenReturnEmptyList() {
 		// arrange
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenThrow(new RuntimeException("Unexpected error!"));
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
@@ -183,7 +183,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldReturnList() {
+	void list_whenEntitiesFound_thenReturnResultList() {
 		// arrange
 		Page<ApiKeyEntity> mockList = new PageImpl<>(Lists.newArrayList(new ApiKeyEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
@@ -201,7 +201,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldDelete() {
+	void delete_whenEntityExists_thenRemoveData() {
 		// act
 		service.delete(1L);
 
@@ -210,7 +210,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldCount() {
+	void count_whenMultipleApiKeysFoundForAUser_thenReturnCount() {
 		// arrange
 		when(repository.countByUserId(anyLong())).thenReturn(3L);
 
@@ -224,7 +224,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
-	void shouldToggleStatus(boolean enabled) {
+	void toggle_whenItHasAStatus_thenToggleValue(boolean enabled) {
 		// arrange
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createApiKey()));
 
@@ -242,7 +242,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test	
-	void shouldReturnDecryptedValue() {
+	void getDecryptedValue_whenEntityFound_thenReturnDecryptedValue() {
 		// arrange
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createApiKey()));
 
@@ -255,7 +255,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldGetAllApiKeyNames() {
+	void getAllApiKeyNames_whenEntityFound_thenReturnValues() {
 		when(repository.getAllApiKeyNames(anyLong())).thenReturn(Lists.newArrayList(
 				new IdNamePairDto(1L, "apikey1"),
 				new IdNamePairDto(1L, "apikey2")
@@ -272,7 +272,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldDeleteInBatch() {
+	void batchDeleteByUserIds_whenInputProvided_thenProceed() {
 		// arrange
 		Set<Long> userIds = Set.of(1L, 2L);
 

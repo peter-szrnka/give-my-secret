@@ -35,7 +35,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Test
 	@TestedMethod("save")
-	void testSave() {
+	void save_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<SaveApiKeyRequestDto> requestEntity = new HttpEntity<>(TestUtils.createSaveApiKeyRequestDto(), TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SaveEntityResponseDto> response = executeHttpPost("", requestEntity, SaveEntityResponseDto.class);
@@ -50,7 +50,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	@Test
 	@TestedMethod("getById")
-	void testGetById() {
+	void getById_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<ApiKeyDto> response = executeHttpGet("/" + DemoData.API_KEY_1_ID, requestEntity, ApiKeyDto.class);
@@ -67,7 +67,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	@Test
 	@TestedMethod("list")
-	void testList() {
+	void list_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<ApiKeyListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, ApiKeyListDto.class);
@@ -80,7 +80,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	@Test
 	@TestedMethod("getValue")
-	void testGetValue() {
+	void getValue_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpGet("/value/" + DemoData.API_KEY_1_ID, requestEntity, String.class);
@@ -95,7 +95,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	@Test
 	@TestedMethod("delete")
-	void testDelete() {
+	void delete_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/" + DemoData.API_KEY_2_ID, requestEntity,
@@ -110,7 +110,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@ParameterizedTest
 	@TestedMethod("toggle")
 	@ValueSource(booleans = { false, true })
-	void testToggleStatus(boolean enabled) {
+	void toggle_whenInputIsValid_thenReturnOk(boolean enabled) {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost("/" + DemoData.API_KEY_1_ID + "?enabled="+ enabled, requestEntity,
@@ -130,7 +130,7 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	@Test
 	@TestedMethod("getAllApiKeyNames")
-	void testGetAllApiKeyNames() {
+	void getAllApiKeyNames_whenInputIsValid_thenReturnOk() {
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		
 		// act
