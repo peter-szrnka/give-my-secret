@@ -30,7 +30,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 public class RequestInitializationFilter extends OncePerRequestFilter {
 
-    @Value("${config.log.response.time.disabled:false}")
+    @Value("${config.logging.response.time.disabled:false}")
     private boolean logResponseTimeDisabled;
 
     private final Clock clock;

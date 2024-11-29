@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
+import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.*;
 import io.github.gms.common.model.GenerateJwtRequest;
@@ -470,7 +471,11 @@ public class TestUtils {
 		return entity;
     }
 
-    @Data
+	public static SaveEntityResponseDto createSaveEntityResponseDto(Long entityId) {
+		return new SaveEntityResponseDto(entityId);
+	}
+
+	@Data
 	@AllArgsConstructor
 	public static class ValueHolder {
 		KeyStoreValueType valueType;

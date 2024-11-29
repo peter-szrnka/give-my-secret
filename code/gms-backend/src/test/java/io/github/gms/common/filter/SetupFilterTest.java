@@ -2,6 +2,7 @@ package io.github.gms.common.filter;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.functions.system.SystemService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static io.github.gms.util.TestConstants.STATUS_NEED_SETUP;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -34,7 +34,7 @@ class SetupFilterTest extends AbstractUnitTest {
 	@Test
 	@SneakyThrows
 	void doFilterInternal_whenSystemIsNotReady_thenSetupRequired() {
-		SystemStatusDto mock = SystemStatusDto.builder().withStatus(STATUS_NEED_SETUP).build();
+		SystemStatusDto mock = SystemStatusDto.builder().withStatus(SystemStatus.NEED_SETUP.name()).build();
 		when(service.getSystemStatus()).thenReturn(mock);
 
 		// act

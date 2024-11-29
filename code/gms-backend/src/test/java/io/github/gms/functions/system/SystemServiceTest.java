@@ -24,7 +24,6 @@ import java.time.ZoneId;
 import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.*;
-import static io.github.gms.util.TestConstants.STATUS_NEED_SETUP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -58,7 +57,7 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {STATUS_NEED_SETUP, OK})
+    @ValueSource(strings = {"NEED_SETUP", OK})
     void getSystemStatus_whenInputProvided_thenReturnDto(String mockResponse) {
         // arrange
         service.setAuthType("db");

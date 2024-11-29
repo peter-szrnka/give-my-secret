@@ -17,7 +17,4 @@ public interface TestConstants {
 	String DELETE = "delete";
 	String GET_VALUE = "getValue";
 	String TOGGLE = "toggle";
-
-	// Statuses
-	String STATUS_NEED_SETUP = "NEED_SETUP";
 }
