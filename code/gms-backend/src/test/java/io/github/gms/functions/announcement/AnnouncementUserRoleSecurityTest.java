@@ -8,7 +8,7 @@ import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
+import static io.github.gms.util.TestConstants.*;
 
 /**
  * @author Peter Szrnka
@@ -23,20 +23,20 @@ class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("save")
+    @TestedMethod(SAVE)
     void save_whenAuthenticationFails_thenReturnHttp403() {
         shouldSaveFailWith403(TestUtils.createSaveAnnouncementDto());
     }
 
     @Test
-    @TestedMethod("list")
+    @TestedMethod(LIST)
     void list_whenAuthenticationFails_thenReturnHttp403() {
         jwt = null;
         shouldListFailWith403(AnnouncementListDto.class);
     }
 
     @Test
-    @TestedMethod("getById")
+    @TestedMethod(GET_BY_ID)
     void getById_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
@@ -44,7 +44,7 @@ class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("delete")
+    @TestedMethod(DELETE)
     void delete_whenAuthenticationFails_thenReturnHttp403() {
         shouldDeleteFailWith403(DemoData.ANNOUNCEMENT_ID);
     }

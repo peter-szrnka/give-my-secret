@@ -22,7 +22,7 @@ class EventConverterTest extends AbstractUnitTest {
 	private final EventConverter converter = new EventConverter();
 
 	@Test
-	void checkToList() {
+	void toDtoList_whenValidInputProvided_thenReturnData() {
 		// arrange
 		Page<EventEntity> entityList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity()));
 

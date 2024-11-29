@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
 
+import static io.github.gms.util.TestConstants.STATUS_NEED_SETUP;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,8 +37,8 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 
 	@Test
 	@TestedMethod("saveAdminUser")
-	void shouldSetupAdminUser() {
-		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("NEED_SETUP").build());
+	void setup_whenUserIsASimpleUser_thenSaveUser() {
+		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(STATUS_NEED_SETUP).build());
 
 		// act
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
@@ -50,8 +51,8 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 	}
 	
 	@Test
-	void shouldSetupAdminUserWithoutRoles() {
-		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("NEED_SETUP").build());
+	void setup_whenUserIsAdminWithoutRoles_thenSaveUser() {
+		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(STATUS_NEED_SETUP).build());
 
 		// act
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDtoWithNoRoles("userRandom", UUID.randomUUID() + "@email.com");

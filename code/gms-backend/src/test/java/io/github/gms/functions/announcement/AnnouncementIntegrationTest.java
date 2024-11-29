@@ -13,7 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -36,7 +36,7 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 
 	@Test
-	@TestedMethod("save")
+	@TestedMethod(SAVE)
 	void save_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<SaveAnnouncementDto> requestEntity = new HttpEntity<>(TestUtils.createSaveAnnouncementDto(), TestUtils.getHttpHeaders(jwt));
@@ -51,7 +51,7 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 	
 	@Test
-	@TestedMethod("getById")
+	@TestedMethod(GET_BY_ID)
 	void getById_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -67,7 +67,7 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 	
 	@Test
-	@TestedMethod("list")
+	@TestedMethod(LIST)
 	void list_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -82,7 +82,7 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 	
 	@Test
-	@TestedMethod("delete")
+	@TestedMethod(DELETE)
 	void delete_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
