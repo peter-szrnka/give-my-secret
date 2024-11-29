@@ -52,7 +52,7 @@ class UserAssetDeletionServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    void test() {
+    void executeRequestedUserAssetDeletion_whenCalled_thenExcute() {
         // arrange
         Set<Long> mockUserIds = Set.of(1L, 2L);
 
