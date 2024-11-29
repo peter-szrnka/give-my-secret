@@ -13,7 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
+import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -29,20 +29,20 @@ class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("getById")
-    void testGetByIdFailWithHttp403() {
+    @TestedMethod(GET_BY_ID)
+    void getById_whenAuthenticationFails_thenReturnHttp403() {
         shouldGetByIdFailWith403(KeystoreDto.class, DemoData.KEYSTORE_ID);
     }
 
     @Test
-    @TestedMethod("list")
-    void testListFailWithHttp403() {
+    @TestedMethod(LIST)
+    void list_whenAuthenticationFails_thenReturnHttp403() {
         shouldListFailWith403(KeystoreListDto.class);
     }
 
     @Test
-    @TestedMethod("getValue")
-    void testGetValueFailWithHttp403() {
+    @TestedMethod(GET_VALUE)
+    void getValue_whenAuthenticationFails_thenReturnHttp403() {
         GetSecureValueDto dto = new GetSecureValueDto();
         dto.setEntityId(DemoData.KEYSTORE_ID);
         HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
@@ -55,32 +55,32 @@ class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("delete")
-    void testDeleteFailWithHttp403() {
+    @TestedMethod(DELETE)
+    void delete_whenAuthenticationFails_thenReturnHttp403() {
         shouldDeleteFailWith403(DemoData.KEYSTORE2_ID);
     }
 
     @Test
-    @TestedMethod("toggle")
-    void testToggleStatusFailWithHttp403() {
+    @TestedMethod(TOGGLE)
+    void toggle_whenAuthenticationFails_thenReturnHttp403() {
         shouldToggleFailWith403(DemoData.KEYSTORE_ID);
     }
 
     @Test
     @TestedMethod("getAllKeystoreNames")
-    void testListAllKeystoreNamesFailWithHttp403() {
+    void listAllKeystoreNames_whenAuthenticationFails_thenReturnHttp403() {
         shouldListingFailWith403("/list_names");
     }
 
     @Test
     @TestedMethod("getAllKeystoreAliases")
-    void testListAllApiKeyNamesFailWithHttp403() {
+    void listAllApiKeyNames_whenAuthenticationFails_thenReturnHttp403() {
         shouldListingFailWith403("/list_aliases/" + DemoData.KEYSTORE_ID);
     }
 
     @Test
     @TestedMethod("download")
-    void testDownloadFailWithHttp403() {
+    void download_whenAuthenticationFails_thenReturnHttp403() {
         // act
         ResponseEntity<Resource> response =
                 executeHttpGet("/secure/keystore/download/" + DemoData.KEYSTORE_ID, null, Resource.class);

@@ -24,15 +24,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -68,7 +62,7 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldGenerateKeystore() {
+	void generate_whenUserExistsAndSystemPropertiesAreSet_thenGenerateKeystore() {
 		// arrange
 		when(userRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
 		when(systemPropertyService.get(SystemProperty.ORGANIZATION_NAME)).thenReturn("orgName");
@@ -82,8 +76,7 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 	}
 
 	@Test
-	@SneakyThrows
-	void shouldGenerateKeystoreFail() {
+	void generate_whenInputIsInvalid_thenThrowException() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 
@@ -95,8 +88,7 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 	}
 
 	@Test
-	@SneakyThrows
-	void shouldDeleteSomeTempFiles() {
+	void deleteTempKeystoreFiles_whenFileServiceReturnsFiles_thenDeleteFiles() throws IOException {
 		Path p1 = initMockPath("t/", true);
 		Path p2 = initMockPath("file1.txt", false);
 		Path p3 = initMockPath("file2.txt", false);
@@ -125,8 +117,7 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 	}
 
 	@Test
-	@SneakyThrows
-	void shouldDeleteTempFilesFail() {
+	void deleteTempKeystoreFiles_whenFileServiceThrowsError_thenThrowException() throws IOException {
 		Path path1 = mock(Path.class);
 		File mockFile1 = mock(File.class);
 		when(mockFile1.isDirectory()).thenReturn(false);

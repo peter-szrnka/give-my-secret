@@ -43,7 +43,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithoutFile() {
+	void toEntity_whenNoFileProvided_thenConvertToEntity() {
 		// act
 		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(),
 				TestUtils.createSaveKeystoreRequestDto());
@@ -61,7 +61,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithParameters() {
+	void toEntity_whenInputProvided_thenConvertToEntity() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -85,7 +85,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToNewEntityWithoutFile() {
+	void toNewEntity_whenNoFileProvided_thenConvertToEntity() {
 		// arrange
 		setupClock(clock);
 
@@ -107,7 +107,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToNewEntity() {
+	void toNewEntity_whenFileProvided_thenConvertToEntity() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -134,7 +134,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToList() {
+	void list_whenInputProvided_thenConvert() {
 		// arrange
 		Page<KeystoreEntity> entityList = new PageImpl<>(Lists.newArrayList(TestUtils.createKeystoreEntity()));
 
@@ -150,7 +150,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToDto() {
+	void toDto_whenInputProvided_thenConvert() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -166,7 +166,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToAliasEntity() {
+	void toAliasEntity_whenInputProvided_thenConvert() {
 		// arrange
 		KeystoreAliasDto aliasDto = new KeystoreAliasDto(1L, "alias", "test1234", AliasOperation.SAVE,
 				EnabledAlgorithm.SHA256WITHRSA.getDisplayName());

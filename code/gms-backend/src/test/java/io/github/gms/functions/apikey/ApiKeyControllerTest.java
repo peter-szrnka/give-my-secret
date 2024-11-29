@@ -35,7 +35,6 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
 
     @Test
     void delete_whenInputProvided_thenReturnOk() {
-
         // act
         ResponseEntity<String> response = controller.delete(1L);
 
