@@ -33,7 +33,7 @@ class JobMaintenanceServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenValidInputProvided_thenReturnResultList() {
         // arrange
         Page<JobEntity> mockList = new PageImpl<>(List.of(new JobEntity()));
         when(repository.findAll(any(Pageable.class))).thenReturn(mockList);

@@ -9,4 +9,15 @@ public interface TestConstants {
 	String TAG_SECURITY_TEST = "SecurityTest";
 
 	String URL_INFO_STATUS = "/info/status";
+
+	// TestedMethod annotation values
+	String SAVE = "save";
+	String LIST = "list";
+	String GET_BY_ID = "getById";
+	String DELETE = "delete";
+	String GET_VALUE = "getValue";
+	String TOGGLE = "toggle";
+
+	// Statuses
+	String STATUS_NEED_SETUP = "NEED_SETUP";
 }

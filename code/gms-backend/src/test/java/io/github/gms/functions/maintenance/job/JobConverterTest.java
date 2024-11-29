@@ -20,7 +20,7 @@ class JobConverterTest extends AbstractUnitTest {
     private final JobConverter converter = new JobConverter();
 
     @Test
-    void checkToList() {
+    void toDtoList_whenValidInputProvided_thenReturnResultList() {
         // arrange
         JobEntity apiKeyEntity = TestUtils.createJobEntity();
         Page<JobEntity> entityList = new PageImpl<>(Lists.newArrayList(apiKeyEntity));
