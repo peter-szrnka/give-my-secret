@@ -29,13 +29,13 @@ class IpRestrictionControllerTest {
     private IpRestrictionService service;
 
     @BeforeEach
-    void setupTest() {
+    void setup() {
         service = Mockito.mock(IpRestrictionService.class);
         controller = new IpRestrictionController(service);
     }
 
     @Test
-    void shouldSave() {
+    void save_whenInputProvided_thenReturnOk() {
         // arrange
         IpRestrictionDto dto = TestUtils.createIpRestrictionDto();
         when(service.save(dto)).thenReturn(new SaveEntityResponseDto(1L));
@@ -50,7 +50,7 @@ class IpRestrictionControllerTest {
     }
 
     @Test
-    void shouldReturnById() {
+    void getById_whenInputProvided_thenReturnOk() {
         // arrange
         IpRestrictionDto dto = TestUtils.createIpRestrictionDto();
         when(service.getById(1L)).thenReturn(dto);
@@ -65,7 +65,7 @@ class IpRestrictionControllerTest {
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenInputProvided_thenReturnOk() {
         // arrange
         IpRestrictionListDto dtoList = TestUtils.createIpRestrictionListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
@@ -87,7 +87,7 @@ class IpRestrictionControllerTest {
     }
 
     @Test
-    void shouldDeleteEntity() {
+    void delete_whenInputProvided_thenReturnOk() {
         // arrange
         doNothing().when(service).delete(1L);
 
@@ -102,7 +102,7 @@ class IpRestrictionControllerTest {
 
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
-    void shouldToggleStatus(boolean status) {
+    void toggle_whenInputProvided_thenReturnOk(boolean status) {
         // arrange
         doNothing().when(service).toggleStatus(1L, status);
 
