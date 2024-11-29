@@ -26,7 +26,7 @@ class MessageConverterTest extends AbstractUnitTest {
 	private final MessageConverter converter = new MessageConverter();
 
 	@Test
-	void checkToDto() {
+	void toDto_whenInputProvided_thenReturnOk() {
 		// arrange
 		Clock clock = mock(Clock.class);
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
@@ -45,7 +45,7 @@ class MessageConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToList() {
+	void toDtoList_whenInputProvided_thenReturnOk() {
 		// arrange
 		Clock clock = mock(Clock.class);
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Set;
 
+import static io.github.gms.util.TestConstants.LIST;
 import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,7 +31,7 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
     }
 
     @Test
-    @TestedMethod("list")
+    @TestedMethod(LIST)
     void testListFailWithHttp403() {
         shouldListFailWith403(MessageListDto.class);
     }

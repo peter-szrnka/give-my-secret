@@ -49,7 +49,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSave() {
+	void save_whenInputProvided_thenReturnOk() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -80,7 +80,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldReturnList() {
+	void list_whenInputProvided_thenReturnOk() {
 		// arrange
 
 		Page<MessageEntity> mockList = new PageImpl<>(Lists.newArrayList(new MessageEntity()));
@@ -101,7 +101,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldReturnUnreadMessagesCount() {
+	void getUnreadMessagesCount_whenInputProvided_thenReturnOk() {
 		// arrange
 		when(repository.countAllUnreadByUserId(1L)).thenReturn(2L);
 
@@ -114,7 +114,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	void shouldToggleMarkAsRead() {
+	void toggleMarkAsRead_whenInputProvided_thenReturnOk() {
 		// arrange
 		MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().ids(Sets.newHashSet(2L)).opened(true).build();
 
@@ -126,7 +126,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldDeleteInBatch() {
+	void batchDeleteByUserIds_whenInputProvided_thenReturnOk() {
 		// arrange
 		Set<Long> userIds = Set.of(1L, 2L);
 
@@ -139,7 +139,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldDeleteAllByIds() {
+	void deleteAllByIds_whenInputProvided_thenReturnOk() {
 		// arrange
 		IdListDto input = new IdListDto(Set.of(1L, 2L, 3L));
 		// act
@@ -150,7 +150,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldDeleteById() {
+	void deleteById_whenInputProvided_thenReturnOk() {
 		// arrange
 		Long id = 1L;
 
