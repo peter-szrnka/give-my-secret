@@ -20,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,8 +45,8 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Test
 	@Transactional
-	@TestedMethod("save")
-	void testSave() {
+	@TestedMethod(SAVE)
+	void save_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<SaveUserRequestDto> saveRequestEntity = new HttpEntity<>(
 				TestUtils.createSaveUserRequestDto(null, "user3", "user3@user3.com"), 
@@ -65,8 +65,8 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
-	@TestedMethod("getById")
-	void testGetById() {
+	@TestedMethod(GET_BY_ID)
+	void getById_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<ApiKeyDto> response = executeHttpGet("/" + DemoData.USER_1_ID, requestEntity, ApiKeyDto.class);
@@ -82,8 +82,8 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
-	@TestedMethod("list")
-	void testList() {
+	@TestedMethod(LIST)
+	void list_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<UserListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, UserListDto.class);
@@ -97,8 +97,8 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
-	@TestedMethod("delete")
-	void testDelete() {
+	@TestedMethod(DELETE)
+	void delete_whenInputIsValid_thenReturnOk() {
 		// arrange
 		HttpEntity<SaveUserRequestDto> saveRequestEntity = new HttpEntity<>(
 				TestUtils.createSaveUserRequestDto(null, "user3", "user3@user3.com"), 
@@ -120,9 +120,9 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	
 	@Transactional
 	@ParameterizedTest
-	@TestedMethod("toggle")
+	@TestedMethod(TOGGLE)
 	@ValueSource(booleans = { true, false })
-	void testToggleStatus(boolean enabled) {
+	void toggle_whenInputIsValid_thenReturnOk(boolean enabled) {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost("/" + DemoData.USER_1_ID + "?enabled="+ enabled, requestEntity,
@@ -142,7 +142,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@Transactional
 	@TestedMethod("changePassword")
-	void testChangePassword() {
+	void changePassword_whenInputIsValid_thenReturnOk() {
 		// arrange
 		HttpEntity<ChangePasswordRequestDto> requestEntity = new HttpEntity<>(TestUtils.createChangePasswordRequestDto(), TestUtils.getHttpHeaders(jwt));
 
@@ -159,7 +159,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 
     @Test
     @TestedMethod("getMfaQrCode")
-    void testGetMfaQrCode() {
+    void getMfaQrCode_whenInputIsValid_thenReturnOk() {
         // arrange
 		gmsUser = TestUtils.createGmsMfaUser();
 		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
@@ -178,7 +178,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 
     @Test
     @TestedMethod("toggleMfa")
-    void testToggleMfa() {
+    void toggleMfa_whenInputIsValid_thenReturnOk() {
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
         ResponseEntity<Void> response = executeHttpPost("/toggle_mfa?enabled=true", requestEntity, Void.class);
@@ -194,7 +194,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@Transactional
 	@TestedMethod("isMfaActive")
-	void testIsMfaActive() {
+	void isMfaActive_whenInputIsValid_thenReturnOk() {
 		// arrange
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 

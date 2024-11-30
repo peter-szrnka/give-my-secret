@@ -11,7 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
+import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -27,42 +27,42 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("save")
-    void testSaveFailWithHttp403() {
+    @TestedMethod(SAVE)
+    void save_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
         shouldSaveFailWith403(TestUtils.createSaveUserRequestDto());
     }
 
     @Test
-    @TestedMethod("getById")
-    void testGetByIdFailWithHttp403() {
+    @TestedMethod(GET_BY_ID)
+    void getById_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
         shouldGetByIdFailWith403(UserDto.class, DemoData.USER_1_ID);
     }
 
     @Test
-    @TestedMethod("list")
-    void testListFailWithHttp403() {
+    @TestedMethod(LIST)
+    void list_whenAuthenticationFails_thenReturnHttp403() {
         shouldListFailWith403(UserListDto.class);
     }
 
     @Test
-    @TestedMethod("delete")
-    void testDeleteFailWithHttp403() {
+    @TestedMethod(DELETE)
+    void delete_whenAuthenticationFails_thenReturnHttp403() {
         shouldDeleteFailWith403(DemoData.USER_1_ID);
     }
 
     @Test
-    @TestedMethod("toggle")
-    void testToggleStatusFailWithHttp403() {
+    @TestedMethod(TOGGLE)
+    void toggle_whenAuthenticationFails_thenReturnHttp403() {
         shouldToggleFailWith403(DemoData.USER_1_ID);
     }
 
     @Test
     @TestedMethod("changePassword")
-    void testChangePasswordFailWithHttp403() {
+    void changePassword_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
         ChangePasswordRequestDto request = new ChangePasswordRequestDto();
@@ -77,7 +77,7 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     @Test
     @TestedMethod("getMfaQrCode")
-    void testGetQrCodeFailWithHttp403() {
+    void getQrCode_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));
@@ -91,7 +91,7 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     @Test
     @TestedMethod("toggleMfa")
-    void testToggleMfaFailWithHttp403() {
+    void toggleMfa_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
         HttpEntity<Boolean> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -105,7 +105,7 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
 
     @Test
     @TestedMethod("isMfaActive")
-    void testIsMfaActiveFailWithHttp403() {
+    void isMfaActive_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));

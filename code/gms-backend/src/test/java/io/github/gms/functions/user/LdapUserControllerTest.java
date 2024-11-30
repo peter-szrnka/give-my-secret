@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link LdapUserController}
@@ -23,14 +21,14 @@ class LdapUserControllerTest {
     private LdapUserController controller;
 
     @BeforeEach
-    void setupTest() {
+    void setup() {
         ldapSyncService = mock(LdapSyncService.class);
         controller = new LdapUserController(ldapSyncService, "db");
     }
 
     @ParameterizedTest
     @MethodSource("inputData")
-    void shouldSyncUsers(String authType, int expectedReturnCode) {
+    void synchronizeUsers_whenDifferentAuthTypeProvided_thenReturn(String authType, int expectedReturnCode) {
         // arrange
         controller = new LdapUserController(ldapSyncService, authType);
 

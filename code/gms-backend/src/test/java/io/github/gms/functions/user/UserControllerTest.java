@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 class UserControllerTest extends AbstractClientControllerTest<UserService, UserController> {
 
     @BeforeEach
-    void setupTest() {
+    void setup() {
         service = mock(UserService.class);
         controller = new UserController(service);
     }

@@ -23,9 +23,7 @@ import static io.github.gms.common.enums.UserRole.ROLE_VIEWER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -45,7 +43,7 @@ class UserConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithRoleChange() {
+	void toEntity_whenRoleChangePresentedInDto_thenReturnEntity() {
 		// arrange
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
 		when(passwordEncoder.encode(anyString())).thenReturn("encoded");
@@ -60,7 +58,7 @@ class UserConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithoutCredential() {
+	void toEntity_whenCredentialsMissing_thenReturnEntity() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -80,7 +78,7 @@ class UserConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithParameters() {
+	void toEntity_whenNewParametersProvided_thenReturnEntity() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -103,7 +101,7 @@ class UserConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToNewEntity() {
+	void toNewEntity_whenInputProvided_thenReturnOk() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -122,7 +120,7 @@ class UserConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToNewEntityWithRoleChange() {
+	void toNewEntity_whenInputContainsRoleChange_thenReturnOk() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -141,7 +139,7 @@ class UserConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToList() {
+	void toDtoList_whenInputProvided_thenReturnOk() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -169,7 +167,7 @@ class UserConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToUserInfoDto() {
+	void toUserInfoDto_whenInputProvidedWithoutMfa_thenReturnOk() {
 		// act
 		UserInfoDto dto = converter.toUserInfoDto(TestUtils.createGmsUser(), false);
 
@@ -183,7 +181,7 @@ class UserConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToUserInfoDtoWithMfa() {
+	void toUserInfoDto_whenInputProvidedWithMfa_thenReturnOk() {
 		// arrange
 		GmsUserDetails testUser = TestUtils.createGmsUser();
 		testUser.setMfaEnabled(true);
@@ -198,7 +196,7 @@ class UserConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldAddIdToUserDetails() {
+	void addIdToUserDetails_whenInputProvided_thenReturnOk() {
 		// arrange
 		GmsUserDetails testUser = TestUtils.createGmsUser();
 		testUser.setUserId(null);
