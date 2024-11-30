@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -108,7 +109,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
     @Test
     void getValue_whenInputProvided_thenReturnOk() {
         // arrange
-        when(service.getSecretValue(1L)).thenReturn("test");
+        when(service.getSecretValue(1L)).thenReturn(TEST);
 
         // act
         ResponseEntity<String> response = controller.getValue(1L);
@@ -116,7 +117,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
         // assert
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
-        assertEquals("test", response.getBody());
+        assertEquals(TEST, response.getBody());
         verify(service).getSecretValue(1L);
     }
 

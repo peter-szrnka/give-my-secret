@@ -15,6 +15,7 @@ import java.util.List;
 
 import static io.github.gms.common.util.Constants.*;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -40,7 +41,7 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	void test_whenLoginCalled_thenReturnOk() {
 		// act
-		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, "test");
+		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, TEST);
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
 		ResponseEntity<String> response = executeHttpPost(SLASH + LoginController.LOGIN_PATH, requestEntity, String.class);
 

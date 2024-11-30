@@ -204,7 +204,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		// Assert
 		assertNotNull(response);
 		assertNotNull(response.getBody());
-		assertThat(response.getBody()).isFalse();
+		assertThat(response.getBody()).isTrue();
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 }

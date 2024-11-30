@@ -18,4 +18,5 @@ public interface TestConstants {
 	String GET_VALUE = "getValue";
 	String TOGGLE = "toggle";
 	String ROTATE_SECRET = "rotateSecret";
+	String TEST = "test";
 }

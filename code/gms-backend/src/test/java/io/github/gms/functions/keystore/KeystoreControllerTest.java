@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static io.github.gms.util.TestConstants.TEST;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -68,7 +69,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     @Test
     void save_whenInputProvided_thenReturnOk() {
         // arrange
-        MultipartFile multiPartFile = new MockMultipartFile("test", "data".getBytes());
+        MultipartFile multiPartFile = new MockMultipartFile(TEST, "data".getBytes());
         when(service.save("{'test':'value'}", multiPartFile)).thenReturn(new SaveEntityResponseDto(2L));
 
         // act
@@ -123,14 +124,14 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     void getValue_whenInputProvided_thenReturnOk() {
         // arrange
         GetSecureValueDto dto = new GetSecureValueDto();
-        when(service.getValue(dto)).thenReturn("test");
+        when(service.getValue(dto)).thenReturn(TEST);
 
         // act
         String response = controller.getValue(dto);
 
         // assert
         assertNotNull(response);
-        assertEquals("test", response);
+        assertEquals(TEST, response);
         verify(service).getValue(dto);
     }
 

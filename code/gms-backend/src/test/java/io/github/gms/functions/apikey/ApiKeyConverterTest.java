@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -116,7 +117,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 
 		ApiKeyDto entity = resultList.getResultList().getFirst();
 		assertEquals(1L, entity.getId());
-		assertEquals("test", entity.getName());
+		assertEquals(TEST, entity.getName());
 		assertEquals(1L, entity.getUserId());
 		assertEquals("description", entity.getDescription());
 		assertEquals("apikey", entity.getValue());

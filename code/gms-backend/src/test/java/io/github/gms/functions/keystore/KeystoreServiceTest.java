@@ -50,6 +50,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 import static io.github.gms.util.LogAssertionUtils.assertLogContains;
+import static io.github.gms.util.TestConstants.TEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -262,7 +263,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         MultipartFile multiPart = mock(MultipartFile.class);
         when(multiPart.getOriginalFilename()).thenReturn("test.jks");
-        when(multiPart.getBytes()).thenReturn("test".getBytes());
+        when(multiPart.getBytes()).thenReturn(TEST.getBytes());
 
         when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
         when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
@@ -284,7 +285,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         String fileName = "my-key.jks";
         TestUtils.createDirectory("unit-test-output/1/");
         Path newFilePath = Files.createFile(Paths.get("unit-test-output/1/" + fileName));
-        Files.writeString(newFilePath, "test");
+        Files.writeString(newFilePath, TEST);
 
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -293,7 +294,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         MultipartFile multiPart = mock(MultipartFile.class);
         when(multiPart.getOriginalFilename()).thenReturn(fileName);
-        when(multiPart.getBytes()).thenReturn("test".getBytes());
+        when(multiPart.getBytes()).thenReturn(TEST.getBytes());
 
         KeystoreEntity keystoreEntity = TestUtils.createKeystoreEntity();
         keystoreEntity.setFileName("my-key.jks");
@@ -324,7 +325,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         MultipartFile multiPart = mock(MultipartFile.class);
 
-        when(multiPart.getBytes()).thenReturn("test".getBytes());
+        when(multiPart.getBytes()).thenReturn(TEST.getBytes());
         when(multiPart.getOriginalFilename()).thenReturn("test.jks");
         when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
 
@@ -351,7 +352,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         String model = TestUtils.objectMapper().writeValueAsString(dto);
 
         when(fileService.exists(any(Path.class))).thenReturn(true);
-        when(fileService.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
+        when(fileService.readAllBytes(any(Path.class))).thenReturn(TEST.getBytes());
         when(converter.toEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
         when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
         when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
@@ -402,7 +403,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     void save_whenOnlyDeletedAliasProvided_thenThrowException() throws JsonProcessingException {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-        dto.setAliases(List.of(new KeystoreAliasDto(1L, "alias", "test", AliasOperation.DELETE,
+        dto.setAliases(List.of(new KeystoreAliasDto(1L, "alias", TEST, AliasOperation.DELETE,
                 EnabledAlgorithm.SHA256WITHRSA.getDisplayName())));
         dto.setId(1L);
         String model = TestUtils.objectMapper().writeValueAsString(dto);
@@ -442,9 +443,9 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     void save_whenCorrectInputProvided_thenSaveEntity() throws IOException {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-        dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", "test", AliasOperation.DELETE,
+        dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", TEST, AliasOperation.DELETE,
                 EnabledAlgorithm.SHA256WITHRSA.getDisplayName()));
-        dto.getAliases().add(new KeystoreAliasDto(4L, "alias3", "test", AliasOperation.SAVE,
+        dto.getAliases().add(new KeystoreAliasDto(4L, "alias3", TEST, AliasOperation.SAVE,
                 EnabledAlgorithm.SHA256WITHRSA.getDisplayName()));
         dto.setStatus(EntityStatus.DISABLED);
         dto.setId(1L);
@@ -452,7 +453,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         MultipartFile multiPart = mock(MultipartFile.class);
         when(multiPart.getOriginalFilename()).thenReturn("test.jks");
-        when(multiPart.getBytes()).thenReturn("test".getBytes());
+        when(multiPart.getBytes()).thenReturn(TEST.getBytes());
 
         when(converter.toEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
         when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
@@ -498,7 +499,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         }
         String fileName = "generated-" + UUID.randomUUID() + ".jks";
         Path newFilePath = Files.createFile(Paths.get("temp-output/" + fileName));
-        Files.writeString(newFilePath, "test");
+        Files.writeString(newFilePath, TEST);
 
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
@@ -514,7 +515,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(keystoreFileService.generate(any(SaveKeystoreRequestDto.class))).thenReturn(fileName);
         when(fileService.exists(any(Path.class))).thenAnswer((Answer<Boolean>) invocationOnMock -> counter.getAndIncrement() == 0);
-        when(fileService.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
+        when(fileService.readAllBytes(any(Path.class))).thenReturn(TEST.getBytes());
 
         // act
         service.save(model, null);
@@ -530,11 +531,11 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     @Test
     void save_whenFileInputsMissing_thenSaveEntity() throws IOException {
         // arrange
-        when(fileService.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
+        when(fileService.readAllBytes(any(Path.class))).thenReturn(TEST.getBytes());
         when(fileService.exists(any(Path.class))).thenReturn(true);
 
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-        dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", "test", AliasOperation.DELETE,
+        dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", TEST, AliasOperation.DELETE,
                 EnabledAlgorithm.SHA256WITHRSA.getDisplayName()));
         dto.setStatus(EntityStatus.DISABLED);
         dto.setId(1L);
@@ -845,7 +846,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         // arrange
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
-        when(fileService.readAllBytes(any(Path.class))).thenReturn("test".getBytes());
+        when(fileService.readAllBytes(any(Path.class))).thenReturn(TEST.getBytes());
 
         // act
         DownloadFileResponseDto response = service.downloadKeystore(1L);
@@ -853,7 +854,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         // assert
         assertNotNull(response);
         assertEquals("test.jks", response.getFileName());
-        assertEquals("test", new String(response.getFileContent()));
+        assertEquals(TEST, new String(response.getFileContent()));
         verify(fileService).readAllBytes(any(Path.class));
     }
 
@@ -876,8 +877,8 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     }
 
     public static List<ValueHolder> valueData() {
-        return Lists.newArrayList(new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, 1L, "test"),
-                new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, 1L, "test"),
-                new ValueHolder(KeyStoreValueType.KEYSTORE_CREDENTIAL, null, "test"));
+        return Lists.newArrayList(new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, 1L, TEST),
+                new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, 1L, TEST),
+                new ValueHolder(KeyStoreValueType.KEYSTORE_CREDENTIAL, null, TEST));
     }
 }

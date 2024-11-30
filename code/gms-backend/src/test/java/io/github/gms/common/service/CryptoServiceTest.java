@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.security.KeyStore;
 
 import static io.github.gms.util.LogAssertionUtils.assertLogContains;
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -115,7 +116,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	    String response = service.decrypt(entity);
 	    
 	    // assert
-	    assertEquals("test", response);
+	    assertEquals(TEST, response);
 	}
 	
 	@Test
@@ -145,7 +146,7 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	    
 	    // assert
 	    String decrypted = service.decrypt(entity);
-	    assertEquals("test", decrypted);
+	    assertEquals(TEST, decrypted);
 	}
 
 	private static MockMultipartFile getMockMultipartFile(byte[] content) throws IOException {

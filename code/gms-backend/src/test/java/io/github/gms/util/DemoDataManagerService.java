@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import java.time.ZonedDateTime;
 
 import static io.github.gms.util.DemoData.*;
+import static io.github.gms.util.TestConstants.TEST;
 import static io.github.gms.util.TestUtils.createMfaUser;
 
 /**
@@ -149,7 +150,7 @@ public class DemoDataManagerService {
 		entity.setValue(value);
 		entity.setCreationDate(ZonedDateTime.now());
 		entity.setDescription(DESCRIPTION);
-		entity.setName("test");
+		entity.setName(TEST);
 		return entity;
 	}
 
@@ -170,7 +171,7 @@ public class DemoDataManagerService {
 	private static KeystoreEntity createKeystore(Long id) {
 		KeystoreEntity entity = new KeystoreEntity();
 		entity.setDescription(DESCRIPTION);
-		entity.setName("test");
+		entity.setName(TEST);
 		entity.setCredential(CREDENTIAL_TEST);
 		entity.setId(id);
 		entity.setCreationDate(ZonedDateTime.now());
@@ -186,7 +187,7 @@ public class DemoDataManagerService {
 
 		entity.setId(id);
 		entity.setKeystoreId(keystoreId);
-		entity.setAlias("test");
+		entity.setAlias(TEST);
 		entity.setAliasCredential(CREDENTIAL_TEST);
 		entity.setDescription(DESCRIPTION);
 		

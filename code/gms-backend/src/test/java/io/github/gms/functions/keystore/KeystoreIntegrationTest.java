@@ -224,7 +224,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		if (!keystoreFile.exists()) {
 			Files.createParentDirs(keystoreFile);
 			keystoreFile.createNewFile();
-			Files.write("test".getBytes(), keystoreFile);
+			Files.write(TEST.getBytes(), keystoreFile);
 		}
 		
 		HttpHeaders headers = new HttpHeaders();	
@@ -246,8 +246,8 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	private static List<ValueHolder> valueData() {
-		return Lists.newArrayList(new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, DemoData.KEYSTORE_ALIAS_ID, "test"),
-				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, DemoData.KEYSTORE_ALIAS_ID, "test"),
-				new ValueHolder(KeyStoreValueType.KEYSTORE_CREDENTIAL, null, "test"));
+		return Lists.newArrayList(new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, DemoData.KEYSTORE_ALIAS_ID, TEST),
+				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, DemoData.KEYSTORE_ALIAS_ID, TEST),
+				new ValueHolder(KeyStoreValueType.KEYSTORE_CREDENTIAL, null, TEST));
 	}
 }

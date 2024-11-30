@@ -19,6 +19,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -53,7 +54,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 		assertEquals("keystore", entity.getName());
 		assertEquals(1L, entity.getUserId());
 		assertEquals("description", entity.getDescription());
-		assertEquals("test", entity.getCredential());
+		assertEquals(TEST, entity.getCredential());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
 		assertEquals(KeystoreType.JKS, entity.getType());
 		assertEquals(FILE_NAME, entity.getFileName());
@@ -100,7 +101,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 		assertEquals("keystore", entity.getName());
 		assertEquals(1L, entity.getUserId());
 		assertEquals("description", entity.getDescription());
-		assertEquals("test", entity.getCredential());
+		assertEquals(TEST, entity.getCredential());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
 		assertEquals(KeystoreType.JKS, entity.getType());
 		assertNull(entity.getFileName());
@@ -125,7 +126,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 		assertEquals("keystore", entity.getName());
 		assertEquals(1L, entity.getUserId());
 		assertEquals("description", entity.getDescription());
-		assertEquals("test", entity.getCredential());
+		assertEquals(TEST, entity.getCredential());
 		assertEquals(EntityStatus.ACTIVE, entity.getStatus());
 		assertEquals(KeystoreType.JKS, entity.getType());
 		assertEquals(FILE_NAME, entity.getFileName());

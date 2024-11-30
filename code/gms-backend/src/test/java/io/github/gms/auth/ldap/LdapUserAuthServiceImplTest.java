@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -53,7 +54,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of());
 		
 		// act
-		UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername("test"));
+		UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername(TEST));
 		
 		// assert
 		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));
@@ -66,7 +67,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(TestUtils.createGmsUser(), TestUtils.createGmsUser()));
 		
 		// act
-		UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername("test"));
+		UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername(TEST));
 		
 		// assert
 		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));
@@ -79,10 +80,10 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(mockUser));
 		when(userConverter.addIdToUserDetails(mockUser, DemoData.USER_1_ID)).thenReturn(mockUser);
-		when(userRepository.getIdByUsername("test")).thenReturn(Optional.of(DemoData.USER_1_ID));
+		when(userRepository.getIdByUsername(TEST)).thenReturn(Optional.of(DemoData.USER_1_ID));
 
 		// act
-		UserDetails response = service.loadUserByUsername("test");
+		UserDetails response = service.loadUserByUsername(TEST);
 
 		// assert
 		assertNotNull(response);

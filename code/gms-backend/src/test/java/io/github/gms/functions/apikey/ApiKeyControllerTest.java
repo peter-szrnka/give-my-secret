@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
@@ -109,14 +110,14 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
     @Test
     void getValue_whenInputProvided_thenReturnOk() {
         // arrange
-        when(service.getDecryptedValue(1L)).thenReturn("test");
+        when(service.getDecryptedValue(1L)).thenReturn(TEST);
 
         // act
         String response = controller.getValue(1L);
 
         // assert
         assertNotNull(response);
-        assertEquals("test", response);
+        assertEquals(TEST, response);
         verify(service).getDecryptedValue(1L);
     }
 

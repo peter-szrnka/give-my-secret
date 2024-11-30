@@ -66,6 +66,7 @@ import static io.github.gms.common.enums.UserRole.ROLE_USER;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.API_KEY_HEADER;
 import static io.github.gms.util.DemoData.USER_3_ID;
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -260,7 +261,7 @@ public class TestUtils {
 	public static ApiKeyEntity createApiKey() {
 		ApiKeyEntity entity = new ApiKeyEntity();
 		entity.setId(1L);
-		entity.setName("test");
+		entity.setName(TEST);
 		entity.setUserId(1L);
 		entity.setStatus(EntityStatus.ACTIVE);
 		entity.setValue("apikey");
@@ -305,7 +306,7 @@ public class TestUtils {
 		entity.setCreationDate(ZonedDateTime.now());
 		entity.setRotationPeriod(RotationPeriod.YEARLY);
 		entity.setStatus(EntityStatus.ACTIVE);
-		entity.setValue("test");
+		entity.setValue(TEST);
 		entity.setKeystoreAliasId(keystoreAliasId);
 		entity.setLastRotated(ZonedDateTime.now());
 		entity.setUserId(1L);
@@ -319,7 +320,7 @@ public class TestUtils {
 		entity.setCreationDate(ZonedDateTime.now());
 		entity.setRotationPeriod(rotationPeriod);
 		entity.setStatus(EntityStatus.ACTIVE);
-		entity.setValue("test");
+		entity.setValue(TEST);
 		entity.setKeystoreAliasId(DemoData.KEYSTORE_ALIAS_ID);
 		entity.setLastRotated(lastRotated);
 		return entity;
@@ -339,7 +340,7 @@ public class TestUtils {
 		dto.setId(id);
 		dto.setName("keystore");
 		dto.setUserId(1L);
-		dto.setCredential("test");
+		dto.setCredential(TEST);
 		dto.setStatus(EntityStatus.ACTIVE);
 		dto.setType(KeystoreType.JKS);
 		dto.setDescription("description");
@@ -357,7 +358,7 @@ public class TestUtils {
 		entity.setId(DemoData.KEYSTORE_ID);
 		entity.setFileName("test.jks");
 		entity.setUserId(DemoData.USER_1_ID);
-		entity.setCredential("test");
+		entity.setCredential(TEST);
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
 		entity.setStatus(EntityStatus.ACTIVE);
@@ -369,7 +370,7 @@ public class TestUtils {
 		entity.setId(DemoData.KEYSTORE_ID);
 		entity.setFileName("test.jks");
 		entity.setUserId(DemoData.USER_1_ID);
-		entity.setCredential("test");
+		entity.setCredential(TEST);
 		entity.setType(KeystoreType.JKS);
 		entity.setStatus(EntityStatus.ACTIVE);
 		return entity;
@@ -380,7 +381,7 @@ public class TestUtils {
 		entity.setId(id);
 		entity.setFileName("test.jks");
 		entity.setUserId(DemoData.USER_1_ID);
-		entity.setCredential("test");
+		entity.setCredential(TEST);
 		entity.setType(KeystoreType.JKS);
 		entity.setDescription("description");
 		entity.setStatus(EntityStatus.ACTIVE);
@@ -393,8 +394,8 @@ public class TestUtils {
 		entity.setId(id);
 		entity.setAlgorithm("algorithm");
 		entity.setKeystoreId(keystoreId);
-		entity.setAlias("test");
-		entity.setAliasCredential("test");
+		entity.setAlias(TEST);
+		entity.setAliasCredential(TEST);
 		entity.setDescription("description");
 
 		return entity;
@@ -596,7 +597,7 @@ public class TestUtils {
 	}
 
 	public static ChangePasswordRequestDto createChangePasswordRequestDto() {
-		return new ChangePasswordRequestDto("test", NEW_CREDENTIAL);
+		return new ChangePasswordRequestDto(TEST, NEW_CREDENTIAL);
 	}
 
 	public static MessageEntity createMessageEntity() {
@@ -643,8 +644,8 @@ public class TestUtils {
 	private static List<KeystoreAliasDto> createKeystoreAliasList() {
 		KeystoreAliasDto dto = new KeystoreAliasDto();
 		dto.setId(1L);
-		dto.setAlias("test");
-		dto.setAliasCredential("test");
+		dto.setAlias(TEST);
+		dto.setAliasCredential(TEST);
 		dto.setOperation(AliasOperation.SAVE);
 
 		return Lists.newArrayList(dto);
@@ -697,7 +698,7 @@ public class TestUtils {
 		dto.setName("api-key-1");
 		dto.setValue("value");
 		dto.setStatus(EntityStatus.ACTIVE);
-		dto.setDescription("test");
+		dto.setDescription(TEST);
 		return dto;
 	}
 
@@ -791,7 +792,7 @@ public class TestUtils {
 				.creationDate(ZonedDateTime.now())
 				.startTime(ZonedDateTime.now())
 				.duration(100L)
-				.message("test")
+				.message(TEST)
 				.build();
 	}
 
