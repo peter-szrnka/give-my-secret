@@ -31,7 +31,7 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
     void save_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
-        shouldSaveFailWith403(TestUtils.createSaveUserRequestDto());
+        assertSaveFailWith403(TestUtils.createSaveUserRequestDto());
     }
 
     @Test
@@ -39,25 +39,25 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
     void getById_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
-        shouldGetByIdFailWith403(UserDto.class, DemoData.USER_1_ID);
+        assertGetByIdFailWith403(UserDto.class, DemoData.USER_1_ID);
     }
 
     @Test
     @TestedMethod(LIST)
     void list_whenAuthenticationFails_thenReturnHttp403() {
-        shouldListFailWith403(UserListDto.class);
+        assertListFailWith403(UserListDto.class);
     }
 
     @Test
     @TestedMethod(DELETE)
     void delete_whenAuthenticationFails_thenReturnHttp403() {
-        shouldDeleteFailWith403(DemoData.USER_1_ID);
+        assertDeleteFailWith403(DemoData.USER_1_ID);
     }
 
     @Test
     @TestedMethod(TOGGLE)
     void toggle_whenAuthenticationFails_thenReturnHttp403() {
-        shouldToggleFailWith403(DemoData.USER_1_ID);
+        assertToggleFailWith403(DemoData.USER_1_ID);
     }
 
     @Test

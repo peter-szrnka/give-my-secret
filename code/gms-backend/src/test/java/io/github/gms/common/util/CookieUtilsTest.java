@@ -38,7 +38,7 @@ class CookieUtilsTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldTestWithNullValues() {
+	void createCookie_whenNullValuesProvided_thenReturnCookie() {
 		//act
 		ResponseCookie cookie = CookieUtils.createCookie("the-cookie", null, 0L, true);
 

@@ -55,7 +55,7 @@ class InformationControllerTest {
     }
 
     @Test
-    void status_whenCalled_thenShouldReturnSystemStatus() {
+    void status_whenCalled_thenReturnSystemStatus() {
         SystemStatusDto mockResponseDto = SystemStatusDto.builder()
                 .withAuthMode("db")
                 .withStatus("OK")
@@ -77,7 +77,7 @@ class InformationControllerTest {
     }
 
     @Test
-    void getErrorCodes_whenCalled_thenShouldReturnAllErrorCodes() {
+    void getErrorCodes_whenCalled_thenReturnAllErrorCodes() {
         // act
         ErrorCodeListDto response = controller.getErrorCodes();
         List<String> codes = response.getErrorCodeList().stream().map(ErrorCodeDto::getCode).toList();

@@ -29,19 +29,19 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 	@Test
 	@TestedMethod(SAVE)
 	void save_whenAuthenticationFails_thenReturnHttp403() {
-		shouldSaveFailWith403(TestUtils.createSaveApiKeyRequestDto());
+		assertSaveFailWith403(TestUtils.createSaveApiKeyRequestDto());
 	}
 	
 	@Test
 	@TestedMethod(GET_BY_ID)
 	void getById_whenAuthenticationFails_thenReturnHttp403() {
-		shouldGetByIdFailWith403(ApiKeyDto.class, DemoData.API_KEY_1_ID);
+		assertGetByIdFailWith403(ApiKeyDto.class, DemoData.API_KEY_1_ID);
 	}
 	
 	@Test
 	@TestedMethod(LIST)
 	void list_whenAuthenticationFails_thenReturnHttp403() {
-		shouldListFailWith403(ApiKeyListDto.class);
+		assertListFailWith403(ApiKeyListDto.class);
 	}
 	
 	@Test
@@ -59,18 +59,18 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 	@Test
 	@TestedMethod(DELETE)
 	void delete_whenAuthenticationFails_thenReturnHttp403() {
-		shouldDeleteFailWith403(DemoData.API_KEY_2_ID);
+		assertDeleteFailWith403(DemoData.API_KEY_2_ID);
 	}
 	
 	@Test
 	@TestedMethod(TOGGLE)
 	void toggleStatus_whenAuthenticationFails_thenReturnHttp403() {
-		shouldToggleFailWith403(DemoData.API_KEY_1_ID);
+		assertToggleFailWith403(DemoData.API_KEY_1_ID);
 	}
 
 	@Test
 	@TestedMethod("getAllApiKeyNames")
 	void listAllApiKeyNames_whenAuthenticationFails_thenReturnHttp403() {
-		shouldListingFailWith403("/secure/apikey/list_names");
+		assertListingFailWith403("/secure/apikey/list_names");
 	}
 }

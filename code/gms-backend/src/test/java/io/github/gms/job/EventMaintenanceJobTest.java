@@ -137,7 +137,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void run_whenMultiNodeDisabled_thenShouldNotProcess() {
+	void run_whenMultiNodeDisabled_thenNotProcess() {
 		// arrange
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(false);

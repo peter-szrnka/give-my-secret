@@ -33,7 +33,7 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
     @Test
     @TestedMethod(LIST)
     void testListFailWithHttp403() {
-        shouldListFailWith403(MessageListDto.class);
+        assertListFailWith403(MessageListDto.class);
     }
 
     @Test

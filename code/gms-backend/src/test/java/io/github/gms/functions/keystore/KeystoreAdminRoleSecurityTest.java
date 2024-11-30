@@ -31,13 +31,13 @@ class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     @Test
     @TestedMethod(GET_BY_ID)
     void getById_whenAuthenticationFails_thenReturnHttp403() {
-        shouldGetByIdFailWith403(KeystoreDto.class, DemoData.KEYSTORE_ID);
+        assertGetByIdFailWith403(KeystoreDto.class, DemoData.KEYSTORE_ID);
     }
 
     @Test
     @TestedMethod(LIST)
     void list_whenAuthenticationFails_thenReturnHttp403() {
-        shouldListFailWith403(KeystoreListDto.class);
+        assertListFailWith403(KeystoreListDto.class);
     }
 
     @Test
@@ -57,25 +57,25 @@ class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     @Test
     @TestedMethod(DELETE)
     void delete_whenAuthenticationFails_thenReturnHttp403() {
-        shouldDeleteFailWith403(DemoData.KEYSTORE2_ID);
+        assertDeleteFailWith403(DemoData.KEYSTORE2_ID);
     }
 
     @Test
     @TestedMethod(TOGGLE)
     void toggle_whenAuthenticationFails_thenReturnHttp403() {
-        shouldToggleFailWith403(DemoData.KEYSTORE_ID);
+        assertToggleFailWith403(DemoData.KEYSTORE_ID);
     }
 
     @Test
     @TestedMethod("getAllKeystoreNames")
     void listAllKeystoreNames_whenAuthenticationFails_thenReturnHttp403() {
-        shouldListingFailWith403("/list_names");
+        assertListingFailWith403("/list_names");
     }
 
     @Test
     @TestedMethod("getAllKeystoreAliases")
     void listAllApiKeyNames_whenAuthenticationFails_thenReturnHttp403() {
-        shouldListingFailWith403("/list_aliases/" + DemoData.KEYSTORE_ID);
+        assertListingFailWith403("/list_aliases/" + DemoData.KEYSTORE_ID);
     }
 
     @Test

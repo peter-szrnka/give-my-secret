@@ -28,7 +28,7 @@ class EventAdminRoleSecurityTest extends AbstractSecurityTest {
 	@Test
 	@TestedMethod("list")
 	void list_whenAuthenticationFails_thenReturnHttp403() {
-		shouldListFailWith403(EventListDto.class);
+		assertListFailWith403(EventListDto.class);
 	}
 
 	@Test

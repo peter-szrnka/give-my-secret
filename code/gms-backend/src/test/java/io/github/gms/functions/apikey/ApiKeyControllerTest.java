@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, ApiKeyController> {
 
     @BeforeEach
-    void setupTest() {
+    void setup() {
         service = Mockito.mock(ApiKeyService.class);
         controller = new ApiKeyController(service);
     }
@@ -107,7 +107,7 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
     }
 
     @Test
-    void shouldReturnValue() {
+    void getValue_whenInputProvided_thenReturnOk() {
         // arrange
         when(service.getDecryptedValue(1L)).thenReturn("test");
 
@@ -121,7 +121,7 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
     }
 
     @Test
-    void shouldReturnAllApiNames() {
+    void getAllApiKeyNames_whenInputProvided_thenReturnOk() {
         // arrange
         IdNamePairListDto mock = new IdNamePairListDto();
         mock.setResultList(List.of(new IdNamePairDto()));
