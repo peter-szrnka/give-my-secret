@@ -10,13 +10,8 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link SecretController}
@@ -28,14 +23,14 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
     private SecretRotationService secretRotationService;
 
     @BeforeEach
-    void setupTest() {
+    void setup() {
         service = Mockito.mock(SecretService.class);
         secretRotationService = mock(SecretRotationService.class);
         controller = new SecretController(service, secretRotationService);
     }
 
     @Test
-    void shouldDeleteEntity() {
+    void delete_whenInputProvided_thenReturnOk() {
         // arrange
         doNothing().when(service).delete(1L);
 
@@ -49,7 +44,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
     }
 
     @Test
-    void shouldToggleEntityStatus() {
+    void toggle_whenInputProvided_thenReturnOk() {
         // act
         ResponseEntity<String> response = controller.toggle(1L, true);
 
@@ -60,7 +55,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
     }
 
     @Test
-    void shouldSave() {
+    void save_whenInputProvided_thenReturnOk() {
         // arrange
         SaveSecretRequestDto dto = TestUtils.createSaveSecretRequestDto(2L);
         when(service.save(dto)).thenReturn(new SaveEntityResponseDto(2L));
@@ -75,7 +70,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
     }
 
     @Test
-    void shouldReturnById() {
+    void getById_whenInputProvided_thenReturnOk() {
         // arrange
         SecretDto dto = TestUtils.createSecretDto();
         when(service.getById(1L)).thenReturn(dto);
@@ -90,7 +85,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenInputProvided_thenReturnOk() {
         // arrange
         SecretListDto dtoList = TestUtils.createSecretListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
@@ -111,7 +106,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
     }
 
     @Test
-    void shouldReturnValue() {
+    void getValue_whenInputProvided_thenReturnOk() {
         // arrange
         when(service.getSecretValue(1L)).thenReturn("test");
 
@@ -126,7 +121,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
     }
 
     @Test
-    void shouldRotateSecret() {
+    void rotateSecret_whenInputProvided_thenReturnOk() {
         // arrange
         doNothing().when(secretRotationService).rotateSecretById(1L);
 

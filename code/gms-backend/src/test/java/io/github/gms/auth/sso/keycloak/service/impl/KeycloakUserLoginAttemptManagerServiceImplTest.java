@@ -41,7 +41,7 @@ class KeycloakUserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnit
     }
 
     @Test
-    void shouldNotBlocked() {
+    void isBlocked_whenCalled_thenReturnFalse() {
         assertFalse(service.isBlocked(DemoData.USERNAME1));
     }
 }

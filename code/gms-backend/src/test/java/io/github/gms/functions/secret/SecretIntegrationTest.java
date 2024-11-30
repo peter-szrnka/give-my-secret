@@ -7,7 +7,6 @@ import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,9 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
-import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -41,16 +41,15 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@BeforeAll
-	@SneakyThrows
-	public static void setupAll() {
+	public static void setupAll() throws IOException {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream jksFileStream = classloader.getResourceAsStream("test.jks");
-		
-		byte[] buffer = new byte[jksFileStream.available()];
-		jksFileStream.read(buffer);
+		try (InputStream jksFileStream = classloader.getResourceAsStream("test.jks")) {
+			byte[] buffer = new byte[jksFileStream.available()];
+			jksFileStream.read(buffer);
 
-		new File("./keystores/1/").mkdirs();
-		FileCopyUtils.copy(buffer, new File("./keystores/1/test.jks"));
+			new File("./keystores/1/").mkdirs();
+			FileCopyUtils.copy(buffer, new File("./keystores/1/test.jks"));
+		}
 	}
 
 	@AfterAll
@@ -61,7 +60,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
-	@TestedMethod("save")
+	@TestedMethod(SAVE)
 	void testSave() {
 		// act
 		HttpEntity<SaveSecretRequestDto> requestEntity = new HttpEntity<>(
@@ -79,7 +78,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
-	@TestedMethod("getById")
+	@TestedMethod(GET_BY_ID)
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -96,7 +95,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
-	@TestedMethod("list")
+	@TestedMethod(LIST)
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -111,7 +110,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
-	@TestedMethod("getValue")
+	@TestedMethod(GET_VALUE)
 	void testGetValue() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -127,7 +126,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
-	@TestedMethod("delete")
+	@TestedMethod(DELETE)
 	void testDelete() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -141,7 +140,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Transactional
 	@ParameterizedTest
-	@TestedMethod("toggle")
+	@TestedMethod(TOGGLE)
 	@ValueSource(booleans = { false, true })
 	void testToggleStatus(boolean enabled) {
 		// act
@@ -162,7 +161,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
-	@TestedMethod("rotateSecret")
+	@TestedMethod(ROTATE_SECRET)
 	void testRotateSecret() {
 		String oldValue = secretRepository.findById(DemoData.SECRET_ENTITY_ID).get().getValue();
 		

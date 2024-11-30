@@ -82,7 +82,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
     @Test
     @TestedMethod("getErrorCodes")
-    void errorCodes_whenCalled_thenShouldReturnAllErrorCodes() {
+    void errorCodes_whenCalled_thenReturnAllErrorCodes() {
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
         ResponseEntity<String> response = executeHttpGet("/info/error_codes", requestEntity, String.class);
