@@ -7,7 +7,7 @@ import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
+import static io.github.gms.util.TestConstants.*;
 
 /**
  * @author Peter Szrnka
@@ -22,20 +22,20 @@ class SystemPropertyUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("save")
-    void testSaveFailWithHttp403() {
-        shouldSaveFailWith403(TestUtils.createSystemPropertyDto());
+    @TestedMethod(SAVE)
+    void save_whenAuthenticationFails_thenReturnHttp403() {
+        assertSaveFailWith403(TestUtils.createSystemPropertyDto());
     }
 
     @Test
-    @TestedMethod("delete")
-    void testDeleteFailWithHttp403() {
-        shouldDeleteFailWith403(1L);
+    @TestedMethod(DELETE)
+    void delete_whenAuthenticationFails_thenReturnHttp403() {
+        assertDeleteFailWith403(1L);
     }
 
     @Test
-    @TestedMethod("list")
-    void testListFailWithHttp403() {
-        shouldListFailWith403(SystemPropertyListDto.class);
+    @TestedMethod(LIST)
+    void list_whenAuthenticationFails_thenReturnHttp403() {
+        assertListFailWith403(SystemPropertyListDto.class);
     }
 }

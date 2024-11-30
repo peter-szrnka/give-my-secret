@@ -13,10 +13,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static io.github.gms.util.TestConstants.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka
@@ -34,8 +32,8 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements G
 	}
 	
 	@Test
-	@TestedMethod("save")
-	void testSave() {
+	@TestedMethod(SAVE)
+	void save_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<SystemPropertyDto> requestEntity = new HttpEntity<>(SystemPropertyDto.builder().key(SystemProperty.JOB_OLD_EVENT_LIMIT.name()).value("2;d").build(), TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<Void> response = executeHttpPost("/secure/system_property", requestEntity, Void.class);
@@ -46,8 +44,8 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements G
 	}
 	
 	@Test
-	@TestedMethod("delete")
-	void testDelete() {
+	@TestedMethod(DELETE)
+	void delete_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/secure/system_property/" + SystemProperty.REFRESH_JWT_ALGORITHM.name(), requestEntity, String.class);
@@ -58,8 +56,8 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements G
 	}
 
 	@Test
-	@TestedMethod("list")
-	void testList() {
+	@TestedMethod(LIST)
+	void list_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SystemPropertyListDto> response = executeHttpGet("/secure/system_property/list?page=0&size=10&direction=ASC&property=id", requestEntity, SystemPropertyListDto.class);
