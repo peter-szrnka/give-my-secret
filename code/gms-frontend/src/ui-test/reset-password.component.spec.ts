@@ -1,10 +1,13 @@
 import { expect, test } from '@playwright/test';
 
+/**
+ * @author Peter Szrnka
+ */
 test.describe('Reset password component', () => {
 
   test.beforeEach(async ({ page }) => await page.goto(`/password_reset`));
 
-  test('should reset password', async ({ page }) => {
+  test('When component loaded fully, Then reset password', async ({ page }) => {
     await expect(page.getByText('Username')).toBeVisible();
     await expect(page.locator('input[name=username]')).toBeVisible();
 

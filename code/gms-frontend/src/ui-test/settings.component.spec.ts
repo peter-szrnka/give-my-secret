@@ -1,10 +1,13 @@
 import { expect, test } from '@playwright/test';
 
+/**
+ * @author Peter Szrnka
+ */
 test.describe('Settings component', () => {
 
   test.beforeEach(async ({ page }) => await page.goto(`/settings`));
 
-  test('should save new password', async ({ page }) => {
+  test('When component loaded fully, Then save new password', async ({ page }) => {
     await page.locator('mat-panel-title').getByText("Password").click();
     await expect(page.getByText('Current password')).toBeVisible();
     await expect(page.getByText('New password')).toBeVisible();
@@ -25,7 +28,7 @@ test.describe('Settings component', () => {
     await page.locator('button').getByText('Close').click();
   });
 
-  test('should display MFA settings', async ({ page }) => {
+  test('When component loaded fully, Then display MFA settings', async ({ page }) => {
     await page.locator('mat-panel-title').nth(1).click();
 
     await expect(page.locator('mat-checkbox[name="mfaEnabled"]')).toBeVisible();
@@ -36,7 +39,7 @@ test.describe('Settings component', () => {
     await page.locator('img').getByAltText('MFA QR code').isVisible();
   });
 
-  test('should change language', async ({ page }) => {
+  test('When component loaded fully, Then change language', async ({ page }) => {
     await page.locator('mat-panel-title').nth(2).click();
 
     await expect(page.locator('mat-select[name="language"]')).toBeVisible();
