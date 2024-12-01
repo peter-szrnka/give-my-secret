@@ -49,7 +49,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testGetVmOptions() {
+    void getVmOptions_whenCalled_thenReturnData() {
         // act
         Map<String, String> vmOptions = service.getVmOptions();
 
@@ -59,7 +59,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldNotStepBack() {
+    void stepBack_whenStatusIsNeedSetup_thenSkipStepBack() {
         // arrange
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
 
@@ -73,7 +73,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldStepBack() {
+    void stepBack_whenStatusIsOk_thenStepBack() {
         // arrange
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
@@ -88,7 +88,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldThrowErrorWhenUserNotFound() {
+    void getCurrentSuperAdmin_whenUserNotFound_thenFailAndReturnNull() {
         // arrange
         when(userService.getById(1L)).thenThrow(new GmsException(ENTITY_NOT_FOUND, GMS_003));
 
@@ -101,7 +101,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldReturnCurrentSuperAdmin() {
+    void getCurrentSuperAdmin_whenUserFound_thenReturnAdminUser() {
         // arrange
         when(userService.getById(1L)).thenReturn(TestUtils.createUserDto());
 
@@ -115,7 +115,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSaveInitialStep() {
+    void saveInitialStep_whenAllConditionsMet_thenProceed() {
         // arrange
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
         when(systemAttributeRepository.save(any())).thenReturn(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP));
@@ -136,7 +136,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSaveAdminUser() {
+    void saveAdminUser_whenAllConditionsMet_thenProceed() {
         // arrange
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_ADMIN_USER)));
         when(systemAttributeRepository.save(any())).thenReturn(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_ADMIN_USER));
@@ -158,7 +158,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldNotUpdateStatus_whenNoSystemPropertiesSent() {
+    void saveSystemProperties_whenNoSystemPropertiesSent_thenSkipUpdateStatus() {
         // arrange
         SetupSystemPropertiesDto dto = new SetupSystemPropertiesDto();
         List< SystemPropertyDto> properties = new ArrayList<>();
@@ -176,7 +176,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSaveSystemProperties() {
+    void saveSystemProperties_whenAllConditionsMet_thenProceed() {
         // arrange
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_AUTH_CONFIG)));
         when(systemAttributeRepository.save(any())).thenReturn(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_AUTH_CONFIG));
@@ -204,7 +204,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSaveOrganizationData() {
+    void saveOrganizationData_whenAllConditionsMet_thenProceed() {
         // arrange
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_AUTH_CONFIG)));
         when(systemAttributeRepository.save(any())).thenReturn(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_AUTH_CONFIG));
@@ -232,7 +232,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldCompleteSetup() {
+    void completeSetup_whenAllConditionsMet_thenProceed() {
         // arrange
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_ORG_DATA)));
         when(systemAttributeRepository.save(any())).thenReturn(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_ORG_DATA));

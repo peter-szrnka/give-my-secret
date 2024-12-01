@@ -53,7 +53,7 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void test() {
+	void commence_whenInvalidCookieExceptionOccurred_thenReturnCustomResponse() {
 		// arrange
 		HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 		HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);

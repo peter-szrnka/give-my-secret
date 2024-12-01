@@ -33,7 +33,7 @@ class MessageControllerTest {
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenInputProvided_thenReturnOk() {
         // arrange
         MessageListDto dtoList = TestUtils.createMessageListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
@@ -54,7 +54,7 @@ class MessageControllerTest {
     }
 
     @Test
-    void shouldReturnUnreadMessagesCount() {
+    void unreadMessagesCount_whenInputProvided_thenReturnOk() {
         // arrange
         when(service.getUnreadMessagesCount()).thenReturn(3L);
 
@@ -68,7 +68,7 @@ class MessageControllerTest {
     }
 
     @Test
-    void shouldMarkAsRead() {
+    void markAsRead_whenInputProvided_thenReturnOk() {
         // arrange
         MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().build();
         doNothing().when(service).toggleMarkAsRead(dto);
@@ -84,7 +84,7 @@ class MessageControllerTest {
     }
 
     @Test
-    void shouldDeleteAllByIds() {
+    void deleteAllByIds_whenInputProvided_thenReturnOk() {
         // arrange
         IdListDto dto = new IdListDto(Set.of(1L, 2L, 3L));
         doNothing().when(service).deleteAllByIds(dto);
@@ -99,7 +99,7 @@ class MessageControllerTest {
     }
     
     @Test
-    void shouldDeleteById() {
+    void deleteById_whenInputProvided_thenReturnOk() {
         // arrange
         Long id = 1L;
         doNothing().when(service).deleteById(id);

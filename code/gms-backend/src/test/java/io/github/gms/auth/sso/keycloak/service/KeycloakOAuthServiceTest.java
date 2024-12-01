@@ -40,7 +40,7 @@ public class KeycloakOAuthServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    void test() {
+    void callPostEndpoint_whenInputProvided_thenReturnOK() {
         // arrange
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add(CLIENT_ID, "client-id");

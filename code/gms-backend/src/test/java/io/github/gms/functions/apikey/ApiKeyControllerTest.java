@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
@@ -28,14 +29,13 @@ import static org.mockito.Mockito.when;
 class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, ApiKeyController> {
 
     @BeforeEach
-    void setupTest() {
+    void setup() {
         service = Mockito.mock(ApiKeyService.class);
         controller = new ApiKeyController(service);
     }
 
     @Test
-    void shouldDeleteEntity() {
-
+    void delete_whenInputProvided_thenReturnOk() {
         // act
         ResponseEntity<String> response = controller.delete(1L);
 
@@ -46,7 +46,7 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
     }
 
     @Test
-    void shouldToggleEntityStatus() {
+    void toggle_whenInputProvided_thenReturnOk() {
         // act
         ResponseEntity<String> response = controller.toggle(1L, true);
 
@@ -57,7 +57,7 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
     }
 
     @Test
-    void shouldSave() {
+    void save_whenInputProvided_thenReturnOk() {
         // arrange
         SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
         when(service.save(dto)).thenReturn(new SaveEntityResponseDto(2L));
@@ -72,7 +72,7 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
     }
 
     @Test
-    void shouldReturnById() {
+    void getById_whenInputProvided_thenReturnOk() {
         // arrange
         ApiKeyDto dto = TestUtils.createApiKeyDto();
         when(service.getById(1L)).thenReturn(dto);
@@ -87,7 +87,7 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenInputProvided_thenReturnOk() {
         // arrange
         ApiKeyListDto dtoList = TestUtils.createApiKeyListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
@@ -108,21 +108,21 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
     }
 
     @Test
-    void shouldReturnValue() {
+    void getValue_whenInputProvided_thenReturnOk() {
         // arrange
-        when(service.getDecryptedValue(1L)).thenReturn("test");
+        when(service.getDecryptedValue(1L)).thenReturn(TEST);
 
         // act
         String response = controller.getValue(1L);
 
         // assert
         assertNotNull(response);
-        assertEquals("test", response);
+        assertEquals(TEST, response);
         verify(service).getDecryptedValue(1L);
     }
 
     @Test
-    void shouldReturnAllApiNames() {
+    void getAllApiKeyNames_whenInputProvided_thenReturnOk() {
         // arrange
         IdNamePairListDto mock = new IdNamePairListDto();
         mock.setResultList(List.of(new IdNamePairDto()));

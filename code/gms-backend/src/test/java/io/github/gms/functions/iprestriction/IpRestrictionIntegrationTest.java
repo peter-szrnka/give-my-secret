@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,7 +43,7 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 
 	@Test
 	@Transactional
-	@TestedMethod("save")
+	@TestedMethod(SAVE)
 	void testSave() {
 		// act
 		HttpEntity<IpRestrictionDto> saveRequestEntity = new HttpEntity<>(
@@ -57,7 +57,7 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	}
 	
 	@Test
-	@TestedMethod("getById")
+	@TestedMethod(GET_BY_ID)
 	void testGetById() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -72,7 +72,7 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	}
 	
 	@Test
-	@TestedMethod("list")
+	@TestedMethod(LIST)
 	void testList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
@@ -87,7 +87,7 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	}
 	
 	@Test
-	@TestedMethod("delete")
+	@TestedMethod(DELETE)
 	void testDelete() {
 		// arrange
 		HttpEntity<IpRestrictionDto> saveRequestEntity = new HttpEntity<>(
@@ -110,7 +110,7 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 
 	@Transactional
 	@ParameterizedTest
-	@TestedMethod("toggle")
+	@TestedMethod(TOGGLE)
 	@ValueSource(booleans = { false, true })
 	void testToggleStatus(boolean enabled) {
 		// act

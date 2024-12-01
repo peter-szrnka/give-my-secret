@@ -13,7 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -36,8 +36,8 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 
 	@Test
-	@TestedMethod("save")
-	void testSave() {
+	@TestedMethod(SAVE)
+	void save_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<SaveAnnouncementDto> requestEntity = new HttpEntity<>(TestUtils.createSaveAnnouncementDto(), TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SaveEntityResponseDto> response = executeHttpPost("", requestEntity, SaveEntityResponseDto.class);
@@ -51,8 +51,8 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 	
 	@Test
-	@TestedMethod("getById")
-	void testGetById() {
+	@TestedMethod(GET_BY_ID)
+	void getById_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<AnnouncementDto> response = executeHttpGet("/" + DemoData.ANNOUNCEMENT_ID, requestEntity, AnnouncementDto.class);
@@ -67,8 +67,8 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 	
 	@Test
-	@TestedMethod("list")
-	void testList() {
+	@TestedMethod(LIST)
+	void list_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<AnnouncementListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, AnnouncementListDto.class);
@@ -82,8 +82,8 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	}
 	
 	@Test
-	@TestedMethod("delete")
-	void testDelete() {
+	@TestedMethod(DELETE)
+	void delete_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/" + 2, requestEntity,

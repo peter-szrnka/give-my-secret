@@ -29,7 +29,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		jwt = null;
 	}
 
-	protected <T> void shouldSaveFailWith403(T request) {
+	protected <T> void assertSaveFailWith403(T request) {
 		HttpEntity<T> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 
 		// act
@@ -39,7 +39,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
-	protected <T> void shouldGetByIdFailWith403(Class<T> clazz, Long id) {
+	protected <T> void assertGetByIdFailWith403(Class<T> clazz, Long id) {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
 		// act
@@ -49,7 +49,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
-	protected <T> void shouldListFailWith403(Class<T> clazz) {
+	protected <T> void assertListFailWith403(Class<T> clazz) {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
 		// act
@@ -59,7 +59,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
-	protected void shouldDeleteFailWith403(Long id) {
+	protected void assertDeleteFailWith403(Long id) {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
 		// act
@@ -69,7 +69,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
-	protected void shouldToggleFailWith403(Long id) {
+	protected void assertToggleFailWith403(Long id) {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
 		// act
@@ -79,7 +79,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
-	protected void shouldListingFailWith403(String url) {
+	protected void assertListingFailWith403(String url) {
 		// act
 		ResponseEntity<IdNamePairListDto> response =
 				executeHttpGet(urlPrefix + url, null, IdNamePairListDto.class);

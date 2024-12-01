@@ -54,7 +54,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldSaveUserEvent() {
+	void saveUserEvent_whenUserEventOccurred_thenReturnOk() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -75,7 +75,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldDelete() {
+	void delete_whenInputProvided_thenReturnOk() {
 		// act
 		service.delete(1L);
 
@@ -84,7 +84,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldReturnList() {
+	void list_whenInputProvided_thenReturnOk() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 		
@@ -121,7 +121,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldReturnListByUser() {
+	void listByUser_whenInputProvided_thenReturnOk() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity()));

@@ -59,7 +59,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldAuthenticateFailWhenUserIsBlocked() {
+	void authenticate_whenUserIsBlocked_thenReturnBlocked() {
 		// arrange
 		when(userLoginAttemptManagerService.isBlocked("user")).thenReturn(true);
 
@@ -73,7 +73,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldAuthenticateFailWhenUserIsLockedInLdap() {
+	void authenticate_whenUserIsBlockedInLdap_thenReturnBlocked() {
 		// arrange
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setAccountNonLocked(false);
@@ -91,7 +91,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldAuthenticateFail() {
+	void authenticate_whenAuthenticationFail_thenReturnFailed() {
 		// arrange
 		when(userLoginAttemptManagerService.isBlocked("user")).thenReturn(false);
 		when(authenticationManager.authenticate(any())).thenThrow(IllegalArgumentException.class);
@@ -109,7 +109,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@ParameterizedTest
 	@MethodSource("nonMfaTestData")
-	void shouldAuthenticate(boolean systemLevelMfaEnabled, boolean userMfaEnabled) {
+	void authenticate_whenCustomMfaDataProvided_thenAuthenticate(boolean systemLevelMfaEnabled, boolean userMfaEnabled) {
 		// arrange
 		when(userLoginAttemptManagerService.isBlocked("user")).thenReturn(false);
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
@@ -144,7 +144,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 	@ParameterizedTest
 	@MethodSource("mfaTestData")
-	void shouldExpectMfa(boolean enableGlobalMfa, boolean enableMfa) {
+	void authenticate_whenMfaEnabled_thenReturnMfaRequired(boolean enableGlobalMfa, boolean enableMfa) {
 		// arrange
 		when(userLoginAttemptManagerService.isBlocked("user")).thenReturn(false);
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
@@ -174,7 +174,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldLogout() {
+	void logout_whenUserLoggedIn_thenLogout() {
 		// act
 		service.logout();
 

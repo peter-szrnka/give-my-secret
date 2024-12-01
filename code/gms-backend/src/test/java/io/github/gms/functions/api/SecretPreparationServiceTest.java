@@ -66,7 +66,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldApiKeyMissing() {
+    void getSecretEntity_whenApiKeyMissing_thenReturnGmsException() {
         // arrange
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(null);
 
@@ -81,7 +81,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldUserMissing() {
+    void getSecretEntity_whenUserMissing_thenReturnGmsException() {
         // arrange
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 
@@ -96,7 +96,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSecretMissing() {
+    void getSecretEntity_whenSecretMissing_thenReturnGmsException() {
         // arrange
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
         when(userRepository.findById(anyLong())).thenReturn(createMockUser());
@@ -114,7 +114,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldFailBecauseOfIpRestriction() {
+    void getSecretEntity_whenIpRestrictionConfigured_thenReturnGmsException() {
         // arrange
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
         when(userRepository.findById(anyLong())).thenReturn(createMockUser());
@@ -135,7 +135,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldFailBecauseOfApiKeyRestriction() {
+    void sgetSecretEntity_whenApiKeyRestrictionConfigured_thenReturnGmsException() {
         // arrange
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
         when(userRepository.findById(anyLong())).thenReturn(createMockUser());
@@ -163,7 +163,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSucceedWithApiKeyRestrictions() {
+    void getSecretEntity_whenApiKeyRestrictionsConfigured_thenSucceed() {
         // arrange
         SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
@@ -193,7 +193,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSucceedWithoutApiKeyRestrictions() {
+    void getSecretEntity_whenApiKeyRestrictionsMissing_thenSucceed() {
         // arrange
         SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());

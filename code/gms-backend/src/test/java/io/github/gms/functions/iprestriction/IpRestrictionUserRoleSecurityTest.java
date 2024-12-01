@@ -7,7 +7,7 @@ import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
+import static io.github.gms.util.TestConstants.*;
 
 /**
  * @author Peter Szrnka
@@ -22,34 +22,34 @@ class IpRestrictionUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("save")
+    @TestedMethod(SAVE)
     void testSaveFailWithHttp403() {
-        shouldSaveFailWith403(TestUtils.createIpRestrictionDto());
+        assertSaveFailWith403(TestUtils.createIpRestrictionDto());
     }
 
     @Test
-    @TestedMethod("list")
+    @TestedMethod(LIST)
     void testListFailWithHttp403() {
-        shouldListFailWith403(IpRestrictionListDto.class);
+        assertListFailWith403(IpRestrictionListDto.class);
     }
 
     @Test
-    @TestedMethod("getById")
+    @TestedMethod(GET_BY_ID)
     void testGetByIdFailWithHttp403() {
         gmsUser = null;
         jwt = null;
-        shouldGetByIdFailWith403(IpRestrictionDto.class, 1L);
+        assertGetByIdFailWith403(IpRestrictionDto.class, 1L);
     }
 
     @Test
-    @TestedMethod("delete")
+    @TestedMethod(DELETE)
     void testDeleteFailWithHttp403() {
-        shouldDeleteFailWith403(1L);
+        assertDeleteFailWith403(1L);
     }
 
     @Test
-    @TestedMethod("toggle")
+    @TestedMethod(TOGGLE)
     void testToggleStatusFailWithHttp403() {
-        shouldToggleFailWith403(1L);
+        assertToggleFailWith403(1L);
     }
 }

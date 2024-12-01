@@ -17,12 +17,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link VerificationController}
@@ -43,9 +39,8 @@ class VerificationControllerTest {
         controller = new VerificationController(service, systemPropertyService, false);
     }
 
-
     @Test
-    void shouldVerify() {
+    void verify_whenVerificationSucceeded_thenReturnHttp200() {
         // arrange
         LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
         UserInfoDto userInfoDto = TestUtils.createUserInfoDto();
@@ -69,7 +64,7 @@ class VerificationControllerTest {
     }
 
     @Test
-    void shouldVerifyFail() {
+    void verify_whenVerificationFails_thenReturnHttp401() {
         // arrange
         LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
         UserInfoDto userInfoDto = TestUtils.createUserInfoDto();

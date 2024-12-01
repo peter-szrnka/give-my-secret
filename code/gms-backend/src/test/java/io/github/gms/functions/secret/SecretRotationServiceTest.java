@@ -18,10 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -45,7 +42,7 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldNotRotate() {
+	void rotateSecret_whenDecryptThrowsException_thenRotateSkipped() {
 		// arrange
 		SecretEntity mockSecret = new SecretEntity();
 		mockSecret.setValue("abcdefgh");
@@ -72,7 +69,7 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldRotate() {
+	void rotateSecret_whenInputProvided_thenRotateSecret() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -102,7 +99,7 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldNotRotateById() {
+	void rotateSecretById_whenSecretNotFound_thenThrowException() {
 		// arrange
 		SecretEntity mockSecret = new SecretEntity();
 		mockSecret.setValue("abcdefgh");
@@ -120,7 +117,7 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldRotateById() {
+	void rotateSecretById_whenInputProvided_thenRotateSecret() {
 		// arrange
 		setupClock(clock);
 		SecretEntity mockSecret = new SecretEntity();

@@ -65,7 +65,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSaveAdminUser() {
+	void save_whenInputUserIsAdmin_thenReturnSave() {
 		// arrange
 		when(converter.toNewEntity(any(SaveUserRequestDto.class), anyBoolean())).thenReturn(TestUtils.createUser());
 		when(secretGenerator.generate()).thenReturn("secret!");
@@ -85,7 +85,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotUpdateNonExistingUser() {
+	void save_whenUserNotFound_thenThrowException() {
 		// arrange
 		when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -95,7 +95,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
-	void shouldUpdateExistingUser(boolean admin) {
+	void save_whenUserAlreadyExists_thenSaveUser(boolean admin) {
 		// arrange
 		MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), String.valueOf(admin));
 		when(converter.toEntity(any(UserEntity.class), any(SaveUserRequestDto.class), eq(admin)))
@@ -115,7 +115,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveExistingUser() {
+	void save_whenUserAlreadyExists_thenThrowException() {
 		// arrange
 		when(repository.findByUsernameOrEmail(anyString(), anyString())).thenReturn(Optional.of(TestUtils.createAdminUser()));
 
@@ -125,7 +125,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotFindEditorUserById() {
+	void getById_whenEditorUserNotFound_thenThrowException() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(repository.findById(1L)).thenReturn(Optional.empty());
@@ -140,7 +140,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotFindUserById() {
+	void getById_whenUserNotFound_thenThrowException() {
 		// arrange
 		when(repository.findById(2L)).thenReturn(Optional.empty());
 
@@ -153,7 +153,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldFindUserById() {
+	void getById_whenUserFound_thenReturnUserDto() {
 		// arrange
 		when(repository.findById(2L)).thenReturn(Optional.of(TestUtils.createUser()));
 		when(converter.toDto(any(UserEntity.class))).thenReturn(TestUtils.createUserDto());
@@ -167,7 +167,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldReturnList() {
+	void list_whenUsersFound_thenReturnUserList() {
 		// arrange
 		Page<UserEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createUser()));
 		when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
@@ -186,7 +186,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldDelete() {
+	void delete_whenUserFound_thenDeleteUser() {
 		// arrange
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 
@@ -200,7 +200,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
-	void shouldToggleStatus(boolean enabled) {
+	void toggleStatus_whenUserFound_thenToggleStatus(boolean enabled) {
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		// arrange
 		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
@@ -216,7 +216,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotToggleStatus() {
+	void toggleStatus_whenUserNotFound_thenThrowException() {
 		// arrange
 		when(repository.findById(3L)).thenReturn(Optional.empty());
 
@@ -229,7 +229,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldReturnUserCount() {
+	void count_whenQueried_thenReturnUserCount() {
 		// arrange
 		when(repository.countNormalUsers()).thenReturn(3L);
 
@@ -242,7 +242,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldGetUsernameById() {
+	void getUsernameById_whenUserFound_thenReturnUsername() {
 		// arrange
 		when(repository.findById(2L)).thenReturn(Optional.of(TestUtils.createUser()));
 		when(converter.toDto(any(UserEntity.class))).thenReturn(TestUtils.createUserDto());
@@ -257,7 +257,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveNewEmptyPassword() {
+	void changePassword_whenPasswordDoesNotMatch_thenThrowException() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(passwordEncoder.matches(isNull(), anyString())).thenReturn(false);
@@ -270,7 +270,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveNewInvalidPassword() {
+	void changePassword_whenPasswordIsInvalid_thenThrowException() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
@@ -283,7 +283,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSaveNewPassword() {
+	void changePassword_whenCorrectInputProvided_thenChangePassword() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
@@ -307,11 +307,11 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldReturnQrCodeUrl() {
+	void getMfaQrCode_whenMfaIsEnabled_thenReturnImage() {
 		// arrange
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		UserEntity entity = TestUtils.createUser();
-		entity.setEmail("szrnka.peter@gmail.com");
+		entity.setEmail("john.doe@fictivehost.com");
 		entity.setMfaSecret("test");
 		entity.setMfaEnabled(true);
 		when(repository.findById(1L)).thenReturn(Optional.of(entity));
@@ -327,7 +327,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
-	void shouldToggleMfa(boolean value) {
+	void toggleMfa_whenValueProvided_thenUpdateMfaToggle(boolean value) {
 		// arrange
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 
@@ -343,7 +343,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
-	void shouldMfaActive(boolean value) {
+	void isMfaActive_whenMfaStatusIsDifferent_thenReturnResponse(boolean value) {
 		// arrange
 		UserEntity entity = TestUtils.createUser();
 		entity.setMfaEnabled(value);
@@ -358,7 +358,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotGetUserInfo() {
+	void getUserInfo_whenRequestDoesNotContainCookies_thenReturnUserInfo() {
 		// arrange
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		when(request.getCookies()).thenReturn(null);
@@ -373,7 +373,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldGetUserInfo() {
+	void getUserInfo_whenRequestContainsCookies_thenReturnUserInfo() {
 		// arrange
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		when(request.getCookies()).thenReturn(List.of(new Cookie(ACCESS_JWT_TOKEN, "jwt")).toArray(new Cookie[1]));

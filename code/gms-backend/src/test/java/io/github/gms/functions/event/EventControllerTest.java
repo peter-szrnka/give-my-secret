@@ -21,13 +21,13 @@ import static org.mockito.Mockito.when;
 class EventControllerTest extends AbstractClientControllerTest<EventService, EventController> {
     
     @BeforeEach
-    void setupTest() {
+    void setup() {
         service = Mockito.mock(EventService.class);
         controller = new EventController(service);
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenInputProvided_thenReturnOk() {
         // arrange
         EventListDto dtoList = TestUtils.createEventListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
@@ -49,7 +49,7 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
     }
 
     @Test
-    void shouldReturnListByUserId() {
+    void listByUserId_whenInputProvided_thenReturnOk() {
         // arrange
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         EventListDto dtoList = TestUtils.createEventListDto();

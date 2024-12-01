@@ -27,13 +27,13 @@ class SystemPropertyControllerTest {
     private SystemPropertyService service;
     
     @BeforeEach
-    void setupTest() {
+    void setup() {
         service = Mockito.mock(SystemPropertyService.class);
         controller = new SystemPropertyController(service);
     }
 
     @Test
-    void shouldDeleteEntity() {
+    void delete_whenInputProvided_thenReturnOk() {
         // arrange
         doNothing().when(service).delete("testKey");
 
@@ -47,7 +47,7 @@ class SystemPropertyControllerTest {
     }
 
     @Test
-    void shouldSave() {
+    void save_whenInputProvided_thenReturnOk() {
         // arrange
         SystemPropertyDto dto = TestUtils.createSystemPropertyDto();
         doNothing().when(service).save(dto);
@@ -63,7 +63,7 @@ class SystemPropertyControllerTest {
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenInputProvided_thenReturnOk() {
         // arrange
         SystemPropertyListDto dtoList = TestUtils.createSystemPropertyListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);

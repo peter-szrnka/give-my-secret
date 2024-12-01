@@ -38,7 +38,7 @@ class SetupControllerTest {
     }
 
     @Test
-    void shouldGetVmOptions() {
+    void getVmOptions_whenDataSaved_thenReturnOptions() {
         // arrange
         when(setupService.getVmOptions()).thenReturn(Map.of("key", "value"));
 
@@ -53,7 +53,7 @@ class SetupControllerTest {
     }
 
     @Test
-    void shouldStepBack() {
+    void stepBack_whenDataSaved_thenProceed() {
         // arrange
         when(setupService.stepBack()).thenReturn(SystemStatus.NEED_SETUP.name());
 
@@ -66,7 +66,7 @@ class SetupControllerTest {
     }
 
     @Test
-    void shouldGetCurrentSuperAdmin() {
+    void getCurrentSuperAdmin_whenDataSaved_thenProceed() {
         // arrange
         when(setupService.getCurrentSuperAdmin()).thenReturn(TestUtils.createUserDto());
 
@@ -80,7 +80,7 @@ class SetupControllerTest {
     }
 
     @Test
-    void shouldSaveInitialStep() {
+    void saveInitialStep_whenDataSaved_thenProceed() {
         // arrange
         when(setupService.saveInitialStep()).thenReturn(new SimpleResponseDto(true));
 
@@ -93,7 +93,7 @@ class SetupControllerTest {
     }
 
     @Test
-    void shouldSaveSystemProperties() {
+    void saveSystemProperties_whenDataSaved_thenProceed() {
         // arrange
         when(setupService.saveSystemProperties(any())).thenReturn(new SimpleResponseDto(true));
 
@@ -106,7 +106,7 @@ class SetupControllerTest {
     }
 
     @Test
-    void shouldSaveOrganizationData() {
+    void saveOrganizationData_whenOrgDataSaved_thenProceed() {
         // arrange
         when(setupService.saveOrganizationData(any())).thenReturn(new SimpleResponseDto(true));
 
@@ -119,7 +119,7 @@ class SetupControllerTest {
     }
 
     @Test
-    void shouldCompleteSetup() {
+    void completeSetup_whenCompletionFinished_thenSucceed() {
         // arrange
         when(setupService.completeSetup()).thenReturn(new SimpleResponseDto(true));
 
@@ -132,7 +132,7 @@ class SetupControllerTest {
     }
 
     @Test
-    void adminRoleMissing() {
+    void saveAdminUser_whenUserRoleMissing_thenSaveUser() {
         // arrange
         SaveUserRequestDto dto = new SaveUserRequestDto();
         dto.setRole(null);
@@ -154,10 +154,10 @@ class SetupControllerTest {
     }
 
     @Test
-    void shouldHaveRole() {
+    void saveAdminUser_whenUserRoleDefined_thenSaveUser() {
         // arrange
         SaveUserRequestDto dto = new SaveUserRequestDto();
-        dto.setRole(UserRole.ROLE_USER);
+        dto.setRole(UserRole.ROLE_ADMIN);
 
         SaveEntityResponseDto mockResponse = new SaveEntityResponseDto(1L);
         when(setupService.saveAdminUser(dto)).thenReturn(mockResponse);

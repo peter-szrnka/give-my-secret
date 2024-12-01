@@ -11,6 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import static io.github.gms.util.TestConstants.LIST;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,8 +35,8 @@ class JobMaintenanceIntegrationTest extends AbstractClientControllerIntegrationT
 	}
 
 	@Test
-	@TestedMethod("list")
-	void testList() {
+	@TestedMethod(LIST)
+	void list_whenValidInputProvided_thenReturnResultList() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<JobListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, JobListDto.class);

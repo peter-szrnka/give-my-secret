@@ -2,6 +2,7 @@ package io.github.gms.common.filter;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.functions.system.SystemService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,10 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -35,8 +33,8 @@ class SetupFilterTest extends AbstractUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldSetupEnabled() {
-		SystemStatusDto mock = SystemStatusDto.builder().withStatus("NEED_SETUP").build();
+	void doFilterInternal_whenSystemIsNotReady_thenSetupRequired() {
+		SystemStatusDto mock = SystemStatusDto.builder().withStatus(SystemStatus.NEED_SETUP.name()).build();
 		when(service.getSystemStatus()).thenReturn(mock);
 
 		// act
@@ -54,7 +52,7 @@ class SetupFilterTest extends AbstractUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldBeOk() {
+	void doFilterInternal_whenSystemIsReady_thenReturnNotFound() {
 		SystemStatusDto mock = SystemStatusDto.builder().withStatus("OK").build();
 		when(service.getSystemStatus()).thenReturn(mock);
 

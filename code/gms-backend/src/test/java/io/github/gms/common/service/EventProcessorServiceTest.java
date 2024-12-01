@@ -22,10 +22,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -48,7 +45,7 @@ class EventProcessorServiceTest extends AbstractUnitTest {
 	
 	@ParameterizedTest
 	@MethodSource("input")
-	void shouldDisableKeystoreEntity(InputData input) {
+	void disableEntity_whenInputIsValid_thenDisableEntity(InputData input) {
 		// arrange
 		if (input.eventType == EntityChangeType.KEYSTORE_DISABLED) {
 			when(keystoreAliasRepository.findAllByKeystoreId(anyLong())).thenReturn(List.of(TestUtils.createKeystoreAliasEntity()));

@@ -42,7 +42,7 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
     }
 
     @Test
-    void checkToList() {
+    void toDtoList_whenInputProvided_thenConvertToDtoList() {
         // arrange
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -63,7 +63,7 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
     }
 
     @Test
-    void checkToDto() {
+    void toDto_whenInputProvided_thenConvertToDto() {
         // arrange
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -79,7 +79,7 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
     }
 
     @Test
-    void checkToModelList() {
+    void toModel_whenInputProvided_thenConvertToModelList() {
         // arrange
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -102,7 +102,7 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
 
     @ParameterizedTest
     @MethodSource("testData")
-    void checkToEntity(Long id, int expectedTimes, String expectedResponse) {
+    void toEntity_whenInputProvided_thenConvertToEntity(Long id, int expectedTimes, String expectedResponse) {
         try (MockedStatic<MdcUtils> utilsMockedStatic = mockStatic(MdcUtils.class)) {
             // arrange
             when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
@@ -130,7 +130,7 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
     }
 
     @Test
-    void checkToListDto() {
+    void toDtoList_whenInputListProvided_thenConvertToDtoList() {
         // arrange
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);

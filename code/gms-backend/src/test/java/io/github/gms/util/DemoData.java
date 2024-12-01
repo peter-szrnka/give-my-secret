@@ -1,16 +1,18 @@
 package io.github.gms.util;
 
+import static io.github.gms.util.TestConstants.TEST;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 public class DemoData {
 
-	public static final String SECRET_VALUE = "test";
+	public static final String SECRET_VALUE = TEST;
 	public static final String SECRET_ID1 = "SECRET_ID";
 	public static final String SECRET_ID2 = "SECRET_ID2";
 	public static final String SECRET_ID3 = "SECRET_ID3";
-	public static final String CREDENTIAL_TEST = "test";
+	public static final String CREDENTIAL_TEST = TEST;
 	public static final Long USER_1_ID = 1L;
 	public static final Long USER_2_ID = 2L;
 	public static final Long USER_3_ID = 3L;

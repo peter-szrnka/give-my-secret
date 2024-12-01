@@ -28,9 +28,7 @@ class MaintenanceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void shouldRequestUserAnonymization() {
-        // arrange
-
+    void requestUserAnonymization_whenCalled_thenReturnOk() {
         // act
         BatchUserOperationDto input = BatchUserOperationDto.builder().build();
         HttpEntity<BatchUserOperationDto> requestEntity = new HttpEntity<>(input, TestUtils.getHttpHeaders(jwt));
@@ -41,9 +39,7 @@ class MaintenanceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void shouldRequestUserDeletion() {
-        // arrange
-
+    void requestUserDeletion_whenCalled_thenReturnOk() {
         // act
         BatchUserOperationDto input = BatchUserOperationDto.builder().build();
         HttpEntity<BatchUserOperationDto> requestEntity = new HttpEntity<>(input, TestUtils.getHttpHeaders(jwt));

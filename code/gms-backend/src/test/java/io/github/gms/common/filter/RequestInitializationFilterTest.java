@@ -41,7 +41,7 @@ class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void testDoFilterInternal(boolean logResponseTimeDisabled) throws ServletException, IOException {
+    void doFilterInternal_whenContextIsOk_thenInitializeRequest(boolean logResponseTimeDisabled) throws ServletException, IOException {
         ReflectionTestUtils.setField(filter, "logResponseTimeDisabled", logResponseTimeDisabled);
 
         try (MockedStatic<MDC> mdcMockedStatic = mockStatic(MDC.class)) {

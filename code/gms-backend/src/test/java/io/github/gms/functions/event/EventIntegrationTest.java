@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.ZonedDateTime;
 
+import static io.github.gms.util.TestConstants.LIST;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -43,8 +44,8 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 	}
 
 	@Test
-	@TestedMethod("list")
-	void testList() {
+	@TestedMethod(LIST)
+	void list_whenInputIsValid_thenReturnOk() {
 		eventRepository.deleteAll();
 		
 		// arrange
@@ -72,7 +73,7 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 	
 	@Test
 	@TestedMethod("listByUserId")
-	void testListByUserId() {
+	void listByUserId_whenInputIsValid_thenReturnOk() {
 		eventRepository.deleteAll();
 		
 		// arrange

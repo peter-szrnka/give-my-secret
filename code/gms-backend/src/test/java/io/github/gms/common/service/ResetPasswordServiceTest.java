@@ -16,13 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -33,7 +28,6 @@ class ResetPasswordServiceTest {
 
     private MessageService messageService;
     private UserRepository userRepository;
-
     private ResetPasswordService service;
 
     @BeforeEach
@@ -44,7 +38,7 @@ class ResetPasswordServiceTest {
     }
 
     @Test
-    void shouldThrowError() {
+    void resetPassword_whenInputIsInvalid_thenThrowGmsException() {
         // arrange
         ResetPasswordRequestDto dto = new ResetPasswordRequestDto("user");
         when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
@@ -59,7 +53,7 @@ class ResetPasswordServiceTest {
     }
 
     @Test
-    void shouldSendMessages() {
+    void resetPassword_whenInputIsValid_thenResetPassword() {
         // arrange
         ResetPasswordRequestDto dto = new ResetPasswordRequestDto("user");
         when(userRepository.findByUsername("user")).thenReturn(Optional.of(TestUtils.createUser()));

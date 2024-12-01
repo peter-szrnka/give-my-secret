@@ -33,7 +33,7 @@ class MaintenanceControllerTest extends AbstractUnitTest {
     }
 
     @Test
-    void shouldRequestUserAnonymization() {
+    void requestUserAnonymization_whenCorrectInputProvided_thenComplete() {
         // arrange
         BatchUserOperationDto input = BatchUserOperationDto.builder().build();
 
@@ -47,7 +47,7 @@ class MaintenanceControllerTest extends AbstractUnitTest {
     }
 
     @Test
-    void shouldRequestUserDeletion() {
+    void requestUserDeletion_whenCorrectInputProvided_thenComplete() {
         // arrange
         BatchUserOperationDto input = BatchUserOperationDto.builder().build();
 

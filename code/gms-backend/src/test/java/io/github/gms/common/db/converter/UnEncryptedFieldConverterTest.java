@@ -16,7 +16,7 @@ class UnEncryptedFieldConverterTest extends AbstractUnitTest {
     private final UnEncryptedFieldConverter converter = new UnEncryptedFieldConverter();
 
     @Test
-    void shouldConvertToDatabaseColumn() {
+    void convertToDatabaseColumn_whenNormalValueProvided_thenReturnNormalValue() {
         // act
         String encryptedValue = converter.convertToDatabaseColumn(ORIGINAL_VALUE);
 
@@ -26,7 +26,7 @@ class UnEncryptedFieldConverterTest extends AbstractUnitTest {
 
 
     @Test
-    void shouldConvertToEntityAttribute() {
+    void convertToEntityAttribute_whenNormalValueProvided_thenReturnNormalValue() {
         // act
         String decryptedValue = converter.convertToEntityAttribute(ORIGINAL_VALUE);
 

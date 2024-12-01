@@ -41,7 +41,7 @@ class SecretConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithoutParameters() {
+	void toEntity_whenNoParametersProvided_thenReturnEntity() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -58,7 +58,7 @@ class SecretConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithParameters() {
+	void toEntity_whenParametersProvided_thenReturnEntity() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -87,7 +87,7 @@ class SecretConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToNewEntity() {
+	void toNewEntity_whenNewEntityCreated_thenReturnNewEntity() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -113,7 +113,7 @@ class SecretConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToList() {
+	void toDtoList_whenCorrectInputProvided_thenReturnsDtoList() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -136,7 +136,7 @@ class SecretConverterTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void checkToDto() {
+	void toDto_whenCorrectInputProvided_thenReturnSecret() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);

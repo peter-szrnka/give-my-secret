@@ -20,14 +20,8 @@ import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -48,7 +42,7 @@ class KeycloakUserInfoServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("emptyInputData")
-    void shouldReturnEmptyInfo(Input input) {
+    void getUserInfo_whenCookiesMissing_thenReturnNull(Input input) {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(input.getCookies());
@@ -67,7 +61,7 @@ class KeycloakUserInfoServiceImplTest {
     }
 
     @Test
-    void shouldNotFoundUserWhenResponseBodyMissing() {
+    void getUserInfo_whenResponseBodyMissing_thenReturnNull() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
@@ -88,7 +82,7 @@ class KeycloakUserInfoServiceImplTest {
     }
 
     @Test
-    void shouldNotFoundUserWhenIntrospectFailed() {
+    void getUserInfo_whenIntrospectFailed_thenReturnNull() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
@@ -109,7 +103,7 @@ class KeycloakUserInfoServiceImplTest {
     }
 
     @Test
-    void shouldNotFoundUserInDb() {
+    void getUserInfo_whenUserNotFoundInDb_thenReturnNull() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
@@ -137,7 +131,7 @@ class KeycloakUserInfoServiceImplTest {
     }
 
     @Test
-    void shouldReturnUserInfo() {
+    void getUserInfo_whenUserFoundInDb_thenReturnsUserInfo() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{

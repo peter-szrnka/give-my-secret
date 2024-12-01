@@ -22,7 +22,7 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 	
 	@Test
 	@SneakyThrows
-	void shouldConvertToDatabaseColumnFail() {
+	void convertToDatabaseColumn_whenInvalidSecretProvided_thenThrowIllegalStateException() {
 		// arrange
 		converter = new EncryptedFieldConverter(INVALID_SECRET, ENCRYPTION_IV);
 		
@@ -33,7 +33,7 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldConvertToDatabaseColumn() {
+	void convertToDatabaseColumn_whenValidSecretProvided_thenReturnEncryptedValue() {
 		// arrange
 		converter = new EncryptedFieldConverter(VALID_SECRET, ENCRYPTION_IV);
 
@@ -46,7 +46,7 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldConvertToEntityAttributeFail() {
+	void convertToEntityAttribute_whenInvalidSecretProvided_thenThrowIllegalStateException() {
 		// arrange
 		converter = new EncryptedFieldConverter(INVALID_SECRET, ENCRYPTION_IV);
 
@@ -57,7 +57,7 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldConvertToEntityAttribute() {
+	void convertToEntityAttribute_whenValidSecretProvided_thenReturnDecryptedValue() {
 		// arrange
 		converter = new EncryptedFieldConverter(VALID_SECRET, ENCRYPTION_IV);
 

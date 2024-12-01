@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.URL_INFO_STATUS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -31,12 +32,12 @@ class GmsExceptionHandlerIntegrationTest extends AbstractIntegrationTest {
     private SystemService systemService;
 
     @Test
-    void shouldHandleGmsException() {
+    void statusInfo_whenSystemStatusThrowsGmsException_thenReturnHttp500() {
         // arrange
         when(systemService.getSystemStatus()).thenThrow(new GmsException("Test exception", ErrorCode.GMS_026));
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
-        ResponseEntity<SystemStatusDto> response = executeHttpGet("/info/status", requestEntity, SystemStatusDto.class);
+        ResponseEntity<SystemStatusDto> response = executeHttpGet(URL_INFO_STATUS, requestEntity, SystemStatusDto.class);
 
         // assert
         assertNotNull(response);
@@ -45,12 +46,12 @@ class GmsExceptionHandlerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void shouldHandleAccessDeniedException() {
+    void statusInfo_whenSystemStatusThrowsAccessDeniedException_thenReturnHttp403() {
         // arrange
         when(systemService.getSystemStatus()).thenThrow(new AccessDeniedException("Access denied"));
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
-        ResponseEntity<SystemStatusDto> response = executeHttpGet("/info/status", requestEntity, SystemStatusDto.class);
+        ResponseEntity<SystemStatusDto> response = executeHttpGet(URL_INFO_STATUS, requestEntity, SystemStatusDto.class);
 
         // assert
         assertNotNull(response);

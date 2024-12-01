@@ -7,7 +7,6 @@ import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.util.TestUtils;
-import lombok.SneakyThrows;
 import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,19 +14,15 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.MockedStatic;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -53,8 +48,7 @@ class KeystoreDataServiceTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	@SneakyThrows
-	void shouldThrowExceptionWhenKeystoreAliasMissing() {
+	void getKeystoreData_whenKeystoreAliasMissing_thenThrowException() {
 		// arrange
 		SecretEntity entity = TestUtils.createSecretEntityWithUniqueKeystoreAliasId(1L);
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -68,8 +62,7 @@ class KeystoreDataServiceTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	@SneakyThrows
-	void shouldNotGetKeystoreData() {
+	void getKeystoreData_whenKeystoreEntityMissing_thenThrowException() {
 		// arrange
 		SecretEntity entity = TestUtils.createSecretEntity();
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
@@ -85,8 +78,7 @@ class KeystoreDataServiceTest extends AbstractLoggingUnitTest {
 	}
 	
 	@Test
-	@SneakyThrows
-	void shouldGetKeystoreData() {
+	void getKeystoreData_whenAllConditionsMet_thenReturnKeystorePair() throws IOException, CertificateException, NoSuchAlgorithmException {
 		try (MockedStatic<KeyStore> keyStoreMockedStatic = mockStatic(KeyStore.class)) {
 			// arrange
 			SecretEntity entity = TestUtils.createSecretEntity();
@@ -97,7 +89,7 @@ class KeystoreDataServiceTest extends AbstractLoggingUnitTest {
 			keyStoreMockedStatic.when(() -> KeyStore.getInstance(anyString())).thenReturn(mockKeyStore);
 
 			// act
-			KeystorePair response = service.getKeystoreData(entity);
+			KeystorePair response = assertDoesNotThrow(() -> service.getKeystoreData(entity));
 
 			// assert
 			assertNotNull(response);

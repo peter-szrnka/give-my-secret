@@ -39,7 +39,7 @@ class IpRestrictionValidatorTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"127.0.0.1", "0:0:0:0:0:0:0:1"})
-    void shouldCheckIpRestrictionsBySecretWithoutRules(String ipAddress) {
+    void isIpAddressBlocked_wheIpRestrictionsBySecretWithoutRulesProvided_thenProceed(String ipAddress) {
         try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
             // arrange
             List<IpRestrictionPattern> input = List.of();
@@ -58,7 +58,7 @@ class IpRestrictionValidatorTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @MethodSource("restrictionInputData")
-    void shouldFailWhenIpIsRestricted(boolean allow, String ipPattern, String ipAddress) {
+    void isIpAddressBlocked_whenIpIsRestricted_thenFail(boolean allow, String ipPattern, String ipAddress) {
         try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
             // arrange
             List<IpRestrictionPattern> input = List.of(IpRestrictionPattern.builder().ipPattern(ipPattern).allow(allow).build());
@@ -77,7 +77,7 @@ class IpRestrictionValidatorTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @MethodSource("positiveRestrictionInputData")
-    void shouldNotFailWhenIpIsNotRestricted(boolean allow, String ipPattern, String ipAddress) {
+    void isIpAddressBlocked_whenIpIsNotRestricted_thenProceed(boolean allow, String ipPattern, String ipAddress) {
         try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
             // arrange
             List<IpRestrictionPattern> input = List.of(IpRestrictionPattern.builder().ipPattern(ipPattern).allow(allow).build());

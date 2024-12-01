@@ -53,7 +53,7 @@ class IntegrationAnnotationCheckerTest {
     }
 
     @Test
-    void shouldControllerHaveProperIntegrationTests() {
+    void integrationTests_whenAllControllersAreCovered_thenSuccess() {
         controllers = getAllControllerClasses(false);
         AtomicInteger skipCounter = new AtomicInteger(0);
         controllers.forEach((k, v) -> assertController(skipCounter, k, v));
@@ -63,7 +63,7 @@ class IntegrationAnnotationCheckerTest {
     }
 
     @Test
-    void shouldControllerHaveProperSecurityTests() {
+    void securityTests_whenAllControllersAreCovered_thenSuccess() {
         controllers = getAllControllerClasses(true);
         AtomicInteger skipCounter = new AtomicInteger(0);
         Set<String> missingSecurityTests = new HashSet<>();

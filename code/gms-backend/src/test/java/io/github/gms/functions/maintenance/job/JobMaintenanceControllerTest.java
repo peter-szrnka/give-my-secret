@@ -28,7 +28,7 @@ class JobMaintenanceControllerTest extends AbstractUnitTest {
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenValidInputProvided_thenReturnResultList() {
         // arrange
         JobListDto dtoList = TestUtils.createJobListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);

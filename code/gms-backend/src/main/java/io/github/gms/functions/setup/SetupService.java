@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +71,7 @@ public class SetupService {
         return SimpleResponseDto.builder().success(true).build();
     }
 
-    public SaveEntityResponseDto saveAdminUser(@RequestBody SaveUserRequestDto dto) {
+    public SaveEntityResponseDto saveAdminUser(SaveUserRequestDto dto) {
         SaveEntityResponseDto saveEntityResponseDto = userService.saveAdminUser(dto);
         updateSystemStatus(SystemStatus.NEED_AUTH_CONFIG);
         return saveEntityResponseDto;

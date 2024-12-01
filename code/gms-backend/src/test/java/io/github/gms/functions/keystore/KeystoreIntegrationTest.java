@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -64,8 +64,8 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Test
 	@SneakyThrows
-	@TestedMethod("save")
-	void testSave() {
+	@TestedMethod(SAVE)
+	void save_whenInputIsValid_thenReturnOk() {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		try (InputStream jksFileStream = classloader.getResourceAsStream("test.jks")) {
             assert jksFileStream != null;
@@ -92,8 +92,8 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
-	@TestedMethod("getById")
-	void testGetById() {
+	@TestedMethod(GET_BY_ID)
+	void getById_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<KeystoreDto> response = executeHttpGet("/" + DemoData.KEYSTORE_ID, requestEntity,
@@ -109,8 +109,8 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
-	@TestedMethod("list")
-	void testList() {
+	@TestedMethod(LIST)
+	void list_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<KeystoreListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, KeystoreListDto.class);
@@ -125,8 +125,8 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@ParameterizedTest
 	@MethodSource("valueData")
-	@TestedMethod("getValue")
-	void testGetSecretValue(ValueHolder input) {
+	@TestedMethod(GET_VALUE)
+	void getValue_whenInputIsValid_thenReturnOk(ValueHolder input) {
 		// act
 		GetSecureValueDto dto = new GetSecureValueDto(DemoData.KEYSTORE_ID, input.getAliasId(), input.getValueType());
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
@@ -142,8 +142,8 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Test
 	@SneakyThrows
-	@TestedMethod("delete")
-	void testDelete() {
+	@TestedMethod(DELETE)
+	void delete_whenInputIsValid_thenReturnOk() {
 		// arrange
 		KeystoreEntity newEntity = keystoreRepository.save(TestUtils.createNewKeystoreEntity(3L));
 
@@ -160,9 +160,9 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Transactional
 	@ParameterizedTest
-	@TestedMethod("toggle")
+	@TestedMethod(TOGGLE)
 	@ValueSource(booleans = { false, true })
-	void testToggleStatus(boolean enabled) {
+	void toggle_whenInputIsValid_thenReturnOk(boolean enabled) {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost("/" + DemoData.KEYSTORE_ID + "?enabled=" + enabled,
@@ -181,7 +181,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Test
 	@TestedMethod("getAllKeystoreNames")
-	void testGetAllKeystoreNames() {
+	void getAllKeystoreNames_whenInputIsValid_thenReturnOk() {
 		// arrange
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
@@ -198,7 +198,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 	@Test
 	@TestedMethod("getAllKeystoreAliases")
-	void testGetAllKeystoreAliasNames() {
+	void getAllKeystoreAliasNames_whenInputIsValid_thenReturnOk() {
 		// arrange
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
@@ -216,7 +216,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@SneakyThrows
 	@TestedMethod("download")
-	void testDownloadKeystoreFile() {
+	void downloadKeystoreFile_whenInputIsValid_thenReturnOk() {
 		// arrange
 		File keystoreFile = new File("./keystores/1/test.jks");
 		boolean keystoreFileCreated = !keystoreFile.exists();
@@ -224,7 +224,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		if (!keystoreFile.exists()) {
 			Files.createParentDirs(keystoreFile);
 			keystoreFile.createNewFile();
-			Files.write("test".getBytes(), keystoreFile);
+			Files.write(TEST.getBytes(), keystoreFile);
 		}
 		
 		HttpHeaders headers = new HttpHeaders();	
@@ -245,9 +245,9 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		}
 	}
 
-	public static List<ValueHolder> valueData() {
-		return Lists.newArrayList(new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, DemoData.KEYSTORE_ALIAS_ID, "test"),
-				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, DemoData.KEYSTORE_ALIAS_ID, "test"),
-				new ValueHolder(KeyStoreValueType.KEYSTORE_CREDENTIAL, null, "test"));
+	private static List<ValueHolder> valueData() {
+		return Lists.newArrayList(new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS, DemoData.KEYSTORE_ALIAS_ID, TEST),
+				new ValueHolder(KeyStoreValueType.KEYSTORE_ALIAS_CREDENTIAL, DemoData.KEYSTORE_ALIAS_ID, TEST),
+				new ValueHolder(KeyStoreValueType.KEYSTORE_CREDENTIAL, null, TEST));
 	}
 }

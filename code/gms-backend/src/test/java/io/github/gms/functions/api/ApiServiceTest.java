@@ -40,7 +40,7 @@ class ApiServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldReturnSecret() {
+    void getSecret_whenInputIsValid_thenReturnOk() {
         // arrange
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         Map<String, String> mockResponse = Map.of(VALUE, "my-value");

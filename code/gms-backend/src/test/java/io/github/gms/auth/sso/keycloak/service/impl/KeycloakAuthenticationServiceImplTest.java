@@ -62,7 +62,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldLoginSkippedWhenIntrospectFailed() {
+    void authenticate_whenIntrospectFailed_thenProceed() {
         // arrange
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {
                 new Cookie(ACCESS_JWT_TOKEN, MOCK_ACCESS_TOKEN),
@@ -84,7 +84,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldLoginSkipped() {
+    void authenticate_whenAlreadyLoggedIn_thenProceed() {
         // arrange
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {
                 new Cookie(ACCESS_JWT_TOKEN, MOCK_ACCESS_TOKEN),
@@ -116,7 +116,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldLoginFail() {
+    void authenticate_whenKeycloakThrowsException_thenFail() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenThrow(new RuntimeException("Oops!"));
@@ -133,7 +133,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @MethodSource("not2xxInputData")
-    void shouldLoginFailWhenResponseIsNot2xx(String errorDescription, AuthResponsePhase authResponsePhaseExpected) {
+    void authenticate_whenResponseIsNot2xx_thenFail(String errorDescription, AuthResponsePhase authResponsePhaseExpected) {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.status(400).body(LoginResponse.builder()
@@ -151,15 +151,8 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         assertLogContains(logAppender, "Login failed! Status code=400");
     }
 
-    private static Object[][] not2xxInputData() {
-        return new Object[][] {
-                { "Account disabled", AuthResponsePhase.BLOCKED },
-                { "Other issue", AuthResponsePhase.FAILED }
-        };
-    }
-
     @Test
-    void shouldLoginFailedWhenIntrospectFailed() {
+    void authenticate_whenIntrospectFailed_thenFail() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder()
@@ -180,7 +173,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldLoginFailedWhenResponseBodyMissing() {
+    void authenticate_whenResponseBodyMissing_thenFail() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok().build());
@@ -198,7 +191,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldLoginFailedWhenIntrospectReturnsInactive() {
+    void authenticate_whenIntrospectReturnsInactive_thenFail() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder()
@@ -222,7 +215,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldLoginFailedWhenIntrospectReturnsEmptyBody() {
+    void authenticate_whenIntrospectReturnsEmptyBody_thenFail() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder()
@@ -247,7 +240,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldLoginSucceedWhenUserNotFound() {
+    void authenticate_whenUserNotFound_thenSucceedLogin() {
         // arrange
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder()
@@ -287,7 +280,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @MethodSource("tokenInputData")
-    void shouldLoginSucceedWhenUserFound(String accessToken, String refreshToken) {
+    void authenticate_whenUserFound_thenSucceedLogin(String accessToken, String refreshToken) {
         List<Cookie> cookies = new ArrayList<>();
         if (accessToken != null) {
             cookies.add(new Cookie(ACCESS_JWT_TOKEN, accessToken));
@@ -334,12 +327,19 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldLogout() {
+    void logout_whenCalled_thenLogOutUser() {
         // act
         service.logout();
 
         // assert
         verify(keycloakLoginService).logout();
+    }
+
+    private static Object[][] not2xxInputData() {
+        return new Object[][] {
+                { "Account disabled", AuthResponsePhase.BLOCKED },
+                { "Other issue", AuthResponsePhase.FAILED }
+        };
     }
 
     private static Object[][] tokenInputData () {

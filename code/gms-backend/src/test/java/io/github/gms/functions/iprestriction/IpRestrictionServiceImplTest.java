@@ -50,7 +50,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldSaveFail() {
+    void save_whenEntityIsNotGlobal_thenThrowGmsException() {
         // arrange
         IpRestrictionDto dto = IpRestrictionDto.builder().id(1L).global(false).build();
 
@@ -65,7 +65,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @MethodSource("saveInputData")
-    void shouldSave(Long id, boolean global) {
+    void save_whenEntityIsCorrect_thenReturnOk(Long id, boolean global) {
         // arrange
         IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
         when(converter.toEntity(any(IpRestrictionDto.class))).thenReturn(mockEntity);
@@ -96,7 +96,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldFindById() {
+    void getById_whenEntityExists_thenReturnEntity() {
         // arrange
         IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
         mockEntity.setGlobal(true);
@@ -113,7 +113,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenInputProvided_thenReturnOk() {
         // arrange
         Page<IpRestrictionEntity> mockList = new PageImpl<>(Lists.newArrayList(new IpRestrictionEntity()));
         when(repository.findAllGlobal(any(Pageable.class))).thenReturn(mockList);
@@ -132,7 +132,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldNotDeleteUserNonExistingIpRestriction() {
+    void delete_whenUserDoesNotExist_thenThrowGmsException() {
         // arrange
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -146,7 +146,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldNotDeleteUserDefinedIpRestriction() {
+    void delete_whenInputIsNotGlobalIpRestriction_thenThrowGmsException() {
         // arrange
         IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
         mockEntity.setGlobal(false);
@@ -162,7 +162,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldDelete() {
+    void delete_whenInputIsCorrect_thenRemove() {
         // arrange
         IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
         mockEntity.setGlobal(true);
@@ -177,7 +177,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldUpdateIpRestrictionsForSecret() {
+    void updateIpRestrictionsForSecret_whenProperInputProvided_thenUpdateData() {
         // arrange
         List<IpRestrictionDto> restrictions = List.of(
                 IpRestrictionDto.builder().allow(true).ipPattern(".*").build(), // existing
@@ -208,7 +208,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldReturnAllSecretById() {
+    void getAllBySecretId_whenInputProvided_thenReturnData() {
         // arrange
         List<IpRestrictionEntity> mockEntities = List.of(
                 IpRestrictionEntity.builder().id(1L).allow(true).ipPattern("(127.0.0.)[0-9]{1,3}").build()
@@ -229,7 +229,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldCheckIpRestrictionsBySecret() {
+    void checkIpRestrictionsBySecret_whenInputProvided_thenReturnOk() {
         // arrange
         List<IpRestrictionEntity> mockEntities = List.of();
         when(repository.findAllBySecretId(1L)).thenReturn(mockEntities);
@@ -247,7 +247,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldCheckGlobalIpRestrictions() {
+    void checkGlobalIpRestrictions_whenInputProvided_thenReturnOk() {
         // arrange
         List<IpRestrictionEntity> mockEntities = List.of();
         when(repository.findAllGlobal()).thenReturn(mockEntities);
@@ -266,7 +266,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void shouldToggleStatus(boolean enabled) {
+    void toggleStatus_whenInputProvided_thenReturnOk(boolean enabled) {
         // arrange
         IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
         mockEntity.setGlobal(true);
@@ -286,7 +286,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldDeleteInBatch() {
+    void batchDeleteByUserIds_whenInputProvided_thenReturnOk() {
         // arrange
         Set<Long> userIds = Set.of(1L, 2L);
 

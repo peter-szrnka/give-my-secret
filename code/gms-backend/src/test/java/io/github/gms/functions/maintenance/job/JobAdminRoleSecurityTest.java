@@ -6,6 +6,7 @@ import io.github.gms.common.TestedMethod;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import static io.github.gms.util.TestConstants.LIST;
 import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
 
 /**
@@ -21,8 +22,8 @@ class JobAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("list")
-    void testListFailWithHttp403() {
-        shouldListFailWith403(JobListDto.class);
+    @TestedMethod(LIST)
+    void list_whenAuthenticationFails_thenReturnHttp403() {
+        assertListFailWith403(JobListDto.class);
     }
 }

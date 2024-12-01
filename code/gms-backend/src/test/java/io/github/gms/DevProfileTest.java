@@ -20,7 +20,7 @@ class DevProfileTest {
 	private ApplicationContext context;
 
 	@Test
-	void test() {
+	void devProfile_whenDevProfileIsActivated_thenLoadFullApplicationContext() {
 		assertNotNull(context);
 	}
 }

@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Set;
 
+import static io.github.gms.util.TestConstants.LIST;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,7 +52,7 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@Test
-	@TestedMethod("list")
+	@TestedMethod(LIST)
 	void testList() {
 		repository.deleteAll();
 

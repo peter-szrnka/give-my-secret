@@ -36,7 +36,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testSupports() {
+    void supports_whenCalled_thenReturnTrue() {
         MethodParameter methodParameter = mock(MethodParameter.class);
         Type targetType = mock(Type.class);
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
@@ -44,7 +44,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testBeforeBodyRead() {
+    void beforeBodyRead_whenCalled_thenReturnHttpInputMessage() {
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
         Type targetType = mock(Type.class);
@@ -53,7 +53,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testAfterBodyRead_whenMaskingDisabled() throws JsonProcessingException {
+    void afterBodyRead_whenMaskingDisabled_thenSkipLogRequestBody() throws JsonProcessingException {
         // arrange
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
@@ -73,7 +73,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testAfterBodyRead() throws JsonProcessingException {
+    void afterBodyRead_whenMaskingEnabled_thenLogRequestBody() throws JsonProcessingException {
         // arrange
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
@@ -92,7 +92,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testAfterBodyRead_whenLoggingTurnedOff() throws JsonProcessingException {
+    void afterBodyRead_whenLoggingTurnedOff_thenLogSkipped() throws JsonProcessingException {
         // arrange
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
@@ -111,7 +111,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testAfterBodyRead_whenExceptionOccurs() throws JsonProcessingException {
+    void afterBodyRead_whenExceptionOccurs_thenLogException() throws JsonProcessingException {
         // arrange
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
@@ -128,7 +128,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void testHandleEmptyBody() {
+    void handleEmptyBody_whenCalled_thenReturnBody() {
         // arrange
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);

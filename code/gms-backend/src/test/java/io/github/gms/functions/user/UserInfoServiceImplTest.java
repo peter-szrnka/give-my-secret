@@ -39,7 +39,7 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void jwtCookieIsMissing() {
+    void getUserInfo_whenJwtCookieIsMissing_thenReturnNull() {
         // arrange
         HttpServletRequest request = mock(HttpServletRequest.class);
 
@@ -52,7 +52,7 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void userNotFound() {
+    void getUserInfo_whenUserNotFound_thenReturnNull() {
         // arrange
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("jwt", "value") });
@@ -69,7 +69,7 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldReturnUserInfo() {
+    void getUserInfo_whenInputIsValid_thenReturnOk() {
         // arrange
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("jwt", "value") });

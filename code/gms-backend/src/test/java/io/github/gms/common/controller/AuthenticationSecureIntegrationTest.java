@@ -15,6 +15,7 @@ import java.util.List;
 
 import static io.github.gms.common.util.Constants.*;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -26,28 +27,27 @@ import static org.junit.jupiter.api.Assertions.*;
 class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 
 	@Test
-	void shouldNotAuthenticate() {
+	void test_whenUserProvidedInvalidCredentials_thenReturnUnauthorized() {
 		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, "testFail");
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
 
 		// act
 		ResponseEntity<String> response = executeHttpPost(SLASH + LoginController.LOGIN_PATH, requestEntity, String.class);
-		
+
 		// assert
 		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 	}
 	
 	@Test
-	void shouldAuthenticate() {
-		
+	void test_whenLoginCalled_thenReturnOk() {
 		// act
-		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, "test");
+		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, TEST);
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
 		ResponseEntity<String> response = executeHttpPost(SLASH + LoginController.LOGIN_PATH, requestEntity, String.class);
-		
+
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		
+
 		List<String> cookies = response.getHeaders().get("Set-Cookie");
 		assertFalse(cookies.isEmpty());
 		assertEquals(2, cookies.size());
@@ -57,12 +57,11 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	void shouldLogout() {
-		
+	void test_whenLogoutCalled_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost(SLASH + LoginController.LOGOUT_PATH, requestEntity, String.class);
-		
+
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertTrue(response.getHeaders().keySet().stream().anyMatch(header -> header.equalsIgnoreCase(SET_COOKIE)));

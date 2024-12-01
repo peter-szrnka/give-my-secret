@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static io.github.gms.util.TestConstants.TEST;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,7 +42,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     }
 
     @Test
-    void shouldDeleteEntity() {
+    void delete_whenInputProvided_thenReturnOk() {
         // arrange
         doNothing().when(service).delete(1L);
 
@@ -55,7 +56,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     }
 
     @Test
-    void shouldToggleEntityStatus() {
+    void toggle_whenInputProvided_thenReturnOk() {
         // act
         ResponseEntity<String> response = controller.toggle(1L, true);
 
@@ -66,9 +67,9 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     }
 
     @Test
-    void shouldSave() {
+    void save_whenInputProvided_thenReturnOk() {
         // arrange
-        MultipartFile multiPartFile = new MockMultipartFile("test", "data".getBytes());
+        MultipartFile multiPartFile = new MockMultipartFile(TEST, "data".getBytes());
         when(service.save("{'test':'value'}", multiPartFile)).thenReturn(new SaveEntityResponseDto(2L));
 
         // act
@@ -84,7 +85,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     }
 
     @Test
-    void shouldReturnById() {
+    void getById_whenInputProvided_thenReturnOk() {
         // arrange
         KeystoreDto dto = TestUtils.createKeystoreDto();
         when(service.getById(1L)).thenReturn(dto);
@@ -99,7 +100,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenInputProvided_thenReturnOk() {
         // arrange
         KeystoreListDto dtoList = TestUtils.createKeystoreListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
@@ -120,22 +121,22 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     }
 
     @Test
-    void shouldReturnValue() {
+    void getValue_whenInputProvided_thenReturnOk() {
         // arrange
         GetSecureValueDto dto = new GetSecureValueDto();
-        when(service.getValue(dto)).thenReturn("test");
+        when(service.getValue(dto)).thenReturn(TEST);
 
         // act
         String response = controller.getValue(dto);
 
         // assert
         assertNotNull(response);
-        assertEquals("test", response);
+        assertEquals(TEST, response);
         verify(service).getValue(dto);
     }
 
     @Test
-    void shouldReturnAllKeystoreNames() {
+    void getAllKeystoreNames_whenInputProvided_thenReturnOk() {
         // arrange
         IdNamePairListDto mock = new IdNamePairListDto();
         mock.setResultList(List.of(new IdNamePairDto()));
@@ -151,7 +152,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     }
 
     @Test
-    void shouldReturnAllKeystoreAliases() {
+    void getAllKeystoreAliases_whenInputProvided_thenReturnOk() {
         // arrange
         IdNamePairListDto mock = new IdNamePairListDto();
         mock.setResultList(List.of(new IdNamePairDto()));
@@ -167,7 +168,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
     }
 
     @Test
-    void shouldDownload() {
+    void download_whenInputProvided_thenReturnOk() {
         // arrange
         DownloadFileResponseDto responseDto = new DownloadFileResponseDto("test.jks", "data".getBytes());
         when(service.downloadKeystore(1L)).thenReturn(responseDto);

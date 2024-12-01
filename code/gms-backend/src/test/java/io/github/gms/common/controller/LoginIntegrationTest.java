@@ -25,7 +25,7 @@ class LoginIntegrationTest extends AbstractIntegrationTest implements GmsControl
 
     @Test
     @TestedMethod("loginAuthentication")
-    void testLoginAuthentication() {
+    void login_whenValidCredentialsSent_thenLogInUser() {
         // arrange
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -41,7 +41,7 @@ class LoginIntegrationTest extends AbstractIntegrationTest implements GmsControl
 
     @Test
     @TestedMethod("logout")
-    void testLogout() {
+    void logout_whenCookiesProvided_thenLogOut() {
         // arrange
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie", ACCESS_JWT_TOKEN + "=" + jwt);

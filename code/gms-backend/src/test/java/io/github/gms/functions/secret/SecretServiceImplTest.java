@@ -81,7 +81,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveNewEntityWhenKeystoreNotSent() {
+	void save_whenKeystoreNotSent_thenThrowException() {
 		// arrange
 		SaveSecretRequestDto dto = TestUtils.createSaveSecretRequestDto(2L);
 		dto.setKeystoreAliasId(null);
@@ -95,7 +95,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveNewEntityWhenKeystoreAliasDoesNotExists() {
+	void save_whenKeystoreAliasDoesNotExists_thenThrowException() {
 		// arrange
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -106,7 +106,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveNewEntityWhenKeystoreDoesNotExists() {
+	void save_whenKeystoreDoesNotExists_thenThrowException() {
 		// arrange
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 		when(keystoreAliasRepository.findById(anyLong()))
@@ -120,7 +120,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveNewEntityWhenKeystoreDisabled() {
+	void save_whenKeystoreIsDisabled_thenThrowException() {
 		// arrange
 		KeystoreEntity mockKeystoreEntity = TestUtils.createKeystoreEntity();
 		mockKeystoreEntity.setStatus(EntityStatus.DISABLED);
@@ -136,7 +136,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveNewEntityWhenKeystoreIsNotRelatedToAlias() {
+	void save_whenKeystoreIsNotRelatedToAlias_thenThrowException() {
 		// arrange
 		KeystoreEntity mockKeystoreEntity = TestUtils.createKeystoreEntity();
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(mockKeystoreEntity));
@@ -152,7 +152,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveNewEntityWhenSecretIdIsNotUnique() {
+	void save_whenSecretIdIsNotUnique_thenThrowException() {
 		// arrange
 		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
 		mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(1L);
@@ -177,7 +177,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = { "a", "a;", "a;b", "a:x;b:" })
-	void shouldNotSaveNewEntityWhenUsernamePasswordPairisInvalid(String inputValue) {
+	void save_whenUsernamePasswordPairIsInvalid_thenThrowException(String inputValue) {
 		// arrange
 		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
 		mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(1L);
@@ -205,7 +205,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldSaveNewEntityWhenValueIsNotProvided() {
+	void save_whenValueIsNotProvided_thenSaveEntity() {
 		// arrange
 		Clock clock = mock(Clock.class);
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
@@ -244,7 +244,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldSaveNewEntityWhenUsernamePasswordPairIsValid() {
+	void save_whenUsernamePasswordPairIsValid_thenSaveEntity() {
 		// arrange
 		MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class);
 		mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(5L);
@@ -278,7 +278,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSaveNewEntity() {
+	void save_whenNewEntityProvided_thenSaveEntity() {
 		// arrange
 		SecretEntity mockEntity = TestUtils.createSecretEntity();
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
@@ -301,7 +301,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSaveNewEntityWithApiKeyRestrictions() {
+	void save_whenNewEntityProvidedWithApiKeyRestrictions_thenSaveEntityAndRestrictions() {
 		// arrange
 		SecretEntity mockEntity = TestUtils.createSecretEntity();
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
@@ -335,7 +335,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveExistingEntity() {
+	void save_whenEntityAlreadyExists_thenThrowException() {
 		// arrange
 		SecretEntity mockEntity = TestUtils.createSecretEntity();
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
@@ -355,7 +355,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSaveExistingEntity() {
+	void save_whenEntityAlreadyExists_thenSaveEntity() {
 		// arrange
 		SecretEntity mockEntity = TestUtils.createSecretEntity();
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
@@ -380,7 +380,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSaveExistingEntityAndRemoveApiKeys() {
+	void save_whenEntityAlreadyExistsAndApiKeysAreRemoved_thenSaveEntityAndRemoveApiKeys() {
 		// arrange
 		SecretEntity mockEntity = TestUtils.createSecretEntity();
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
@@ -407,7 +407,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSaveExistingEntityAndUpdateApiKeys() {
+	void save_whenEntityAndApiKeysProvided_thenSaveEntityAndApiKeys() {
 		// arrange
 		SecretEntity mockEntity = TestUtils.createSecretEntity();
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
@@ -436,7 +436,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldSaveExistingEntityWithoutNewValue() {
+	void save_whenEntityAlreadyExistsAndValueIsNull_thenSaveEntityWithoutNewValue() {
 		// arrange
 		SecretEntity mockEntity = TestUtils.createSecretEntity();
 		when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
@@ -463,7 +463,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotFindById() {
+	void getById_whenEntityNotFound_thenThrowException() {
 		// arrange
 		when(repository.findById(1L)).thenReturn(Optional.empty());
 
@@ -478,13 +478,14 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 	@ParameterizedTest
 	@MethodSource("findByIdData")
-	void shouldFindById(Optional<KeystoreAliasEntity> aliasEntity) {
+	void getById_whenCorrectInputProvided_thenGetById(KeystoreAliasEntity aliasEntity) {
 		// arrange
 		try( MockedStatic<MdcUtils> mockedMdcUtils = mockStatic(MdcUtils.class)) {
 			mockedMdcUtils.when(MdcUtils::getUserId).thenReturn(4L);
 			when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createSecretEntity()));
 			when(converter.toDto(any())).thenReturn(new SecretDto());
-			when(keystoreAliasRepository.findById(anyLong())).thenReturn(aliasEntity);
+			Optional<KeystoreAliasEntity> aliasEntityOptional = Optional.ofNullable(aliasEntity);
+			when(keystoreAliasRepository.findById(anyLong())).thenReturn(aliasEntityOptional);
 
 			List<ApiKeyRestrictionEntity> mockRestrictionEntities = List.of(TestUtils.createApiKeyRestrictionEntity(1L));
 			when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(4L, 1L)).thenReturn(mockRestrictionEntities);
@@ -497,7 +498,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 			assertNotNull(response);
 			assertThat(response.getApiKeyRestrictions()).isNotEmpty();
 			assertThat(response.getIpRestrictions()).isEmpty();
-			if (aliasEntity.isPresent()) {
+			if (aliasEntityOptional.isPresent()) {
 				assertEquals(DemoData.KEYSTORE_ID, response.getKeystoreId());
 			}
 			verify(repository).findById(1L);
@@ -508,7 +509,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldReturnList() {
+	void list_whenCorrectInputProvided_thenListAllByUserId() {
 		// arrange
 		Page<SecretEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createSecretEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
@@ -527,7 +528,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldDelete() {
+	void delete_whenCorrectInputProvided_thenDeleteById() {
 		// act
 		service.delete(1L);
 
@@ -537,7 +538,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
-	void shouldToggleStatus(boolean enabled) {
+	void toggleStatus_whenCorrectInputProvided_thenToggleStatus(boolean enabled) {
 		// arrange
 		when(repository.findByIdAndUserId(anyLong(), anyLong()))
 				.thenReturn(Optional.of(TestUtils.createSecretEntity()));
@@ -554,8 +555,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotToggleStatus() {
-
+	void toggleStatus_whenSecretNotFound_thenThrowException() {
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.toggleStatus(3L, true));
 
@@ -567,7 +567,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotGetSecretValue() {
+	void getSecretValue_whenSecretNotFound_thenThrowException() {
 		// arrange
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
@@ -580,7 +580,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldGetSecretValue() {
+	void getSecretValue_whenCorrectInputProvided_thenGetSecretValue() {
 		// arrange
 		when(repository.findByIdAndUserId(anyLong(), anyLong()))
 				.thenReturn(Optional.of(TestUtils.createSecretEntity()));
@@ -595,7 +595,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldReturnCount() {
+	void count_whenCorrectInputProvided_thenCountByUserId() {
 		// arrange
 		when(repository.countByUserId(anyLong())).thenReturn(4L);
 
@@ -610,7 +610,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldDeleteInBatch() {
+	void batchDeleteByUserIds_whenCorrectInputProvided_thenDeleteAllByUserId() {
 		// arrange
 		Set<Long> userIds = Set.of(1L, 2L);
 
@@ -624,8 +624,8 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
 	private static Object[] findByIdData() {
 		return new Object[] {
-			Optional.of(TestUtils.createKeystoreAliasEntity()),
-			Optional.empty()
+			TestUtils.createKeystoreAliasEntity(),
+			null
 		};
 	}
 }

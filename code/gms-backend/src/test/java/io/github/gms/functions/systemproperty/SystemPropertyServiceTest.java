@@ -18,15 +18,9 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -46,7 +40,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldNotSaveNewSystemProperty() {
+	void save_whenInvalidKeyProvided_thenThrowException() {
 		// arrange
 		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
 		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("0").build();
@@ -63,7 +57,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldSaveNewSystemProperty() {
+	void save_whenNewSystemPropertyProvided_thenSaveSystemProperty() {
 		// arrange
 		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
 		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("900").build();
@@ -83,7 +77,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldNotDelete() {
+	void delete_whenInvalidKeyProvided_thenThrowException() {
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.delete("Invalid key"));
 
@@ -92,7 +86,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldDelete() {
+	void delete_whenInputProvided_thenDeleteSystemProperty() {
 		// act
 		service.delete(SystemProperty.ACCESS_JWT_ALGORITHM.name());
 
@@ -101,7 +95,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldReturnEmptyList() {
+	void list_whenInputExceptionOccurred_thenReturnResultList() {
 		// arrange
 		when(repository.findAll(any(Pageable.class))).thenThrow(new RuntimeException("Unexpected error!"));
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
@@ -118,7 +112,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldReturnList() {
+	void list_whenInputProvided_thenReturnResultList() {
 		// arrange
 		Page<SystemPropertyEntity> mockList = new PageImpl<>(Lists.newArrayList(new SystemPropertyEntity()));
 		when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
@@ -140,7 +134,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldGetDefaultLongValue() {
+	void getLong_whenValueIsNotProvided_thenReturnDefaultValue() {
 		// arrange
 		when(repository.getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(Optional.empty());
 		
@@ -153,7 +147,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldGetLongValue() {
+	void getLong_whenValueProvided_thenReturnValue() {
 		// arrange
 		when(repository.getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(Optional.of("3600"));
 		
@@ -166,7 +160,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldGetIntegerValue() {
+	void getInteger_whenValueProvided_thenReturnValue() {
 		// arrange
 		when(repository.getValueByKey(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(Optional.of("2"));
 
@@ -179,7 +173,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldGetDefaultIntegerValue() {
+	void getInteger_whenValueIsNotProvided_thenReturnDefaultValue() {
 		// arrange
 		when(repository.getValueByKey(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(Optional.empty());
 
@@ -193,7 +187,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
-	void shouldGetBooleanValue(boolean value) {
+	void getBoolean_whenValueIsProvided_thenReturnBoolean(boolean value) {
 		// arrange
 		when(repository.getValueByKey(SystemProperty.ENABLE_GLOBAL_MFA)).thenReturn(Optional.of(String.valueOf(value)));
 
@@ -206,7 +200,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldUpdateSystemProperty() {
+	void updateSystemProperty_whenValueIsValid_thenUpdateSystemProperty() {
 		// arrange
 		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
 		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("900").build();
@@ -226,7 +220,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldThrowErrorWhenValueIsInvalid() {
+	void updateSystemProperty_whenValueIsInvalid_thenThrowException() {
 		// arrange
 		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
 		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("0").build();

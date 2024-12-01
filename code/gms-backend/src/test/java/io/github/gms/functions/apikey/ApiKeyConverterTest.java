@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -37,7 +38,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithoutParameters() {
+	void toEntity_whenNotParametersProvided_thenConvert() {
 		// arrange
 		SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
 		dto.setValue(null);
@@ -57,7 +58,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToEntityWithParameters() {
+	void toEntity_whenParametersProvided_thenConvert() {
 		// arrange
 		SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
 		dto.setId(3L);
@@ -77,7 +78,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToNewEntity() {
+	void toNewEntity_whenDtoProvided_thenConvertToNewEntity() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -98,7 +99,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void checkToList() {
+	void toDtoList_whenEntityListProvided_thenConvertToDto() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -116,7 +117,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 
 		ApiKeyDto entity = resultList.getResultList().getFirst();
 		assertEquals(1L, entity.getId());
-		assertEquals("test", entity.getName());
+		assertEquals(TEST, entity.getName());
 		assertEquals(1L, entity.getUserId());
 		assertEquals("description", entity.getDescription());
 		assertEquals("apikey", entity.getValue());

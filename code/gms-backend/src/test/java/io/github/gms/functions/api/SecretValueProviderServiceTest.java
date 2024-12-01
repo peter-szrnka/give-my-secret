@@ -41,7 +41,7 @@ class SecretValueProviderServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldReturnEncrypted() {
+    void getSecretValue_whenDataIsValid_thenReturnEncrypted() {
         // arrange
         SecretEntity mockSecret = TestUtils.createSecretEntity();
         mockSecret.setValue("encrypted");
@@ -61,7 +61,7 @@ class SecretValueProviderServiceTest extends AbstractLoggingUnitTest {
 
     @ParameterizedTest
     @MethodSource("inputData")
-    void shouldReturnValue(boolean returnDecrypted, SecretType type, String expectedValue) {
+    void getSecretValue_whenDataIsValid_thenReturnEncrypted(boolean returnDecrypted, SecretType type, String expectedValue) {
         // arrange
         SecretEntity mockSecret = TestUtils.createSecretEntity();
         mockSecret.setValue("encrypted");

@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
+import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -34,11 +35,11 @@ class DbUserAuthServiceImplTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldNotFoundUser() {
+	void loadUserByUsername_whenUserNotFound_thenThrowException() {
 		when(repository.findByUsername(anyString())).thenReturn(Optional.empty());
 		
 		// act
-		UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername("test"));
+		UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername(TEST));
 		
 		// assert
 		assertEquals("User not found!", exception.getMessage());
@@ -46,7 +47,7 @@ class DbUserAuthServiceImplTest extends AbstractUnitTest {
 	
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
-	void shouldFoundUser(boolean isActive) {
+	void loadUserByUsername_whenUserIsAvailable_thenLoadUser(boolean isActive) {
 		// arrange
 		UserEntity user = TestUtils.createUserWithStatus(isActive? EntityStatus.ACTIVE : EntityStatus.DISABLED);
 		user.setMfaEnabled(true);
@@ -54,7 +55,7 @@ class DbUserAuthServiceImplTest extends AbstractUnitTest {
 		when(repository.findByUsername(anyString())).thenReturn(Optional.of(user));
 		
 		// act
-		GmsUserDetails response = (GmsUserDetails) service.loadUserByUsername("test");
+		GmsUserDetails response = (GmsUserDetails) service.loadUserByUsername(TEST);
 		
 		// assert
 		assertNotNull(response);

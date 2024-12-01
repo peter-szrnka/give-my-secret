@@ -11,7 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
+import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -27,26 +27,26 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("save")
-    void testSaveFailWithHttp403() {
-        shouldSaveFailWith403(TestUtils.createSaveSecretRequestDto(1L));
+    @TestedMethod(SAVE)
+    void save_whenAuthenticationFails_thenReturnHttp403() {
+        assertSaveFailWith403(TestUtils.createSaveSecretRequestDto(1L));
     }
 
     @Test
-    @TestedMethod("getById")
-    void testGetByIdFailWithHttp403() {
-        shouldGetByIdFailWith403(SecretDto.class, DemoData.SECRET_ENTITY_ID);
+    @TestedMethod(GET_BY_ID)
+    void getById_whenAuthenticationFails_thenReturnHttp403() {
+        assertGetByIdFailWith403(SecretDto.class, DemoData.SECRET_ENTITY_ID);
     }
 
     @Test
-    @TestedMethod("list")
-    void testListFailWithHttp403() {
-        shouldListFailWith403(SecretListDto.class);
+    @TestedMethod(LIST)
+    void list_whenAuthenticationFails_thenReturnHttp403() {
+        assertListFailWith403(SecretListDto.class);
     }
 
     @Test
-    @TestedMethod("getValue")
-    void testGetValueFailWithHttp403() {
+    @TestedMethod(GET_VALUE)
+    void getValue_whenAuthenticationFails_thenReturnHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
         // act
@@ -58,8 +58,8 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("rotateSecret")
-    void testRotateFailWithHttp403() {
+    @TestedMethod(ROTATE_SECRET)
+    void rotate_whenAuthenticationFails_thenReturnHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
         // act
@@ -71,14 +71,14 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("delete")
-    void testDeleteFailWithHttp403() {
-        shouldDeleteFailWith403(DemoData.SECRET_ENTITY2_ID);
+    @TestedMethod(DELETE)
+    void delete_whenAuthenticationFails_thenReturnHttp403() {
+        assertDeleteFailWith403(DemoData.SECRET_ENTITY2_ID);
     }
 
     @Test
-    @TestedMethod("toggle")
-    void testToggleStatusFailWithHttp403() {
-        shouldToggleFailWith403(DemoData.SECRET_ENTITY_ID);
+    @TestedMethod(TOGGLE)
+    void toggleStatus_whenAuthenticationFails_thenReturnHttp403() {
+        assertToggleFailWith403(DemoData.SECRET_ENTITY_ID);
     }
 }

@@ -35,7 +35,7 @@ class UserAnonymizationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldRequestUserDeletion() {
+    void requestProcess_whenCorrectInputProvided_thenRequestUserDeletion() {
         // arrange
         Set<Long> userIds = Set.of(1L);
 
@@ -48,7 +48,7 @@ class UserAnonymizationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldGetRequestedUserDeletionIds() {
+    void getRequestedUserIds_whenCorrectInputProvided_thenReturnRequestedUserIds() {
         // arrange
         Set<Long> userIds = Set.of(1L, 2L);
         when(userRepository.findAllByStatus(EntityStatus.ANONYMIZATION_REQUESTED)).thenReturn(userIds);
@@ -63,7 +63,7 @@ class UserAnonymizationServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void shouldExecuteRequestedUserDeletion() {
+    void process_whenCorrectInputProvided_thenProcessUserDeletion() {
         // arrange
         Set<Long> userIds = Set.of(1L);
 

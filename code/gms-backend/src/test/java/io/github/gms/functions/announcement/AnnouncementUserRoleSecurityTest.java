@@ -8,7 +8,7 @@ import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
+import static io.github.gms.util.TestConstants.*;
 
 /**
  * @author Peter Szrnka
@@ -23,29 +23,29 @@ class AnnouncementUserRoleSecurityTest extends AbstractUserRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("save")
-    void testSaveFailWithHttp403() {
-        shouldSaveFailWith403(TestUtils.createSaveAnnouncementDto());
+    @TestedMethod(SAVE)
+    void save_whenAuthenticationFails_thenReturnHttp403() {
+        assertSaveFailWith403(TestUtils.createSaveAnnouncementDto());
     }
 
     @Test
-    @TestedMethod("list")
-    void testListFailWithHttp403() {
+    @TestedMethod(LIST)
+    void list_whenAuthenticationFails_thenReturnHttp403() {
         jwt = null;
-        shouldListFailWith403(AnnouncementListDto.class);
+        assertListFailWith403(AnnouncementListDto.class);
     }
 
     @Test
-    @TestedMethod("getById")
-    void testGetByIdFailWithHttp403() {
+    @TestedMethod(GET_BY_ID)
+    void getById_whenAuthenticationFails_thenReturnHttp403() {
         gmsUser = null;
         jwt = null;
-        shouldGetByIdFailWith403(AnnouncementDto.class, DemoData.USER_1_ID);
+        assertGetByIdFailWith403(AnnouncementDto.class, DemoData.USER_1_ID);
     }
 
     @Test
-    @TestedMethod("delete")
-    void testDeleteFailWithHttp403() {
-        shouldDeleteFailWith403(DemoData.ANNOUNCEMENT_ID);
+    @TestedMethod(DELETE)
+    void delete_whenAuthenticationFails_thenReturnHttp403() {
+        assertDeleteFailWith403(DemoData.ANNOUNCEMENT_ID);
     }
 }

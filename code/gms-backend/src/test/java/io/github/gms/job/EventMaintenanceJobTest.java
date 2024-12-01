@@ -108,7 +108,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldNotProcess() {
+	void run_whenNoEventsDeleted_thenSkipLogging() {
 		// arrange
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
@@ -137,7 +137,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void run_whenMultiNodeDisabled_thenShouldNotProcess() {
+	void run_whenMultiNodeDisabled_thenNotProcess() {
 		// arrange
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(false);
@@ -165,7 +165,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void shouldProcess() {
+	void run_whenAllConditionsMet_thenProcess() {
 		// arrange
 		when(systemService.getContainerId()).thenReturn("ab123456");
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);

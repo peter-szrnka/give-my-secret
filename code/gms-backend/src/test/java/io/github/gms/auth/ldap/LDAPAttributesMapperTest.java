@@ -34,7 +34,7 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 	@SneakyThrows
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
-	void shouldMapAttributes(boolean returnRoles) {
+	void mapFromAttributes_whenAllDataProvided_thenMapToUserDetails(boolean returnRoles) {
 		// arrange
 		Attributes input = mock(Attributes.class);
 
@@ -61,7 +61,7 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 		assertTrue(response.getEmail().isEmpty());
 	}
 
-	private void mockAttributeCollection(Attributes attributes, boolean returnValue) throws NamingException {
+	private static void mockAttributeCollection(Attributes attributes, boolean returnValue) throws NamingException {
 		if (!returnValue) {
 			when(attributes.get(LDAP_PROPERTY_ROLE)).thenReturn(null);
 			return;
@@ -75,7 +75,7 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 		when(attributes.get(LDAP_PROPERTY_ROLE)).thenReturn(attribute);
 	}
 
-	private void mockAttribute(Attributes attributes, String attributeName, String value, boolean returnValue)
+	private static void mockAttribute(Attributes attributes, String attributeName, String value, boolean returnValue)
 			throws NamingException {
 		if (!returnValue) {
 			when(attributes.get(attributeName)).thenReturn(null);

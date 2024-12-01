@@ -19,7 +19,7 @@ class MaskSensitiveDataSerializerTest extends AbstractUnitTest {
     private final MaskSensitiveDataSerializer maskSensitiveDataSerializer = new MaskSensitiveDataSerializer();
 
     @Test
-    void testSerialize() throws IOException {
+    void serialize_whenMockDataProvided_thenReturnSerializedData() throws IOException {
         // arrange
         JsonGenerator gen = mock(JsonGenerator.class);
         SerializerProvider provider = mock(SerializerProvider.class);

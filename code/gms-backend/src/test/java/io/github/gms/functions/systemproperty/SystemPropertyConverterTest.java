@@ -11,12 +11,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +25,7 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 	private final SystemPropertyConverter converter = new SystemPropertyConverter(clock);
 
 	@Test
-	void shouldConvertToDtoList() {
+	void list_whenInputIsNotNull_thenConvertToDtoList() {
 		// arrange
 		SystemPropertyEntity entity = new SystemPropertyEntity();
 		entity.setKey(SystemProperty.ORGANIZATION_CITY);
@@ -58,7 +53,7 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldConvertToNewEntity() {
+	void toEntity_whenEntityIsNew_thenConvertToEntity() {
 		// act
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -72,7 +67,7 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldConvertExistingEntity() {
+	void toEntity_whenEntityExists_thenConvertToEntity() {
 		// act
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -88,7 +83,7 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldNotConvertToExistingEntity() {
+	void toEntity_whenEntityAlreadyExistsAndKeyIsInvalid_thenThrowException() {
 		// arrange
 		SystemPropertyEntity entity = new SystemPropertyEntity();
 		SystemPropertyDto dto = SystemPropertyDto.builder().key("invalid").value("1").build();

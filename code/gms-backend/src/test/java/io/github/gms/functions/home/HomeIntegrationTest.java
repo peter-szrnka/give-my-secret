@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class HomeIntegrationTest extends AbstractIntegrationTest {
 
     @Test
-    void testGetAdminData() {
+    void getHomeData_whenUserIsAdmin_thenReturnData() {
         // arrange
         gmsUser = TestUtils.createGmsAdminUser();
         jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
@@ -35,7 +35,7 @@ class HomeIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void testGetUserData() {
+    void getHomeData_whenUserIsUser_thenReturnData() {
         // arrange
         gmsUser = TestUtils.createGmsUser();
         jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest());

@@ -19,6 +19,7 @@ import static io.github.gms.common.enums.SystemStatus.NEED_SETUP;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
+import static io.github.gms.util.TestConstants.URL_INFO_STATUS;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -31,7 +32,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
     @Test
     @TestedMethod("getUserInfo")
-	void shouldReturnHttp200WithEmptyResponse() {
+	void infoMe_whenJwtIsMissing_thenEmptyResponse() {
 		// act
 		ResponseEntity<UserInfoDto> response = executeHttpGet("/info/me", new HttpEntity<>(null), UserInfoDto.class);
 		
@@ -42,7 +43,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
     @Test
     @TestedMethod("getUserInfo")
-	void shouldReturnHttp200() {
+	void infoMe_whenJwtIsValid_thenReturnUserInfo() {
         // arrange
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie", ACCESS_JWT_TOKEN + "=" + jwt);
@@ -65,11 +66,10 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
     @Test
     @TestedMethod("status")
-    void shouldSystemStatusOK() {
-
+    void systemStatus_whenSystemIsNotReady_thenReturnNeedSetup() {
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
-        ResponseEntity<SystemStatusDto> response = executeHttpGet("/info/status", requestEntity, SystemStatusDto.class);
+        ResponseEntity<SystemStatusDto> response = executeHttpGet(URL_INFO_STATUS, requestEntity, SystemStatusDto.class);
 
         // assert
         assertNotNull(response);
@@ -82,8 +82,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
     @Test
     @TestedMethod("getErrorCodes")
-    void shouldGetErrorCodes() {
-
+    void errorCodes_whenCalled_thenReturnAllErrorCodes() {
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
         ResponseEntity<String> response = executeHttpGet("/info/error_codes", requestEntity, String.class);

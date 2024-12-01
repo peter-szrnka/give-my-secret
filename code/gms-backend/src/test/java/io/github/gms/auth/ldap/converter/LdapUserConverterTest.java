@@ -39,7 +39,7 @@ class LdapUserConverterTest extends AbstractUnitTest {
 
     @ParameterizedTest
     @MethodSource("newUserTestData")
-    void shouldConvertUserDetailsWithNewUser(boolean storeLdapCredential, String expectedResponse) {
+    void toEntity_whenUserDoesNotExists_thenConvertToEntity(boolean storeLdapCredential, String expectedResponse) {
         // arrange
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -57,16 +57,9 @@ class LdapUserConverterTest extends AbstractUnitTest {
         verify(secretGenerator).generate();
     }
 
-    private static Object[][] newUserTestData() {
-        return new Object[][] {
-                { true, "UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=null, credential=test, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=secret!, failedAttempts=0)" },
-                { false, "UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=null, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=secret!, failedAttempts=0)" }
-        };
-    }
-
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
-    void shouldConvertUserDetailsWithExistingUser(boolean storeLdapCredential) {
+    void toEntity_whenUserAlreadyExists_thenConvertToEntity(boolean storeLdapCredential) {
         // arrange
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -83,5 +76,12 @@ class LdapUserConverterTest extends AbstractUnitTest {
         assertEquals("secret!", response.getMfaSecret());
         assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
         verify(secretGenerator).generate();
+    }
+
+    private static Object[][] newUserTestData() {
+        return new Object[][] {
+                { true, "UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=null, credential=test, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=secret!, failedAttempts=0)" },
+                { false, "UserEntity(id=null, name=username1, username=username1, email=a@b.com, status=null, credential=*PROVIDED_BY_LDAP*, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=secret!, failedAttempts=0)" }
+        };
     }
 }

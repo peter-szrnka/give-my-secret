@@ -12,7 +12,7 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 class SerialVersionUidTest {
 
     @Test
-    void shouldAllEntitiesHaveSerialVersionUid() {
+    void serialVersionUidTest_whenAllEntitiesHaveSerialVersionUidField_thenTestPass() {
         Set<Class<?>> allSubClasses = getAllSubClasses(AbstractGmsEntity.class);
         Set<String> missingSerialVersionUid = Sets.newHashSet();
 

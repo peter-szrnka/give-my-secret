@@ -19,7 +19,7 @@ class ApiControllerTest {
     private final ApiService service = mock(ApiService.class);
 
     @Test
-    void shouldReturnSecret() {
+    void getSecret_whenInputIsValid_thenReturnData() {
         // arrange
         Map<String, String> mockResponse = Map.of("value", "x");
         when(service.getSecret(any(GetSecretRequestDto.class))).thenReturn(mockResponse);

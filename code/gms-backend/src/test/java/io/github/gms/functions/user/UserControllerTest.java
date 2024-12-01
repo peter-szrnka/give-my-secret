@@ -5,7 +5,6 @@ import io.github.gms.abstraction.AbstractClientControllerTest;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link UserController}
@@ -28,13 +24,13 @@ import static org.mockito.Mockito.when;
 class UserControllerTest extends AbstractClientControllerTest<UserService, UserController> {
 
     @BeforeEach
-    void setupTest() {
+    void setup() {
         service = mock(UserService.class);
         controller = new UserController(service);
     }
 
     @Test
-    void shouldDeleteEntity() {
+    void delete_whenInputProvided_thenReturnOk() {
         // arrange
         doNothing().when(service).delete(1L);
 
@@ -48,7 +44,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     }
 
     @Test
-    void shouldToggleEntityStatus() {
+    void toggle_whenInputProvided_thenReturnOk() {
         // act
         ResponseEntity<String> response = controller.toggle(1L, true);
 
@@ -59,7 +55,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     }
 
     @Test
-    void shouldSave() {
+    void save_whenInputProvided_thenReturnOk() {
         // arrange
         SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
         when(service.save(dto)).thenReturn(new SaveEntityResponseDto(2L));
@@ -74,7 +70,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     }
 
     @Test
-    void shouldReturnById() {
+    void getById_whenInputProvided_thenReturnOk() {
         // arrange
         UserDto dto = TestUtils.createUserDto();
         when(service.getById(1L)).thenReturn(dto);
@@ -89,7 +85,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     }
 
     @Test
-    void shouldReturnList() {
+    void list_whenInputProvided_thenReturnOk() {
         // arrange
         UserListDto dtoList = TestUtils.createUserListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
@@ -110,7 +106,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     }
 
     @Test
-    void shouldChangePassword() {
+    void changePassword_whenInputProvided_thenReturnOk() {
         // arrange
         ChangePasswordRequestDto dto = new ChangePasswordRequestDto("old", "new");
         doNothing().when(service).changePassword(dto);
@@ -125,8 +121,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     }
 
     @Test
-    @SneakyThrows
-    void shouldNotReturnQrCode() {
+    void getMfaQrCode_whenExceptionOccurred_thenReturnHttp400() throws QrGenerationException {
         // arrange
         when(service.getMfaQrCode()).thenThrow(QrGenerationException.class);
 
@@ -140,8 +135,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     }
 
     @Test
-    @SneakyThrows
-    void shouldReturnQrCode() {
+    void getMfaQrCode_whenInputProvided_thenReturnOk() throws QrGenerationException {
         // arrange
         when(service.getMfaQrCode()).thenReturn("QR-url".getBytes());
 
@@ -158,7 +152,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
-    void shouldToggleMfa(boolean input) {
+    void toggleMfa_whenInputProvided_thenReturnOk(boolean input) {
         // arrange
         doNothing().when(service).toggleMfa(input);
 
@@ -172,8 +166,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     }
 
     @Test
-    @SneakyThrows
-    void shouldReturnMfaIsActive() {
+    void isMfaActive_whenInputProvided_thenReturnOk() {
         // arrange
         when(service.isMfaActive()).thenReturn(true);
 

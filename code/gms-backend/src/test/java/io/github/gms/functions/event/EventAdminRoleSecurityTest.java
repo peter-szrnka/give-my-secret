@@ -27,13 +27,13 @@ class EventAdminRoleSecurityTest extends AbstractSecurityTest {
 
 	@Test
 	@TestedMethod("list")
-	void testListFailWithHttp403() {
-		shouldListFailWith403(EventListDto.class);
+	void list_whenAuthenticationFails_thenReturnHttp403() {
+		assertListFailWith403(EventListDto.class);
 	}
 
 	@Test
 	@TestedMethod("listByUserId")
-	void testListByUserIdFailWithHttp403() {
+	void listByUserId_whenAuthenticationFails_thenReturnHttp403() {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));
 
 		// act

@@ -23,13 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -49,7 +44,7 @@ class JwtServiceTest extends AbstractUnitTest {
 
 	@Test
 	@SneakyThrows
-	void shouldGenerateJwts() {
+	void generateJwts_whenInputIsValid_thenReturnJwts() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900L));
 		GenerateJwtRequest generateRequest1 = new GenerateJwtRequest("subject1", "HS384", 1000L, Map.of("k1", "v1"));
@@ -85,7 +80,7 @@ class JwtServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldGenerateJwt() {
+	void generateJwt_whenInputIsAdmin_thenReturnJwt() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900L));
 		// act
@@ -96,7 +91,7 @@ class JwtServiceTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	void shouldParseJwt() {
+	void parseJwt_whenJwtIsValid_thenReturnClaims() {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900L));
 		String generatedToken = service.generateJwt(TestUtils.createJwtAdminRequest());

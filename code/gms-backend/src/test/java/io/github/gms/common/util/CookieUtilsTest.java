@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class CookieUtilsTest extends AbstractUnitTest {
 
     @Test
-    void shouldTestPrivateConstructor() {
+    void test_whenConstructorCalled_thenSuccessfullyInstantiated() {
         assertPrivateConstructor(CookieUtils.class);
     }
 
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
-	void shouldReturnCookie(boolean secure) {
+	void createCookie_whenValidParametersProvided_thenReturnCookie(boolean secure) {
 		// act
 		ResponseCookie cookie = CookieUtils.createCookie("the-cookie", "new-value", 60L, secure);
 		
@@ -38,7 +38,7 @@ class CookieUtilsTest extends AbstractUnitTest {
 	}
 
 	@Test
-	void shouldTestWithNullValues() {
+	void createCookie_whenNullValuesProvided_thenReturnCookie() {
 		//act
 		ResponseCookie cookie = CookieUtils.createCookie("the-cookie", null, 0L, true);
 

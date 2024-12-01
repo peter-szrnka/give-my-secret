@@ -24,9 +24,7 @@ import static io.github.gms.common.util.Constants.REFRESH_JWT_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -49,7 +47,7 @@ class KeycloakAuthorizationServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("emptyInputData")
-    void shouldReturnEmptyInfo(Input input) {
+    void authorize_whenCookieIsMissing_thenReturnForbidden(Input input) {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(input.getCookies());
@@ -64,7 +62,7 @@ class KeycloakAuthorizationServiceImplTest {
     }
 
     @Test
-    void shouldNotReturnInfoWhenIntrospectFailed() {
+    void authorize_whenIntrospectFailed_thenReturnForbidden() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
@@ -85,7 +83,7 @@ class KeycloakAuthorizationServiceImplTest {
     }
 
     @Test
-    void shouldNotReturnInfoWhenResponseBodyIsEmpty() {
+    void authorize_whenResponseBodyIsEmpty_thenReturnForbidden() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
@@ -106,7 +104,7 @@ class KeycloakAuthorizationServiceImplTest {
     }
 
     @Test
-    void shouldNotReturnInfoWhenUserIsMissing() {
+    void authorize_whenUserIsMissing_thenReturnForbidden() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
@@ -131,7 +129,7 @@ class KeycloakAuthorizationServiceImplTest {
     }
 
     @Test
-    void shouldReturnInfo() {
+    void authorize_whenProcessSucceeded_thenReturnOk() {
         // arrange
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{

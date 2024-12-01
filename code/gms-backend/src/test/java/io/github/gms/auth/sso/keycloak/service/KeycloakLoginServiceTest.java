@@ -46,7 +46,7 @@ class KeycloakLoginServiceTest {
     }
 
     @Test
-    void shouldLogin() {
+    void login_whenCorrectInputProvided_thenLogIn() {
         // arrange
         when(keycloakSettings.getRealm()).thenReturn("gms");
         when(keycloakSettings.getKeycloakTokenUrl()).thenReturn(TestUtils.LOCALHOST_8080);
@@ -81,7 +81,7 @@ class KeycloakLoginServiceTest {
     }
 
     @Test
-    void shouldLogout() {
+    void logout_whenUserPressedLogout_thenDeleteAllCookies() {
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
                 new Cookie(REFRESH_JWT_TOKEN, "refresh")
@@ -109,7 +109,7 @@ class KeycloakLoginServiceTest {
 
     @ParameterizedTest
     @MethodSource("emptyInputData")
-    void shouldReturnEmptyInfo(Input input) {
+    void logout_whenUserAlreadyLoggedOut_thenDoNothing(Input input) {
         // arrange
         when(httpServletRequest.getCookies()).thenReturn(input.getCookies());
         when(keycloakSettings.getClientId()).thenReturn("clientId");
