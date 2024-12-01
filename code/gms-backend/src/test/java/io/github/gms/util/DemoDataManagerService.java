@@ -127,6 +127,8 @@ public class DemoDataManagerService {
 				.category(SystemPropertyCategory.JOB)
 				.lastModified(ZonedDateTime.now())
 				.build());
+
+		log.info("Job {} has been disabled!", systemProperty.name());
 	}
 
 	private IpRestrictionEntity createGlobalIpRestriction() {
