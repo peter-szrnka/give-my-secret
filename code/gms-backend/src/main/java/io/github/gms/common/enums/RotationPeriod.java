@@ -11,18 +11,18 @@ import java.time.temporal.ChronoUnit;
 @Getter
 public enum RotationPeriod {
 
-	MINUTES(ChronoUnit.MINUTES, 1L),
-	HOURLY(ChronoUnit.HOURS, 1L),
-	DAILY(ChronoUnit.DAYS, 1L),
-	WEEKLY(ChronoUnit.WEEKS, 1L),
-	MONTHLY(ChronoUnit.MONTHS, 1L),
-	YEARLY(ChronoUnit.YEARS, 1L);
+	MINUTES(ChronoUnit.MINUTES),
+	HOURLY(ChronoUnit.HOURS),
+	DAILY(ChronoUnit.DAYS),
+	WEEKLY(ChronoUnit.WEEKS),
+	MONTHLY(ChronoUnit.MONTHS),
+	YEARLY(ChronoUnit.YEARS);
 	
 	private final ChronoUnit unit;
 	private final Long unitValue;
 	
-	RotationPeriod(ChronoUnit unit, Long unitValue) {
+	RotationPeriod(ChronoUnit unit) {
 		this.unit = unit;
-		this.unitValue = unitValue;
+		this.unitValue = 1L;
 	}
 }

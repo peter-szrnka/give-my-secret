@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.gms.common.util.Constants.*;
-import static io.github.gms.common.util.Constants.SIZE;
+
 
 /**
  * @author Peter Szrnka
