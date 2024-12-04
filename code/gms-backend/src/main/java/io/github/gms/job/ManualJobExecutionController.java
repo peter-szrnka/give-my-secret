@@ -46,53 +46,44 @@ public class ManualJobExecutionController implements GmsController {
     @Autowired(required = false)
     private LdapUserSyncJob ldapUserSyncJob;
 
+    @FunctionalInterface
+    protected interface JobExecutor {
+        void execute();
+    }
+
     @GetMapping(EVENT_MAINTENANCE)
     public ResponseEntity<Void> eventMaintenance() {
-        setMdcParameter();
-        eventMaintenanceJob.run();
-        return ResponseEntity.ok().build();
+        return runJob(eventMaintenanceJob::run);
     }
 
     @GetMapping(GENERATED_KEYSTORE_CLEANUP)
     public ResponseEntity<Void> generatedKeystoreCleanup() {
-        setMdcParameter();
-        generatedKeystoreCleanupJob.run();
-        return ResponseEntity.ok().build();
+        return runJob(generatedKeystoreCleanupJob::run);
     }
 
     @GetMapping(JOB_MAINTENANCE)
     public ResponseEntity<Void> jobMaintenance() {
-        setMdcParameter();
-        jobMaintenanceJob.run();
-        return ResponseEntity.ok().build();
+        return runJob(jobMaintenanceJob::run);
     }
 
     @GetMapping(MESSAGE_CLEANUP)
     public ResponseEntity<Void> messageCleanup() {
-        setMdcParameter();
-        messageCleanupJob.run();
-        return ResponseEntity.ok().build();
+        return runJob(messageCleanupJob::run);
     }
 
     @GetMapping(SECRET_ROTATION)
     public ResponseEntity<Void> secretRotation() {
-        setMdcParameter();
-        secretRotationJob.run();
-        return ResponseEntity.ok().build();
+        return runJob(secretRotationJob::run);
     }
 
     @GetMapping(USER_ANONYMIZATION)
     public ResponseEntity<Void> userAnonymization() {
-        setMdcParameter();
-        userAnonymizationJob.run();
-        return ResponseEntity.ok().build();
+        return runJob(userAnonymizationJob::run);
     }
 
     @GetMapping(USER_DELETION)
     public ResponseEntity<Void> userDeletion() {
-        setMdcParameter();
-        userDeletionJob.run();
-        return ResponseEntity.ok().build();
+        return runJob(userDeletionJob::run);
     }
 
     @GetMapping(LDAP_USER_SYNC)
@@ -101,13 +92,16 @@ public class ManualJobExecutionController implements GmsController {
             return ResponseEntity.notFound().build();
         }
 
-        setMdcParameter();
-        ldapUserSyncJob.run();
-
-        return ResponseEntity.ok().build();
+        return runJob(ldapUserSyncJob::run);
     }
 
-    private static void setMdcParameter() {
+    private ResponseEntity<Void> runJob(JobExecutor jobExecutor) {
         MdcUtils.put(MdcParameter.MANUAL_JOB_EXECUTION, TRUE);
+
+        jobExecutor.execute();
+
+        MdcUtils.remove(MdcParameter.MANUAL_JOB_EXECUTION);
+
+        return ResponseEntity.ok().build();
     }
 }
