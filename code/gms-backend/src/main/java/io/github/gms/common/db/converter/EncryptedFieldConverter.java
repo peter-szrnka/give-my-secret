@@ -18,12 +18,14 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
+import static io.github.gms.common.util.Constants.TRUE;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 @Component
-@ConditionalOnProperty(value = "config.encryption.enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "config.encryption.enable", havingValue = TRUE, matchIfMissing = true)
 public class EncryptedFieldConverter implements AttributeConverter<String, String> {
 
 	private static final int AUTHENTICATION_TAG_LENGTH = 128;

@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 public enum MdcParameter {
 
+	MANUAL_JOB_EXECUTION("manualJobExecution", false),
 	CORRELATION_ID("correlationId", false),
 	USER_ID(Constants.USER_ID),
 	USER_NAME("userName"),
