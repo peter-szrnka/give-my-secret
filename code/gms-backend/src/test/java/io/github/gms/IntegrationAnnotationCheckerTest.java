@@ -119,6 +119,7 @@ class IntegrationAnnotationCheckerTest {
 
             ClassData classData = new ClassData();
             Set<String> controllerMethods = Stream.of(controller.getDeclaredMethods())
+                    .filter(method -> Modifier.isPublic(method.getModifiers()))
                     .filter(method -> !securityTestCheck || method.getAnnotation(SkipSecurityTestCheck.class) == null)
                     .map(Method::getName)
                     .filter(name -> !name.startsWith("lambda$")).collect(Collectors.toSet());
