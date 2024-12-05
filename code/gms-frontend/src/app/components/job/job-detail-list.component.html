@@ -1,7 +1,18 @@
 <h2>{{ 'job.title' | translate }}</h2>
 <div class="datatable">
 
-  <nav-back></nav-back>
+  <nav-back [buttonConfig]="buttonConfig"></nav-back>
+
+  @if (panelVisible) {
+    <mat-card class="margin-top">
+      <div class="information">{{ 'job.execution.info' | translate }}</div>
+      <mat-card-content>
+          @for (item of job_execution_config; track $index) {
+            <button mat-button (click)="executeJob(item.url)">{{item.label | translate}}</button>
+          }
+      </mat-card-content>
+    </mat-card>
+  }
 
   @if (error) {
     <div class="warning"><b>{{ 'messages.error' | translate }}:</b> {{error}}</div>

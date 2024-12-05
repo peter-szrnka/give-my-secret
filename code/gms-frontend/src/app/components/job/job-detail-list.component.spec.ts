@@ -1,14 +1,17 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/compiler";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { TranslatorService } from "../../common/service/translator-service";
 import { JobDetailListComponent } from "./job-detail-list.component";
 import { JobDetail } from "./model/job-detail.model";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { JobDetailService } from "./service/job-detail.service";
 
 /**
  * @author Peter Szrnka
@@ -19,6 +22,9 @@ describe('JobDetailListComponent', () => {
     // Injected services
     let router: any;
     let activatedRoute : any = {};
+    let jobDetailService: any;
+    let snackbar: any;
+    let translatorService: any;
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -26,7 +32,10 @@ describe('JobDetailListComponent', () => {
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
             providers: [
                 { provide : Router, useValue : router },
-                { provide : ActivatedRoute, useClass : activatedRoute }
+                { provide : ActivatedRoute, useClass : activatedRoute },
+                { provide : JobDetailService, useValue : jobDetailService },
+                { provide : MatSnackBar, useValue : snackbar },
+                { provide : TranslatorService, useValue : translatorService }
             ]
         });
 
@@ -54,6 +63,16 @@ describe('JobDetailListComponent', () => {
             snapshot = {
                 queryParams : {}
             }
+        };
+
+        jobDetailService = {
+            startManualExecution : jest.fn().mockReturnValue(of({}))
+        };
+        snackbar = {
+            open : jest.fn()
+        };
+        translatorService = {
+            translate : jest.fn().mockReturnValue('Job executed successfully')
         };
     });
 
@@ -83,5 +102,15 @@ describe('JobDetailListComponent', () => {
         component.onFetch({ pageSize : 25, pageIndex : 1 });
         expect(component).toBeTruthy();
         expect(router.navigateByUrl).toHaveBeenCalled();
+    });
+
+    it('executeJob when jobUrl is provided', () => {
+        configureTestBed();
+
+        component.panelVisible = true;
+        component.executeJob('generated_keystore_cleanup');
+
+        expect(jobDetailService.startManualExecution).toHaveBeenCalled();
+        expect(translatorService.translate).toHaveBeenCalled();
     });
 });

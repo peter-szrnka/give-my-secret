@@ -45,4 +45,19 @@ describe("JobDetailService", () => {
       req.flush(request);
       httpMock.verify();
     });
+
+    it('startManualExecution when called then return http 200', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/job_execution/generated_keystore_cleanup";
+      const mockResponse = {};
+
+      // act
+      service.startManualExecution('generated_keystore_cleanup').subscribe((res) => expect(res).toBe(mockResponse));
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+      httpMock.verify();
+    });
 });

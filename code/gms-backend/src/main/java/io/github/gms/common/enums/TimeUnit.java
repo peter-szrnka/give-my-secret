@@ -13,6 +13,7 @@ import java.util.Arrays;
  */
 public enum TimeUnit {
 
+	MINUTE("m", ChronoUnit.MINUTES),
 	HOUR("h", ChronoUnit.HOURS),
 	DAY("d", ChronoUnit.DAYS),
 	WEEK("w", ChronoUnit.WEEKS),
