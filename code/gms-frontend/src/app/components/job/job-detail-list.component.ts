@@ -8,7 +8,6 @@ import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { JobDetail } from "./model/job-detail.model";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { JobDetailService } from "./service/job-detail.service";
-import { ButtonConfig } from "../../common/components/nav-back/button-config";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslatorService } from "../../common/service/translator-service";
 
