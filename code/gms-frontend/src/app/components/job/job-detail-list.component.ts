@@ -36,10 +36,6 @@ export class JobDetailListComponent implements OnInit {
 
     columns: string[] = ['id', 'name', 'correlationId', 'status', 'duration', 'creationDate', 'message'];
     job_execution_config = MANUAL_JOB_EXECUTION_CONFIG;
-    panelVisible = false;
-    buttonConfig: ButtonConfig[] = [
-        { primary: false, label: 'job.manual.execution.toggle', callFunction: () => this.panelVisible = !this.panelVisible }
-    ];
 
     loading = true;
     public datasource: MatTableDataSource<JobDetail>;

@@ -107,7 +107,6 @@ describe('JobDetailListComponent', () => {
     it('executeJob when jobUrl is provided', () => {
         configureTestBed();
 
-        component.panelVisible = true;
         component.executeJob('generated_keystore_cleanup');
 
         expect(jobDetailService.startManualExecution).toHaveBeenCalled();

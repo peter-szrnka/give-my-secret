@@ -34,7 +34,7 @@ class ManualJobExecutionControllerTest extends AbstractUnitTest {
         userAnonymizationJob = mock(UserAnonymizationJob.class);
         userDeletionJob = mock(UserDeletionJob.class);
         ldapUserSyncJob = mock(LdapUserSyncJob.class);
-        manualJobExecutionController = new ManualJobExecutionController(eventMaintenanceJob, generatedKeystoreCleanupJob, jobMaintenanceJob, messageCleanupJob, secretRotationJob, userAnonymizationJob, userDeletionJob, null);
+        manualJobExecutionController = new ManualJobExecutionController(eventMaintenanceJob, generatedKeystoreCleanupJob, jobMaintenanceJob, messageCleanupJob, secretRotationJob, userAnonymizationJob, userDeletionJob);
     }
 
     @Test
@@ -102,7 +102,8 @@ class ManualJobExecutionControllerTest extends AbstractUnitTest {
 
     @Test
     void ldapUserSync_whenAuthModeIsLdap_thenSyncLdapUsers() {
-        manualJobExecutionController = new ManualJobExecutionController(eventMaintenanceJob, generatedKeystoreCleanupJob, jobMaintenanceJob, messageCleanupJob, secretRotationJob, userAnonymizationJob, userDeletionJob, ldapUserSyncJob);
+        manualJobExecutionController = new ManualJobExecutionController(eventMaintenanceJob, generatedKeystoreCleanupJob, jobMaintenanceJob, messageCleanupJob, secretRotationJob, userAnonymizationJob, userDeletionJob);
+        manualJobExecutionController.setLdapUserSyncJob(ldapUserSyncJob);
 
         ResponseEntity<Void> response = manualJobExecutionController.ldapUserSync();
 
