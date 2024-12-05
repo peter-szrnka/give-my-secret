@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ClickJackingProtectionTest extends AbstractIntegrationTest {
 
     @Test
-    void testClickJackingProtection() throws Exception {
+    void testClickJackingProtection() {
         // arrange
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
 

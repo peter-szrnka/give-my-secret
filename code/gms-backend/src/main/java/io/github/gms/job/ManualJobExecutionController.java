@@ -5,7 +5,6 @@ import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.util.MdcUtils;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +20,6 @@ import static io.github.gms.common.util.Constants.TRUE;
  * @since 1.0
  */
 @RestController
-@RequiredArgsConstructor
 @AuditTarget(EventTarget.ANNOUNCEMENT)
 @RequestMapping("/secure/job_execution")
 @PreAuthorize(ROLE_ADMIN)
@@ -43,8 +41,25 @@ public class ManualJobExecutionController implements GmsController {
     private final SecretRotationJob secretRotationJob;
     private final UserAnonymizationJob userAnonymizationJob;
     private final UserDeletionJob userDeletionJob;
-    @Autowired(required = false)
-    private LdapUserSyncJob ldapUserSyncJob;
+    private final LdapUserSyncJob ldapUserSyncJob;
+
+    public ManualJobExecutionController(EventMaintenanceJob eventMaintenanceJob,
+                                        GeneratedKeystoreCleanupJob generatedKeystoreCleanupJob,
+                                        JobMaintenanceJob jobMaintenanceJob,
+                                        MessageCleanupJob messageCleanupJob,
+                                        SecretRotationJob secretRotationJob,
+                                        UserAnonymizationJob userAnonymizationJob,
+                                        UserDeletionJob userDeletionJob,
+                                        @Autowired(required = false) LdapUserSyncJob ldapUserSyncJob) {
+        this.eventMaintenanceJob = eventMaintenanceJob;
+        this.generatedKeystoreCleanupJob = generatedKeystoreCleanupJob;
+        this.jobMaintenanceJob = jobMaintenanceJob;
+        this.messageCleanupJob = messageCleanupJob;
+        this.secretRotationJob = secretRotationJob;
+        this.userAnonymizationJob = userAnonymizationJob;
+        this.userDeletionJob = userDeletionJob;
+        this.ldapUserSyncJob = ldapUserSyncJob;
+    }
 
     @FunctionalInterface
     protected interface JobExecutor {

@@ -4,7 +4,6 @@ import io.github.gms.abstraction.AbstractUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -35,87 +34,85 @@ class ManualJobExecutionControllerTest extends AbstractUnitTest {
         userAnonymizationJob = mock(UserAnonymizationJob.class);
         userDeletionJob = mock(UserDeletionJob.class);
         ldapUserSyncJob = mock(LdapUserSyncJob.class);
-        manualJobExecutionController = new ManualJobExecutionController(eventMaintenanceJob, generatedKeystoreCleanupJob, jobMaintenanceJob, messageCleanupJob, secretRotationJob, userAnonymizationJob, userDeletionJob);
+        manualJobExecutionController = new ManualJobExecutionController(eventMaintenanceJob, generatedKeystoreCleanupJob, jobMaintenanceJob, messageCleanupJob, secretRotationJob, userAnonymizationJob, userDeletionJob, null);
     }
 
     @Test
-    void testEventMaintenance() {
+    void eventMaintenance_whenCalled_thenRunEventMaintenance() {
         ResponseEntity<Void> response = manualJobExecutionController.eventMaintenance();
 
         // assert
         assertEquals(ResponseEntity.ok().build(), response);
-        verify(eventMaintenanceJob, times(1)).run();
+        verify(eventMaintenanceJob).run();
     }
 
     @Test
-    void testGeneratedKeystoreCleanup() {
+    void generatedKeystoreCleanup_whenCalled_thenCleanupGeneratedKeystores() {
         ResponseEntity<Void> response = manualJobExecutionController.generatedKeystoreCleanup();
 
         // assert
         assertEquals(ResponseEntity.ok().build(), response);
-        verify(generatedKeystoreCleanupJob, times(1)).run();
+        verify(generatedKeystoreCleanupJob).run();
     }
 
     @Test
-    void testJobMaintenance() {
+    void jobMaintenance_whenCalled_thenRunJobMaintenance() {
         ResponseEntity<Void> response = manualJobExecutionController.jobMaintenance();
 
         // assert
         assertEquals(ResponseEntity.ok().build(), response);
-        verify(jobMaintenanceJob, times(1)).run();
+        verify(jobMaintenanceJob).run();
     }
 
     @Test
-    void testMessageCleanup() {
+    void messageCleanup_whenCalled_thenCleanupMessages() {
         ResponseEntity<Void> response = manualJobExecutionController.messageCleanup();
 
         // assert
         assertEquals(ResponseEntity.ok().build(), response);
-        verify(messageCleanupJob, times(1)).run();
+        verify(messageCleanupJob).run();
     }
 
     @Test
-    void testSecretRotation() {
+    void secretRotation_whenCalled_thenRotateSecrets() {
         ResponseEntity<Void> response = manualJobExecutionController.secretRotation();
 
         // assert
         assertEquals(ResponseEntity.ok().build(), response);
-        verify(secretRotationJob, times(1)).run();
+        verify(secretRotationJob).run();
     }
 
     @Test
-    void testUserAnonymization() {
+    void userAnonymization_whenCalled_thenAnonymizeUsers() {
         ResponseEntity<Void> response = manualJobExecutionController.userAnonymization();
 
         // assert
         assertEquals(ResponseEntity.ok().build(), response);
-        verify(userAnonymizationJob, times(1)).run();
+        verify(userAnonymizationJob).run();
     }
 
     @Test
-    void testUserDeletion() {
+    void userDeletion_whenCalled_thenDeleteUsers() {
         ResponseEntity<Void> response = manualJobExecutionController.userDeletion();
 
         // assert
         assertEquals(ResponseEntity.ok().build(), response);
-        verify(userDeletionJob, times(1)).run();
+        verify(userDeletionJob).run();
     }
 
     @Test
-    void testLdapUserSync() {
-        ReflectionTestUtils.setField(manualJobExecutionController, "ldapUserSyncJob", ldapUserSyncJob);
+    void ldapUserSync_whenAuthModeIsLdap_thenSyncLdapUsers() {
+        manualJobExecutionController = new ManualJobExecutionController(eventMaintenanceJob, generatedKeystoreCleanupJob, jobMaintenanceJob, messageCleanupJob, secretRotationJob, userAnonymizationJob, userDeletionJob, ldapUserSyncJob);
 
         ResponseEntity<Void> response = manualJobExecutionController.ldapUserSync();
 
         // assert
         assertEquals(ResponseEntity.ok().build(), response);
-        verify(ldapUserSyncJob, times(1)).run();
+        verify(ldapUserSyncJob).run();
     }
 
     @Test
-    void testLdapUserSyncNotFound() {
-        ReflectionTestUtils.setField(manualJobExecutionController, "ldapUserSyncJob", null);
-
+    void ldapUserSync_whenAuthModeIsDb_thenSkipSyncLdapUsers() {
         ResponseEntity<Void> response = manualJobExecutionController.ldapUserSync();
 
         assertEquals(ResponseEntity.notFound().build(), response);
