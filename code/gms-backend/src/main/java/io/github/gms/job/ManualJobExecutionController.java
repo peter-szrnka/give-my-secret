@@ -43,6 +43,7 @@ public class ManualJobExecutionController implements GmsController {
     private final UserDeletionJob userDeletionJob;
     private final LdapUserSyncJob ldapUserSyncJob;
 
+    @Autowired
     public ManualJobExecutionController(EventMaintenanceJob eventMaintenanceJob,
                                         GeneratedKeystoreCleanupJob generatedKeystoreCleanupJob,
                                         JobMaintenanceJob jobMaintenanceJob,
