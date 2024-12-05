@@ -5,11 +5,11 @@
 
   @if (panelVisible) {
     <mat-card class="margin-top">
-      <div class="information">{{ 'job.execution.info' | translate }}</div>
       <mat-card-content>
-          @for (item of job_execution_config; track $index) {
-            <button mat-button (click)="executeJob(item.url)">{{item.label | translate}}</button>
-          }
+        <div class="information">{{ 'job.execution.info' | translate }}</div>
+        @for (item of job_execution_config; track $index) {
+          <button mat-button mat-raised-button color="primary" (click)="executeJob(item.url)" class="margin-r10">{{item.label | translate}}</button>
+        }
       </mat-card-content>
     </mat-card>
   }

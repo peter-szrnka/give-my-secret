@@ -1,10 +1,9 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AngularMaterialModule } from '../../../angular-material-module';
 import { NavButtonVisibilityPipe } from '../pipes/nav-button-visibility.pipe';
-import { ButtonConfig } from './button-config';
 import { TranslatorModule } from '../pipes/translator/translator.module';
+import { ButtonConfig } from './button-config';
 
 /**
  * @author Peter Szrnka
@@ -14,7 +13,6 @@ import { TranslatorModule } from '../pipes/translator/translator.module';
     imports: [
         AngularMaterialModule,
         NavButtonVisibilityPipe,
-        NgIf, NgFor,
         RouterLink,
         TranslatorModule
     ],

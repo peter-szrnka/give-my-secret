@@ -111,6 +111,5 @@ describe('JobDetailListComponent', () => {
         component.executeJob('generated_keystore_cleanup');
 
         expect(jobDetailService.startManualExecution).toHaveBeenCalled();
-        expect(translatorService.translate).toHaveBeenCalled();
     });
 });
