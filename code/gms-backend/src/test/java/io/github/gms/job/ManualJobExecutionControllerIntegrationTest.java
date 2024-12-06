@@ -32,55 +32,21 @@ class ManualJobExecutionControllerIntegrationTest extends AbstractIntegrationTes
     }
 
     @Test
-    @TestedMethod("eventMaintenance")
-    void eventMaintenance_whenInputIsValid_thenReturnOk() {
-        assertByUrl(ManualJobExecutionController.EVENT_MAINTENANCE);
+    @TestedMethod("runJobByName")
+    void runJobByName_whenInputIsValid_thenReturnOk() {
+        assertByUrl("/event_maintenance", HttpStatus.OK);
     }
 
     @Test
-    @TestedMethod("generatedKeystoreCleanup")
-    void generatedKeystoreCleanup_whenInputIsValid_thenReturnOk() {
-        assertByUrl(ManualJobExecutionController.GENERATED_KEYSTORE_CLEANUP);
+    @TestedMethod("runJobByName")
+    void runJobByName_whenInputIsInvalid_thenReturnNotFound() {
+        assertByUrl("/invalid_job", HttpStatus.NOT_FOUND);
     }
 
     @Test
-    @TestedMethod("jobMaintenance")
-    void jobMaintenance_whenInputIsValid_thenReturnOk() {
-        assertByUrl(ManualJobExecutionController.JOB_MAINTENANCE);
-    }
-
-    @Test
-    @TestedMethod("messageCleanup")
-    void messageCleanup_whenInputIsValid_thenReturnOk() {
-        assertByUrl(ManualJobExecutionController.MESSAGE_CLEANUP);
-    }
-
-    @Test
-    @TestedMethod("secretRotation")
-    void secretRotation_whenInputIsValid_thenReturnOk() {
-        assertByUrl(ManualJobExecutionController.SECRET_ROTATION);
-    }
-
-    @Test
-    @TestedMethod("userAnonymization")
-    void userAnonymization_whenInputIsValid_thenReturnOk() {
-        assertByUrl(ManualJobExecutionController.USER_ANONYMIZATION);
-    }
-
-    @Test
-    @TestedMethod("userDeletion")
-    void userDeletion_whenInputIsValid_thenReturnOk() {
-        assertByUrl(ManualJobExecutionController.USER_DELETION);
-    }
-
-    @Test
-    @TestedMethod("ldapUserSync")
-    void ldapUserSync_whenInputIsValid_thenReturnOk() {
-        assertByUrl(ManualJobExecutionController.LDAP_USER_SYNC, HttpStatus.NOT_FOUND);
-    }
-
-    private void assertByUrl(String url) {
-        assertByUrl(url, HttpStatus.OK);
+    @TestedMethod("runJobByName")
+    void rubJobByName_whenLdapUserSync_thenReturnNotFound() {
+        assertByUrl("/ldap_user_sync", HttpStatus.NOT_FOUND);
     }
 
     private void assertByUrl(String url, HttpStatus expectedStatus) {
