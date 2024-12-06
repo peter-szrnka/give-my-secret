@@ -7,8 +7,11 @@
     <mat-card-content>
       <div class="information">{{ 'job.execution.info' | translate }}</div>
       @for (item of job_execution_config; track $index) {
-      <button mat-button mat-raised-button color="primary" (click)="executeJob(item.url)"
-        class="margin-r10">{{item.label | translate}}</button>
+      <button mat-button mat-raised-button color="primary" (click)="executeJob(item.url)" class="margin-r10">{{item.label | translate}}</button>
+      }
+
+      @if (authMode$ | async; as authMode) {
+      <button mat-button mat-raised-button color="primary" [disabled]="authMode !== 'LDAP'" (click)="executeJob('ldap_user_sync')" class="margin-r10">{{'job.button.ldapsync' | translate}}</button>
       }
     </mat-card-content>
   </mat-card>

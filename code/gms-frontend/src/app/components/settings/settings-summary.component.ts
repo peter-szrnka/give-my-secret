@@ -13,17 +13,7 @@ export interface PasswordSettings {
   oldCredential: string | undefined,
   newCredential1: string | undefined,
   newCredential2: string | undefined
-}
-
-/*const LANGUAGE_SETTINGS_EN = [
-  { key: 'en', value: 'English' },
-  { key: 'hu', value: 'Hungarian' }
-];
-
-const LANGUAGE_SETTINGS_HU = [
-  { key: 'en', value: 'Angol' },
-  { key: 'hu', value: 'Magyar' }
-];*/
+};
 
 /**
  * @author Peter Szrnka

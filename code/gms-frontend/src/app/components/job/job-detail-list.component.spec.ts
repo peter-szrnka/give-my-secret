@@ -4,10 +4,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
-import { of, throwError } from "rxjs";
+import { of, ReplaySubject, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { SharedDataService } from "../../common/service/shared-data-service";
 import { TranslatorService } from "../../common/service/translator-service";
 import { JobDetailListComponent } from "./job-detail-list.component";
 import { JobDetail } from "./model/job-detail.model";
@@ -25,6 +26,7 @@ describe('JobDetailListComponent', () => {
     let jobDetailService: any;
     let snackbar: any;
     let translatorService: any;
+    let authModeSubject = new ReplaySubject<string>();
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
@@ -35,6 +37,7 @@ describe('JobDetailListComponent', () => {
                 { provide : ActivatedRoute, useClass : activatedRoute },
                 { provide : JobDetailService, useValue : jobDetailService },
                 { provide : MatSnackBar, useValue : snackbar },
+                { provide : SharedDataService, useValue : { authModeSubject$: authModeSubject } },
                 { provide : TranslatorService, useValue : translatorService }
             ]
         });
@@ -42,6 +45,7 @@ describe('JobDetailListComponent', () => {
         fixture = TestBed.createComponent(JobDetailListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        authModeSubject.next('db');
     };
 
 
@@ -108,6 +112,15 @@ describe('JobDetailListComponent', () => {
         configureTestBed();
 
         component.executeJob('generated_keystore_cleanup');
+
+        expect(jobDetailService.startManualExecution).toHaveBeenCalled();
+    });
+
+    it('executeJob when jobUrl is invalid then handle error', () => {
+        jobDetailService.startManualExecution = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
+        configureTestBed();
+
+        component.executeJob('invalid_job_url');
 
         expect(jobDetailService.startManualExecution).toHaveBeenCalled();
     });
