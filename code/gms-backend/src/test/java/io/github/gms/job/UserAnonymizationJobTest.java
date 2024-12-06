@@ -3,15 +3,16 @@ package io.github.gms.job;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.SystemStatus;
-import io.github.gms.functions.maintenance.user.UserAnonymizationService;
 import io.github.gms.functions.maintenance.job.JobEntity;
 import io.github.gms.functions.maintenance.job.JobRepository;
+import io.github.gms.functions.maintenance.user.UserAnonymizationService;
 import io.github.gms.functions.setup.SystemAttributeRepository;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
@@ -57,6 +58,8 @@ class UserAnonymizationJobTest extends AbstractLoggingUnitTest {
         ReflectionTestUtils.setField(job, "jobRepository", jobRepository);
         ReflectionTestUtils.setField(job, "systemAttributeRepository", systemAttributeRepository);
         addAppender(UserAnonymizationJob.class);
+
+        MDC.clear();
     }
 
     @Test

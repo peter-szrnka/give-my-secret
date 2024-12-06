@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import static io.github.gms.common.enums.JobStatus.COMPLETED;
 import static io.github.gms.common.enums.JobStatus.FAILED;
+import static io.github.gms.common.util.Constants.TRUE;
 
 /**
  * @author Peter Szrnka
@@ -73,7 +74,7 @@ public abstract class AbstractJob {
     }
 
     protected boolean skipJobExecution() {
-        return systemIsNotReady() || jobDisabled() || multiNodeEnabled();
+        return !manualJobExecution() && (systemIsNotReady() || jobDisabled() || multiNodeEnabled());
     }
 
     private void createJobExecution() {
@@ -101,6 +102,10 @@ public abstract class AbstractJob {
         }
 
         jobRepository.save(entity);
+    }
+
+    private boolean manualJobExecution() {
+        return TRUE.equals(MdcUtils.get(MdcParameter.MANUAL_JOB_EXECUTION));
     }
 
     private boolean systemIsNotReady() {

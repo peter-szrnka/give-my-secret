@@ -194,6 +194,18 @@
 
         "job.title" : "Jobs",
         "job.duration" : "Duration (ms)",
+        "job.manual.execution.toggle": "Toggle manual job execution panel",
+        "job.execution.info": "Please select a job that you want to run manually.",
+        "job.button.event.maintenance" : "Event maintenance",
+        "job.button.keystore.cleanup" : "Generated keystore cleanup",
+        "job.button.old.job.log.cleanup" : "Delete old job log entries",
+        "job.button.message.cleanup" : "Message cleanup",
+        "job.button.secret.rotation" : "Secret rotation",
+        "job.button.user.anonymization" : "User anonymization",
+        "job.button.user.deletion" : "User deletion",
+        "job.button.ldapsync" : "LDAP user sync",
+        "job.manual.execution.success": "Job executed successfully!",
+        "job.manual.execution.error": "Job execution failed!",
 
         "systemProperties.category": "Category",
 
@@ -490,6 +502,18 @@
 
         "job.title" : "Munkafolyamatok",
         "job.duration" : "Futásidő (ms)",
+        "job.manual.execution.toggle": "Kézi munkafolyamat végrehajtás panel",
+        "job.execution.info": "Kérjük válasszon egy munkafolyamatot, amelyet kézzel szeretne futtatni.",
+        "job.button.event.maintenance" : "Esemény karbantartás",
+        "job.button.keystore.cleanup" : "Generált kulcstárak törlése",
+        "job.button.old.job.log.cleanup" : "Régi munkafolyamat napló bejegyzések törlése",
+        "job.button.message.cleanup" : "Üzenetek törlése",
+        "job.button.secret.rotation" : "Secret rotálás",
+        "job.button.user.anonymization" : "Felhasználó anonimizálás",
+        "job.button.user.deletion" : "Felhasználó törlés",
+        "job.button.ldapsync" : "LDAP felhasználó szinkronizálás",
+        "job.manual.execution.success": "Munkafolyamat sikeresen végrehajtva!",
+        "job.manual.execution.error": "Munkafolyamat végrehajtása sikertelen!",
 
         "systemProperties.category": "Kategória",
 

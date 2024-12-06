@@ -12,6 +12,7 @@ import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
@@ -58,6 +59,8 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		ReflectionTestUtils.setField(job, "systemAttributeRepository", systemAttributeRepository);
 
 		addAppender(MessageCleanupJob.class);
+
+		MDC.clear();
 	}
 
 	@Test

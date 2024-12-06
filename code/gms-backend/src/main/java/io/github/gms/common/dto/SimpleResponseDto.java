@@ -20,5 +20,6 @@ public class SimpleResponseDto implements Serializable {
 	@Serial
 	private static final long serialVersionUID = -5324564162143551148L;
 
+	@Builder.Default
 	private boolean success = true;
 }

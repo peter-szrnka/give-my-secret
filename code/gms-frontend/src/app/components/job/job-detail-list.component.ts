@@ -1,27 +1,44 @@
+import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
-import { catchError } from "rxjs";
+import { catchError, Observable } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { JobDetail } from "./model/job-detail.model";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { SharedDataService } from "../../common/service/shared-data-service";
+import { TranslatorService } from "../../common/service/translator-service";
+import { JobDetail } from "./model/job-detail.model";
+import { JobDetailService } from "./service/job-detail.service";
+
+const MANUAL_JOB_EXECUTION_CONFIG = [
+    { label: 'job.button.event.maintenance', url : 'event_maintenance' },
+    { label: 'job.button.keystore.cleanup', url : 'generated_keystore_cleanup' },
+    { label: 'job.button.old.job.log.cleanup', url : 'job_maintenance' },
+    { label: 'job.button.message.cleanup', url : 'message_cleanup' },
+    { label: 'job.button.secret.rotation', url : 'secret_rotation' },
+    { label: 'job.button.user.anonymization', url : 'user_anonymization' },
+    { label: 'job.button.user.deletion', url : 'user_deletion' }
+];
 
 /**
  * @author Peter Szrnka
  */
 @Component({
     standalone: true,
-    imports: [AngularMaterialModule, NavBackComponent, MomentPipe, TranslatorModule],
+    imports: [AngularMaterialModule, CommonModule, NavBackComponent, MomentPipe, TranslatorModule],
     selector: 'job-detail-list',
     templateUrl: './job-detail-list.component.html'
 })
 export class JobDetailListComponent implements OnInit {
 
     columns: string[] = ['id', 'name', 'correlationId', 'status', 'duration', 'creationDate', 'message'];
+    job_execution_config = MANUAL_JOB_EXECUTION_CONFIG;
 
     loading = true;
+    authMode$: Observable<string> = this.sharedData.authModeSubject$;
     public datasource: MatTableDataSource<JobDetail>;
     public error?: string;
 
@@ -33,7 +50,11 @@ export class JobDetailListComponent implements OnInit {
 
     constructor(
         private readonly router: Router,
-        private readonly activatedRoute: ActivatedRoute) {
+        private readonly activatedRoute: ActivatedRoute,
+        private readonly sharedData: SharedDataService,
+        private readonly jobDetailService: JobDetailService, 
+        private readonly snackbar : MatSnackBar,
+        private readonly translatorService: TranslatorService) {
     }
 
     ngOnInit(): void {
@@ -46,6 +67,13 @@ export class JobDetailListComponent implements OnInit {
                 this.error = response.data.error;
                 this.loading = false;
             });
+    }
+
+    executeJob(jobUrl: string) {
+        this.jobDetailService.startManualExecution(jobUrl).subscribe({
+            next: () => this.snackbar.open(this.translatorService.translate('job.manual.execution.success')),
+            error: () => this.snackbar.open(this.translatorService.translate('job.manual.execution.error'))
+        });
     }
 
     private initDefaultDataTable() {

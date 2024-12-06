@@ -17,4 +17,8 @@ export class JobDetailService {
     return this.http.get<JobDetailList>(environment.baseUrl + `secure/job/list?direction=${paging.direction}&property=${paging.property}&page=${paging.page}&size=${paging.size}`, 
       { withCredentials: true, headers : getHeaders() });
   }
+
+  startManualExecution(jobName: string): Observable<any> {
+    return this.http.get(environment.baseUrl + `secure/job_execution/${jobName}`, { withCredentials: true, headers : getHeaders() });
+  }
 }
