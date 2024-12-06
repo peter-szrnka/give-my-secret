@@ -1,5 +1,9 @@
 package io.github.gms.job.model;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 public interface UrlConstants {
     String EVENT_MAINTENANCE = "event_maintenance";
     String GENERATED_KEYSTORE_CLEANUP = "generated_keystore_cleanup";

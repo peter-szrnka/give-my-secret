@@ -4,10 +4,12 @@ import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
+import io.github.gms.job.model.UrlConstants;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,22 +33,25 @@ class ManualJobExecutionControllerIntegrationTest extends AbstractIntegrationTes
         jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
     }
 
-    @Test
+    @ParameterizedTest
     @TestedMethod("runJobByName")
-    void runJobByName_whenInputIsValid_thenReturnOk() {
-        assertByUrl("/event_maintenance", HttpStatus.OK);
+    @MethodSource("jobNameTestData")
+    void runJobByName_whenInputIsProvided_thenReturnExpectedStatus(String urlPath, HttpStatus expectedStatus) {
+        assertByUrl("/" + urlPath, expectedStatus);
     }
 
-    @Test
-    @TestedMethod("runJobByName")
-    void runJobByName_whenInputIsInvalid_thenReturnNotFound() {
-        assertByUrl("/invalid_job", HttpStatus.NOT_FOUND);
-    }
-
-    @Test
-    @TestedMethod("runJobByName")
-    void rubJobByName_whenLdapUserSync_thenReturnNotFound() {
-        assertByUrl("/ldap_user_sync", HttpStatus.NOT_FOUND);
+    private static Object[][] jobNameTestData() {
+        return new Object[][] {
+            {UrlConstants.JOB_MAINTENANCE, HttpStatus.OK},
+            {UrlConstants.EVENT_MAINTENANCE, HttpStatus.OK},
+            {UrlConstants.GENERATED_KEYSTORE_CLEANUP, HttpStatus.OK},
+            {UrlConstants.MESSAGE_CLEANUP, HttpStatus.OK},
+            {UrlConstants.SECRET_ROTATION, HttpStatus.OK},
+            {UrlConstants.USER_ANONYMIZATION, HttpStatus.OK},
+            {UrlConstants.USER_DELETION, HttpStatus.OK},
+            {UrlConstants.LDAP_USER_SYNC, HttpStatus.NOT_FOUND},
+            {"/invalid_job", HttpStatus.NOT_FOUND}
+        };
     }
 
     private void assertByUrl(String url, HttpStatus expectedStatus) {

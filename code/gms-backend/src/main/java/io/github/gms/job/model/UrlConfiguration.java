@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Getter
 @RequiredArgsConstructor
 public enum UrlConfiguration {

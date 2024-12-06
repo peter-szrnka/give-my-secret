@@ -27,8 +27,8 @@ class ManualJobExecutionControllerUserRoleSecurityTest extends AbstractUserRoleS
         super("/secure/job_execution");
     }
 
-    @TestedMethod("runJobByName")
     @ParameterizedTest
+    @TestedMethod("runJobByName")
     @ValueSource(strings = {
             UrlConstants.JOB_MAINTENANCE,
             UrlConstants.EVENT_MAINTENANCE,
