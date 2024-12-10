@@ -263,6 +263,10 @@
         "secrets.lastUpdated" : "Last updated",
         "secrets.lastRotated" : "Last rotated",
         "secrets.capacityWarning": "The number of saveable key-value pairs depends on the used keystore algorithm and the capacity of the database system. For instance, in case of RSA-2048 it will be ~ 245 bytes.",
+        "secrets.validation.inProgress": "Secret value validation is in progress...",
+        "secrets.validation.success": "Secret value is valid!",
+        "secrets.validation.invalid": "Secret length is invalid!",
+        "secrets.validation.invalidInput": "Secret input is invalid! Please check that you've entered a valid input and selected a valid keystore and keystore alias.",
 
         "keystores.upload": "Upload",
         "keystores.generate": "Generate",
@@ -571,6 +575,10 @@
         "secrets.lastUpdated" : "Utoljára frissítve",
         "secrets.lastRotated" : "Utoljára rotálva",
         "secrets.capacityWarning": "A menthető kulcs-érték párok száma az alkalmazott kulcstár algoritmusától függ és az adatbázis rendszer kapacitásától. Például RSA-2048 esetén ~ 245 bájt lesz elmentve.",
+        "secrets.validation.inProgress" : "Secret érték ellenőrzése folyamatban...",
+        "secrets.validation.success" : "Secret érték érvényes!",
+        "secrets.validation.invalid" : "Secret értéke érvénytelen!",
+        "secrets.validation.invalidInput" : "Secret érvénytelen beviteli adatokat tartalmaz! Kérjük ellenőrizze, hogy érvényes adatokat adott-e meg és válasszon ki egy érvényes kulcstárat és kulcstár alias-t.",
 
         "keystores.upload": "Feltöltés",
         "keystores.generate": "Generálás",
