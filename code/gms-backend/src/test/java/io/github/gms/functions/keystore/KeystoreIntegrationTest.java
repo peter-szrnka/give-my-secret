@@ -9,7 +9,7 @@ import io.github.gms.common.dto.IdNamePairListDto;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
 import io.github.gms.common.filter.SecureHeaderInitializerFilter;
-import io.github.gms.functions.secret.GetSecureValueDto;
+import io.github.gms.functions.secret.dto.GetSecureValueDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import io.github.gms.util.TestUtils.ValueHolder;

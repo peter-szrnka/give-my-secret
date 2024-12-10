@@ -1,6 +1,6 @@
 package io.github.gms.functions.api;
 
-import io.github.gms.functions.secret.GetSecretRequestDto;
+import io.github.gms.functions.secret.dto.GetSecretRequestDto;
 import io.github.gms.functions.secret.SecretEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

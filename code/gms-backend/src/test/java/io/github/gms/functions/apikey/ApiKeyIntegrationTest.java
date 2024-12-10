@@ -6,7 +6,7 @@ import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.IdNamePairListDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.functions.secret.GetSecureValueDto;
+import io.github.gms.functions.secret.dto.GetSecureValueDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;

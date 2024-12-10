@@ -1,8 +1,13 @@
 package io.github.gms.functions.secret;
 
 import io.github.gms.abstraction.AbstractClientControllerTest;
+import io.github.gms.common.dto.BooleanValueDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.functions.secret.dto.SaveSecretRequestDto;
+import io.github.gms.functions.secret.dto.SecretDto;
+import io.github.gms.functions.secret.dto.SecretListDto;
+import io.github.gms.functions.secret.dto.SecretValueDto;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,12 +27,14 @@ import static org.mockito.Mockito.*;
 class SecretControllerTest extends AbstractClientControllerTest<SecretService, SecretController> {
 
     private SecretRotationService secretRotationService;
+    private SecretLengthValidatorService secretLengthValidatorService;
 
     @BeforeEach
     void setup() {
         service = Mockito.mock(SecretService.class);
         secretRotationService = mock(SecretRotationService.class);
-        controller = new SecretController(service, secretRotationService);
+        secretLengthValidatorService = mock(SecretLengthValidatorService.class);
+        controller = new SecretController(service, secretRotationService, secretLengthValidatorService);
     }
 
     @Test
@@ -134,5 +141,21 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
         assertEquals(200, response.getStatusCode().value());
         assertNull(response.getBody());
         verify(secretRotationService).rotateSecretById(1L);
+    }
+
+    @Test
+    void validateValueLength_whenInputProvided_thenReturnOk() {
+        // arrange
+        when(secretLengthValidatorService.validateValueLength(any())).thenReturn(new BooleanValueDto(true));
+
+        // act
+        ResponseEntity<BooleanValueDto> response = controller.validateValueLength(SecretValueDto.builder().build());
+
+        // assert
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().getValue());
+        assertEquals(200, response.getStatusCode().value());
+        verify(secretLengthValidatorService).validateValueLength(any());
     }
 }

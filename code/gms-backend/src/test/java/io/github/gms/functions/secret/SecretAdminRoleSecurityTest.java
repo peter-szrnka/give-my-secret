@@ -3,6 +3,10 @@ package io.github.gms.functions.secret;
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
 import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
+import io.github.gms.common.dto.BooleanValueDto;
+import io.github.gms.functions.secret.dto.SecretDto;
+import io.github.gms.functions.secret.dto.SecretListDto;
+import io.github.gms.functions.secret.dto.SecretValueDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
@@ -80,5 +84,24 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     @TestedMethod(TOGGLE)
     void toggleStatus_whenAuthenticationFails_thenReturnHttp403() {
         assertToggleFailWith403(DemoData.SECRET_ENTITY_ID);
+    }
+
+    @Test
+    @TestedMethod("validateValueLength")
+    void validateValueLength_whenAuthenticationFails_thenReturnHttp403() {
+        // arrange
+        SecretValueDto secretValueDto = SecretValueDto.builder()
+                .keystoreId(DemoData.KEYSTORE_ID)
+                .keystoreAliasId(DemoData.KEYSTORE_ALIAS_ID)
+                .value("value:1234567890")
+                .build();
+        HttpEntity<SecretValueDto> requestEntity = new HttpEntity<>(secretValueDto, TestUtils.getHttpHeaders(jwt));
+
+        // act
+        ResponseEntity<BooleanValueDto> response =
+                executeHttpPost(urlPrefix + "/validate_value_length", requestEntity, BooleanValueDto.class);
+
+        // assert
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 }

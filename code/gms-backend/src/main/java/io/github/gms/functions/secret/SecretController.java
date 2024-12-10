@@ -1,12 +1,17 @@
 package io.github.gms.functions.secret;
 
 import io.github.gms.common.abstraction.AbstractClientController;
+import io.github.gms.common.dto.BooleanValueDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
 import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.functions.secret.dto.SaveSecretRequestDto;
+import io.github.gms.functions.secret.dto.SecretDto;
+import io.github.gms.functions.secret.dto.SecretListDto;
+import io.github.gms.functions.secret.dto.SecretValueDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,10 +29,12 @@ import static io.github.gms.common.util.Constants.*;
 public class SecretController extends AbstractClientController<SecretService> {
 
 	private final SecretRotationService secretRotationService;
+	private final SecretLengthValidatorService secretLengthValidatorService;
 
-	public SecretController(SecretService service, SecretRotationService secretRotationService) {
+	public SecretController(SecretService service, SecretRotationService secretRotationService, SecretLengthValidatorService secretLengthValidatorService) {
 		super(service);
 		this.secretRotationService = secretRotationService;
+		this.secretLengthValidatorService = secretLengthValidatorService;
 	}
 
 	@PostMapping
@@ -66,5 +73,11 @@ public class SecretController extends AbstractClientController<SecretService> {
 	public ResponseEntity<String> rotateSecret(@PathVariable(ID) Long id) {
 		secretRotationService.rotateSecretById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@PostMapping("/validate_value_length")
+	@PreAuthorize(ROLE_USER)
+	public ResponseEntity<BooleanValueDto> validateValueLength(@RequestBody SecretValueDto dto) {
+		return new ResponseEntity<>(secretLengthValidatorService.validateValueLength(dto), HttpStatus.OK);
 	}
 }

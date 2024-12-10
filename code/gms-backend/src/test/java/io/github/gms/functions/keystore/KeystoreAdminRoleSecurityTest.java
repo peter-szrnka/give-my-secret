@@ -3,7 +3,7 @@ package io.github.gms.functions.keystore;
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
 import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
-import io.github.gms.functions.secret.GetSecureValueDto;
+import io.github.gms.functions.secret.dto.GetSecureValueDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;

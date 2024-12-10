@@ -15,9 +15,10 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { ApiKeyService } from "../apikey/service/apikey-service";
 import { KeystoreService } from "../keystore/service/keystore-service";
-import { SecretDetailComponent } from "./secret-detail.component";
+import { SecretDetailComponent, ValidationState } from "./secret-detail.component";
 import { SecretService } from "./service/secret-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { Secret } from "./model/secret.model";
 
 /**
  * @author Peter Szrnka
@@ -96,7 +97,8 @@ describe('SecretDetailComponent', () => {
         serviceMock = {
             getValue : jest.fn().mockReturnValue(of("value")),
             rotate : jest.fn().mockReturnValue(of("OK")),
-            save : jest.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>)
+            save : jest.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>),
+            validateLength: jest.fn().mockReturnValue(of({ valid : true })),
         };
 
         const mockNames : IdNamePair[] = [ idPair1, idPair2 ];
@@ -286,6 +288,7 @@ describe('SecretDetailComponent', () => {
         expect(component.multipleCredential[0].value).toEqual('user');
         expect(component.multipleCredential[1].key).toEqual('password');
         expect(component.multipleCredential[1].value).toEqual('pw12345678');
+
         expect(component.data.type).toEqual('MULTIPLE_CREDENTIAL');
         expect(component.data.value).toEqual("username:user;password:pw12345678");
     });
@@ -334,5 +337,62 @@ describe('SecretDetailComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(dialogService.openNewDialog).toHaveBeenCalledWith({"text": "dialog.secret.rotate", "type": "information"});
+    });
+
+    it('onKeyUp when validation required immediately then validate', () => {
+        // arrange
+        configureTestBed();
+
+        component.onKeyUp({ key: 'Enter' } as any, 200);
+        component.onKeyUp({ key: 'Enter' } as any, 0);
+
+        // assert
+        expect(component).toBeTruthy();
+    });
+
+    it.each([
+        { value: ''} as Secret,
+        { value: '12345678901234', keystoreId: undefined, keystoreAliasId: undefined } as Secret,
+        { value: '12345678901234', keystoreId: 1, keystoreAliasId: undefined } as Secret
+    ])('validateSecretLength when input is invalid then show warning message', (secretInput: Secret) => {
+        // arrange
+        configureTestBed();
+
+        // act
+        component.data = secretInput;
+        component.validateSecretLength();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.validationState).toEqual(ValidationState.INVALID_INPUT);
+    });
+
+    it.each([
+        [ true, ValidationState.VALID ],
+        [ false, ValidationState.INVALID ]
+    ])('validateSecretLength when service returns an answer then show result', (input: boolean, expectedValidationState: ValidationState) => {
+        // arrange
+        serviceMock.validateLength = jest.fn().mockReturnValue(of({ value: input }));
+        configureTestBed();
+
+        // act
+        component.validateSecretLength();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.validationState).toEqual(expectedValidationState);
+    });
+
+    it('validateSecretLength when service returns an error then show error message', () => {
+        // arrange
+        serviceMock.validateLength = jest.fn().mockReturnValue(throwError(() => new Error("OOPS!")));
+        configureTestBed();
+
+        // act
+        component.validateSecretLength();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.validationState).toEqual(ValidationState.INVALID);
     });
 });

@@ -4,6 +4,9 @@ import io.github.gms.common.abstraction.AbstractCrudService;
 import io.github.gms.common.abstraction.BatchDeletionService;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.service.CountService;
+import io.github.gms.functions.secret.dto.SaveSecretRequestDto;
+import io.github.gms.functions.secret.dto.SecretDto;
+import io.github.gms.functions.secret.dto.SecretListDto;
 
 /**
  * @author Peter Szrnka

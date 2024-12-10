@@ -150,4 +150,25 @@ describe("SecretService", () => {
       expect(req.request.method).toBe('POST');
       httpMock.verify();
     });
+
+    it('validateLength when input is valid then return response', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/secret/validate_value_length";
+      const mockResponse = {
+        value : true
+      };
+
+      // act
+      service.validateLength({
+        value : "myValue",
+        keystoreId : 1,
+        keystoreAliasId : 1
+      }).subscribe((res) => expect(res).toBe(mockResponse));
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('POST');
+      req.flush(mockResponse);
+      httpMock.verify();
+    });
 });

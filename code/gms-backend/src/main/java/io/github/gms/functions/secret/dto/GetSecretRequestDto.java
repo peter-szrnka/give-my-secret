@@ -1,4 +1,4 @@
-package io.github.gms.functions.secret;
+package io.github.gms.functions.secret.dto;
 
 import io.github.gms.common.types.Sensitive;
 import lombok.AllArgsConstructor;

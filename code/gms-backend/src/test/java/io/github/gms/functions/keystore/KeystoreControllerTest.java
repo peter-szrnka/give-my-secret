@@ -5,7 +5,7 @@ import io.github.gms.common.dto.IdNamePairDto;
 import io.github.gms.common.dto.IdNamePairListDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.functions.secret.GetSecureValueDto;
+import io.github.gms.functions.secret.dto.GetSecureValueDto;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -55,7 +55,7 @@ public class KeystoreDataService {
 		return new KeystorePair(keystoreAliasEntity, keystore);
 	}
 
-	private KeyStore getKeyStore(GetKeystore request)
+	public KeyStore getKeyStore(GetKeystore request)
 			throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException {
 		KeystoreEntity keystoreEntity = request.getKeystoreEntity();
 
