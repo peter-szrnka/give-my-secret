@@ -1,7 +1,7 @@
 package io.github.gms.functions.api;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.functions.secret.GetSecretRequestDto;
+import io.github.gms.functions.secret.dto.GetSecretRequestDto;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

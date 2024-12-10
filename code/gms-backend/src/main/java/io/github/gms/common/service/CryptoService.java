@@ -16,13 +16,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.UnrecoverableKeyException;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.util.Base64;
 
@@ -77,20 +71,23 @@ public class CryptoService {
 	public void encrypt(SecretEntity secretEntity) {
 		try {
 			KeystorePair keyPairData = keystoreDataService.getKeystoreData(secretEntity);
-			PublicKey publicKey = keyPairData.getKeystore().getCertificate(keyPairData.getEntity().getAlias())
-					.getPublicKey();
-
-			Cipher encrypt = Cipher.getInstance(publicKey.getAlgorithm());
-			encrypt.init(Cipher.ENCRYPT_MODE, publicKey);
-			byte[] encryptedMessage = encrypt.doFinal(secretEntity.getValue().getBytes(StandardCharsets.UTF_8));
-
-			secretEntity.setValue(Base64.getEncoder().withoutPadding().encodeToString(encryptedMessage));
+			String encryptedValue = encrypt(secretEntity.getValue(), keyPairData);
+			secretEntity.setValue(encryptedValue);
 		} catch (Exception e) {
 			log.warn("Encrypt failed!", e);
 			throw new GmsException(e, GMS_001);
 		}
 	}
 
+	public String encrypt(String value, KeystorePair keyPairData)
+			throws KeyStoreException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		PublicKey publicKey = keyPairData.getKeystore().getCertificate(keyPairData.getEntity().getAlias()).getPublicKey();
+
+		Cipher encrypt = Cipher.getInstance(publicKey.getAlgorithm());
+		encrypt.init(Cipher.ENCRYPT_MODE, publicKey);
+		byte[] encryptedMessage = encrypt.doFinal(value.getBytes(StandardCharsets.UTF_8));
+		return Base64.getEncoder().withoutPadding().encodeToString(encryptedMessage);
+	}
 
 	private static void validateAliasDto(KeyStore keystore, KeystoreAliasDto dto)
 			throws KeyStoreException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnrecoverableKeyException {

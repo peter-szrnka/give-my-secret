@@ -33,6 +33,10 @@ import io.github.gms.functions.message.MessageDto;
 import io.github.gms.functions.message.MessageEntity;
 import io.github.gms.functions.message.MessageListDto;
 import io.github.gms.functions.secret.*;
+import io.github.gms.functions.secret.dto.SaveSecretRequestDto;
+import io.github.gms.functions.secret.dto.SecretDto;
+import io.github.gms.functions.secret.dto.SecretListDto;
+import io.github.gms.functions.secret.dto.SecretValueDto;
 import io.github.gms.functions.setup.SystemAttributeEntity;
 import io.github.gms.functions.systemproperty.SystemPropertyDto;
 import io.github.gms.functions.systemproperty.SystemPropertyEntity;
@@ -801,5 +805,13 @@ public class TestUtils {
 		return reflections.getSubTypesOf(inputClazz).stream()
 				.filter(cls -> !cls.getSimpleName().endsWith("$$SpringCGLIB$$0"))
 				.filter(cls -> !Modifier.isAbstract(cls.getModifiers())).collect(Collectors.toSet());
+	}
+
+	public static SecretValueDto createSecretValueDto(Long keystoreId, Long keystoreAliasId) {
+		return SecretValueDto.builder()
+				.keystoreId(keystoreId)
+				.keystoreAliasId(keystoreAliasId)
+				.secretValues(Map.of("key", "value"))
+				.build();
 	}
 }

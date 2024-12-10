@@ -1,4 +1,4 @@
-package io.github.gms.functions.secret;
+package io.github.gms.functions.secret.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.gms.common.enums.KeyStoreValueType;

@@ -11,7 +11,7 @@ import io.github.gms.functions.apikey.ApiKeyRepository;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.iprestriction.IpRestrictionValidator;
 import io.github.gms.functions.secret.ApiKeyRestrictionRepository;
-import io.github.gms.functions.secret.GetSecretRequestDto;
+import io.github.gms.functions.secret.dto.GetSecretRequestDto;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.user.UserEntity;

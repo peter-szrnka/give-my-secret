@@ -9,7 +9,7 @@ import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
 import io.github.gms.common.types.SkipSecurityTestCheck;
 import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.functions.secret.GetSecureValueDto;
+import io.github.gms.functions.secret.dto.GetSecureValueDto;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;

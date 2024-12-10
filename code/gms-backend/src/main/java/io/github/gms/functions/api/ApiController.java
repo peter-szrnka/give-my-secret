@@ -2,7 +2,7 @@ package io.github.gms.functions.api;
 
 import io.github.gms.common.abstraction.GmsController;
 import io.github.gms.common.types.SkipSecurityTestCheck;
-import io.github.gms.functions.secret.GetSecretRequestDto;
+import io.github.gms.functions.secret.dto.GetSecretRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,6 @@
 package io.github.gms.functions.api;
 
-import io.github.gms.functions.secret.GetSecretRequestDto;
+import io.github.gms.functions.secret.dto.GetSecretRequestDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
