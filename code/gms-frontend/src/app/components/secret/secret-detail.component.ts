@@ -24,6 +24,14 @@ interface KeyValuePair {
     value: string;
 }
 
+enum ValidationState {
+    UNDEFINED = 'UNDEFINED',
+    VALID = 'VALID',
+    INVALID = 'INVALID',
+    INVALID_INPUT = 'INVALID_INPUT',
+    IN_PROGRESS = 'IN_PROGRESS'
+}
+
 /**
  * @author Peter Szrnka
  */
@@ -59,6 +67,10 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         unmaskedValue: undefined,
         allApiKeysAllowed: true
     };
+
+    // interval config
+    private keyPressTimeout: any;
+    validationState: ValidationState = ValidationState.UNDEFINED;
 
     readonly separatorKeysCodes = [ENTER, COMMA] as const;
     @ViewChild('roleInput') roleInput: ElementRef<HTMLInputElement>;
@@ -166,11 +178,13 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     addNewMultipleCredential(): void {
         this.multipleCredential.push({ key: "", value: "" });
         this.refreshTable();
+        this.validateSecretLength();
     }
 
     deleteMultipleCredential(index: number) {
         this.multipleCredential.splice(index, 1);
         this.refreshTable();
+        this.validateSecretLength();
     }
 
     selected(event: MatAutocompleteSelectedEvent): void {
@@ -221,6 +235,38 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     deleteIpRestriction(index : number) {
         this.ipRestrictions?.splice(index, 1);
         this.refreshIpRestrictions();
+    }
+
+    onKeyUp($event: any, timeout: number) {
+        if (this.keyPressTimeout) {
+            clearTimeout(this.keyPressTimeout);
+        }
+
+        this.keyPressTimeout = setTimeout(() => this.validateSecretLength(), timeout);
+    }
+
+    validateSecretLength() {
+        this.transformMultipleCredentials();
+        if (this.data.value.length === 0 || this.data.keystoreId === undefined || this.data.keystoreAliasId === undefined) {
+            this.validationState = ValidationState.INVALID_INPUT;
+            return;
+        }
+
+        this.validationState = ValidationState.IN_PROGRESS;
+
+        this.service.validateLength({
+            keystoreId: this.data.keystoreId || 0,
+            keystoreAliasId: this.data.keystoreAliasId || 0,
+            value: this.data.value
+        }).subscribe({
+            next: (result) => {
+                console.info("result", result);
+                this.validationState = result.value ? ValidationState.VALID : ValidationState.INVALID;
+            },
+            error: () => {
+                this.validationState = ValidationState.INVALID;
+            }
+        });
     }
 
     private refreshTable() {

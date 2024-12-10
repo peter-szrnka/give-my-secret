@@ -1,6 +1,5 @@
 package io.github.gms.functions.secret;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.common.dto.BooleanValueDto;
 import io.github.gms.common.model.GetKeystore;
 import io.github.gms.common.model.KeystorePair;
@@ -31,7 +30,6 @@ public class SecretLengthValidatorService {
     private final KeystoreAliasRepository keystoreAliasRepository;
     private final KeystoreDataService keystoreDataService;
     private final CryptoService cryptoService;
-    private final ObjectMapper objectMapper;
 
     @Value("${config.location.keystore.path}")
     private String keystorePath;
@@ -49,8 +47,7 @@ public class SecretLengthValidatorService {
                     .keystorePath(keystorePath + keystoreEntity.getUserId() + SLASH + keystoreEntity.getFileName())
                     .build());
 
-            String stringValue = objectMapper.writeValueAsString(dto.getSecretValues());
-            String encryptedValue = cryptoService.encrypt(stringValue, new KeystorePair(keystoreAliasEntity, keystore));
+            String encryptedValue = cryptoService.encrypt(dto.getValue(), new KeystorePair(keystoreAliasEntity, keystore));
 
             log.info("Encrypted secret value size: {}", encryptedValue.length());
             return new BooleanValueDto(true);

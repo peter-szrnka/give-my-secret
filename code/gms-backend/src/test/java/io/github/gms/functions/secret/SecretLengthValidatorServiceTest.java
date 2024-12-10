@@ -1,6 +1,5 @@
 package io.github.gms.functions.secret;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.BooleanValueDto;
 import io.github.gms.common.model.GetKeystore;
@@ -28,7 +27,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import static io.github.gms.common.types.ErrorCode.GMS_001;
 import static io.github.gms.util.LogAssertionUtils.assertLogContains;
@@ -51,8 +49,6 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
     private KeystoreDataService keystoreDataService;
     @Mock
     private CryptoService cryptoService;
-    @Mock
-    private ObjectMapper objectMapper;
     @InjectMocks
     private SecretLengthValidatorService secretLengthValidatorService;
 
@@ -122,7 +118,6 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
         when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(keystoreAliasRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenReturn(mock(KeyStore.class));
-        when(objectMapper.writeValueAsString(any())).thenReturn(IntStream.of(1, 1000).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString());
         when(cryptoService.encrypt(any(), any())).thenThrow(new GmsException("Encryption failed", GMS_001));
 
         // act
@@ -134,7 +129,6 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
         verify(keystoreRepository).findById(1L);
         verify(keystoreAliasRepository).findById(1L);
         verify(keystoreDataService).getKeyStore(any(GetKeystore.class));
-        verify(objectMapper).writeValueAsString(any());
         verify(cryptoService).encrypt(any(), any());
     }
 
@@ -147,7 +141,6 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
         when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(keystoreAliasRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenReturn(mock(KeyStore.class));
-        when(objectMapper.writeValueAsString(any())).thenReturn(IntStream.of(1, 1000).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString());
         when(cryptoService.encrypt(any(), any())).thenReturn("encryptedValue");
 
         // act
@@ -160,7 +153,6 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
         verify(keystoreRepository).findById(1L);
         verify(keystoreAliasRepository).findById(1L);
         verify(keystoreDataService).getKeyStore(any(GetKeystore.class));
-        verify(objectMapper).writeValueAsString(any());
         verify(cryptoService).encrypt(any(), any());
     }
 }

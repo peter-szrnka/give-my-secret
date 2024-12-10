@@ -15,8 +15,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Map;
-
 import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -95,7 +93,7 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
         SecretValueDto secretValueDto = SecretValueDto.builder()
                 .keystoreId(DemoData.KEYSTORE_ID)
                 .keystoreAliasId(DemoData.KEYSTORE_ALIAS_ID)
-                .secretValues(Map.of("value", "1234567890"))
+                .value("value:1234567890")
                 .build();
         HttpEntity<SecretValueDto> requestEntity = new HttpEntity<>(secretValueDto, TestUtils.getHttpHeaders(jwt));
 

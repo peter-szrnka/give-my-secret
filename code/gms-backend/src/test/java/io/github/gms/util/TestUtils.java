@@ -577,7 +577,7 @@ public class TestUtils {
 						return;
 					}
 
-					log.info("file = " + file.getName());
+					log.info("file = {}", file.getName());
 					file.delete();
 				});
 	}
@@ -811,7 +811,7 @@ public class TestUtils {
 		return SecretValueDto.builder()
 				.keystoreId(keystoreId)
 				.keystoreAliasId(keystoreAliasId)
-				.secretValues(Map.of("key", "value"))
+				.value("key:value")
 				.build();
 	}
 }

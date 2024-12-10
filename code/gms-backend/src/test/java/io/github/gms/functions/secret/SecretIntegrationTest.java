@@ -28,7 +28,6 @@ import org.springframework.util.FileCopyUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -189,7 +188,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 		SecretValueDto secretValueDto = SecretValueDto.builder()
 				.keystoreId(DemoData.KEYSTORE_ID)
 				.keystoreAliasId(DemoData.KEYSTORE_ALIAS_ID)
-				.secretValues(Map.of("value", "1234567890"))
+				.value("value:1234567890")
 				.build();
 		HttpEntity<SecretValueDto> requestEntity = new HttpEntity<>(secretValueDto, TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<BooleanValueDto> response = executeHttpPost("/validate_value_length",

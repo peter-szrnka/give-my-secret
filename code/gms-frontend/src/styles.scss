@@ -53,6 +53,13 @@ body {
     border: 1px solid $information;
 }
 
+.success {
+    padding: 15px;
+    margin: 10px 0 10px 0;
+    background-color: $success;
+    border: 1px solid $success_dark;
+}
+
 .datatable {
     width: 100%;
     margin: 0 auto;
