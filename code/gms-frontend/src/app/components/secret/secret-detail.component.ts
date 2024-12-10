@@ -24,7 +24,7 @@ interface KeyValuePair {
     value: string;
 }
 
-enum ValidationState {
+export enum ValidationState {
     UNDEFINED = 'UNDEFINED',
     VALID = 'VALID',
     INVALID = 'INVALID',
@@ -237,7 +237,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         this.refreshIpRestrictions();
     }
 
-    onKeyUp($event: any, timeout: number) {
+    onKeyUp(_$event: any, timeout: number) {
         if (this.keyPressTimeout) {
             clearTimeout(this.keyPressTimeout);
         }
@@ -255,14 +255,11 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         this.validationState = ValidationState.IN_PROGRESS;
 
         this.service.validateLength({
-            keystoreId: this.data.keystoreId || 0,
-            keystoreAliasId: this.data.keystoreAliasId || 0,
+            keystoreId: this.data.keystoreId,
+            keystoreAliasId: this.data.keystoreAliasId,
             value: this.data.value
         }).subscribe({
-            next: (result) => {
-                console.info("result", result);
-                this.validationState = result.value ? ValidationState.VALID : ValidationState.INVALID;
-            },
+            next: (result) => this.validationState = result.value ? ValidationState.VALID : ValidationState.INVALID,
             error: () => {
                 this.validationState = ValidationState.INVALID;
             }
