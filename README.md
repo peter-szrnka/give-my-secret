@@ -69,7 +69,7 @@ You can find client code examples for Java, Go, Python and Node.js **[here](clie
 
 - Java 21 (Microsoft OpenJDK)
 - Maven
-- Spring Boot 3.3.3
+- Spring Boot 3.3.5
 - Angular 18
 - Docker
 - Flyway (DB migration)
