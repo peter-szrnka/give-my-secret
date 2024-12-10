@@ -5,16 +5,12 @@ on:
   push:
     paths:
       - 'code/**'
-    paths-ignore:
-      - 'README.md'
     branches: 
       - '*'
       - '*/*'
       - '**'
   pull_request:
     types: [opened, synchronize, reopened]
-    paths-ignore:
-      - 'README.md'
 jobs:
   analize_backend:
     name: Backend
