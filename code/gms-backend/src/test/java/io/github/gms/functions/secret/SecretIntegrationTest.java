@@ -183,6 +183,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@Test
+	@TestedMethod("validateValueLength")
 	void validateValueLength_whenInputProvided_thenReturnOk() {
 		// act
 		SecretValueDto secretValueDto = SecretValueDto.builder()
