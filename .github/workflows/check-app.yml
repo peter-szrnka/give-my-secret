@@ -3,15 +3,22 @@ name: Code quality check of application
 on:
   workflow_dispatch:
   push:
+    paths:
+      - 'code/**'
+    paths-ignore:
+      - 'README.md'
+      - '*/**/*.md'
+      - '*/**/*.png'
     branches: 
       - '*'
       - '*/*'
       - '**'
-      - '!README.md'
-      - '!*/**/*.md'
-      - '!*/**/*.png'
   pull_request:
     types: [opened, synchronize, reopened]
+    paths-ignore:
+      - 'README.md'
+      - '*/**/*.md'
+      - '*/**/*.png'
 jobs:
   analize_backend:
     name: Backend
