@@ -156,7 +156,6 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getValue());
         assertEquals(200, response.getStatusCode().value());
-        assertNull(response.getBody());
         verify(secretValueSizeValidatorService).validateValueLength(any());
     }
 }

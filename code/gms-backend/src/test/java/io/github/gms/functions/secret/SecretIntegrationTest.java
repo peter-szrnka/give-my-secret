@@ -9,6 +9,7 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.functions.secret.dto.SaveSecretRequestDto;
 import io.github.gms.functions.secret.dto.SecretDto;
 import io.github.gms.functions.secret.dto.SecretListDto;
+import io.github.gms.functions.secret.dto.SecretValueDto;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import org.springframework.util.FileCopyUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 import static io.github.gms.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -110,7 +112,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(response.getBody());
 
 		SecretListDto responseList = response.getBody();
-		assertEquals(2, responseList.getResultList().size());
+		assertEquals(1, responseList.getResultList().size());
 	}
 
 	@Test
@@ -118,7 +120,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void getValue_whenInputIsValid_thenReturnOk() {
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<String> response = executeHttpGet("/value/" + DemoData.SECRET_ENTITY2_ID,
+		ResponseEntity<String> response = executeHttpGet("/value/" + DemoData.SECRET_ENTITY_ID,
 				requestEntity, String.class);
 
 		// Assert
@@ -183,7 +185,12 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	void validateValueLength_whenInputProvided_thenReturnOk() {
 		// act
-		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		SecretValueDto secretValueDto = SecretValueDto.builder()
+				.keystoreId(DemoData.KEYSTORE_ID)
+				.keystoreAliasId(DemoData.KEYSTORE_ALIAS_ID)
+				.secretValues(Map.of("value", "1234567890"))
+				.build();
+		HttpEntity<SecretValueDto> requestEntity = new HttpEntity<>(secretValueDto, TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<BooleanValueDto> response = executeHttpPost("/validate_value_length",
 				requestEntity, BooleanValueDto.class);
 

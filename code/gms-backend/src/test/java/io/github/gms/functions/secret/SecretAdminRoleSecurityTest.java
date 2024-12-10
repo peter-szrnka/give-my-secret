@@ -89,7 +89,7 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     }
 
     @Test
-    @TestedMethod("validate_value_length")
+    @TestedMethod("validateValueLength")
     void validateValueLength_whenAuthenticationFails_thenReturnHttp403() {
         // arrange
         SecretValueDto secretValueDto = SecretValueDto.builder()
