@@ -25,7 +25,7 @@ import static io.github.gms.common.util.Constants.SLASH;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SecretValueSizeValidatorService {
+public class SecretLengthValidatorService {
 
     private final KeystoreRepository keystoreRepository;
     private final KeystoreAliasRepository keystoreAliasRepository;

@@ -29,12 +29,12 @@ import static io.github.gms.common.util.Constants.*;
 public class SecretController extends AbstractClientController<SecretService> {
 
 	private final SecretRotationService secretRotationService;
-	private final SecretValueSizeValidatorService secretValueSizeValidatorService;
+	private final SecretLengthValidatorService secretLengthValidatorService;
 
-	public SecretController(SecretService service, SecretRotationService secretRotationService, SecretValueSizeValidatorService secretValueSizeValidatorService) {
+	public SecretController(SecretService service, SecretRotationService secretRotationService, SecretLengthValidatorService secretLengthValidatorService) {
 		super(service);
 		this.secretRotationService = secretRotationService;
-		this.secretValueSizeValidatorService = secretValueSizeValidatorService;
+		this.secretLengthValidatorService = secretLengthValidatorService;
 	}
 
 	@PostMapping
@@ -78,6 +78,6 @@ public class SecretController extends AbstractClientController<SecretService> {
 	@PostMapping("/validate_value_length")
 	@PreAuthorize(ROLE_USER)
 	public ResponseEntity<BooleanValueDto> validateValueLength(@RequestBody SecretValueDto dto) {
-		return new ResponseEntity<>(secretValueSizeValidatorService.validateValueLength(dto), HttpStatus.OK);
+		return new ResponseEntity<>(secretLengthValidatorService.validateValueLength(dto), HttpStatus.OK);
 	}
 }

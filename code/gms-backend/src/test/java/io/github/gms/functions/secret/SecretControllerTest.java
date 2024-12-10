@@ -27,14 +27,14 @@ import static org.mockito.Mockito.*;
 class SecretControllerTest extends AbstractClientControllerTest<SecretService, SecretController> {
 
     private SecretRotationService secretRotationService;
-    private SecretValueSizeValidatorService secretValueSizeValidatorService;
+    private SecretLengthValidatorService secretLengthValidatorService;
 
     @BeforeEach
     void setup() {
         service = Mockito.mock(SecretService.class);
         secretRotationService = mock(SecretRotationService.class);
-        secretValueSizeValidatorService = mock(SecretValueSizeValidatorService.class);
-        controller = new SecretController(service, secretRotationService, secretValueSizeValidatorService);
+        secretLengthValidatorService = mock(SecretLengthValidatorService.class);
+        controller = new SecretController(service, secretRotationService, secretLengthValidatorService);
     }
 
     @Test
@@ -146,7 +146,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
     @Test
     void validateValueLength_whenInputProvided_thenReturnOk() {
         // arrange
-        when(secretValueSizeValidatorService.validateValueLength(any())).thenReturn(new BooleanValueDto(true));
+        when(secretLengthValidatorService.validateValueLength(any())).thenReturn(new BooleanValueDto(true));
 
         // act
         ResponseEntity<BooleanValueDto> response = controller.validateValueLength(SecretValueDto.builder().build());
@@ -156,6 +156,6 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getValue());
         assertEquals(200, response.getStatusCode().value());
-        verify(secretValueSizeValidatorService).validateValueLength(any());
+        verify(secretLengthValidatorService).validateValueLength(any());
     }
 }

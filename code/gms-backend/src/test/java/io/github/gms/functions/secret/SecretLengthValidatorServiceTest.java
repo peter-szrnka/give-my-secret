@@ -35,15 +35,13 @@ import static io.github.gms.util.LogAssertionUtils.assertLogContains;
 import static io.github.gms.util.TestUtils.createSecretValueDto;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
-class SecretValueSizeValidatorServiceTest extends AbstractLoggingUnitTest {
+class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
 
     @Mock
     private KeystoreRepository keystoreRepository;
@@ -56,14 +54,14 @@ class SecretValueSizeValidatorServiceTest extends AbstractLoggingUnitTest {
     @Mock
     private ObjectMapper objectMapper;
     @InjectMocks
-    private SecretValueSizeValidatorService secretValueSizeValidatorService;
+    private SecretLengthValidatorService secretLengthValidatorService;
 
     @Override
     @BeforeEach
     public void setup() {
         super.setup();
-        ReflectionTestUtils.setField(secretValueSizeValidatorService, "keystorePath", "keystorePath");
-        addAppender(SecretValueSizeValidatorService.class);
+        ReflectionTestUtils.setField(secretLengthValidatorService, "keystorePath", "keystorePath");
+        addAppender(SecretLengthValidatorService.class);
     }
 
     @Test
@@ -72,7 +70,7 @@ class SecretValueSizeValidatorServiceTest extends AbstractLoggingUnitTest {
         SecretValueDto dto = createSecretValueDto(1L, 1L);
 
         // act
-        BooleanValueDto response = secretValueSizeValidatorService.validateValueLength(dto);
+        BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
         // assert
         assertNotNull(response);
@@ -83,14 +81,16 @@ class SecretValueSizeValidatorServiceTest extends AbstractLoggingUnitTest {
     void validateValueLength_whenKeystoreAliasEntityNotFound_thenReturnFalse() {
         // arrange
         SecretValueDto dto = createSecretValueDto(1L, 1L);
-        when(keystoreRepository.findById(eq(1L))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+        when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
         // act
-        BooleanValueDto response = secretValueSizeValidatorService.validateValueLength(dto);
+        BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
         // assert
         assertNotNull(response);
         assertFalse(response.getValue());
+        verify(keystoreRepository).findById(1L);
+        verify(keystoreAliasRepository).findById(1L);
     }
 
     @Test
@@ -98,16 +98,19 @@ class SecretValueSizeValidatorServiceTest extends AbstractLoggingUnitTest {
             throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException {
         // arrange
         SecretValueDto dto = createSecretValueDto(1L, 1L);
-        when(keystoreRepository.findById(eq(1L))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
-        when(keystoreAliasRepository.findById(eq(1L))).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
+        when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+        when(keystoreAliasRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenThrow(new FileNotFoundException());
 
         // act
-        BooleanValueDto response = secretValueSizeValidatorService.validateValueLength(dto);
+        BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
         // assert
         assertNotNull(response);
         assertFalse(response.getValue());
+        verify(keystoreRepository).findById(1L);
+        verify(keystoreAliasRepository).findById(1L);
+        verify(keystoreDataService).getKeyStore(any(GetKeystore.class));
     }
 
     @Test
@@ -116,18 +119,23 @@ class SecretValueSizeValidatorServiceTest extends AbstractLoggingUnitTest {
             NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         // arrange
         SecretValueDto dto = createSecretValueDto(1L, 1L);
-        when(keystoreRepository.findById(eq(1L))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
-        when(keystoreAliasRepository.findById(eq(1L))).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
+        when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+        when(keystoreAliasRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenReturn(mock(KeyStore.class));
         when(objectMapper.writeValueAsString(any())).thenReturn(IntStream.of(1, 1000).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString());
         when(cryptoService.encrypt(any(), any())).thenThrow(new GmsException("Encryption failed", GMS_001));
 
         // act
-        BooleanValueDto response = secretValueSizeValidatorService.validateValueLength(dto);
+        BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
         // assert
         assertNotNull(response);
         assertFalse(response.getValue());
+        verify(keystoreRepository).findById(1L);
+        verify(keystoreAliasRepository).findById(1L);
+        verify(keystoreDataService).getKeyStore(any(GetKeystore.class));
+        verify(objectMapper).writeValueAsString(any());
+        verify(cryptoService).encrypt(any(), any());
     }
 
     @Test
@@ -136,18 +144,23 @@ class SecretValueSizeValidatorServiceTest extends AbstractLoggingUnitTest {
             NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         // arrange
         SecretValueDto dto = createSecretValueDto(1L, 1L);
-        when(keystoreRepository.findById(eq(1L))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
-        when(keystoreAliasRepository.findById(eq(1L))).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
+        when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
+        when(keystoreAliasRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenReturn(mock(KeyStore.class));
         when(objectMapper.writeValueAsString(any())).thenReturn(IntStream.of(1, 1000).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString());
         when(cryptoService.encrypt(any(), any())).thenReturn("encryptedValue");
 
         // act
-        BooleanValueDto response = secretValueSizeValidatorService.validateValueLength(dto);
+        BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
         // assert
         assertNotNull(response);
         assertTrue(response.getValue());
         assertLogContains(logAppender, "Encrypted secret value size: 14");
+        verify(keystoreRepository).findById(1L);
+        verify(keystoreAliasRepository).findById(1L);
+        verify(keystoreDataService).getKeyStore(any(GetKeystore.class));
+        verify(objectMapper).writeValueAsString(any());
+        verify(cryptoService).encrypt(any(), any());
     }
 }
