@@ -15,6 +15,7 @@ import { SecretService } from "./service/secret-service";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 /**
  * @author Peter Szrnka
@@ -33,7 +34,8 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         MomentPipe,
         NavButtonVisibilityPipe,
         StatusToggleComponent,
-        TranslatorModule
+        TranslatorModule,
+        GmsComponentsModule
     ], 
     providers: [
         SecretService, SecretListResolver, SecretDetailResolver,

@@ -68,7 +68,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
         allApiKeysAllowed: true
     };
 
-    // interval config
+    valueDisplayed = false;
     private keyPressTimeout: any;
     validationState: ValidationState = ValidationState.UNDEFINED;
 
@@ -105,6 +105,8 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
 
             this.refreshSelectableRoles();
         });
+        this.valueDisplayed = this.data.id === undefined;
+        this.validateSecretLength();
     }
 
     override dataLoadingCallback(data: Secret): void {
@@ -146,6 +148,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     showValue() {
         this.service.getValue(this.data.id).subscribe(value => {
             this.data.value = value;
+            this.valueDisplayed = true;
 
             if (this.data.type !== 'MULTIPLE_CREDENTIAL') {
                 return;
@@ -153,6 +156,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
 
             this.multipleCredential = this.parseValue(this.data.value);
             this.refreshTable();
+            this.validateSecretLength();
         });
     }
 
@@ -246,7 +250,12 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     }
 
     validateSecretLength() {
+        if (this.valueDisplayed === false) {
+            return;
+        }
+
         this.transformMultipleCredentials();
+
         if (this.data.value.length === 0 || this.data.keystoreId === undefined || this.data.keystoreAliasId === undefined) {
             this.validationState = ValidationState.INVALID_INPUT;
             return;
