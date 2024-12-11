@@ -9,16 +9,17 @@ import { InfoDialog } from "./info-dialog/info-dialog.component";
 import { MomentPipe } from "./pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "./pipes/nav-button-visibility.pipe";
 import { TranslatorModule } from "./pipes/translator/translator.module";
+import { InformationMessageComponent } from "./information-message/information-message.component";
 
 /**
  * @author Peter Szrnka
  */
 @NgModule({
     declarations: [
-        ConfirmDeleteDialog, InfoDialog
+        ConfirmDeleteDialog, InfoDialog, InformationMessageComponent
     ],
     exports: [
-        ConfirmDeleteDialog, InfoDialog
+        ConfirmDeleteDialog, InfoDialog, InformationMessageComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     imports: [
