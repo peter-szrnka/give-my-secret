@@ -359,6 +359,7 @@ describe('SecretDetailComponent', () => {
         configureTestBed();
 
         // act
+        component.valueDisplayed = true;
         component.data = secretInput;
         component.validateSecretLength();
 
@@ -376,6 +377,7 @@ describe('SecretDetailComponent', () => {
         configureTestBed();
 
         // act
+        component.valueDisplayed = true;
         component.validateSecretLength();
 
         // assert
@@ -389,6 +391,7 @@ describe('SecretDetailComponent', () => {
         configureTestBed();
 
         // act
+        component.valueDisplayed = true;
         component.validateSecretLength();
 
         // assert
