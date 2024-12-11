@@ -61,6 +61,20 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
+    void validateValueLength_whenValueIsEmpty_thenReturnFalse() {
+        // arrange
+        SecretValueDto dto = createSecretValueDto(1L, 1L);
+        dto.setValue(null);
+
+        // act
+        BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
+
+        // assert
+        assertNotNull(response);
+        assertFalse(response.getValue());
+    }
+
+    @Test
     void validateValueLength_whenKeystoreEntityNotFound_thenReturnFalse() {
         // arrange
         SecretValueDto dto = createSecretValueDto(1L, 1L);
@@ -150,6 +164,7 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
         assertNotNull(response);
         assertTrue(response.getValue());
         assertLogContains(logAppender, "Encrypted secret value size: 14");
+        assertLogContains(logAppender, "Input value size: 9");
         verify(keystoreRepository).findById(1L);
         verify(keystoreAliasRepository).findById(1L);
         verify(keystoreDataService).getKeyStore(any(GetKeystore.class));

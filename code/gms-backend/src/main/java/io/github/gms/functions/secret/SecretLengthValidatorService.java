@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.security.KeyStore;
 
@@ -36,6 +37,10 @@ public class SecretLengthValidatorService {
 
     public BooleanValueDto validateValueLength(SecretValueDto dto) {
         try {
+            if (!StringUtils.hasText(dto.getValue())) {
+                return new BooleanValueDto(false);
+            }
+
             KeystoreEntity keystoreEntity = keystoreRepository.findById(dto.getKeystoreId())
                     .orElseThrow(() -> new GmsException("KeystoreEntity not found!", GMS_002));
 
@@ -47,6 +52,7 @@ public class SecretLengthValidatorService {
                     .keystorePath(keystorePath + keystoreEntity.getUserId() + SLASH + keystoreEntity.getFileName())
                     .build());
 
+            log.info("Input value size: {}", dto.getValue().length());
             String encryptedValue = cryptoService.encrypt(dto.getValue(), new KeystorePair(keystoreAliasEntity, keystore));
 
             log.info("Encrypted secret value size: {}", encryptedValue.length());
