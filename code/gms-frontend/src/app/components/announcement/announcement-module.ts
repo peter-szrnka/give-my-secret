@@ -4,16 +4,16 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 import { AnnouncementListComponent } from "./announcement-list.component";
 import { AnnouncementDetailResolver } from "./resolver/announcement-detail.resolver";
 import { AnnouncementListResolver } from "./resolver/announcement-list.resolver";
 import { AnnouncementService } from "./service/announcement-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
-import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 /**
  * @author Peter Szrnka
@@ -29,8 +29,8 @@ import { GmsComponentsModule } from "../../common/components/gms-components-modu
     MomentPipe,
     NavBackComponent,
     NavButtonVisibilityPipe,
-    TranslatorModule,
-    GmsComponentsModule
+    InformationMessageComponent,
+    TranslatorModule
 ], providers: [
         AnnouncementService, AnnouncementListResolver, AnnouncementDetailResolver,
         provideHttpClient(withInterceptorsFromDi())

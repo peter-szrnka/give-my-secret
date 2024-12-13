@@ -4,8 +4,10 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SplashComponent } from "../../common/components/splash/splash.component";
 import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { UserDetailResolver } from "./resolver/user-detail.resolver";
@@ -13,8 +15,6 @@ import { UserListResolver } from "./resolver/user-list.resolver";
 import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
 import { UserListComponent } from "./user-list.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
-import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 /**
  * @author Peter Szrnka
@@ -31,7 +31,7 @@ import { GmsComponentsModule } from "../../common/components/gms-components-modu
     MomentPipe,
     NavBackComponent,
     StatusToggleComponent,
-    TranslatorModule, GmsComponentsModule], 
+    TranslatorModule, InformationMessageComponent], 
     providers: [
         UserService, UserListResolver, UserDetailResolver,
         provideHttpClient(withInterceptorsFromDi())

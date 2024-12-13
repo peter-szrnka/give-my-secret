@@ -5,9 +5,9 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
-import { VerifyComponent } from "./verify.component";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
-import { GmsComponentsModule } from "../../common/components/gms-components-module";
+import { VerifyComponent } from "./verify.component";
 
 /**
  * @author Peter Szrnka
@@ -20,6 +20,6 @@ import { GmsComponentsModule } from "../../common/components/gms-components-modu
         BrowserAnimationsModule,
         AppRoutingModule,
         FormsModule,
-        GmsComponentsModule,
+        InformationMessageComponent,
     TranslatorModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
   export class VerifyModule { }
