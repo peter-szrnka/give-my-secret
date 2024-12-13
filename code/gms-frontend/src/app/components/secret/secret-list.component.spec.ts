@@ -10,16 +10,16 @@ import { AppRoutingModule } from "../../app-routing.module";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SplashComponent } from "../../common/components/splash/splash.component";
 import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { ClipboardService } from "../../common/service/clipboard-service";
+import { DialogService } from "../../common/service/dialog-service";
 import { ServiceModule } from "../../common/service/service-module";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { COPY_SECRET_ID_MESSAGE, SecretListComponent } from "./secret-list.component";
 import { SecretService } from "./service/secret-service";
-import { DialogService } from "../../common/service/dialog-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -53,7 +53,8 @@ describe('SecretListComponent', () => {
                 NavButtonVisibilityPipe,
                 StatusToggleComponent,
                 ServiceModule,
-                TranslatorModule ],
+                TranslatorModule
+            ],
             declarations : [SecretListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

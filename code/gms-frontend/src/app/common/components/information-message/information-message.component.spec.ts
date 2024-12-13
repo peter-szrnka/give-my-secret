@@ -15,8 +15,7 @@ describe('InformationMessageComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports : [MatDialogModule, TranslatorModule ],
-            declarations : [InformationMessageComponent],
+            imports : [MatDialogModule, TranslatorModule, InformationMessageComponent ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
             ]

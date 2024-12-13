@@ -5,7 +5,7 @@
 
   <mat-card class="margin-top">
     <mat-card-content>
-      <div class="information">{{ 'job.execution.info' | translate }}</div>
+      <information-message severity="information">{{ 'job.execution.info' | translate }}</information-message>
       @for (item of job_execution_config; track $index) {
       <button mat-button mat-raised-button color="primary" (click)="executeJob(item.url)" class="margin-r10">{{item.label | translate}}</button>
       }
@@ -17,7 +17,7 @@
   </mat-card>
 
   @if (error) {
-  <div class="warning"><b>{{ 'messages.error' | translate }}:</b> {{error}}</div>
+  <information-message severity="warning">{{ 'messages.error' | translate }}: {{error}}</information-message>
   }
   @if (!error) {
   <mat-card class="margin-top">

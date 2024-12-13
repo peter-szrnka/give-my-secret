@@ -2,15 +2,16 @@ import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { ErrorCode } from "./model/error-code.model";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { ErrorCode } from "./model/error-code.model";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
     standalone: true,
-    imports: [ AngularMaterialModule, TranslatorModule ],
+    imports: [ AngularMaterialModule, TranslatorModule, InformationMessageComponent ],
     selector: 'help',
     templateUrl: './help.component.html',
     styleUrls: ['./help.component.scss']

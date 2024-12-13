@@ -9,7 +9,6 @@ import { AppComponent } from './app.component';
 // Material Modules
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { AngularMaterialModule } from './angular-material-module';
-import { GmsComponentsModule } from './common/components/gms-components-module';
 import { AuthInterceptor } from './common/interceptor/auth-interceptor';
 import { MockInterceptor } from './common/interceptor/mock-interceptor';
 import { ServiceModule } from './common/service/service-module';
@@ -51,7 +50,6 @@ export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
             // or after 30 seconds (whichever comes first).
             registrationStrategy: 'registerWhenStable:30000'
         }),
-        GmsComponentsModule,
         // Main application modules
         NavMenuModule,
         HomeModule,

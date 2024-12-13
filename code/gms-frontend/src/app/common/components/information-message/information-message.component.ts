@@ -1,4 +1,6 @@
+import { NgClass } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
 
 const SETTINGS_MAP: any = {
   'success': { icon: 'check_circle', iconColor: 'green', styleClass: 'success' },
@@ -10,7 +12,8 @@ const SETTINGS_MAP: any = {
  * @author Peter Szrnka
  */
 @Component({
-
+  standalone: true,
+  imports: [MatIconModule, NgClass],
   selector: 'information-message',
   templateUrl: './information-message.component.html',
   styleUrls: ['./information-message.component.scss']

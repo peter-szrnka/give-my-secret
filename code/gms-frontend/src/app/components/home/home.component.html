@@ -1,5 +1,5 @@
 @if (pageStatus === 2) {
-  <div class="warning"><b>{{ 'messages.error' | translate }}:</b> {{error}}</div>
+  <information-message severity="warning">{{ 'messages.error' | translate }}: {{error}}</information-message>
 }
 
 @if (pageStatus === 0) {
@@ -38,7 +38,7 @@
             @if (data.announcements.resultList.length === 0) {
               <mat-card class="gms-card-right">
                 <mat-card-content>
-                  <div class="information">{{ 'home.noAnnouncements' | translate }}</div>
+                  <information-message severity="information">{{ 'home.noAnnouncements' | translate }}</information-message>
                 </mat-card-content>
               </mat-card>
             }
@@ -70,9 +70,7 @@
               <mat-card-title>{{ 'home.users' | translate }}</mat-card-title>
               <mat-card-subtitle>{{ 'home.users.subtitle' | translate }}</mat-card-subtitle>
               @if (data.userCount === 0) {
-                <div class="warning">
-                  <b>{{ 'label.warning' | translate }}:</b> {{ 'home.noUsersRegistered' | translate }}
-                </div>
+                <information-message severity="warning"><b>{{ 'label.warning' | translate }}:</b> {{ 'home.noUsersRegistered' | translate }}</information-message>
               }
               @if (data.userCount > 0) {
                 <p>
