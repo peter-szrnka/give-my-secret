@@ -5,14 +5,14 @@ import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError, Observable } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { TranslatorService } from "../../common/service/translator-service";
 import { JobDetail } from "./model/job-detail.model";
 import { JobDetailService } from "./service/job-detail.service";
-import { GmsComponentsModule } from "../../common/components/gms-components-module";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 const MANUAL_JOB_EXECUTION_CONFIG = [
     { label: 'job.button.event.maintenance', url : 'event_maintenance' },
