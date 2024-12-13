@@ -3,7 +3,7 @@
   <nav-back [buttonConfig]="[{url:'/user/list', label:'navback.back2List', primary : true}]"></nav-back>
 
   @if (error) {
-    <div class="warning"><b>{{ 'messages.error' | translate }}:</b> {{error}}</div>
+    <information-message severity="warning">{{ 'messages.error' | translate }}: {{error}}</information-message>
   }
   @if (!error) {
     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">

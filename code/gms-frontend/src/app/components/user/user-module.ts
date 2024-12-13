@@ -14,6 +14,7 @@ import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
 import { UserListComponent } from "./user-list.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 /**
  * @author Peter Szrnka
@@ -23,15 +24,14 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA], 
     imports: [AngularMaterialModule,
-        FormsModule,
-        BrowserModule,
-        AppRoutingModule,
-        SplashComponent,
-        MomentPipe,
-        NavBackComponent,
-        StatusToggleComponent,
-        TranslatorModule
-    ], 
+    FormsModule,
+    BrowserModule,
+    AppRoutingModule,
+    SplashComponent,
+    MomentPipe,
+    NavBackComponent,
+    StatusToggleComponent,
+    TranslatorModule, GmsComponentsModule], 
     providers: [
         UserService, UserListResolver, UserDetailResolver,
         provideHttpClient(withInterceptorsFromDi())

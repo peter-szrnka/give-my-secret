@@ -4,7 +4,7 @@
   <nav-back [buttonConfig]="[{url:'/apikey/new', label:'navback.create', primary : true}]"></nav-back>
 
   @if (error) {
-    <div class="warning"><b>{{ 'messages.error' | translate }}:</b> {{error}}</div>
+    <information-message severity="warning">{{ 'messages.error' | translate }}: {{error}}</information-message>
   }
   @if (!error) {
     <mat-card class="margin-top">

@@ -4,14 +4,10 @@
   <form #form="ngForm">
     <mat-accordion>
       @if (authMode === 'ldap') {
-      <div class="information">
-        {{ 'settings.info.ldap' | translate }}
-      </div>
+      <information-message severity="information">{{ 'settings.info.ldap' | translate }}</information-message>
       }
       @if (authMode === 'sso') {
-      <div class="information">
-        {{ 'settings.info.sso' | translate }}
-      </div>
+      <information-message severity="information">{{ 'settings.info.sso' | translate }}</information-message>
       }
       <mat-expansion-panel hideToggle [disabled]="authMode !== 'db'">
         <mat-expansion-panel-header>

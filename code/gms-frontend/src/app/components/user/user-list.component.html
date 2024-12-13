@@ -7,11 +7,11 @@
   }
 
   @if (authMode === 'ldap') {
-    <div class="information">{{ 'users.managedByLdap' | translate }}</div>
+    <information-message severity="information">{{ 'users.managedByLdap' | translate }}</information-message>
   }
 
   @if (error) {
-    <div class="warning"><b>{{ 'messages.error' | translate }}:</b> {{error}}</div>
+    <information-message severity="warning">{{ 'messages.error' | translate }}: {{error}}</information-message>
   }
   @if (!error) {
     <mat-card class="margin-top">

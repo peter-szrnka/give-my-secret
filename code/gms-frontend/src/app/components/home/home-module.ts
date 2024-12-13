@@ -8,6 +8,7 @@ import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { HomeComponent } from "./home.component";
 import { HomeService } from "./service/home.service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 /**
  * @author Peter Szrnka
@@ -20,6 +21,7 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         BrowserAnimationsModule,
         AppRoutingModule,
         MomentPipe,
+        GmsComponentsModule,
         TranslatorModule
     ], providers: [HomeService, provideHttpClient(withInterceptorsFromDi())] })
   export class HomeModule { }

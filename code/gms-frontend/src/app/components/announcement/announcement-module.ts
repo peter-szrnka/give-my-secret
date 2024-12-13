@@ -13,6 +13,7 @@ import { AnnouncementDetailResolver } from "./resolver/announcement-detail.resol
 import { AnnouncementListResolver } from "./resolver/announcement-list.resolver";
 import { AnnouncementService } from "./service/announcement-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 /**
  * @author Peter Szrnka
@@ -21,15 +22,16 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         AnnouncementListComponent, AnnouncementDetailComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [
-        AngularMaterialModule,
-        FormsModule,
-        BrowserModule,
-        AppRoutingModule,
-        MomentPipe,
-        NavBackComponent,
-        NavButtonVisibilityPipe,
-        TranslatorModule
-    ], providers: [
+    AngularMaterialModule,
+    FormsModule,
+    BrowserModule,
+    AppRoutingModule,
+    MomentPipe,
+    NavBackComponent,
+    NavButtonVisibilityPipe,
+    TranslatorModule,
+    GmsComponentsModule
+], providers: [
         AnnouncementService, AnnouncementListResolver, AnnouncementDetailResolver,
         provideHttpClient(withInterceptorsFromDi())
     ] })

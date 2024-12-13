@@ -7,6 +7,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { VerifyComponent } from "./verify.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 /**
  * @author Peter Szrnka
@@ -19,5 +20,6 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         BrowserAnimationsModule,
         AppRoutingModule,
         FormsModule,
+        GmsComponentsModule,
     TranslatorModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
   export class VerifyModule { }

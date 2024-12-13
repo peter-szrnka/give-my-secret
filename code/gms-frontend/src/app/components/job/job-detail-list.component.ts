@@ -12,6 +12,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { TranslatorService } from "../../common/service/translator-service";
 import { JobDetail } from "./model/job-detail.model";
 import { JobDetailService } from "./service/job-detail.service";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 const MANUAL_JOB_EXECUTION_CONFIG = [
     { label: 'job.button.event.maintenance', url : 'event_maintenance' },
@@ -28,7 +29,7 @@ const MANUAL_JOB_EXECUTION_CONFIG = [
  */
 @Component({
     standalone: true,
-    imports: [AngularMaterialModule, CommonModule, NavBackComponent, MomentPipe, TranslatorModule],
+    imports: [AngularMaterialModule, CommonModule, NavBackComponent, MomentPipe, TranslatorModule, GmsComponentsModule],
     selector: 'job-detail-list',
     templateUrl: './job-detail-list.component.html'
 })

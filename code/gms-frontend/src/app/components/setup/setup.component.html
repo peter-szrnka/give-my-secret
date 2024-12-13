@@ -15,10 +15,7 @@
           <div [class]="'step' + (currentStep === 4 ? ' step-active': (currentStep < 4) ? ' step-upcoming':  ' step-passed')">{{ 'setup.step5' | translate }}</div>
         </div>
         @if(systemStatus === 'NEED_SETUP') {
-        <div class="information">
-          {{ 'setup.intro' | translate }}
-        </div>
-
+        <information-message severity="information">{{ 'setup.intro' | translate }}</information-message>
         <mat-accordion>
           @for (vmOption of vmOptions; track $index) {
           <mat-expansion-panel [hideToggle]="vmOption.value.length <= 100">
@@ -42,16 +39,12 @@
         }
         @else if(systemStatus === 'NEED_ADMIN_USER') {
         @if (errorMessage) {
-        <div class="warning">
-          {{ 'setup.failed' | translate: errorMessage }}
-        </div>
+        <information-message severity="warning">{{ 'setup.failed' | translate: errorMessage }}</information-message>
         }
 
         @if (errorMessage === undefined) {
         <div>
-          <p class="information">
-            {{ 'setup.description' | translate }}
-          </p>
+          <information-message severity="information">{{ 'setup.description' | translate }}</information-message>
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>{{ 'setup.fullName' | translate }}</mat-label>
             <input matInput name="name" [(ngModel)]="userData.name" required>
@@ -109,9 +102,7 @@
           </mat-form-field>
         </div>
         } @else if(systemStatus === 'COMPLETE') {
-          <div class="information">
-            {{ 'setup.succeeded' | translate }}
-          </div>
+          <information-message severity="information">{{ 'setup.succeeded' | translate }}</information-message>
         }
       }
     </mat-card-content>

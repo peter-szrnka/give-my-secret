@@ -4,13 +4,14 @@ import { ActivatedRoute } from "@angular/router";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { ErrorCode } from "./model/error-code.model";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
     standalone: true,
-    imports: [ AngularMaterialModule, TranslatorModule ],
+    imports: [ AngularMaterialModule, TranslatorModule, GmsComponentsModule ],
     selector: 'help',
     templateUrl: './help.component.html',
     styleUrls: ['./help.component.scss']

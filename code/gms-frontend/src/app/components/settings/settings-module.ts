@@ -6,6 +6,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { AppRoutingModule } from "../../app-routing.module";
 import { SettingsSummaryComponent } from "./settings-summary.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { GmsComponentsModule } from "../../common/components/gms-components-module";
 
 /**
  * @author Peter Szrnka
@@ -14,11 +15,10 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         SettingsSummaryComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [AngularMaterialModule,
-        FormsModule,
-        BrowserModule,
-        AppRoutingModule,
-        TranslatorModule
-    ], providers: [
+    FormsModule,
+    BrowserModule,
+    AppRoutingModule,
+    TranslatorModule, GmsComponentsModule], providers: [
         provideHttpClient(withInterceptorsFromDi())
     ] })
 export class SettingsModule {}

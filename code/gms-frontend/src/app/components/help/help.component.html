@@ -1,7 +1,7 @@
 <mat-card class="help-card">
     <mat-card-title>{{ 'help.errorCodes.title' | translate }}</mat-card-title>
     <mat-card-content>
-        <div class="information">{{ 'help.errorCodes' | translate }}</div>
+        <information-message severity="information">{{ 'help.errorCodes' | translate }}</information-message>
 
         <table mat-table [dataSource]="datasource" (load)="true">
             <tr mat-header-row *matHeaderRowDef="columns"></tr>

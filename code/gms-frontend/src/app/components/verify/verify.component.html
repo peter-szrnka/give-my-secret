@@ -6,7 +6,7 @@
       </mat-card-header>
 
       <mat-card-content>
-        <div class="information">{{ 'verify.description' | translate }}</div>
+        <information-message severity="information">{{ 'verify.description' | translate }}</information-message>
         <mat-form-field appearance="fill" class="form-control">
           <mat-label>{{ 'verify.code' | translate }}</mat-label>
           <input type="number" maxlength="6" matInput name="verificationCode" required [(ngModel)]="formModel.verificationCode">
