@@ -14,13 +14,26 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <developers>
+        <developer>
+            <email>szrnka.peter@gmail.com</email>
+            <name>Peter Szrnka</name>
+            <url>https://github.com/peter-szrnka</url>
+            <roles>
+                <role>Architect</role>
+                <role>Technical lead</role>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
     <dependencyManagement>
         <dependencies>
             <!-- Spring Boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.3.5</version>
+                <version>3.4.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -32,11 +45,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>io.github.peter-szrnka</groupId>
             <artifactId>give-my-secret-client-spring</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
-
 </project>
