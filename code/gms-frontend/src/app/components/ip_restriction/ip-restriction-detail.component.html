@@ -1,5 +1,5 @@
 <div class="with-margin-top">
-  <nav-back [buttonConfig]="buttonConfig"></nav-back>
+  <nav-back [buttonConfig]="buttonConfig" [reload]="data.id !== undefined"></nav-back>
 
   @if (error) {
     <information-message severity="warning">{{ 'messages.error' | translate }}: {{error}}</information-message>

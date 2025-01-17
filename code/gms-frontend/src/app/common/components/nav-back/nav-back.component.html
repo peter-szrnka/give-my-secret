@@ -12,4 +12,8 @@
     [disabled]="button.enabled === false" [routerLink]="button.url">{{button.label | translate}}</button>
   }
   }
+
+  @if (reload === true) {
+    <button color="primary" mat-raised-button (click)="reloadPage()"><mat-icon>refresh</mat-icon>Reload page</button>
+  }
 </div>
