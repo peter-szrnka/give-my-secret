@@ -1,6 +1,6 @@
 <div class="with-margin-top">
 
-  <nav-back [buttonConfig]="[{url:'/announcement/list', label:'navback.back2List', primary : true}]"></nav-back>
+  <nav-back [buttonConfig]="[{url:'/announcement/list', label:'navback.back2List', primary : true}]" [reload]="data.id !== undefined"></nav-back>
 
   @if (error) {
     <information-message severity="warning">{{ 'messages.error' | translate }}: {{error}}</information-message>

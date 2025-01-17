@@ -24,4 +24,9 @@ export class NavBackComponent {
 
     @Input() backToHome? : boolean = true;
     @Input() buttonConfig? : ButtonConfig[] = [];
+    @Input() reload? : boolean = true;
+
+    reloadPage() {
+        window.location.reload();
+    }
 }
