@@ -85,9 +85,11 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod(GET_BY_ID)
 	void getById_whenInputIsValid_thenReturnOk() {
+		SecretEntity newEntity = secretRepository.save(TestUtils.createSecretEntityWithUniqueId("getById_whenInputIsValid_thenReturnOk"));
+
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<SecretDto> response = executeHttpGet("/" + DemoData.SECRET_ENTITY_ID,
+		ResponseEntity<SecretDto> response = executeHttpGet("/" + newEntity.getId(),
 				requestEntity, SecretDto.class);
 
 		// Assert
@@ -95,8 +97,10 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(response.getBody());
 
 		SecretDto responseBody = response.getBody();
-		assertEquals(DemoData.SECRET_ENTITY_ID, responseBody.getId());
+		assertEquals(newEntity.getId(), responseBody.getId());
 		assertEquals(EntityStatus.ACTIVE, responseBody.getStatus());
+
+		secretRepository.delete(newEntity);
 	}
 
 	@Test

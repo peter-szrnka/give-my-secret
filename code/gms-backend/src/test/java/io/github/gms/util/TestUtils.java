@@ -303,6 +303,21 @@ public class TestUtils {
 		return createSecretEntityWithUniqueKeystoreAliasId(DemoData.KEYSTORE_ALIAS_ID);
 	}
 
+	public static SecretEntity createSecretEntityWithUniqueId(String secretId) {
+		SecretEntity entity = new SecretEntity();
+		entity.setCreationDate(ZonedDateTime.now());
+		entity.setRotationPeriod(RotationPeriod.YEARLY);
+		entity.setStatus(EntityStatus.ACTIVE);
+		entity.setValue(DemoData.ENCRYPTED_VALUE);
+		entity.setType(SecretType.SIMPLE_CREDENTIAL);
+		entity.setSecretId(secretId);
+		entity.setKeystoreAliasId(DemoData.KEYSTORE_ALIAS_ID);
+		entity.setLastRotated(ZonedDateTime.now());
+		entity.setReturnDecrypted(false);
+		entity.setUserId(1L);
+		return entity;
+	}
+
 	public static SecretEntity createSecretEntityWithUniqueKeystoreAliasId(Long keystoreAliasId) {
 		SecretEntity entity = new SecretEntity();
 		entity.setId(1L);
