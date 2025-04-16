@@ -42,5 +42,6 @@ describe('NavBackComponent', () => {
         ];
 
         expect(component).toBeTruthy();
+        component.reloadPage();
     });
 });
