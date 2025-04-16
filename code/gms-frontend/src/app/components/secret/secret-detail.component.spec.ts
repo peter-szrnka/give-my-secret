@@ -340,11 +340,14 @@ describe('SecretDetailComponent', () => {
     });
 
     it('onKeyUp when validation required immediately then validate', () => {
+        jest.useFakeTimers();
         // arrange
         configureTestBed();
 
         component.onKeyUp({ key: 'Enter' } as any, 200);
         component.onKeyUp({ key: 'Enter' } as any, 0);
+
+        jest.runAllTimers();
 
         // assert
         expect(component).toBeTruthy();
