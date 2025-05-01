@@ -14,6 +14,7 @@
 			"gms-backend"
 		],
 		"java.debug.settings.onBuildFailureProceed": true,
-		"testing.openTesting": "neverOpen"
+		"testing.openTesting": "neverOpen",
+		"testing.automaticallyOpenTestResults": "neverOpen"
 	}
 }

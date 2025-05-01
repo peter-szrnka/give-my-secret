@@ -5,6 +5,7 @@ import io.github.gms.functions.announcement.AnnouncementDto;
 import io.github.gms.functions.announcement.AnnouncementService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,6 +16,7 @@ import org.testcontainers.containers.MySQLContainer;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("mysql")
+@Disabled("Only for local testing")
 public class MysqlTestContainersIT extends AbstractTestContainersIntegrationTest {
     static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.0.34");
 

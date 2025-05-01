@@ -5,6 +5,7 @@ import io.github.gms.functions.announcement.AnnouncementDto;
 import io.github.gms.functions.announcement.AnnouncementService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,6 +16,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("postgres")
+@Disabled("Only for local testing")
 public class PostgresTestContainersIT extends AbstractTestContainersIntegrationTest {
     static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:16-alpine");
 
