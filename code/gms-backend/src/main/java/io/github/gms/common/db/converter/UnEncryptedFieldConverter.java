@@ -1,6 +1,7 @@
 package io.github.gms.common.db.converter;
 
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
  * @since 1.0
  */
 @Component
+@Converter(autoApply = true)
 @ConditionalOnProperty(value = "config.encryption.enable", havingValue = "false")
 public class UnEncryptedFieldConverter implements AttributeConverter<String, String> {
 
