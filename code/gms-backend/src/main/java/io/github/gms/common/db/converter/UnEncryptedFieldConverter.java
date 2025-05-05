@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @since 1.0
  */
 @Component
-@ConditionalOnProperty(value = "config.encryption.enable", havingValue = "false")
+@ConditionalOnProperty(name = "config.encryption.enable", havingValue = "false")
 public class UnEncryptedFieldConverter implements AttributeConverter<String, String> {
 
     @Override
