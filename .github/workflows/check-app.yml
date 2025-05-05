@@ -1,4 +1,7 @@
 name: Code quality check of application
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   workflow_dispatch:
