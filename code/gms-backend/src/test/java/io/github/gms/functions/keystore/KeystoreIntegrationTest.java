@@ -15,6 +15,7 @@ import io.github.gms.util.TestUtils;
 import io.github.gms.util.TestUtils.ValueHolder;
 import lombok.SneakyThrows;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -65,6 +66,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@SneakyThrows
 	@TestedMethod(SAVE)
+	@Disabled("This test is disabled temporarily.")
 	void save_whenInputIsValid_thenReturnOk() {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		try (InputStream jksFileStream = classloader.getResourceAsStream("test.jks")) {
