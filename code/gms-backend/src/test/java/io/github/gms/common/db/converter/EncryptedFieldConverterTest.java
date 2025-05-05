@@ -24,7 +24,7 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 	@SneakyThrows
 	void convertToDatabaseColumn_whenInvalidSecretProvided_thenThrowIllegalStateException() {
 		// arrange
-		converter = new EncryptedFieldConverter(INVALID_SECRET, ENCRYPTION_IV);
+		converter = new EncryptedFieldConverter(true, INVALID_SECRET, ENCRYPTION_IV);
 		
 		// act & assert
 		IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
@@ -35,7 +35,7 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 	@Test
 	void convertToDatabaseColumn_whenValidSecretProvided_thenReturnEncryptedValue() {
 		// arrange
-		converter = new EncryptedFieldConverter(VALID_SECRET, ENCRYPTION_IV);
+		converter = new EncryptedFieldConverter(true, VALID_SECRET, ENCRYPTION_IV);
 
 		// act
 		String encryptedValue = converter.convertToDatabaseColumn(ORIGINAL_VALUE);
@@ -48,7 +48,7 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 	@SneakyThrows
 	void convertToEntityAttribute_whenInvalidSecretProvided_thenThrowIllegalStateException() {
 		// arrange
-		converter = new EncryptedFieldConverter(INVALID_SECRET, ENCRYPTION_IV);
+		converter = new EncryptedFieldConverter(true, INVALID_SECRET, ENCRYPTION_IV);
 
 		// act & assert
 		IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
@@ -59,10 +59,36 @@ class EncryptedFieldConverterTest extends AbstractUnitTest {
 	@Test
 	void convertToEntityAttribute_whenValidSecretProvided_thenReturnDecryptedValue() {
 		// arrange
-		converter = new EncryptedFieldConverter(VALID_SECRET, ENCRYPTION_IV);
+		converter = new EncryptedFieldConverter(true, VALID_SECRET, ENCRYPTION_IV);
 
 		// act
 		String decryptedValue = converter.convertToEntityAttribute(ENCRYPTED_VALUE);
+
+		// assert
+		assertEquals(ORIGINAL_VALUE, decryptedValue);
+	}
+
+
+	@Test
+	void convertToDatabaseColumn_whenNormalValueProvided_thenReturnNormalValue() {
+		// arrange
+		converter = new EncryptedFieldConverter(false, VALID_SECRET, ENCRYPTION_IV);
+
+		// act
+		String encryptedValue = converter.convertToDatabaseColumn(ORIGINAL_VALUE);
+
+		// assert
+		assertEquals(ORIGINAL_VALUE, encryptedValue);
+	}
+
+
+	@Test
+	void convertToEntityAttribute_whenNormalValueProvided_thenReturnNormalValue() {
+		// arrange
+		converter = new EncryptedFieldConverter(false, VALID_SECRET, ENCRYPTION_IV);
+
+		// act
+		String decryptedValue = converter.convertToEntityAttribute(ORIGINAL_VALUE);
 
 		// assert
 		assertEquals(ORIGINAL_VALUE, decryptedValue);
