@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
  * @since 1.0
  */
 @Component
+@Deprecated
 @ConditionalOnProperty(name = "config.encryption.enable", havingValue = "false")
 public class UnEncryptedFieldConverter implements AttributeConverter<String, String> {
 
