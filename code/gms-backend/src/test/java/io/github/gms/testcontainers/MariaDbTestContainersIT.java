@@ -5,8 +5,8 @@ import io.github.gms.functions.announcement.AnnouncementDto;
 import io.github.gms.functions.announcement.AnnouncementService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -16,7 +16,7 @@ import org.testcontainers.containers.MariaDBContainer;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("mariadb")
-@Disabled("Only for local testing")
+@EnabledIfEnvironmentVariable(named = "TEST_CONTAINERS_TEST_ENABLED", matches = "true")
 public class MariaDbTestContainersIT extends AbstractTestContainersIntegrationTest {
     static MariaDBContainer<?> container = new MariaDBContainer<>("mariadb:10.3.34");
 
