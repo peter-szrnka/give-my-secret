@@ -22,6 +22,9 @@ env:
 jobs:
   setup_new_version:
     name: Update version to ${{ github.event.inputs.releaseVersion }}
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -51,6 +54,9 @@ jobs:
           git push
   analize_backend:
     name: Backend code analysis
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     needs: [setup_new_version]
     steps:
@@ -79,6 +85,9 @@ jobs:
         run: mvn clean verify
   analize_frontend:
     name: Frontend code analysis
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     needs: [setup_new_version]
     steps:
@@ -100,6 +109,9 @@ jobs:
         run: npm run test
   build:
     name: Build production artifact
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     # if: false
     needs: [analize_backend, analize_frontend]
@@ -149,6 +161,9 @@ jobs:
           retention-days: 1
   deploy:
     name: 'Deploy to GHCR'
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on : ubuntu-latest
     needs: build
     # if: false
@@ -188,6 +203,9 @@ jobs:
         run: docker push ${{ env.REGISTRY }}/peter-szrnka/give-my-secret:latest
   update_version:
     name: Update version to ${{ github.event.inputs.developmentVersion }}
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     # if: false
     needs: [deploy]
