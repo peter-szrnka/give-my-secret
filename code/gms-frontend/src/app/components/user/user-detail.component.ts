@@ -52,7 +52,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
     super(router, sharedData, service, dialogService, activatedRoute, splashScreenStateService);
   }
 
-  override async ngOnInit(): Promise<void> {
+  override ngOnInit(): void {
     super.ngOnInit();
 
     this.sharedData.authModeSubject$.subscribe(authMode => this.editEnabled = authMode === 'db');

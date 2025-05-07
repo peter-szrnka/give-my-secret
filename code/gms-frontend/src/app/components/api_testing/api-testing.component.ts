@@ -5,6 +5,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorCode } from "../../common/utils/error-utils";
 import { CredentialApiResponse } from "../secret/model/credential-api-response.model";
+import { User } from "../user/model/user.model";
 import { ApiTestingService } from "./service/api-testing-service";
 
 /**
@@ -29,11 +30,12 @@ export class ApiTestingComponent implements OnInit {
         private readonly secureStorageService : SecureStorageService
     ) { }
 
-    async ngOnInit(): Promise<void> {
-        const user = await this.sharedData.getUserInfo();
-        this.userName = user?.username ?? '';
-        this.apiKey = this.secureStorageService.getItem(this.userName, 'apiKey');
-        this.secretId = this.secureStorageService.getItem(this.userName, 'secretId');
+    ngOnInit(): void {
+        this.sharedData.getUserInfo().then((user: User | undefined) => {
+            this.userName = user?.username ?? '';
+            this.apiKey = this.secureStorageService.getItem(this.userName, 'apiKey');
+            this.secretId = this.secureStorageService.getItem(this.userName, 'secretId');
+        });
     }
 
     callApi() {

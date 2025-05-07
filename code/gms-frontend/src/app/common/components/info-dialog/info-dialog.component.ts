@@ -22,6 +22,6 @@ export class InfoDialog {
     public dialogRef: MatDialogRef<InfoDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {
-    this.title = data.title ? data.title : this.TITLE_MAP[this.data.type];
+    this.title = data.title ?? this.TITLE_MAP[this.data.type];
   }
 }
