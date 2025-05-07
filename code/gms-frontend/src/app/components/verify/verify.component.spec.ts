@@ -16,6 +16,7 @@ import { WINDOW_TOKEN } from "../../window.provider";
 import { User } from "../user/model/user.model";
 import { VerifyComponent } from "./verify.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { LoggerService } from "../../common/service/logger-service";
 
 /**
  * @author Peter Szrnka
@@ -33,6 +34,7 @@ describe('VerifyComponent', () => {
     let mockWindow : any;
     let mockLocation: any;
     let activatedRoute : any = {};
+    let loggerService : any = {};
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
@@ -46,7 +48,8 @@ describe('VerifyComponent', () => {
                 { provide : AuthService, useValue : authService },
                 { provide : MatDialog, useValue : dialog },
                 { provide : Location, useValue: mockLocation },
-                { provide : ActivatedRoute, useValue : activatedRoute }
+                { provide : ActivatedRoute, useValue : activatedRoute },
+                { provide : LoggerService, useValue: loggerService }
             ]
         });
         fixture = TestBed.createComponent(VerifyComponent);
@@ -109,6 +112,10 @@ describe('VerifyComponent', () => {
                 }
             }
         };
+
+        loggerService = {
+            error: jest.fn()
+        };
     });
 
     afterEach(() => {
@@ -141,6 +148,7 @@ describe('VerifyComponent', () => {
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();
         expect(sharedDataService.refreshCurrentUserInfo).toHaveBeenCalledTimes(0);
+        expect(loggerService.error).toHaveBeenCalled();
     });
 
     it('Should MFA verification succeed', async () => {

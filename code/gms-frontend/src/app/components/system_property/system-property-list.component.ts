@@ -163,7 +163,7 @@ export class SystemPropertyListComponent {
       return {
         ...property,
         textDescription: this.getResolvedPropertyText(property.key),
-        valueSet: PROPERTY_TEXT_MAP[property.key]?.valueSet || [],
+        valueSet: PROPERTY_TEXT_MAP[property.key]?.valueSet ?? [],
         value: "BOOLEAN" === property.type ? property.value === 'true' : property.value,
         mode: undefined,
         inputType: TYPE_MAP[property.type],

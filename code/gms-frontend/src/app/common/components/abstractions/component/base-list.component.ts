@@ -37,6 +37,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
   async ngOnInit(): Promise<void> {
     this.sharedData.refreshCurrentUserInfo();
     await this.fetchData();
+    return Promise.resolve();
   }
 
   abstract getPageConfig(): PageConfig;

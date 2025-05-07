@@ -81,9 +81,7 @@ export class SharedDataService {
     }
 
     setStartTime(currentTime?: number) {
-        if (!this.startTime) {
-            this.startTime = currentTime;
-        }
+        this.startTime = this.startTime ?? currentTime;
     }
 
     resetAutomaticLogoutTimer(clearStartTime: boolean = true) {

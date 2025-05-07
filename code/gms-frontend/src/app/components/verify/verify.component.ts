@@ -8,6 +8,7 @@ import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { WINDOW_TOKEN } from "../../window.provider";
+import { LoggerService } from "../../common/service/logger-service";
 
 /**
  * @author Peter Szrnka
@@ -26,7 +27,8 @@ export class VerifyComponent extends BaseLoginComponent {
         private readonly authService: AuthService,
         protected override sharedDataService: SharedDataService,
         protected override splashScreenStateService: SplashScreenStateService,
-        protected override dialogService: DialogService) {
+        protected override dialogService: DialogService,
+        protected loggerService: LoggerService) {
             super(route, sharedDataService, dialogService, splashScreenStateService);      
     }
 
@@ -51,6 +53,7 @@ export class VerifyComponent extends BaseLoginComponent {
             const response: LoginResponse = await firstValueFrom(this.authService.verifyLogin(this.formModel));
             this.handleResponse(response);
         } catch (err) {
+            this.loggerService.error('Error during login verification', err);
             this.handleFailure();
         }
     }
