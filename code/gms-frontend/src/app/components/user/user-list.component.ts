@@ -31,9 +31,8 @@ export class UserListComponent extends BaseListComponent<UserData, UserService> 
         super(router, sharedData, service, dialogService, activatedRoute);
     }
 
-    override async ngOnInit(): Promise<void> {
+    override ngOnInit(): void {
         super.ngOnInit();
-
         this.sharedData.authModeSubject$.subscribe(authMode => this.authMode = authMode);
     }
 

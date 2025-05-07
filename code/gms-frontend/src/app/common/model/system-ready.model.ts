@@ -2,7 +2,7 @@
  * @author Peter Szrnka
  */
 export interface SystemReadyData {
-    ready : boolean, // TODO Deprecate this field
+    ready : boolean,
     systemStatus : string,
     status: number,
     authMode : string,
