@@ -34,9 +34,9 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     protected activatedRoute: ActivatedRoute) {
     }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit() : void {
     this.sharedData.refreshCurrentUserInfo();
-    return await this.fetchData();
+    this.fetchData().then(() => {});
   }
 
   abstract getPageConfig(): PageConfig;
