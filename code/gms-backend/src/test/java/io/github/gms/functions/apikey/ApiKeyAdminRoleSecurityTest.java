@@ -48,6 +48,7 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 	@TestedMethod(GET_VALUE)
 	void getValue_whenAuthenticationFails_thenReturnHttp403() {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		addCsrf(requestEntity);
 
 		// act
 		ResponseEntity<String> response = executeHttpGet(urlPrefix + "/value/" + DemoData.API_KEY_1_ID, requestEntity, String.class);

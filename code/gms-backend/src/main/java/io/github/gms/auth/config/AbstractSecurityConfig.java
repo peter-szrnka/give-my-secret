@@ -37,8 +37,7 @@ public abstract class AbstractSecurityConfig {
             "/gms-app/**", "/favicon.ico", "/assets/**", "/index.html**", "/*.js**", "/*.css**", "/*.json**",
             "/manifest.webmanifest", "/reset_password", "/info/error_codes"};
 
-    @Bean
-    public Customizer<CsrfConfigurer<HttpSecurity>> csrf() {
+    public Customizer<CsrfConfigurer<HttpSecurity>> csrfConfigurerCustomizer() {
         return AbstractHttpConfigurer::disable;
     }
 
@@ -46,8 +45,7 @@ public abstract class AbstractSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            AuthenticationEntryPoint authenticationEntryPoint,
                                            RequestInitializationFilter requestInitializationFilter,
-                                           SecureHeaderInitializerFilter secureHeaderInitializerFilter,
-                                           Customizer<CsrfConfigurer<HttpSecurity>> csrfConfigurerCustomizer) throws Exception {
+                                           SecureHeaderInitializerFilter secureHeaderInitializerFilter) throws Exception {
         http
                 .headers(httpSecurityHeadersConfigurer ->
                         httpSecurityHeadersConfigurer
@@ -56,7 +54,7 @@ public abstract class AbstractSecurityConfig {
                                         contentSecurityPolicyConfig.policyDirectives("frame-ancestors 'none'"))
                 )
                 .cors(cors -> Customizer.withDefaults())
-                .csrf(csrfConfigurerCustomizer)
+                .csrf(csrfConfigurerCustomizer())
                 .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeHttpRequest ->

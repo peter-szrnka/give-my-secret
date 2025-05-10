@@ -18,22 +18,26 @@ public abstract class AbstractClientControllerIntegrationTest extends AbstractIn
 	
 	@Override
 	protected <I,O> ResponseEntity<O> executeHttpGet(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
+		addCsrf(requestEntity);
 		return rest.exchange(basePath + port + path + url, HttpMethod.GET, requestEntity, responseType);
 	}
 	
 	@Override
 	protected <I,O> ResponseEntity<O> executeHttpPost(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
+		addCsrf(requestEntity);
 		return rest.exchange(basePath + port + path + url, HttpMethod.POST, requestEntity, responseType);
 	}
 	
 	@Override
 	protected <I, O> ResponseEntity<O> executeHttpDelete(String url, HttpEntity<I> requestEntity,
 			Class<O> responseType) {
+		addCsrf(requestEntity);
 		return rest.exchange(basePath + port + path + url, HttpMethod.DELETE, requestEntity, responseType);
 	}
 	
 	@Override
 	protected <I> ResponseEntity<String> executeHttpPut(HttpEntity<I> requestEntity) {
+		addCsrf(requestEntity);
 		return rest.exchange(basePath + port + path + "/mark_as_read", HttpMethod.PUT, requestEntity, String.class);
 	}
 }

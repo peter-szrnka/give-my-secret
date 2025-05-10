@@ -2,7 +2,6 @@ package io.github.gms.auth.config;
 
 import io.github.gms.auth.GmsCsrfTokenRequestHandler;
 import io.github.gms.auth.GmsSessionAuthenticationStrategy;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,9 +48,8 @@ public class SecurityConfig extends AbstractSecurityConfig {
         return new GmsCsrfTokenRequestHandler();
     }
 
-    @Bean
-    @ConditionalOnProperty(name = "config.auth.csrf.enabled", havingValue = "true", matchIfMissing = true)
-    public Customizer<CsrfConfigurer<HttpSecurity>> csrf() {
+    @Override
+    public Customizer<CsrfConfigurer<HttpSecurity>> csrfConfigurerCustomizer() {
         return csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
                 .sessionAuthenticationStrategy(new GmsSessionAuthenticationStrategy(csrfTokenRepository(), csrfTokenRequestHandler()))
                 .ignoringRequestMatchers(

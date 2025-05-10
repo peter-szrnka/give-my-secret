@@ -31,6 +31,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 
 	protected <T> void assertSaveFailWith403(T request) {
 		HttpEntity<T> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
+		addCsrf(requestEntity);
 
 		// act
 		ResponseEntity<SaveEntityResponseDto> response = executeHttpPost(urlPrefix, requestEntity, SaveEntityResponseDto.class);
@@ -41,6 +42,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 
 	protected <T> void assertGetByIdFailWith403(Class<T> clazz, Long id) {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		addCsrf(requestEntity);
 
 		// act
 		ResponseEntity<T> response = executeHttpGet(urlPrefix + "/" + id, requestEntity, clazz);
@@ -51,6 +53,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 
 	protected <T> void assertListFailWith403(Class<T> clazz) {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		addCsrf(requestEntity);
 
 		// act
 		ResponseEntity<T> response = executeHttpGet(urlPrefix + "/list?page=0&size=10&direction=ASC&property=id", requestEntity, clazz);
@@ -61,6 +64,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 
 	protected void assertDeleteFailWith403(Long id) {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		addCsrf(requestEntity);
 
 		// act
 		ResponseEntity<String> response = executeHttpDelete(urlPrefix + "/" + id, requestEntity, String.class);
@@ -71,6 +75,7 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 
 	protected void assertToggleFailWith403(Long id) {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		addCsrf(requestEntity);
 
 		// act
 		ResponseEntity<String> response = executeHttpPost(urlPrefix + "/" + id + "?enabled=true", requestEntity, String.class);
