@@ -26,7 +26,7 @@ class JobMaintenanceServiceTest extends AbstractUnitTest {
     private JobMaintenanceService service;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         repository = mock(JobRepository.class);
         converter = mock(JobConverter.class);
         service = new JobMaintenanceService(repository, converter);

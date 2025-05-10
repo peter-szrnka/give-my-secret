@@ -36,7 +36,7 @@ class EventProcessorServiceTest extends AbstractUnitTest {
 	private EventProcessorService service;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		messageService = mock(MessageService.class);
 		secretRepository = mock(SecretRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);

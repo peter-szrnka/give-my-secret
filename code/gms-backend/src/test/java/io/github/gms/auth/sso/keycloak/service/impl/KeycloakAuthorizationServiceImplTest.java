@@ -38,7 +38,7 @@ class KeycloakAuthorizationServiceImplTest {
     private KeycloakAuthorizationServiceImpl service;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         converter = mock(KeycloakConverter.class);
         keycloakIntrospectService = mock(KeycloakIntrospectService.class);
         userRepository = mock(UserRepository.class);

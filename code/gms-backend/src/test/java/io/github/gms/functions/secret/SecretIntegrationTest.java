@@ -46,7 +46,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 	
 	@BeforeAll
-	public static void setupAll() throws IOException {
+	static void setupAll() throws IOException {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		try (InputStream jksFileStream = classloader.getResourceAsStream("test.jks")) {
 			byte[] buffer = new byte[jksFileStream.available()];
@@ -58,7 +58,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	}
 
 	@AfterAll
-	public static void tearDownAll() {
+	static void tearDownAll() {
 		new File("./keystores/1/test.jks").delete();
 		new File("./keystores/1/").delete();
 		new File("./keystores").delete();

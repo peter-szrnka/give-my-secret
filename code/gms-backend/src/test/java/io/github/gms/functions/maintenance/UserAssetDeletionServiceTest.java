@@ -33,7 +33,7 @@ class UserAssetDeletionServiceTest extends AbstractUnitTest {
     private UserAssetDeletionService service;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         apiKeyService = mock(ApiKeyService.class);
         apiKeyRestrictionRepository = mock(ApiKeyRestrictionRepository.class);
         keystoreService = mock(KeystoreService.class);

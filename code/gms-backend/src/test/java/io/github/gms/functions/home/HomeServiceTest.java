@@ -42,7 +42,7 @@ class HomeServiceTest extends AbstractUnitTest {
     private HomeService service;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         announcementService = mock(AnnouncementService.class);
         apiKeyService = mock(ApiKeyService.class);
         eventService = mock(EventService.class);

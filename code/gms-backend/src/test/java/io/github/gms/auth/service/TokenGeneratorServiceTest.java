@@ -31,7 +31,7 @@ class TokenGeneratorServiceTest extends AbstractUnitTest {
     private TokenGeneratorService service;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jwtService = mock(JwtService.class);
         generateJwtRequestConverter = mock(GenerateJwtRequestConverter.class);
         service = new TokenGeneratorService(jwtService, generateJwtRequestConverter);

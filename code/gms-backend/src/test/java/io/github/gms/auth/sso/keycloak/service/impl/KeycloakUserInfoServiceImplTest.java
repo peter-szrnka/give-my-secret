@@ -34,7 +34,7 @@ class KeycloakUserInfoServiceImplTest {
     private KeycloakUserInfoServiceImpl service;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         keycloakIntrospectService = mock(KeycloakIntrospectService.class);
         userRepository = mock(UserRepository.class);
         service = new KeycloakUserInfoServiceImpl(keycloakIntrospectService, userRepository);

@@ -34,7 +34,7 @@ public class KeycloakOAuthServiceTest extends AbstractUnitTest {
     private KeycloakOAuthService service;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         restTemplate = mock(RestTemplate.class);
         service = new KeycloakOAuthService(restTemplate);
     }

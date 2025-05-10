@@ -25,7 +25,7 @@ class SetupFilterTest extends AbstractUnitTest {
 	SetupFilter filter;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		// init
 		service = mock(SystemService.class);
 		filter = new SetupFilter(service);
