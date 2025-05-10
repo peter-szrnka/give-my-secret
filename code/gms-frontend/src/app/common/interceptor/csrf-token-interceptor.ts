@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 @Injectable()
 export class CsrfTokenInterceptor implements HttpInterceptor {
 
-    constructor(@Inject(DOCUMENT) private document: Document) {}
+    constructor(@Inject(DOCUMENT) private readonly document: Document) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         req = this.addCsrfToken(req);
