@@ -8,8 +8,7 @@ import org.springframework.http.ResponseCookie;
 
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka
@@ -25,24 +24,39 @@ class CookieUtilsTest extends AbstractUnitTest {
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
 	void createCookie_whenValidParametersProvided_thenReturnCookie(boolean secure) {
-		// act
+		// when
 		ResponseCookie cookie = CookieUtils.createCookie("the-cookie", "new-value", 60L, secure);
 		
-		// assert
+		// then
 		assertNotNull(cookie);
 		assertEquals("the-cookie", cookie.getName());
 		assertEquals("new-value", cookie.getValue());
 		assertEquals(Duration.ofSeconds(60L), cookie.getMaxAge());
 		assertEquals(secure, cookie.isSecure());
 		assertEquals(secure ? "None" : "Lax", cookie.getSameSite());
+		assertTrue(cookie.isHttpOnly());
 	}
 
 	@Test
 	void createCookie_whenNullValuesProvided_thenReturnCookie() {
-		//act
+		// when
 		ResponseCookie cookie = CookieUtils.createCookie("the-cookie", null, 0L, true);
 
-		// assert
+		// then
 		assertNotNull(cookie);
+	}
+
+	@Test
+	void createCookie_whenHttpOnlyFalse_thenReturnCookie() {
+		// when
+		ResponseCookie cookie = CookieUtils.createCookie("the-cookie", "new-value", 60L, true, false);
+
+		// then
+		assertNotNull(cookie);
+		assertEquals("the-cookie", cookie.getName());
+		assertEquals("new-value", cookie.getValue());
+		assertEquals(Duration.ofSeconds(60L), cookie.getMaxAge());
+		assertTrue(cookie.isSecure());
+		assertFalse(cookie.isHttpOnly());
 	}
 }

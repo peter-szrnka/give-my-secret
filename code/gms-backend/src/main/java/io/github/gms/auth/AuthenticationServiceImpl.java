@@ -36,6 +36,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final AuthenticationManager authenticationManager;
 	private final UserConverter converter;
 	private final UserLoginAttemptManagerService userLoginAttemptManagerService;
+	private final CsrfTokenService csrfTokenService;
 
 	@Override
 	public AuthenticationResponse authenticate(String username, String credential) {
@@ -66,10 +67,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			Map<JwtConfigType, String> authenticationDetails = tokenGeneratorService.getAuthenticationDetails(user);
 			userLoginAttemptManagerService.resetLoginAttempt(username);
 
+			String csrfToken = csrfTokenService.generateCsrfToken();
+
 			return AuthenticationResponse.builder()
 				.currentUser(converter.toUserInfoDto(user, false))
 				.token(authenticationDetails.get(JwtConfigType.ACCESS_JWT))
 				.refreshToken(authenticationDetails.get(JwtConfigType.REFRESH_JWT))
+				.csrfToken(csrfToken)
 				.phase(AuthResponsePhase.COMPLETED)
 				.build();
 		} catch (Exception ex) {

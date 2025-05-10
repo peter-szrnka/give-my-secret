@@ -6,6 +6,7 @@ import io.github.gms.auth.dto.AuthenticateResponseDto;
 import io.github.gms.auth.model.AuthenticationResponse;
 import io.github.gms.auth.types.AuthResponsePhase;
 import io.github.gms.common.abstraction.AbstractLoginController;
+import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.types.SkipSecurityTestCheck;
 import io.github.gms.common.util.CookieUtils;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
@@ -31,12 +32,15 @@ public class LoginController extends AbstractLoginController {
 	public static final String LOGOUT_PATH = "logoutUser";
 
 	private final AuthenticationService authenticationService;
+	private final boolean csrfEnabled;
 
 	public LoginController(AuthenticationService authenticationService,
 						   SystemPropertyService systemPropertyService,
-						   @Value("${config.cookie.secure}") boolean secure) {
+						   @Value("${config.cookie.secure}") boolean secure,
+						   @Value("${config.auth.csrf.enabled}") boolean csrfEnabled) {
 		super(systemPropertyService, secure);
 		this.authenticationService = authenticationService;
+		this.csrfEnabled = csrfEnabled;
 	}
 
 	@PostMapping(LOGIN_PATH)
@@ -50,7 +54,14 @@ public class LoginController extends AbstractLoginController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).headers(headers).body(null);
 		}
 
-		return ResponseEntity.ok().headers(addHeaders(authenticateResult))
+		HttpHeaders headers = addHeaders(authenticateResult);
+		if (csrfEnabled) {
+			Long accessTokenExpirationTime = systemPropertyService.getLong(SystemProperty.CSRF_TOKEN_EXPIRATION_TIME_SECONDS);
+			headers.add(SET_COOKIE, CookieUtils.createCookie(CSRF_TOKEN, authenticateResult.getCsrfToken(),
+					accessTokenExpirationTime, secure, false).toString());
+		}
+
+		return ResponseEntity.ok().headers(headers)
 			.body(AuthenticateResponseDto.builder()
 				.currentUser(authenticateResult.getCurrentUser())
 				.phase(authenticateResult.getPhase())
@@ -65,6 +76,9 @@ public class LoginController extends AbstractLoginController {
 		
 		headers.add(SET_COOKIE, CookieUtils.createCookie(ACCESS_JWT_TOKEN, null, 0, secure).toString());
 		headers.add(SET_COOKIE, CookieUtils.createCookie(REFRESH_JWT_TOKEN, null, 0, secure).toString());
+		if (csrfEnabled) {
+			headers.add(SET_COOKIE, CookieUtils.createCookie(CSRF_TOKEN, null, 0, secure, false).toString());
+		}
 
 		return ResponseEntity.ok().headers(headers).build();
 	}

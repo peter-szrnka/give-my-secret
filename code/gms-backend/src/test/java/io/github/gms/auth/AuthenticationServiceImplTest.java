@@ -15,6 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,27 +36,25 @@ import static org.mockito.Mockito.*;
  */
 class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
+	@Mock
 	private TokenGeneratorService tokenGeneratorService;
+	@Mock
 	private AuthenticationManager authenticationManager;
+	@Mock
 	private SystemPropertyService systemPropertyService;
+	@Mock
 	private UserConverter userConverter;
+	@Mock
 	private UserLoginAttemptManagerService userLoginAttemptManagerService;
+	@Mock
+	private CsrfTokenService csrfTokenService;
+	@InjectMocks
 	private AuthenticationServiceImpl service;
 
 	@Override
 	@BeforeEach
 	public void setup() {
 		super.setup();
-
-		// init
-		tokenGeneratorService = mock(TokenGeneratorService.class);
-		authenticationManager = mock(AuthenticationManager.class);
-		systemPropertyService = mock(SystemPropertyService.class);
-		userConverter = mock(UserConverter.class);
-		userLoginAttemptManagerService = mock(UserLoginAttemptManagerService.class);
-		service = new AuthenticationServiceImpl(tokenGeneratorService,
-				systemPropertyService, authenticationManager, userConverter, userLoginAttemptManagerService);
-
 		addAppender(AuthenticationServiceImpl.class);
 	}
 
@@ -123,6 +123,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 				JwtConfigType.ACCESS_JWT, "ACCESS_JWT",
 				JwtConfigType.REFRESH_JWT, "REFRESH_JWT"
 		));
+		when(csrfTokenService.generateCsrfToken()).thenReturn("csrf");
 		
 		//act
 		AuthenticationResponse response = service.authenticate("user", "credential");
@@ -131,6 +132,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		assertNotNull(response);
 		assertEquals("ACCESS_JWT", response.getToken());
 		assertEquals("REFRESH_JWT", response.getRefreshToken());
+		assertEquals("csrf", response.getCsrfToken());
 		assertEquals(AuthResponsePhase.COMPLETED, response.getPhase());
 
 		verify(userLoginAttemptManagerService).isBlocked("user");
