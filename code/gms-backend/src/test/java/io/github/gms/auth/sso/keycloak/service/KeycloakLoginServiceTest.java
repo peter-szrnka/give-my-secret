@@ -37,7 +37,7 @@ class KeycloakLoginServiceTest {
     private KeycloakLoginService service;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         oAuthService = mock(KeycloakOAuthService.class);
         httpServletRequest = mock(HttpServletRequest.class);
         keycloakSettings = mock(KeycloakSettings.class);

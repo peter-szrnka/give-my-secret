@@ -45,7 +45,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 	private EventServiceImpl service;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		clock = mock(Clock.class);
 		repository = mock(EventRepository.class);
 		userRepository = mock(UserRepository.class);

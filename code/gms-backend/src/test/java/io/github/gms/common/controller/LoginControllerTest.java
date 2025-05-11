@@ -13,6 +13,8 @@ import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseCookie;
@@ -43,7 +45,7 @@ class LoginControllerTest {
     void setup() {
         service = mock(AuthenticationService.class);
         systemPropertyService = mock(SystemPropertyService.class);
-        controller = new LoginController(service, systemPropertyService, false);
+        controller = new LoginController(service, systemPropertyService, false, true);
     }
 
     @Test
@@ -72,9 +74,11 @@ class LoginControllerTest {
         }
     }
 
-    @Test
-    void loginAuthentication_whenUserIsActive_thenReturnJwtAndCookies() {
-        // arrange
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void loginAuthentication_whenUserIsActive_thenReturnJwtAndCookies(boolean csrfEnabled) {
+        // given
+        controller = new LoginController(service, systemPropertyService, false, csrfEnabled);
         AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
 
         AuthenticationResponse mockResponse = new AuthenticationResponse();
@@ -82,10 +86,15 @@ class LoginControllerTest {
         mockResponse.setToken("TOKEN");
         mockResponse.setCurrentUser(TestUtils.createUserInfoDto());
         mockResponse.setPhase(AuthResponsePhase.COMPLETED);
+        String csrfTokenValue = "csrf-token";
+        mockResponse.setCsrfToken(csrfTokenValue);
         when(service.authenticate("user", "pass")).thenReturn(mockResponse);
 
         when(systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(2L);
         when(systemPropertyService.getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(3L);
+        if (csrfEnabled) {
+            when(systemPropertyService.getLong(SystemProperty.CSRF_TOKEN_EXPIRATION_TIME_SECONDS)).thenReturn(3L);
+        }
 
         MockedStatic<CookieUtils> mockCookieUtils = mockStatic(CookieUtils.class);
 
@@ -96,6 +105,12 @@ class LoginControllerTest {
         ResponseCookie refreshJwtCookie = mock(ResponseCookie.class);
         when(refreshJwtCookie.toString()).thenReturn("mock-cookie2");
         mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESHTOKEN"), eq(3L), eq(false))).thenReturn(refreshJwtCookie);
+
+        if (csrfEnabled) {
+            ResponseCookie csrfCookie = mock(ResponseCookie.class);
+            when(csrfCookie.toString()).thenReturn(csrfTokenValue);
+            mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.CSRF_TOKEN), eq(csrfTokenValue), eq(3L), eq(false), eq(false))).thenReturn(csrfCookie);
+        }
 
         // act
         ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto);
@@ -114,12 +129,17 @@ class LoginControllerTest {
 
         mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.ACCESS_JWT_TOKEN), eq("TOKEN"), eq(2L), eq(false)));
         mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESHTOKEN"), eq(3L), eq(false)));
+        if (csrfEnabled) {
+            verify(systemPropertyService).getLong(SystemProperty.CSRF_TOKEN_EXPIRATION_TIME_SECONDS);
+            mockCookieUtils.verify(() -> CookieUtils.createCookie(eq(Constants.CSRF_TOKEN), eq(csrfTokenValue), eq(3L), eq(false), eq(false)));
+        }
         mockCookieUtils.close();
     }
 
     @Test
     void loginAuthentication_whenUserIsMfaEnabled_thenReturnMfaRequired() {
         // arrange
+        controller = new LoginController(service, systemPropertyService, false, false);
         AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
 
         AuthenticationResponse mockResponse = new AuthenticationResponse();
@@ -140,9 +160,11 @@ class LoginControllerTest {
 		verify(systemPropertyService, never()).getLong(SystemProperty.REFRESH_JWT_EXPIRATION_TIME_SECONDS);
     }
 
-    @Test
-    void logout_whenCalled_thenDeleteCookies() {
-        // act
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void logout_whenCalled_thenDeleteCookies(boolean csrfEnabled) {
+        // given
+        controller = new LoginController(service, systemPropertyService, false, csrfEnabled);
         ResponseEntity<Void> response = controller.logout();
     
         // assert
@@ -153,6 +175,10 @@ class LoginControllerTest {
                 .stream().anyMatch(item -> item.equals("jwt=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax")));
         assertTrue(Objects.requireNonNull(response.getHeaders().get("Set-Cookie"))
                 .stream().anyMatch(item -> item.equals("refreshJwt=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax")));
+        if (csrfEnabled) {
+            assertTrue(Objects.requireNonNull(response.getHeaders().get("Set-Cookie"))
+                    .stream().anyMatch(item -> item.equals("XSRF-TOKEN=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax")));
+        }
         verify(service).logout();
     }
 }

@@ -51,6 +51,7 @@ public final class Constants {
 	// Headers
 	public static final String ACCESS_JWT_TOKEN = "jwt";
 	public static final String REFRESH_JWT_TOKEN = "refreshJwt";
+	public static final String CSRF_TOKEN = "XSRF-TOKEN";
 	public static final String SET_COOKIE = "Set-Cookie";
 	public static final String API_KEY_HEADER = "x-api-key";
 	

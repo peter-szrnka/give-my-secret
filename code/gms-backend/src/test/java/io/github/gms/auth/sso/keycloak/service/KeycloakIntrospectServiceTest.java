@@ -32,7 +32,7 @@ class KeycloakIntrospectServiceTest {
     private KeycloakIntrospectService service;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         oAuthService = mock(KeycloakOAuthService.class);
         keycloakSettings = mock(KeycloakSettings.class);
         service = new KeycloakIntrospectService(oAuthService, keycloakSettings);

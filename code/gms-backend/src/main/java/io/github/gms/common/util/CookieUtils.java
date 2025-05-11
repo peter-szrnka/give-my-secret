@@ -13,10 +13,14 @@ public class CookieUtils {
 	private CookieUtils() {}
 
 	public static ResponseCookie createCookie(String name, String value, long maxAge, boolean secure) {
+		return createCookie(name, value, maxAge, secure, true);
+	}
+
+	public static ResponseCookie createCookie(String name, String value, long maxAge, boolean secure, boolean httpOnly) {
 		return ResponseCookie.from(name, value)
 				.maxAge(Duration.ofSeconds(maxAge))
 				.secure(secure)
-				.httpOnly(true)
+				.httpOnly(httpOnly)
 				.sameSite(secure ? "None" : "Lax")
 				.path("/")
 				.build();

@@ -55,7 +55,7 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 
 	@AfterEach
 	@SneakyThrows
-	public void tearDownAll() {
+	void tearDownAll() {
 		TestUtils.deleteDirectoryWithContent("./temp-output");
 		MDC.clear();
 	}

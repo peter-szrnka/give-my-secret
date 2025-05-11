@@ -55,24 +55,20 @@ public class SystemPropertyService {
 
 	@Cacheable
 	public String get(SystemProperty property) {
-		return repository.getValueByKey(property).orElse(property.getDefaultValue());
+		return getValueByKey(property);
 	}
 
 	@Cacheable
 	public Long getLong(SystemProperty property) {
-		return Long.parseLong(get(property));
-	}
-
-	private SystemProperty getSystemPropertyByName(String key) {
-		return SystemProperty.getByKey(key).orElseThrow(() -> new GmsException("Unknown system property!", ErrorCode.GMS_026));
+		return Long.parseLong(getValueByKey(property));
 	}
 
 	public boolean getBoolean(SystemProperty key) {
-		return Boolean.parseBoolean(get(key));
+		return Boolean.parseBoolean(getValueByKey(key));
 	}
 
 	public Integer getInteger(SystemProperty key) {
-		return Integer.parseInt(get(key));
+		return Integer.parseInt(getValueByKey(key));
 	}
 
 	public void updateSystemProperty(SystemPropertyDto systemPropertyDto) {
@@ -84,5 +80,13 @@ public class SystemPropertyService {
 		}
 
 		repository.save(converter.toEntity(entity, systemPropertyDto));
+	}
+
+	private String getValueByKey(SystemProperty property) {
+		return repository.getValueByKey(property).orElse(property.getDefaultValue());
+	}
+
+	private SystemProperty getSystemPropertyByName(String key) {
+		return SystemProperty.getByKey(key).orElseThrow(() -> new GmsException("Unknown system property!", ErrorCode.GMS_026));
 	}
 }

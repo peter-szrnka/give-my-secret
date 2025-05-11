@@ -34,7 +34,7 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 	private SecretRotationService service;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		clock = mock(Clock.class);
 		secretRepository = mock(SecretRepository.class);
 		cryptoService = mock(CryptoService.class);

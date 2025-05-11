@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -62,19 +63,33 @@ public abstract class AbstractIntegrationTest {
 	}
 
 	protected <I, O> ResponseEntity<O> executeHttpGet(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
+		addCsrf(requestEntity);
 		return rest.exchange(basePath + port + url, HttpMethod.GET, requestEntity, responseType);
 	}
 
 	protected <I, O> ResponseEntity<O> executeHttpPost(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
+		addCsrf(requestEntity);
 		return rest.exchange(basePath + port + url, HttpMethod.POST, requestEntity, responseType);
 	}
 
 	protected <I, O> ResponseEntity<O> executeHttpDelete(String url, HttpEntity<I> requestEntity,
 			Class<O> responseType) {
+		addCsrf(requestEntity);
 		return rest.exchange(basePath + port + url, HttpMethod.DELETE, requestEntity, responseType);
 	}
 
 	protected <I> ResponseEntity<String> executeHttpPut(HttpEntity<I> requestEntity) {
+		addCsrf(requestEntity);
 		return rest.exchange(basePath + port + "/mark_as_read", HttpMethod.PUT, requestEntity, String.class);
+	}
+
+	protected static <I> void addCsrf(HttpEntity<I> requestEntity) {
+		if (requestEntity == null) {
+			return;
+		}
+
+		HttpHeaders headers = HttpHeaders.writableHttpHeaders(requestEntity.getHeaders());
+		headers.add("X-XSRF-TOKEN","1");
+		headers.add("Cookie", "XSRF-TOKEN=1");
 	}
 }

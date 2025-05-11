@@ -23,6 +23,8 @@ public class AuthenticationResponse {
 	private String token;
 	@Sensitive
 	private String refreshToken;
+	@Sensitive
+	private String csrfToken;
 	@Builder.Default
 	private AuthResponsePhase phase = AuthResponsePhase.FAILED;
 }

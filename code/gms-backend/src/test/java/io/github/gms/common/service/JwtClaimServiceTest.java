@@ -23,7 +23,7 @@ class JwtClaimServiceTest extends AbstractUnitTest {
     private JwtClaimService service;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		jwtService = mock(JwtService.class);
 		systemPropertyService = mock(SystemPropertyService.class);
 		service = new JwtClaimService(jwtService, systemPropertyService);

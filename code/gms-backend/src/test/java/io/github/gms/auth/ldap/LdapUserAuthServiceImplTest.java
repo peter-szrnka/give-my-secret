@@ -40,7 +40,7 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 	private LdapUserAuthServiceImpl service;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 		ldapTemplate = mock(LdapTemplate.class);
 		userRepository = mock(UserRepository.class);

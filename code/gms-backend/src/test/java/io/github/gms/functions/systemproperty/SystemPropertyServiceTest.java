@@ -33,7 +33,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	private SystemPropertyService service;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		converter = mock(SystemPropertyConverter.class);
 		repository = mock(SystemPropertyRepository.class);
 		service = new SystemPropertyService(converter, repository);

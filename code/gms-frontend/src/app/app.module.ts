@@ -30,6 +30,7 @@ import { SetupModule } from './components/setup/setup-module';
 import { SystemPropertyModule } from './components/system_property/system-property-module';
 import { UserModule } from './components/user/user-module';
 import { VerifyModule } from './components/verify/verify-module';
+import { CsrfTokenInterceptor } from './common/interceptor/csrf-token-interceptor';
 
 export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
 
@@ -74,6 +75,7 @@ export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
     providers: [
         provideHttpClient(),
         { provide: ENV_CONFIG, useValue: environment },
+        { provide: HTTP_INTERCEPTORS, useClass: CsrfTokenInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: MockInterceptor, multi: true },
         { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },

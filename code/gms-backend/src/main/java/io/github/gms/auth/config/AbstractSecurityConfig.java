@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,6 +37,10 @@ public abstract class AbstractSecurityConfig {
             "/gms-app/**", "/favicon.ico", "/assets/**", "/index.html**", "/*.js**", "/*.css**", "/*.json**",
             "/manifest.webmanifest", "/reset_password", "/info/error_codes"};
 
+    public Customizer<CsrfConfigurer<HttpSecurity>> csrfConfigurerCustomizer() {
+        return AbstractHttpConfigurer::disable;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            AuthenticationEntryPoint authenticationEntryPoint,
@@ -49,7 +54,7 @@ public abstract class AbstractSecurityConfig {
                                         contentSecurityPolicyConfig.policyDirectives("frame-ancestors 'none'"))
                 )
                 .cors(cors -> Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrfConfigurerCustomizer())
                 .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeHttpRequest ->

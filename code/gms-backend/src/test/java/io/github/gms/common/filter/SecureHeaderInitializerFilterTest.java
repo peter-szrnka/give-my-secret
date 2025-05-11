@@ -49,7 +49,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 	private SecureHeaderInitializerFilter filter;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		// init
 		authorizationService = mock(AuthorizationService.class);
 		systemPropertyService = mock(SystemPropertyService.class);
