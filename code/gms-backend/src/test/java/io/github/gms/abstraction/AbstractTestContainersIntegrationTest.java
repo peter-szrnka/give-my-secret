@@ -3,7 +3,7 @@ package io.github.gms.abstraction;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-public class AbstractTestContainersIntegrationTest extends AbstractIntegrationTest {
+public abstract class AbstractTestContainersIntegrationTest extends AbstractIntegrationTest {
 
     public static final String DS_DRIVER = "spring.datasource.driver-class-name";
     public static final String DS_URL = "spring.datasource.url";
