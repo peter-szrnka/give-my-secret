@@ -2,13 +2,15 @@ package io.github.gms.auth;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.web.csrf.CsrfToken;
 
+import java.util.function.Supplier;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -17,6 +19,23 @@ import static org.mockito.Mockito.when;
 class GmsCsrfTokenRequestHandlerTest extends AbstractUnitTest {
 
     private final GmsCsrfTokenRequestHandler gmsCsrfTokenRequestHandler = new GmsCsrfTokenRequestHandler();
+
+    @Test
+    void handle_thenSetRequestAttributes() {
+        // Arrange
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        CsrfToken mockCsrfToken = mock(CsrfToken.class);
+        when(mockCsrfToken.getParameterName()).thenReturn("csrf_token");
+        Supplier<CsrfToken> deferredCsrfToken = () -> mockCsrfToken;
+
+        // Act
+        gmsCsrfTokenRequestHandler.handle(request, response, deferredCsrfToken);
+
+        // Assert
+        verify(request).setAttribute(HttpServletResponse.class.getName(), response);
+        verify(request).setAttribute(CsrfToken.class.getName(), mockCsrfToken);
+    }
 
     @Test
     void resolveCsrfTokenValue_whenTokenIsNull_thenReturnNull() {
