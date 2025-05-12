@@ -35,6 +35,9 @@ export class SettingsSummaryComponent implements OnInit {
   authMode = '';
   mfaEnabled = false;
   showQrCode = false;
+  showCurrentPassword: boolean = false;
+  showNew1Password: boolean = false;
+  showNew2Password: boolean = false;
 
   constructor(
     private readonly router: Router,
@@ -42,7 +45,6 @@ export class SettingsSummaryComponent implements OnInit {
     private readonly userService: UserService,
     public dialogService: DialogService,
     private readonly splashScreenService: SplashScreenStateService,
-    private readonly translatorService: TranslatorService,
     private readonly storageService: SecureStorageService) {
     }
 
@@ -50,6 +52,18 @@ export class SettingsSummaryComponent implements OnInit {
     this.language = this.storageService.getItemWithoutEncryption('language','en');
     this.sharedData.authModeSubject$.subscribe(authMode => this.authMode = authMode);
     this.userService.isMfaActive().subscribe(response => this.mfaEnabled = response);
+  }
+
+  toggleCurrentPasswordDisplay(): void {
+    this.showCurrentPassword = !this.showCurrentPassword;
+  }
+
+  toggleNew1PasswordDisplay(): void {
+    this.showNew1Password = !this.showNew1Password;
+  }
+
+  toggleNew2PasswordDisplay(): void {
+    this.showNew2Password = !this.showNew2Password;
   }
 
   save() {

@@ -10,7 +10,6 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { UserService } from "../user/service/user-service";
 import { SettingsSummaryComponent } from "./settings-summary.component";
-import { TranslatorService } from "../../common/service/translator-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { Router } from "express";
@@ -30,7 +29,6 @@ describe('SettingsSummaryComponent', () => {
     let splashScreenService : any;
     let sharedData : any;
     let mockSubject : ReplaySubject<string>;
-    let translatorService : any;
     let storageService: any;
 
     const configTestBed = () => {
@@ -44,7 +42,6 @@ describe('SettingsSummaryComponent', () => {
                 { provide : FormBuilder, useValue : formBuilder },
                 { provide : SplashScreenStateService, useValue : splashScreenService },
                 { provide : SharedDataService, useValue : sharedData },
-                { provide : TranslatorService, useValue : translatorService },
                 { provide : SecureStorageService, useValue : storageService }
             ]
         });
@@ -70,10 +67,6 @@ describe('SettingsSummaryComponent', () => {
         splashScreenService = {
             start : jest.fn(),
             stop : jest.fn()
-        };
-
-        translatorService = {
-            translate : jest.fn().mockReturnValue('translated')
         };
 
         mockSubject = new ReplaySubject<string>();
@@ -168,5 +161,20 @@ describe('SettingsSummaryComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(storageService.setItemWithoutEncryption).toHaveBeenCalledWith('language', 'en');
+    });
+
+    it('Should toggle password display', () => {
+        // arrange
+        configTestBed();
+
+        // act
+        component.toggleCurrentPasswordDisplay();
+        component.toggleNew1PasswordDisplay();
+        component.toggleNew2PasswordDisplay();
+
+        // assert
+        expect(component.showCurrentPassword).toBe(true);
+        expect(component.showNew1Password).toBe(true);
+        expect(component.showNew2Password).toBe(true);
     });
 });

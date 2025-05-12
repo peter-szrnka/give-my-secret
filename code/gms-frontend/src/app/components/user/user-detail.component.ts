@@ -36,6 +36,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
   eventList : Event[] = [];
   public datasource : ArrayDataSource<Event>;
   editEnabled: boolean = true;
+  showPassword: boolean = false;
 
   public tableConfig = {
     pageSize : 20
@@ -73,5 +74,9 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
 
   getPageConfig(): PageConfig {
     return PAGE_CONFIG_USER;
+  }
+
+  togglePasswordDisplay(): void {
+    this.showPassword = !this.showPassword;
   }
 }

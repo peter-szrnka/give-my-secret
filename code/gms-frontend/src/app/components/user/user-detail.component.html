@@ -26,9 +26,10 @@
                 </mat-form-field>
                 <mat-form-field appearance="fill" class="full-width">
                   <mat-label>{{ 'tables.credential' | translate }}</mat-label>
-                  <input type="password" matInput autocomplete="new-password" name="credential" required="{{!data.id}}"
+                  <input type="{{showPassword ? 'text':'password'}}" matInput autocomplete="new-password" name="credential" required="{{!data.id}}"
                     [(ngModel)]="data.credential" [disabled]="editEnabled === false">
-                  </mat-form-field>
+                  <mat-icon matSuffix class="w-pointer" (click)="togglePasswordDisplay()" [title]="'login.togglePassword' | translate">{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </mat-form-field>
                   <mat-form-field appearance="fill" class="full-width">
                     <mat-label>{{ 'tables.status' | translate }}</mat-label>
                     <mat-select [(ngModel)]="data.status" name="status" required [disabled]="editEnabled === false">

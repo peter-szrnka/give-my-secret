@@ -20,20 +20,23 @@
         </mat-expansion-panel-header>
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>{{ 'settings.password.current' | translate }}</mat-label>
-          <input type="current-password" matInput name="oldCredential" required minlength="8"
+          <input [type]="showCurrentPassword ? 'text' : 'password'" autocomplete="current-password" matInput name="oldCredential" required minlength="8"
             [(ngModel)]="credentialData.oldCredential">
+            <mat-icon matSuffix class="w-pointer" (click)="toggleCurrentPasswordDisplay()" [title]="'login.togglePassword' | translate">{{showCurrentPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>{{ 'settings.password.new' | translate }}</mat-label>
-          <input type="new-password" matInput name="newCredential1" required minlength="8"
+          <input type="{{showNew1Password ? 'text' : 'password'}}" autocomplete="new-password" matInput name="newCredential1" required minlength="8"
             [(ngModel)]="credentialData.newCredential1">
+          <mat-icon matSuffix class="w-pointer" (click)="toggleNew1PasswordDisplay()" [title]="'login.togglePassword' | translate">{{showNew1Password ? 'visibility_off' : 'visibility'}}</mat-icon>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>{{ 'settings.password.confirm' | translate }}</mat-label>
-          <input type="new-password" matInput name="newCredential2" required minlength="8"
+          <input type="{{showNew2Password ? 'text' : 'password'}}" autocomplete="new-password" matInput name="newCredential2" required minlength="8"
             [(ngModel)]="credentialData.newCredential2">
+          <mat-icon matSuffix class="w-pointer" (click)="toggleNew2PasswordDisplay()" [title]="'login.togglePassword' | translate">{{showNew2Password ? 'visibility_off' : 'visibility'}}</mat-icon>
         </mat-form-field>
 
         <button name="savePassword" mat-button color="primary" [disabled]="form.status ==='INVALID'" (click)="save()">{{
