@@ -5,7 +5,6 @@ import { DialogService } from "../../common/service/dialog-service";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { TranslatorService } from "../../common/service/translator-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { UserService } from "../user/service/user-service";
 
