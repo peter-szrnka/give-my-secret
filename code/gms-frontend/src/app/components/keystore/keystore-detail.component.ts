@@ -55,7 +55,6 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
   allAliasesAreValid : boolean;
   enabledAlgorithms : string[] = ENABLED_ALGORITHMS;
   showCredential : boolean = false;
-  showAliasCredentials : any = {};
 
   constructor(
     protected override router: Router,

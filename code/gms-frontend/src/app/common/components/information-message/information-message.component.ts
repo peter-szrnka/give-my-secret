@@ -1,3 +1,4 @@
+import { NgClass } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 
@@ -12,7 +13,7 @@ const SETTINGS_MAP: any = {
  */
 @Component({
   standalone: true,
-  imports: [MatIconModule],
+  imports: [MatIconModule, NgClass],
   selector: 'information-message',
   templateUrl: './information-message.component.html',
   styleUrls: ['./information-message.component.scss']
