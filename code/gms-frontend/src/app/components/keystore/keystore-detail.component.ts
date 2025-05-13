@@ -54,6 +54,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
   aliasList : KeystoreAlias[] = [];
   allAliasesAreValid : boolean;
   enabledAlgorithms : string[] = ENABLED_ALGORITHMS;
+  showCredential : boolean = false;
 
   constructor(
     protected override router: Router,
@@ -71,7 +72,11 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
 
   override dataLoadingCallback(data: Keystore): void {
     this.aliasList = data.aliases;
-    this.datasource = new ArrayDataSource<KeystoreAlias>(this.aliasList.map(alias => {alias.operation = 'SAVE'; return alias;}));
+    this.datasource = new ArrayDataSource<KeystoreAlias>(this.aliasList.map(alias => {
+      alias.operation = 'SAVE'; 
+      alias.showCredential = false;
+      return alias;
+    }));
   }
 
   save() {
@@ -138,6 +143,14 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
     }
 
     this.refreshTable();
+  }
+
+  toggleCredentialDisplay() {
+    this.showCredential = !this.showCredential;
+  }
+
+  toggleAliasCredentialDisplay(alias : KeystoreAlias) {
+    alias.showCredential = !alias.showCredential;
   }
 
   private addAliasDataToRequest() : void {

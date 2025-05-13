@@ -16,6 +16,7 @@ import { IpRestrictionDetailResolver } from "./resolver/ip-restriction-detail.re
 import { IpRestrictionListResolver } from "./resolver/ip-restriction-list.resolver";
 import { IpRestrictionService } from "./service/ip-restriction.service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 
 /**
  * @author Peter Szrnka
@@ -34,7 +35,8 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         NavBackComponent,
         NavButtonVisibilityPipe,
         StatusToggleComponent,
-        TranslatorModule
+        TranslatorModule,
+        InformationMessageComponent
     ], providers: [
         SharedDataService, IpRestrictionService, IpRestrictionListResolver, IpRestrictionDetailResolver,
         provideHttpClient(withInterceptorsFromDi())

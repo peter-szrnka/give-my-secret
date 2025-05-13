@@ -6,6 +6,7 @@ import { AppRoutingModule } from "../../app-routing.module";
 import { ApiTestingComponent } from "./api-testing.component";
 import { ApiTestingService } from "./service/api-testing-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 
 /**
  * @author Peter Szrnka
@@ -18,6 +19,7 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         AngularMaterialModule,
         FormsModule,
         AppRoutingModule,
-        TranslatorModule
+        TranslatorModule,
+        InformationMessageComponent
     ], providers: [ApiTestingService, provideHttpClient(withInterceptorsFromDi())] })
   export class ApiTestingModule { }

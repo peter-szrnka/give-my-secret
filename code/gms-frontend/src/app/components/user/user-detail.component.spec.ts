@@ -136,4 +136,15 @@ describe('UserDetailComponent', () => {
         expect(component).toBeTruthy();
         expect(dialogService.openNewDialog).toHaveBeenCalled();
     });
+
+    it('should toggle password display', () => {
+        // arrange
+        configureTestBed();
+        // act
+        component.togglePasswordDisplay();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(component.showPassword).toBe(true);
+    });
 });

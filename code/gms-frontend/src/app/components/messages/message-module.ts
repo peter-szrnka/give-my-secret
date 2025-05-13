@@ -9,6 +9,7 @@ import { MessageListComponent } from "./message-list.component";
 import { MessageService } from "./service/message-service";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 
 /**
  * @author Peter Szrnka
@@ -24,7 +25,8 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         GmsComponentsModule,
         MomentPipe,
         NavBackComponent,
-        TranslatorModule
+        TranslatorModule,
+        InformationMessageComponent
     ], providers: [
         MessageService, provideHttpClient(withInterceptorsFromDi())
     ]
