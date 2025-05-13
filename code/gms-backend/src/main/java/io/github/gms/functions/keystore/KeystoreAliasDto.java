@@ -1,5 +1,6 @@
 package io.github.gms.functions.keystore;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.types.Sensitive;
@@ -20,6 +21,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class KeystoreAliasDto implements Serializable {
 
 	@Serial

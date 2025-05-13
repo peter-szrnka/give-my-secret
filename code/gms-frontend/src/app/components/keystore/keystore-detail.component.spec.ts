@@ -130,6 +130,8 @@ describe('KeystoreDetailComponent', () => {
         component.changeState({ alias: '...', aliasCredential: '...', operation : 'SAVE' }, 1, 'DELETE');
         component.changeState({ id: 1, alias: '...', aliasCredential: '...', operation : 'SAVE' }, 0, 'DELETE');
         component.data.generated = true;
+        component.toggleCredentialDisplay();
+        component.toggleAliasCredentialDisplay({ alias: '...', aliasCredential: '...', operation : 'SAVE', showCredential: true });
 
         // act
         component.save();

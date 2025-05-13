@@ -11,6 +11,7 @@ import { EventListResolver } from "./resolver/event-list.resolver";
 import { EventService } from "./service/event-service";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 
 /**
  * @author Peter Szrnka
@@ -27,7 +28,8 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         SplashComponent,
         MomentPipe,
         NavBackComponent,
-        TranslatorModule
+        TranslatorModule,
+        InformationMessageComponent
     ], providers: [
         EventService, EventListResolver, provideHttpClient(withInterceptorsFromDi())
     ]

@@ -7,6 +7,7 @@ import { FormsModule } from "@angular/forms";
 import { WINDOW_TOKEN } from "../../window.provider";
 import { SetupService } from "./service/setup-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 
 /**
  * @author Peter Szrnka
@@ -20,7 +21,8 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         BrowserModule,
         FormsModule,
         BrowserAnimationsModule,
-        TranslatorModule
+        TranslatorModule,
+        InformationMessageComponent
     ],
     providers: [{ provide: WINDOW_TOKEN, useValue: window }, SetupService],
     schemas : [ CUSTOM_ELEMENTS_SCHEMA ]

@@ -34,7 +34,7 @@
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>{{ 'settings.password.confirm' | translate }}</mat-label>
-          <input type="{{showNew2Password ? 'text' : 'password'}}" autocomplete="new-password" matInput name="newCredential2" required minlength="8"
+          <input [type]="showNew2Password ? 'text' : 'password'" autocomplete="new-password" matInput name="newCredential2" required minlength="8"
             [(ngModel)]="credentialData.newCredential2">
           <mat-icon matSuffix class="w-pointer" (click)="toggleNew2PasswordDisplay()" [title]="'login.togglePassword' | translate">{{showNew2Password ? 'visibility_off' : 'visibility'}}</mat-icon>
         </mat-form-field>
