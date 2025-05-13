@@ -27,7 +27,7 @@
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>{{ 'settings.password.new' | translate }}</mat-label>
-          <input type="{{showNew1Password ? 'text' : 'password'}}" autocomplete="new-password" matInput name="newCredential1" required minlength="8"
+          <input [type]="showNew1Password ? 'text' : 'password'" autocomplete="new-password" matInput name="newCredential1" required minlength="8"
             [(ngModel)]="credentialData.newCredential1">
           <mat-icon matSuffix class="w-pointer" (click)="toggleNew1PasswordDisplay()" [title]="'login.togglePassword' | translate">{{showNew1Password ? 'visibility_off' : 'visibility'}}</mat-icon>
         </mat-form-field>
