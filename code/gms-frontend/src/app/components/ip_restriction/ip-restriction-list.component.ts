@@ -12,7 +12,8 @@ import { IpRestrictionService } from "./service/ip-restriction.service";
  */
 @Component({
     selector: 'ip-restriction-list',
-    templateUrl: './ip-restriction-list.component.html'
+    templateUrl: './ip-restriction-list.component.html',
+    standalone: false
 })
 export class IpRestrictionListComponent extends BaseListComponent<IpRestriction, IpRestrictionService> {
 

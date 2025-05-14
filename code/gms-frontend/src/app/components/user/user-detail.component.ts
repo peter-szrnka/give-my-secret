@@ -22,9 +22,10 @@ const ALL_ROLES: string[] = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN','ROLE_TECH
 const ALL_STATUS: string[] = [ 'ACTIVE', 'BLOCKED', 'DISABLED', 'DELETE_REQUESTED', 'TO_BE_DELETED', 'ANONYMIZATION_REQUESTED', 'ANONYMIZED' ];
 
 @Component({
-  selector: 'user-detail-component',
-  templateUrl: './user-detail.component.html',
-  styleUrls: ['./user-detail.component.scss']
+    selector: 'user-detail-component',
+    templateUrl: './user-detail.component.html',
+    styleUrls: ['./user-detail.component.scss'],
+    standalone: false
 })
 export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, UserService> {
 

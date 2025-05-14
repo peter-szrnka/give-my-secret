@@ -13,7 +13,8 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
  */
 @Component({
     selector: 'login',
-    templateUrl: './login.component.html'
+    templateUrl: './login.component.html',
+    standalone: false
 })
 export class LoginComponent extends BaseLoginComponent {
 

@@ -105,8 +105,9 @@ interface SystemPropertyElement extends SystemProperty {
  * @author Peter Szrnka
  */
 @Component({
-  selector: 'system-property',
-  templateUrl: './system-property-list.component.html'
+    selector: 'system-property',
+    templateUrl: './system-property-list.component.html',
+    standalone: false
 })
 export class SystemPropertyListComponent {
   columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];

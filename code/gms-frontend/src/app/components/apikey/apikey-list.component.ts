@@ -14,7 +14,8 @@ import { TranslatorService } from "../../common/service/translator-service";
  */
 @Component({
     selector: 'apikey-list',
-    templateUrl: './apikey-list.component.html'
+    templateUrl: './apikey-list.component.html',
+    standalone: false
 })
 export class ApiKeyListComponent extends BaseListComponent<ApiKey, ApiKeyService> {
     apiKeyColumns: string[] = ['id', 'name', 'status', 'creationDate', 'operations'];

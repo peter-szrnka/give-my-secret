@@ -11,13 +11,12 @@ export const WARNING_THRESHOLD = 60000;
  * @author Peter Szrnka
  */
 @Component({
-    standalone: true,
     imports: [
         MatTooltipModule,
         DatePipe,
         NgClass
     ],
-    schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     selector: 'automatic-logout',
     templateUrl: './automatic-logout.component.html',
     styleUrls: ['./automatic-logout.component.scss']

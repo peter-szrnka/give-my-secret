@@ -28,7 +28,6 @@ const MANUAL_JOB_EXECUTION_CONFIG = [
  * @author Peter Szrnka
  */
 @Component({
-    standalone: true,
     imports: [AngularMaterialModule, CommonModule, NavBackComponent, MomentPipe, TranslatorModule, InformationMessageComponent],
     selector: 'job-detail-list',
     templateUrl: './job-detail-list.component.html'

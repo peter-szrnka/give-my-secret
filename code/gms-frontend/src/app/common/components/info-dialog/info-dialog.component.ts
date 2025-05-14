@@ -6,8 +6,9 @@ import { DialogData } from "./dialog-data.model";
  * @author Peter Szrnka
  */
 @Component({
-  selector: 'info-dialog',
-  templateUrl: './info-dialog.component.html'
+    selector: 'info-dialog',
+    templateUrl: './info-dialog.component.html',
+    standalone: false
 })
 export class InfoDialog {
 

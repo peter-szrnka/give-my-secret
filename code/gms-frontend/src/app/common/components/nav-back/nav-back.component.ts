@@ -8,8 +8,7 @@ import { ButtonConfig } from './button-config';
 /**
  * @author Peter Szrnka
  */
-@Component({ 
-    standalone: true,
+@Component({
     imports: [
         AngularMaterialModule,
         NavButtonVisibilityPipe,
@@ -18,7 +17,7 @@ import { ButtonConfig } from './button-config';
     ],
     selector: 'nav-back',
     templateUrl: './nav-back.component.html',
-    styleUrls : ['./nav-back.component.scss'],
+    styleUrls: ['./nav-back.component.scss']
 })
 export class NavBackComponent {
 

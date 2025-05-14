@@ -11,9 +11,10 @@ import { User } from '../user/model/user.model';
  * @author Peter Szrnka
  */
 @Component({
-    selector : 'header',
-    templateUrl : './header.component.html',
-    styleUrls : ['./header.component.scss']
+    selector: 'header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    standalone: false
 })
 export class HeaderComponent implements OnInit, OnDestroy {
     currentUser : User | undefined;

@@ -9,7 +9,6 @@ import { TranslatorService } from '../../service/translator-service';
  * @author Peter Szrnka
  */
 @Component({
-    standalone: true,
     imports: [
         AngularMaterialModule,
         NgIf,
@@ -18,10 +17,10 @@ import { TranslatorService } from '../../service/translator-service';
     providers: [
         MatSnackBar
     ],
-    schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ], 
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     selector: 'status-toggle',
     templateUrl: './status-toggle.component.html',
-    styleUrls : ['./status-toggle.component.scss']
+    styleUrls: ['./status-toggle.component.scss']
 })
 export class StatusToggleComponent {
 

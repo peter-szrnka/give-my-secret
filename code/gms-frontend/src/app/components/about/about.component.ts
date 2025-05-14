@@ -11,8 +11,7 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
  * @author Peter Szrnka
  */
 @Component({
-    standalone: true,
-    imports: [ AngularMaterialModule, CommonModule , MomentPipe, TranslatorModule ],
+    imports: [AngularMaterialModule, CommonModule, MomentPipe, TranslatorModule],
     selector: 'about',
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.scss']

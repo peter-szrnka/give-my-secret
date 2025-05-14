@@ -13,8 +13,9 @@ export interface ConfirmDeleteDialogData {
  * @author Peter Szrnka
  */
 @Component({
-  selector: 'confirm-delete-dialog',
-  templateUrl: './confirm-delete-dialog.component.html',
+    selector: 'confirm-delete-dialog',
+    templateUrl: './confirm-delete-dialog.component.html',
+    standalone: false
 })
 export class ConfirmDeleteDialog {
 

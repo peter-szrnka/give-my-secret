@@ -20,7 +20,8 @@ export enum SelectionStatus {
 @Component({
     selector: 'message-list',
     templateUrl: './message-list.component.html',
-    styleUrls: ['./message-list.component.scss']
+    styleUrls: ['./message-list.component.scss'],
+    standalone: false
 })
 export class MessageListComponent implements OnInit {
     messageColumns: string[] = ['message', 'creationDate', 'read_toggle', 'delete', 'selection'];

@@ -10,8 +10,7 @@ import { ErrorCode } from "./model/error-code.model";
  * @author Peter Szrnka
  */
 @Component({
-    standalone: true,
-    imports: [ AngularMaterialModule, TranslatorModule, InformationMessageComponent ],
+    imports: [AngularMaterialModule, TranslatorModule, InformationMessageComponent],
     selector: 'help',
     templateUrl: './help.component.html',
     styleUrls: ['./help.component.scss']
