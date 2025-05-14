@@ -11,7 +11,6 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { IpRestrictionListComponent } from "./ip-restriction-list.component";
 import { IpRestrictionService } from "./service/ip-restriction.service";
-import { query } from "express";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**

@@ -9,6 +9,7 @@ import { ButtonConfig } from './button-config';
  * @author Peter Szrnka
  */
 @Component({
+    standalone: true,
     imports: [
         AngularMaterialModule,
         NavButtonVisibilityPipe,

@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AngularMaterialModule } from '../../../angular-material-module';
@@ -9,9 +8,9 @@ import { TranslatorService } from '../../service/translator-service';
  * @author Peter Szrnka
  */
 @Component({
+    standalone: true,
     imports: [
         AngularMaterialModule,
-        NgIf,
         TranslatorModule
     ],
     providers: [

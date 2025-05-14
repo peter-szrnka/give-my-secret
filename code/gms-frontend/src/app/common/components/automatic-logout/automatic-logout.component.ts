@@ -11,6 +11,7 @@ export const WARNING_THRESHOLD = 60000;
  * @author Peter Szrnka
  */
 @Component({
+    standalone: true,
     imports: [
         MatTooltipModule,
         DatePipe,

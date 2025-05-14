@@ -40,9 +40,11 @@
             ],
             "scripts": [],
             "stylePreprocessorOptions" : {
-              "includePaths": ["node_modules/"]
+              "includePaths": ["node_modules/"],
+              "sass": {
+                "silenceDeprecations": ["mixed-decls", "color-functions", "global-builtin", "import"]
+              }
             },
-            "serviceWorker": true,
             "browser": "src/main.ts"
           },
           "configurations": {

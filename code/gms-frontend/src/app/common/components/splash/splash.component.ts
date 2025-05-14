@@ -7,6 +7,7 @@ import { NgStyle } from "@angular/common";
  * @author Peter Szrnka
  */
 @Component({
+    standalone: true,
     imports: [
         AngularMaterialModule,
         NgStyle

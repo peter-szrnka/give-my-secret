@@ -12,10 +12,11 @@ const SETTINGS_MAP: any = {
  * @author Peter Szrnka
  */
 @Component({
-    imports: [MatIconModule, NgClass],
-    selector: 'information-message',
-    templateUrl: './information-message.component.html',
-    styleUrls: ['./information-message.component.scss']
+  standalone: true,
+  imports: [MatIconModule, NgClass],
+  selector: 'information-message',
+  templateUrl: './information-message.component.html',
+  styleUrls: ['./information-message.component.scss'],
 })
 export class InformationMessageComponent implements OnInit {
 
