@@ -15,7 +15,8 @@ import { ApiKeyService } from "./service/apikey-service";
  */
 @Component({
     selector: 'api-key-detail',
-    templateUrl: './apikey-detail.component.html'
+    templateUrl: './apikey-detail.component.html',
+    standalone: false
 })
 export class ApiKeyDetailComponent extends BaseSaveableDetailComponent<ApiKey, ApiKeyService> {
 

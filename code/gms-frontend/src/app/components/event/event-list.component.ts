@@ -14,7 +14,8 @@ import { EventService } from "./service/event-service";
  */
 @Component({
     selector: 'event-list-component',
-    templateUrl: './event-list.component.html'
+    templateUrl: './event-list.component.html',
+    standalone: false
 })
 export class EventListComponent extends BaseListComponent<Event, EventService> {
 

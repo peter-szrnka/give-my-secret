@@ -32,7 +32,8 @@ export const EMPTY_ADMIN_DATA : UserData = {
 @Component({
     selector: 'setup-component',
     templateUrl: './setup.component.html',
-    styleUrls: ['./setup.component.scss']
+    styleUrls: ['./setup.component.scss'],
+    standalone: false
 })
 export class SetupComponent implements OnInit {
 

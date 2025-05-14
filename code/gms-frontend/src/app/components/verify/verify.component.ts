@@ -16,7 +16,8 @@ import { LoggerService } from "../../common/service/logger-service";
 @Component({
     selector: 'verify',
     templateUrl: './verify.component.html',
-    styleUrls: ['./verify.component.scss']
+    styleUrls: ['./verify.component.scss'],
+    standalone: false
 })
 export class VerifyComponent extends BaseLoginComponent {
 

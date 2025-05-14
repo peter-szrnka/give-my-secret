@@ -38,9 +38,10 @@ const ENABLED_ALGORITHMS : string[] = [
  * @author Peter Szrnka
  */
 @Component({
-  selector: 'keystore-detail',
-  templateUrl: './keystore-detail.component.html',
-  styleUrls: ['./keystore-detail.component.scss']
+    selector: 'keystore-detail',
+    templateUrl: './keystore-detail.component.html',
+    styleUrls: ['./keystore-detail.component.scss'],
+    standalone: false
 })
 export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, KeystoreService> {
 

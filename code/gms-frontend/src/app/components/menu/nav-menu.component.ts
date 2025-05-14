@@ -27,7 +27,8 @@ export const NAV_MENU_ITEMS: NavMenuItem[] = [
 @Component({
     selector: 'nav-menu',
     templateUrl: './nav-menu.html',
-    styleUrls: ['./nav-menu.css']
+    styleUrls: ['./nav-menu.css'],
+    standalone: false
 })
 export class NavMenuComponent {
 

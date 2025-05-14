@@ -16,7 +16,7 @@ const SETTINGS_MAP: any = {
   imports: [MatIconModule, NgClass],
   selector: 'information-message',
   templateUrl: './information-message.component.html',
-  styleUrls: ['./information-message.component.scss']
+  styleUrls: ['./information-message.component.scss'],
 })
 export class InformationMessageComponent implements OnInit {
 

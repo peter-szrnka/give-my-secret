@@ -9,13 +9,13 @@ import { NgStyle } from "@angular/common";
 @Component({
     standalone: true,
     imports: [
-      AngularMaterialModule,
-      NgStyle
+        AngularMaterialModule,
+        NgStyle
     ],
     selector: 'splash-screen',
     templateUrl: './splash.component.html',
-    styleUrls : ['./splash.component.scss']
-  })
+    styleUrls: ['./splash.component.scss']
+})
 export class SplashComponent {
 
   public opacityChange = 1;

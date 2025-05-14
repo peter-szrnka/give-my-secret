@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AngularMaterialModule } from '../../../angular-material-module';
@@ -12,16 +11,15 @@ import { TranslatorService } from '../../service/translator-service';
     standalone: true,
     imports: [
         AngularMaterialModule,
-        NgIf,
         TranslatorModule
     ],
     providers: [
         MatSnackBar
     ],
-    schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ], 
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     selector: 'status-toggle',
     templateUrl: './status-toggle.component.html',
-    styleUrls : ['./status-toggle.component.scss']
+    styleUrls: ['./status-toggle.component.scss']
 })
 export class StatusToggleComponent {
 

@@ -12,7 +12,8 @@ import { AnnouncementService } from "./service/announcement-service";
  */
 @Component({
     selector: 'announcement-list-component',
-    templateUrl: './announcement-list.component.html'
+    templateUrl: './announcement-list.component.html',
+    standalone: false
 })
 export class AnnouncementListComponent extends BaseListComponent<Announcement, AnnouncementService> {
 

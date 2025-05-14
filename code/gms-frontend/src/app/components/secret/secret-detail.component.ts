@@ -38,7 +38,8 @@ export enum ValidationState {
 @Component({
     selector: 'secret-detail',
     templateUrl: './secret-detail.component.html',
-    styleUrls: ['./secret-detail.component.scss']
+    styleUrls: ['./secret-detail.component.scss'],
+    standalone: false
 })
 export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretService> {
 

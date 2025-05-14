@@ -17,7 +17,7 @@ export const WARNING_THRESHOLD = 60000;
         DatePipe,
         NgClass
     ],
-    schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     selector: 'automatic-logout',
     templateUrl: './automatic-logout.component.html',
     styleUrls: ['./automatic-logout.component.scss']

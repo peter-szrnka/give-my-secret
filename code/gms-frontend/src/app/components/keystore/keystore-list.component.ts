@@ -12,7 +12,8 @@ import { KeystoreService } from "./service/keystore-service";
  */
 @Component({
     selector: 'keystore-list',
-    templateUrl: './keystore-list.component.html'
+    templateUrl: './keystore-list.component.html',
+    standalone: false
 })
 export class KeystoreListComponent extends BaseListComponent<Keystore, KeystoreService> {
     keystoreColumns: string[] = ['id', 'name', 'type', 'status', 'creationDate', 'operations'];

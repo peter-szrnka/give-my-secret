@@ -6,7 +6,8 @@ import { ResetPasswordRequestService } from "./service/request-password-reset.se
 
 @Component({
     selector: 'request-password-reset',
-    templateUrl: './request-password-reset.component.html'
+    templateUrl: './request-password-reset.component.html',
+    standalone: false
 })
 export class RequestPasswordResetComponent {
 

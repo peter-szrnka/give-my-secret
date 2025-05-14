@@ -12,7 +12,7 @@ import { UserService } from "../user/service/user-service";
 import { SettingsSummaryComponent } from "./settings-summary.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
-import { Router } from "express";
+import { Router } from "@angular/router";
 
 /**
  * @author Peter Szrnka

@@ -10,11 +10,10 @@ import { SharedDataService } from "../../common/service/shared-data-service";
  * @author Peter Szrnka
  */
 @Component({
-  standalone: true,
-  imports: [MatIconModule, MatProgressBarModule, TranslatorModule],
-  selector: 'error',
-  templateUrl: './error.component.html',
-  styleUrls: ['./error.component.scss']
+    imports: [MatIconModule, MatProgressBarModule, TranslatorModule],
+    selector: 'error',
+    templateUrl: './error.component.html',
+    styleUrls: ['./error.component.scss']
 })
 export class ErrorComponent {
 

@@ -14,7 +14,8 @@ import { IpRestrictionService } from "./service/ip-restriction.service";
  */
 @Component({
     selector: 'ip-restriction-key-detail',
-    templateUrl: './ip-restriction-detail.component.html'
+    templateUrl: './ip-restriction-detail.component.html',
+    standalone: false
 })
 export class IprestrictionDetailComponent extends BaseSaveableDetailComponent<IpRestriction, IpRestrictionService> {
 
