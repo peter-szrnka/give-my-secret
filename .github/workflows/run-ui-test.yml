@@ -28,7 +28,7 @@ jobs:
         working-directory: ./code/gms-frontend
         run: npm install
       - name: Install PlayWright
-        run: npm install -g artillery artillery-engine-playwright playwright && npm cache clean --force
+        run: npm install -g artillery artillery-engine-playwright && npx install playwright && npm cache clean --force
       - name: Run tests
         working-directory: ./code/gms-frontend
         run: npm run uiTest
