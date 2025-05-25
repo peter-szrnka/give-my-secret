@@ -4,6 +4,7 @@ import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
+import io.github.gms.common.dto.IntegerValueDto;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.util.TestUtils;
@@ -19,9 +20,7 @@ import java.time.ZonedDateTime;
 
 import static io.github.gms.util.TestConstants.LIST;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Szrnka
@@ -103,7 +102,7 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 	@TestedMethod("getUnprocessedEventsCount")
 	void getUnprocessedEventsCount_whenCalled_thenReturnOk() {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
-		ResponseEntity<Integer> response = executeHttpGet(path + "/unprocessed", requestEntity, Integer.class);
+		ResponseEntity<IntegerValueDto> response = executeHttpGet(path + "/unprocessed", requestEntity, IntegerValueDto.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());

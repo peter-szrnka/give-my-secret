@@ -3,6 +3,7 @@ package io.github.gms.functions.event;
 import io.github.gms.abstraction.AbstractSecurityTest;
 import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
+import io.github.gms.common.dto.IntegerValueDto;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ class EventAdminRoleSecurityTest extends AbstractSecurityTest {
 	@TestedMethod("getUnprocessedEventsCount")
 	void getUnprocessedEventsCount_whenCalled_thenReturn403() {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));
-		ResponseEntity<Integer> response = executeHttpGet(urlPrefix + "/unprocessed", requestEntity, Integer.class);
+		ResponseEntity<IntegerValueDto> response = executeHttpGet(urlPrefix + "/unprocessed", requestEntity, IntegerValueDto.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
