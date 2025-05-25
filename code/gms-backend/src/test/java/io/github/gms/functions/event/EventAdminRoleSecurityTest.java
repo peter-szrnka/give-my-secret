@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 import static io.github.gms.util.TestConstants.TAG_SECURITY_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Peter Szrnka
@@ -41,5 +42,15 @@ class EventAdminRoleSecurityTest extends AbstractSecurityTest {
 
 		// assert
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+	}
+
+	@Test
+	@TestedMethod("getUnprocessedEventsCount")
+	void getUnprocessedEventsCount_whenCalled_thenReturn403() {
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));
+		ResponseEntity<Integer> response = executeHttpGet(urlPrefix + "/unprocessed", requestEntity, Integer.class);
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertNotNull(response.getBody());
 	}
 }
