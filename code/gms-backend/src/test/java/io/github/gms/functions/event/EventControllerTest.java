@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -67,5 +68,16 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).listByUser(1L, pageable);
+    }
+
+    @Test
+    void getUnprocessedEventsCount_thenReturnOk() {
+        when(service.getUnprocessedEventsCount()).thenReturn(1);
+
+        ResponseEntity<Integer> response = controller.getUnprocessedEventsCount();
+
+        assertNotNull(response);
+        assertEquals(1, response.getBody());
+        verify(service).getUnprocessedEventsCount();
     }
 }

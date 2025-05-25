@@ -98,4 +98,14 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		assertEquals(EventOperation.GET_BY_ID, responseList.getResultList().getFirst().getOperation());
 		assertEquals(EventTarget.API_KEY, responseList.getResultList().getFirst().getTarget());
 	}
+
+	@Test
+	@TestedMethod("getUnprocessedEventsCount")
+	void getUnprocessedEventsCount_whenCalled_thenReturnOk() {
+		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
+		ResponseEntity<Integer> response = executeHttpGet(path + "/unprocessed", requestEntity, Integer.class);
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertNotNull(response.getBody());
+	}
 }
