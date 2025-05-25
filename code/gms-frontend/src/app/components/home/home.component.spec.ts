@@ -75,7 +75,7 @@ describe('HomeComponent', () => {
         };
         mockHomeData = {
             events: {
-                resultList: [{ id: 1, target: 'apikey', username: 'user-1', operation: 'save', eventDate: new Date() }],
+                resultList: [{ id: 1, entityId:1, source: "UI", target: 'apikey', username: 'user-1', operation: 'save', eventDate: new Date() }],
                 totalElements: 0
             },
             announcements: {
@@ -104,7 +104,7 @@ describe('HomeComponent', () => {
     it('should not load component for unknown user', () => {
         mockHomeData = {
             events: {
-                resultList: [{ id: 1, target: 'apikey', username: 'user-1', operation: 'save', eventDate: new Date() }],
+                resultList: [{ id: 1, entityId:1, source: "UI", target: 'apikey', username: 'user-1', operation: 'save', eventDate: new Date() }],
                 totalElements: 0
             },
             announcements: {

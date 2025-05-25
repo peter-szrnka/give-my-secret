@@ -7,8 +7,10 @@ import { EventService } from "./event-service";
 
 const TEST_EVENT : Event = {
   id : 1,
+  entityId: 1,
   username : "user1",
   eventDate: new Date(),
+  source: "UI",
   target : "USER",
   operation : "SAVE"
 };
