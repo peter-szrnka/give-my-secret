@@ -51,9 +51,12 @@ public enum SystemProperty {
 	USER_ANONYMIZATION_RUNNER_CONTAINER_ID(JOB, STRING, ""),
 	USER_DELETION_RUNNER_CONTAINER_ID(JOB, STRING, ""),
 	USER_DELETION_JOB_ENABLED(JOB, BOOLEAN, TRUE),
+	UNPROCESSED_AUDIT_LOGS_RUNNER_CONTAINER_ID(JOB, STRING, ""),
+	UNPROCESSED_AUDIT_LOGS_ENABLED(JOB, BOOLEAN, TRUE),
 	// Other configurations
 	ENABLE_AUTOMATIC_LOGOUT(GENERAL, BOOLEAN, "false"),
-	AUTOMATIC_LOGOUT_TIME_IN_MINUTES(GENERAL, INTEGER, "15", value -> Integer.parseInt(value) >= 15);
+	AUTOMATIC_LOGOUT_TIME_IN_MINUTES(GENERAL, INTEGER, "15", value -> Integer.parseInt(value) >= 15),
+	ENABLE_DETAILED_AUDIT(GENERAL, BOOLEAN, "false");
 
 	SystemProperty(SystemPropertyCategory category, PropertyType type, String defaultValue, PropertyTypeValidator validator) {
 		this.category = category;

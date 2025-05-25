@@ -15,6 +15,9 @@ public final class Constants {
 	public static final String USER_ID = "userId";
 	public static final String KEYSTORE_ID = "keystoreId";
 
+	public static final Long JOB_USER = -1L;
+	public static final Long GENERIC_USER = 0L;
+
 	public static final String ENTITY_NOT_FOUND = "Entity not found!";
 	public static final String LDAP_CRYPT_PREFIX = "{CRYPT}";
 

@@ -5,6 +5,7 @@ import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,9 +24,9 @@ public class Test2Controller {
 	}
 
 	@ResponseBody
-	@GetMapping("/test4")
+	@GetMapping("/test4/{id}")
 	@Audited(operation = EventOperation.GET_BY_ID)
-	public String test2() {
+	public String test2(@PathVariable("id") Long id) {
 		return "OK";
 	}
 }

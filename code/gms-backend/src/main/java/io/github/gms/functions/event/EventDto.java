@@ -24,8 +24,10 @@ public class EventDto implements Serializable {
 	private Long id;
 	private Long userId;
 	private String username;
+	private Long entityId;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
 	private ZonedDateTime eventDate;
 	private EventOperation operation;
+	private EventSource source;
 	private EventTarget target;
 }

@@ -4,7 +4,9 @@ import io.github.gms.common.enums.JobStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.SystemStatus;
+import io.github.gms.common.service.GmsThreadLocalValues;
 import io.github.gms.common.util.MdcUtils;
+import io.github.gms.functions.event.EventSource;
 import io.github.gms.functions.maintenance.job.JobEntity;
 import io.github.gms.functions.maintenance.job.JobRepository;
 import io.github.gms.functions.setup.SystemAttributeEntity;
@@ -23,6 +25,7 @@ import java.util.UUID;
 
 import static io.github.gms.common.enums.JobStatus.COMPLETED;
 import static io.github.gms.common.enums.JobStatus.FAILED;
+import static io.github.gms.common.util.Constants.JOB_USER;
 import static io.github.gms.common.util.Constants.TRUE;
 
 /**
@@ -58,6 +61,8 @@ public abstract class AbstractJob {
             return;
         }
 
+        GmsThreadLocalValues.setEventSource(EventSource.JOB);
+        GmsThreadLocalValues.setUserId(JOB_USER);
         MdcUtils.put(MdcParameter.CORRELATION_ID, UUID.randomUUID().toString());
         createJobExecution();
 
@@ -71,6 +76,8 @@ public abstract class AbstractJob {
 
         MdcUtils.remove(MdcParameter.JOB_ID);
         MdcUtils.remove(MdcParameter.CORRELATION_ID);
+        GmsThreadLocalValues.removeEventSource();
+        GmsThreadLocalValues.removeUserId();
     }
 
     protected boolean skipJobExecution() {
@@ -81,7 +88,7 @@ public abstract class AbstractJob {
         JobEntity newEntity = jobRepository.save(JobEntity.builder()
                 .name(getClass().getSimpleName())
                 .correlationId(MdcUtils.get(MdcParameter.CORRELATION_ID))
-                .status(JobStatus.COMPLETED)
+                .status(JobStatus.RUNNING)
                 .creationDate(ZonedDateTime.now(clock))
                 .startTime(ZonedDateTime.now(clock))
                 .build());

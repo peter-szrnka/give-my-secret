@@ -56,6 +56,7 @@ public class SetupController implements GmsController {
         initMdc();
         return setupService.getCurrentSuperAdmin();
     }
+
     @PostMapping("/initial")
     @Audited(operation = EventOperation.SETUP)
     public SimpleResponseDto saveInitialStep() {

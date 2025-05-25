@@ -1,12 +1,15 @@
+import { Observable } from "rxjs";
 
 /**
  * @author Peter Szrnka
  */
 export interface ButtonConfig {
-    label : string,
+    label? : string,
+    labelAsync?: Observable<string>,
+    type: string,
     url? : string,
     callFunction?: Function,
-    primary : boolean,
+    primary? : boolean,
     visibilityCondition? : boolean;
     enabled? : boolean;
 }

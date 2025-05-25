@@ -18,7 +18,7 @@ public class TestController {
 
 	@ResponseBody
 	@GetMapping("/test")
-	@Audited(operation = EventOperation.GET_BY_ID)
+	@Audited(operation = EventOperation.SAVE)
 	public String test() {
 		return "OK";
 	}
@@ -26,7 +26,7 @@ public class TestController {
 	@ResponseBody
 	@GetMapping("/test2")
 	@AuditTarget(EventTarget.API_KEY)
-	@Audited(operation = EventOperation.GET_BY_ID)
+	@Audited(operation = EventOperation.LIST)
 	public String test2() {
 		return "OK";
 	}

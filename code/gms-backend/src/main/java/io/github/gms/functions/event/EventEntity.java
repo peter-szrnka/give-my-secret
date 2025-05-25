@@ -37,11 +37,18 @@ public class EventEntity extends AbstractGmsEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "entity_id")
+	private Long entityId;
+
 	@Column(name = "user_id")
 	private Long userId;
 	
 	@Column(name = "event_date")
 	private ZonedDateTime eventDate;
+
+	@Column(name = "source")
+	@Enumerated(EnumType.STRING)
+	private EventSource source;
 	
 	@Column(name = "operation")
 	@Enumerated(EnumType.STRING)

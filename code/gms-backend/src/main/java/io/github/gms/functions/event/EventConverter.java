@@ -15,8 +15,10 @@ public class EventConverter {
 	public EventDto toDto(EventEntity entity, String username) {
 		EventDto dto = new EventDto();
 		dto.setId(entity.getId());
+		dto.setEntityId(entity.getEntityId());
 		dto.setEventDate(entity.getEventDate());
 		dto.setOperation(entity.getOperation());
+		dto.setSource(entity.getSource());
 		dto.setTarget(entity.getTarget());
 		dto.setUserId(entity.getUserId());
 		dto.setUsername(username);

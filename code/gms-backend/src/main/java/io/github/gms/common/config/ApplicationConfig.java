@@ -13,8 +13,10 @@ import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
 import io.github.gms.common.interceptor.HttpClientResponseLoggingInterceptor;
 import io.github.gms.common.logging.GmsJacksonAnnotationIntrospector;
+import io.github.gms.common.service.GmsThreadLocalValues;
 import io.github.gms.functions.announcement.AnnouncementRepository;
 import io.github.gms.functions.apikey.ApiKeyRepository;
+import io.github.gms.functions.event.EventSource;
 import io.github.gms.functions.event.EventRepository;
 import io.github.gms.functions.iprestriction.IpRestrictionRepository;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
@@ -90,6 +92,20 @@ public class ApplicationConfig implements WebMvcConfigurer {
         executor.setMaxPoolSize(1);
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setThreadNamePrefix("secret-rotation-");
+		executor.setTaskDecorator(runnable -> {
+			EventSource contextValue = GmsThreadLocalValues.getEventSource();
+			Long currentUserId = GmsThreadLocalValues.getUserId();
+			return () -> {
+				try {
+					GmsThreadLocalValues.setEventSource(contextValue);
+					GmsThreadLocalValues.setUserId(currentUserId);
+					runnable.run();
+				} finally {
+					GmsThreadLocalValues.removeEventSource();
+					GmsThreadLocalValues.removeUserId();
+				}
+			};
+		});
         return executor;
     }
 	

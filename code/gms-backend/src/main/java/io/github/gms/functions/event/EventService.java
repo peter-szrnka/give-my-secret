@@ -16,4 +16,6 @@ public interface EventService extends GmsService, BatchDeletionService {
 	EventListDto list(Pageable pageable);
 	
 	EventListDto listByUser(Long userId, Pageable pageable);
+
+    int getUnprocessedEventsCount();
 }

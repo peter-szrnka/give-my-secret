@@ -46,12 +46,14 @@ public class SecretController extends AbstractClientController<SecretService> {
 
 	@GetMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
+	@Audited(operation = EventOperation.GET_BY_ID)
 	public SecretDto getById(@PathVariable(ID) Long id) {
 		return service.getById(id);
 	}
 
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
+	@Audited(operation = EventOperation.LIST)
 	public SecretListDto list(
 			@RequestParam(DIRECTION) String direction,
 			@RequestParam(PROPERTY) String property,

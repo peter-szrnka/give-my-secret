@@ -3,14 +3,18 @@
     <button mat-raised-button [routerLink]="''">{{ 'navback.home' | translate }}</button>
   }
   @for (button of buttonConfig!! | navButtonVisibility; track button) {
-  @if (button.callFunction) {
-  <button color="{{button.primary ? 'primary':'default'}}" mat-button mat-raised-button
-    [disabled]="button.enabled === false" (click)="button.callFunction()"
-    [routerLink]="button.url">{{button.label | translate}}</button>
-  } @else {
-  <button color="{{button.primary ? 'primary':'default'}}" mat-button mat-raised-button
-    [disabled]="button.enabled === false" [routerLink]="button.url">{{button.label | translate}}</button>
-  }
+    @if (button.type === 'BUTTON') {
+      @if (button.callFunction) {
+      <button color="{{button.primary ? 'primary':'default'}}" mat-button mat-raised-button
+        [disabled]="button.enabled === false" (click)="button.callFunction()"
+        [routerLink]="button.url">{{button.label | translate}}</button>
+      } @else {
+      <button color="{{button.primary ? 'primary':'default'}}" mat-button mat-raised-button
+        [disabled]="button.enabled === false" [routerLink]="button.url">{{button.label | translate}}</button>
+      }
+    } @else if (button.type === 'TEXT') {
+      jhgjhgjhg:{{button.labelAsync }}
+    }
   }
 
   @if (reload === true) {

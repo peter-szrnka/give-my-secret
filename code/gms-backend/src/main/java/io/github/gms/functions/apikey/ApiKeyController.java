@@ -35,7 +35,7 @@ public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 
 	@PostMapping
 	@PreAuthorize(ROLE_USER)
-	@Audited(operation = EventOperation.SAVE)
+	//@Audited(operation = EventOperation.SAVE)
 	public SaveEntityResponseDto save(@RequestBody SaveApiKeyRequestDto dto) {
 		return service.save(dto);
 	}
@@ -49,6 +49,7 @@ public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 	
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
+	@Audited(operation = EventOperation.LIST)
 	public ApiKeyListDto list(
 			@RequestParam(DIRECTION) String direction,
 			@RequestParam(PROPERTY) String property,

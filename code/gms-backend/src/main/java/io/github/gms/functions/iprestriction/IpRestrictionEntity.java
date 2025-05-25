@@ -1,21 +1,9 @@
 package io.github.gms.functions.iprestriction;
 
-import io.github.gms.common.abstraction.AbstractGmsEntity;
+import io.github.gms.common.abstraction.AuditableGmsEntity;
 import io.github.gms.common.enums.EntityStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serial;
 import java.time.ZonedDateTime;
@@ -33,7 +21,7 @@ import static io.github.gms.common.util.Constants.ID;
 @AllArgsConstructor
 @Table(name = "gms_ip_restriction")
 @EqualsAndHashCode(callSuper = false)
-public class IpRestrictionEntity extends AbstractGmsEntity {
+public class IpRestrictionEntity extends AuditableGmsEntity {
 
     @Serial
     private static final long serialVersionUID = 7001126982750326766L;

@@ -36,12 +36,14 @@ public class AnnouncementController extends AbstractController<AnnouncementServi
 	
 	@GetMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ALL_ROLE)
+	@Audited(operation = EventOperation.GET_BY_ID)
 	public AnnouncementDto getById(@PathVariable(ID) Long id) {
 		return service.getById(id);
 	}
 	
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ALL_ROLE)
+	@Audited(operation = EventOperation.LIST)
 	public AnnouncementListDto list(
 			@RequestParam(DIRECTION) String direction,
 			@RequestParam(PROPERTY) String property,

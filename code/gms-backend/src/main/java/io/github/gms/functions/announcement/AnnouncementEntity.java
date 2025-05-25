@@ -1,12 +1,7 @@
 package io.github.gms.functions.announcement;
 
-import io.github.gms.common.abstraction.AbstractGmsEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import io.github.gms.common.abstraction.AuditableGmsEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -23,7 +18,7 @@ import static io.github.gms.common.util.Constants.ID;
 @Entity
 @Table(name = "gms_announcement")
 @EqualsAndHashCode(callSuper = false)
-public class AnnouncementEntity extends AbstractGmsEntity {
+public class AnnouncementEntity extends AuditableGmsEntity {
 
 	@Serial
 	private static final long serialVersionUID = 5171308736459567016L;

@@ -1,7 +1,7 @@
 <div>
   <h2>{{ 'event.title' | translate }}</h2>
 
-  <nav-back></nav-back>
+  <nav-back [buttonConfig]="buttonConfig"></nav-back>
 
   @if (error) {
     <information-message severity="warning">{{ 'messages.error' | translate }}: {{error}}</information-message>
@@ -20,9 +20,17 @@
             <th mat-header-cell *matHeaderCellDef>{{ 'tables.username' | translate }}</th>
             <td mat-cell *matCellDef="let element"> {{element.username}} </td>
           </ng-container>
+          <ng-container matColumnDef="entityId">
+            <th mat-header-cell *matHeaderCellDef>Entity ID</th>
+            <td mat-cell *matCellDef="let element"> {{element.entityId}} </td>
+          </ng-container>
           <ng-container matColumnDef="operation">
             <th mat-header-cell *matHeaderCellDef>{{ 'tables.operation' | translate }}</th>
             <td mat-cell *matCellDef="let element"> {{element.operation}} </td>
+          </ng-container>
+          <ng-container matColumnDef="source">
+            <th mat-header-cell *matHeaderCellDef>{{ 'event.source' | translate }}</th>
+            <td mat-cell *matCellDef="let element"> {{element.source}} </td>
           </ng-container>
           <ng-container matColumnDef="target">
             <th mat-header-cell *matHeaderCellDef>{{ 'event.target' | translate }}</th>

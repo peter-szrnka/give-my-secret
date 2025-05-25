@@ -44,7 +44,7 @@ export enum ValidationState {
 export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretService> {
 
     buttonConfig: ButtonConfig[] = [
-        { primary: true, url: '/secret/list', label: 'navback.back2List' }
+        { primary: true, type: 'BUTTON', url: '/secret/list', label: 'navback.back2List' }
     ];
 
     rotationPeriods: string[] = [

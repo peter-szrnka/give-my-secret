@@ -189,6 +189,7 @@
         "apikey.copied": "API key copied!",
 
         "event.title" : "Events",
+        "event.source": "Event source",
         "event.target" : "Target",
         "event.date" : "Event date",
 
