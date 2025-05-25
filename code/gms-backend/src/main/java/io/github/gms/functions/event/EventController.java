@@ -1,6 +1,7 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.common.abstraction.AbstractController;
+import io.github.gms.common.dto.IntegerValueDto;
 import io.github.gms.common.util.ConverterUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,7 +43,7 @@ public class EventController extends AbstractController<EventService> {
 
 	@GetMapping("/unprocessed")
 	@PreAuthorize(ROLE_ADMIN)
-	public ResponseEntity<Integer> getUnprocessedEventsCount() {
-		return ResponseEntity.ok(service.getUnprocessedEventsCount());
+	public ResponseEntity<IntegerValueDto> getUnprocessedEventsCount() {
+		return ResponseEntity.ok(new IntegerValueDto(service.getUnprocessedEventsCount()));
 	}
 }

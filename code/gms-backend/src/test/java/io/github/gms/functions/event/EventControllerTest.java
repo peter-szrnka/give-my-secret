@@ -1,6 +1,7 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractClientControllerTest;
+import io.github.gms.common.dto.IntegerValueDto;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,10 +75,11 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
     void getUnprocessedEventsCount_thenReturnOk() {
         when(service.getUnprocessedEventsCount()).thenReturn(1);
 
-        ResponseEntity<Integer> response = controller.getUnprocessedEventsCount();
+        ResponseEntity<IntegerValueDto> response = controller.getUnprocessedEventsCount();
 
         assertNotNull(response);
-        assertEquals(1, response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().getValue());
         verify(service).getUnprocessedEventsCount();
     }
 }
