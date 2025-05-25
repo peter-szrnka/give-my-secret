@@ -79,7 +79,8 @@ describe('EventListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK"))
+            delete : jest.fn().mockReturnValue(of("OK")),
+            getUnprocessedEventsCount : of(1)
         };
 
         router = {

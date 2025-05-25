@@ -189,7 +189,7 @@
         "apikey.copied": "API key copied!",
 
         "event.title" : "Events",
-        "event.source": "Event source",
+        "event.source": "Source",
         "event.target" : "Target",
         "event.date" : "Event date",
 
@@ -502,6 +502,7 @@
         "apikey.copied": "API kulcs másolva!",
 
         "event.title" : "Események",
+        "event.source" : "Forrás",
         "event.target" : "Cél",
         "event.date" : "Esemény dátuma",
 
