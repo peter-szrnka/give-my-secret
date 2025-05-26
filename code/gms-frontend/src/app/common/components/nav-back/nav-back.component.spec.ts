@@ -36,9 +36,9 @@ describe('NavBackComponent', () => {
     it('Should create component', () => {
         component.backToHome = true;
         component.buttonConfig = [
-            { type: "BUTTON", label : "Button1", primary : false, url : "http://localhost:8080/" },
-            { type: "BUTTON", label : "Button2", primary : false, url : "http://localhost:8080/", visibilityCondition: true },
-            { type: "BUTTON", label : "Button3", primary : false, url : "http://localhost:8080/", visibilityCondition: false }
+            { label : "Button1", primary : false, url : "http://localhost:8080/" },
+            { label : "Button2", primary : false, url : "http://localhost:8080/", visibilityCondition: true },
+            { label : "Button3", primary : false, url : "http://localhost:8080/", visibilityCondition: false }
         ];
 
         expect(component).toBeTruthy();

@@ -21,7 +21,7 @@ import { ApiKeyService } from "./service/apikey-service";
 export class ApiKeyDetailComponent extends BaseSaveableDetailComponent<ApiKey, ApiKeyService> {
 
     buttonConfig: ButtonConfig[] = [
-        { primary: true, type: 'BUTTON', url: '/apikey/list', label: 'navback.back2List' }
+        { primary: true, url: '/apikey/list', label: 'navback.back2List' }
     ];
 
     constructor(

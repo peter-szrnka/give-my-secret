@@ -5,11 +5,10 @@ import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.model.UserEvent;
 import io.github.gms.common.service.GmsThreadLocalValues;
-import io.github.gms.functions.event.EventSource;
+import io.github.gms.common.types.EventSource;
 import io.github.gms.functions.event.UnprocessedEventStorage;
 import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +17,6 @@ import java.time.ZonedDateTime;
 
 import static java.util.Optional.ofNullable;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GmsEntityListener {
@@ -33,9 +31,7 @@ public class GmsEntityListener {
     @PrePersist
     @PreUpdate
     public void beforeAnyUpdate(AuditableGmsEntity entity) {
-        if (enableDetailedAudit) {
-            changeTypeThreadLocal.set(entity.getId() == null ? EventOperation.INSERT : EventOperation.UPDATE);
-        }
+        changeTypeThreadLocal.set(entity.getId() == null ? EventOperation.INSERT : EventOperation.UPDATE);
     }
 
     @PostPersist
@@ -50,9 +46,7 @@ public class GmsEntityListener {
 
     @PreRemove
     public void beforeRemove(AuditableGmsEntity entity) {
-        if (enableDetailedAudit) {
-            changeTypeThreadLocal.set(EventOperation.DELETE);
-        }
+        changeTypeThreadLocal.set(EventOperation.DELETE);
     }
 
     @PostRemove
@@ -74,8 +68,6 @@ public class GmsEntityListener {
 
         // Entity change initiator location
         EventSource eventSource = ofNullable(GmsThreadLocalValues.getEventSource()).orElse(EventSource.UNKNOWN);
-
-        log.info("[AUDIT] operation={}, class={}, id={}, target={}, eventSource={}", eventOperation.name(), getClassName(entity), entity.getId(), target, eventSource);
 
         unprocessedEventStorage.addToQueue(UserEvent.builder()
                         .userId(GmsThreadLocalValues.getUserId())

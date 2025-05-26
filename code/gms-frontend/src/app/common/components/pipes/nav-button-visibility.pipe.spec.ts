@@ -11,7 +11,7 @@ describe('NavButtonVisibilityPipe', () => {
         const pipe: NavButtonVisibilityPipe = new NavButtonVisibilityPipe();
 
         pipe.transform([
-            { type: "BUTTON", label : label, primary : primary, url : url, visibilityCondition: visibilityCondition },
+            { label : label, primary : primary, url : url, visibilityCondition: visibilityCondition },
         ]);
     });
 });

@@ -11,6 +11,7 @@ import { User } from "../user/model/user.model";
 import { EventListComponent } from "./event-list.component";
 import { EventService } from "./service/event-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { TranslatorService } from "../../common/service/translator-service";
 
 /**
  * @author Peter Szrnka
@@ -26,6 +27,7 @@ describe('EventListComponent', () => {
     let sharedDataService : any;
     let activatedRoute : any = {};
     let router : any;
+    let translatorService: any;
     // Fixtures
     let fixture : ComponentFixture<EventListComponent>;
 
@@ -39,7 +41,8 @@ describe('EventListComponent', () => {
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : EventService, useValue : service },
                 { provide : DialogService, useValue : dialogService },
-                { provide : ActivatedRoute, useClass : activatedRoute }
+                { provide : ActivatedRoute, useClass : activatedRoute },
+                { provide: TranslatorService, useValue: translatorService }
             ]
         });
     };
@@ -85,6 +88,10 @@ describe('EventListComponent', () => {
 
         router = {
             navigate : jest.fn()
+        };
+
+        translatorService = {
+            translate: jest.fn().mockReturnValue('Unprocessed: 1')
         };
     });
 

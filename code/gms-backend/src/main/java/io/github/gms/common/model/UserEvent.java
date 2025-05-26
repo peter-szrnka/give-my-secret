@@ -2,7 +2,7 @@ package io.github.gms.common.model;
 
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
-import io.github.gms.functions.event.EventSource;
+import io.github.gms.common.types.EventSource;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

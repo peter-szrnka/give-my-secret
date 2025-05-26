@@ -1,7 +1,7 @@
 <div>
   <h2>{{ 'event.title' | translate }}</h2>
 
-  <nav-back [buttonConfig]="buttonConfig"></nav-back>
+  <nav-back [customSuffixText]="unprocessedEventsLabel"></nav-back>
 
   @if (error) {
     <information-message severity="warning">{{ 'messages.error' | translate }}: {{error}}</information-message>

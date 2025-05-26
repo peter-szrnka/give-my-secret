@@ -3,6 +3,7 @@ package io.github.gms.functions.event;
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.types.EventSource;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

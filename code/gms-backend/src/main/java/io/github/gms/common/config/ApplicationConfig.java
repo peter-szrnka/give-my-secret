@@ -16,7 +16,7 @@ import io.github.gms.common.logging.GmsJacksonAnnotationIntrospector;
 import io.github.gms.common.service.GmsThreadLocalValues;
 import io.github.gms.functions.announcement.AnnouncementRepository;
 import io.github.gms.functions.apikey.ApiKeyRepository;
-import io.github.gms.functions.event.EventSource;
+import io.github.gms.common.types.EventSource;
 import io.github.gms.functions.event.EventRepository;
 import io.github.gms.functions.iprestriction.IpRestrictionRepository;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;

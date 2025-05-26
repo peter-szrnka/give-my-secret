@@ -29,7 +29,7 @@ public class UnprocessedAuditProcessorJob extends AbstractJob {
 
     private void businessLogic() {
         List<UserEvent> events = unprocessedEventStorage.getAll(true);
-        log.info("Number of queue events: {}", events.size());
+        log.info("Number of unprocessed events: {}", events.size());
 
         if (events.isEmpty()) {
             return;

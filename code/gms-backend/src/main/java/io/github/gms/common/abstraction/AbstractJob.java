@@ -6,7 +6,7 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.service.GmsThreadLocalValues;
 import io.github.gms.common.util.MdcUtils;
-import io.github.gms.functions.event.EventSource;
+import io.github.gms.common.types.EventSource;
 import io.github.gms.functions.maintenance.job.JobEntity;
 import io.github.gms.functions.maintenance.job.JobRepository;
 import io.github.gms.functions.setup.SystemAttributeEntity;

@@ -25,6 +25,7 @@ export class NavBackComponent {
     @Input() backToHome? : boolean = true;
     @Input() buttonConfig? : ButtonConfig[] = [];
     @Input() reload? : boolean = true;
+    @Input() customSuffixText?: string;
 
     reloadPage() {
         window.location.reload();

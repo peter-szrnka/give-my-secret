@@ -7,7 +7,7 @@ import io.github.gms.common.model.UserEvent;
 import io.github.gms.common.service.GmsThreadLocalValues;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
-import io.github.gms.functions.event.EventSource;
+import io.github.gms.common.types.EventSource;
 import io.github.gms.functions.event.EventService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;

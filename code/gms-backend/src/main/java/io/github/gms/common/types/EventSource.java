@@ -1,4 +1,4 @@
-package io.github.gms.functions.event;
+package io.github.gms.common.types;
 
 /**
  * @author Peter Szrnka

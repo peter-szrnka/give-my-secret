@@ -3,6 +3,7 @@ package io.github.gms.functions.event;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.types.EventSource;
 import lombok.Data;
 
 import java.io.Serial;

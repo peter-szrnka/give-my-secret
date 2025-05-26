@@ -1,7 +1,9 @@
 package io.github.gms.common.service;
 
-import io.github.gms.functions.event.EventSource;
+import io.github.gms.common.types.EventSource;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class GmsThreadLocalValues {
 
     private static final ThreadLocal<EventSource> eventSourceThreadLocal = new ThreadLocal<>();
