@@ -108,4 +108,18 @@ describe("EventService", () => {
       // act
       service.toggle(1, true).subscribe((res) => expect(res).toBeUndefined());
     });
+
+    it('should return the number of unprocessed events', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/event/unprocessed";
+
+      // act
+      service.getUnprocessedEventsCount().subscribe((res) => expect(res).toBe({ value: 1}));
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('GET');
+      req.flush({ value: 1 });
+      httpMock.verify();
+    });
 });

@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
  */
 export interface ButtonConfig {
     label? : string,
-    labelAsync?: Observable<string>,
+    customText?: string,
     type: string,
     url? : string,
     callFunction?: Function,
