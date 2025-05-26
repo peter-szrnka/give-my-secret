@@ -39,6 +39,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 		try (MockedStatic<SecurityContextHolder> contextHolderMockedStatic = mockStatic(SecurityContextHolder.class)) {
 			// arrange
 			ReflectionTestUtils.setField(aspect, "service", service);
+			setupClock(clock);
 
 			SecurityContext mockContext = mock(SecurityContext.class);
 			Authentication mockAuthentication = mock(Authentication.class);

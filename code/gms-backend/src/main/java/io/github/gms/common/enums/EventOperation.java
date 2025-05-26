@@ -30,13 +30,13 @@ public enum EventOperation {
 	REQUEST_USER_DELETION,
 	UNKNOWN;
 
-	private final boolean basicAuditRequired;
+	private final boolean basicAuditCompatible;
 	
 	EventOperation() {
-		basicAuditRequired = true;
+		basicAuditCompatible = true;
 	}
 
-	EventOperation(boolean basicAuditRequired) {
-		this.basicAuditRequired = basicAuditRequired;
+	EventOperation(boolean basicAuditCompatible) {
+		this.basicAuditCompatible = basicAuditCompatible;
 	}
 }

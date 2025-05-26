@@ -53,13 +53,15 @@ Give My Secret (GMS) provides more than 40 external properties that you can use 
 | 40   | REQUEST_LOGGING_ENABLED           | Boolean      | false (default), true                         | The flag determines whether logging of incoming request bodies enabled or not. |
 | 41   | RESPONSE_LOGGING_ENABLED          | Boolean      | false (default), true                         | The flag determines whether logging of outgoing response bodies enabled or not. |
 | 42   | SENSITIVE_DATA_MASKING_ENABLED    | Boolean      | false, true (default)                         | The flag determines whether the sensitive data masking in request and response bodies enabled or not. |
+| 43   | RESPONSE_TIME_LOGGING_DISABLED    | Boolean      | false, true (default)                         | The flag determines whether the response time is logged or not. |
+| 44   | ENABLE_DETAILED_AUDIT             | Boolean      | false (default), true                         | The flag determines whether the detailed audit is enabled or not. |
 |      | **Caching / Redis**               |              |                                               |                                                              |
-| 43   | ENABLE_REDIS_CACHE                | Boolean      | false, true                                   | This flag determines whether Redis caching enabled or not.   |
-| 44   | REDIS_HOST                        | String       |                                               | Redis host URL.                                              |
-| 45   | REDIS_PORT                        | Number       |                                               | Redis host port.                                             |
+| 45   | ENABLE_REDIS_CACHE                | Boolean      | false, true                                   | This flag determines whether Redis caching enabled or not.   |
+| 46   | REDIS_HOST                        | String       |                                               | Redis host URL.                                              |
+| 47   | REDIS_PORT                        | Number       |                                               | Redis host port.                                             |
 |      | **Tracing / Zipkin**              |              |                                               |                                                              |
-| 46   | ZIPKIN_URL                        | String       | -                                             | Zipkin host url.                                             |
+| 48   | ZIPKIN_URL                        | String       | -                                             | Zipkin host url.                                             |
 |      | **Other**                         |              |                                               |                                                              |
-| 47   | CONFIG_RESOURCE_HANDLER_DISABLED  | Boolean      | true, false                                   | *This parameter is not necessary for production Docker images.* |
-| 48   | COMPOSE_CONVERT_WINDOWS_PATHS     | Number       | 0, 1                                          | Required only by Windows!                                    |
+| 49   | CONFIG_RESOURCE_HANDLER_DISABLED  | Boolean      | true, false                                   | *This parameter is not necessary for production Docker images.* |
+| 50   | COMPOSE_CONVERT_WINDOWS_PATHS     | Number       | 0, 1                                          | Required only by Windows!                                    |
 

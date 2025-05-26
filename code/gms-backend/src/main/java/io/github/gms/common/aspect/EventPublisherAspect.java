@@ -15,6 +15,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,8 @@ public class EventPublisherAspect {
 
 	private final EventService service;
 	private final Clock clock;
+	@Value("${config.audit.enableDetailed}")
+	private boolean enableDetailedAudit;
 
 	@Pointcut("execution(* *.*(..))")
 	public void allMethod() {
@@ -67,7 +70,7 @@ public class EventPublisherAspect {
 
 	    Object result = joinPoint.proceed();
 		
-	    if (auditTarget != null && auditSettings != null && auditSettings.operation().isBasicAuditRequired()) {
+	    if (canSaveUserEvent(auditTarget, auditSettings)) {
 			saveUserEvent(joinPoint, auditTarget.value(), auditSettings.operation());
 	    }
 
@@ -75,6 +78,10 @@ public class EventPublisherAspect {
 		GmsThreadLocalValues.removeUserId();
 	    
 	    return result;
+	}
+
+	private boolean canSaveUserEvent(AuditTarget auditTarget, Audited auditSettings) {
+		return auditTarget != null && auditSettings != null && (auditSettings.operation().isBasicAuditCompatible() || !enableDetailedAudit);
 	}
 
 	private void setCurrentUser() {

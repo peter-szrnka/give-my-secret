@@ -25,7 +25,7 @@ public class GmsEntityListener {
 
     private final UnprocessedEventStorage unprocessedEventStorage;
     private final Clock clock;
-    @Value("${config.audit.enableDetailed:true}")
+    @Value("${config.audit.enableDetailed}")
     private boolean enableDetailedAudit;
 
     @PrePersist
