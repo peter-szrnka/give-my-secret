@@ -94,6 +94,35 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			Assertions.assertThat(capturedUserEvent.getTarget()).isEqualTo(EventTarget.API_KEY);
 		}
 	}
+
+	@Test
+	void test_whenAuthenticationIsMissing_thenProceedAsNormal() {
+		try (MockedStatic<SecurityContextHolder> contextHolderMockedStatic = mockStatic(SecurityContextHolder.class)) {
+			// arrange
+			ReflectionTestUtils.setField(aspect, "service", service);
+			setupClock(clock);
+			SecurityContext mockContext = mock(SecurityContext.class);
+			when(mockContext.getAuthentication()).thenReturn(null);
+			contextHolderMockedStatic.when(SecurityContextHolder::getContext).thenReturn(mockContext);
+
+			// act
+			TestController target = new TestController();
+			AspectJProxyFactory factory = new AspectJProxyFactory(target);
+			factory.addAspect(aspect);
+			TestController proxy = factory.getProxy();
+
+			String response = proxy.test2();
+
+			// assert
+			Assertions.assertThat(response).isEqualTo("OK");
+			ArgumentCaptor<UserEvent> userEventCaptor = ArgumentCaptor.forClass(UserEvent.class);
+			Mockito.verify(service).saveUserEvent(userEventCaptor.capture());
+
+			UserEvent capturedUserEvent = userEventCaptor.getValue();
+			Assertions.assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.LIST);
+			Assertions.assertThat(capturedUserEvent.getTarget()).isEqualTo(EventTarget.API_KEY);
+		}
+	}
 	
 	@Test
 	void test_whenAnnotationIsMissing_thenReturnOk() {
