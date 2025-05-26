@@ -35,7 +35,7 @@ public class SystemPropertyController implements GmsController {
 
 	@PostMapping
 	@PreAuthorize(ROLE_ADMIN)
-	//@Audited(operation = EventOperation.SAVE)
+	@Audited(operation = EventOperation.SAVE)
 	public ResponseEntity<Void> save(@RequestBody SystemPropertyDto dto) {
 		service.save(dto);
 		return new ResponseEntity<>(HttpStatus.OK);

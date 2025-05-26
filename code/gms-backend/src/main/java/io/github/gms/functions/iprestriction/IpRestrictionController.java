@@ -26,7 +26,7 @@ public class IpRestrictionController extends AbstractAdminController<IpRestricti
 
     @PostMapping
     @PreAuthorize(ROLE_ADMIN)
-    //@Audited(operation = EventOperation.SAVE)
+    @Audited(operation = EventOperation.SAVE)
     public SaveEntityResponseDto save(@RequestBody IpRestrictionDto dto) {
         return service.save(dto);
     }
