@@ -80,6 +80,6 @@ public class EventServiceImpl implements EventService {
 			return "technical user";
 		}
 
-		return userId.equals(JOB_USER) ? "job" : userRepository.getUsernameById(userId);
+		return JOB_USER.equals(userId) ? "job" : userRepository.getUsernameById(userId);
 	}
 }
