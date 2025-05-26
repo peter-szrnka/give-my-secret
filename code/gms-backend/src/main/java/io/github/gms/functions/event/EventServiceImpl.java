@@ -1,5 +1,6 @@
 package io.github.gms.functions.event;
 
+import io.github.gms.common.dto.IntegerValueDto;
 import io.github.gms.common.model.UserEvent;
 import io.github.gms.functions.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,8 +64,8 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public int getUnprocessedEventsCount() {
-		return unprocessedEventStorage.getAll(false).size();
+	public IntegerValueDto getUnprocessedEventsCount() {
+		return new IntegerValueDto(unprocessedEventStorage.getAll(false).size());
 	}
 
 	@Async

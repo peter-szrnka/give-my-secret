@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * @author Peter Szrnka
+ * @since 1.0
+ */
 @Component
 public class UnprocessedEventStorage {
     private static final List<UserEvent> items = new CopyOnWriteArrayList<>();

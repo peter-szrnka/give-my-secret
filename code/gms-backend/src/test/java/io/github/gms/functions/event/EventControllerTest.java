@@ -73,7 +73,7 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
 
     @Test
     void getUnprocessedEventsCount_thenReturnOk() {
-        when(service.getUnprocessedEventsCount()).thenReturn(1);
+        when(service.getUnprocessedEventsCount()).thenReturn(new IntegerValueDto(1));
 
         ResponseEntity<IntegerValueDto> response = controller.getUnprocessedEventsCount();
 

@@ -44,6 +44,6 @@ public class EventController extends AbstractController<EventService> {
 	@GetMapping("/unprocessed")
 	@PreAuthorize(ROLE_ADMIN)
 	public ResponseEntity<IntegerValueDto> getUnprocessedEventsCount() {
-		return ResponseEntity.ok(new IntegerValueDto(service.getUnprocessedEventsCount()));
+		return ResponseEntity.ok(service.getUnprocessedEventsCount());
 	}
 }
