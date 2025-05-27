@@ -7,6 +7,7 @@ import io.github.gms.functions.event.UnprocessedEventStorage;
 import io.github.gms.functions.event.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "config.audit.enableDetailed", havingValue = "true")
 public class UnprocessedAuditProcessorJob extends AbstractJob {
 
     private final UnprocessedEventStorage unprocessedEventStorage;

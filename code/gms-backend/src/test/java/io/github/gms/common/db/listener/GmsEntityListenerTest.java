@@ -43,7 +43,6 @@ class GmsEntityListenerTest extends AbstractUnitTest {
         }
 
         ApiKeyEntity entity = new ApiKeyEntity();
-        listener.beforeAnyUpdate(entity);
         listener.afterAnyInsert(entity);
 
         // then

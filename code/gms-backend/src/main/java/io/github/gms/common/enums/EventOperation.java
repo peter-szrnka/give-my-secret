@@ -12,7 +12,6 @@ public enum EventOperation {
 	INSERT(false),
 	UPDATE(false),
 	DELETE(false),
-	LIST,
 
 	// Triggered by AOP
 	SETUP,

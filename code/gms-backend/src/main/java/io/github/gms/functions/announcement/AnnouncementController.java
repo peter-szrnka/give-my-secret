@@ -43,7 +43,6 @@ public class AnnouncementController extends AbstractController<AnnouncementServi
 	
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ALL_ROLE)
-	@Audited(operation = EventOperation.LIST)
 	public AnnouncementListDto list(
 			@RequestParam(DIRECTION) String direction,
 			@RequestParam(PROPERTY) String property,

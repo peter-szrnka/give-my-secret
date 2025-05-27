@@ -60,7 +60,6 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	@Audited(operation = EventOperation.LIST)
 	public KeystoreListDto list(
 			@RequestParam(DIRECTION) String direction,
 			@RequestParam(PROPERTY) String property,

@@ -9,6 +9,7 @@ import io.github.gms.common.types.EventSource;
 import io.github.gms.functions.event.UnprocessedEventStorage;
 import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,44 +18,39 @@ import java.time.ZonedDateTime;
 
 import static java.util.Optional.ofNullable;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GmsEntityListener {
 
-    private static final ThreadLocal<EventOperation> changeTypeThreadLocal = new ThreadLocal<>();
-
     private final UnprocessedEventStorage unprocessedEventStorage;
     private final Clock clock;
+
     @Value("${config.audit.enableDetailed}")
     private boolean enableDetailedAudit;
 
     @PrePersist
     @PreUpdate
     public void beforeAnyUpdate(AuditableGmsEntity entity) {
-        changeTypeThreadLocal.set(entity.getId() == null ? EventOperation.INSERT : EventOperation.UPDATE);
+        log.info("[Entity listener] entity will be updated, entityId={}", entity.getId());
     }
 
     @PostPersist
     public void afterAnyInsert(AuditableGmsEntity entity) {
-        handle(entity);
+        handle(entity, EventOperation.INSERT);
     }
 
     @PostUpdate
     public void afterAnyUpdate(AuditableGmsEntity entity) {
-        handle(entity);
-    }
-
-    @PreRemove
-    public void beforeRemove(AuditableGmsEntity entity) {
-        changeTypeThreadLocal.set(EventOperation.DELETE);
+        handle(entity, EventOperation.UPDATE);
     }
 
     @PostRemove
     public void afterRemove(AuditableGmsEntity entity) {
-        handle(entity);
+        handle(entity, EventOperation.DELETE);
     }
 
-    private void handle(AuditableGmsEntity entity) {
+    private void handle(AuditableGmsEntity entity, EventOperation eventOperation) {
         if (!enableDetailedAudit) {
             return;
         }
@@ -62,12 +58,11 @@ public class GmsEntityListener {
         // Entity target type, like Api key or a secret
         EventTarget target = EventTarget.getByClassName(getClassName(entity));
 
-        // Audit event type, like insert, update, delete or setup the system
-        EventOperation eventOperation =
-                changeTypeThreadLocal.get() != null ? changeTypeThreadLocal.get() : EventOperation.UNKNOWN;
-
         // Entity change initiator location
         EventSource eventSource = ofNullable(GmsThreadLocalValues.getEventSource()).orElse(EventSource.UNKNOWN);
+
+        log.info("[Entity listener] userId={}, entityId={}, operation={}, source={}, target={}",
+                GmsThreadLocalValues.getUserId(), entity.getId(), eventOperation, eventSource, target);
 
         unprocessedEventStorage.addToQueue(UserEvent.builder()
                         .userId(GmsThreadLocalValues.getUserId())
@@ -78,7 +73,6 @@ public class GmsEntityListener {
                         .eventDate(ZonedDateTime.now(clock))
                 .build());
 
-        changeTypeThreadLocal.remove();
         GmsThreadLocalValues.removeEventSource();
     }
 

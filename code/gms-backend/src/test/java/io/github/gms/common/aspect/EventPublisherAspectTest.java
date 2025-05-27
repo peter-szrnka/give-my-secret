@@ -91,7 +91,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			Mockito.verify(service).saveUserEvent(userEventCaptor.capture());
 
 			UserEvent capturedUserEvent = userEventCaptor.getValue();
-			Assertions.assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.LIST);
+			Assertions.assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.SETUP);
 			Assertions.assertThat(capturedUserEvent.getTarget()).isEqualTo(EventTarget.API_KEY);
 		}
 	}
@@ -120,7 +120,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			Mockito.verify(service).saveUserEvent(userEventCaptor.capture());
 
 			UserEvent capturedUserEvent = userEventCaptor.getValue();
-			Assertions.assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.LIST);
+			Assertions.assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.SETUP);
 			Assertions.assertThat(capturedUserEvent.getTarget()).isEqualTo(EventTarget.API_KEY);
 		}
 	}

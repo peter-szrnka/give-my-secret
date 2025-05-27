@@ -49,7 +49,6 @@ public class ApiKeyController extends AbstractClientController<ApiKeyService> {
 	
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_USER_OR_VIEWER)
-	@Audited(operation = EventOperation.LIST)
 	public ApiKeyListDto list(
 			@RequestParam(DIRECTION) String direction,
 			@RequestParam(PROPERTY) String property,

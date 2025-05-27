@@ -46,7 +46,6 @@ public class UserController extends AbstractAdminController<UserService> {
 	
 	@GetMapping(PATH_LIST)
 	@PreAuthorize(ROLE_ADMIN)
-	@Audited(operation = EventOperation.LIST)
 	public UserListDto list(
 			@RequestParam(DIRECTION) String direction,
 			@RequestParam(PROPERTY) String property,
