@@ -39,6 +39,7 @@ public class UserController extends AbstractAdminController<UserService> {
 
 	@GetMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ROLE_ADMIN_OR_USER)
+	@Audited(operation = EventOperation.GET_BY_ID)
 	public UserDto getById(@PathVariable(ID) Long id) {
 		return service.getById(id);
 	}

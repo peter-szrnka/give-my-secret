@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 public abstract class AbstractSecurityConfig {
 
-    private static final String[] FILTER_URL = new String[]{"/", "/info/status", "/healthcheck",
+    protected static final String[] FILTER_URL = new String[]{"/", "/info/status", "/healthcheck",
             "/setup/vm_options", "/setup/step_back", "/setup/initial", "/setup/user",
             "/setup/properties", "/setup/org_data", "/setup/current_super_admin", "/setup/complete",
             "/login", "/authenticate", "/verify", "/logoutUser", "/api/**", "/info/me", "/actuator/**",

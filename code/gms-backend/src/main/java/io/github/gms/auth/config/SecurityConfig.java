@@ -56,6 +56,7 @@ public class SecurityConfig extends AbstractSecurityConfig {
                         new AntPathRequestMatcher("/authenticate", "POST"),
                         new AntPathRequestMatcher("/logoutUser", "POST")
                 )
+                .ignoringRequestMatchers(FILTER_URL)
                 .ignoringRequestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 .csrfTokenRequestHandler(csrfTokenRequestHandler());
     }
