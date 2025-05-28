@@ -42,7 +42,7 @@ describe('InformationService', () => {
     it('should return system VM options', () => {
       const expectedUrl = environment.baseUrl + 'info/vm_options';
 
-      const mockResponse = { "A":"B", "C":"D" };
+      const mockResponse = [ {"A":"B"}, {"C":"D"} ];
   
       service.getVmOptions()
         .subscribe((res) => expect(res).toBe(mockResponse));

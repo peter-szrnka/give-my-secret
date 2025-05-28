@@ -4,6 +4,7 @@ import { getHeaders } from "../utils/header-utils";
 import { environment } from "../../../environments/environment";
 import { User } from "../../components/user/model/user.model";
 import { firstValueFrom, Observable } from "rxjs";
+import { VmOption } from "../model/common.model";
 
 /**
  * @author Peter Szrnka
@@ -17,8 +18,8 @@ export class InformationService {
         return firstValueFrom(this.http.get<string>(environment.baseUrl + 'healthcheck', {}));
     }
 
-    public getVmOptions() : Observable<{ [key: string]: string }> {
-        return this.http.get<{ [key: string]: string }>(environment.baseUrl + 'info/vm_options', { withCredentials : true, headers : getHeaders() });
+    public getVmOptions() : Observable<VmOption[]> {
+        return this.http.get<VmOption[]>(environment.baseUrl + 'info/vm_options', { withCredentials : true, headers : getHeaders() });
     }
 
     getUserInfo() : Promise<User> {

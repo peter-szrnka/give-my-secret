@@ -3,6 +3,7 @@ package io.github.gms.functions.system;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.dto.VmOptionDto;
 import io.github.gms.common.enums.ContainerHostType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.SystemStatus;
@@ -21,7 +22,7 @@ import org.springframework.core.env.Environment;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.*;
@@ -60,7 +61,7 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
     @Test
     void getVmOptions_whenCalled_thenReturnData() {
         // act
-        Map<String, String> vmOptions = service.getVmOptions();
+        List<VmOptionDto> vmOptions = service.getVmOptions();
 
         // assert
         assertNotNull(vmOptions);

@@ -21,34 +21,34 @@ import { InformationService } from "../../common/service/info-service";
  * @author Peter Szrnka
  */
 describe('SystemPropertyListComponent', () => {
-    let component : SystemPropertyListComponent;
-    const currentUser : User | any = {
-        roles :  [ "ROLE_ADMIN" ]
+    let component: SystemPropertyListComponent;
+    const currentUser: User | any = {
+        roles: ["ROLE_ADMIN"]
     };
     // Injected services
-    let router : any;
-    let service : any;
-    let dialogService : any = {};
-    let sharedDataService : any;
-    let activatedRoute : any = {};
+    let router: any;
+    let service: any;
+    let dialogService: any = {};
+    let sharedDataService: any;
+    let activatedRoute: any = {};
     let splashScreenService: any = {};
     let informationService: any;
     // Fixtures
-    let fixture : ComponentFixture<SystemPropertyListComponent>;
+    let fixture: ComponentFixture<SystemPropertyListComponent>;
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
-            declarations : [SystemPropertyListComponent],
-            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+            imports: [ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule],
+            declarations: [SystemPropertyListComponent],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
-                { provide : Router, useValue : router },
-                { provide : SharedDataService, useValue : sharedDataService },
-                { provide : SystemPropertyService, useValue : service },
-                { provide : DialogService, useValue : dialogService },
-                { provide : ActivatedRoute, useClass : activatedRoute },
-                { provide: InformationService, useValue: informationService},
-                { provide : SplashScreenStateService, useValue : splashScreenService }
+                { provide: Router, useValue: router },
+                { provide: SharedDataService, useValue: sharedDataService },
+                { provide: SystemPropertyService, useValue: service },
+                { provide: DialogService, useValue: dialogService },
+                { provide: ActivatedRoute, useClass: activatedRoute },
+                { provide: InformationService, useValue: informationService },
+                { provide: SplashScreenStateService, useValue: splashScreenService }
             ]
         });
 
@@ -59,93 +59,93 @@ describe('SystemPropertyListComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn().mockReturnValue(of(true))
+            navigate: jest.fn().mockReturnValue(of(true))
         };
 
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
+            getUserInfo: jest.fn().mockReturnValue(Promise.resolve(currentUser)),
             refreshCurrentUserInfo: jest.fn()
         };
 
         dialogService = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) }),
-            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) }),
+            openNewDialog: jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of({ result: true })) }),
+            openConfirmDeleteDialog: jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of({ result: true })) }),
         }
-        
+
         activatedRoute = class {
-            data : Data = of({
-                data : {
-                    resultList : [
+            data: Data = of({
+                data: {
+                    resultList: [
                         {
-                            key : "ENABLE_GLOBAL_MFA",
-                            category : "JWT",
-                            value : "HS512",
-                            factoryValue : false,
-                            lastModified : new Date(),
-                            type : "BOOLEAN"
+                            key: "ENABLE_GLOBAL_MFA",
+                            category: "JWT",
+                            value: "HS512",
+                            factoryValue: false,
+                            lastModified: new Date(),
+                            type: "BOOLEAN"
                         },
                         {
-                            key : "ENABLE_AUTOMATIC_LOGOUT",
-                            category : "GENERAL",
-                            factoryValue : true,
-                            lastModified : new Date(),
-                            type : "BOOLEAN"
+                            key: "ENABLE_AUTOMATIC_LOGOUT",
+                            category: "GENERAL",
+                            factoryValue: true,
+                            lastModified: new Date(),
+                            type: "BOOLEAN"
                         },
                         {
-                            key : "JOB_OLD_EVENT_LIMIT",
-                            category : "JOB",
-                            value : "1;d",
-                            factoryValue : true,
-                            lastModified : new Date(),
-                            type : "STRING"
+                            key: "JOB_OLD_EVENT_LIMIT",
+                            category: "JOB",
+                            value: "1;d",
+                            factoryValue: true,
+                            lastModified: new Date(),
+                            type: "STRING"
                         },
                         {
-                            key : "AUTOMATIC_LOGOUT_TIME_IN_MINUTES",
-                            category : "GENERAL",
-                            value : "15;m",
-                            factoryValue : true,
-                            lastModified : new Date(),
-                            type : "STRING"
+                            key: "AUTOMATIC_LOGOUT_TIME_IN_MINUTES",
+                            category: "GENERAL",
+                            value: "15;m",
+                            factoryValue: true,
+                            lastModified: new Date(),
+                            type: "STRING"
                         },
                         {
-                            key : "UNKNOWN_PROPERTY",
-                            category : "GENERAL",
-                            value : "15;m",
-                            factoryValue : true,
-                            lastModified : new Date(),
-                            type : "STRING"
+                            key: "UNKNOWN_PROPERTY",
+                            category: "GENERAL",
+                            value: "15;m",
+                            factoryValue: true,
+                            lastModified: new Date(),
+                            type: "STRING"
                         }
                     ],
-                    totalElements : 3
+                    totalElements: 3
                 }
             });
             snapshot = {
-                queryParams : {
-                    page : 0
+                queryParams: {
+                    page: 0
                 }
             }
         };
 
         service = {
-            save : jest.fn().mockReturnValue(of("")),
-            delete : jest.fn().mockReturnValue(of("OK"))
+            save: jest.fn().mockReturnValue(of("")),
+            delete: jest.fn().mockReturnValue(of("OK"))
         };
 
         splashScreenService = {
-            start : jest.fn()
+            start: jest.fn()
         };
 
         informationService = {
-            getVmOptions : jest.fn().mockReturnValue(of({
-                'key1' : 'value1',
-                'key2' : 'value2'
-            })),
+            getVmOptions: jest.fn().mockReturnValue(of([
+                { 'key1': 'value1' },
+                { 'key2': 'value2' }
+            ])),
         };
     });
 
     it('Should handle resolver error', () => {
         activatedRoute = class {
-            data : Data = throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"}))
+            data: Data = throwError(() => new HttpErrorResponse({ error: new Error("OOPS!"), status: 500, statusText: "OOPS!" }))
         };
         configureTestBed();
 
@@ -156,7 +156,7 @@ describe('SystemPropertyListComponent', () => {
     it('Should return empty table | Invalid user', () => {
         // arrange
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(undefined)
+            getUserInfo: jest.fn().mockReturnValue(undefined)
         };
         configureTestBed();
 
@@ -167,20 +167,20 @@ describe('SystemPropertyListComponent', () => {
 
     it('Should save fail', () => {
         // arrange
-        service.save = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
+        service.save = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("OOPS!"), status: 500, statusText: "OOPS!" })));
         configureTestBed();
 
         expect(component).toBeTruthy();
 
         // act
-        component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
+        component.save({ key: 'X', value: 'value', type: 'string' } as SystemProperty);
 
         // assert
         expect(dialogService.openNewDialog).toHaveBeenCalled();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
     });
 
-    it('Should filter table', async() => {
+    it('Should filter table', async () => {
         // arrange
         configureTestBed();
 
@@ -188,7 +188,7 @@ describe('SystemPropertyListComponent', () => {
 
         // act
         component.ngOnInit();
-        component.applyFilter({ target: { value: 'JWT_TOKEN' }});
+        component.applyFilter({ target: { value: 'JWT_TOKEN' } });
     });
 
     it('Should save succeed', () => {
@@ -199,7 +199,7 @@ describe('SystemPropertyListComponent', () => {
 
         // act
         component.onFetch({ pageSize: 10 });
-        component.save({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
+        component.save({ key: 'X', value: 'value', type: 'string' } as SystemProperty);
 
         // assert
         expect(dialogService.openNewDialog).toHaveBeenCalled();
@@ -215,9 +215,9 @@ describe('SystemPropertyListComponent', () => {
 
         // act
         component.onFetch({ pageSize: 10 });
-        component.save({ key : 'X', value : 'value', type : 'STRING', callbackMethod: 'checkSystemReady' } as SystemProperty);
-        component.save({ key : 'ENABLE_GLOBAL_MFA', value : 'true', type : 'BOOLEAN' } as SystemProperty);
-        component.save({ key : 'ENABLE_AUTOMATIC_LOGOUT', value : 'false', type : 'BOOLEAN' } as SystemProperty);
+        component.save({ key: 'X', value: 'value', type: 'STRING', callbackMethod: 'checkSystemReady' } as SystemProperty);
+        component.save({ key: 'ENABLE_GLOBAL_MFA', value: 'true', type: 'BOOLEAN' } as SystemProperty);
+        component.save({ key: 'ENABLE_AUTOMATIC_LOGOUT', value: 'false', type: 'BOOLEAN' } as SystemProperty);
 
         // assert
         expect(dialogService.openNewDialog).toHaveBeenCalled();
@@ -230,10 +230,10 @@ describe('SystemPropertyListComponent', () => {
         // arrange
         configureTestBed();
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true }) )});
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of({ result: true })) });
 
         // act
-        component.promptDelete({ key : 'X', value : 'value', type : 'string' } as SystemProperty);
+        component.promptDelete({ key: 'X', value: 'value', type: 'string' } as SystemProperty);
 
         expect(service.delete).toHaveBeenCalled();
         expect(dialogService.openConfirmDeleteDialog).toHaveBeenCalled();
@@ -243,14 +243,14 @@ describe('SystemPropertyListComponent', () => {
 
     it('Should cancel dialog after delete', () => {
         // arrange
-        dialogService.openConfirmDeleteDialog = jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: false })) });
+        dialogService.openConfirmDeleteDialog = jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of({ result: false })) });
         configureTestBed();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: false }) )});
+        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of({ result: false })) });
 
         // act
-        component.promptDelete({ key : 'REFRESH_JWT_ALGORITHM', value : 'value', type : 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
+        component.promptDelete({ key: 'REFRESH_JWT_ALGORITHM', value: 'value', type: 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);
 
         // assert
         expect(service.delete).toHaveBeenCalledTimes(0);

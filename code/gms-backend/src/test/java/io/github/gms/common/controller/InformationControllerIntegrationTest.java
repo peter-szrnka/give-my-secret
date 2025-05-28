@@ -10,6 +10,7 @@ import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.util.DemoData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,7 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Map;
+import java.util.List;
 
 import static io.github.gms.common.enums.SystemStatus.NEED_SETUP;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
@@ -26,8 +27,7 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static io.github.gms.util.TestConstants.URL_INFO_STATUS;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -40,6 +40,13 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
     @MockBean
     private SystemService systemService;
 
+    @Override
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(SystemStatus.OK.name()).build());
+    }
+
     @Test
     @TestedMethod("getVmOptions")
     void getVmOptions_whenCalled_thenReturnVmOptions() {
@@ -47,12 +54,12 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
 
         // act
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
-        ResponseEntity<Map> response = executeHttpGet("/setup/vm_options", requestEntity, Map.class);
+        ResponseEntity<List> response = executeHttpGet("/info/vm_options", requestEntity, List.class);
 
         // assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        verify(systemService).getSystemStatus();
+        verify(systemService, times(2)).getSystemStatus();
     }
 
     @Test
@@ -93,6 +100,10 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
     @TestedMethod("status")
     void systemStatus_whenSystemIsNotReady_thenReturnNeedSetup() {
         // act
+        when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder()
+                        .withVersion("1.0")
+                        .withAuthMode("db")
+                .withStatus(SystemStatus.NEED_SETUP.name()).build());
         HttpEntity<Void> requestEntity = new HttpEntity<>(null);
         ResponseEntity<SystemStatusDto> response = executeHttpGet(URL_INFO_STATUS, requestEntity, SystemStatusDto.class);
 

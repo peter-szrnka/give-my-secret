@@ -27,8 +27,7 @@ import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -56,7 +55,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 	}
 
 	@Test
@@ -72,7 +71,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 		verify(userService).getById(1L);
 	}
 
@@ -88,7 +87,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 	}
 
 	@Test
@@ -136,7 +135,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 	}
 
 	@Test
@@ -153,7 +152,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 	}
 
 	@Test
@@ -168,6 +167,6 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 	}
 }

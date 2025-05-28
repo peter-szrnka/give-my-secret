@@ -166,7 +166,7 @@ export class SystemPropertyListComponent {
   getVmOptions() {
     this.informationService.getVmOptions().subscribe(data => {
             this.splashScreenService.stop();
-            Object.keys(data).forEach(key => this.vmOptions.push({key: key, value: data[key]}) );
+            this.vmOptions = data;
     });
 }
 

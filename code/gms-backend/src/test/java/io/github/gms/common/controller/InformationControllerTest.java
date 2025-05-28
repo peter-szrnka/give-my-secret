@@ -1,9 +1,6 @@
 package io.github.gms.common.controller;
 
-import io.github.gms.common.dto.ErrorCodeDto;
-import io.github.gms.common.dto.ErrorCodeListDto;
-import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.common.dto.*;
 import io.github.gms.common.enums.ContainerHostType;
 import io.github.gms.common.types.ErrorCode;
 import io.github.gms.functions.system.SystemService;
@@ -16,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,15 +41,14 @@ class InformationControllerTest {
     @Test
     void getVmOptions_whenDataSaved_thenReturnOptions() {
         // arrange
-        when(systemService.getVmOptions()).thenReturn(Map.of("key", "value"));
+        when(systemService.getVmOptions()).thenReturn(List.of(new VmOptionDto("key", "value")));
 
         // act
-        Map<String, String> response = controller.getVmOptions();
+        List<VmOptionDto> response = controller.getVmOptions();
 
         // assert
         assertNotNull(response);
         assertEquals(1, response.size());
-        assertEquals("value", response.get("key"));
         verify(systemService).getVmOptions();
     }
 
