@@ -89,7 +89,7 @@
 
         "sidemenu.home": "Home",
         "sidemenu.users" : "Users",
-        "sidemenu.systemProperties" : "System properties",
+        "sidemenu.systemProperties" : "Properties",
         "sidemenu.ipRestrictions" : "IP restrictions",
         "sidemenu.jobs" : "Jobs",
         "sidemenu.announcements" : "Announcements",
@@ -208,6 +208,8 @@
         "job.manual.execution.error": "Job execution failed!",
 
         "systemProperties.category": "Category",
+        "systemProperties.tab.systemProperties" : "System properties",
+        "systemProperties.tab.envProperties" : "Environment properties",
 
         "setup.intro": "Welcome to Give My Secret application! In order to make the application works, you must walk through the setup wizard. Please check the list of JVM properties, then click on the Continue button below.",
         "setup.title" : "Application setup wizard",

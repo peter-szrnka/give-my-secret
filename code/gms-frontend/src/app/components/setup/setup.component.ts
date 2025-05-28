@@ -6,11 +6,8 @@ import { WINDOW_TOKEN } from "../../window.provider";
 import { SystemProperty } from "../system_property/model/system-property.model";
 import { UserData } from "../user/model/user-data.model";
 import { SetupService } from "./service/setup-service";
-
-interface VmOption {
-    key: string;
-    value: string;
-}
+import { InformationService } from "../../common/service/info-service";
+import { VmOption } from "../../common/model/common.model";
 
 const SYSTEM_STATUS_INDEX: {[key:string] :number} = {
     "NEED_SETUP": 0,
@@ -57,6 +54,7 @@ export class SetupComponent implements OnInit {
         private readonly router : Router, 
         private readonly route: ActivatedRoute,
         private readonly splashScreenService : SplashScreenStateService,
+        private readonly informationService: InformationService,
         private readonly setupService : SetupService) {}
 
     ngOnInit(): void {
@@ -75,7 +73,7 @@ export class SetupComponent implements OnInit {
     getVmOptions() {
         this.prepareHttpCall();
 
-        this.setupService.getVmOptions().subscribe(data => {
+        this.informationService.getVmOptions().subscribe(data => {
                 this.splashScreenService.stop();
                 Object.keys(data).forEach(key => this.vmOptions.push({key: key, value: data[key]}) );
                 this.loading = false;

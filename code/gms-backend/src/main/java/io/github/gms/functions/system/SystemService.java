@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.github.gms.common.util.Constants.*;
 
@@ -40,6 +42,12 @@ public class SystemService {
 	private String authType;
 	// It will be set with setter injection
 	private BuildProperties buildProperties;
+
+	public Map<String, String> getVmOptions() {
+		Map<String, String> vmOptions = new HashMap<>();
+		System.getProperties().forEach((key, value) -> vmOptions.put(key.toString(), value.toString()));
+		return vmOptions;
+	}
 
 	public SystemStatusDto getSystemStatus() {
 		SystemStatusDto.SystemStatusDtoBuilder builder = SystemStatusDto.builder();

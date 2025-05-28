@@ -18,6 +18,7 @@ public class FilterConfig {
 	    FilterRegistrationBean<SetupFilter> registrationBean = new FilterRegistrationBean<>();
 	    registrationBean.setFilter(systemFilter);
 	    registrationBean.addUrlPatterns("/setup/*");
+		registrationBean.addUrlPatterns("/info/vm_options");
 	    return registrationBean;
 	}
 

@@ -39,6 +39,21 @@ describe('InformationService', () => {
         httpMock.verify();
     });
 
+    it('should return system VM options', () => {
+      const expectedUrl = environment.baseUrl + 'setup/vm_options';
+
+      const mockResponse = { "A":"B", "C":"D" };
+  
+      service.getVmOptions()
+        .subscribe((res) => expect(res).toBe(mockResponse));
+  
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+
+      httpMock.verify();
+    });
+
     it('Should provide null userinfo', () => {
         // arrange
         const expectedUrl = environment.baseUrl + "info/me";

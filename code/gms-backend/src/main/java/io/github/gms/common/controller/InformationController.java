@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Comparator;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -30,6 +31,11 @@ public class InformationController implements GmsController {
     
     private final UserInfoService userInfoService;
     private final SystemService systemService;
+
+    @GetMapping("/vm_options")
+    public Map<String, String> getVmOptions() {
+        return systemService.getVmOptions();
+    }
 
 	@GetMapping("/me")
     public UserInfoDto getUserInfo(HttpServletRequest request) {

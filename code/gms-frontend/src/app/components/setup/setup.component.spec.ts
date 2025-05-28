@@ -14,6 +14,7 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { WINDOW_TOKEN } from "../../window.provider";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { InformationService } from "../../common/service/info-service";
 
 /**
  * @author Peter Szrnka
@@ -28,6 +29,7 @@ describe('SetupComponent', () => {
     let splashScreenStateService : any;
     let dialog : any;
     let setupService : any;
+    let informationService: any;
     let mockWindow : any;
 
     const configTestBed = () => {
@@ -41,7 +43,8 @@ describe('SetupComponent', () => {
                 { provide : ActivatedRoute, useValue: route },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
                 { provide : MatDialog, useValue : dialog },
-                { provide : SetupService, useValue : setupService }
+                { provide : SetupService, useValue : setupService },
+                { provide: InformationService, useValue: informationService}
             ]
         }).compileComponents();
 
@@ -75,16 +78,19 @@ describe('SetupComponent', () => {
             saveAdminUser : jest.fn().mockImplementation(() : Observable<IEntitySaveResponseDto> => {
                 return of({ entityId : 1, success : true } as IEntitySaveResponseDto);
             }),
-            getVmOptions : jest.fn().mockReturnValue(of({
-                'key1' : 'value1',
-                'key2' : 'value2'
-            })),
             stepBack : jest.fn().mockReturnValue(of('NEED_SETUP')),
             getAdminUserData : jest.fn().mockReturnValue(of({ username : 'admin', credential : 'testPassword', role : 'ROLE_ADMIN' })),
             saveInitialStep : jest.fn().mockReturnValue(of('NEED_ADMIN_USER')),
             saveSystemProperties: jest.fn().mockReturnValue(of({ success : true })),
             saveOrganizationData : jest.fn().mockReturnValue(of({ success : true })),
             completeSetup : jest.fn().mockReturnValue(of({ success : true }))
+        };
+
+        informationService = {
+            getVmOptions : jest.fn().mockReturnValue(of({
+                'key1' : 'value1',
+                'key2' : 'value2'
+            })),
         };
     });
 

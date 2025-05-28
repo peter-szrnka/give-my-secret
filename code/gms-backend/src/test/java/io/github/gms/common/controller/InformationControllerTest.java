@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,6 +39,22 @@ class InformationControllerTest {
         userInfoService = mock(UserInfoService.class);
         systemService = mock(SystemService.class);
         controller = new InformationController(userInfoService, systemService);
+    }
+
+
+    @Test
+    void getVmOptions_whenDataSaved_thenReturnOptions() {
+        // arrange
+        when(systemService.getVmOptions()).thenReturn(Map.of("key", "value"));
+
+        // act
+        Map<String, String> response = controller.getVmOptions();
+
+        // assert
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals("value", response.get("key"));
+        verify(systemService).getVmOptions();
     }
 
     @Test

@@ -15,6 +15,8 @@ import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 
 import * as systemPropertyList from '../../../assets/i18n/system-properties.json';
+import { InformationService } from "../../common/service/info-service";
+import { VmOption } from "../../common/model/common.model";
 
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
@@ -112,6 +114,7 @@ interface SystemPropertyElement extends SystemProperty {
 export class SystemPropertyListComponent {
   columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];
   timeUnits: any[] = TIME_UNITS;
+  vmOptions: VmOption[] = [];
 
   public datasource: MatTableDataSource<SystemPropertyElement> = new MatTableDataSource<SystemPropertyElement>([]);
   protected count = 0;
@@ -129,6 +132,7 @@ export class SystemPropertyListComponent {
     protected router: Router,
     public sharedData: SharedDataService,
     protected service: SystemPropertyService,
+    private readonly informationService: InformationService,
     public dialogService: DialogService,
     protected activatedRoute: ActivatedRoute,
     private readonly splashScreenService: SplashScreenStateService) { }
@@ -139,6 +143,7 @@ export class SystemPropertyListComponent {
 
   protected async fetchData() {
     const user: User | undefined = await this.sharedData.getUserInfo();
+    this.getVmOptions();
 
     if (checkRights(user)) {
       this.initDefaultDataTable();
@@ -157,6 +162,13 @@ export class SystemPropertyListComponent {
     const filterValue = (event.target as HTMLInputElement).value;
     this.datasource.filter = filterValue.trim().toLowerCase();
   }
+
+  getVmOptions() {
+    this.informationService.getVmOptions().subscribe(data => {
+            this.splashScreenService.stop();
+            Object.keys(data).forEach(key => this.vmOptions.push({key: key, value: data[key]}) );
+    });
+}
 
   private convertToElements(resultList: SystemProperty[]): SystemPropertyElement[] {
     return resultList.map((property: SystemProperty) => {

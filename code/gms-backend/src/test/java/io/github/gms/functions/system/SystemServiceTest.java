@@ -21,10 +21,11 @@ import org.springframework.core.env.Environment;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -54,6 +55,16 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
 
         service = new SystemService(environment, clock, systemPropertyService, systemAttributeRepository);
         service.setAuthType("db");
+    }
+
+    @Test
+    void getVmOptions_whenCalled_thenReturnData() {
+        // act
+        Map<String, String> vmOptions = service.getVmOptions();
+
+        // assert
+        assertNotNull(vmOptions);
+        assertFalse(vmOptions.isEmpty());
     }
 
     @ParameterizedTest

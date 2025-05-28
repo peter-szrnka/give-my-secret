@@ -6,14 +6,19 @@ import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.enums.UserRole;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.util.DemoData;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Map;
 
 import static io.github.gms.common.enums.SystemStatus.NEED_SETUP;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
@@ -21,6 +26,8 @@ import static io.github.gms.common.util.Constants.SELECTED_AUTH_DB;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static io.github.gms.util.TestConstants.URL_INFO_STATUS;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -29,6 +36,24 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag(TAG_INTEGRATION_TEST)
 @TestedClass(InformationController.class)
 class InformationControllerIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
+
+    @MockBean
+    private SystemService systemService;
+
+    @Test
+    @TestedMethod("getVmOptions")
+    void getVmOptions_whenCalled_thenReturnVmOptions() {
+        when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(SystemStatus.NEED_SETUP.name()).build());
+
+        // act
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+        ResponseEntity<Map> response = executeHttpGet("/setup/vm_options", requestEntity, Map.class);
+
+        // assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(systemService).getSystemStatus();
+    }
 
     @Test
     @TestedMethod("getUserInfo")
