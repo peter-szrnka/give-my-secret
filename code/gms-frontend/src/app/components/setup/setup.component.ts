@@ -75,7 +75,7 @@ export class SetupComponent implements OnInit {
 
         this.informationService.getVmOptions().subscribe(data => {
                 this.splashScreenService.stop();
-                Object.keys(data).forEach(key => this.vmOptions.push({key: key, value: data[key]}) );
+                this.vmOptions = data;
                 this.loading = false;
         });
     }
