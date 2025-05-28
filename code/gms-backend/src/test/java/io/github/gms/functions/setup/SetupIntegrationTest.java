@@ -21,15 +21,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -46,21 +44,6 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 	private UserService userService;
 
 	@Test
-	@TestedMethod("getVmOptions")
-	void getVmOptions_whenCalled_thenReturnVmOptions() {
-		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(SystemStatus.NEED_SETUP.name()).build());
-
-		// act
-		HttpEntity<Void> requestEntity = new HttpEntity<>(null);
-		ResponseEntity<Map> response = executeHttpGet("/setup/vm_options", requestEntity, Map.class);
-
-		// assert
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
-	}
-
-	@Test
 	@TestedMethod("stepBack")
 	void stepBack_whenCalled_thenReturnStepBack() {
 		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(SystemStatus.NEED_ADMIN_USER.name()).build());
@@ -72,7 +55,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 	}
 
 	@Test
@@ -88,7 +71,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 		verify(userService).getById(1L);
 	}
 
@@ -104,7 +87,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 	}
 
 	@Test
@@ -152,7 +135,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 	}
 
 	@Test
@@ -169,7 +152,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 	}
 
 	@Test
@@ -184,6 +167,6 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
-		verify(systemService).getSystemStatus();
+		verify(systemService, times(2)).getSystemStatus();
 	}
 }

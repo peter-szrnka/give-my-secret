@@ -1,19 +1,19 @@
 import { HttpErrorResponse } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
+import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { SetupService } from "./service/setup-service";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { EMPTY_ADMIN_DATA, SetupComponent } from "./setup.component";
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
-import { WINDOW_TOKEN } from "../../window.provider";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { WINDOW_TOKEN } from "../../window.provider";
+import { SetupService } from "./service/setup-service";
+import { EMPTY_ADMIN_DATA, SetupComponent } from "./setup.component";
 
 /**
  * @author Peter Szrnka
@@ -75,10 +75,6 @@ describe('SetupComponent', () => {
             saveAdminUser : jest.fn().mockImplementation(() : Observable<IEntitySaveResponseDto> => {
                 return of({ entityId : 1, success : true } as IEntitySaveResponseDto);
             }),
-            getVmOptions : jest.fn().mockReturnValue(of({
-                'key1' : 'value1',
-                'key2' : 'value2'
-            })),
             stepBack : jest.fn().mockReturnValue(of('NEED_SETUP')),
             getAdminUserData : jest.fn().mockReturnValue(of({ username : 'admin', credential : 'testPassword', role : 'ROLE_ADMIN' })),
             saveInitialStep : jest.fn().mockReturnValue(of('NEED_ADMIN_USER')),

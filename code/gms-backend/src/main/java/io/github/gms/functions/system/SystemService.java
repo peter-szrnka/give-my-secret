@@ -1,6 +1,7 @@
 package io.github.gms.functions.system;
 
 import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.dto.VmOptionDto;
 import io.github.gms.common.enums.ContainerHostType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.github.gms.common.util.Constants.*;
 
@@ -40,6 +43,13 @@ public class SystemService {
 	private String authType;
 	// It will be set with setter injection
 	private BuildProperties buildProperties;
+
+	public List<VmOptionDto> getVmOptions() {
+		List<VmOptionDto> resultList = new ArrayList<>();
+		System.getProperties().forEach((key, value) ->
+				resultList.add(new VmOptionDto(key.toString(), value.toString())));
+		return resultList;
+	}
 
 	public SystemStatusDto getSystemStatus() {
 		SystemStatusDto.SystemStatusDtoBuilder builder = SystemStatusDto.builder();

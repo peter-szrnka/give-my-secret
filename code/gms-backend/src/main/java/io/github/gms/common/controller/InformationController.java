@@ -1,21 +1,20 @@
 package io.github.gms.common.controller;
 
 import io.github.gms.common.abstraction.GmsController;
-import io.github.gms.common.dto.ErrorCodeDto;
-import io.github.gms.common.dto.ErrorCodeListDto;
-import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.common.dto.*;
 import io.github.gms.common.types.ErrorCode;
 import io.github.gms.common.types.SkipSecurityTestCheck;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.user.UserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -30,6 +29,12 @@ public class InformationController implements GmsController {
     
     private final UserInfoService userInfoService;
     private final SystemService systemService;
+
+    @GetMapping("/vm_options")
+    @PostAuthorize("@vmOptionsPostAuthorize.canAccess()")
+    public List<VmOptionDto> getVmOptions() {
+        return systemService.getVmOptions();
+    }
 
 	@GetMapping("/me")
     public UserInfoDto getUserInfo(HttpServletRequest request) {

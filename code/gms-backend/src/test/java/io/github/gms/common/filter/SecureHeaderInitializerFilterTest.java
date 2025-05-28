@@ -4,12 +4,14 @@ import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.AuthorizationService;
 import io.github.gms.auth.model.AuthorizationResponse;
+import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.util.TestUtils;
 import jakarta.servlet.FilterChain;
@@ -31,7 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -46,6 +48,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 
 	private AuthorizationService authorizationService;
 	private SystemPropertyService systemPropertyService;
+	private SystemService systemService;
 	private SecureHeaderInitializerFilter filter;
 
 	@BeforeEach
@@ -53,7 +56,8 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		// init
 		authorizationService = mock(AuthorizationService.class);
 		systemPropertyService = mock(SystemPropertyService.class);
-		filter = new SecureHeaderInitializerFilter(authorizationService, systemPropertyService, false);
+		systemService = mock(SystemService.class);
+		filter = new SecureHeaderInitializerFilter(authorizationService, systemPropertyService, systemService, false);
 	}
 	
 	@Test
@@ -64,10 +68,30 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);
 		when(request.getRequestURI()).thenReturn("/healthcheck");
+		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("OK").build());
 		
 		// act
 		filter.doFilterInternal(request, response, filterChain);
 		
+		// assert
+		verify(authorizationService, never()).authorize(any(HttpServletRequest.class));
+		verify(filterChain).doFilter(any(), any());
+		verify(response, never()).sendError(HttpStatus.OK.value(), ERROR_MESSAGE);
+	}
+
+	@Test
+	@SneakyThrows
+	void doFilterInternal_whenSystemIsInSetupPhase_thenSkipAuthorization() {
+		// arrange
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		HttpServletResponse response = mock(HttpServletResponse.class);
+		FilterChain filterChain = mock(FilterChain.class);
+		when(request.getRequestURI()).thenReturn("/info/vm_options");
+		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("NEED_SETUP").build());
+
+		// act
+		filter.doFilterInternal(request, response, filterChain);
+
 		// assert
 		verify(authorizationService, never()).authorize(any(HttpServletRequest.class));
 		verify(filterChain).doFilter(any(), any());
@@ -86,6 +110,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 				.responseStatus(HttpStatus.BAD_REQUEST)
 				.errorMessage(ERROR_MESSAGE)
 				.build());
+		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("OK").build());
 
 		// act
 		filter.doFilterInternal(request, response, filterChain);
@@ -102,12 +127,13 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 	void doFilterInternal_whenAllDataProvided_thenPass(UserRole role, boolean admin) {
 		// arrange
 		try (MockedStatic<MDC>  mockedMDC = mockStatic(MDC.class)) {
-			filter = new SecureHeaderInitializerFilter(authorizationService, systemPropertyService, true);
+			filter = new SecureHeaderInitializerFilter(authorizationService, systemPropertyService, systemService, true);
 			HttpServletRequest request = mock(HttpServletRequest.class);
 			HttpServletResponse response = mock(HttpServletResponse.class);
 			FilterChain filterChain = mock(FilterChain.class);
 			Authentication mockAuthentication = mock(Authentication.class);
 			when(mockAuthentication.getPrincipal()).thenReturn(TestUtils.createGmsAdminUser());
+			when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("OK").build());
 
 			when(authorizationService.authorize(any(HttpServletRequest.class))).thenReturn(AuthorizationResponse.builder()
 					.responseStatus(HttpStatus.OK)

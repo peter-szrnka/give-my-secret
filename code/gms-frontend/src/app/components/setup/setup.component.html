@@ -17,24 +17,7 @@
         @if(systemStatus === 'NEED_SETUP') {
         <information-message severity="information">{{ 'setup.intro' | translate }}</information-message>
         <mat-accordion>
-          @for (vmOption of vmOptions; track $index) {
-          <mat-expansion-panel [hideToggle]="vmOption.value.length <= 100">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                {{ vmOption.key }}
-              </mat-panel-title>
-              <mat-panel-description>
-                @if (vmOption.value.length > 100) {
-                ...
-                } @else {
-                {{ vmOption.value }}
-                }
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-
-            {{ vmOption.value }}
-          </mat-expansion-panel>
-          }
+          <vm-options/>
         </mat-accordion>
         }
         @else if(systemStatus === 'NEED_ADMIN_USER') {

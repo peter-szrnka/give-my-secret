@@ -15,8 +15,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.MDC;
 
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -35,21 +33,6 @@ class SetupControllerTest {
     void setup() {
         setupService = mock(SetupService.class);
         controller = new SetupController(setupService);
-    }
-
-    @Test
-    void getVmOptions_whenDataSaved_thenReturnOptions() {
-        // arrange
-        when(setupService.getVmOptions()).thenReturn(Map.of("key", "value"));
-
-        // act
-        Map<String, String> response = controller.getVmOptions();
-
-        // assert
-        assertNotNull(response);
-        assertEquals(1, response.size());
-        assertEquals("value", response.get("key"));
-        verify(setupService).getVmOptions();
     }
 
     @Test

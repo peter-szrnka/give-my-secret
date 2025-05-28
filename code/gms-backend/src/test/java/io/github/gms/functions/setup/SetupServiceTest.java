@@ -16,7 +16,6 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static io.github.gms.common.types.ErrorCode.GMS_003;
@@ -46,16 +45,6 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
         service = new SetupService(userService, systemAttributeRepository, systemPropertyService);
 
         addAppender(SetupService.class);
-    }
-
-    @Test
-    void getVmOptions_whenCalled_thenReturnData() {
-        // act
-        Map<String, String> vmOptions = service.getVmOptions();
-
-        // assert
-        assertNotNull(vmOptions);
-        assertFalse(vmOptions.isEmpty());
     }
 
     @Test

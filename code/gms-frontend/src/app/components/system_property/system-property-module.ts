@@ -11,6 +11,7 @@ import { SystemPropertyListResolver } from "./resolver/system-property-list.reso
 import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { VmOptionsComponent } from "../../common/components/vm-options/vm-options.component";
 
 /**
  * @author Peter Szrnka
@@ -28,7 +29,8 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
         SplashComponent,
         MomentPipe,
         NavBackComponent,
-        TranslatorModule
+        TranslatorModule,
+        VmOptionsComponent
     ], 
     providers: [
         SystemPropertyService, SystemPropertyListResolver,

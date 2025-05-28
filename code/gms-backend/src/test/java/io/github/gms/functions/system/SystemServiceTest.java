@@ -3,6 +3,7 @@ package io.github.gms.functions.system;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
+import io.github.gms.common.dto.VmOptionDto;
 import io.github.gms.common.enums.ContainerHostType;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.SystemStatus;
@@ -21,10 +22,11 @@ import org.springframework.core.env.Environment;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 
 import static io.github.gms.common.util.Constants.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -54,6 +56,16 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
 
         service = new SystemService(environment, clock, systemPropertyService, systemAttributeRepository);
         service.setAuthType("db");
+    }
+
+    @Test
+    void getVmOptions_whenCalled_thenReturnData() {
+        // act
+        List<VmOptionDto> vmOptions = service.getVmOptions();
+
+        // assert
+        assertNotNull(vmOptions);
+        assertFalse(vmOptions.isEmpty());
     }
 
     @ParameterizedTest

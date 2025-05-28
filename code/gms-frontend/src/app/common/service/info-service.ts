@@ -3,7 +3,8 @@ import { Injectable } from "@angular/core";
 import { getHeaders } from "../utils/header-utils";
 import { environment } from "../../../environments/environment";
 import { User } from "../../components/user/model/user.model";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, Observable } from "rxjs";
+import { VmOption } from "../model/common.model";
 
 /**
  * @author Peter Szrnka
@@ -15,6 +16,10 @@ export class InformationService {
 
     healthCheck() : Promise<string> {
         return firstValueFrom(this.http.get<string>(environment.baseUrl + 'healthcheck', {}));
+    }
+
+    public getVmOptions() : Observable<VmOption[]> {
+        return this.http.get<VmOption[]>(environment.baseUrl + 'info/vm_options', { withCredentials : true, headers : getHeaders() });
     }
 
     getUserInfo() : Promise<User> {

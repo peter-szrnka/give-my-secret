@@ -5,81 +5,91 @@
 
   <mat-card class="margin-top">
     <mat-card-content>
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>{{ 'tables.filter' | translate }}</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="..." #input>
-      </mat-form-field>
+      <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+        <mat-tab label="{{ 'systemProperties.tab.systemProperties' | translate }}">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>{{ 'tables.filter' | translate }}</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="..." #input>
+          </mat-form-field>
 
-      <table mat-table [dataSource]="datasource" (load)="true">
-        <tr mat-header-row *matHeaderRowDef="columns"></tr>
-        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
-        <ng-container matColumnDef="key">
-          <th mat-header-cell *matHeaderCellDef>{{ 'tables.key' | translate }}</th>
-          <td mat-cell *matCellDef="let element"> {{element.textDescription}}<br/>
-            <sub>{{ 'systemProperties.category' | translate }}: <b>{{element.category}}</b>@if (element.hint) { {{' | ' + element.hint}} }</sub>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="value">
-          <th mat-header-cell *matHeaderCellDef>{{ 'tables.value' | translate }}</th>
-          <td mat-cell *matCellDef="let element">
-            @if (element.mode === undefined && element.displayMode !== 'toggle') {
-              <span>{{element.value}}</span>
-            } @else if (element.mode === undefined && element.displayMode === 'toggle') {
-              <mat-slide-toggle [(ngModel)]="element.value" [checked]="element.value" [disabled]="true"></mat-slide-toggle>
-            }
-            @if (element.mode === 'EDIT' && element.displayMode === 'text') {
-              <mat-form-field class="example-full-width">
-                <input matInput name="value" type="{{element.inputType}}" [(ngModel)]="element.value" />
-              </mat-form-field>
-            }
-            @if (element.mode === 'EDIT' && element.displayMode === 'toggle') {
-              <mat-slide-toggle [(ngModel)]="element.value" [checked]="element.value"></mat-slide-toggle>
-            }
-            @if (element.mode === 'EDIT' && element.displayMode === 'list') {
-              <mat-select name="value" [(ngModel)]="element.value">
-                @for (item of element.valueSet; track item) {
-                  <mat-option [value]="item">{{item}}</mat-option>
+          <table mat-table [dataSource]="datasource" (load)="true">
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+            <ng-container matColumnDef="key">
+              <th mat-header-cell *matHeaderCellDef>{{ 'tables.key' | translate }}</th>
+              <td mat-cell *matCellDef="let element"> {{element.textDescription}}<br />
+                <sub>{{ 'systemProperties.category' | translate }}: <b>{{element.category}}</b>@if (element.hint) { {{'
+                  |
+                  ' + element.hint}} }</sub>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="value">
+              <th mat-header-cell *matHeaderCellDef>{{ 'tables.value' | translate }}</th>
+              <td mat-cell *matCellDef="let element">
+                @if (element.mode === undefined && element.displayMode !== 'toggle') {
+                <span>{{element.value}}</span>
+                } @else if (element.mode === undefined && element.displayMode === 'toggle') {
+                <mat-slide-toggle [(ngModel)]="element.value" [checked]="element.value"
+                  [disabled]="true"></mat-slide-toggle>
                 }
-              </mat-select>
-            }
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>{{ 'tables.type' | translate }}</th>
-          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
-        </ng-container>
-        <ng-container matColumnDef="lastModified">
-          <th mat-header-cell *matHeaderCellDef class="show-large">{{ 'tables.lastModified' | translate }}</th>
-          <td mat-cell *matCellDef="let element" class="show-large"> {{element.lastModified | momentPipe:'yyyy.MM.DD. HH:mm:ss'}} </td>
-        </ng-container>
-        <ng-container matColumnDef="operations">
-          <th mat-header-cell *matHeaderCellDef>{{ 'tables.operations' | translate }}</th>
-          <td mat-cell *matCellDef="let element">&nbsp;
-            @if (!element.mode) {
-              <button mat-icon-button color="primary"
-                (click)="element.mode = 'EDIT'">
-                <mat-icon aria-hidden="false">edit</mat-icon>
-              </button>
-            }
-            @if (element.mode === 'EDIT') {
-              <button mat-icon-button color="primary"
-                (click)="element.mode=undefined">
-                <mat-icon aria-hidden="false">undo</mat-icon>
-              </button>
-              <button mat-icon-button color="primary"
-                (click)="save(element)">
-                <mat-icon aria-hidden="false">save</mat-icon>
-              </button>
-            }
-            @if (!element.mode && element.factoryValue === false) {
-              <button mat-icon-button color="warn"
-                (click)="promptDelete(element)">
-                <mat-icon aria-hidden="false">delete</mat-icon>
-              </button>
-            }
-          </td>
-        </ng-container>
-      </table>
+                @if (element.mode === 'EDIT' && element.displayMode === 'text') {
+                <mat-form-field class="example-full-width">
+                  <input matInput name="value" type="{{element.inputType}}" [(ngModel)]="element.value" />
+                </mat-form-field>
+                }
+                @if (element.mode === 'EDIT' && element.displayMode === 'toggle') {
+                <mat-slide-toggle [(ngModel)]="element.value" [checked]="element.value"></mat-slide-toggle>
+                }
+                @if (element.mode === 'EDIT' && element.displayMode === 'list') {
+                <mat-select name="value" [(ngModel)]="element.value">
+                  @for (item of element.valueSet; track item) {
+                  <mat-option [value]="item">{{item}}</mat-option>
+                  }
+                </mat-select>
+                }
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef>{{ 'tables.type' | translate }}</th>
+              <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+            </ng-container>
+            <ng-container matColumnDef="lastModified">
+              <th mat-header-cell *matHeaderCellDef class="show-large">{{ 'tables.lastModified' | translate }}</th>
+              <td mat-cell *matCellDef="let element" class="show-large"> {{element.lastModified |
+                momentPipe:'yyyy.MM.DD.
+                HH:mm:ss'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="operations">
+              <th mat-header-cell *matHeaderCellDef>{{ 'tables.operations' | translate }}</th>
+              <td mat-cell *matCellDef="let element">&nbsp;
+                @if (!element.mode) {
+                <button mat-icon-button color="primary" (click)="element.mode = 'EDIT'">
+                  <mat-icon aria-hidden="false">edit</mat-icon>
+                </button>
+                }
+                @if (element.mode === 'EDIT') {
+                <button mat-icon-button color="primary" (click)="element.mode=undefined">
+                  <mat-icon aria-hidden="false">undo</mat-icon>
+                </button>
+                <button mat-icon-button color="primary" (click)="save(element)">
+                  <mat-icon aria-hidden="false">save</mat-icon>
+                </button>
+                }
+                @if (!element.mode && element.factoryValue === false) {
+                <button mat-icon-button color="warn" (click)="promptDelete(element)">
+                  <mat-icon aria-hidden="false">delete</mat-icon>
+                </button>
+                }
+              </td>
+            </ng-container>
+          </table>
+        </mat-tab>
+        <mat-tab label="{{ 'systemProperties.tab.envProperties' | translate }}">
+          <mat-accordion>
+            <vm-options />
+        </mat-accordion>
+        </mat-tab>
+      </mat-tab-group>
     </mat-card-content>
   </mat-card>
 </div>

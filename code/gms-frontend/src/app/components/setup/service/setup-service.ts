@@ -20,10 +20,6 @@ export class SetupService {
         return this.http.get<SystemStatus>(environment.baseUrl + 'info/status', { headers : getHeaders() });
     }
 
-    public getVmOptions() : Observable<{ [key: string]: string }> {
-        return this.http.get<{ [key: string]: string }>(environment.baseUrl + 'setup/vm_options', { headers : getHeaders() });
-    }
-
     public getAdminUserData() : Observable<UserData> {
         return this.http.get<UserData>(environment.baseUrl + 'setup/current_super_admin', { headers : getHeaders() });
     }

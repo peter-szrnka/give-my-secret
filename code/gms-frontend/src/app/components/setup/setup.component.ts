@@ -1,16 +1,12 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { VmOption } from "../../common/model/common.model";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { WINDOW_TOKEN } from "../../window.provider";
 import { SystemProperty } from "../system_property/model/system-property.model";
 import { UserData } from "../user/model/user-data.model";
 import { SetupService } from "./service/setup-service";
-
-interface VmOption {
-    key: string;
-    value: string;
-}
 
 const SYSTEM_STATUS_INDEX: {[key:string] :number} = {
     "NEED_SETUP": 0,
@@ -67,18 +63,6 @@ export class SetupComponent implements OnInit {
             if (this.systemStatus === 'NEED_ADMIN_USER') {
                 this.getCurrentAdminUserData();
             }
-        });
-
-        this.getVmOptions();
-    }
-
-    getVmOptions() {
-        this.prepareHttpCall();
-
-        this.setupService.getVmOptions().subscribe(data => {
-                this.splashScreenService.stop();
-                Object.keys(data).forEach(key => this.vmOptions.push({key: key, value: data[key]}) );
-                this.loading = false;
         });
     }
 

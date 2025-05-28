@@ -15,9 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 
@@ -34,12 +31,6 @@ public class SetupService {
     private final UserService userService;
     private final SystemAttributeRepository systemAttributeRepository;
     private final SystemPropertyService systemPropertyService;
-
-    public Map<String, String> getVmOptions() {
-        Map<String, String> vmOptions = new HashMap<>();
-        System.getProperties().forEach((key, value) -> vmOptions.put(key.toString(), value.toString()));
-        return vmOptions;
-    }
 
     public String stepBack() {
         SystemAttributeEntity systemStatusEntity = getCurrentSystemStatus();

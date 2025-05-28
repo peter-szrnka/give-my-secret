@@ -1,9 +1,6 @@
 package io.github.gms.common.controller;
 
-import io.github.gms.common.dto.ErrorCodeDto;
-import io.github.gms.common.dto.ErrorCodeListDto;
-import io.github.gms.common.dto.SystemStatusDto;
-import io.github.gms.common.dto.UserInfoDto;
+import io.github.gms.common.dto.*;
 import io.github.gms.common.enums.ContainerHostType;
 import io.github.gms.common.types.ErrorCode;
 import io.github.gms.functions.system.SystemService;
@@ -38,6 +35,21 @@ class InformationControllerTest {
         userInfoService = mock(UserInfoService.class);
         systemService = mock(SystemService.class);
         controller = new InformationController(userInfoService, systemService);
+    }
+
+
+    @Test
+    void getVmOptions_whenDataSaved_thenReturnOptions() {
+        // arrange
+        when(systemService.getVmOptions()).thenReturn(List.of(new VmOptionDto("key", "value")));
+
+        // act
+        List<VmOptionDto> response = controller.getVmOptions();
+
+        // assert
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        verify(systemService).getVmOptions();
     }
 
     @Test

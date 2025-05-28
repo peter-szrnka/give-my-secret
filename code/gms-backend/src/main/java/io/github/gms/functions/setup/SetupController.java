@@ -18,8 +18,6 @@ import org.slf4j.MDC;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
 
 /**
@@ -35,13 +33,6 @@ import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_
 public class SetupController implements GmsController {
 
 	private final SetupService setupService;
-
-    @GetMapping("/vm_options")
-    @Audited(operation = EventOperation.SETUP)
-    public Map<String, String> getVmOptions() {
-        initMdc();
-        return setupService.getVmOptions();
-    }
 
     @GetMapping(value = "/step_back", produces = "plain/text")
     @Audited(operation = EventOperation.SETUP)
