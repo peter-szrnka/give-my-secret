@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Comparator;
@@ -33,7 +32,7 @@ public class InformationController implements GmsController {
 
     @GetMapping("/vm_options")
     @PostAuthorize("@vmOptionsPostAuthorize.canAccess()")
-    public @ResponseBody List<VmOptionDto> getVmOptions() {
+    public List<VmOptionDto> getVmOptions() {
         return systemService.getVmOptions();
     }
 
