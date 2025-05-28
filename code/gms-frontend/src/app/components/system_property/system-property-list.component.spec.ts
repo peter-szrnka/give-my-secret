@@ -16,6 +16,7 @@ import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { InformationService } from "../../common/service/info-service";
+import { VmOption } from "../../common/model/common.model";
 
 /**
  * @author Peter Szrnka
@@ -137,8 +138,8 @@ describe('SystemPropertyListComponent', () => {
 
         informationService = {
             getVmOptions: jest.fn().mockReturnValue(of([
-                { 'key1': 'value1' },
-                { 'key2': 'value2' }
+                { key: 'k1', value: 'value1' } as VmOption,
+                { key: 'k2', value: 'value2' } as VmOption,
             ])),
         };
     });

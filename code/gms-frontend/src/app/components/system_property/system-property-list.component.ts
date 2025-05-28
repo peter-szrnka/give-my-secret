@@ -139,11 +139,11 @@ export class SystemPropertyListComponent {
 
   ngOnInit(): void {
     this.fetchData();
+    this.informationService.getVmOptions().subscribe(data => this.vmOptions = data);
   }
 
   protected async fetchData() {
     const user: User | undefined = await this.sharedData.getUserInfo();
-    this.getVmOptions();
 
     if (checkRights(user)) {
       this.initDefaultDataTable();
@@ -162,13 +162,6 @@ export class SystemPropertyListComponent {
     const filterValue = (event.target as HTMLInputElement).value;
     this.datasource.filter = filterValue.trim().toLowerCase();
   }
-
-  getVmOptions() {
-    this.informationService.getVmOptions().subscribe(data => {
-            this.splashScreenService.stop();
-            this.vmOptions = data;
-    });
-}
 
   private convertToElements(resultList: SystemProperty[]): SystemPropertyElement[] {
     return resultList.map((property: SystemProperty) => {
