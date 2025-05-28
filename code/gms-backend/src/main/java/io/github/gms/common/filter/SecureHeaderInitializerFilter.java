@@ -9,6 +9,7 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,6 +29,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.github.gms.common.enums.SystemStatus.NEED_SETUP;
+
 /**
  * A custom Spring filter used to authorize user by parsing JWT token.
  * 
@@ -37,16 +40,20 @@ import java.util.regex.Pattern;
 @Component
 public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 	
-	private static final Set<String> IGNORED_URLS = Sets.newHashSet("/secure/.*");
+	private static final Set<String> IGNORED_URLS = Sets.newHashSet("/secure/.*", "/info/vm_options");
+	private static final Set<String> IGNORED_URLS_IN_SETUP_PHASE = Sets.newHashSet("/info/vm_options");
 	private final AuthorizationService authorizationService;
 	private final SystemPropertyService systemPropertyService;
+	private final SystemService systemService;
 	private final boolean secure;
 
 	public SecureHeaderInitializerFilter(AuthorizationService authorizationService,
 										 SystemPropertyService systemPropertyService,
+										 SystemService systemService,
 										 @Value("${config.cookie.secure}") boolean secure) {
 		this.authorizationService = authorizationService;
 		this.systemPropertyService = systemPropertyService;
+		this.systemService = systemService;
 		this.secure = secure;
 	}
 
@@ -54,7 +61,7 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
 			throws ServletException, IOException {
 
-		if (shouldSkipUrl(request.getRequestURI())) {
+		if (shouldSkipUrlDuringSetup(request.getRequestURI()) || shouldSkipUrl(IGNORED_URLS, request.getRequestURI())) {
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -85,9 +92,13 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 		MDC.remove(MdcParameter.USER_ID.getDisplayName());
 		MDC.remove(MdcParameter.IS_ADMIN.getDisplayName());
 	}
-	
-	private static boolean shouldSkipUrl(String url) {
-		return IGNORED_URLS.stream().noneMatch(urlPattern -> {
+
+	private boolean shouldSkipUrlDuringSetup(String url) {
+		return NEED_SETUP.name().equals(systemService.getSystemStatus().getStatus()) && !shouldSkipUrl(IGNORED_URLS_IN_SETUP_PHASE, url);
+	}
+
+	private static boolean shouldSkipUrl(Set<String> urlSet, String url) {
+		return urlSet.stream().noneMatch(urlPattern -> {
 			Pattern p = Pattern.compile(urlPattern);
 			Matcher matcher = p.matcher(url);
 			return matcher.matches();

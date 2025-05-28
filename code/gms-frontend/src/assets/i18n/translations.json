@@ -403,7 +403,7 @@
 
         "sidemenu.home": "Nyitólap",
         "sidemenu.users" : "Felhasználók",
-        "sidemenu.systemProperties" : "Rendszer tulajdonságok",
+        "sidemenu.systemProperties" : "Rendszer paraméterek",
         "sidemenu.ipRestrictions" : "IP korlátozások",
         "sidemenu.jobs" : "Munkafolyamatok",
         "sidemenu.announcements" : "Bejelentések",
@@ -522,6 +522,8 @@
         "job.manual.execution.error": "Munkafolyamat végrehajtása sikertelen!",
 
         "systemProperties.category": "Kategória",
+        "systemProperties.tab.systemProperties" : "Rendszer paraméterek",
+        "systemProperties.tab.envProperties" : "Környezeti változók",
 
         "setup.intro": "Üdvözöljük a Give My Secret alkalmazásban! Az alkalmazás működéséhez végig kell menned a beállítás varázslón. Kérlek ellenőrizd a JVM tulajdonságok listáját, majd kattints a lenti Folytatás gombra.",
         "setup.title" : "Alkalmazás beállítás varázsló",

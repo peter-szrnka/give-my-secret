@@ -11,6 +11,7 @@ import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.user.UserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +34,7 @@ public class InformationController implements GmsController {
     private final SystemService systemService;
 
     @GetMapping("/vm_options")
+    @PostAuthorize("@vmOptionsPostAuthorize.canAccess()")
     public Map<String, String> getVmOptions() {
         return systemService.getVmOptions();
     }

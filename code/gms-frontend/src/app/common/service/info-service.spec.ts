@@ -40,7 +40,7 @@ describe('InformationService', () => {
     });
 
     it('should return system VM options', () => {
-      const expectedUrl = environment.baseUrl + 'setup/vm_options';
+      const expectedUrl = environment.baseUrl + 'info/vm_options';
 
       const mockResponse = { "A":"B", "C":"D" };
   

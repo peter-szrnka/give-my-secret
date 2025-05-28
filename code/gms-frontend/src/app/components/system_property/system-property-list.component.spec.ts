@@ -15,6 +15,7 @@ import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { InformationService } from "../../common/service/info-service";
 
 /**
  * @author Peter Szrnka
@@ -31,6 +32,7 @@ describe('SystemPropertyListComponent', () => {
     let sharedDataService : any;
     let activatedRoute : any = {};
     let splashScreenService: any = {};
+    let informationService: any;
     // Fixtures
     let fixture : ComponentFixture<SystemPropertyListComponent>;
 
@@ -45,6 +47,7 @@ describe('SystemPropertyListComponent', () => {
                 { provide : SystemPropertyService, useValue : service },
                 { provide : DialogService, useValue : dialogService },
                 { provide : ActivatedRoute, useClass : activatedRoute },
+                { provide: InformationService, useValue: informationService},
                 { provide : SplashScreenStateService, useValue : splashScreenService }
             ]
         });
@@ -130,6 +133,13 @@ describe('SystemPropertyListComponent', () => {
 
         splashScreenService = {
             start : jest.fn()
+        };
+
+        informationService = {
+            getVmOptions : jest.fn().mockReturnValue(of({
+                'key1' : 'value1',
+                'key2' : 'value2'
+            })),
         };
     });
 
