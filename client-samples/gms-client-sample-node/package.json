@@ -24,7 +24,7 @@
     "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^11.0.20",
     "@nestjs/core": "^11.0.20",
-    "@nestjs/platform-express": "^11.0.20",
+    "@nestjs/platform-express": "^11.1.2",
     "jks-js": "^1.1.0",
     "nestjs-http-promise": "^4.0.0",
     "reflect-metadata": "^0.1.13",
