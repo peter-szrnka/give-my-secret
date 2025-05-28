@@ -3,6 +3,7 @@ package io.github.gms.functions.event;
 import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.types.EventSource;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,11 +38,18 @@ public class EventEntity extends AbstractGmsEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "entity_id")
+	private Long entityId;
+
 	@Column(name = "user_id")
 	private Long userId;
 	
 	@Column(name = "event_date")
 	private ZonedDateTime eventDate;
+
+	@Column(name = "source")
+	@Enumerated(EnumType.STRING)
+	private EventSource source;
 	
 	@Column(name = "operation")
 	@Enumerated(EnumType.STRING)

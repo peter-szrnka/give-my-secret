@@ -2,6 +2,7 @@ package io.github.gms.common.abstraction;
 
 import jakarta.persistence.MappedSuperclass;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -10,4 +11,6 @@ import java.io.Serializable;
  */
 @MappedSuperclass
 public abstract class AbstractGmsEntity implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 7089530376252111656L;
 }

@@ -3,10 +3,10 @@
  * @author Peter Szrnka
  */
 export interface ButtonConfig {
-    label : string,
+    label? : string,
     url? : string,
     callFunction?: Function,
-    primary : boolean,
+    primary? : boolean,
     visibilityCondition? : boolean;
     enabled? : boolean;
 }

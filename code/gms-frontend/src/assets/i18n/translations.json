@@ -189,8 +189,10 @@
         "apikey.copied": "API key copied!",
 
         "event.title" : "Events",
+        "event.source": "Source",
         "event.target" : "Target",
         "event.date" : "Event date",
+        "event.unprocessed": "Number of unprocessed events: $s",
 
         "job.title" : "Jobs",
         "job.duration" : "Duration (ms)",
@@ -503,8 +505,10 @@
         "apikey.copied": "API kulcs másolva!",
 
         "event.title" : "Események",
+        "event.source" : "Forrás",
         "event.target" : "Cél",
         "event.date" : "Esemény dátuma",
+        "event.unprocessed": "Feldolgozatlan események száma: $s",
 
         "job.title" : "Munkafolyamatok",
         "job.duration" : "Futásidő (ms)",

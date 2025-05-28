@@ -1,7 +1,9 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.common.abstraction.AbstractController;
+import io.github.gms.common.dto.IntegerValueDto;
 import io.github.gms.common.util.ConverterUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,5 +39,11 @@ public class EventController extends AbstractController<EventService> {
 									 @RequestParam(PAGE) int page,
 									 @RequestParam(SIZE) int size) {
 		return service.listByUser(userId, ConverterUtils.createPageable(direction, property, page, size));
+	}
+
+	@GetMapping("/unprocessed")
+	@PreAuthorize(ROLE_ADMIN)
+	public ResponseEntity<IntegerValueDto> getUnprocessedEventsCount() {
+		return ResponseEntity.ok(service.getUnprocessedEventsCount());
 	}
 }

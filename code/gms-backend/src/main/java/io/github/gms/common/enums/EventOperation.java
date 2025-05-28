@@ -1,14 +1,21 @@
 package io.github.gms.common.enums;
 
+import lombok.Getter;
+
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
+@Getter
 public enum EventOperation {
+	// Triggered by Entity listener
+	INSERT(false),
+	UPDATE(false),
+	DELETE(false),
 
+	// Triggered by AOP
 	SETUP,
-	SAVE,
-	DELETE,
+	SAVE(false),
 	GET_BY_ID,
 	GET_VALUE,
 	ROTATE_SECRET_MANUALLY,
@@ -19,5 +26,16 @@ public enum EventOperation {
 	GENERATE_KEYSTORE,
 	SYNC_LDAP_USERS_MANUALLY,
 	REQUEST_USER_ANONYMIZATION,
-	REQUEST_USER_DELETION
+	REQUEST_USER_DELETION,
+	UNKNOWN;
+
+	private final boolean basicAuditCompatible;
+	
+	EventOperation() {
+		basicAuditCompatible = true;
+	}
+
+	EventOperation(boolean basicAuditCompatible) {
+		this.basicAuditCompatible = basicAuditCompatible;
+	}
 }

@@ -3,6 +3,7 @@ package io.github.gms.functions.event;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.types.EventSource;
 import lombok.Data;
 
 import java.io.Serial;
@@ -24,8 +25,10 @@ public class EventDto implements Serializable {
 	private Long id;
 	private Long userId;
 	private String username;
+	private Long entityId;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
 	private ZonedDateTime eventDate;
 	private EventOperation operation;
+	private EventSource source;
 	private EventTarget target;
 }

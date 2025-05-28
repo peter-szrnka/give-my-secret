@@ -1,12 +1,7 @@
 package io.github.gms.functions.secret;
 
-import io.github.gms.common.abstraction.AbstractGmsEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import io.github.gms.common.abstraction.AuditableGmsEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -22,7 +17,7 @@ import static io.github.gms.common.util.Constants.ID;
 @Entity
 @Table(name = "gms_api_key_restriction")
 @EqualsAndHashCode(callSuper = false)
-public class ApiKeyRestrictionEntity extends AbstractGmsEntity {
+public class ApiKeyRestrictionEntity extends AuditableGmsEntity {
 
 	@Serial
 	private static final long serialVersionUID = -6965366285964443078L;

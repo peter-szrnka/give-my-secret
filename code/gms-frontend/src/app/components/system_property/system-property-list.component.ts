@@ -90,7 +90,8 @@ export const PROPERTY_TEXT_MAP: any = {
   'USER_DELETION_RUNNER_CONTAINER_ID': createTextConfig(),
   'ENABLE_MULTI_NODE': createBoolConfig(),
   'ENABLE_AUTOMATIC_LOGOUT': createBoolConfig('checkSystemReady'),
-  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES': createUnitBasedTextConfig('checkSystemReady')
+  'AUTOMATIC_LOGOUT_TIME_IN_MINUTES': createUnitBasedTextConfig('checkSystemReady'),
+  'ENABLE_DETAILED_AUDIT': createBoolConfig()
 };
 
 interface SystemPropertyElement extends SystemProperty {

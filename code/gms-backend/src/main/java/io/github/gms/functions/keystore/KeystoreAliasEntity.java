@@ -1,14 +1,8 @@
 package io.github.gms.functions.keystore;
 
-import io.github.gms.common.abstraction.AbstractGmsEntity;
+import io.github.gms.common.abstraction.AuditableGmsEntity;
 import io.github.gms.common.db.converter.EncryptedFieldConverter;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,7 +18,7 @@ import static io.github.gms.common.util.Constants.ID;
 @Entity
 @Table(name = "gms_keystore_alias")
 @EqualsAndHashCode(callSuper = false)
-public class KeystoreAliasEntity extends AbstractGmsEntity {
+public class KeystoreAliasEntity extends AuditableGmsEntity {
 
 	@Serial
 	private static final long serialVersionUID = -5558391835366268906L;

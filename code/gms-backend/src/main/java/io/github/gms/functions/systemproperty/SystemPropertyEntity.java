@@ -1,15 +1,8 @@
 package io.github.gms.functions.systemproperty;
 
-import io.github.gms.common.abstraction.AbstractGmsEntity;
+import io.github.gms.common.abstraction.AuditableGmsEntity;
 import io.github.gms.common.enums.SystemProperty;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,7 +19,7 @@ import static io.github.gms.common.util.Constants.ID;
 @Entity
 @Table(name = "gms_system_property")
 @EqualsAndHashCode(callSuper = false)
-public class SystemPropertyEntity extends AbstractGmsEntity {
+public class SystemPropertyEntity extends AuditableGmsEntity {
 
 	@Serial
 	private static final long serialVersionUID = 7838750742371446801L;

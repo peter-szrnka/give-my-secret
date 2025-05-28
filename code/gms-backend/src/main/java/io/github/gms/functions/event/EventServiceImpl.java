@@ -1,5 +1,6 @@
 package io.github.gms.functions.event;
 
+import io.github.gms.common.dto.IntegerValueDto;
 import io.github.gms.common.model.UserEvent;
 import io.github.gms.functions.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,9 @@ import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-import static io.github.gms.common.util.MdcUtils.getUserId;
+import static io.github.gms.common.util.Constants.GENERIC_USER;
+import static io.github.gms.common.util.Constants.JOB_USER;
+import static java.util.Optional.ofNullable;
 
 /**
  * @author Peter Szrnka
@@ -28,13 +31,16 @@ public class EventServiceImpl implements EventService {
 	private final EventRepository repository;
 	private final UserRepository userRepository;
 	private final EventConverter converter;
+	private final UnprocessedEventStorage unprocessedEventStorage;
 
 	@Override
 	public void saveUserEvent(UserEvent event) {
 		EventEntity entity = new EventEntity();
-		entity.setEventDate(ZonedDateTime.now(clock));
-		entity.setUserId(getUserId());
+		entity.setEntityId(event.getEntityId());
+		entity.setEventDate(ofNullable(event.getEventDate()).orElse(ZonedDateTime.now(clock)));
+		entity.setUserId(event.getUserId());
 		entity.setOperation(event.getOperation());
+		entity.setSource(event.getEventSource());
 		entity.setTarget(event.getTarget());
 		repository.save(entity);
 	}
@@ -57,6 +63,11 @@ public class EventServiceImpl implements EventService {
 		return converter.toDtoList(repository.findAllByUserId(userId, pageable), getUsername(userId));
 	}
 
+	@Override
+	public IntegerValueDto getUnprocessedEventsCount() {
+		return new IntegerValueDto(unprocessedEventStorage.getAll(false).size());
+	}
+
 	@Async
 	@Override
 	public void batchDeleteByUserIds(Set<Long> userIds) {
@@ -65,6 +76,10 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	private String getUsername(Long userId) {
-		return userId.equals(0L) ? "setup" : userRepository.getUsernameById(userId);
+		if (GENERIC_USER.equals(userId)) {
+			return "technical user";
+		}
+
+		return JOB_USER.equals(userId) ? "job" : userRepository.getUsernameById(userId);
 	}
 }

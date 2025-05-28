@@ -36,6 +36,7 @@ public class AnnouncementController extends AbstractController<AnnouncementServi
 	
 	@GetMapping(PATH_VARIABLE_ID)
 	@PreAuthorize(ALL_ROLE)
+	@Audited(operation = EventOperation.GET_BY_ID)
 	public AnnouncementDto getById(@PathVariable(ID) Long id) {
 		return service.getById(id);
 	}

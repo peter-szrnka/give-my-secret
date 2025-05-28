@@ -1,17 +1,9 @@
 package io.github.gms.functions.apikey;
 
-import io.github.gms.common.abstraction.AbstractGmsEntity;
+import io.github.gms.common.abstraction.AuditableGmsEntity;
 import io.github.gms.common.db.converter.EncryptedFieldConverter;
 import io.github.gms.common.enums.EntityStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,7 +21,7 @@ import static io.github.gms.common.util.Constants.ID;
 @Entity
 @Table(name = "gms_api_key")
 @EqualsAndHashCode(callSuper = false)
-public class ApiKeyEntity extends AbstractGmsEntity {
+public class ApiKeyEntity extends AuditableGmsEntity {
 
 	@Serial
 	private static final long serialVersionUID = -890551760657637824L;

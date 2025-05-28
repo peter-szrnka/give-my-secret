@@ -15,7 +15,8 @@ public enum MdcParameter {
 	USER_ID(Constants.USER_ID),
 	USER_NAME("userName"),
 	IS_ADMIN("isAdmin", false),
-	JOB_ID("jobId");
+	JOB_ID("jobId"),
+	AUDIT_EVENT_SOURCE("eventLocation");
 	
 	private final String displayName;
 	private final boolean input;

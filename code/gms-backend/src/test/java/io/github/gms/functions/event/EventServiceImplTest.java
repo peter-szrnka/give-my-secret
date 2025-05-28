@@ -10,9 +10,10 @@ import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.jboss.logging.MDC;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,14 +24,8 @@ import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -38,20 +33,18 @@ import static org.mockito.Mockito.when;
  */
 class EventServiceImplTest extends AbstractUnitTest {
 
+	@Mock
 	private Clock clock;
+	@Mock
 	private EventRepository repository;
+	@Mock
 	private UserRepository userRepository;
+	@Mock
 	private EventConverter converter;
+	@Mock
+	private UnprocessedEventStorage unprocessedEventStorage;
+	@InjectMocks
 	private EventServiceImpl service;
-
-	@BeforeEach
-	void setup() {
-		clock = mock(Clock.class);
-		repository = mock(EventRepository.class);
-		userRepository = mock(UserRepository.class);
-		converter = mock(EventConverter.class);
-		service = new EventServiceImpl(clock, repository, userRepository, converter);
-	}
 	
 	@Test
 	void saveUserEvent_whenUserEventOccurred_thenReturnOk() {
@@ -61,7 +54,11 @@ class EventServiceImplTest extends AbstractUnitTest {
 		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 
 		// act
-		service.saveUserEvent(new UserEvent(EventOperation.GET_BY_ID, EventTarget.API_KEY));
+		service.saveUserEvent(UserEvent.builder()
+						.userId(1L)
+						.operation(EventOperation.GET_BY_ID)
+						.target(EventTarget.API_KEY)
+				.build());
 		
 		// assert
 		ArgumentCaptor<EventEntity> eventCaptor = ArgumentCaptor.forClass(EventEntity.class);
@@ -93,15 +90,21 @@ class EventServiceImplTest extends AbstractUnitTest {
 
 		EventEntity event1 = TestUtils.createEventEntity();
 
+		EventEntity event3 = TestUtils.createEventEntity();
+		event3.setUserId(-1L);
+
 		EventDto mockEvent1 = new EventDto();
 		mockEvent1.setUsername("user1");
 		EventDto mockEvent2 = new EventDto();
 		mockEvent2.setUsername("user2");
+		EventDto mockEvent3 = new EventDto();
+		mockEvent3.setUsername("user3");
 		
-		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(event1, secondEventEntity));
+		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(event1, secondEventEntity, event3));
 		when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
 		when(converter.toDto(eq(event1), anyString())).thenReturn(mockEvent1);
 		when(converter.toDto(eq(secondEventEntity), anyString())).thenReturn(mockEvent2);
+		when(converter.toDto(eq(event3), anyString())).thenReturn(mockEvent3);
 		when(userRepository.getUsernameById(anyLong())).thenReturn("user1");
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
@@ -110,10 +113,10 @@ class EventServiceImplTest extends AbstractUnitTest {
 
 		// assert
 		assertNotNull(response);
-		assertEquals(2, response.getResultList().size());
-		assertEquals(2L, response.getTotalElements());
+		assertEquals(3, response.getResultList().size());
+		assertEquals(3L, response.getTotalElements());
 		verify(repository).findAll(any(Pageable.class));
-		verify(converter, times(2)).toDto(any(EventEntity.class), anyString());
+		verify(converter, times(3)).toDto(any(EventEntity.class), anyString());
 		verify(userRepository).getUsernameById(anyLong());
 
 		assertEquals("user1", response.getResultList().get(0).getUsername());

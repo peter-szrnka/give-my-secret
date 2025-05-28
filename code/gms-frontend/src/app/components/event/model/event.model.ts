@@ -5,9 +5,11 @@ import { PageConfig } from "../../../common/model/common.model";
  */
 export interface Event {
     id : number,
+    entityId: number,
     username : string,
     eventDate : Date,
     operation : string,
+    source: string,
     target : string;
 }
 

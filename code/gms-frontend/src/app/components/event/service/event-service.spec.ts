@@ -7,8 +7,10 @@ import { EventService } from "./event-service";
 
 const TEST_EVENT : Event = {
   id : 1,
+  entityId: 1,
   username : "user1",
   eventDate: new Date(),
+  source: "UI",
   target : "USER",
   operation : "SAVE"
 };
@@ -105,5 +107,19 @@ describe("EventService", () => {
     it('should enable entity', () => {
       // act
       service.toggle(1, true).subscribe((res) => expect(res).toBeUndefined());
+    });
+
+    it('should return the number of unprocessed events', () => {
+      // arrange
+      const expectedUrl = environment.baseUrl + "secure/event/unprocessed";
+
+      // act
+      service.getUnprocessedEventsCount().subscribe((res) => expect(res).toBe({ value: 1}));
+
+      // assert
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('GET');
+      req.flush({ value: 1 });
+      httpMock.verify();
     });
 });

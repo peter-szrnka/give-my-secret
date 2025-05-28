@@ -1,18 +1,10 @@
 package io.github.gms.functions.secret;
 
-import io.github.gms.common.abstraction.AbstractGmsEntity;
+import io.github.gms.common.abstraction.AuditableGmsEntity;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.RotationPeriod;
 import io.github.gms.common.enums.SecretType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,7 +21,7 @@ import static io.github.gms.common.util.Constants.ID;
 @Entity
 @Table(name = "gms_secret")
 @EqualsAndHashCode(callSuper = false)
-public class SecretEntity extends AbstractGmsEntity {
+public class SecretEntity extends AuditableGmsEntity {
 
 	@Serial
 	private static final long serialVersionUID = 5114924217467033850L;

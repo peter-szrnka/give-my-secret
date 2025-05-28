@@ -23,4 +23,8 @@ export class EventService extends ServiceBase<Event, EventList> {
              { withCredentials: true, headers : getHeaders() })
             .pipe(tap(), map(value => value.resultList));
     }
+
+    getUnprocessedEventsCount(): Observable<number> {
+        return this.http.get<number>(`${environment.baseUrl}secure/event/unprocessed`, { withCredentials: true, headers : getHeaders() });
+    }
 }

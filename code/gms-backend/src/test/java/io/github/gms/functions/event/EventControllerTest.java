@@ -1,12 +1,14 @@
 package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractClientControllerTest;
+import io.github.gms.common.dto.IntegerValueDto;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -67,5 +69,17 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).listByUser(1L, pageable);
+    }
+
+    @Test
+    void getUnprocessedEventsCount_thenReturnOk() {
+        when(service.getUnprocessedEventsCount()).thenReturn(new IntegerValueDto(1));
+
+        ResponseEntity<IntegerValueDto> response = controller.getUnprocessedEventsCount();
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().getValue());
+        verify(service).getUnprocessedEventsCount();
     }
 }

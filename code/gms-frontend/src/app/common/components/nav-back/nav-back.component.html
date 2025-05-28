@@ -1,12 +1,12 @@
 <div>
   @if (backToHome === true) {
-    <button mat-raised-button [routerLink]="''">{{ 'navback.home' | translate }}</button>
+  <button mat-raised-button [routerLink]="''">{{ 'navback.home' | translate }}</button>
   }
   @for (button of buttonConfig!! | navButtonVisibility; track button) {
   @if (button.callFunction) {
   <button color="{{button.primary ? 'primary':'default'}}" mat-button mat-raised-button
-    [disabled]="button.enabled === false" (click)="button.callFunction()"
-    [routerLink]="button.url">{{button.label | translate}}</button>
+    [disabled]="button.enabled === false" (click)="button.callFunction()" [routerLink]="button.url">{{button.label |
+    translate}}</button>
   } @else {
   <button color="{{button.primary ? 'primary':'default'}}" mat-button mat-raised-button
     [disabled]="button.enabled === false" [routerLink]="button.url">{{button.label | translate}}</button>
@@ -14,6 +14,10 @@
   }
 
   @if (reload === true) {
-    <button color="primary" mat-raised-button (click)="reloadPage()"><mat-icon>refresh</mat-icon>Reload page</button>
+  <button color="primary" mat-raised-button (click)="reloadPage()"><mat-icon>refresh</mat-icon>Reload page</button>
+  }
+
+  @if (customSuffixText) {
+  {{customSuffixText}}
   }
 </div>
