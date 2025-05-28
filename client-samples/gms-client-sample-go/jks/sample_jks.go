@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/pavel-v-chernykh/keystore-go/v4"
+	"github.com/pavlo-v-chernykh/keystore-go/v4"
 )
 
 // CONSTANTS ////////////////////////////////////////////////
