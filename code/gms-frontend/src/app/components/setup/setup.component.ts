@@ -1,13 +1,12 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { VmOption } from "../../common/model/common.model";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { WINDOW_TOKEN } from "../../window.provider";
 import { SystemProperty } from "../system_property/model/system-property.model";
 import { UserData } from "../user/model/user-data.model";
 import { SetupService } from "./service/setup-service";
-import { InformationService } from "../../common/service/info-service";
-import { VmOption } from "../../common/model/common.model";
 
 const SYSTEM_STATUS_INDEX: {[key:string] :number} = {
     "NEED_SETUP": 0,
@@ -54,7 +53,6 @@ export class SetupComponent implements OnInit {
         private readonly router : Router, 
         private readonly route: ActivatedRoute,
         private readonly splashScreenService : SplashScreenStateService,
-        private readonly informationService: InformationService,
         private readonly setupService : SetupService) {}
 
     ngOnInit(): void {
@@ -65,18 +63,6 @@ export class SetupComponent implements OnInit {
             if (this.systemStatus === 'NEED_ADMIN_USER') {
                 this.getCurrentAdminUserData();
             }
-        });
-
-        this.getVmOptions();
-    }
-
-    getVmOptions() {
-        this.prepareHttpCall();
-
-        this.informationService.getVmOptions().subscribe(data => {
-                this.splashScreenService.stop();
-                this.vmOptions = data;
-                this.loading = false;
         });
     }
 

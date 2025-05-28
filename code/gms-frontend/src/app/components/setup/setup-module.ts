@@ -8,6 +8,7 @@ import { WINDOW_TOKEN } from "../../window.provider";
 import { SetupService } from "./service/setup-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
+import { VmOptionsComponent } from "../../common/components/vm-options/vm-options.component";
 
 /**
  * @author Peter Szrnka
@@ -17,13 +18,14 @@ import { InformationMessageComponent } from "../../common/components/information
       SetupComponent
     ],
     imports: [
-        AngularMaterialModule,
-        BrowserModule,
-        FormsModule,
-        BrowserAnimationsModule,
-        TranslatorModule,
-        InformationMessageComponent
-    ],
+    AngularMaterialModule,
+    BrowserModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    TranslatorModule,
+    InformationMessageComponent,
+    VmOptionsComponent
+],
     providers: [{ provide: WINDOW_TOKEN, useValue: window }, SetupService],
     schemas : [ CUSTOM_ELEMENTS_SCHEMA ]
   })

@@ -1,20 +1,19 @@
 import { HttpErrorResponse } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
+import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
-import { SetupService } from "./service/setup-service";
-import { SplashScreenStateService } from "../../common/service/splash-screen-service";
-import { EMPTY_ADMIN_DATA, SetupComponent } from "./setup.component";
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
-import { WINDOW_TOKEN } from "../../window.provider";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
-import { InformationService } from "../../common/service/info-service";
+import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
+import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { WINDOW_TOKEN } from "../../window.provider";
+import { SetupService } from "./service/setup-service";
+import { EMPTY_ADMIN_DATA, SetupComponent } from "./setup.component";
 
 /**
  * @author Peter Szrnka
@@ -29,7 +28,6 @@ describe('SetupComponent', () => {
     let splashScreenStateService : any;
     let dialog : any;
     let setupService : any;
-    let informationService: any;
     let mockWindow : any;
 
     const configTestBed = () => {
@@ -43,8 +41,7 @@ describe('SetupComponent', () => {
                 { provide : ActivatedRoute, useValue: route },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
                 { provide : MatDialog, useValue : dialog },
-                { provide : SetupService, useValue : setupService },
-                { provide: InformationService, useValue: informationService}
+                { provide : SetupService, useValue : setupService }
             ]
         }).compileComponents();
 
@@ -84,13 +81,6 @@ describe('SetupComponent', () => {
             saveSystemProperties: jest.fn().mockReturnValue(of({ success : true })),
             saveOrganizationData : jest.fn().mockReturnValue(of({ success : true })),
             completeSetup : jest.fn().mockReturnValue(of({ success : true }))
-        };
-
-        informationService = {
-            getVmOptions : jest.fn().mockReturnValue(of({
-                'key1' : 'value1',
-                'key2' : 'value2'
-            })),
         };
     });
 

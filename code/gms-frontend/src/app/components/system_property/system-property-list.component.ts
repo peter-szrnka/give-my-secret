@@ -15,8 +15,6 @@ import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 
 import * as systemPropertyList from '../../../assets/i18n/system-properties.json';
-import { InformationService } from "../../common/service/info-service";
-import { VmOption } from "../../common/model/common.model";
 
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
@@ -114,7 +112,6 @@ interface SystemPropertyElement extends SystemProperty {
 export class SystemPropertyListComponent {
   columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];
   timeUnits: any[] = TIME_UNITS;
-  vmOptions: VmOption[] = [];
 
   public datasource: MatTableDataSource<SystemPropertyElement> = new MatTableDataSource<SystemPropertyElement>([]);
   protected count = 0;
@@ -132,14 +129,12 @@ export class SystemPropertyListComponent {
     protected router: Router,
     public sharedData: SharedDataService,
     protected service: SystemPropertyService,
-    private readonly informationService: InformationService,
     public dialogService: DialogService,
     protected activatedRoute: ActivatedRoute,
     private readonly splashScreenService: SplashScreenStateService) { }
 
   ngOnInit(): void {
     this.fetchData();
-    this.informationService.getVmOptions().subscribe(data => this.vmOptions = data);
   }
 
   protected async fetchData() {

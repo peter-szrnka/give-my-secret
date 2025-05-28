@@ -7,6 +7,7 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
@@ -14,9 +15,6 @@ import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
-import { InformationService } from "../../common/service/info-service";
-import { VmOption } from "../../common/model/common.model";
 
 /**
  * @author Peter Szrnka
@@ -33,7 +31,6 @@ describe('SystemPropertyListComponent', () => {
     let sharedDataService: any;
     let activatedRoute: any = {};
     let splashScreenService: any = {};
-    let informationService: any;
     // Fixtures
     let fixture: ComponentFixture<SystemPropertyListComponent>;
 
@@ -48,7 +45,6 @@ describe('SystemPropertyListComponent', () => {
                 { provide: SystemPropertyService, useValue: service },
                 { provide: DialogService, useValue: dialogService },
                 { provide: ActivatedRoute, useClass: activatedRoute },
-                { provide: InformationService, useValue: informationService },
                 { provide: SplashScreenStateService, useValue: splashScreenService }
             ]
         });
@@ -135,13 +131,6 @@ describe('SystemPropertyListComponent', () => {
         splashScreenService = {
             start: jest.fn()
         };
-
-        informationService = {
-            getVmOptions: jest.fn().mockReturnValue(of([
-                { key: 'k1', value: 'value1' } as VmOption,
-                { key: 'k2', value: 'value2' } as VmOption,
-            ])),
-        };
     });
 
     it('Should handle resolver error', () => {
@@ -164,7 +153,7 @@ describe('SystemPropertyListComponent', () => {
         // act &assert
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
-        expect(informationService.getVmOptions).toHaveBeenCalled();
+        //expect(informationService.getVmOptions).toHaveBeenCalled();
     });
 
     it('Should save fail', () => {
