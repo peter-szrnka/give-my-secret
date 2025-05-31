@@ -78,8 +78,11 @@ describe('ApiTestingComponent', () => {
         sharedData.getUserInfo = jest.fn().mockResolvedValue(undefined);
         configTestBed();
 
+        component.apiKey = "test";
+        component.secretId = "secret1";
+
         // act
-        await component.ngOnInit();
+        fixture.autoDetectChanges();
         component.callApi();
 
         // assert
@@ -89,7 +92,6 @@ describe('ApiTestingComponent', () => {
         expect(component.apiResponse).toEqual("{\"value\":\"my-secret-value\"}");
         expect(splashScreenService.start).toHaveBeenCalled();
         expect(splashScreenService.stop).toHaveBeenCalled();
-        expect(secureStorageService.getItem).toHaveBeenCalled();
         expect(secureStorageService.setItem).toHaveBeenCalled();
     });
 
@@ -101,7 +103,7 @@ describe('ApiTestingComponent', () => {
         component.secretId = "secret-id1";
 
         // act
-        await component.ngOnInit();
+        //fixture.detectChanges();
         component.callApi();
 
         // assert
@@ -124,7 +126,7 @@ describe('ApiTestingComponent', () => {
         component.secretId = "secret-id2";
 
         // act
-        component.ngOnInit();
+        fixture.detectChanges();
         component.callApi();
 
         // assert

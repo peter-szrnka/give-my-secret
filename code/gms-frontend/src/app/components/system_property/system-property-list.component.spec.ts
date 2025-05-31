@@ -178,7 +178,7 @@ describe('SystemPropertyListComponent', () => {
         expect(component).toBeTruthy();
 
         // act
-        component.ngOnInit();
+        fixture.detectChanges();
         component.applyFilter({ target: { value: 'JWT_TOKEN' } });
     });
 

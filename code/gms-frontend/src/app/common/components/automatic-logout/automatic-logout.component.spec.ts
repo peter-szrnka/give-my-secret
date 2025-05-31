@@ -50,7 +50,7 @@ describe('AutomaticLogoutComponent', () => {
     component.automaticLogoutTimeInMinutes = 2;
     expect(component).toBeTruthy();
 
-    component.ngOnInit();
+    fixture.detectChanges();
     mockSubject.next(undefined);
     expect(component.logoutComing).toBeFalsy();
 
@@ -73,7 +73,7 @@ describe('AutomaticLogoutComponent', () => {
     component.automaticLogoutTimeInMinutes = 2;
     expect(component).toBeTruthy();
 
-    component.ngOnInit();
+    fixture.detectChanges();
     mockSubject.next(undefined);
     expect(component.logoutComing).toBeFalsy();
 
