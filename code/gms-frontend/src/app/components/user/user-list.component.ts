@@ -7,6 +7,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { PAGE_CONFIG_USER, UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
+import { takeUntil } from "rxjs";
 
 /**
  * @author Peter Szrnka
@@ -34,7 +35,7 @@ export class UserListComponent extends BaseListComponent<UserData, UserService> 
 
     override ngOnInit(): void {
         super.ngOnInit();
-        this.sharedData.authModeSubject$.subscribe(authMode => this.authMode = authMode);
+        this.sharedData.authModeSubject$.pipe(takeUntil(this.destroy$)).subscribe(authMode => this.authMode = authMode);
     }
 
     getPageConfig(): PageConfig {
@@ -47,13 +48,13 @@ export class UserListComponent extends BaseListComponent<UserData, UserService> 
         }
 
         this.splashScreenService.start();
-        this.service.manualLdapUserSync().subscribe(() => this.handleLdapSyncResult());
+        this.service.manualLdapUserSync().pipe(takeUntil(this.destroy$)).subscribe(() => this.handleLdapSyncResult());
     }
 
     handleLdapSyncResult(): void {
         this.splashScreenService.stop();
         const dialogRef = this.dialogService.openNewDialog({ text: "dialog.ldapSync.succeeded", type: "information" });
 
-        dialogRef.afterClosed().subscribe(() => this.reloadPage());
+        dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => this.reloadPage());
     }
 }

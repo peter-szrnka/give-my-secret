@@ -7,6 +7,8 @@ import { getErrorCode } from "../../common/utils/error-utils";
 import { CredentialApiResponse } from "../secret/model/credential-api-response.model";
 import { User } from "../user/model/user.model";
 import { ApiTestingService } from "./service/api-testing-service";
+import { takeUntil } from "rxjs";
+import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 
 /**
  * @author Peter Szrnka
@@ -16,7 +18,7 @@ import { ApiTestingService } from "./service/api-testing-service";
     templateUrl: './api-testing.component.html',
     standalone: false
 })
-export class ApiTestingComponent implements OnInit {
+export class ApiTestingComponent extends BaseComponent implements OnInit {
 
     apiKey : string;
     secretId : string;
@@ -29,7 +31,9 @@ export class ApiTestingComponent implements OnInit {
         private readonly dialogService: DialogService,
         private readonly splashScreenService: SplashScreenStateService,
         private readonly secureStorageService : SecureStorageService
-    ) { }
+    ) {
+        super();
+    }
 
     ngOnInit(): void {
         this.sharedData.getUserInfo().then((user: User | undefined) => {
@@ -43,6 +47,7 @@ export class ApiTestingComponent implements OnInit {
         this.splashScreenService.start();
         this.apiResponse = undefined;
         this.service.getSecretValue(this.secretId, this.apiKey)
+            .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (response : CredentialApiResponse | { [key:string] : string }) => {
                     this.apiResponse = JSON.stringify(response);

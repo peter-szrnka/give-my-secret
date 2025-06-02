@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
-import { catchError } from "rxjs";
+import { catchError, takeUntil } from "rxjs";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
@@ -40,7 +40,7 @@ export class LoginComponent extends BaseLoginComponent {
         this.loginAttempt = true;
 
         this.authService.login(this.formModel)
-            .pipe(catchError((err) => this.handleError(err)))
+            .pipe(catchError((err) => this.handleError(err)), takeUntil(this.destroy$))
             .subscribe((response : LoginResponse) => {
                 this.loginAttempt = false;
                 this.splashScreenStateService.stop();

@@ -10,6 +10,7 @@ import { Event } from "../event/model/event.model";
 import { EventService } from "../event/service/event-service";
 import { PAGE_CONFIG_USER, UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
+import { takeUntil } from "rxjs";
 
 const EVENT_LIST_FILTER = {
   direction: "DESC",
@@ -57,7 +58,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
   override ngOnInit(): void {
     super.ngOnInit();
 
-    this.sharedData.authModeSubject$.subscribe(authMode => this.editEnabled = authMode === 'db');
+    this.sharedData.authModeSubject$.pipe(takeUntil(this.destroy$)).subscribe(authMode => this.editEnabled = authMode === 'db');
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -67,7 +68,7 @@ export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, U
       return;
     }
 
-    this.eventService.listByUserId(EVENT_LIST_FILTER, data.id).subscribe(eventList => {
+    this.eventService.listByUserId(EVENT_LIST_FILTER, data.id).pipe(takeUntil(this.destroy$)).subscribe(eventList => {
       this.eventList = eventList;
       this.datasource = new ArrayDataSource<Event>(this.eventList);
     });

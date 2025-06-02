@@ -1,8 +1,8 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { catchError } from "rxjs";
+import { catchError, takeUntil } from "rxjs";
 import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { DialogService } from "../../common/service/dialog-service";
@@ -15,6 +15,7 @@ import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 
 import * as systemPropertyList from '../../../assets/i18n/system-properties.json';
+import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
@@ -110,7 +111,7 @@ interface SystemPropertyElement extends SystemProperty {
     templateUrl: './system-property-list.component.html',
     standalone: false
 })
-export class SystemPropertyListComponent {
+export class SystemPropertyListComponent extends BaseComponent implements OnInit {
   columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];
   timeUnits: any[] = TIME_UNITS;
 
@@ -132,7 +133,9 @@ export class SystemPropertyListComponent {
     protected service: SystemPropertyService,
     public dialogService: DialogService,
     protected activatedRoute: ActivatedRoute,
-    private readonly splashScreenService: SplashScreenStateService) { }
+    private readonly splashScreenService: SplashScreenStateService) {
+      super();
+    }
 
   ngOnInit(): void {
     this.fetchData();
@@ -147,7 +150,7 @@ export class SystemPropertyListComponent {
     }
 
     this.activatedRoute.data
-      .pipe(catchError(async () => this.initDefaultDataTable()))
+      .pipe(catchError(async () => this.initDefaultDataTable()), takeUntil(this.destroy$))
       .subscribe((response: any) => {
         this.count = response.data.totalElements;
         this.datasource = new MatTableDataSource<SystemPropertyElement>(this.convertToElements(response.data.resultList));
@@ -184,7 +187,7 @@ export class SystemPropertyListComponent {
   public save(element: SystemProperty) {
     element.mode = undefined;
     element.valueSet = undefined;
-    this.service.save(element).subscribe({
+    this.service.save(element).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.openInformationDialog("dialog.save.systemProperty", true, 'information');
         this.executeCallbackMethod(element.callbackMethod);
@@ -202,12 +205,12 @@ export class SystemPropertyListComponent {
       result: true
     });
 
-    this.confirmDeleteDialogRef.afterClosed().subscribe((data: any) => {
+    this.confirmDeleteDialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
       if (data.result !== true) {
         return;
       }
 
-      this.service.delete(element.key).subscribe(() => {
+      this.service.delete(element.key).pipe(takeUntil(this.destroy$)).subscribe(() => {
         this.executeCallbackMethod(element.callbackMethod);
         this.reloadPage();
       });
@@ -217,7 +220,7 @@ export class SystemPropertyListComponent {
   openInformationDialog(message: string, navigateToList: boolean, dialogType: string, errorMessage?: string) {
     this.infoDialogRef = this.dialogService.openNewDialog({ text: message, type: dialogType, arg: errorMessage });
 
-    this.infoDialogRef.afterClosed().subscribe(() => {
+    this.infoDialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (navigateToList === false) {
         return;
       }

@@ -86,7 +86,6 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);
-		when(request.getRequestURI()).thenReturn("/info/vm_options");
 		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("NEED_SETUP").build());
 
 		// act

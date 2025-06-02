@@ -10,12 +10,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SystemStatus {
-    NEED_SETUP(null), // Initial status
-    NEED_ADMIN_USER(NEED_SETUP), // Admin user is not created
-    NEED_AUTH_CONFIG(NEED_ADMIN_USER), // Authentication is not yet configured
-    NEED_ORG_DATA(NEED_AUTH_CONFIG), // Organization data is not yet configured
-    COMPLETE(NEED_ORG_DATA), // System is ready to use
-    OK(COMPLETE); // System can be used
+    NEED_SETUP(true,null), // Initial status
+    NEED_ADMIN_USER(true, NEED_SETUP), // Admin user is not created
+    NEED_AUTH_CONFIG(true, NEED_ADMIN_USER), // Authentication is not yet configured
+    NEED_ORG_DATA(true, NEED_AUTH_CONFIG), // Organization data is not yet configured
+    COMPLETE(true, NEED_ORG_DATA), // System is ready to use
+    OK(false, COMPLETE); // System can be used
 
+    private final boolean setupPhase;
     private final SystemStatus previousStatus;
 }

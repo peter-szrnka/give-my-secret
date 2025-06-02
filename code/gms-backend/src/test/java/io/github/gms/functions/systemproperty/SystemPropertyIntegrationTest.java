@@ -27,6 +27,7 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements G
 	@Override
 	@BeforeEach
 	public void setup() {
+		super.setup();
 		gmsUser = TestUtils.createGmsAdminUser();
 		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
 	}

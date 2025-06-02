@@ -8,7 +8,6 @@ import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.dto.SimpleResponseDto;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.enums.SystemStatus;
-import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.user.SaveUserRequestDto;
 import io.github.gms.functions.user.UserDto;
 import io.github.gms.functions.user.UserService;
@@ -36,9 +35,6 @@ import static org.mockito.Mockito.*;
 @Tag(TAG_INTEGRATION_TEST)
 @TestedClass(SetupController.class)
 class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
-
-	@MockBean
-	private SystemService systemService;
 
 	@MockBean
 	private UserService userService;

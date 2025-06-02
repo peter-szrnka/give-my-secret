@@ -1,8 +1,9 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom, Subscription } from "rxjs";
+import { firstValueFrom, takeUntil } from "rxjs";
 import systemAnnouncements from "../../../assets/caas/system-announcements.json";
+import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { Event } from "../event/model/event.model";
 import { User } from "../user/model/user.model";
@@ -25,7 +26,7 @@ export enum PageStatus {
     styleUrls: ['./home.component.scss'],
     standalone: false
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent extends BaseComponent implements OnInit {
 
     eventColumns: string[] = ['id', 'userId', 'eventDate', 'operation', 'target'];
     eventDataSource: ArrayDataSource<Event>;
@@ -35,19 +36,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     editEnabled: boolean = false;
     error?: string;
 
-    userSubscription: Subscription;
-    authModeSubcription: Subscription;
-
     constructor(
         public router: Router,
         private readonly sharedData: SharedDataService,
         private readonly homeService: HomeService
     ) {
-    }
-
-    ngOnDestroy(): void {
-        this.userSubscription.unsubscribe();
-        this.authModeSubcription.unsubscribe();
+        super();
     }
 
     ngOnInit(): void {
@@ -68,7 +62,8 @@ export class HomeComponent implements OnInit, OnDestroy {
                 this.pageStatus = PageStatus.ERROR;
                 this.eventDataSource = new ArrayDataSource<Event>([]);
             });
-        this.userSubscription = this.sharedData.userSubject$
+        this.sharedData.userSubject$
+            .pipe(takeUntil(this.destroy$))
             .subscribe((user: User | undefined) => {
                 this.data = {
                     ...EMPTY_HOME_DATA,
@@ -77,6 +72,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
                 this.data.role = user?.role;
             });
-        this.authModeSubcription = this.sharedData.authModeSubject$.subscribe(authMode => this.editEnabled = authMode === 'db');
+        this.sharedData.authModeSubject$.pipe(takeUntil(this.destroy$)).subscribe(authMode => this.editEnabled = authMode === 'db');
     }
 }

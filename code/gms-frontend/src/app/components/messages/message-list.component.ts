@@ -1,6 +1,7 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
-import { catchError, of } from "rxjs";
+import { catchError, of, takeUntil } from "rxjs";
+import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { Paging } from "../../common/model/paging.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -23,7 +24,7 @@ export enum SelectionStatus {
     styleUrls: ['./message-list.component.scss'],
     standalone: false
 })
-export class MessageListComponent implements OnInit {
+export class MessageListComponent extends BaseComponent implements OnInit {
     messageColumns: string[] = ['message', 'creationDate', 'read_toggle', 'delete', 'selection'];
     results: Message[];
     datasource: ArrayDataSource<Message>;
@@ -44,6 +45,7 @@ export class MessageListComponent implements OnInit {
         private readonly sharedDataService: SharedDataService,
         public dialogService: DialogService
     ) {
+        super();
     }
 
     public onFetch(event: any) {
@@ -57,7 +59,7 @@ export class MessageListComponent implements OnInit {
     }
 
     markAsRead(id: number, opened: boolean): void {
-        this.service.markAsRead([id], opened).subscribe(() => this.fetchData());
+        this.service.markAsRead([id], opened).pipe(takeUntil(this.destroy$)).subscribe(() => this.fetchData());
     }
 
     getCount(): number {
@@ -86,7 +88,7 @@ export class MessageListComponent implements OnInit {
         }
 
         const ids: number[] = this.results.filter(message => message.selected === true).map(message => message.id) as number[];
-        this.service.markAsRead(ids, true).subscribe(() => this.fetchData());
+        this.service.markAsRead(ids, true).pipe(takeUntil(this.destroy$)).subscribe(() => this.fetchData());
     }
 
     deleteMessage(id: number): void {
@@ -105,12 +107,12 @@ export class MessageListComponent implements OnInit {
     private promptDeleteAll(ids: number[], key: string, arg?: any): void {
         const dialogRef = this.dialogService.openConfirmDeleteDialog({ result: true, key: key, arg: arg });
 
-        dialogRef.afterClosed().subscribe(response => {
+        dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe(response => {
             if (response?.result !== true) {
                 return;
             }
 
-            this.service.deleteAllByIds(ids).subscribe(() => this.fetchData());
+            this.service.deleteAllByIds(ids).pipe(takeUntil(this.destroy$)).subscribe(() => this.fetchData());
         });
     }
 
@@ -133,6 +135,7 @@ export class MessageListComponent implements OnInit {
             size: this.tableConfig.pageSize
         } as Paging)
             .pipe(catchError((err) => of({ totalElements: 0, resultList: [], error: err.error.message } as MessageList)))
+            .pipe(takeUntil(this.destroy$))
             .subscribe(response => this.handleResponse(response));
     }
 

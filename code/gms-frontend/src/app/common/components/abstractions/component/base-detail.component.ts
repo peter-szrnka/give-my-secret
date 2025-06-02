@@ -1,6 +1,7 @@
 import { Directive, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
+import { takeUntil } from "rxjs";
 import { BaseDetail } from "../../../model/base-detail.model";
 import { BaseList } from "../../../model/base-list";
 import { PageConfig } from "../../../model/common.model";
@@ -9,12 +10,13 @@ import { SharedDataService } from "../../../service/shared-data-service";
 import { SplashScreenStateService } from "../../../service/splash-screen-service";
 import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { ServiceBase } from "../service/service-base";
+import { BaseComponent } from "./base.component";
 
 /**
  * @author Peter Szrnka
  */
 @Directive()
-export abstract class BaseDetailComponent<T extends BaseDetail, S extends ServiceBase<T, BaseList<T>>> implements OnInit {
+export abstract class BaseDetailComponent<T extends BaseDetail, S extends ServiceBase<T, BaseList<T>>> extends BaseComponent implements OnInit {
 
   data: T;
   public error? : string;
@@ -25,7 +27,9 @@ export abstract class BaseDetailComponent<T extends BaseDetail, S extends Servic
     protected service: S,
     public dialog: DialogService,
     protected activatedRoute: ActivatedRoute,
-    protected splashScreenStateService: SplashScreenStateService) { }
+    protected splashScreenStateService: SplashScreenStateService) {
+      super();
+    }
 
   ngOnInit(): void {
     this.sharedData.refreshCurrentUserInfo();
@@ -37,7 +41,7 @@ export abstract class BaseDetailComponent<T extends BaseDetail, S extends Servic
   abstract dataLoadingCallback(data: T) : void;
 
   private fetchData() {
-    this.activatedRoute.data.subscribe((response: any) => {
+    this.activatedRoute.data.pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
       this.data = response['entity'];
       this.error = this.data.error;
       this.dataLoadingCallback(this.data);
@@ -47,7 +51,7 @@ export abstract class BaseDetailComponent<T extends BaseDetail, S extends Servic
   public openInformationDialog(key: string, navigateToList: boolean, dialogType : string, arg?: any, errorCode?: string) {
     const dialogRef: MatDialogRef<InfoDialog, any> = this.dialog.openNewDialog({ text: key, arg: arg, type: dialogType, errorCode: errorCode });
 
-    dialogRef.afterClosed().subscribe(() => {
+    dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (navigateToList === false) {
         return;
       }

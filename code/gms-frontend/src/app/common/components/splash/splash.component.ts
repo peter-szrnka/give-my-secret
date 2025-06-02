@@ -1,7 +1,9 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { AngularMaterialModule } from "../../../angular-material-module";
 import { SplashScreenStateService } from "../../service/splash-screen-service";
 import { NgStyle } from "@angular/common";
+import { takeUntil } from "rxjs";
+import { BaseComponent } from "../abstractions/component/base.component";
 
 /**
  * @author Peter Szrnka
@@ -16,16 +18,18 @@ import { NgStyle } from "@angular/common";
     templateUrl: './splash.component.html',
     styleUrls: ['./splash.component.scss']
 })
-export class SplashComponent {
+export class SplashComponent extends BaseComponent implements OnInit {
 
   public opacityChange = 1;
   public splashTransition : string;
   public showSplash = false;
 
-  constructor(private readonly splashScreenStateService: SplashScreenStateService) {}
+  constructor(private readonly splashScreenStateService: SplashScreenStateService) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.splashScreenStateService.splashScreenSubject$.subscribe((value) => {
+    this.splashScreenStateService.splashScreenSubject$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         this.splashTransition = `opacity 0s`;
         this.opacityChange = 1;

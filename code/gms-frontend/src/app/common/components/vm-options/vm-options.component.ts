@@ -1,10 +1,12 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
 import { AngularMaterialModule } from "../../../angular-material-module";
 import { VmOption } from "../../model/common.model";
 import { InformationService } from "../../service/info-service";
 import { TranslatorModule } from "../pipes/translator/translator.module";
+import { takeUntil } from "rxjs";
+import { BaseComponent } from "../abstractions/component/base.component";
 
 /**
  * @author Peter Szrnka
@@ -20,14 +22,16 @@ import { TranslatorModule } from "../pipes/translator/translator.module";
         TranslatorModule
     ]
 })
-export class VmOptionsComponent {
+export class VmOptionsComponent extends BaseComponent implements OnInit {
 
     datasource: MatTableDataSource<VmOption> = new MatTableDataSource<VmOption>([]);
     columns: string[] = ['key', 'value'];
 
     vmOptions: VmOption[] = [];
 
-    constructor(private readonly informationService: InformationService) { }
+    constructor(private readonly informationService: InformationService) {
+        super();
+    }
 
     ngOnInit(): void {
         this.fetchData();
@@ -39,6 +43,6 @@ export class VmOptionsComponent {
     }
 
     private fetchData() {
-        this.informationService.getVmOptions().subscribe(data => this.datasource = new MatTableDataSource<VmOption>(data));
+        this.informationService.getVmOptions().pipe(takeUntil(this.destroy$)).subscribe(data => this.datasource = new MatTableDataSource<VmOption>(data));
     }
 }

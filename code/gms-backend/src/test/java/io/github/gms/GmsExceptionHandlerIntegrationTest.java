@@ -5,7 +5,6 @@ import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.types.ErrorCode;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.user.UserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Tag;
@@ -33,8 +32,6 @@ class GmsExceptionHandlerIntegrationTest extends AbstractIntegrationTest {
 
     @MockBean
     private UserInfoService userInfoService;
-    @MockBean
-    private SystemService systemService;
 
     @Test
     void userInfo_whenUserInfoThrowsGmsException_thenReturnHttp500() {

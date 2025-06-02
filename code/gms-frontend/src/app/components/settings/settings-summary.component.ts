@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { takeUntil } from "rxjs";
 import { environment } from "../../../environments/environment";
+import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { DialogService } from "../../common/service/dialog-service";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -22,7 +24,7 @@ export interface PasswordSettings {
     templateUrl: './settings-summary.component.html',
     standalone: false
 })
-export class SettingsSummaryComponent implements OnInit {
+export class SettingsSummaryComponent extends BaseComponent implements OnInit {
 
   imageBaseUrl: string = environment.baseUrl;
   panelOpenState = false;
@@ -46,12 +48,13 @@ export class SettingsSummaryComponent implements OnInit {
     public dialogService: DialogService,
     private readonly splashScreenService: SplashScreenStateService,
     private readonly storageService: SecureStorageService) {
+      super();
     }
 
-  ngOnInit(): void {
+   ngOnInit(): void {
     this.language = this.storageService.getItemWithoutEncryption('language','en');
-    this.sharedData.authModeSubject$.subscribe(authMode => this.authMode = authMode);
-    this.userService.isMfaActive().subscribe(response => this.mfaEnabled = response);
+    this.sharedData.authModeSubject$.pipe(takeUntil(this.destroy$)).subscribe(authMode => this.authMode = authMode);
+    this.userService.isMfaActive().pipe(takeUntil(this.destroy$)).subscribe(response => this.mfaEnabled = response);
   }
 
   toggleCurrentPasswordDisplay(): void {
@@ -72,7 +75,7 @@ export class SettingsSummaryComponent implements OnInit {
     this.userService.changeCredentials({
       oldCredential: this.credentialData.oldCredential,
       newCredential: this.credentialData.newCredential1
-    }).subscribe({
+    }).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.openInfoDialog("settings.password.dialog.title", "settings.password.dialog.text");
         this.splashScreenService.stop();
@@ -88,7 +91,7 @@ export class SettingsSummaryComponent implements OnInit {
 
   toggleMfa() {
     this.splashScreenService.start();
-    this.userService.toggleMfa(this.mfaEnabled).subscribe({
+    this.userService.toggleMfa(this.mfaEnabled).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.openInfoDialog("settings.mfa.dialog.title", "settings.mfa.dialog.text");
         this.splashScreenService.stop();
