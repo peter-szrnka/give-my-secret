@@ -12,6 +12,7 @@ import { getErrorMessage } from "../../common/utils/error-utils";
 import { KeystoreAlias } from "./model/keystore-alias.model";
 import { Keystore, PAGE_CONFIG_KEYSTORE } from "./model/keystore.model";
 import { KeystoreService } from "./service/keystore-service";
+import { takeUntil } from "rxjs";
 
 const ENABLED_ALGORITHMS : string[] = [
   "MD2WITHRSA",
@@ -84,6 +85,7 @@ export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, Keyst
     this.addAliasDataToRequest();
     this.splashScreenStateService.start();
     this.service.save(this.data, (this.data.generated === true) ? undefined : this.file)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.openInformationDialog("dialog.save." + this.getPageConfig().scope, true, 'information');

@@ -1,5 +1,7 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { takeUntil } from "rxjs";
+import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { VmOption } from "../../common/model/common.model";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
@@ -31,7 +33,7 @@ export const EMPTY_ADMIN_DATA : UserData = {
     styleUrls: ['./setup.component.scss'],
     standalone: false
 })
-export class SetupComponent implements OnInit {
+export class SetupComponent extends BaseComponent {
 
     loading: boolean = true;
     systemStatus: string = '';
@@ -53,14 +55,19 @@ export class SetupComponent implements OnInit {
         private readonly router : Router, 
         private readonly route: ActivatedRoute,
         private readonly splashScreenService : SplashScreenStateService,
-        private readonly setupService : SetupService) {}
+        private readonly setupService : SetupService) {
+            super();
+        }
 
-    ngOnInit(): void {
-        this.route.queryParams.subscribe(params => {
+    override ngOnInit(): void {
+        this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
             this.systemStatus = params['systemStatus'];
             this.currentStep = SYSTEM_STATUS_INDEX[this.systemStatus];
 
-            if (this.systemStatus === 'NEED_ADMIN_USER') {
+            if (this.systemStatus === 'NEED_SETUP') {
+                this.loading = false;
+                this.splashScreenService.stop();
+            } else if (this.systemStatus === 'NEED_ADMIN_USER') {
                 this.getCurrentAdminUserData();
             }
         });
@@ -69,7 +76,7 @@ export class SetupComponent implements OnInit {
     stepBack() {
         this.prepareHttpCall();
 
-        this.setupService.stepBack().subscribe({
+        this.setupService.stepBack().pipe(takeUntil(this.destroy$)).subscribe({
             next: (newStatus) => this.handleNextStep(newStatus),
             error: (err) => this.handleError(err)
         });
@@ -78,7 +85,7 @@ export class SetupComponent implements OnInit {
     getCurrentAdminUserData() {
         this.prepareHttpCall();
 
-        this.setupService.getAdminUserData().subscribe({
+        this.setupService.getAdminUserData().pipe(takeUntil(this.destroy$)).subscribe({
             next: (data) => {
                 this.splashScreenService.stop();
                 this.userData = data ?? EMPTY_ADMIN_DATA;
@@ -91,7 +98,7 @@ export class SetupComponent implements OnInit {
     saveInitialStep() {
         this.prepareHttpCall();
 
-        this.setupService.saveInitialStep().subscribe({
+        this.setupService.saveInitialStep().pipe(takeUntil(this.destroy$)).subscribe({
             next: () => this.handleNextStep('NEED_ADMIN_USER'),
             error: (err) => this.handleError(err)
         });
@@ -101,7 +108,7 @@ export class SetupComponent implements OnInit {
         this.prepareHttpCall();
         this.userData.role = 'ROLE_ADMIN';
 
-        this.setupService.saveAdminUser(this.userData).subscribe({
+        this.setupService.saveAdminUser(this.userData).pipe(takeUntil(this.destroy$)).subscribe({
             next: () => this.handleNextStep('NEED_AUTH_CONFIG'),
             error: (err) => this.handleError(err)
         });
@@ -116,7 +123,7 @@ export class SetupComponent implements OnInit {
         systemProperties.push(this.initPropertyData("AUTOMATIC_LOGOUT_TIME_IN_MINUTES"));
         systemProperties.push(this.initPropertyData("ENABLE_MFA"));
 
-        this.setupService.saveSystemProperties(systemProperties).subscribe({
+        this.setupService.saveSystemProperties(systemProperties).pipe(takeUntil(this.destroy$)).subscribe({
             next: () => this.handleNextStep('NEED_ORG_DATA'),
             error: (err) => this.handleError(err)
         });
@@ -129,14 +136,14 @@ export class SetupComponent implements OnInit {
         systemProperties.push(this.initPropertyData("ORGANIZATION_NAME"));
         systemProperties.push(this.initPropertyData("ORGANIZATION_CITY"));
 
-        this.setupService.saveOrganizationData(systemProperties).subscribe({
+        this.setupService.saveOrganizationData(systemProperties).pipe(takeUntil(this.destroy$)).subscribe({
             next: () => this.handleNextStep('COMPLETE'),
             error: (err) => this.handleError(err)
         });
     }
 
     navigateToHome() : void {
-        this.setupService.completeSetup().subscribe({
+        this.setupService.completeSetup().pipe(takeUntil(this.destroy$)).subscribe({
             next: () => this.window.location.reload(),
             error: (err) => this.handleError(err)
         });

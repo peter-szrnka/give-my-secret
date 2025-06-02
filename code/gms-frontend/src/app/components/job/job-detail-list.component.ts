@@ -3,7 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
-import { catchError, Observable } from "rxjs";
+import { catchError, Observable, takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
@@ -13,6 +13,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { TranslatorService } from "../../common/service/translator-service";
 import { JobDetail } from "./model/job-detail.model";
 import { JobDetailService } from "./service/job-detail.service";
+import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 
 const MANUAL_JOB_EXECUTION_CONFIG = [
     { label: 'job.button.event.maintenance', url : 'event_maintenance' },
@@ -32,7 +33,7 @@ const MANUAL_JOB_EXECUTION_CONFIG = [
     selector: 'job-detail-list',
     templateUrl: './job-detail-list.component.html'
 })
-export class JobDetailListComponent implements OnInit {
+export class JobDetailListComponent extends BaseComponent {
 
     columns: string[] = ['id', 'name', 'correlationId', 'status', 'duration', 'creationDate', 'message'];
     job_execution_config = MANUAL_JOB_EXECUTION_CONFIG;
@@ -55,12 +56,13 @@ export class JobDetailListComponent implements OnInit {
         private readonly jobDetailService: JobDetailService, 
         private readonly snackbar : MatSnackBar,
         private readonly translatorService: TranslatorService) {
+            super();
     }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         this.tableConfig.pageIndex = this.activatedRoute.snapshot.queryParams['page'] ?? 0;
         this.activatedRoute.data
-            .pipe(catchError(async () => this.initDefaultDataTable()))
+            .pipe(catchError(async () => this.initDefaultDataTable()), takeUntil(this.destroy$))
             .subscribe((response: any) => {
                 this.tableConfig.count = response.data.totalElements;
                 this.datasource = new MatTableDataSource<JobDetail>(response.data.resultList);
@@ -70,7 +72,7 @@ export class JobDetailListComponent implements OnInit {
     }
 
     executeJob(jobUrl: string) {
-        this.jobDetailService.startManualExecution(jobUrl).subscribe({
+        this.jobDetailService.startManualExecution(jobUrl).pipe(takeUntil(this.destroy$)).subscribe({
             next: () => this.snackbar.open(this.translatorService.translate('job.manual.execution.success')),
             error: () => this.snackbar.open(this.translatorService.translate('job.manual.execution.error'))
         });

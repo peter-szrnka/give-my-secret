@@ -93,6 +93,8 @@ public class EventPublisherAspect {
 
 		if (auth.getPrincipal() instanceof GmsUserDetails userDetails) {
             GmsThreadLocalValues.setUserId(userDetails.getUserId());
+		} else {
+			GmsThreadLocalValues.setUserId(0L);
 		}
 	}
 

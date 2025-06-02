@@ -9,6 +9,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { TranslatorService } from "../../common/service/translator-service";
 import { Event, PAGE_CONFIG_EVENT } from "./model/event.model";
 import { EventService } from "./service/event-service";
+import { takeUntil } from "rxjs";
 
 /**
  * @author Peter Szrnka
@@ -35,7 +36,9 @@ export class EventListComponent extends BaseListComponent<Event, EventService> {
 
     override ngOnInit(): void {
         super.ngOnInit();
-        this.service.getUnprocessedEventsCount().subscribe((response: any) => this.unprocessedEventsLabel = this.translatorService.translate('event.unprocessed', response.value));
+        this.service.getUnprocessedEventsCount()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((response: any) => this.unprocessedEventsLabel = this.translatorService.translate('event.unprocessed', response.value));
     }
 
     getPageConfig(): PageConfig {

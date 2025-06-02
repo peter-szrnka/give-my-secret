@@ -6,6 +6,7 @@ import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
 import { roleCheck } from './common/utils/permission-utils';
 import { User } from './components/user/model/user.model';
+import { BaseComponent } from './common/components/abstractions/component/base.component';
 
 const LOGIN_CALLBACK_URL = '/login';
 
@@ -18,9 +19,8 @@ const LOGIN_CALLBACK_URL = '/login';
     styleUrls: ['./app.component.scss'],
     standalone: false
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent extends BaseComponent {
 
-  unsubscribe = new Subject<void>();
   currentUser: User | undefined;
   showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') ?? 'true');
   isAdmin: boolean;
@@ -31,15 +31,16 @@ export class AppComponent implements OnInit, OnDestroy {
     public sharedDataService: SharedDataService, 
     private readonly splashScreenStateService: SplashScreenStateService,
     ) {
+      super();
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
     this.splashScreenStateService.start();
-    this.sharedDataService.navigationChangeEvent.subscribe(newUrl => this.navigateTo(newUrl));
-    this.router.events.pipe(takeUntil(this.unsubscribe))
+    this.sharedDataService.navigationChangeEvent.pipe(takeUntil(this.destroy$)).subscribe(newUrl => this.navigateTo(newUrl));
+    this.router.events.pipe(takeUntil(this.destroy$))
       .subscribe((routerEvent) => this.checkRouterEvent(routerEvent as RouterEvent));
 
-      this.sharedDataService.systemReadySubject$.subscribe(readyData => {
+      this.sharedDataService.systemReadySubject$.pipe(takeUntil(this.destroy$)).subscribe(readyData => {
 
         if (readyData.status === 0 && readyData.ready === false) {
           this.router.navigate(['/error']);
@@ -62,7 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private processUserSubject() : void {
-    this.sharedDataService.userSubject$.asObservable().subscribe(user => {
+    this.sharedDataService.userSubject$.asObservable().pipe(takeUntil(this.destroy$)).subscribe(user => {
       this.currentUser = user;
       this.isAdmin = !this.currentUser ? false : roleCheck(this.currentUser, 'ROLE_ADMIN');
 
@@ -75,10 +76,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.router.navigate(['']);
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe.next();
   }
 
   toggleTextMenuVisibility() : void {

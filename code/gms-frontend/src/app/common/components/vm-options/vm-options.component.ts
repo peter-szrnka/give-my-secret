@@ -5,6 +5,8 @@ import { AngularMaterialModule } from "../../../angular-material-module";
 import { VmOption } from "../../model/common.model";
 import { InformationService } from "../../service/info-service";
 import { TranslatorModule } from "../pipes/translator/translator.module";
+import { takeUntil } from "rxjs";
+import { BaseComponent } from "../abstractions/component/base.component";
 
 /**
  * @author Peter Szrnka
@@ -20,16 +22,18 @@ import { TranslatorModule } from "../pipes/translator/translator.module";
         TranslatorModule
     ]
 })
-export class VmOptionsComponent {
+export class VmOptionsComponent extends BaseComponent {
 
     datasource: MatTableDataSource<VmOption> = new MatTableDataSource<VmOption>([]);
     columns: string[] = ['key', 'value'];
 
     vmOptions: VmOption[] = [];
 
-    constructor(private readonly informationService: InformationService) { }
+    constructor(private readonly informationService: InformationService) {
+        super();
+    }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         this.fetchData();
     }
 
@@ -39,6 +43,6 @@ export class VmOptionsComponent {
     }
 
     private fetchData() {
-        this.informationService.getVmOptions().subscribe(data => this.datasource = new MatTableDataSource<VmOption>(data));
+        this.informationService.getVmOptions().pipe(takeUntil(this.destroy$)).subscribe(data => this.datasource = new MatTableDataSource<VmOption>(data));
     }
 }

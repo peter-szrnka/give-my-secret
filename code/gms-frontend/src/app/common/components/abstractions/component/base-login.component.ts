@@ -7,21 +7,24 @@ import { DialogService } from "../../../service/dialog-service";
 import { SharedDataService } from "../../../service/shared-data-service";
 import { SplashScreenStateService } from "../../../service/splash-screen-service";
 import { ROLE_ROUTE_MAP } from "../../../utils/route-utils";
+import { BaseComponent } from "./base.component";
 
 /**
  * @author Peter Szrnka
  */
 @Directive()
-export abstract class BaseLoginComponent implements OnInit {
+export abstract class BaseLoginComponent extends BaseComponent {
 
     constructor(
         protected route: ActivatedRoute,
         protected sharedDataService: SharedDataService,
         protected dialogService: DialogService,
         protected splashScreenStateService: SplashScreenStateService
-    ) {}
+    ) {
+        super();
+    }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         this.splashScreenStateService.stop();
     }
     

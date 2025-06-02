@@ -1,6 +1,7 @@
-import { Directive, OnInit } from "@angular/core";
+import { Directive } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
+import { takeUntil } from "rxjs";
 import { BaseDetail } from "../../../model/base-detail.model";
 import { BaseList } from "../../../model/base-list";
 import { PageConfig } from "../../../model/common.model";
@@ -10,12 +11,13 @@ import { SplashScreenStateService } from "../../../service/splash-screen-service
 import { getErrorCode, getErrorMessage } from "../../../utils/error-utils";
 import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { SaveServiceBase } from "../service/save-service-base";
+import { BaseComponent } from "./base.component";
 
 /**
  * @author Peter Szrnka
  */
 @Directive()
-export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extends SaveServiceBase<T, BaseList<T>>> implements OnInit {
+export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extends SaveServiceBase<T, BaseList<T>>> extends BaseComponent {
 
     data : T;
     public error? : string;
@@ -26,7 +28,9 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         protected service : S,
         public dialogService: DialogService,
         protected activatedRoute: ActivatedRoute,
-        protected splashScreenStateService: SplashScreenStateService) {}
+        protected splashScreenStateService: SplashScreenStateService) {
+            super();
+        }
 
     abstract getPageConfig() : PageConfig;
 
@@ -35,7 +39,7 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         // Empty implementation
     }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         this.sharedData.refreshCurrentUserInfo();
         this.fetchData();
     }
@@ -43,6 +47,7 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
     save() {
         this.splashScreenStateService.start();
         this.service.save(this.data)
+        .pipe(takeUntil(this.destroy$))
         .subscribe({
             next: () => {
                 this.splashScreenStateService.stop();
@@ -59,7 +64,7 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
     }
 
     private fetchData() {
-        this.activatedRoute.data.subscribe((response : any) => {
+        this.activatedRoute.data.pipe(takeUntil(this.destroy$)).subscribe((response : any) => {
             this.data = response['entity'];
             this.error = this.data.error;
             this.dataLoadingCallback(this.data);
@@ -69,7 +74,7 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
     openInformationDialog(key: string, navigateToList: boolean, type: string, errorMessage?: string, errorCode?: string) {
         const dialogRef : MatDialogRef<InfoDialog, any> = this.dialogService.openNewDialog({ text: key, type: type, arg: errorMessage, errorCode: errorCode });
 
-        dialogRef.afterClosed().subscribe(() => {
+        dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
           if (navigateToList === false) {
             return;
           }

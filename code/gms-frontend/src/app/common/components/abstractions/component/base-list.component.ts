@@ -1,7 +1,7 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { catchError } from "rxjs";
+import { catchError, takeUntil } from "rxjs";
 import { User } from "../../../../components/user/model/user.model";
 import { BaseList } from "../../../model/base-list";
 import { PageConfig } from "../../../model/common.model";
@@ -9,12 +9,13 @@ import { DialogService } from "../../../service/dialog-service";
 import { SharedDataService } from "../../../service/shared-data-service";
 import { checkRights } from "../../../utils/permission-utils";
 import { ServiceBase } from "../service/service-base";
+import { BaseComponent } from "./base.component";
 
 /**
  * @author Peter Szrnka
  */
 @Directive()
-export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>> implements OnInit {
+export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>> extends BaseComponent {
 
   protected loading = true;
   public datasource: ArrayDataSource<T>;
@@ -32,9 +33,10 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     protected service: S,
     public dialogService: DialogService,
     protected activatedRoute: ActivatedRoute) {
+      super();
     }
 
-  ngOnInit() : void {
+  override ngOnInit() : void {
     this.sharedData.refreshCurrentUserInfo();
     this.fetchData().then(() => {});
   }
@@ -42,7 +44,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
   abstract getPageConfig(): PageConfig;
 
   public toggle(entityId: number, status: string): void {
-    this.service.toggle(entityId, status !== 'ACTIVE').subscribe(() => this.reloadPage());
+    this.service.toggle(entityId, status !== 'ACTIVE').pipe(takeUntil(this.destroy$)).subscribe(() => this.reloadPage());
   }
 
   public onFetch(event: any) {
@@ -62,6 +64,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
 
     this.activatedRoute.data
       .pipe(catchError(async () => this.initDefaultDataTable()))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((response: any) => {
         this.tableConfig.count = response.data.totalElements;
         this.datasource = new ArrayDataSource<T>(response.data.resultList);
@@ -73,12 +76,12 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
   public promptDelete(id: number) {
     const dialogRef = this.dialogService.openConfirmDeleteDialog({ result: true, key: "dialog.delete." + this.getPageConfig().scope });
 
-    dialogRef.afterClosed().subscribe(data => {
+    dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe(data => {
       if (data.result !== true) {
         return;
       }
 
-      this.service.delete(id).subscribe(() => this.reloadPage());
+      this.service.delete(id).pipe(takeUntil(this.destroy$)).subscribe(() => this.reloadPage());
     });
   }
 

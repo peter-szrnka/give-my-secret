@@ -7,6 +7,7 @@ import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.JwtConfigType;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
 import io.github.gms.functions.system.SystemService;
@@ -29,7 +30,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.github.gms.common.enums.SystemStatus.NEED_SETUP;
+import static java.util.Optional.ofNullable;
 
 /**
  * A custom Spring filter used to authorize user by parsing JWT token.
@@ -41,7 +42,6 @@ import static io.github.gms.common.enums.SystemStatus.NEED_SETUP;
 public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 	
 	private static final Set<String> IGNORED_URLS = Sets.newHashSet("/secure/.*", "/info/vm_options");
-	private static final Set<String> IGNORED_URLS_IN_SETUP_PHASE = Sets.newHashSet("/info/vm_options");
 	private final AuthorizationService authorizationService;
 	private final SystemPropertyService systemPropertyService;
 	private final SystemService systemService;
@@ -58,10 +58,10 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
+	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
 			throws ServletException, IOException {
 
-		if (shouldSkipUrlDuringSetup(request.getRequestURI()) || shouldSkipUrl(IGNORED_URLS, request.getRequestURI())) {
+		if (shouldSkipUrlDuringSetup() || shouldSkipUrl(request.getRequestURI())) {
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -93,12 +93,13 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 		MDC.remove(MdcParameter.IS_ADMIN.getDisplayName());
 	}
 
-	private boolean shouldSkipUrlDuringSetup(String url) {
-		return NEED_SETUP.name().equals(systemService.getSystemStatus().getStatus()) && !shouldSkipUrl(IGNORED_URLS_IN_SETUP_PHASE, url);
+	private boolean shouldSkipUrlDuringSetup() {
+		SystemStatus currentStatus = SystemStatus.valueOf(ofNullable(systemService.getSystemStatus().getStatus()).orElse("OK"));
+		return currentStatus.isSetupPhase();
 	}
 
-	private static boolean shouldSkipUrl(Set<String> urlSet, String url) {
-		return urlSet.stream().noneMatch(urlPattern -> {
+	private static boolean shouldSkipUrl(String url) {
+		return IGNORED_URLS.stream().noneMatch(urlPattern -> {
 			Pattern p = Pattern.compile(urlPattern);
 			Matcher matcher = p.matcher(url);
 			return matcher.matches();
