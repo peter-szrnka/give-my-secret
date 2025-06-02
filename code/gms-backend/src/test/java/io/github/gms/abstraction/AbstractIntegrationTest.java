@@ -1,10 +1,12 @@
 package io.github.gms.abstraction;
 
 import io.github.gms.auth.model.GmsUserDetails;
+import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.service.JwtService;
 import io.github.gms.functions.apikey.ApiKeyRepository;
 import io.github.gms.functions.keystore.KeystoreRepository;
 import io.github.gms.functions.secret.SecretRepository;
+import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Peter Szrnka
@@ -52,6 +56,9 @@ public abstract class AbstractIntegrationTest {
 	@Autowired
 	protected SecretRepository secretRepository;
 
+	@MockBean
+	protected SystemService systemService;
+
 	protected String jwt;
 	protected GmsUserDetails gmsUser;
 	protected String basePath = "http://localhost:";
@@ -60,6 +67,9 @@ public abstract class AbstractIntegrationTest {
 	public void setup() {
 		gmsUser = TestUtils.createGmsUser();
 		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest());
+		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder()
+				.withStatus("OK").withAuthMode("db").withVersion("1.0-TEST")
+				.build());
 	}
 
 	protected <I, O> ResponseEntity<O> executeHttpGet(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
