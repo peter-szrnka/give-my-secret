@@ -89,7 +89,6 @@ describe('AppComponent', () => {
         configureTestBed();
         expect(component).toBeTruthy();
         component.toggleTextMenuVisibility();
-        component.ngOnDestroy();
     });
 
     it('User is admin', () => {

@@ -1,12 +1,12 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { Subscription, filter, takeUntil } from 'rxjs';
+import { filter, takeUntil } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { BaseComponent } from '../../common/components/abstractions/component/base.component';
 import { SharedDataService } from '../../common/service/shared-data-service';
 import { checkRights } from '../../common/utils/permission-utils';
 import { MessageService } from '../messages/service/message-service';
 import { User } from '../user/model/user.model';
-import { BaseComponent } from '../../common/components/abstractions/component/base.component';
 
 /**
  * @author Peter Szrnka
@@ -53,8 +53,6 @@ export class HeaderComponent extends BaseComponent {
     logout() : void {
         this.currentUser = undefined;
         this.sharedDataService.logout();
-        this.destroy$.next(true);
-        this.destroy$.unsubscribe();
     }
 
     toggleMenu() : void {

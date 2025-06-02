@@ -89,7 +89,6 @@ describe('HeaderComponent', () => {
         mockSubject.next(currentUser);
         mockSystemReadySubject.next({ automaticLogoutTimeInMinutes: 1});
         fixture.detectChanges();
-        component.ngOnDestroy();
     });
 
     it('should toggle menu', () => {

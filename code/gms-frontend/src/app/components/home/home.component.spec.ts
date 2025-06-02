@@ -97,8 +97,6 @@ describe('HomeComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(component.data).toBeDefined();
-        
-        component.ngOnDestroy();
     });
 
     it('should not load component for unknown user', () => {
