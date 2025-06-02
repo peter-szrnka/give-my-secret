@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { takeUntil } from "rxjs";
 import { environment } from "../../../environments/environment";
@@ -24,7 +24,7 @@ export interface PasswordSettings {
     templateUrl: './settings-summary.component.html',
     standalone: false
 })
-export class SettingsSummaryComponent extends BaseComponent {
+export class SettingsSummaryComponent extends BaseComponent implements OnInit {
 
   imageBaseUrl: string = environment.baseUrl;
   panelOpenState = false;
@@ -51,7 +51,7 @@ export class SettingsSummaryComponent extends BaseComponent {
       super();
     }
 
-  override  ngOnInit(): void {
+   ngOnInit(): void {
     this.language = this.storageService.getItemWithoutEncryption('language','en');
     this.sharedData.authModeSubject$.pipe(takeUntil(this.destroy$)).subscribe(authMode => this.authMode = authMode);
     this.userService.isMfaActive().pipe(takeUntil(this.destroy$)).subscribe(response => this.mfaEnabled = response);

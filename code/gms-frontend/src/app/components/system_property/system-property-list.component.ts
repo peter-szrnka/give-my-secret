@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Params, Router } from "@angular/router";
@@ -111,7 +111,7 @@ interface SystemPropertyElement extends SystemProperty {
     templateUrl: './system-property-list.component.html',
     standalone: false
 })
-export class SystemPropertyListComponent extends BaseComponent {
+export class SystemPropertyListComponent extends BaseComponent implements OnInit {
   columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];
   timeUnits: any[] = TIME_UNITS;
 
@@ -137,7 +137,7 @@ export class SystemPropertyListComponent extends BaseComponent {
       super();
     }
 
-  override ngOnInit(): void {
+  ngOnInit(): void {
     this.fetchData();
   }
 

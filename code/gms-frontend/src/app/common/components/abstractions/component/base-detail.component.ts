@@ -1,6 +1,7 @@
 import { Directive, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
+import { takeUntil } from "rxjs";
 import { BaseDetail } from "../../../model/base-detail.model";
 import { BaseList } from "../../../model/base-list";
 import { PageConfig } from "../../../model/common.model";
@@ -10,13 +11,12 @@ import { SplashScreenStateService } from "../../../service/splash-screen-service
 import { InfoDialog } from "../../info-dialog/info-dialog.component";
 import { ServiceBase } from "../service/service-base";
 import { BaseComponent } from "./base.component";
-import { takeUntil } from "rxjs";
 
 /**
  * @author Peter Szrnka
  */
 @Directive()
-export abstract class BaseDetailComponent<T extends BaseDetail, S extends ServiceBase<T, BaseList<T>>> extends BaseComponent {
+export abstract class BaseDetailComponent<T extends BaseDetail, S extends ServiceBase<T, BaseList<T>>> extends BaseComponent implements OnInit {
 
   data: T;
   public error? : string;
@@ -31,7 +31,7 @@ export abstract class BaseDetailComponent<T extends BaseDetail, S extends Servic
       super();
     }
 
-  override ngOnInit(): void {
+  ngOnInit(): void {
     this.sharedData.refreshCurrentUserInfo();
     this.fetchData();
   }

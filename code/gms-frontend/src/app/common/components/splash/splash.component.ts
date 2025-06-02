@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { AngularMaterialModule } from "../../../angular-material-module";
 import { SplashScreenStateService } from "../../service/splash-screen-service";
 import { NgStyle } from "@angular/common";
@@ -18,7 +18,7 @@ import { BaseComponent } from "../abstractions/component/base.component";
     templateUrl: './splash.component.html',
     styleUrls: ['./splash.component.scss']
 })
-export class SplashComponent extends BaseComponent {
+export class SplashComponent extends BaseComponent implements OnInit {
 
   public opacityChange = 1;
   public splashTransition : string;
@@ -28,7 +28,7 @@ export class SplashComponent extends BaseComponent {
     super();
   }
 
-  override ngOnInit(): void {
+  ngOnInit(): void {
     this.splashScreenStateService.splashScreenSubject$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         this.splashTransition = `opacity 0s`;

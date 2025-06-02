@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -17,7 +17,7 @@ import { User } from '../user/model/user.model';
     styleUrls: ['./header.component.scss'],
     standalone: false
 })
-export class HeaderComponent extends BaseComponent {
+export class HeaderComponent extends BaseComponent implements OnInit {
     currentUser : User | undefined;
     unreadMessageCount  = 0;
     automaticLogoutTimeInMinutes = signal(0);
@@ -32,7 +32,7 @@ export class HeaderComponent extends BaseComponent {
             super();
     }
 
-    override ngOnInit(): void {
+    ngOnInit(): void {
         this.sharedDataService.showLargeMenuEvent.subscribe((result : boolean) => this.showLargeMenu = result);
         this.sharedDataService.messageCountUpdateEvent.subscribe(() => this.getAllUnread());
         this.sharedDataService.systemReadySubject$.subscribe((data) => this.automaticLogoutTimeInMinutes.set(data.automaticLogoutTimeInMinutes ?? 0));

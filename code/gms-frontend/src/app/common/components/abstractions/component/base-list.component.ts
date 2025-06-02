@@ -15,7 +15,7 @@ import { BaseComponent } from "./base.component";
  * @author Peter Szrnka
  */
 @Directive()
-export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>> extends BaseComponent {
+export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>> extends BaseComponent implements OnInit {
 
   protected loading = true;
   public datasource: ArrayDataSource<T>;
@@ -36,7 +36,7 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
       super();
     }
 
-  override ngOnInit() : void {
+  ngOnInit() : void {
     this.sharedData.refreshCurrentUserInfo();
     this.fetchData().then(() => {});
   }

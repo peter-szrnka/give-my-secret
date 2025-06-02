@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { takeUntil } from "rxjs";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
@@ -33,7 +33,7 @@ export const EMPTY_ADMIN_DATA : UserData = {
     styleUrls: ['./setup.component.scss'],
     standalone: false
 })
-export class SetupComponent extends BaseComponent {
+export class SetupComponent extends BaseComponent implements OnInit {
 
     loading: boolean = true;
     systemStatus: string = '';
@@ -59,7 +59,7 @@ export class SetupComponent extends BaseComponent {
             super();
         }
 
-    override ngOnInit(): void {
+    ngOnInit(): void {
         this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
             this.systemStatus = params['systemStatus'];
             this.currentStep = SYSTEM_STATUS_INDEX[this.systemStatus];

@@ -29,6 +29,7 @@ class ManualJobExecutionControllerIntegrationTest extends AbstractIntegrationTes
     @Override
     @BeforeEach
     public void setup() {
+        super.setup();
         gmsUser = TestUtils.createGmsAdminUser();
         jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
     }

@@ -1,5 +1,5 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { catchError, of, takeUntil } from "rxjs";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { Paging } from "../../common/model/paging.model";
@@ -24,7 +24,7 @@ export enum SelectionStatus {
     styleUrls: ['./message-list.component.scss'],
     standalone: false
 })
-export class MessageListComponent extends BaseComponent {
+export class MessageListComponent extends BaseComponent implements OnInit {
     messageColumns: string[] = ['message', 'creationDate', 'read_toggle', 'delete', 'selection'];
     results: Message[];
     datasource: ArrayDataSource<Message>;
@@ -54,7 +54,7 @@ export class MessageListComponent extends BaseComponent {
         this.fetchData();
     }
 
-    override ngOnInit(): void {
+    ngOnInit(): void {
         this.fetchData();
     }
 

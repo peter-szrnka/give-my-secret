@@ -38,6 +38,7 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 	@Override
 	@BeforeEach
 	public void setup() {
+		super.setup();
 		gmsUser = TestUtils.createGmsAdminUser();
 		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
 	}

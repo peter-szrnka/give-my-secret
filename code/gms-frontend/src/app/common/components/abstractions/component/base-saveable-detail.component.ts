@@ -1,4 +1,4 @@
-import { Directive } from "@angular/core";
+import { Directive, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { takeUntil } from "rxjs";
@@ -17,7 +17,7 @@ import { BaseComponent } from "./base.component";
  * @author Peter Szrnka
  */
 @Directive()
-export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extends SaveServiceBase<T, BaseList<T>>> extends BaseComponent {
+export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extends SaveServiceBase<T, BaseList<T>>> extends BaseComponent implements OnInit {
 
     data : T;
     public error? : string;
@@ -39,7 +39,7 @@ export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extend
         // Empty implementation
     }
 
-    override ngOnInit(): void {
+    ngOnInit(): void {
         this.sharedData.refreshCurrentUserInfo();
         this.fetchData();
     }

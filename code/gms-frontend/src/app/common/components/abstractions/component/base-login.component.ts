@@ -13,7 +13,7 @@ import { BaseComponent } from "./base.component";
  * @author Peter Szrnka
  */
 @Directive()
-export abstract class BaseLoginComponent extends BaseComponent {
+export abstract class BaseLoginComponent extends BaseComponent implements OnInit {
 
     constructor(
         protected route: ActivatedRoute,
@@ -24,7 +24,7 @@ export abstract class BaseLoginComponent extends BaseComponent {
         super();
     }
 
-    override ngOnInit(): void {
+    ngOnInit(): void {
         this.splashScreenStateService.stop();
     }
     

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
 import { AngularMaterialModule } from "../../../angular-material-module";
@@ -22,7 +22,7 @@ import { BaseComponent } from "../abstractions/component/base.component";
         TranslatorModule
     ]
 })
-export class VmOptionsComponent extends BaseComponent {
+export class VmOptionsComponent extends BaseComponent implements OnInit {
 
     datasource: MatTableDataSource<VmOption> = new MatTableDataSource<VmOption>([]);
     columns: string[] = ['key', 'value'];
@@ -33,7 +33,7 @@ export class VmOptionsComponent extends BaseComponent {
         super();
     }
 
-    override ngOnInit(): void {
+    ngOnInit(): void {
         this.fetchData();
     }
 

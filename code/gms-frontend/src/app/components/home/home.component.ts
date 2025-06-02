@@ -1,5 +1,5 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom, takeUntil } from "rxjs";
 import systemAnnouncements from "../../../assets/caas/system-announcements.json";
@@ -26,7 +26,7 @@ export enum PageStatus {
     styleUrls: ['./home.component.scss'],
     standalone: false
 })
-export class HomeComponent extends BaseComponent {
+export class HomeComponent extends BaseComponent implements OnInit {
 
     eventColumns: string[] = ['id', 'userId', 'eventDate', 'operation', 'target'];
     eventDataSource: ArrayDataSource<Event>;
@@ -44,7 +44,7 @@ export class HomeComponent extends BaseComponent {
         super();
     }
 
-    override ngOnInit(): void {
+    ngOnInit(): void {
         this.pageStatus = PageStatus.LOADING;
         firstValueFrom(this.homeService.getData())
             .then((homeData: HomeData) => {

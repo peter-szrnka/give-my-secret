@@ -18,7 +18,7 @@ import { BaseComponent } from "../../common/components/abstractions/component/ba
     templateUrl: './api-testing.component.html',
     standalone: false
 })
-export class ApiTestingComponent extends BaseComponent {
+export class ApiTestingComponent extends BaseComponent implements OnInit {
 
     apiKey : string;
     secretId : string;
@@ -35,7 +35,7 @@ export class ApiTestingComponent extends BaseComponent {
         super();
     }
 
-    override ngOnInit(): void {
+    ngOnInit(): void {
         this.sharedData.getUserInfo().then((user: User | undefined) => {
             this.userName = user?.username ?? '';
             this.apiKey = this.secureStorageService.getItem(this.userName, 'apiKey');

@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
 import { roleCheck } from './common/utils/permission-utils';
@@ -19,7 +19,7 @@ const LOGIN_CALLBACK_URL = '/login';
     styleUrls: ['./app.component.scss'],
     standalone: false
 })
-export class AppComponent extends BaseComponent {
+export class AppComponent extends BaseComponent implements OnInit {
 
   currentUser: User | undefined;
   showTexts = JSON.parse(localStorage.getItem('showTextsInSidevNav') ?? 'true');
@@ -34,7 +34,7 @@ export class AppComponent extends BaseComponent {
       super();
   }
 
-  override ngOnInit(): void {
+  ngOnInit(): void {
     this.splashScreenStateService.start();
     this.sharedDataService.navigationChangeEvent.pipe(takeUntil(this.destroy$)).subscribe(newUrl => this.navigateTo(newUrl));
     this.router.events.pipe(takeUntil(this.destroy$))

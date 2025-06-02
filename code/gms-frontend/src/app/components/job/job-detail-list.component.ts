@@ -5,6 +5,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError, Observable, takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
+import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
@@ -13,7 +14,6 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { TranslatorService } from "../../common/service/translator-service";
 import { JobDetail } from "./model/job-detail.model";
 import { JobDetailService } from "./service/job-detail.service";
-import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 
 const MANUAL_JOB_EXECUTION_CONFIG = [
     { label: 'job.button.event.maintenance', url : 'event_maintenance' },
@@ -33,7 +33,7 @@ const MANUAL_JOB_EXECUTION_CONFIG = [
     selector: 'job-detail-list',
     templateUrl: './job-detail-list.component.html'
 })
-export class JobDetailListComponent extends BaseComponent {
+export class JobDetailListComponent extends BaseComponent implements OnInit {
 
     columns: string[] = ['id', 'name', 'correlationId', 'status', 'duration', 'creationDate', 'message'];
     job_execution_config = MANUAL_JOB_EXECUTION_CONFIG;
@@ -59,7 +59,7 @@ export class JobDetailListComponent extends BaseComponent {
             super();
     }
 
-    override ngOnInit(): void {
+    ngOnInit(): void {
         this.tableConfig.pageIndex = this.activatedRoute.snapshot.queryParams['page'] ?? 0;
         this.activatedRoute.data
             .pipe(catchError(async () => this.initDefaultDataTable()), takeUntil(this.destroy$))
