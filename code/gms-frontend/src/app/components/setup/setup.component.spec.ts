@@ -203,6 +203,16 @@ describe('SetupComponent', () => {
         expect(router.navigateByUrl).toHaveBeenCalledWith('/setup?systemStatus=NEED_SETUP');
     });
 
+    it('should load vm options', () => {
+        // arrange
+        route.queryParams = of({ systemStatus : 'NEED_SETUP' })
+        configTestBed();
+
+        // assert
+        expect(component).toBeTruthy();
+        expect(setupService.saveInitialStep).toHaveBeenCalledTimes(0);
+    });
+
     it('should save initial step', () => {
         // arrange
         setupService.saveInitialStep = jest.fn().mockReturnValue(of('NEED_ADMIN_USER'));
