@@ -8,12 +8,10 @@ import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.dto.UserInfoDto;
 import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.enums.UserRole;
-import io.github.gms.functions.system.SystemService;
 import io.github.gms.util.DemoData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,9 +34,6 @@ import static org.mockito.Mockito.*;
 @Tag(TAG_INTEGRATION_TEST)
 @TestedClass(InformationController.class)
 class InformationControllerIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
-
-    @MockBean
-    private SystemService systemService;
 
     @Override
     @BeforeEach
