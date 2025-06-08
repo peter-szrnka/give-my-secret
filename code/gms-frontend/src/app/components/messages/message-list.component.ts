@@ -1,7 +1,14 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
+import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
+import { RouterLink } from "@angular/router";
 import { catchError, of, takeUntil } from "rxjs";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { Paging } from "../../common/model/paging.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -22,7 +29,15 @@ export enum SelectionStatus {
     selector: 'message-list',
     templateUrl: './message-list.component.html',
     styleUrls: ['./message-list.component.scss'],
-    standalone: false
+    imports: [
+        AngularMaterialModule,
+        CommonModule,
+        InformationMessageComponent,
+        NavBackComponent,
+        RouterLink,
+        MomentPipe,
+        TranslatorModule
+    ]
 })
 export class MessageListComponent extends BaseComponent implements OnInit {
     messageColumns: string[] = ['message', 'creationDate', 'read_toggle', 'delete', 'selection'];

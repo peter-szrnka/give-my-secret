@@ -12,7 +12,6 @@ const SETTINGS_MAP: any = {
  * @author Peter Szrnka
  */
 @Component({
-  standalone: true,
   imports: [MatIconModule, NgClass],
   selector: 'information-message',
   templateUrl: './information-message.component.html',

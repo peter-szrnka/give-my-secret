@@ -1,16 +1,14 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { DialogService } from "../../common/service/dialog-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { RequestPasswordResetComponent } from "./request-password-reset.component";
 import { ResetPasswordRequestService } from "./service/request-password-reset.service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -24,18 +22,25 @@ describe('RequestPasswordResetComponent', () => {
     let service : any;
     let dialogService : any = {};
     let splashScreenStateService : any;
+    const activatedRouteMock = {
+        snapshot: {
+          queryParams: {
+            previousUrl: {}
+          }
+        }
+      };
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
-            declarations : [RequestPasswordResetComponent],
+            imports : [ RequestPasswordResetComponent, FormsModule, AngularMaterialModule, TranslatorModule ],
             providers: [
+                { provide: ActivatedRoute, useValue: activatedRouteMock },
                 { provide : Router, useValue: router },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
                 { provide : DialogService, useValue : dialogService },
                 { provide : ResetPasswordRequestService, useValue : service }
             ],
-            schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ]
+            //schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ]
         });
 
         fixture = TestBed.createComponent(RequestPasswordResetComponent);

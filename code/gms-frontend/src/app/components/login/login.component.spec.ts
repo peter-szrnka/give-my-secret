@@ -2,11 +2,9 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Router } from "@angular/router";
-import { of, throwError } from "rxjs";
+import { of, Subject, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { DialogService } from "../../common/service/dialog-service";
@@ -32,8 +30,7 @@ describe('LoginComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
-            declarations : [LoginComponent],
+            imports : [ LoginComponent, AngularMaterialModule, FormsModule ],
             providers: [
                 { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
@@ -53,7 +50,10 @@ describe('LoginComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn().mockReturnValue(of(true))
+            navigate : jest.fn().mockReturnValue(of(true)),
+            events: new Subject(),
+            createUrlTree: jest.fn().mockReturnValue({}), // <-- this fixes the error
+            serializeUrl: jest.fn().mockReturnValue('')   // <-- optional but recommended
         };
 
         sharedDataService = {

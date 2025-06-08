@@ -2,20 +2,16 @@ import { NgModule, Type, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn, Route, RouterModule, Routes } from '@angular/router';
 import { ROLE_GUARD } from './common/interceptor/role-guard';
 import { ROLE_ROUTE_MAP } from './common/utils/route-utils';
-import { AboutComponent } from './components/about/about.component';
 import { AnnouncementDetailComponent } from './components/announcement/announcement-detail.component';
 import { AnnouncementListComponent } from './components/announcement/announcement-list.component';
 import { AnnouncementDetailResolver } from './components/announcement/resolver/announcement-detail.resolver';
 import { AnnouncementListResolver } from './components/announcement/resolver/announcement-list.resolver';
-import { ApiTestingComponent } from './components/api_testing/api-testing.component';
 import { ApiKeyDetailComponent } from './components/apikey/apikey-detail.component';
 import { ApiKeyListComponent } from './components/apikey/apikey-list.component';
 import { ApiKeyDetailResolver } from './components/apikey/resolver/apikey-detail.resolver';
 import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.resolver';
-import { ErrorComponent } from './components/error/error.component';
 import { EventListComponent } from './components/event/event-list.component';
 import { EventListResolver } from './components/event/resolver/event-list.resolver';
-import { HelpComponent } from './components/help/help.compontent';
 import { ErrorCodeResolver } from './components/help/resolver/error-code.resolver';
 import { HomeComponent } from './components/home/home.component';
 import { IprestrictionDetailComponent } from './components/ip_restriction/ip-restriction-detail.component';
@@ -28,22 +24,16 @@ import { KeystoreDetailComponent } from './components/keystore/keystore-detail.c
 import { KeystoreListComponent } from './components/keystore/keystore-list.component';
 import { KeystoreDetailResolver } from './components/keystore/resolver/keystore-detail.resolver';
 import { KeystoreListResolver } from './components/keystore/resolver/keystore-list.resolver';
-import { LoginComponent } from './components/login/login.component';
-import { MessageListComponent } from './components/messages/message-list.component';
-import { RequestPasswordResetComponent } from './components/password_reset/request-password-reset.component';
 import { SecretDetailResolver } from './components/secret/resolver/secret-detail.resolver';
 import { SecretListResolver } from './components/secret/resolver/secret-list.resolver';
 import { SecretDetailComponent } from './components/secret/secret-detail.component';
 import { SecretListComponent } from './components/secret/secret-list.component';
-import { SettingsSummaryComponent } from './components/settings/settings-summary.component';
-import { SetupComponent } from './components/setup/setup.component';
 import { SystemPropertyListResolver } from './components/system_property/resolver/system-property-list.resolver';
 import { SystemPropertyListComponent } from './components/system_property/system-property-list.component';
 import { UserDetailResolver } from './components/user/resolver/user-detail.resolver';
 import { UserListResolver } from './components/user/resolver/user-list.resolver';
 import { UserDetailComponent } from './components/user/user-detail.component';
 import { UserListComponent } from './components/user/user-list.component';
-import { VerifyComponent } from './components/verify/verify.component';
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 
 const routeBuilder = (routePath: string, resolveKey: string, component: Type<any>, resolver: Type<any>): Route => {
@@ -66,13 +56,13 @@ const detailRouteBuilder = (scope: string, component: Type<any>, resolver: Type<
 };
 
 const routes: Routes = [
-  { path: 'error', component: ErrorComponent },
-  { path: 'setup', component: SetupComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'verify', component: VerifyComponent },
-  { path: 'password_reset', component: RequestPasswordResetComponent },
-  { path: 'about', component: AboutComponent },
-  { path: 'help', component: HelpComponent, resolve: { 'data': (snapshot: ActivatedRouteSnapshot) => inject(ErrorCodeResolver).resolve(snapshot) }  },
+  { path: 'error', loadComponent: () => import('./components/error/error.component').then(c => c.ErrorComponent) },
+  { path: 'setup', loadComponent: () => import('./components/setup/setup.component').then(c => c.SetupComponent) },
+  { path: 'login', loadComponent: () => import('./components/login/login.component').then(c => c.LoginComponent) },
+  { path: 'verify', loadComponent: () => import('./components/verify/verify.component').then(c => c.VerifyComponent) },
+  { path: 'password_reset', loadComponent: () => import('./components/password_reset/request-password-reset.component').then(c => c.RequestPasswordResetComponent) },
+  { path: 'about', loadComponent: () => import('./components/about/about.component').then(c => c.AboutComponent) },
+  { path: 'help', loadComponent: () => import('./components/help/help.compontent').then(c => c.HelpComponent), resolve: { 'data': (snapshot: ActivatedRouteSnapshot) => inject(ErrorCodeResolver).resolve(snapshot) }  },
 
   // Secured components
   { path: '', component: HomeComponent, pathMatch: 'full', data: { 'roles': ROLES_ALL } },
@@ -82,8 +72,8 @@ const routes: Routes = [
   detailRouteBuilder('apikey', ApiKeyDetailComponent, ApiKeyDetailResolver),
   listRouteBuilder('keystore', KeystoreListComponent, KeystoreListResolver),
   detailRouteBuilder('keystore', KeystoreDetailComponent, KeystoreDetailResolver),
-  { path: 'settings', component: SettingsSummaryComponent, data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD] },
-  { path: 'api-testing', component: ApiTestingComponent, data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD] },
+  { path: 'settings', loadComponent: () => import('./components/settings/settings-summary.component').then(c => c.SettingsSummaryComponent), data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD] },
+  { path: 'api-testing', loadComponent: () => import('./components/api_testing/api-testing.component').then(c => c.ApiTestingComponent), data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD] },
 
   // Admin functions
   listRouteBuilder('user', UserListComponent, UserListResolver),
@@ -97,7 +87,7 @@ const routes: Routes = [
   listRouteBuilder('job', JobDetailListComponent, JobDetailListResolver),
 
   // Common functions
-  { path: 'messages', component: MessageListComponent },
+  { path: 'messages', loadComponent: () => import('./components/messages/message-list.component').then(c => c.MessageListComponent) },
   // All other unknown routes
   {path: '**', redirectTo: ''},
 ];

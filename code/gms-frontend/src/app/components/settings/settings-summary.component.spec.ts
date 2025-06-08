@@ -33,8 +33,7 @@ describe('SettingsSummaryComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
-            declarations : [SettingsSummaryComponent],
+            imports : [ SettingsSummaryComponent, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
             providers: [
                 { provide : Router, useValue : router },
                 { provide : UserService, useValue : userService },

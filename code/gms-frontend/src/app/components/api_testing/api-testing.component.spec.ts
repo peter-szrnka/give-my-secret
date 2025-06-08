@@ -32,8 +32,7 @@ describe('ApiTestingComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
-            declarations : [ ApiTestingComponent ],
+            imports : [ ApiTestingComponent, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
             providers : [
                 { provide : SharedDataService, useValue: sharedData },
                 { provide : ApiTestingService, useValue : service },

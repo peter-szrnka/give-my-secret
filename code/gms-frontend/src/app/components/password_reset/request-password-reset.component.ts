@@ -1,15 +1,18 @@
 import { Component } from "@angular/core";
-import { Router } from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { Router, RouterModule } from "@angular/router";
+import { takeUntil } from "rxjs";
+import { AngularMaterialModule } from "../../angular-material-module";
+import { BaseComponent } from "../../common/components/abstractions/component/base.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { DialogService } from "../../common/service/dialog-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { ResetPasswordRequestService } from "./service/request-password-reset.service";
-import { takeUntil } from "rxjs";
-import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 
 @Component({
     selector: 'request-password-reset',
     templateUrl: './request-password-reset.component.html',
-    standalone: false
+    imports: [AngularMaterialModule, RouterModule, FormsModule, TranslatorModule]
 })
 export class RequestPasswordResetComponent extends BaseComponent {
 

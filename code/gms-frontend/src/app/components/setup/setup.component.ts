@@ -1,7 +1,12 @@
 import { Component, Inject, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { takeUntil } from "rxjs";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { VmOptionsComponent } from "../../common/components/vm-options/vm-options.component";
 import { VmOption } from "../../common/model/common.model";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
@@ -31,7 +36,13 @@ export const EMPTY_ADMIN_DATA : UserData = {
     selector: 'setup-component',
     templateUrl: './setup.component.html',
     styleUrls: ['./setup.component.scss'],
-    standalone: false
+    imports: [
+        AngularMaterialModule,
+        FormsModule,
+        TranslatorModule,
+        InformationMessageComponent,
+        VmOptionsComponent
+    ]
 })
 export class SetupComponent extends BaseComponent implements OnInit {
 

@@ -3,7 +3,6 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
-import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable, of, throwError } from "rxjs";
@@ -32,8 +31,7 @@ describe('SetupComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, FormsModule, BrowserModule, BrowserAnimationsModule, TranslatorModule ],
-            declarations : [SetupComponent],
+            imports : [ SetupComponent, AngularMaterialModule, FormsModule, BrowserAnimationsModule, TranslatorModule ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : WINDOW_TOKEN, useValue : mockWindow },

@@ -38,8 +38,7 @@ describe('VerifyComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
-            declarations : [VerifyComponent],
+            imports : [ VerifyComponent, RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
             providers: [
                 { provide : WINDOW_TOKEN, useValue : mockWindow },
                 { provide : Router, useValue: router },
