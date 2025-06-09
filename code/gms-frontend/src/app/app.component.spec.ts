@@ -230,9 +230,9 @@ describe('AppComponent', () => {
         router.url = '/login';
         mockSubject.next(currentUser);
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
-        mockNavigationEmitter.emit('/apikey/list');
         configureTestBed();
-        
+        mockNavigationEmitter.emit('/apikey/list');
+
         // act & assert
         expect(component.isAdmin).toEqual(true);
         expect(splashScreenStateService.start).toHaveBeenCalled();
