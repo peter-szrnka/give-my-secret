@@ -9,7 +9,7 @@ import { VmOption } from "../model/common.model";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InformationService {
 
     constructor(private readonly http : HttpClient) {}

@@ -13,6 +13,8 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { WINDOW_TOKEN } from "../../window.provider";
 import { SetupService } from "./service/setup-service";
 import { EMPTY_ADMIN_DATA, SetupComponent } from "./setup.component";
+import { InformationService } from "../../common/service/info-service";
+import { VmOption } from "../../common/model/common.model";
 
 /**
  * @author Peter Szrnka
@@ -28,6 +30,7 @@ describe('SetupComponent', () => {
     let dialog : any;
     let setupService : any;
     let mockWindow : any;
+    let infoService : any;
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
@@ -39,7 +42,8 @@ describe('SetupComponent', () => {
                 { provide : ActivatedRoute, useValue: route },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
                 { provide : MatDialog, useValue : dialog },
-                { provide : SetupService, useValue : setupService }
+                { provide : SetupService, useValue : setupService },
+                { provide : InformationService, useValue: infoService }
             ]
         }).compileComponents();
 
@@ -80,6 +84,10 @@ describe('SetupComponent', () => {
             saveOrganizationData : jest.fn().mockReturnValue(of({ success : true })),
             completeSetup : jest.fn().mockReturnValue(of({ success : true }))
         };
+
+        infoService = {
+            getVmOptions: jest.fn().mockReturnValue(of([{ key: 'testKey', value: 'value1' } as VmOption]))
+        }
     });
 
     it('should saveAdminUser throw error 404', async () => {
