@@ -1,11 +1,17 @@
-import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { IpRestriction, PAGE_CONFIG_IP_RESTRICTION } from "./model/ip-restriction.model";
 import { IpRestrictionService } from "./service/ip-restriction.service";
+import { FormsModule } from "@angular/forms";
+import { AngularMaterialModule } from "../../angular-material-module";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -13,7 +19,16 @@ import { IpRestrictionService } from "./service/ip-restriction.service";
 @Component({
     selector: 'ip-restriction-list',
     templateUrl: './ip-restriction-list.component.html',
-    standalone: false
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [
+        AngularMaterialModule,
+        FormsModule,
+        RouterModule,
+        MomentPipe,
+        NavBackComponent,
+        TranslatorModule,
+        InformationMessageComponent
+    ]
 })
 export class IpRestrictionListComponent extends BaseListComponent<IpRestriction, IpRestrictionService> {
 

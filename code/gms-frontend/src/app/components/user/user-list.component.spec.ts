@@ -33,8 +33,7 @@ describe('UserListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ MatTableModule, MomentPipe, TranslatorModule ],
-            declarations : [UserListComponent],
+            imports : [ UserListComponent, MatTableModule, MomentPipe, TranslatorModule ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue: router },

@@ -1,7 +1,15 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { takeUntil } from "rxjs";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -10,7 +18,6 @@ import { Event } from "../event/model/event.model";
 import { EventService } from "../event/service/event-service";
 import { PAGE_CONFIG_USER, UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
-import { takeUntil } from "rxjs";
 
 const EVENT_LIST_FILTER = {
   direction: "DESC",
@@ -26,7 +33,15 @@ const ALL_STATUS: string[] = [ 'ACTIVE', 'BLOCKED', 'DISABLED', 'DELETE_REQUESTE
     selector: 'user-detail-component',
     templateUrl: './user-detail.component.html',
     styleUrls: ['./user-detail.component.scss'],
-    standalone: false
+    imports: [
+      AngularMaterialModule,
+      FormsModule,
+      RouterModule,
+      MomentPipe,
+      NavBackComponent,
+      TranslatorModule,
+      InformationMessageComponent
+  ]
 })
 export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, UserService> {
 

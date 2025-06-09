@@ -1,8 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -15,6 +14,8 @@ import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
+import { InformationService } from "../../common/service/info-service";
+import { VmOption } from "../../common/model/common.model";
 
 /**
  * @author Peter Szrnka
@@ -31,13 +32,13 @@ describe('SystemPropertyListComponent', () => {
     let sharedDataService: any;
     let activatedRoute: any = {};
     let splashScreenService: any = {};
+    let infoService : any;
     // Fixtures
     let fixture: ComponentFixture<SystemPropertyListComponent>;
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [ReactiveFormsModule, FormsModule, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule],
-            declarations: [SystemPropertyListComponent],
+            imports: [SystemPropertyListComponent, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide: Router, useValue: router },
@@ -45,7 +46,8 @@ describe('SystemPropertyListComponent', () => {
                 { provide: SystemPropertyService, useValue: service },
                 { provide: DialogService, useValue: dialogService },
                 { provide: ActivatedRoute, useClass: activatedRoute },
-                { provide: SplashScreenStateService, useValue: splashScreenService }
+                { provide: SplashScreenStateService, useValue: splashScreenService },
+                { provide : InformationService, useValue: infoService }
             ]
         });
 
@@ -120,7 +122,7 @@ describe('SystemPropertyListComponent', () => {
                 queryParams: {
                     page: 0
                 }
-            }
+            };
         };
 
         service = {
@@ -130,6 +132,10 @@ describe('SystemPropertyListComponent', () => {
 
         splashScreenService = {
             start: jest.fn()
+        };
+
+        infoService = {
+            getVmOptions: jest.fn().mockReturnValue(of([{ key: 'testKey', value: 'value1' } as VmOption]))
         };
     });
 

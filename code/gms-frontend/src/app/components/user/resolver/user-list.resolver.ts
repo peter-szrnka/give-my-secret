@@ -10,7 +10,7 @@ import { PageConfig } from "../../../common/model/common.model";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserListResolver extends ListResolver<UserData, UserDataList, UserService> {
 
     constructor(sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : UserService) {

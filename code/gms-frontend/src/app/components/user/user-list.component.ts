@@ -1,13 +1,20 @@
-import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { takeUntil } from "rxjs";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { PAGE_CONFIG_USER, UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
-import { takeUntil } from "rxjs";
 
 /**
  * @author Peter Szrnka
@@ -16,7 +23,16 @@ import { takeUntil } from "rxjs";
     selector: 'user-list-component',
     templateUrl: './user-list.component.html',
     styleUrls: ['./user-list.component.scss'],
-    standalone: false
+    imports: [
+        AngularMaterialModule,
+        FormsModule,
+        RouterModule,
+        MomentPipe,
+        NavBackComponent,
+        StatusToggleComponent,
+        TranslatorModule,
+        InformationMessageComponent
+    ]
 })
 export class UserListComponent extends BaseListComponent<UserData, UserService> {
 

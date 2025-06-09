@@ -87,7 +87,7 @@ describe('SetupComponent', () => {
 
         infoService = {
             getVmOptions: jest.fn().mockReturnValue(of([{ key: 'testKey', value: 'value1' } as VmOption]))
-        }
+        };
     });
 
     it('should saveAdminUser throw error 404', async () => {

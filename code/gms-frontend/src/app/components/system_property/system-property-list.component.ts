@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
-import { ActivatedRoute, Params, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router, RouterModule } from "@angular/router";
 import { catchError, takeUntil } from "rxjs";
 import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
@@ -14,8 +14,14 @@ import { User } from "../user/model/user.model";
 import { SystemProperty } from "./model/system-property.model";
 import { SystemPropertyService } from "./service/system-property.service";
 
+import { FormsModule } from "@angular/forms";
 import * as systemPropertyList from '../../../assets/i18n/system-properties.json';
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { VmOptionsComponent } from "../../common/components/vm-options/vm-options.component";
 
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
@@ -107,9 +113,17 @@ interface SystemPropertyElement extends SystemProperty {
  * @author Peter Szrnka
  */
 @Component({
-    selector: 'system-property',
-    templateUrl: './system-property-list.component.html',
-    standalone: false
+  selector: 'system-property',
+  templateUrl: './system-property-list.component.html',
+  imports: [
+    AngularMaterialModule,
+    FormsModule,
+    RouterModule,
+    MomentPipe,
+    NavBackComponent,
+    TranslatorModule,
+    VmOptionsComponent
+  ]
 })
 export class SystemPropertyListComponent extends BaseComponent implements OnInit {
   columns: string[] = ['key', 'value', 'type', 'lastModified', 'operations'];
@@ -134,8 +148,8 @@ export class SystemPropertyListComponent extends BaseComponent implements OnInit
     public dialogService: DialogService,
     protected activatedRoute: ActivatedRoute,
     private readonly splashScreenService: SplashScreenStateService) {
-      super();
-    }
+    super();
+  }
 
   ngOnInit(): void {
     this.fetchData();

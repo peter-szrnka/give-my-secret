@@ -5,13 +5,13 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { TranslatorService } from "../../common/service/translator-service";
 import { User } from "../user/model/user.model";
 import { EventListComponent } from "./event-list.component";
 import { EventService } from "./service/event-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
-import { TranslatorService } from "../../common/service/translator-service";
 
 /**
  * @author Peter Szrnka
@@ -33,8 +33,7 @@ describe('EventListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
-            declarations : [EventListComponent],
+            imports : [ EventListComponent, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue: router },

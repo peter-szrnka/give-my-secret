@@ -1,15 +1,21 @@
 
 import { Component } from "@angular/core";
 
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { takeUntil } from "rxjs";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { TranslatorService } from "../../common/service/translator-service";
 import { Event, PAGE_CONFIG_EVENT } from "./model/event.model";
 import { EventService } from "./service/event-service";
-import { takeUntil } from "rxjs";
 
 /**
  * @author Peter Szrnka
@@ -17,7 +23,14 @@ import { takeUntil } from "rxjs";
 @Component({
     selector: 'event-list-component',
     templateUrl: './event-list.component.html',
-    standalone: false
+    imports: [
+        AngularMaterialModule,
+        FormsModule,
+        MomentPipe,
+        NavBackComponent,
+        TranslatorModule,
+        InformationMessageComponent
+    ]
 })
 export class EventListComponent extends BaseListComponent<Event, EventService> {
 

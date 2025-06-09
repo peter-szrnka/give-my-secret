@@ -12,13 +12,8 @@ import { AuthInterceptor } from './common/interceptor/auth-interceptor';
 import { CsrfTokenInterceptor } from './common/interceptor/csrf-token-interceptor';
 import { MockInterceptor } from './common/interceptor/mock-interceptor';
 import { ServiceModule } from './common/service/service-module';
-import { AnnouncementModule } from './components/announcement/announcement-module';
-import { EventModule } from './components/event/event-module';
 import { HeaderModule } from './components/header/header-module';
-import { IpRestrictionModule } from './components/ip_restriction/ip-restriction-module';
 import { NavMenuModule } from './components/menu/nav-menu.module';
-import { SystemPropertyModule } from './components/system_property/system-property-module';
-import { UserModule } from './components/user/user-module';
 
 export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
 
@@ -36,12 +31,7 @@ export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
         // Main application modules
         NavMenuModule,
         HeaderModule,
-        ServiceModule,
-        UserModule,
-        EventModule,
-        AnnouncementModule,
-        SystemPropertyModule,
-        IpRestrictionModule
+        ServiceModule
     ], 
     providers: [
         { provide: ENV_CONFIG, useValue: environment },
