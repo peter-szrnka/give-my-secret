@@ -8,7 +8,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class KeystoreDetailResolver extends DetailDataResolver<Keystore, KeystoreService> {
 
     constructor(sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : KeystoreService) {

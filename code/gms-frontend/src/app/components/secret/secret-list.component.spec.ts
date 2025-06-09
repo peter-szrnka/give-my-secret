@@ -42,10 +42,9 @@ describe('SecretListComponent', () => {
     const configureTestBed = () => {
         TestBed.configureTestingModule({
             imports : [
+                SecretListComponent,
                 AngularMaterialModule,
                 FormsModule,
-                BrowserModule,
-                NoopAnimationsModule,
                 AppRoutingModule,
                 SplashComponent,
                 NavBackComponent,
@@ -55,7 +54,6 @@ describe('SecretListComponent', () => {
                 ServiceModule,
                 TranslatorModule
             ],
-            declarations : [SecretListComponent],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue: router },

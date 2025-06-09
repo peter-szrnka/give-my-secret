@@ -6,8 +6,6 @@ import { AnnouncementDetailComponent } from './components/announcement/announcem
 import { AnnouncementListComponent } from './components/announcement/announcement-list.component';
 import { AnnouncementDetailResolver } from './components/announcement/resolver/announcement-detail.resolver';
 import { AnnouncementListResolver } from './components/announcement/resolver/announcement-list.resolver';
-import { ApiKeyDetailComponent } from './components/apikey/apikey-detail.component';
-import { ApiKeyListComponent } from './components/apikey/apikey-list.component';
 import { ApiKeyDetailResolver } from './components/apikey/resolver/apikey-detail.resolver';
 import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.resolver';
 import { EventListComponent } from './components/event/event-list.component';
@@ -19,14 +17,10 @@ import { IpRestrictionDetailResolver } from './components/ip_restriction/resolve
 import { IpRestrictionListResolver } from './components/ip_restriction/resolver/ip-restriction-list.resolver';
 import { JobDetailListComponent } from './components/job/job-detail-list.component';
 import { JobDetailListResolver } from './components/job/resolver/job-detail-list.resolver';
-import { KeystoreDetailComponent } from './components/keystore/keystore-detail.component';
-import { KeystoreListComponent } from './components/keystore/keystore-list.component';
 import { KeystoreDetailResolver } from './components/keystore/resolver/keystore-detail.resolver';
 import { KeystoreListResolver } from './components/keystore/resolver/keystore-list.resolver';
 import { SecretDetailResolver } from './components/secret/resolver/secret-detail.resolver';
 import { SecretListResolver } from './components/secret/resolver/secret-list.resolver';
-import { SecretDetailComponent } from './components/secret/secret-detail.component';
-import { SecretListComponent } from './components/secret/secret-list.component';
 import { SystemPropertyListResolver } from './components/system_property/resolver/system-property-list.resolver';
 import { SystemPropertyListComponent } from './components/system_property/system-property-list.component';
 import { UserDetailResolver } from './components/user/resolver/user-detail.resolver';
@@ -54,6 +48,25 @@ const detailRouteBuilder = (scope: string, component: Type<any>, resolver: Type<
   return routeBuilder(scope + '/:id', 'entity', component, resolver);
 };
 
+const routeBuilderFn = (routePath: string, resolveKey: string, componentLoader: any, resolver: Type<any>): Route => {
+  return {
+    path: routePath,
+    loadComponent: () => componentLoader,
+    data: { 'roles': ROLE_ROUTE_MAP[routePath] },
+    resolve: { [resolveKey]: (snapshot: ActivatedRouteSnapshot): ResolveFn<Object> => inject(resolver).resolve(snapshot) },
+    canActivate: [ROLE_GUARD],
+    runGuardsAndResolvers: 'always'
+  };
+};
+
+const listRouteBuilderFn = (scope: string, componentLoader: any, resolver: Type<any>): Route => {
+  return routeBuilderFn(scope + '/list', 'data', componentLoader, resolver);
+};
+
+const detailRouteBuilderFn = (scope: string, componentLoader: any, resolver: Type<any>): Route => {
+  return routeBuilderFn(scope + '/:id', 'entity', componentLoader, resolver);
+};
+
 const routes: Routes = [
   { path: 'error', loadComponent: () => import('./components/error/error.component').then(c => c.ErrorComponent) },
   { path: 'setup', loadComponent: () => import('./components/setup/setup.component').then(c => c.SetupComponent) },
@@ -65,12 +78,12 @@ const routes: Routes = [
 
   // Secured components
   { path: '', loadComponent: () => import('./components/home/home.component').then(c => c.HomeComponent), pathMatch: 'full', data: { 'roles': ROLES_ALL } },
-  listRouteBuilder('secret', SecretListComponent, SecretListResolver),
-  detailRouteBuilder('secret', SecretDetailComponent, SecretDetailResolver),
-  listRouteBuilder('apikey', ApiKeyListComponent, ApiKeyListResolver),
-  detailRouteBuilder('apikey', ApiKeyDetailComponent, ApiKeyDetailResolver),
-  listRouteBuilder('keystore', KeystoreListComponent, KeystoreListResolver),
-  detailRouteBuilder('keystore', KeystoreDetailComponent, KeystoreDetailResolver),
+  listRouteBuilderFn('secret', import('./components/secret/secret-list.component').then(c => c.SecretListComponent), SecretListResolver),
+  detailRouteBuilderFn('secret', import('./components/secret/secret-detail.component').then(c => c.SecretDetailComponent), SecretDetailResolver),
+  listRouteBuilderFn('apikey', import('./components/apikey/apikey-list.component').then(c => c.ApiKeyListComponent), ApiKeyListResolver),
+  detailRouteBuilderFn('apikey', import('./components/apikey/apikey-detail.component').then(c => c.ApiKeyDetailComponent), ApiKeyDetailResolver),
+  listRouteBuilderFn('keystore', import('./components/keystore/keystore-list.component').then(c => c.KeystoreListComponent), KeystoreListResolver),
+  detailRouteBuilderFn('keystore', import('./components/keystore/keystore-detail.component').then(c => c.KeystoreDetailComponent), KeystoreDetailResolver),
   { path: 'settings', loadComponent: () => import('./components/settings/settings-summary.component').then(c => c.SettingsSummaryComponent), data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD] },
   { path: 'api-testing', loadComponent: () => import('./components/api_testing/api-testing.component').then(c => c.ApiTestingComponent), data: { 'roles': ROLES_ALL }, canActivate: [ROLE_GUARD] },
 

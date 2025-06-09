@@ -1,12 +1,19 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
+import { AsyncPipe } from "@angular/common";
 import { Component, ElementRef, ViewChild } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { MatChipInputEvent } from "@angular/material/chips";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseDetailComponent } from "../../common/components/abstractions/component/base-detail.component";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { ButtonConfig } from "../../common/components/nav-back/button-config";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { PageConfig } from "../../common/model/common.model";
 import { IdNamePair } from "../../common/model/id-name-pair.model";
 import { DialogService } from "../../common/service/dialog-service";
@@ -39,7 +46,15 @@ export enum ValidationState {
     selector: 'secret-detail',
     templateUrl: './secret-detail.component.html',
     styleUrls: ['./secret-detail.component.scss'],
-    standalone: false
+    imports: [
+        AngularMaterialModule,
+        FormsModule,
+        AsyncPipe,
+        NavBackComponent,
+        MomentPipe,
+        InformationMessageComponent,
+        TranslatorModule
+    ]
 })
 export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretService> {
 

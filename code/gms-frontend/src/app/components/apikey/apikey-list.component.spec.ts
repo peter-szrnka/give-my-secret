@@ -34,8 +34,7 @@ describe('ApiKeyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
-            declarations : [ApiKeyListComponent],
+            imports : [ ApiKeyListComponent, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue : router },

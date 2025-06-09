@@ -10,7 +10,7 @@ import { PageConfig } from "../../../common/model/common.model";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class KeystoreListResolver extends ListResolver<Keystore, KeystoreList, KeystoreService> {
 
     constructor(sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : KeystoreService) {

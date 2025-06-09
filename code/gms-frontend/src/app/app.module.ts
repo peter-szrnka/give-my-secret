@@ -13,13 +13,10 @@ import { CsrfTokenInterceptor } from './common/interceptor/csrf-token-intercepto
 import { MockInterceptor } from './common/interceptor/mock-interceptor';
 import { ServiceModule } from './common/service/service-module';
 import { AnnouncementModule } from './components/announcement/announcement-module';
-import { ApiKeyModule } from './components/apikey/apikey-module';
 import { EventModule } from './components/event/event-module';
 import { HeaderModule } from './components/header/header-module';
 import { IpRestrictionModule } from './components/ip_restriction/ip-restriction-module';
-import { KeystoreModule } from './components/keystore/keystore-module';
 import { NavMenuModule } from './components/menu/nav-menu.module';
-import { SecretModule } from './components/secret/secret-module';
 import { SystemPropertyModule } from './components/system_property/system-property-module';
 import { UserModule } from './components/user/user-module';
 
@@ -40,9 +37,6 @@ export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
         NavMenuModule,
         HeaderModule,
         ServiceModule,
-        KeystoreModule,
-        ApiKeyModule,
-        SecretModule,
         UserModule,
         EventModule,
         AnnouncementModule,

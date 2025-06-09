@@ -8,7 +8,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class SecretDetailResolver extends DetailDataResolver<Secret, SecretService> {
 
     constructor(sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : SecretService) {
