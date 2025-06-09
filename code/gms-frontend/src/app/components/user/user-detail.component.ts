@@ -9,7 +9,6 @@ import { InformationMessageComponent } from "../../common/components/information
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
-import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
