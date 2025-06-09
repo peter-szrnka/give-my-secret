@@ -13,7 +13,6 @@ import { ApiKeyListResolver } from './components/apikey/resolver/apikey-list.res
 import { EventListComponent } from './components/event/event-list.component';
 import { EventListResolver } from './components/event/resolver/event-list.resolver';
 import { ErrorCodeResolver } from './components/help/resolver/error-code.resolver';
-import { HomeComponent } from './components/home/home.component';
 import { IprestrictionDetailComponent } from './components/ip_restriction/ip-restriction-detail.component';
 import { IpRestrictionListComponent } from './components/ip_restriction/ip-restriction-list.component';
 import { IpRestrictionDetailResolver } from './components/ip_restriction/resolver/ip-restriction-detail.resolver';
@@ -65,7 +64,7 @@ const routes: Routes = [
   { path: 'help', loadComponent: () => import('./components/help/help.compontent').then(c => c.HelpComponent), resolve: { 'data': (snapshot: ActivatedRouteSnapshot) => inject(ErrorCodeResolver).resolve(snapshot) }  },
 
   // Secured components
-  { path: '', component: HomeComponent, pathMatch: 'full', data: { 'roles': ROLES_ALL } },
+  { path: '', loadComponent: () => import('./components/home/home.component').then(c => c.HomeComponent), pathMatch: 'full', data: { 'roles': ROLES_ALL } },
   listRouteBuilder('secret', SecretListComponent, SecretListResolver),
   detailRouteBuilder('secret', SecretDetailComponent, SecretDetailResolver),
   listRouteBuilder('apikey', ApiKeyListComponent, ApiKeyListResolver),

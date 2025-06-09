@@ -16,7 +16,6 @@ import { AnnouncementModule } from './components/announcement/announcement-modul
 import { ApiKeyModule } from './components/apikey/apikey-module';
 import { EventModule } from './components/event/event-module';
 import { HeaderModule } from './components/header/header-module';
-import { HomeModule } from './components/home/home-module';
 import { IpRestrictionModule } from './components/ip_restriction/ip-restriction-module';
 import { KeystoreModule } from './components/keystore/keystore-module';
 import { NavMenuModule } from './components/menu/nav-menu.module';
@@ -39,8 +38,6 @@ export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
         AppRoutingModule,
         // Main application modules
         NavMenuModule,
-        HomeModule,
-        //SetupModule,
         HeaderModule,
         ServiceModule,
         KeystoreModule,

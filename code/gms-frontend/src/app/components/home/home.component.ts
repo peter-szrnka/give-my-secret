@@ -1,9 +1,13 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { firstValueFrom, takeUntil } from "rxjs";
 import systemAnnouncements from "../../../assets/caas/system-announcements.json";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { Event } from "../event/model/event.model";
 import { User } from "../user/model/user.model";
@@ -24,7 +28,13 @@ export enum PageStatus {
     selector: 'home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
-    standalone: false
+    imports: [
+        AngularMaterialModule,
+        RouterModule,
+        MomentPipe,
+        InformationMessageComponent,
+        TranslatorModule
+    ]
 })
 export class HomeComponent extends BaseComponent implements OnInit {
 

@@ -1,15 +1,15 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ReplaySubject, Subscription, of, throwError } from "rxjs";
+import { ReplaySubject, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
-import { HomeComponent, PageStatus } from "./home.component";
+import { HomeComponent } from "./home.component";
 import { HomeData } from "./model/home-data.model";
 import { HomeService } from "./service/home.service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -26,9 +26,8 @@ describe('HomeComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule, AngularMaterialModule, MomentPipe, TranslatorModule],
+            imports: [HomeComponent, RouterTestingModule, AngularMaterialModule, MomentPipe, TranslatorModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            declarations: [HomeComponent],
             providers: [
                 { provide: SharedDataService, useValue: sharedData },
                 { provide: HomeService, useValue: homeService }
