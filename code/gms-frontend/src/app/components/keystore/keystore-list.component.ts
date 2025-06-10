@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
@@ -23,7 +23,7 @@ import { KeystoreService } from "./service/keystore-service";
     imports: [
         AngularMaterialModule,
         FormsModule,
-        RouterLink,
+        RouterModule,
         NavBackComponent,
         MomentPipe,
         StatusToggleComponent,

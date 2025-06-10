@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
@@ -24,7 +24,6 @@ import { IpRestrictionService } from "./service/ip-restriction.service";
     imports: [
         AngularMaterialModule,
         FormsModule,
-        RouterModule,
         MomentPipe,
         NavBackComponent,
         TranslatorModule,

@@ -1,5 +1,5 @@
-import { NgModule, Type, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, ResolveFn, Route, RouterModule, Routes } from '@angular/router';
+import { inject, InjectionToken, Type } from '@angular/core';
+import { ActivatedRouteSnapshot, ResolveFn, Route, Routes } from '@angular/router';
 import { ROLE_GUARD } from './common/interceptor/role-guard';
 import { ROLE_ROUTE_MAP } from './common/utils/route-utils';
 import { AnnouncementDetailResolver } from './components/announcement/resolver/announcement-detail.resolver';
@@ -18,26 +18,10 @@ import { SecretListResolver } from './components/secret/resolver/secret-list.res
 import { SystemPropertyListResolver } from './components/system_property/resolver/system-property-list.resolver';
 import { UserDetailResolver } from './components/user/resolver/user-detail.resolver';
 import { UserListResolver } from './components/user/resolver/user-list.resolver';
+import { HomeComponent } from './components/home/home.component';
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 
-const routeBuilder = (routePath: string, resolveKey: string, component: Type<any>, resolver: Type<any>): Route => {
-  return {
-    path: routePath,
-    component: component,
-    data: { 'roles': ROLE_ROUTE_MAP[routePath] },
-    resolve: { [resolveKey]: (snapshot: ActivatedRouteSnapshot): ResolveFn<Object> => inject(resolver).resolve(snapshot) },
-    canActivate: [ROLE_GUARD],
-    runGuardsAndResolvers: 'always'
-  };
-};
-
-const listRouteBuilder = (scope: string, component: Type<any>, resolver: Type<any>): Route => {
-  return routeBuilder(scope + '/list', 'data', component, resolver);
-};
-
-const detailRouteBuilder = (scope: string, component: Type<any>, resolver: Type<any>): Route => {
-  return routeBuilder(scope + '/:id', 'entity', component, resolver);
-};
+export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
 
 const routeBuilderFn = (routePath: string, resolveKey: string, componentLoader: any, resolver: Type<any>): Route => {
   return {
@@ -58,7 +42,7 @@ const detailRouteBuilderFn = (scope: string, componentLoader: any, resolver: Typ
   return routeBuilderFn(scope + '/:id', 'entity', componentLoader, resolver);
 };
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: 'error', loadComponent: () => import('./components/error/error.component').then(c => c.ErrorComponent) },
   { path: 'setup', loadComponent: () => import('./components/setup/setup.component').then(c => c.SetupComponent) },
   { path: 'login', loadComponent: () => import('./components/login/login.component').then(c => c.LoginComponent) },
@@ -94,12 +78,3 @@ const routes: Routes = [
   // All other unknown routes
   {path: '**', redirectTo: ''},
 ];
-
-/**
- * @author Peter Szrnka
- */
-@NgModule({
-  imports: [RouterModule.forRoot(routes,{ enableTracing: false })],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }

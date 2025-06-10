@@ -6,7 +6,6 @@ import { LoggerService } from "../service/logger-service";
 
 // mocks
 import { Environment } from "../../../environments/environment.default";
-import { ENV_CONFIG } from "../../app.module";
 import * as errorCodes from "../../../assets/mock/error.codes.json";
 import * as eventList from "../../../assets/mock/event-list.json";
 import * as infoMe from "../../../assets/mock/info.me.json";
@@ -15,6 +14,7 @@ import * as messages from "../../../assets/mock/secure.messages.json";
 import * as systemPropertyList from "../../../assets/mock/system-property-list.json";
 import * as systemStatus from "../../../assets/mock/system.status.json";
 import * as unreadMessages from "../../../assets/mock/unread.messages.json";
+import { ENV_CONFIG } from "../../app.config";
 
 const MOCK_MAP : any = {
     "info/status" : systemStatus,
@@ -30,7 +30,7 @@ const MOCK_MAP : any = {
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class MockInterceptor implements HttpInterceptor {
 
     constructor(@Inject(ENV_CONFIG) private readonly env: Environment, private readonly logger: LoggerService) {}

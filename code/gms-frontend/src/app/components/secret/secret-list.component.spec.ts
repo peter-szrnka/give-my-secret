@@ -1,12 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { AppRoutingModule } from "../../app-routing.module";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
@@ -15,7 +12,6 @@ import { SplashComponent } from "../../common/components/splash/splash.component
 import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { ClipboardService } from "../../common/service/clipboard-service";
 import { DialogService } from "../../common/service/dialog-service";
-import { ServiceModule } from "../../common/service/service-module";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { COPY_SECRET_ID_MESSAGE, SecretListComponent } from "./secret-list.component";
@@ -45,13 +41,11 @@ describe('SecretListComponent', () => {
                 SecretListComponent,
                 AngularMaterialModule,
                 FormsModule,
-                AppRoutingModule,
                 SplashComponent,
                 NavBackComponent,
                 MomentPipe,
                 NavButtonVisibilityPipe,
                 StatusToggleComponent,
-                ServiceModule,
                 TranslatorModule
             ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

@@ -6,8 +6,7 @@ import { ButtonConfig } from "../nav-back/button-config";
  */
 @Pipe({
     name: 'navButtonVisibility',
-    pure : false,
-    standalone: true
+    pure : false
   })
   export class NavButtonVisibilityPipe implements PipeTransform {
   

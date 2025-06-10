@@ -1,7 +1,7 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseSaveableDetailComponent } from "../../common/components/abstractions/component/base-saveable-detail.component";
@@ -35,7 +35,6 @@ const ALL_STATUS: string[] = [ 'ACTIVE', 'BLOCKED', 'DISABLED', 'DELETE_REQUESTE
     imports: [
       AngularMaterialModule,
       FormsModule,
-      RouterModule,
       MomentPipe,
       NavBackComponent,
       TranslatorModule,

@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, NavigationExtras, Router, RouterLink } from "@angular/router";
+import { ActivatedRoute, NavigationExtras, Router, RouterModule } from "@angular/router";
 import { catchError, takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
@@ -18,7 +18,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
     selector: 'login',
     templateUrl: './login.component.html',
     standalone: true,
-    imports: [TranslatorModule, RouterLink, AngularMaterialModule, FormsModule]
+    imports: [TranslatorModule, RouterModule, AngularMaterialModule, FormsModule]
 })
 export class LoginComponent extends BaseLoginComponent {
 

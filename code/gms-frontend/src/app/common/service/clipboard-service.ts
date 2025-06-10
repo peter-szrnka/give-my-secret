@@ -5,7 +5,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ClipboardService {
 
     constructor(private readonly clipboard: Clipboard, private readonly snackbar : MatSnackBar) { }

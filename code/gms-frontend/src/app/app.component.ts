@@ -1,12 +1,15 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent, RouterModule } from '@angular/router';
 import { takeUntil } from 'rxjs';
+import { AngularMaterialModule } from './angular-material-module';
+import { BaseComponent } from './common/components/abstractions/component/base.component';
 import { SharedDataService } from './common/service/shared-data-service';
 import { SplashScreenStateService } from './common/service/splash-screen-service';
 import { roleCheck } from './common/utils/permission-utils';
+import { HeaderModule } from './components/header/header-module';
+import { NavMenuModule } from './components/menu/nav-menu.module';
 import { User } from './components/user/model/user.model';
-import { BaseComponent } from './common/components/abstractions/component/base.component';
 
 const LOGIN_CALLBACK_URL = '/login';
 
@@ -17,7 +20,13 @@ const LOGIN_CALLBACK_URL = '/login';
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    standalone: false
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], 
+    imports: [
+        AngularMaterialModule,
+        NavMenuModule,
+        HeaderModule,
+        RouterModule
+    ]
 })
 export class AppComponent extends BaseComponent implements OnInit {
 

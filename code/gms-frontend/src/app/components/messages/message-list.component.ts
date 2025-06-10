@@ -1,7 +1,7 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { RouterModule } from "@angular/router";
 import { catchError, of, takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
@@ -34,7 +34,7 @@ export enum SelectionStatus {
         CommonModule,
         InformationMessageComponent,
         NavBackComponent,
-        RouterLink,
+        RouterModule,
         MomentPipe,
         TranslatorModule
     ]

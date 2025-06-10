@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -72,7 +71,7 @@ describe('AnnouncementDetailComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports : [ AnnouncementDetailComponent, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe, TranslatorModule ],
+            imports : [ AnnouncementDetailComponent, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe, TranslatorModule ],
             declarations : [],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

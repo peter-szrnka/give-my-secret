@@ -26,9 +26,9 @@ export const COPY_SECRET_ID_MESSAGE = "Secret ID copied to clipboard!";
     imports: [
       AngularMaterialModule,
       FormsModule,
-      RouterModule,
       NavBackComponent,
       MomentPipe,
+      RouterModule,
       StatusToggleComponent,
       InformationMessageComponent,
       TranslatorModule
