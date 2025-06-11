@@ -1,5 +1,11 @@
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { inject, InjectionToken, Type } from '@angular/core';
-import { ActivatedRouteSnapshot, ResolveFn, Route, Routes } from '@angular/router';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { ActivatedRouteSnapshot, provideRouter, ResolveFn, Route, Routes } from '@angular/router';
+import { environment } from '../environments/environment';
+import { AuthInterceptor } from './common/interceptor/auth-interceptor';
+import { CsrfTokenInterceptor } from './common/interceptor/csrf-token-interceptor';
+import { MockInterceptor } from './common/interceptor/mock-interceptor';
 import { ROLE_GUARD } from './common/interceptor/role-guard';
 import { ROLE_ROUTE_MAP } from './common/utils/route-utils';
 import { AnnouncementDetailResolver } from './components/announcement/resolver/announcement-detail.resolver';
@@ -18,14 +24,8 @@ import { SecretListResolver } from './components/secret/resolver/secret-list.res
 import { SystemPropertyListResolver } from './components/system_property/resolver/system-property-list.resolver';
 import { UserDetailResolver } from './components/user/resolver/user-detail.resolver';
 import { UserListResolver } from './components/user/resolver/user-list.resolver';
-import { HomeComponent } from './components/home/home.component';
 
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
-
-/**
- * @author Peter Szrnka
- */
-export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
 
 const routeBuilderFn = (routePath: string, resolveKey: string, componentLoader: any, resolver: Type<any>): Route => {
   return {
@@ -56,7 +56,7 @@ export const routes: Routes = [
   { path: 'verify', loadComponent: () => import('./components/verify/verify.component').then(c => c.VerifyComponent) },
   { path: 'password_reset', loadComponent: () => import('./components/password_reset/request-password-reset.component').then(c => c.RequestPasswordResetComponent) },
   { path: 'about', loadComponent: () => import('./components/about/about.component').then(c => c.AboutComponent) },
-  { path: 'help', loadComponent: () => import('./components/help/help.compontent').then(c => c.HelpComponent), resolve: { 'data': (snapshot: ActivatedRouteSnapshot) => inject(ErrorCodeResolver).resolve(snapshot) }  },
+  { path: 'help', loadComponent: () => import('./components/help/help.compontent').then(c => c.HelpComponent), resolve: { 'data': (snapshot: ActivatedRouteSnapshot) => inject(ErrorCodeResolver).resolve(snapshot) } },
 
   // Secured components
   { path: '', loadComponent: () => import('./components/home/home.component').then(c => c.HomeComponent), pathMatch: 'full', data: { 'roles': ROLES_ALL } },
@@ -71,7 +71,7 @@ export const routes: Routes = [
 
   // Admin functions
   listRouteBuilderFn('user', import('./components/user/user-list.component').then(c => c.UserListComponent), UserListResolver),
-  detailRouteBuilderFn('user',  import('./components/user/user-detail.component').then(c => c.UserDetailComponent), UserDetailResolver),
+  detailRouteBuilderFn('user', import('./components/user/user-detail.component').then(c => c.UserDetailComponent), UserDetailResolver),
   listRouteBuilderFn('event', import('./components/event/event-list.component').then(c => c.EventListComponent), EventListResolver),
   listRouteBuilderFn('announcement', import('./components/announcement/announcement-list.component').then(c => c.AnnouncementListComponent), AnnouncementListResolver),
   detailRouteBuilderFn('announcement', import('./components/announcement/announcement-detail.component').then(c => c.AnnouncementDetailComponent), AnnouncementDetailResolver),
@@ -83,5 +83,26 @@ export const routes: Routes = [
   // Common functions
   { path: 'messages', loadComponent: () => import('./components/messages/message-list.component').then(c => c.MessageListComponent) },
   // All other unknown routes
-  {path: '**', redirectTo: ''},
+  { path: '**', redirectTo: '' },
 ];
+
+/**
+ * @author Peter Szrnka
+ */
+export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
+
+/**
+ * @author Peter Szrnka
+ */
+export const APP_CONFIG = {
+  providers: [
+    provideRouter(routes/*, withDebugTracing()*/),
+    //importProvidersFrom(PreloadAllModules),
+    { provide: ENV_CONFIG, useValue: environment },
+    { provide: HTTP_INTERCEPTORS, useClass: CsrfTokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: MockInterceptor, multi: true },
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
+};
