@@ -4,10 +4,10 @@ LABEL maintainer="Peter Szrnka"
 ARG JAR_FILE=target/gms-app.jar
 COPY ${JAR_FILE} gms-app.jar
 
-COPY entrypoint.sh entrypoint.sh
-RUN chmod +x entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-ENTRYPOINT ["entrypoint.sh", "java","-jar","gms-app.jar"]
+ENTRYPOINT ["/entrypoint.sh", "java","-jar","gms-app.jar"]
 
 EXPOSE 8080
 EXPOSE 8443
