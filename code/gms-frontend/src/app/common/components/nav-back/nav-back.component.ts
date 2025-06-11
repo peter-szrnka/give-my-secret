@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AngularMaterialModule } from '../../../angular-material-module';
 import { NavButtonVisibilityPipe } from '../pipes/nav-button-visibility.pipe';
 import { TranslatorModule } from '../pipes/translator/translator.module';
@@ -13,7 +13,7 @@ import { ButtonConfig } from './button-config';
     imports: [
         AngularMaterialModule,
         NavButtonVisibilityPipe,
-        RouterLink,
+        RouterModule,
         TranslatorModule
     ],
     selector: 'nav-back',

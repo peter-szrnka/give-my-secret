@@ -8,7 +8,7 @@ import { ApiKeyService } from "../service/apikey-service";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class ApiKeyDetailResolver extends DetailDataResolver<ApiKey, ApiKeyService> {
 
     constructor(sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : ApiKeyService) {

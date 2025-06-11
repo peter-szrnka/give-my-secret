@@ -1,7 +1,10 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, NavigationExtras, Router, RouterModule } from "@angular/router";
 import { catchError, takeUntil } from "rxjs";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { DialogService } from "../../common/service/dialog-service";
@@ -14,7 +17,8 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 @Component({
     selector: 'login',
     templateUrl: './login.component.html',
-    standalone: false
+    standalone: true,
+    imports: [TranslatorModule, RouterModule, AngularMaterialModule, FormsModule]
 })
 export class LoginComponent extends BaseLoginComponent {
 
@@ -32,7 +36,7 @@ export class LoginComponent extends BaseLoginComponent {
         protected override sharedDataService: SharedDataService,
         protected override splashScreenStateService: SplashScreenStateService,
         protected override dialogService: DialogService) {
-            super(route, sharedDataService, dialogService, splashScreenStateService)
+        super(route, sharedDataService, dialogService, splashScreenStateService)
     }
 
     login(): void {
@@ -41,7 +45,7 @@ export class LoginComponent extends BaseLoginComponent {
 
         this.authService.login(this.formModel)
             .pipe(catchError((err) => this.handleError(err)), takeUntil(this.destroy$))
-            .subscribe((response : LoginResponse) => {
+            .subscribe((response: LoginResponse) => {
                 this.loginAttempt = false;
                 this.splashScreenStateService.stop();
                 if (response === null) {
@@ -52,12 +56,12 @@ export class LoginComponent extends BaseLoginComponent {
                 if (response.phase === AuthenticationPhase.MFA_REQUIRED) {
                     const navigationExtras: NavigationExtras = {
                         state: {
-                          username: response.currentUser.username
+                            username: response.currentUser.username
                         },
                         queryParams: {
                             previousUrl: this.route.snapshot.queryParams['previousUrl'] ?? ''
                         }
-                      };
+                    };
 
                     this.router.navigate(['/verify'], navigationExtras);
                     return;

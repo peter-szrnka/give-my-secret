@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslatorModule } from '../../common/components/pipes/translator/translator.module';
 import { SharedDataService } from '../../common/service/shared-data-service';
 import { NavMenuComponent } from './nav-menu.component';
-import { ServiceModule } from '../../common/service/service-module';
 
 /**
  * @author Peter Szrnka
@@ -16,7 +15,7 @@ describe('NavMenuComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [TranslatorModule, ServiceModule],
+            imports: [TranslatorModule],
             declarations : [NavMenuComponent],
             providers: [
                 { provide : SharedDataService, useValue : sharedDataService }

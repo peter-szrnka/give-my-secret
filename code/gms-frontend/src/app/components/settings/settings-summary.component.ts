@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { takeUntil } from "rxjs";
 import { environment } from "../../../environments/environment";
@@ -9,6 +9,10 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { getErrorMessage } from "../../common/utils/error-utils";
 import { UserService } from "../user/service/user-service";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { AngularMaterialModule } from "../../angular-material-module";
+import { FormsModule } from "@angular/forms";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 
 export interface PasswordSettings {
   oldCredential: string | undefined,
@@ -22,7 +26,9 @@ export interface PasswordSettings {
 @Component({
     selector: 'settings-summary-component',
     templateUrl: './settings-summary.component.html',
-    standalone: false
+    standalone: true,
+    imports: [AngularMaterialModule, FormsModule, InformationMessageComponent, TranslatorModule],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SettingsSummaryComponent extends BaseComponent implements OnInit {
 

@@ -7,7 +7,7 @@ import { SharedDataService } from "../service/shared-data-service";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthInterceptor implements HttpInterceptor {
     
     constructor(private readonly sharedData : SharedDataService) { }

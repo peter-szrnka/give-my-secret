@@ -1,13 +1,14 @@
-import { CUSTOM_ELEMENTS_SCHEMA, EventEmitter, NO_ERRORS_SCHEMA } from "@angular/core";
+import { Location } from "@angular/common";
+import { EventEmitter } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
-import { Observable, of, ReplaySubject } from "rxjs";
+import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
+import { Observable, of, ReplaySubject, Subject } from "rxjs";
 import { AppComponent } from "./app.component";
 import { SystemReadyData } from "./common/model/system-ready.model";
-import { User } from "./components/user/model/user.model";
 import { SharedDataService } from "./common/service/shared-data-service";
 import { SplashScreenStateService } from "./common/service/splash-screen-service";
-import { Location } from "@angular/common";
+import { User } from "./components/user/model/user.model";
+import { RouterTestingModule } from "@angular/router/testing";
 
 /**
  * @author Peter Szrnka
@@ -27,9 +28,9 @@ describe('AppComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            declarations : [AppComponent],
-            schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+            imports : [AppComponent, RouterTestingModule],
             providers: [
+                { provide: ActivatedRoute, useValue: { snapshot: { url: [ { path: 'test' } ] } } },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
                 { provide : Router, useValue : router },
@@ -69,6 +70,8 @@ describe('AppComponent', () => {
             systemReadySubject$ : mockSystemReadySubject,
             getUserInfo : jest.fn(),
             clearData : jest.fn(),
+            showLargeMenuEvent: new Subject<boolean>(),
+            messageCountUpdateEvent: new Subject<number>(),
             navigationChangeEvent: mockNavigationEmitter,
             resetAutomaticLogoutTimer: jest.fn()
         };
@@ -230,9 +233,9 @@ describe('AppComponent', () => {
         router.url = '/login';
         mockSubject.next(currentUser);
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
-        mockNavigationEmitter.emit('/apikey/list');
         configureTestBed();
-        
+        mockNavigationEmitter.emit('/apikey/list');
+
         // act & assert
         expect(component.isAdmin).toEqual(true);
         expect(splashScreenStateService.start).toHaveBeenCalled();

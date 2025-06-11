@@ -10,7 +10,7 @@ import { SystemPropertyList } from "../model/system-property-list.model";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class SystemPropertyService {
 
     constructor(protected http : HttpClient) {}

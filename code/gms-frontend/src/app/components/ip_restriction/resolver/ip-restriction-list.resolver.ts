@@ -10,7 +10,7 @@ import { IpRestrictionService } from "../service/ip-restriction.service";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class IpRestrictionListResolver extends ListResolver<IpRestriction, IpRestrictionList, IpRestrictionService> {
 
     constructor(sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : IpRestrictionService) {

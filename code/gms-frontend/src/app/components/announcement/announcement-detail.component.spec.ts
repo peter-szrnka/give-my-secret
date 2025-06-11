@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -14,7 +14,6 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { User } from "../user/model/user.model";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 import { AnnouncementService } from "./service/announcement-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -72,8 +71,8 @@ describe('AnnouncementDetailComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports : [ BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe, TranslatorModule ],
-            declarations : [AnnouncementDetailComponent],
+            imports : [ AnnouncementDetailComponent, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe, TranslatorModule ],
+            declarations : [],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue : router },

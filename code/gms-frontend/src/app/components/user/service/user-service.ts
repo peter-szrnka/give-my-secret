@@ -10,7 +10,7 @@ import { SaveServiceBase } from "../../../common/components/abstractions/service
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserService extends SaveServiceBase<UserData, UserDataList> {
 
     constructor(http : HttpClient) {

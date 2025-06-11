@@ -2,12 +2,12 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -15,7 +15,6 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { ApiKeyDetailComponent } from "./apikey-detail.component";
 import { ApiKey } from "./model/apikey.model";
 import { ApiKeyService } from "./service/apikey-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -33,8 +32,7 @@ describe('ApiKeyDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
-            declarations : [ApiKeyDetailComponent],
+            imports : [ApiKeyDetailComponent,RouterTestingModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue : router},

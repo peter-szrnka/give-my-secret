@@ -1,14 +1,12 @@
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { RouterModule } from "@angular/router";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { AppRoutingModule } from "../../app-routing.module";
 import { AutomaticLogoutComponent } from "../../common/components/automatic-logout/automatic-logout.component";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SplashComponent } from "../../common/components/splash/splash.component";
 import { NavMenuModule } from "../menu/nav-menu.module";
 import { HeaderComponent } from "./header.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 
 /**
  * @author Peter Szrnka
@@ -19,10 +17,8 @@ import { TranslatorModule } from "../../common/components/pipes/translator/trans
     exports: [HeaderComponent], 
     imports: [
         AngularMaterialModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        AppRoutingModule,
         NavMenuModule,
+        RouterModule,
         AutomaticLogoutComponent,
         SplashComponent,
         TranslatorModule

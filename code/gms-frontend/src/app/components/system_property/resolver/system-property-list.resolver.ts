@@ -14,7 +14,7 @@ const EMPTY_SYSTEM_PROPERTY_LIST: SystemPropertyList = {
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class SystemPropertyListResolver {
 
     constructor(protected sharedData : SharedDataService, protected splashScreenStateService: SplashScreenStateService, protected service : SystemPropertyService) {

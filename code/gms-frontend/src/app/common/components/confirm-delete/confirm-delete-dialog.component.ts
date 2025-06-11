@@ -1,5 +1,7 @@
 import { Component, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { AngularMaterialModule } from "../../../angular-material-module";
+import { TranslatorModule } from "../pipes/translator/translator.module";
 
 const DEFAULT_DELETE_MESSAGE = 'dialog.defaultDeleteMessage';
 
@@ -15,7 +17,7 @@ export interface ConfirmDeleteDialogData {
 @Component({
     selector: 'confirm-delete-dialog',
     templateUrl: './confirm-delete-dialog.component.html',
-    standalone: false
+    imports: [AngularMaterialModule, TranslatorModule]
 })
 export class ConfirmDeleteDialog {
 

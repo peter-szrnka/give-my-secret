@@ -1,9 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Component, ElementRef, ViewChild } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { takeUntil } from "rxjs";
 import { environment } from "../../../environments/environment";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseDetailComponent } from "../../common/components/abstractions/component/base-detail.component";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -12,7 +19,6 @@ import { getErrorMessage } from "../../common/utils/error-utils";
 import { KeystoreAlias } from "./model/keystore-alias.model";
 import { Keystore, PAGE_CONFIG_KEYSTORE } from "./model/keystore.model";
 import { KeystoreService } from "./service/keystore-service";
-import { takeUntil } from "rxjs";
 
 const ENABLED_ALGORITHMS : string[] = [
   "MD2WITHRSA",
@@ -42,7 +48,14 @@ const ENABLED_ALGORITHMS : string[] = [
     selector: 'keystore-detail',
     templateUrl: './keystore-detail.component.html',
     styleUrls: ['./keystore-detail.component.scss'],
-    standalone: false
+    imports: [
+      AngularMaterialModule,
+      FormsModule,
+      NavBackComponent,
+      MomentPipe,
+      TranslatorModule,
+      InformationMessageComponent
+  ]
 })
 export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, KeystoreService> {
 

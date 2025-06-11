@@ -7,7 +7,7 @@ import { Observable } from "rxjs";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CsrfTokenInterceptor implements HttpInterceptor {
 
     constructor(@Inject(DOCUMENT) private readonly document: Document) {}

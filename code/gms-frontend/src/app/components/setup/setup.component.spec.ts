@@ -3,7 +3,6 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
-import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable, of, throwError } from "rxjs";
@@ -14,6 +13,8 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { WINDOW_TOKEN } from "../../window.provider";
 import { SetupService } from "./service/setup-service";
 import { EMPTY_ADMIN_DATA, SetupComponent } from "./setup.component";
+import { InformationService } from "../../common/service/info-service";
+import { VmOption } from "../../common/model/common.model";
 
 /**
  * @author Peter Szrnka
@@ -29,11 +30,11 @@ describe('SetupComponent', () => {
     let dialog : any;
     let setupService : any;
     let mockWindow : any;
+    let infoService : any;
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, FormsModule, BrowserModule, BrowserAnimationsModule, TranslatorModule ],
-            declarations : [SetupComponent],
+            imports : [ SetupComponent, AngularMaterialModule, FormsModule, BrowserAnimationsModule, TranslatorModule ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : WINDOW_TOKEN, useValue : mockWindow },
@@ -41,7 +42,8 @@ describe('SetupComponent', () => {
                 { provide : ActivatedRoute, useValue: route },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
                 { provide : MatDialog, useValue : dialog },
-                { provide : SetupService, useValue : setupService }
+                { provide : SetupService, useValue : setupService },
+                { provide : InformationService, useValue: infoService }
             ]
         }).compileComponents();
 
@@ -81,6 +83,10 @@ describe('SetupComponent', () => {
             saveSystemProperties: jest.fn().mockReturnValue(of({ success : true })),
             saveOrganizationData : jest.fn().mockReturnValue(of({ success : true })),
             completeSetup : jest.fn().mockReturnValue(of({ success : true }))
+        };
+
+        infoService = {
+            getVmOptions: jest.fn().mockReturnValue(of([{ key: 'testKey', value: 'value1' } as VmOption]))
         };
     });
 

@@ -8,7 +8,7 @@ import { HomeData } from "../model/home-data.model";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class HomeService {
     
     constructor(private readonly http : HttpClient) {

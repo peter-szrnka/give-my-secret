@@ -11,7 +11,7 @@ import { Event } from "../model/event.model";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class EventService extends ServiceBase<Event, EventList> {
 
     constructor(http : HttpClient) {

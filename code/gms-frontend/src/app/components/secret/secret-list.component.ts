@@ -1,6 +1,13 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseListComponent } from "../../common/components/abstractions/component/base-list.component";
+import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
+import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
+import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
+import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { PageConfig } from "../../common/model/common.model";
 import { ClipboardService } from "../../common/service/clipboard-service";
 import { DialogService } from "../../common/service/dialog-service";
@@ -16,7 +23,16 @@ export const COPY_SECRET_ID_MESSAGE = "Secret ID copied to clipboard!";
 @Component({
     selector: 'secret-list',
     templateUrl: './secret-list.component.html',
-    standalone: false
+    imports: [
+      AngularMaterialModule,
+      FormsModule,
+      NavBackComponent,
+      MomentPipe,
+      RouterModule,
+      StatusToggleComponent,
+      InformationMessageComponent,
+      TranslatorModule
+  ]
 })
 export class SecretListComponent extends BaseListComponent<Secret, SecretService> {
     secretColumns: string[] = ['id', 'secretId', 'status', 'lastUpdated', 'lastRotated', 'rotationPeriod', 'operations'];

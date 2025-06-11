@@ -13,7 +13,7 @@ import { ServiceBase } from "../../../common/components/abstractions/service/ser
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class KeystoreService extends ServiceBase<Keystore, KeystoreList> {
 
     constructor(http : HttpClient) {

@@ -16,8 +16,7 @@ describe('ConfirmDeleteDialog', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ MatDialogModule, TranslatorModule ],
-            declarations : [ConfirmDeleteDialog],
+            imports : [ConfirmDeleteDialog, MatDialogModule, TranslatorModule ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : MatDialogRef, useValue : {

@@ -14,7 +14,6 @@ import { BaseComponent } from "../abstractions/component/base.component";
 @Component({
     selector: 'vm-options',
     templateUrl: './vm-options.component.html',
-    standalone: true,
     imports: [
         AngularMaterialModule,
         ReactiveFormsModule,

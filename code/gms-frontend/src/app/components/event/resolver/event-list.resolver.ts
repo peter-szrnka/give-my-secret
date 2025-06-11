@@ -10,7 +10,7 @@ import { PageConfig } from "../../../common/model/common.model";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class EventListResolver extends ListResolver<Event, EventList, EventService> {
 
     constructor(sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : EventService) {

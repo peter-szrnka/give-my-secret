@@ -10,7 +10,7 @@ import { PageConfig } from "../../../common/model/common.model";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AnnouncementListResolver extends ListResolver<Announcement, AnnouncementList, AnnouncementService> {
 
     constructor(sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : AnnouncementService) {

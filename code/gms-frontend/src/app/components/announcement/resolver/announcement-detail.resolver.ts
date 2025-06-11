@@ -8,7 +8,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AnnouncementDetailResolver extends DetailDataResolver<Announcement, AnnouncementService> {
 
     constructor(

@@ -20,8 +20,7 @@ describe('InfoDialog', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports : [MatDialogModule, TranslatorModule ],
-            declarations : [InfoDialog],
+            imports : [InfoDialog,MatDialogModule, TranslatorModule ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : MatDialogRef, useValue : {

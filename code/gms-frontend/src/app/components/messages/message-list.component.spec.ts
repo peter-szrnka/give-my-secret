@@ -12,6 +12,7 @@ import { MessageListComponent, SelectionStatus } from "./message-list.component"
 import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { ActivatedRoute } from "@angular/router";
 
 /**
  * @author Peter Szrnka
@@ -23,13 +24,21 @@ describe('MessageListComponent', () => {
     let sharedDataService : any;
     let service : any;
     let dialogService : any;
+    const activatedRouteMock = {
+        snapshot: {
+          queryParams: {
+            previousUrl: {}
+          }
+        }
+      };
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, NoopAnimationsModule, MomentPipe, TranslatorModule ],
-            declarations : [MessageListComponent],
+            imports : [ MessageListComponent, AngularMaterialModule, NoopAnimationsModule, MomentPipe, TranslatorModule ],
+            declarations : [],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
             providers: [
+                { provide: ActivatedRoute, useValue: activatedRouteMock },
                 { provide : MessageService, useValue : service },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : DialogService, useValue : dialogService }

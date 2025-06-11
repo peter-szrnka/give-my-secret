@@ -12,7 +12,7 @@ import { SecretValueInput } from "../model/secret-value-input";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class SecretService extends SaveServiceBase<Secret, SecretList> {
 
     constructor(http : HttpClient,) {

@@ -8,7 +8,7 @@ import { IpRestrictionService } from "../service/ip-restriction.service";
 /**
  * @author Peter Szrnka
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class IpRestrictionDetailResolver extends DetailDataResolver<IpRestriction, IpRestrictionService> {
 
     constructor(sharedData : SharedDataService, protected override splashScreenStateService: SplashScreenStateService, protected override service : IpRestrictionService) {

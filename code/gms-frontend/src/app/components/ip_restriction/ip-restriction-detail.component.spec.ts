@@ -7,8 +7,6 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { DialogData } from "../../common/components/info-dialog/dialog-data.model";
-import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
@@ -35,8 +33,7 @@ describe('IprestrictionDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
-            declarations : [IprestrictionDetailComponent],
+            imports : [IprestrictionDetailComponent, RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue : router},
