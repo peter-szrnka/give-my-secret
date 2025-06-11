@@ -19,8 +19,12 @@ import { SystemPropertyListResolver } from './components/system_property/resolve
 import { UserDetailResolver } from './components/user/resolver/user-detail.resolver';
 import { UserListResolver } from './components/user/resolver/user-list.resolver';
 import { HomeComponent } from './components/home/home.component';
+
 const ROLES_ALL = ['ROLE_USER', 'ROLE_VIEWER', 'ROLE_ADMIN'];
 
+/**
+ * @author Peter Szrnka
+ */
 export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
 
 const routeBuilderFn = (routePath: string, resolveKey: string, componentLoader: any, resolver: Type<any>): Route => {
@@ -42,6 +46,9 @@ const detailRouteBuilderFn = (scope: string, componentLoader: any, resolver: Typ
   return routeBuilderFn(scope + '/:id', 'entity', componentLoader, resolver);
 };
 
+/**
+ * @author Peter Szrnka
+ */
 export const routes: Routes = [
   { path: 'error', loadComponent: () => import('./components/error/error.component').then(c => c.ErrorComponent) },
   { path: 'setup', loadComponent: () => import('./components/setup/setup.component').then(c => c.SetupComponent) },
