@@ -1,11 +1,5 @@
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { inject, InjectionToken, Type } from '@angular/core';
-import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
-import { ActivatedRouteSnapshot, provideRouter, ResolveFn, Route, Routes } from '@angular/router';
-import { environment } from '../environments/environment';
-import { AuthInterceptor } from './common/interceptor/auth-interceptor';
-import { CsrfTokenInterceptor } from './common/interceptor/csrf-token-interceptor';
-import { MockInterceptor } from './common/interceptor/mock-interceptor';
+import { ActivatedRouteSnapshot, ResolveFn, Route, Routes } from '@angular/router';
 import { ROLE_GUARD } from './common/interceptor/role-guard';
 import { ROLE_ROUTE_MAP } from './common/utils/route-utils';
 import { AnnouncementDetailResolver } from './components/announcement/resolver/announcement-detail.resolver';
@@ -90,19 +84,3 @@ export const routes: Routes = [
  * @author Peter Szrnka
  */
 export const ENV_CONFIG = new InjectionToken('gmsEnvConfig');
-
-/**
- * @author Peter Szrnka
- */
-export const APP_CONFIG = {
-  providers: [
-    provideRouter(routes/*, withDebugTracing()*/),
-    //importProvidersFrom(PreloadAllModules),
-    { provide: ENV_CONFIG, useValue: environment },
-    { provide: HTTP_INTERCEPTORS, useClass: CsrfTokenInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: MockInterceptor, multi: true },
-    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
-    provideHttpClient(withInterceptorsFromDi())
-  ]
-};
