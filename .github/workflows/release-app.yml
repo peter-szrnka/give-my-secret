@@ -23,7 +23,7 @@ jobs:
   setup_new_version:
     name: Update version to ${{ github.event.inputs.releaseVersion }}
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
@@ -55,7 +55,7 @@ jobs:
   analize_backend:
     name: Backend code analysis
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
     runs-on: ubuntu-latest
     needs: [setup_new_version]
