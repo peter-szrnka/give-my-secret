@@ -1,6 +1,6 @@
 <div>
   <mat-list role="list">
-    <mat-list-item class="side-menu-list-item" [routerLink]="'/'">
+    <mat-list-item class="side-menu-list-item" [routerLink]="'/'" role="listitem">
       <mat-icon matListIcon>home</mat-icon>
       @if (showTexts) {
         <span matLine (click)="handleClick()"> {{ 'sidemenu.home' | translate }} </span>
