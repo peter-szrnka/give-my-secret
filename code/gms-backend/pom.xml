@@ -13,9 +13,9 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <backend.buildname>gms-app</backend.buildname>
-        <spring-core.version>6.1.14</spring-core.version>
-        <spring-security-core.version>6.3.5</spring-security-core.version>
-        <spring-boot.version>3.3.5</spring-boot.version>
+        <spring-core.version>6.2.12</spring-core.version>
+        <spring-security-core.version>6.5.6</spring-security-core.version>
+        <spring-boot.version>3.5.7</spring-boot.version>
         <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
         <flyway.version>10.17.0</flyway.version>
         <flyway-database.version>10.14.0</flyway-database.version>
@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
-            <version>6.4.4</version>
+            <version>6.5.6</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -251,7 +251,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.5.13</version>
+            <version>1.5.20</version>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
@@ -489,7 +489,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.26.1</version>
+            <version>1.28.0</version>
         </dependency>
     </dependencies>
 
@@ -696,7 +696,7 @@
                             <dependency>
                                 <groupId>org.pitest</groupId>
                                 <artifactId>pitest-junit5-plugin</artifactId>
-                                <version>1.2.1</version>
+                                <version>1.2.3</version>
                             </dependency>
                         </dependencies>
                         <configuration>
