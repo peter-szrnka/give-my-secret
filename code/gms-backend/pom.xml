@@ -19,7 +19,7 @@
         <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
         <flyway.version>10.17.0</flyway.version>
         <flyway-database.version>10.14.0</flyway-database.version>
-        <bouncycastle.version>1.78.1</bouncycastle.version>
+        <bouncycastle.version>1.82</bouncycastle.version>
         <jsonwebtoken.version>0.11.1</jsonwebtoken.version>
         <!-- Testing & code quality -->
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
