@@ -14,7 +14,7 @@
     "declaration": false,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "strictPropertyInitialization": false,
     "target": "ES2022",
