@@ -1,4 +1,4 @@
-import { enableProdMode } from '@angular/core';
+import { enableProdMode, provideZoneChangeDetection } from '@angular/core';
 
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
@@ -39,4 +39,4 @@ if (environment.production) {
 /**
  * @author Peter Szrnka
  */
-bootstrapApplication(AppComponent, APP_CONFIG);
+bootstrapApplication(AppComponent, {...APP_CONFIG, providers: [provideZoneChangeDetection(), ...APP_CONFIG.providers]});
