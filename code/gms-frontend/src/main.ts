@@ -28,7 +28,8 @@ const APP_CONFIG = {
     { provide: HTTP_INTERCEPTORS, useClass: MockInterceptor, multi: true },
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
     provideHttpClient(withInterceptorsFromDi()),
-    provideAnimations()
+    provideAnimations(),
+    provideZoneChangeDetection()
   ]
 };
 
@@ -39,4 +40,4 @@ if (environment.production) {
 /**
  * @author Peter Szrnka
  */
-bootstrapApplication(AppComponent, {...APP_CONFIG, providers: [provideZoneChangeDetection(), ...APP_CONFIG.providers]});
+bootstrapApplication(AppComponent, APP_CONFIG);
