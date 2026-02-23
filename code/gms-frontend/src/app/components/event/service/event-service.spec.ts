@@ -24,7 +24,7 @@ describe("EventService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [provideHttpClientTesting],
+        imports: [provideHttpClientTesting()],
         providers : [EventService]
       });
       service = TestBed.inject(EventService);

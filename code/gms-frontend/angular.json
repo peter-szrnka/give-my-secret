@@ -168,7 +168,6 @@
           "options": {
             "runner": "vitest",
             "runnerConfig": "vitest.config.ts",
-            "setupFiles": ["src/test-setup.ts"],
             "include": [
               "**/*.spec.ts"
             ],

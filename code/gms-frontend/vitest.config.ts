@@ -8,11 +8,6 @@ export default defineConfig({
     setupFiles: ["./src/test-setup.ts"],
     pool: 'threads',
     isolate: false,
-    poolOptions: {
-      threads: {
-        singleThread: true,
-      },
-    },
     reporters: [
         "default"
     ]

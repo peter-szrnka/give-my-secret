@@ -1,4 +1,4 @@
-import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { ApiTestingService } from "./api-testing-service";
@@ -13,7 +13,7 @@ describe("ApiTestingService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [provideHttpClientTesting()],
         providers : [ApiTestingService]
       });
       service = TestBed.inject(ApiTestingService);
