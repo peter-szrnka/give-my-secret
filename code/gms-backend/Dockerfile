@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jdk-alpine
 LABEL maintainer="Peter Szrnka"
 
 ARG JAR_FILE=target/gms-app.jar
