@@ -15,6 +15,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { KeystoreDetailComponent } from "./keystore-detail.component";
 import { KeystoreAlias } from "./model/keystore-alias.model";
 import { KeystoreService } from "./service/keystore-service";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -59,11 +60,11 @@ describe('KeystoreDetailComponent', () => {
         };
 
         sharedDataService = {
-            refreshCurrentUserInfo: jest.fn()
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any)
         };
         
         activatedRoute = class {
@@ -82,22 +83,22 @@ describe('KeystoreDetailComponent', () => {
         };
 
         service = {
-            save : jest.fn().mockReturnValue(of({ entityId: 1 } as IEntitySaveResponseDto))
+            save : vi.fn().mockReturnValue(of({ entityId: 1 } as IEntitySaveResponseDto))
         };
 
         router = {
-            navigate : jest.fn()
+            navigate : vi.fn()
         };
 
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
     });
 
     it('Should save keystore', () => {
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
         };
         
         mockAliases = [
@@ -118,7 +119,7 @@ describe('KeystoreDetailComponent', () => {
 
     it('Should save new generated keystore', () => {
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
         };
         
         mockAliases = [
@@ -142,10 +143,10 @@ describe('KeystoreDetailComponent', () => {
 
     it('Should fail on save keystore | HTTP error', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+            save : vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
         };
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
         };
         configureTestBed();
 
@@ -160,10 +161,10 @@ describe('KeystoreDetailComponent', () => {
 
     it('Should fail on save keystore | Unknown error', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => new Error("OOPS!")))
+            save : vi.fn().mockReturnValue(throwError(() => new Error("OOPS!")))
         };
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(false) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(false) })
         };
         configureTestBed();
 

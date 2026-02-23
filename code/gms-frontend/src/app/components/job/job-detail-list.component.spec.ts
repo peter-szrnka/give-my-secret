@@ -13,6 +13,7 @@ import { TranslatorService } from "../../common/service/translator-service";
 import { JobDetailListComponent } from "./job-detail-list.component";
 import { JobDetail } from "./model/job-detail.model";
 import { JobDetailService } from "./service/job-detail.service";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -51,8 +52,8 @@ describe('JobDetailListComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigateByUrl: jest.fn().mockResolvedValue(true),
-            navigate: jest.fn()
+            navigateByUrl: vi.fn().mockResolvedValue(true),
+            navigate: vi.fn()
         };
         activatedRoute = class {
             data : Data = of({
@@ -70,13 +71,13 @@ describe('JobDetailListComponent', () => {
         };
 
         jobDetailService = {
-            startManualExecution : jest.fn().mockReturnValue(of({}))
+            startManualExecution : vi.fn().mockReturnValue(of({}))
         };
         snackbar = {
-            open : jest.fn()
+            open : vi.fn()
         };
         translatorService = {
-            translate : jest.fn().mockReturnValue('Job executed successfully')
+            translate : vi.fn().mockReturnValue('Job executed successfully')
         };
     });
 
@@ -117,7 +118,7 @@ describe('JobDetailListComponent', () => {
     });
 
     it('executeJob when jobUrl is invalid then handle error', () => {
-        jobDetailService.startManualExecution = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
+        jobDetailService.startManualExecution = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
         configureTestBed();
 
         component.executeJob('invalid_job_url');

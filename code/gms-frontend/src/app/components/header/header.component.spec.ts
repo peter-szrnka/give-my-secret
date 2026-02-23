@@ -9,6 +9,7 @@ import { MessageService } from "../messages/service/message-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { HeaderComponent } from "./header.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -53,16 +54,16 @@ describe('HeaderComponent', () => {
         mockSubject = new ReplaySubject<any>();
 
         sharedDataService = {
-            logout: jest.fn(),
+            logout: vi.fn(),
             messageCountUpdateEvent: eventEmitter,
             showLargeMenuEvent: menuEmitter,
             systemReadySubject$: mockSystemReadySubject,
             userSubject$: mockSubject,
-            getAllUnread : jest.fn()
+            getAllUnread : vi.fn()
         };
 
         messageService = {
-            getAllUnread: jest.fn().mockReturnValue(of(1))
+            getAllUnread: vi.fn().mockReturnValue(of(1))
         };
 
         TestBed.configureTestingModule({

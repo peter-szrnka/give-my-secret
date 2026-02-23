@@ -12,6 +12,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { ApiKeyListComponent } from "./apikey-list.component";
 import { ApiKeyService } from "./service/apikey-service";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -52,17 +53,17 @@ describe('ApiKeyListComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn(),
-            navigateByUrl : jest.fn().mockResolvedValue(true)
+            navigate : vi.fn(),
+            navigateByUrl : vi.fn().mockResolvedValue(true)
         };
 
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo : vi.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialogService = {
-            openConfirmDeleteDialog : jest.fn()
+            openConfirmDeleteDialog : vi.fn()
         }
         
         activatedRoute = class {
@@ -90,12 +91,12 @@ describe('ApiKeyListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK")),
-            toggle : jest.fn().mockReturnValue(of("OK"))
+            delete : vi.fn().mockReturnValue(of("OK")),
+            toggle : vi.fn().mockReturnValue(of("OK"))
         };
 
         clipboardService = {
-            copyValue : jest.fn()
+            copyValue : vi.fn()
         };
     });
 
@@ -119,7 +120,7 @@ describe('ApiKeyListComponent', () => {
     });
 
     it('Should return empty table | Invalid user', () => {
-        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
+        vi.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         configureTestBed();
 
         expect(component).toBeTruthy();
@@ -131,8 +132,8 @@ describe('ApiKeyListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
+        const mockDialogRef : any = { afterClosed : vi.fn().mockReturnValue(of(true)) };
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
 
         component.promptDelete(1);
 
@@ -145,8 +146,8 @@ describe('ApiKeyListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
+        const mockDialogRef : any = { afterClosed : vi.fn().mockReturnValue(of(false)) };
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
 
         component.promptDelete(1);
 

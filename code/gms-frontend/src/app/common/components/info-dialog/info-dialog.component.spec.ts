@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/materia
 import { TranslatorModule } from "../pipes/translator/translator.module";
 import { InfoDialog } from "./info-dialog.component";
 import { DialogData } from "./dialog-data.model";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -24,7 +25,7 @@ describe('InfoDialog', () => {
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : MatDialogRef, useValue : {
-                    close : jest.fn()
+                    close : vi.fn()
                 } },
                 { provide : MAT_DIALOG_DATA, useValue : dialogData }
             ]

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
@@ -7,6 +7,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 import { SystemProperty } from "../model/system-property.model";
 import { SystemPropertyService } from "../service/system-property.service";
 import { SystemPropertyListResolver } from "./system-property-list.resolver";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -26,7 +27,7 @@ describe('SystemPropertyListResolver', () => {
     const configureTestBed = () => {
         TestBed.configureTestingModule({
             // add this to imports array
-            imports: [HttpClientTestingModule],
+            imports: [provideHttpClientTesting()],
             providers: [
                 SystemPropertyListResolver,
                 { provide: SplashScreenStateService, useValue: splashScreenStateService },
@@ -40,16 +41,16 @@ describe('SystemPropertyListResolver', () => {
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            list: jest.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
         };
 
         sharedData = {
-            clearData: jest.fn()
+            clearData: vi.fn()
         };
     })
 
@@ -82,8 +83,8 @@ describe('SystemPropertyListResolver', () => {
         resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+            expect(splashScreenStateService.start).toHaveBeenCalled();
+            expect(splashScreenStateService.stop).toHaveBeenCalled();
         });
 
         localStorage.removeItem('system_property_pageSize');
@@ -98,7 +99,7 @@ describe('SystemPropertyListResolver', () => {
         };
 
         service = {
-            list: jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
+            list: vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
         };
 
         configureTestBed();
@@ -107,8 +108,8 @@ describe('SystemPropertyListResolver', () => {
         resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+            expect(splashScreenStateService.start).toHaveBeenCalled();
+            expect(splashScreenStateService.stop).toHaveBeenCalled();
         });
     });
 });

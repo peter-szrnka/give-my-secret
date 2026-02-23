@@ -9,6 +9,7 @@ import { SharedDataService } from "./common/service/shared-data-service";
 import { SplashScreenStateService } from "./common/service/splash-screen-service";
 import { User } from "./components/user/model/user.model";
 import { RouterTestingModule } from "@angular/router/testing";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -51,7 +52,7 @@ describe('AppComponent', () => {
             new NavigationError(0, 'http://localhost:4200/login', new Error())
         ];
         router = {
-            navigate : jest.fn().mockReturnValue(of(true)),
+            navigate : vi.fn().mockReturnValue(of(true)),
             url: '',
             events: new Observable(observer => {
                 mockEvents.forEach(event => observer.next(event));
@@ -63,26 +64,26 @@ describe('AppComponent', () => {
         mockSystemReadySubject = new ReplaySubject<SystemReadyData>();
 
         sharedDataService = {
-            init : jest.fn(),
-            check : jest.fn(),
+            init : vi.fn(),
+            check : vi.fn(),
             userSubject$ : mockSubject,
             authMode : 'db',
             systemReadySubject$ : mockSystemReadySubject,
-            getUserInfo : jest.fn(),
-            clearData : jest.fn(),
+            getUserInfo : vi.fn(),
+            clearData : vi.fn(),
             showLargeMenuEvent: new Subject<boolean>(),
             messageCountUpdateEvent: new Subject<number>(),
             navigationChangeEvent: mockNavigationEmitter,
-            resetAutomaticLogoutTimer: jest.fn()
+            resetAutomaticLogoutTimer: vi.fn()
         };
 
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         mockLocation = {
-            path: jest.fn().mockReturnValue("/")
+            path: vi.fn().mockReturnValue("/")
         };
 
         localStorage.clear();
@@ -166,7 +167,7 @@ describe('AppComponent', () => {
     });
 
     it('No available user', () => {
-        sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
+        sharedDataService.getUserInfo = vi.fn().mockReturnValue(undefined);
         router.url = '/api_key/list';
         configureTestBed();
         mockSubject.next(undefined); 
@@ -180,9 +181,9 @@ describe('AppComponent', () => {
     });
 
     it('No available user and set previousUrl parameter', () => {
-        sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
+        sharedDataService.getUserInfo = vi.fn().mockReturnValue(undefined);
         router.url = '/api_key/list';
-        mockLocation.path = jest.fn().mockReturnValue("");
+        mockLocation.path = vi.fn().mockReturnValue("");
         configureTestBed();
         mockSubject.next(undefined); 
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
@@ -195,7 +196,7 @@ describe('AppComponent', () => {
     });
 
     it('should not log out', () => {
-        sharedDataService.getUserInfo = jest.fn().mockReturnValue(undefined);
+        sharedDataService.getUserInfo = vi.fn().mockReturnValue(undefined);
         configureTestBed();
         mockSubject.next(undefined);
         mockSystemReadySubject.next({ ready: false, status: 500, authMode : 'db', systemStatus: 'NEED_SETUP' });

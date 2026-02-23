@@ -12,6 +12,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { IpRestrictionListComponent } from "./ip-restriction-list.component";
 import { IpRestrictionService } from "./service/ip-restriction.service";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -50,17 +51,17 @@ describe('IpRestrictionListComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn(),
-            navigateByUrl : jest.fn().mockResolvedValue(true)
+            navigate : vi.fn(),
+            navigateByUrl : vi.fn().mockResolvedValue(true)
         };
 
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo : vi.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialogService = {
-            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) })
+            openConfirmDeleteDialog : vi.fn().mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) })
         };
         
         activatedRoute = class {
@@ -88,8 +89,8 @@ describe('IpRestrictionListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK")),
-            toggle : jest.fn().mockReturnValue(of("OK"))
+            delete : vi.fn().mockReturnValue(of("OK")),
+            toggle : vi.fn().mockReturnValue(of("OK"))
         };
     });
 
@@ -113,7 +114,7 @@ describe('IpRestrictionListComponent', () => {
     });
 
     it('Should return empty table | Invalid user', () => {
-        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
+        vi.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         configureTestBed();
 
         expect(component).toBeTruthy();
@@ -125,8 +126,8 @@ describe('IpRestrictionListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
+        const mockDialogRef : any = { afterClosed : vi.fn().mockReturnValue(of(true)) };
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
 
         component.promptDelete(1);
 
@@ -139,8 +140,8 @@ describe('IpRestrictionListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
+        const mockDialogRef : any = { afterClosed : vi.fn().mockReturnValue(of(false)) };
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
 
         component.promptDelete(1);
 

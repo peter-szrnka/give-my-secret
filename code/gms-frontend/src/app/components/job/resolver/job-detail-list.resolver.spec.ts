@@ -1,11 +1,12 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { of, throwError } from "rxjs";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { JobDetail } from "../model/job-detail.model";
 import { JobDetailService } from "../service/job-detail.service";
 import { JobDetailListResolver } from "./job-detail-list.resolver";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -19,7 +20,7 @@ describe('JobDetailListResolver', () => {
     const configureTestBed = () => {
         TestBed.configureTestingModule({
             // add this to imports array
-            imports: [HttpClientTestingModule],
+            imports: [provideHttpClientTesting()],
             providers: [
                 JobDetailListResolver,
                 { provide: SplashScreenStateService, useValue: splashScreenStateService },
@@ -42,12 +43,12 @@ describe('JobDetailListResolver', () => {
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            list: jest.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
         };
     })
 
@@ -67,7 +68,7 @@ describe('JobDetailListResolver', () => {
         };
 
         service = {
-            list: jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
+            list: vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
         };
 
         configureTestBed();
@@ -91,7 +92,7 @@ describe('JobDetailListResolver', () => {
             }
         };
         localStorage.setItem('apikey_pageSize', '27');
-        service.list = jest.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.list = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
         configureTestBed();
 
         // act & assert

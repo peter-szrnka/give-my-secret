@@ -14,6 +14,7 @@ import { User } from "../user/model/user.model";
 import { ApiTestingComponent } from "./api-testing.component";
 import { ApiTestingService } from "./service/api-testing-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -50,31 +51,31 @@ describe('ApiTestingComponent', () => {
 
     beforeEach(() => {
         sharedData = {
-            getUserInfo : jest.fn().mockResolvedValue({ id: 1, role: 'USER', username: 'test' } as User)
+            getUserInfo : vi.fn().mockResolvedValue({ id: 1, role: 'USER', username: 'test' } as User)
         };
 
         service = {
-            getSecretValue : jest.fn().mockImplementation(() : Observable<any> => {
+            getSecretValue : vi.fn().mockImplementation(() : Observable<any> => {
                 return of({ value : "my-secret-value" });
             })
         };
         dialogService = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () => of(true) })
         };
         splashScreenService = {
-            start : jest.fn(),
-            stop : jest.fn()
+            start : vi.fn(),
+            stop : vi.fn()
         };
         secureStorageService = {
-            getItem : jest.fn().mockImplementation((_username, key) => "apiKey" === key ? "test" : "secret1"),
-            setItem : jest.fn(),
-            getItemWithoutEncryption: jest.fn().mockReturnValue('en')
+            getItem : vi.fn().mockImplementation((_username, key) => "apiKey" === key ? "test" : "secret1"),
+            setItem : vi.fn(),
+            getItemWithoutEncryption: vi.fn().mockReturnValue('en')
         };
     });
 
     it('should return secret value with saved credentials', async() => {
         // arrange
-        sharedData.getUserInfo = jest.fn().mockResolvedValue(undefined);
+        sharedData.getUserInfo = vi.fn().mockResolvedValue(undefined);
         configTestBed();
 
         component.apiKey = "test";
@@ -117,7 +118,7 @@ describe('ApiTestingComponent', () => {
     it('should throw error', () => {
         // arrange
         service = {
-            getSecretValue : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+            getSecretValue : vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
         };
         configTestBed();
 

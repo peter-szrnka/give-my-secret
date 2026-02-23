@@ -1,12 +1,12 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { EMPTY, of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { Announcement } from "../model/announcement.model";
 import { AnnouncementService } from "../service/announcement-service";
 import { AnnouncementListResolver } from "./announcement-list.resolver";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -42,17 +42,17 @@ describe('AnnouncementListResolver', () => {
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            list: jest.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
         };
 
         sharedData = {
-            clearData: jest.fn(),
-            clearDataAndReturn: jest.fn().mockReturnValue(of(EMPTY))
+            clearData: vi.fn(),
+            clearDataAndReturn: vi.fn().mockReturnValue(of(EMPTY))
         };
     });
 
@@ -69,15 +69,15 @@ describe('AnnouncementListResolver', () => {
             "queryParams": {}
         };
         localStorage.setItem('announcement_pageSize', '27');
-        service.list = jest.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.list = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
         configureTestBed();
 
         // act & assert
         resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+            expect(splashScreenStateService.start).toHaveBeenCalled();
+            expect(splashScreenStateService.stop).toHaveBeenCalled();
         });
         localStorage.clear();
     });
@@ -96,8 +96,8 @@ describe('AnnouncementListResolver', () => {
         resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+            expect(splashScreenStateService.start).toHaveBeenCalled();
+            expect(splashScreenStateService.stop).toHaveBeenCalled();
         });
     });
 });

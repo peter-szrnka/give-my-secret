@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { ClipboardService } from "./clipboard-service";
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { vi } from "vitest";
 
 describe('ClipboardService', () => {
     let service : ClipboardService;
@@ -22,14 +23,14 @@ describe('ClipboardService', () => {
   
     it.each([true, false]) ('Should copy value', (input) => {
         const pendingCopy : any = {
-            copy : jest.fn().mockImplementation(() => input),
-            destroy : jest.fn()
+            copy : vi.fn().mockImplementation(() => input),
+            destroy : vi.fn()
         };
         snackbar = {
-            open : jest.fn()
+            open : vi.fn()
         };
         clipboard = {
-            beginCopy : jest.fn().mockReturnValue(pendingCopy)
+            beginCopy : vi.fn().mockReturnValue(pendingCopy)
         };
         configureTestBed();
 

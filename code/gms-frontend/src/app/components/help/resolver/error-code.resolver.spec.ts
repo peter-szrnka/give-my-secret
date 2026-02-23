@@ -1,11 +1,12 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { of, throwError } from "rxjs";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { ErrorCodeList } from "../model/error-code-list.model";
 import { ErrorCodeService } from "../service/error-code.service";
 import { ErrorCodeResolver } from "./error-code.resolver";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -26,7 +27,7 @@ describe('ErrorCodeResolver', () => {
     const configureTestBed = () => {
         TestBed.configureTestingModule({
             // add this to imports array
-            imports: [HttpClientTestingModule],
+            imports: [provideHttpClientTesting()],
             providers: [
                 ErrorCodeResolver,
                 { provide: SplashScreenStateService, useValue: splashScreenStateService },
@@ -39,12 +40,12 @@ describe('ErrorCodeResolver', () => {
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            list: jest.fn().mockReturnValue(of([]))
+            list: vi.fn().mockReturnValue(of([]))
         };
     })
 
@@ -65,7 +66,7 @@ describe('ErrorCodeResolver', () => {
             }
         };
         service = {
-            list: jest.fn().mockReturnValue(of(mockResponse))
+            list: vi.fn().mockReturnValue(of(mockResponse))
         };
         configureTestBed();
 
@@ -88,7 +89,7 @@ describe('ErrorCodeResolver', () => {
         };
 
         service = {
-            list: jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
+            list: vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
         };
 
         configureTestBed();

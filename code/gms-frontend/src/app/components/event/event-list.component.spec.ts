@@ -11,6 +11,7 @@ import { TranslatorService } from "../../common/service/translator-service";
 import { User } from "../user/model/user.model";
 import { EventListComponent } from "./event-list.component";
 import { EventService } from "./service/event-service";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -47,12 +48,12 @@ describe('EventListComponent', () => {
 
     beforeEach(() => {
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo : vi.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialogService = {
-            openConfirmDeleteDialog : jest.fn()
+            openConfirmDeleteDialog : vi.fn()
         }
         
         activatedRoute = class {
@@ -80,16 +81,16 @@ describe('EventListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK")),
-            getUnprocessedEventsCount : jest.fn().mockReturnValue(of(1))
+            delete : vi.fn().mockReturnValue(of("OK")),
+            getUnprocessedEventsCount : vi.fn().mockReturnValue(of(1))
         };
 
         router = {
-            navigate : jest.fn()
+            navigate : vi.fn()
         };
 
         translatorService = {
-            translate: jest.fn().mockReturnValue('Unprocessed: 1')
+            translate: vi.fn().mockReturnValue('Unprocessed: 1')
         };
     });
 
@@ -119,7 +120,7 @@ describe('EventListComponent', () => {
         configureTestBed();
         fixture = TestBed.createComponent(EventListComponent);
         component = fixture.componentInstance;
-        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
+        vi.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
@@ -133,7 +134,7 @@ describe('EventListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any);
 
         component.promptDelete(1);
 
@@ -148,7 +149,7 @@ describe('EventListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
 

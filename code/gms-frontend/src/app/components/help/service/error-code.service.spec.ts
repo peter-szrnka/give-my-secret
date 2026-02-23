@@ -1,4 +1,4 @@
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { ErrorCodeList } from "../model/error-code-list.model";
@@ -19,7 +19,7 @@ describe("ErrorCodeService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [provideHttpClientTesting()],
         providers : [ErrorCodeService]
       });
       service = TestBed.inject(ErrorCodeService);

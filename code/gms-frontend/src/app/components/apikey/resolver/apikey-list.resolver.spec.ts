@@ -7,6 +7,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 import { ApiKey } from "../model/apikey.model";
 import { ApiKeyService } from "../service/apikey-service";
 import { ApiKeyListResolver } from "./apikey-list.resolver";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -42,16 +43,16 @@ describe('ApiKeyListResolver', () => {
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            list: jest.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
         };
 
         sharedData = {
-            clearDataAndReturn: jest.fn().mockReturnValue(of([]))
+            clearDataAndReturn: vi.fn().mockReturnValue(of([]))
         };
     })
 
@@ -70,7 +71,7 @@ describe('ApiKeyListResolver', () => {
         };
 
         service = {
-            list: jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
+            list: vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
         };
 
         configureTestBed();
@@ -79,8 +80,8 @@ describe('ApiKeyListResolver', () => {
         resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+            expect(splashScreenStateService.start).toHaveBeenCalled();
+            expect(splashScreenStateService.stop).toHaveBeenCalled();
         });
     });
 
@@ -92,15 +93,15 @@ describe('ApiKeyListResolver', () => {
             "queryParams": {}
         };
         localStorage.setItem('apikey_pageSize', '27');
-        service.list = jest.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.list = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
         configureTestBed();
 
         // act & assert
         resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+            expect(splashScreenStateService.start).toHaveBeenCalled();
+            expect(splashScreenStateService.stop).toHaveBeenCalled();
         });
 
         localStorage.clear();
@@ -120,8 +121,8 @@ describe('ApiKeyListResolver', () => {
         resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+            expect(splashScreenStateService.start).toHaveBeenCalled();
+            expect(splashScreenStateService.stop).toHaveBeenCalled();
         });
     });
 });

@@ -1,4 +1,4 @@
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { provideHttpClientTesting, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { Paging } from "../../../common/model/paging.model";
@@ -24,7 +24,7 @@ describe("EventService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [provideHttpClientTesting],
         providers : [EventService]
       });
       service = TestBed.inject(EventService);
@@ -40,7 +40,7 @@ describe("EventService", () => {
       const expectedUrl = environment.baseUrl + "secure/event/1";
 
       // act
-      service.delete(1).subscribe((res) => expect(res).toBeCalled());
+      service.delete(1).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);

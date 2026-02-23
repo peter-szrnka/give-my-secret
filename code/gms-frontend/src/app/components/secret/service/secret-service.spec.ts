@@ -1,4 +1,4 @@
-import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
@@ -26,7 +26,7 @@ describe("SecretService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [provideHttpClientTesting()],
         providers : [SecretService]
       });
       service = TestBed.inject(SecretService);
@@ -65,7 +65,7 @@ describe("SecretService", () => {
       const expectedUrl = environment.baseUrl + "secure/secret/1";
 
       // act
-      service.delete(1).subscribe((res) => expect(res).toBeCalled());
+      service.delete(1).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -143,7 +143,7 @@ describe("SecretService", () => {
       const expectedUrl = environment.baseUrl + "secure/secret/1?enabled=true";
 
       // act
-      service.toggle(1, true).subscribe((res) => expect(res).toBeCalled());
+      service.toggle(1, true).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);

@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslatorModule } from '../../common/components/pipes/translator/translator.module';
 import { SharedDataService } from '../../common/service/shared-data-service';
 import { NavMenuComponent } from './nav-menu.component';
+import { vi } from 'vitest';
 
 /**
  * @author Peter Szrnka
@@ -30,7 +31,7 @@ describe('NavMenuComponent', () => {
 
     beforeEach(() => {
         mockShowLargeMenuEvent = {
-            emit : jest.fn()
+            emit : vi.fn()
         };
 
         sharedDataService = {

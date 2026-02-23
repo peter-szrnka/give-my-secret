@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { TranslatorService } from "./translator-service";
 import { SecureStorageService } from "./secure-storage.service";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -12,7 +13,7 @@ describe("TranslatorService", () => {
         TestBed.configureTestingModule({
             providers: [
                 TranslatorService,
-                { provide: SecureStorageService, useValue: { getItemWithoutEncryption: jest.fn().mockReturnValue("en") } }
+                { provide: SecureStorageService, useValue: { getItemWithoutEncryption: vi.fn().mockReturnValue("en") } }
             ]
         });
         service = TestBed.inject(TranslatorService);

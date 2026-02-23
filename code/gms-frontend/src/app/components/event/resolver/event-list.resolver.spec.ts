@@ -6,6 +6,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 import { Event } from "../model/event.model";
 import { EventService } from "../service/event-service";
 import { EventListResolver } from "./event-list.resolver";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -45,16 +46,16 @@ describe('EventListResolver', () => {
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            list: jest.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
         };
 
         sharedData = {
-            clearData: jest.fn()
+            clearData: vi.fn()
         };
     })
 
@@ -77,8 +78,8 @@ describe('EventListResolver', () => {
         resolver.resolve(activatedRouteSnapshot).subscribe(response => {
             // assert
             expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+            expect(splashScreenStateService.start).toHaveBeenCalled();
+            expect(splashScreenStateService.stop).toHaveBeenCalled();
         });
     });
 });

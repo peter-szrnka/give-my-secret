@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot } from "@angular/router";
 import { of, throwError } from "rxjs";
@@ -8,6 +8,7 @@ import { ApiKeyService } from "../service/apikey-service";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { ApiKeyDetailResolver } from "./apikey-detail.resolver";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -22,7 +23,7 @@ describe('ApiKeyDetailResolver', () => {
     const configureTestBed = () => {
         TestBed.configureTestingModule({
             // add this to imports array
-            imports: [HttpClientTestingModule],
+            imports: [provideHttpClientTesting()],
             providers: [
               ApiKeyDetailResolver,
               { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
@@ -43,16 +44,16 @@ describe('ApiKeyDetailResolver', () => {
 
     beforeEach(async() => {
         splashScreenStateService = {
-            start : jest.fn(),
-            stop : jest.fn()
+            start : vi.fn(),
+            stop : vi.fn()
         };
 
         service = {
-            getById : jest.fn().mockReturnValue(of(mockResponse))
+            getById : vi.fn().mockReturnValue(of(mockResponse))
         };
 
         sharedData = {
-            clearDataAndReturn: jest.fn().mockReturnValue(of({ id : 1, name : 'apikey' } as ApiKey))
+            clearDataAndReturn: vi.fn().mockReturnValue(of({ id : 1, name : 'apikey' } as ApiKey))
         };
     })
 
@@ -85,7 +86,7 @@ describe('ApiKeyDetailResolver', () => {
         };
 
         service = {
-            getById : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })))
+            getById : vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })))
         };
 
         configureTestBed();
@@ -93,8 +94,8 @@ describe('ApiKeyDetailResolver', () => {
         TestBed.runInInjectionContext(() => {
             resolver.resolve(activatedRouteSnapshot).subscribe(() => {
                 // assert
-                expect(splashScreenStateService.start).toBeCalled();
-                expect(splashScreenStateService.stop).toBeCalled();
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+                expect(splashScreenStateService.stop).toHaveBeenCalled();
             });
         });
     });
@@ -112,8 +113,8 @@ describe('ApiKeyDetailResolver', () => {
             resolver.resolve(activatedRouteSnapshot).subscribe(response => {
                 // assert
                 expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toBeCalled();
-                expect(splashScreenStateService.stop).toBeCalled();
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+                expect(splashScreenStateService.stop).toHaveBeenCalled();
             });
         });
     });

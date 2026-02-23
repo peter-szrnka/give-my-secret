@@ -14,6 +14,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { User } from "../user/model/user.model";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 import { AnnouncementService } from "./service/announcement-service";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -38,11 +39,11 @@ describe('AnnouncementDetailComponent', () => {
 
         };
         dialogService = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any)
         };
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo : vi.fn().mockReturnValue(currentUser),
+            refreshCurrentUserInfo: vi.fn()
         };
 
         service = {
@@ -66,8 +67,8 @@ describe('AnnouncementDetailComponent', () => {
         };
 
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         TestBed.configureTestingModule({
@@ -100,7 +101,7 @@ describe('AnnouncementDetailComponent', () => {
 
         expect(component).toBeTruthy();
 
-        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        vi.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any);
 
         component.save();
         expect(dialogService.openNewDialog).toHaveBeenCalled();

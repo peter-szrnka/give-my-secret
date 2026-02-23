@@ -7,6 +7,7 @@ import { EMPTY_USER_DATA, UserData } from "../model/user-data.model";
 import { UserService } from "../service/user-service";
 import { UserDetailResolver } from "./user-detail.resolver";
 import { ActivatedRouteSnapshot } from "@angular/router";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -24,16 +25,16 @@ describe('UserDetailResolver', () => {
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            getById: jest.fn().mockReturnValue(of(mockResponse))
+            getById: vi.fn().mockReturnValue(of(mockResponse))
         };
 
         sharedData = {
-            clearData: jest.fn()
+            clearData: vi.fn()
         };
 
         TestBed.configureTestingModule({
@@ -81,8 +82,8 @@ describe('UserDetailResolver', () => {
             resolver.resolve(activatedRouteSnapshot).subscribe(response => {
                 // assert
                 expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toBeCalled();
-                expect(splashScreenStateService.stop).toBeCalled();
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+                expect(splashScreenStateService.stop).toHaveBeenCalled();
             });
         });
     });

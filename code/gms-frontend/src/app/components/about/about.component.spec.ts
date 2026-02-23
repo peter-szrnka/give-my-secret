@@ -7,6 +7,7 @@ import { SetupService } from "../setup/service/setup-service";
 import { AboutComponent } from "./about.component";
 import { CommonModule } from "@angular/common";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -21,7 +22,7 @@ describe('AboutComponent', () => {
 
     beforeEach(async () => {
         setupService = {
-            checkReady: jest.fn().mockReturnValue(of(mockStatus))
+            checkReady: vi.fn().mockReturnValue(of(mockStatus))
         };
 
         TestBed.configureTestingModule({

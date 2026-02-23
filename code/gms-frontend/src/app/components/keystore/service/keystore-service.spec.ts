@@ -1,4 +1,4 @@
-import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { Keystore } from "../model/keystore.model";
 import { KeystoreService } from "./keystore-service";
@@ -24,7 +24,7 @@ describe("KeystoreService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [provideHttpClientTesting()],
         providers : [KeystoreService]
       });
       service = TestBed.inject(KeystoreService);
@@ -56,7 +56,7 @@ describe("KeystoreService", () => {
       const expectedUrl = environment.baseUrl + "secure/keystore/1";
 
       // act
-      service.delete(1).subscribe((res) => expect(res).toBeCalled());
+      service.delete(1).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -140,7 +140,7 @@ describe("KeystoreService", () => {
     const expectedUrl = environment.baseUrl + "secure/keystore/1?enabled=true";
 
     // act
-    service.toggle(1, true).subscribe((res) => expect(res).toBeCalled());
+    service.toggle(1, true).subscribe((res) => expect(res).toHaveBeenCalled());
 
     // assert
     const req = httpMock.expectOne(expectedUrl);

@@ -11,6 +11,7 @@ import { User } from "../user/model/user.model";
 import { KeystoreListComponent } from "./keystore-list.component";
 import { KeystoreService } from "./service/keystore-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -45,12 +46,12 @@ describe('KeystoreListComponent', () => {
 
     beforeEach(() => {
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo : vi.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialogService = {
-            openConfirmDeleteDialog : jest.fn()
+            openConfirmDeleteDialog : vi.fn()
         }
         
         activatedRoute = class {
@@ -78,11 +79,11 @@ describe('KeystoreListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK"))
+            delete : vi.fn().mockReturnValue(of("OK"))
         };
 
         router = {
-            navigate : jest.fn()
+            navigate : vi.fn()
         };
     });
 
@@ -111,7 +112,7 @@ describe('KeystoreListComponent', () => {
         configureTestBed();
         fixture = TestBed.createComponent(KeystoreListComponent);
         component = fixture.componentInstance;
-        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
+        vi.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
@@ -125,7 +126,7 @@ describe('KeystoreListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any);
 
         component.promptDelete(1);
 
@@ -140,7 +141,7 @@ describe('KeystoreListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
 

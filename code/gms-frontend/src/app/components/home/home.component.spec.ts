@@ -10,6 +10,7 @@ import { User } from "../user/model/user.model";
 import { HomeComponent } from "./home.component";
 import { HomeData } from "./model/home-data.model";
 import { HomeService } from "./service/home.service";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -44,21 +45,21 @@ describe('HomeComponent', () => {
         authModeSubject = new ReplaySubject<string>();
 
         sharedData = {
-            init: jest.fn(),
-            check: jest.fn(),
+            init: vi.fn(),
+            check: vi.fn(),
             userSubject$: mockSubject,
-            getUserInfo: jest.fn(),
-            clearData: jest.fn(),
+            getUserInfo: vi.fn(),
+            clearData: vi.fn(),
             authModeSubject$: authModeSubject
         };
 
         homeService = {
-            getData: jest.fn()
+            getData: vi.fn()
         };
     });
 
     it('should handle errors', async() => {
-        homeService.getData = jest.fn().mockReturnValue(throwError(() => new Error("error")));
+        homeService.getData = vi.fn().mockReturnValue(throwError(() => new Error("error")));
         configTestBed();
 
         // assert
@@ -88,7 +89,7 @@ describe('HomeComponent', () => {
             announcementCount: 0,
             secretCount: 0
         };
-        homeService.getData = jest.fn().mockReturnValue(of(mockHomeData));
+        homeService.getData = vi.fn().mockReturnValue(of(mockHomeData));
         configTestBed();
         mockSubject.next(currentUser);
         authModeSubject.next("db");
@@ -114,7 +115,7 @@ describe('HomeComponent', () => {
             announcementCount: 0,
             secretCount: 0
         };
-        homeService.getData = jest.fn().mockReturnValue(of(mockHomeData));
+        homeService.getData = vi.fn().mockReturnValue(of(mockHomeData));
         configTestBed();
         mockSubject.next(undefined);
         authModeSubject.next("db");

@@ -19,6 +19,7 @@ import { SecretDetailComponent, ValidationState } from "./secret-detail.componen
 import { SecretService } from "./service/secret-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { Secret } from "./model/secret.model";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -65,11 +66,11 @@ describe('SecretDetailComponent', () => {
 
         };
         sharedDataService = {
-            refreshCurrentUserInfo: jest.fn()
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialogService = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () => of(true) })
         }
         
         activatedRoute = class {
@@ -94,26 +95,26 @@ describe('SecretDetailComponent', () => {
         };
 
         serviceMock = {
-            getValue : jest.fn().mockReturnValue(of("value")),
-            rotate : jest.fn().mockReturnValue(of("OK")),
-            save : jest.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>),
-            validateLength: jest.fn().mockReturnValue(of({ valid : true })),
+            getValue : vi.fn().mockReturnValue(of("value")),
+            rotate : vi.fn().mockReturnValue(of("OK")),
+            save : vi.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>),
+            validateLength: vi.fn().mockReturnValue(of({ valid : true })),
         };
 
         const mockNames : IdNamePair[] = [ idPair1, idPair2 ];
 
         keystoreService = {
-            getAllKeystoreNames : jest.fn().mockReturnValue(of(mockNames)),
-            getAllKeystoreAliases : jest.fn().mockReturnValue(of(['test','test2']))
+            getAllKeystoreNames : vi.fn().mockReturnValue(of(mockNames)),
+            getAllKeystoreAliases : vi.fn().mockReturnValue(of(['test','test2']))
         };
 
         apiKeyService = {
-            getAllApiKeyNames : jest.fn().mockReturnValue(of(mockNames))
+            getAllApiKeyNames : vi.fn().mockReturnValue(of(mockNames))
         };
 
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
     });
 
@@ -134,7 +135,7 @@ describe('SecretDetailComponent', () => {
     });
 
     it('Should not save secret | HTTP error', () => {
-        serviceMock.save = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
+        serviceMock.save = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
         configureTestBed();
 
         // act
@@ -146,10 +147,10 @@ describe('SecretDetailComponent', () => {
     });
 
     it('Should not save secret | unkown error', () => {
-        serviceMock.save = jest.fn().mockReturnValue(throwError(() => new Error("OOPS!")));
+        serviceMock.save = vi.fn().mockReturnValue(throwError(() => new Error("OOPS!")));
         configureTestBed();
 
-        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : () => of(false) });
+        vi.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : () => of(false) });
 
         // act
         component.save();
@@ -163,8 +164,8 @@ describe('SecretDetailComponent', () => {
         configureTestBed();
 
         // act
-        component.add({ value : idPair2.id, chipInput : { clear : jest.fn() } } as any);
-        component.add({ value : '3', chipInput : { clear : jest.fn() } } as any);
+        component.add({ value : idPair2.id, chipInput : { clear : vi.fn() } } as any);
+        component.add({ value : '3', chipInput : { clear : vi.fn() } } as any);
         component.selected({
             option : {
                 value : 1,
@@ -209,8 +210,8 @@ describe('SecretDetailComponent', () => {
         configureTestBed();
 
         // act
-        component.add({ value : idPair2.id, chipInput : { clear : jest.fn() } } as any);
-        component.add({ value : '3', chipInput : { clear : jest.fn() } } as any);
+        component.add({ value : idPair2.id, chipInput : { clear : vi.fn() } } as any);
+        component.add({ value : '3', chipInput : { clear : vi.fn() } } as any);
         component.ipRestrictions = [
             { allow: true, ipPattern: '(192.168.0.)[0-9]{1,3}' }
         ];
@@ -252,7 +253,7 @@ describe('SecretDetailComponent', () => {
     });
 
     it('Should show secret value for username and password', () => {
-        serviceMock.getValue = jest.fn().mockReturnValue(of("username:user;password:pw12345678"));
+        serviceMock.getValue = vi.fn().mockReturnValue(of("username:user;password:pw12345678"));
         activatedRoute = class {
             data : Data = of({
                 entity : {
@@ -304,7 +305,7 @@ describe('SecretDetailComponent', () => {
     });
 
     it('Should not rotate secret | HTTP error', () => {
-        serviceMock.rotate = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
+        serviceMock.rotate = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
         configureTestBed();
 
         // act
@@ -316,7 +317,7 @@ describe('SecretDetailComponent', () => {
     });
 
     it('Should not rotate secret | unknown error', () => {
-        serviceMock.rotate = jest.fn().mockReturnValue(throwError(() => new Error("OOPS!")));
+        serviceMock.rotate = vi.fn().mockReturnValue(throwError(() => new Error("OOPS!")));
         configureTestBed();
 
         // act
@@ -339,14 +340,14 @@ describe('SecretDetailComponent', () => {
     });
 
     it('onKeyUp when validation required immediately then validate', () => {
-        jest.useFakeTimers();
+        vi.useFakeTimers();
         // arrange
         configureTestBed();
 
         component.onKeyUp({ key: 'Enter' } as any, 200);
         component.onKeyUp({ key: 'Enter' } as any, 0);
 
-        jest.runAllTimers();
+        vi.runAllTimers();
 
         // assert
         expect(component).toBeTruthy();
@@ -375,7 +376,7 @@ describe('SecretDetailComponent', () => {
         [ false, ValidationState.INVALID ]
     ])('validateSecretLength when service returns an answer then show result', (input: boolean, expectedValidationState: ValidationState) => {
         // arrange
-        serviceMock.validateLength = jest.fn().mockReturnValue(of({ value: input }));
+        serviceMock.validateLength = vi.fn().mockReturnValue(of({ value: input }));
         configureTestBed();
 
         // act
@@ -389,7 +390,7 @@ describe('SecretDetailComponent', () => {
 
     it('validateSecretLength when service returns an error then show error message', () => {
         // arrange
-        serviceMock.validateLength = jest.fn().mockReturnValue(throwError(() => new Error("OOPS!")));
+        serviceMock.validateLength = vi.fn().mockReturnValue(throwError(() => new Error("OOPS!")));
         configureTestBed();
 
         // act

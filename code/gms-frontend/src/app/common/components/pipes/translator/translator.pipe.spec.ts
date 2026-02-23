@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { TranslatorService } from "../../../service/translator-service";
 import { TranslatorPipe } from "./translator.pipe";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -11,7 +12,7 @@ describe('TranslatorPipe', () => {
 
     beforeEach(() => {
         translatorService = {
-            translate: jest.fn().mockReturnValue('Home')
+            translate: vi.fn().mockReturnValue('Home')
         };
         TestBed.configureTestingModule({
             providers: [

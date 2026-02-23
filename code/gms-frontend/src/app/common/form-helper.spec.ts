@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 
 /**
  * Complex object to mock a {@link FormGroup}
@@ -5,17 +6,17 @@
  * @author Peter Szrnka
  */
 export const FORM_GROUP_MOCK = {
-    group : jest.fn().mockReturnValue({
-        _updateTreeValidity : jest.fn(),
-        _registerOnCollectionChange : jest.fn(),
-        get : jest.fn().mockReturnValue({
+    group : vi.fn().mockReturnValue({
+        _updateTreeValidity : vi.fn(),
+        _registerOnCollectionChange : vi.fn(),
+        get : vi.fn().mockReturnValue({
             status : "VALID",
             value : "",
-            parent : jest.fn(),
-            registerOnChange : jest.fn(),
-            registerOnDisabledChange : jest.fn(),
-            updateValueAndValidity : jest.fn(),
-            setValue : jest.fn()
+            parent : vi.fn(),
+            registerOnChange : vi.fn(),
+            registerOnDisabledChange : vi.fn(),
+            updateValueAndValidity : vi.fn(),
+            setValue : vi.fn()
         })
     })
 };

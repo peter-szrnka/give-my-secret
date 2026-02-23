@@ -1,4 +1,4 @@
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
@@ -22,7 +22,7 @@ describe("AnnouncementService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [provideHttpClientTesting()],
         providers : [AnnouncementService]
       });
       service = TestBed.inject(AnnouncementService);
@@ -61,7 +61,7 @@ describe("AnnouncementService", () => {
       const expectedUrl = environment.baseUrl + "secure/announcement/1";
 
       // act
-      service.delete(1).subscribe((res) => expect(res).toBeCalled());
+      service.delete(1).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);

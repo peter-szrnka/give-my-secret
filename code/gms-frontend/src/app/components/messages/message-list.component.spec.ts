@@ -13,6 +13,7 @@ import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { ActivatedRoute } from "@angular/router";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -53,7 +54,7 @@ describe('MessageListComponent', () => {
 
     beforeEach(() => {
         service = {
-            list : jest.fn().mockImplementation(() => {
+            list : vi.fn().mockImplementation(() => {
                 return of({
                     resultList : [
                         { id : 1, message : "1", opened : false, creationDate: new Date() } as Message,
@@ -62,14 +63,14 @@ describe('MessageListComponent', () => {
                     totalElements : 2
                 });
             }),
-            markAsRead : jest.fn().mockReturnValue(of("OK")),
-            deleteAllByIds: jest.fn().mockReturnValue(of("OK"))
+            markAsRead : vi.fn().mockReturnValue(of("OK")),
+            deleteAllByIds: vi.fn().mockReturnValue(of("OK"))
         };
         sharedDataService = {
-            messageCountUpdateEvent : { emit : jest.fn() }
+            messageCountUpdateEvent : { emit : vi.fn() }
         };
         dialogService = {
-            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true } as ConfirmDeleteDialogData)) })
+            openConfirmDeleteDialog : vi.fn().mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of({ result: true } as ConfirmDeleteDialogData)) })
         };
     });
 
@@ -115,14 +116,14 @@ describe('MessageListComponent', () => {
     it('should delete messages', () => {
         configureTestBed();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of({ result: true } as ConfirmDeleteDialogData)) };
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
+        const mockDialogRef : any = { afterClosed : vi.fn().mockReturnValue(of({ result: true } as ConfirmDeleteDialogData)) };
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
         component.deleteMessage(1);
 
         component.selectAll();
 
-        const mockDialogRef2 : any = { afterClosed : jest.fn().mockReturnValue(of(undefined)) };
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef2);
+        const mockDialogRef2 : any = { afterClosed : vi.fn().mockReturnValue(of(undefined)) };
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef2);
         component.deleteMessages();
 
         expect(component).toBeTruthy();
@@ -142,7 +143,7 @@ describe('MessageListComponent', () => {
     });
 
     it('should handle unknown error', () => {
-        service.list = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
+        service.list = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
         configureTestBed();
 
         // assert

@@ -1,6 +1,7 @@
 import { HttpErrorResponse, HttpRequest, HttpResponse } from "@angular/common/http";
 import { of, throwError } from "rxjs";
 import { AuthInterceptor } from "./auth-interceptor";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -13,8 +14,8 @@ describe('AuthInterceptor', () => {
 
     beforeEach(() => {
         sharedData = {
-            clearData : jest.fn(),
-            logout : jest.fn()
+            clearData : vi.fn(),
+            logout : vi.fn()
         };
 
         handler = {

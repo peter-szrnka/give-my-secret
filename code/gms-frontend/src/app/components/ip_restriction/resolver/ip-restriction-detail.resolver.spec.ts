@@ -8,6 +8,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 import { IpRestrictionDetailResolver } from "./ip-restriction-detail.resolver";
 import { IpRestrictionService } from "../service/ip-restriction.service";
 import { EMPTY_IP_RESTRICTION, IpRestriction } from "../model/ip-restriction.model";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -43,16 +44,16 @@ describe('IpRestrictionDetailResolver', () => {
 
     beforeEach(async() => {
         splashScreenStateService = {
-            start : jest.fn(),
-            stop : jest.fn()
+            start : vi.fn(),
+            stop : vi.fn()
         };
 
         service = {
-            getById : jest.fn().mockReturnValue(of(mockResponse))
+            getById : vi.fn().mockReturnValue(of(mockResponse))
         };
 
         sharedData = {
-            clearDataAndReturn: jest.fn().mockReturnValue(of({ id : 1 } as IpRestriction))
+            clearDataAndReturn: vi.fn().mockReturnValue(of({ id : 1 } as IpRestriction))
         };
     })
 
@@ -85,7 +86,7 @@ describe('IpRestrictionDetailResolver', () => {
         };
 
         service = {
-            getById : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })))
+            getById : vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })))
         };
 
         configureTestBed();
@@ -93,8 +94,8 @@ describe('IpRestrictionDetailResolver', () => {
         TestBed.runInInjectionContext(() => {
             resolver.resolve(activatedRouteSnapshot).subscribe(() => {
                 // assert
-                expect(splashScreenStateService.start).toBeCalled();
-                expect(splashScreenStateService.stop).toBeCalled();
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+                expect(splashScreenStateService.stop).toHaveBeenCalled();
             });
         });
     });
@@ -112,8 +113,8 @@ describe('IpRestrictionDetailResolver', () => {
             resolver.resolve(activatedRouteSnapshot).subscribe(response => {
                 // assert
                 expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toBeCalled();
-                expect(splashScreenStateService.stop).toBeCalled();
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+                expect(splashScreenStateService.stop).toHaveBeenCalled();
             });
         });
     });

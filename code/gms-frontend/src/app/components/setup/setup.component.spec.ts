@@ -15,6 +15,7 @@ import { SetupService } from "./service/setup-service";
 import { EMPTY_ADMIN_DATA, SetupComponent } from "./setup.component";
 import { InformationService } from "../../common/service/info-service";
 import { VmOption } from "../../common/model/common.model";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -55,13 +56,13 @@ describe('SetupComponent', () => {
     beforeEach(() => {
         mockWindow = {
             location : {
-                reload: jest.fn()
+                reload: vi.fn()
             }
         };
 
         router = {
-            navigate : jest.fn().mockReturnValue(of(true)),
-            navigateByUrl : jest.fn().mockReturnValue(of(true))
+            navigate : vi.fn().mockReturnValue(of(true)),
+            navigateByUrl : vi.fn().mockReturnValue(of(true))
         };
 
         route = {
@@ -69,30 +70,30 @@ describe('SetupComponent', () => {
         };
 
         splashScreenStateService = {
-            start : jest.fn(),
-            stop : jest.fn()
+            start : vi.fn(),
+            stop : vi.fn()
         };
 
         setupService = {
-            saveAdminUser : jest.fn().mockImplementation(() : Observable<IEntitySaveResponseDto> => {
+            saveAdminUser : vi.fn().mockImplementation(() : Observable<IEntitySaveResponseDto> => {
                 return of({ entityId : 1, success : true } as IEntitySaveResponseDto);
             }),
-            stepBack : jest.fn().mockReturnValue(of('NEED_SETUP')),
-            getAdminUserData : jest.fn().mockReturnValue(of({ username : 'admin', credential : 'testPassword', role : 'ROLE_ADMIN' })),
-            saveInitialStep : jest.fn().mockReturnValue(of('NEED_ADMIN_USER')),
-            saveSystemProperties: jest.fn().mockReturnValue(of({ success : true })),
-            saveOrganizationData : jest.fn().mockReturnValue(of({ success : true })),
-            completeSetup : jest.fn().mockReturnValue(of({ success : true }))
+            stepBack : vi.fn().mockReturnValue(of('NEED_SETUP')),
+            getAdminUserData : vi.fn().mockReturnValue(of({ username : 'admin', credential : 'testPassword', role : 'ROLE_ADMIN' })),
+            saveInitialStep : vi.fn().mockReturnValue(of('NEED_ADMIN_USER')),
+            saveSystemProperties: vi.fn().mockReturnValue(of({ success : true })),
+            saveOrganizationData : vi.fn().mockReturnValue(of({ success : true })),
+            completeSetup : vi.fn().mockReturnValue(of({ success : true }))
         };
 
         infoService = {
-            getVmOptions: jest.fn().mockReturnValue(of([{ key: 'testKey', value: 'value1' } as VmOption]))
+            getVmOptions: vi.fn().mockReturnValue(of([{ key: 'testKey', value: 'value1' } as VmOption]))
         };
     });
 
     it('should saveAdminUser throw error 404', async () => {
         // arrange
-        setupService.saveAdminUser = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 404, statusText: "Not exists"})));
+        setupService.saveAdminUser = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 404, statusText: "Not exists"})));
 
         configTestBed();
 
@@ -101,7 +102,7 @@ describe('SetupComponent', () => {
             credential : "testPassword",
             role: 'ROLE_ADMIN'
         };
-        const navigateSpy = jest.spyOn(router,'navigate');
+        const navigateSpy = vi.spyOn(router,'navigate');
 
         // act
         component.saveAdminUser();
@@ -114,7 +115,7 @@ describe('SetupComponent', () => {
 
     it('should saveAdminUser throw error 500', () => {
         // arrange
-        setupService.saveAdminUser = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
+        setupService.saveAdminUser = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
         component.userData = {
@@ -153,7 +154,7 @@ describe('SetupComponent', () => {
 
     it('should step back throw error 500', () => {
         // arrange
-        setupService.stepBack = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
+        setupService.stepBack = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
         // act
@@ -167,7 +168,7 @@ describe('SetupComponent', () => {
 
     it('should getCurrentAdminUserData throw error 500', () => {
         // arrange
-        setupService.getAdminUserData = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
+        setupService.getAdminUserData = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
         // act
@@ -181,7 +182,7 @@ describe('SetupComponent', () => {
 
     it('should not found existing admin user', () => {
         // arrange
-        setupService.getAdminUserData = jest.fn().mockReturnValue(of(null));
+        setupService.getAdminUserData = vi.fn().mockReturnValue(of(null));
         configTestBed();
 
         // act
@@ -197,7 +198,7 @@ describe('SetupComponent', () => {
     it('should step back', () => {
         // arrange
         route.queryParams = of();
-        setupService.stepBack = jest.fn().mockReturnValue(of('NEED_SETUP'));
+        setupService.stepBack = vi.fn().mockReturnValue(of('NEED_SETUP'));
         configTestBed();
 
         // act
@@ -221,7 +222,7 @@ describe('SetupComponent', () => {
 
     it('should save initial step', () => {
         // arrange
-        setupService.saveInitialStep = jest.fn().mockReturnValue(of('NEED_ADMIN_USER'));
+        setupService.saveInitialStep = vi.fn().mockReturnValue(of('NEED_ADMIN_USER'));
         configTestBed();
 
         // act
@@ -235,7 +236,7 @@ describe('SetupComponent', () => {
 
     it('should save initial step throw error 500', () => {
         // arrange
-        setupService.saveInitialStep = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
+        setupService.saveInitialStep = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
         // act
@@ -249,7 +250,7 @@ describe('SetupComponent', () => {
 
     it('should save system properties', () => {
         // arrange
-        setupService.saveSystemProperties = jest.fn().mockReturnValue(of({ success : true }));
+        setupService.saveSystemProperties = vi.fn().mockReturnValue(of({ success : true }));
         configTestBed();
 
         // act
@@ -262,7 +263,7 @@ describe('SetupComponent', () => {
 
     it('should save system properties throw error 500', () => {
         // arrange
-        setupService.saveSystemProperties = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
+        setupService.saveSystemProperties = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
         // act
@@ -276,7 +277,7 @@ describe('SetupComponent', () => {
 
     it('should save organization data'  , () => {
         // arrange
-        setupService.saveOrganizationData = jest.fn().mockReturnValue(of({ success : true }));
+        setupService.saveOrganizationData = vi.fn().mockReturnValue(of({ success : true }));
         configTestBed();
 
         // act
@@ -289,7 +290,7 @@ describe('SetupComponent', () => {
 
     it('should save organization data throw error 500', () => {
         // arrange
-        setupService.saveOrganizationData = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
+        setupService.saveOrganizationData = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
         // act
@@ -316,7 +317,7 @@ describe('SetupComponent', () => {
 
     it('should navigate to home throw error 404', () => {
         // arrange
-        setupService.completeSetup = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 404, statusText: "Not exists"})));
+        setupService.completeSetup = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 404, statusText: "Not exists"})));
         configTestBed();
 
         // act

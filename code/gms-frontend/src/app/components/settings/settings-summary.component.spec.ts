@@ -13,6 +13,7 @@ import { SettingsSummaryComponent } from "./settings-summary.component";
 import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { Router } from "@angular/router";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -52,20 +53,20 @@ describe('SettingsSummaryComponent', () => {
 
     beforeEach(() => {
         dialog = {
-            openNewDialog : jest.fn()
+            openNewDialog : vi.fn()
         };
         userService = {
-            changeCredentials : jest.fn().mockImplementation(() : Observable<void> => {
+            changeCredentials : vi.fn().mockImplementation(() : Observable<void> => {
                 return of(void 0);
             }),
-            isMfaActive: jest.fn().mockImplementation(() : Observable<boolean> => {
+            isMfaActive: vi.fn().mockImplementation(() : Observable<boolean> => {
                 return of(true);
             }),
-            toggleMfa: jest.fn().mockReturnValue(of(''))
+            toggleMfa: vi.fn().mockReturnValue(of(''))
         };
         splashScreenService = {
-            start : jest.fn(),
-            stop : jest.fn()
+            start : vi.fn(),
+            stop : vi.fn()
         };
 
         mockSubject = new ReplaySubject<string>();
@@ -74,12 +75,12 @@ describe('SettingsSummaryComponent', () => {
             authModeSubject$ : mockSubject
         };
         storageService = {
-            getItemWithoutEncryption : jest.fn().mockReturnValue('en'),
-            setItemWithoutEncryption : jest.fn(),
-            removeItemWithoutEncryption : jest.fn()
+            getItemWithoutEncryption : vi.fn().mockReturnValue('en'),
+            setItemWithoutEncryption : vi.fn(),
+            removeItemWithoutEncryption : vi.fn()
         };
         router = {
-            navigate : jest.fn().mockResolvedValue(true)
+            navigate : vi.fn().mockResolvedValue(true)
         }
 
         mockSubject.next('db');
@@ -88,7 +89,7 @@ describe('SettingsSummaryComponent', () => {
     });
 
     it('Should fail on save', () => {
-        userService.changeCredentials  =jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
+        userService.changeCredentials  =vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
 
         component.credentialData.oldCredential = "oldPassword";
@@ -123,7 +124,7 @@ describe('SettingsSummaryComponent', () => {
 
     it('Should toggle MFA fail', () => {
         // arrange
-        userService.toggleMfa =jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
+        userService.toggleMfa =vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})));
         configTestBed();
         component.mfaEnabled = true;
 

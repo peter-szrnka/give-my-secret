@@ -16,6 +16,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { COPY_SECRET_ID_MESSAGE, SecretListComponent } from "./secret-list.component";
 import { SecretService } from "./service/secret-service";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -66,12 +67,12 @@ describe('SecretListComponent', () => {
 
     beforeEach(() => {
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo : vi.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialogService = {
-            openConfirmDeleteDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true })) })
+            openConfirmDeleteDialog : vi.fn().mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of({ result: true })) })
         };
         
         activatedRoute = class {
@@ -99,15 +100,15 @@ describe('SecretListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK"))
+            delete : vi.fn().mockReturnValue(of("OK"))
         };
 
         clipboardService = {
-            copyValue : jest.fn()
+            copyValue : vi.fn()
         };
 
         router = {
-            navigate : jest.fn()
+            navigate : vi.fn()
         };
     });
 
@@ -130,7 +131,7 @@ describe('SecretListComponent', () => {
         configureTestBed();
         fixture = TestBed.createComponent(SecretListComponent);
         component = fixture.componentInstance;
-        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
+        vi.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
@@ -142,7 +143,7 @@ describe('SecretListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: true }) )});
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of({ result: true }) )});
 
         component.promptDelete(1);
 
@@ -151,11 +152,11 @@ describe('SecretListComponent', () => {
     });
 
     it('Should cancel dialog', () => {
-        dialogService.openConfirmDeleteDialog = jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: false })) });
+        dialogService.openConfirmDeleteDialog = vi.fn().mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of({ result: false })) });
         configureTestBed();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of({ result: false }) )});
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of({ result: false }) )});
 
         component.promptDelete(1);
 
