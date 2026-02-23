@@ -22,7 +22,7 @@
         <bouncycastle.version>1.82</bouncycastle.version>
         <jsonwebtoken.version>0.11.1</jsonwebtoken.version>
         <!-- Testing & code quality -->
-        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <skip.jacoco-check-execution>false</skip.jacoco-check-execution>
         <test.minimum.coverage>0.90</test.minimum.coverage>
         <sonar.organization>peter-szrnka</sonar.organization>
