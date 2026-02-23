@@ -15,7 +15,7 @@
         <backend.buildname>gms-app</backend.buildname>
         <spring-core.version>6.2.12</spring-core.version>
         <spring-security-core.version>6.5.6</spring-security-core.version>
-        <spring-boot.version>3.5.7</spring-boot.version>
+        <spring-boot.version>3.5.9</spring-boot.version>
         <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
         <flyway.version>10.17.0</flyway.version>
         <flyway-database.version>10.14.0</flyway-database.version>
