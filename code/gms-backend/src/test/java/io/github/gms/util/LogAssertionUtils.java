@@ -15,27 +15,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @UtilityClass
 public class LogAssertionUtils {
 
-    public static void assertLogContains(ListAppender<ILoggingEvent> logAppender, String message) {
+    public void assertLogContains(ListAppender<ILoggingEvent> logAppender, String message) {
         assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().contains(message)));
     }
 
-    public static void assertLogEmpty(ListAppender<ILoggingEvent> logAppender) {
+    public void assertLogEmpty(ListAppender<ILoggingEvent> logAppender) {
         assertTrue(logAppender.list.isEmpty());
     }
 
-    public static void assertLogEquals(ListAppender<ILoggingEvent> logAppender, String message) {
+    public void assertLogEquals(ListAppender<ILoggingEvent> logAppender, String message) {
         assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equals(message)));
     }
 
-    public static void assertLogEqualsIgnoreCase(ListAppender<ILoggingEvent> logAppender, String message) {
+    public void assertLogEqualsIgnoreCase(ListAppender<ILoggingEvent> logAppender, String message) {
         assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().equalsIgnoreCase(message)));
     }
 
-    public static void assertLogMissing(ListAppender<ILoggingEvent> appender, String expectedMessage) {
+    public void assertLogMissing(ListAppender<ILoggingEvent> appender, String expectedMessage) {
         assertTrue(appender.list.stream().noneMatch(event -> event.getFormattedMessage().contains(expectedMessage)));
     }
 
-    public static void assertLogStartsWith(ListAppender<ILoggingEvent> logAppender, String message) {
+    public void assertLogStartsWith(ListAppender<ILoggingEvent> logAppender, String message) {
         assertTrue(logAppender.list.stream().anyMatch(event -> event.getFormattedMessage().startsWith(message)));
     }
 }

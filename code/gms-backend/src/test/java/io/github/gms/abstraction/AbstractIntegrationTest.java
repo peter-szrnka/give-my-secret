@@ -1,7 +1,6 @@
 package io.github.gms.abstraction;
 
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.abstraction.AbstractGmsEntity;
 import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.service.JwtService;
 import io.github.gms.functions.apikey.ApiKeyRepository;
@@ -108,7 +107,7 @@ public abstract class AbstractIntegrationTest {
 			return;
 		}
 
-		HttpHeaders headers = HttpHeaders.writableHttpHeaders(requestEntity.getHeaders());
+		HttpHeaders headers = new HttpHeaders(requestEntity.getHeaders());
 		headers.add("X-XSRF-TOKEN","1");
 		headers.add("Cookie", "XSRF-TOKEN=1");
 	}
