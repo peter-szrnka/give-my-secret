@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.ZonedDateTime;
 
+import static io.github.gms.util.DemoData.USER_2_ID;
 import static io.github.gms.util.TestConstants.LIST;
 import static io.github.gms.util.TestConstants.TAG_INTEGRATION_TEST;
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,8 +51,7 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		
 		// arrange
 		EventEntity eventEntity = new EventEntity();
-		eventEntity.setId(1L);
-		eventEntity.setUserId(2L);
+		eventEntity.setUserId(getEntityId("user", USER_2_ID));
 		eventEntity.setOperation(EventOperation.GET_BY_ID);
 		eventEntity.setTarget(EventTarget.API_KEY);
 		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1L));
@@ -78,8 +78,7 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		
 		// arrange
 		EventEntity eventEntity = new EventEntity();
-		eventEntity.setId(1L);
-		eventEntity.setUserId(2L);
+		eventEntity.setUserId(getEntityId("user", USER_2_ID));
 		eventEntity.setOperation(EventOperation.GET_BY_ID);
 		eventEntity.setTarget(EventTarget.API_KEY);
 		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1L));

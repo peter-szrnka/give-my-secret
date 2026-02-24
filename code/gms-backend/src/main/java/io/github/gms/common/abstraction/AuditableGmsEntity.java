@@ -15,6 +15,4 @@ import java.io.Serial;
 public abstract class AuditableGmsEntity extends AbstractGmsEntity {
     @Serial
     private static final long serialVersionUID = -5384814018073435649L;
-
-    public abstract Long getId();
 }

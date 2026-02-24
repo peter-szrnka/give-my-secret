@@ -15,13 +15,12 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
  * @since 1.0
  */
 @SpringBootApplication(exclude = {
-	LdapRepositoriesAutoConfiguration.class,
+    LdapRepositoriesAutoConfiguration.class,
 	JacksonAutoConfiguration.class,
-	LdapRepositoriesAutoConfiguration.class,
 	RedisAutoConfiguration.class,
 	// Actuator auto configurations
 	LdapHealthContributorAutoConfiguration.class,
-	RedisHealthContributorAutoConfiguration.class
+    RedisHealthContributorAutoConfiguration.class
 })
 public class GmsApplication {
 

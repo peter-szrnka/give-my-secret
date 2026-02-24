@@ -13,4 +13,6 @@ import java.io.Serializable;
 public abstract class AbstractGmsEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 7089530376252111656L;
+
+    public abstract Long getId();
 }

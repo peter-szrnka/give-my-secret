@@ -69,7 +69,7 @@ import static io.github.gms.common.enums.UserRole.ROLE_ADMIN;
 import static io.github.gms.common.enums.UserRole.ROLE_USER;
 import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
 import static io.github.gms.common.util.Constants.API_KEY_HEADER;
-import static io.github.gms.util.DemoData.USER_3_ID;
+import static io.github.gms.util.DemoData.MFA_USER_ID;
 import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -175,7 +175,7 @@ public class TestUtils {
 		return GmsUserDetails.builder()
 				.accountNonLocked(true)
 				.credential(DemoData.CREDENTIAL_TEST)
-				.userId(USER_3_ID)
+				.userId(MFA_USER_ID)
 				.username(USERNAME_MFA)
 				.authorities(Sets.newHashSet(ROLE_USER))
 				.mfaEnabled(true)
@@ -241,7 +241,6 @@ public class TestUtils {
 
 	public static UserEntity createMfaUser() {
 		UserEntity user = new UserEntity();
-		user.setId(USER_3_ID);
 		user.setUsername(USERNAME_MFA);
 		user.setCredential(NEW_CREDENTIAL);
 		user.setEmail("test@email.hu");
@@ -395,9 +394,8 @@ public class TestUtils {
 		return entity;
 	}
 
-	public static KeystoreEntity createNewKeystoreEntity(Long id) {
+	public static KeystoreEntity createNewKeystoreEntity() {
 		KeystoreEntity entity = new KeystoreEntity();
-		entity.setId(id);
 		entity.setFileName("test.jks");
 		entity.setUserId(DemoData.USER_1_ID);
 		entity.setCredential(TEST);

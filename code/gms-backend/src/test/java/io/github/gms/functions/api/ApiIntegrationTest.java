@@ -4,7 +4,10 @@ import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
+import io.github.gms.functions.apikey.ApiKeyEntity;
+import io.github.gms.functions.keystore.KeystoreAliasEntity;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
+import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
@@ -35,18 +38,18 @@ class ApiIntegrationTest extends AbstractIntegrationTest implements GmsControlle
 	@TestedMethod("getSecret")
 	void getSecret_whenInputIsValid_thenReturnData() {
 		// arrange
-		apiKeyRepository.save(TestUtils.createApiKey(DemoData.API_KEY_3_ID, DemoData.API_KEY_CREDENTIAL3));
-		keystoreAliasRepository.save(TestUtils.createKeystoreAliasEntity(DemoData.KEYSTORE_ALIAS3_ID, DemoData.KEYSTORE_ID));
-		secretRepository.save(
-				TestUtils.createSecretEntity(DemoData.SECRET_ENTITY3_ID, DemoData.KEYSTORE_ALIAS3_ID, DemoData.SECRET_ID3));
+        ApiKeyEntity apiKeyEntity = apiKeyRepository.save(TestUtils.createApiKey(null, DemoData.API_KEY_CREDENTIAL3));
+        KeystoreAliasEntity keystoreAliasEntity =  keystoreAliasRepository.save(TestUtils.createKeystoreAliasEntity(null, DemoData.KEYSTORE_ID));
+		SecretEntity secretEntity = secretRepository.save(
+				TestUtils.createSecretEntity(null, keystoreAliasEntity.getId(), DemoData.SECRET_ID3));
 		
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoData.API_KEY_CREDENTIAL3));
-		ResponseEntity<Map> response = executeHttpGet("/api/secret/" + DemoData.SECRET_ID3, requestEntity, Map.class);
+		ResponseEntity<Map> response = executeHttpGet("/api/secret/" + secretEntity.getSecretId(), requestEntity, Map.class);
 
-		secretRepository.deleteById(DemoData.SECRET_ENTITY3_ID);
-		apiKeyRepository.deleteById(DemoData.API_KEY_3_ID);
-		keystoreAliasRepository.deleteById(DemoData.KEYSTORE_ALIAS3_ID);
+		secretRepository.deleteById(secretEntity.getId());
+		apiKeyRepository.deleteById(apiKeyEntity.getId());
+		keystoreAliasRepository.deleteById(keystoreAliasEntity.getId());
 
 		// Assert
 		assertNotNull(response);
@@ -68,13 +71,13 @@ class ApiIntegrationTest extends AbstractIntegrationTest implements GmsControlle
 	@Test
 	void getSecret_whenApiKeyIsInvalid_thenReturnInternalServerError() {
 		// arrange
-		apiKeyRepository.save(TestUtils.createApiKey(DemoData.API_KEY_3_ID, DemoData.API_KEY_CREDENTIAL3));
+        ApiKeyEntity newEntity = apiKeyRepository.save(TestUtils.createApiKey(null, DemoData.API_KEY_CREDENTIAL3));
 
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoData.API_KEY_CREDENTIAL3));
 		ResponseEntity<String> response = executeHttpGet("/api/secret/fake-key", requestEntity, String.class);
 
-		apiKeyRepository.deleteById(DemoData.API_KEY_3_ID);
+		apiKeyRepository.deleteById(newEntity.getId());
 		// Assert
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 	}
