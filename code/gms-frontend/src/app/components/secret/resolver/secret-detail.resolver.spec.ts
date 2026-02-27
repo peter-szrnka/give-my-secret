@@ -104,8 +104,7 @@ describe('SecretDetailResolver', () => {
         // assert
         expect(response).toEqual({
             "id": 1,
-            "returnDecrypted": false,
-            "rotationEnabled": true,
+            "apiKeyRestrictions": [],
             "rotationPeriod": "",
             "status": "ACTIVE",
             "type": "CREDENTIAL",
