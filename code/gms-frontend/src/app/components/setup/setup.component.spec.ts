@@ -7,7 +7,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { WINDOW_TOKEN } from "../../window.provider";
@@ -16,6 +15,7 @@ import { EMPTY_ADMIN_DATA, SetupComponent } from "./setup.component";
 import { InformationService } from "../../common/service/info-service";
 import { VmOption } from "../../common/model/common.model";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -35,7 +35,7 @@ describe('SetupComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ SetupComponent, AngularMaterialModule, FormsModule, BrowserAnimationsModule, TranslatorModule ],
+            imports : [ SetupComponent, AngularMaterialModule, FormsModule, BrowserAnimationsModule, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : WINDOW_TOKEN, useValue : mockWindow },

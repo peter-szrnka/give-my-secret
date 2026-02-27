@@ -11,9 +11,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { MessageListComponent, SelectionStatus } from "./message-list.component";
 import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { ActivatedRoute } from "@angular/router";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -35,7 +35,7 @@ describe('MessageListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ MessageListComponent, AngularMaterialModule, NoopAnimationsModule, MomentPipe, TranslatorModule ],
+            imports : [ MessageListComponent, AngularMaterialModule, NoopAnimationsModule, MomentPipe, TranslatorPipe ],
             declarations : [],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
             providers: [

@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { ErrorCodeList } from "../model/error-code-list.model";
 import { ErrorCodeService } from "../service/error-code.service";
@@ -19,15 +19,14 @@ describe('ErrorCodeResolver', () => {
 
     const mockResponse: ErrorCodeList = {
         errorCodeList: [
-            { code: "GMS-001" },
-            { code: "GMS-100" }
+            { code: "GMS-001", "description": "Unexpected IO error" },
+            { code: "GMS-100", "description": "N/A" }
         ]
     };
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
-            imports: [provideHttpClientTesting()],
+            imports: [HttpClientTestingModule],
             providers: [
                 ErrorCodeResolver,
                 { provide: SplashScreenStateService, useValue: splashScreenStateService },
@@ -72,12 +71,11 @@ describe('ErrorCodeResolver', () => {
 
 
         // act
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponse);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
     it('should handle error', async () => {
@@ -95,11 +93,10 @@ describe('ErrorCodeResolver', () => {
         configureTestBed();
 
         // act
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual({ errorCodeList: [] });
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

@@ -19,7 +19,7 @@ import { BaseComponent } from "./base.component";
 @Directive()
 export abstract class BaseSaveableDetailComponent<T extends BaseDetail, S extends SaveServiceBase<T, BaseList<T>>> extends BaseComponent implements OnInit {
 
-    data : T;
+    data! : T;
     public error? : string;
 
     constructor(

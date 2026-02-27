@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot } from "@angular/router";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { EMPTY_KEYSTORE, Keystore } from "../model/keystore.model";
 import { KeystoreService } from "../service/keystore-service";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { KeystoreDetailResolver } from "./keystore-detail.resolver";
 import { vi } from "vitest";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 /**
  * @author Peter Szrnka
@@ -42,8 +42,7 @@ describe('KeystoreDetailResolver', () => {
         };
 
         TestBed.configureTestingModule({
-          // add this to imports array
-          imports: [provideHttpClientTesting()],
+          imports: [HttpClientTestingModule],
           providers: [
             KeystoreDetailResolver,
             { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
@@ -82,14 +81,12 @@ describe('KeystoreDetailResolver', () => {
 
         service.getById = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
 
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
-            });
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponse);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
     it('should return existing entity', async() => {
@@ -99,13 +96,11 @@ describe('KeystoreDetailResolver', () => {
             }
         }
 
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
-            });
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponse);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

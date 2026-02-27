@@ -7,7 +7,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 import { SplashComponent } from "../../common/components/splash/splash.component";
 import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { ClipboardService } from "../../common/service/clipboard-service";
@@ -47,7 +47,7 @@ describe('SecretListComponent', () => {
                 MomentPipe,
                 NavButtonVisibilityPipe,
                 StatusToggleComponent,
-                TranslatorModule
+                TranslatorPipe
             ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -108,7 +108,8 @@ describe('SecretListComponent', () => {
         };
 
         router = {
-            navigate : vi.fn()
+            navigate : vi.fn(),
+            navigateByUrl: vi.fn().mockResolvedValue(true)
         };
     });
 

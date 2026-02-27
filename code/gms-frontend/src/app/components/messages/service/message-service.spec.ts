@@ -57,12 +57,12 @@ describe("MessageService", () => {
         property: "id",
         size: 10
       };
-      service.list(request).subscribe((res) => expect(res).toBe(mockResponse));
+      service.list(request).subscribe((res) => expect(res).toEqual(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('GET');
-      req.flush(request);
+      expect(req.request.method).toEqual('GET');
+      req.flush(mockResponse);
       httpMock.verify();
     });
 
@@ -71,11 +71,11 @@ describe("MessageService", () => {
       const expectedUrl = environment.baseUrl + "secure/message/1";
 
       // act
-      service.getById(1).subscribe((res) => expect(res).toBe(TEST_MESSAGE));
+      service.getById(1).subscribe((res) => expect(res).toEqual(TEST_MESSAGE));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('GET');
+      expect(req.request.method).toEqual('GET');
       req.flush(TEST_MESSAGE);
       httpMock.verify();
     });
@@ -86,11 +86,11 @@ describe("MessageService", () => {
       const mockResponse = 3;
 
       // act
-      service.getAllUnread().subscribe(res => expect(res).toBe(mockResponse));
+      service.getAllUnread().subscribe(res => expect(res).toEqual(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('GET');
+      expect(req.request.method).toEqual('GET');
       req.flush(mockResponse);
       httpMock.verify();
     });
@@ -101,11 +101,11 @@ describe("MessageService", () => {
       const mockResponse = "OK";
 
       // act
-      service.markAsRead([1], true).subscribe(res => expect(res).toBe(mockResponse));
+      service.markAsRead([1], true).subscribe(res => expect(res).toEqual(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('PUT');
+      expect(req.request.method).toEqual('PUT');
       req.flush(mockResponse);
       httpMock.verify();
     });
@@ -116,11 +116,11 @@ describe("MessageService", () => {
       const mockResponse = "OK";
 
       // act
-      service.deleteAllByIds([1]).subscribe(res => expect(res).toBe(mockResponse));
+      service.deleteAllByIds([1]).subscribe(res => expect(res).toEqual(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('POST');
+      expect(req.request.method).toEqual('POST');
       req.flush(mockResponse);
       httpMock.verify();
     });

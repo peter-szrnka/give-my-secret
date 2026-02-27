@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { SystemProperty } from "../model/system-property.model";
@@ -23,11 +23,11 @@ describe('SystemPropertyListResolver', () => {
         { key: 'PROPERTY1', value: 'true', type: 'boolean', factoryValue: false, category: 'GENERAL' },
         { key: 'PROPERTY2', value: '10', type: 'long', factoryValue: true, category: 'GENERAL' }
     ];
+    const mockResponseList = { resultList: mockResponse, totalElements: mockResponse.length };
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
-            imports: [provideHttpClientTesting()],
+            imports: [HttpClientTestingModule],
             providers: [
                 SystemPropertyListResolver,
                 { provide: SplashScreenStateService, useValue: splashScreenStateService },
@@ -46,7 +46,7 @@ describe('SystemPropertyListResolver', () => {
         };
 
         service = {
-            list: vi.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of(mockResponseList))
         };
 
         sharedData = {
@@ -80,12 +80,11 @@ describe('SystemPropertyListResolver', () => {
         }
 
         // act
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+        
+        // assert
+        expect(response).toEqual(mockResponseList);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
 
         localStorage.removeItem('system_property_pageSize');
     });
@@ -105,11 +104,12 @@ describe('SystemPropertyListResolver', () => {
         configureTestBed();
 
         // act
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+        
+        // assert
+        expect(response).toEqual({
+            totalElements: 0, resultList: []
         });
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

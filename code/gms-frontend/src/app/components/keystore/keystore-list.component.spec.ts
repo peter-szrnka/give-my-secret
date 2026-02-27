@@ -10,8 +10,8 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { KeystoreListComponent } from "./keystore-list.component";
 import { KeystoreService } from "./service/keystore-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -32,7 +32,7 @@ describe('KeystoreListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ KeystoreListComponent, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
+            imports : [ KeystoreListComponent, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue: router },

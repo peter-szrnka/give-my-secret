@@ -7,11 +7,9 @@
     "allowJs": true,
     "types": [ "vitest/globals", "node" ],
     "emitDecoratorMetadata" : true,
+    "strictPropertyInitialization": false,
     "typeRoots": ["./types", "node_modules/@types", "node_modules"]
   },
-  "files": [
-    "src/test-setup.ts"
-  ],
   "include": [
     "src/**/*.d.ts",
     "src/**/*.spec.ts"

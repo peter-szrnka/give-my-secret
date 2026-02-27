@@ -4,9 +4,9 @@ import { MatTableDataSource } from "@angular/material/table";
 import { AngularMaterialModule } from "../../../angular-material-module";
 import { VmOption } from "../../model/common.model";
 import { InformationService } from "../../service/info-service";
-import { TranslatorModule } from "../pipes/translator/translator.module";
 import { takeUntil } from "rxjs";
 import { BaseComponent } from "../abstractions/component/base.component";
+import { TranslatorPipe } from "../pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -18,7 +18,7 @@ import { BaseComponent } from "../abstractions/component/base.component";
         AngularMaterialModule,
         ReactiveFormsModule,
         FormsModule,
-        TranslatorModule
+        TranslatorPipe
     ]
 })
 export class VmOptionsComponent extends BaseComponent implements OnInit {

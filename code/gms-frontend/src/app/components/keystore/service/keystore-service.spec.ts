@@ -1,4 +1,4 @@
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { Keystore } from "../model/keystore.model";
 import { KeystoreService } from "./keystore-service";
@@ -24,7 +24,7 @@ describe("KeystoreService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [provideHttpClientTesting()],
+        imports: [HttpClientTestingModule],
         providers : [KeystoreService]
       });
       service = TestBed.inject(KeystoreService);
@@ -81,7 +81,7 @@ describe("KeystoreService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(request);
+      req.flush(mockResponse);
       httpMock.verify();
     });
 
@@ -131,7 +131,7 @@ describe("KeystoreService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(mockHttpResponse);
+      req.flush(mockHttpResponse.resultList);
       httpMock.verify();
   });
 

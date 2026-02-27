@@ -20,8 +20,8 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { VmOptionsComponent } from "../../common/components/vm-options/vm-options.component";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 const ALGORITHM_SET: any = [
   'HS256', 'HS384', 'HS512'
@@ -119,8 +119,8 @@ interface SystemPropertyElement extends SystemProperty {
     AngularMaterialModule,
     FormsModule,
     MomentPipe,
+    TranslatorPipe,
     NavBackComponent,
-    TranslatorModule,
     VmOptionsComponent
   ]
 })

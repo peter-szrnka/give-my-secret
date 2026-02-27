@@ -17,9 +17,9 @@ import { ApiKeyService } from "../apikey/service/apikey-service";
 import { KeystoreService } from "../keystore/service/keystore-service";
 import { SecretDetailComponent, ValidationState } from "./secret-detail.component";
 import { SecretService } from "./service/secret-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { Secret } from "./model/secret.model";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -42,7 +42,7 @@ describe('SecretDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [SecretDetailComponent, RouterTestingModule, FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
+            imports : [SecretDetailComponent, RouterTestingModule, FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue : router},
@@ -63,7 +63,7 @@ describe('SecretDetailComponent', () => {
 
     beforeEach(() => {
         router = {
-
+            navigate: vi.fn()
         };
         sharedDataService = {
             refreshCurrentUserInfo: vi.fn()

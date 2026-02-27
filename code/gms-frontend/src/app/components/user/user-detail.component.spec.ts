@@ -6,7 +6,6 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, ReplaySubject, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -17,6 +16,7 @@ import { UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -36,7 +36,7 @@ describe('UserDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [UserDetailComponent, RouterTestingModule, AngularMaterialModule, NoopAnimationsModule, FormsModule, TranslatorModule ],
+            imports : [UserDetailComponent, RouterTestingModule, AngularMaterialModule, NoopAnimationsModule, FormsModule, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue : router},

@@ -6,7 +6,7 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
@@ -39,7 +39,7 @@ describe('SystemPropertyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [SystemPropertyListComponent, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule],
+            imports: [SystemPropertyListComponent, FormsModule, AngularMaterialModule, MomentPipe, TranslatorPipe],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide: Router, useValue: router },
@@ -64,7 +64,8 @@ describe('SystemPropertyListComponent', () => {
 
         sharedDataService = {
             getUserInfo: vi.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: vi.fn()
+            refreshCurrentUserInfo: vi.fn(),
+            checkSystemReady: vi.fn()
         };
 
         dialogService = {

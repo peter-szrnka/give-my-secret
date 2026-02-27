@@ -15,9 +15,9 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { WINDOW_TOKEN } from "../../window.provider";
 import { User } from "../user/model/user.model";
 import { VerifyComponent } from "./verify.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { LoggerService } from "../../common/service/logger-service";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -39,7 +39,7 @@ describe('VerifyComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ VerifyComponent, RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
+            imports : [ VerifyComponent, RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorPipe ],
             providers: [
                 { provide : WINDOW_TOKEN, useValue : mockWindow },
                 { provide : Router, useValue: router },

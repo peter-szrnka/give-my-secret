@@ -8,7 +8,6 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -17,6 +16,7 @@ import { IprestrictionDetailComponent } from "./ip-restriction-detail.component"
 import { IpRestriction } from "./model/ip-restriction.model";
 import { IpRestrictionService } from "./service/ip-restriction.service";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -34,7 +34,7 @@ describe('IprestrictionDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [IprestrictionDetailComponent, RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
+            imports : [IprestrictionDetailComponent, RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue : router},
@@ -53,7 +53,7 @@ describe('IprestrictionDetailComponent', () => {
 
     beforeEach(() => {
         router = {
-
+            navigate: vi.fn()
         };
         sharedDataService = {
             refreshCurrentUserInfo: vi.fn()

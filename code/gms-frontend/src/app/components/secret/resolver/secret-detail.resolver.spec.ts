@@ -1,9 +1,8 @@
-import { HttpClientTestingModule, provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot } from "@angular/router";
-import { of, throwError } from "rxjs";
-import { Secret } from "../model/secret.model";
-import { EMPTY_USER } from "../../user/model/user.model";
+import { firstValueFrom, of, throwError } from "rxjs";
+import { EMPTY_SECRET, Secret } from "../model/secret.model";
 import { SecretService } from "../service/secret-service";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
@@ -44,8 +43,7 @@ describe('SecretDetailResolver', () => {
         };
 
         TestBed.configureTestingModule({
-          // add this to imports array
-          imports: [provideHttpClientTesting()],
+          imports: [HttpClientTestingModule],
           providers: [
             SecretDetailResolver,
             { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
@@ -69,10 +67,11 @@ describe('SecretDetailResolver', () => {
             }
         }
 
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(EMPTY_USER);
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(EMPTY_SECRET);
     });
 
     it('should handle error', async() => {
@@ -84,14 +83,12 @@ describe('SecretDetailResolver', () => {
 
         service.getById = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
 
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
-            });
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponse);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
     it('should return existing entity', async() => {
@@ -101,13 +98,19 @@ describe('SecretDetailResolver', () => {
             }
         }
 
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
-            });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual({
+            "id": 1,
+            "returnDecrypted": false,
+            "rotationEnabled": true,
+            "rotationPeriod": "",
+            "status": "ACTIVE",
+            "type": "CREDENTIAL",
+            "value": "test"
         });
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

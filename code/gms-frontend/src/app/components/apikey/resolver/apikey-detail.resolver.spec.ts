@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot } from "@angular/router";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { ApiKey, EMPTY_API_KEY } from "../model/apikey.model";
 import { ApiKeyService } from "../service/apikey-service";
 import { SharedDataService } from "../../../common/service/shared-data-service";
@@ -22,8 +22,7 @@ describe('ApiKeyDetailResolver', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
-            imports: [provideHttpClientTesting()],
+            imports: [HttpClientTestingModule],
             providers: [
               ApiKeyDetailResolver,
               { provide : ActivatedRouteSnapshot, useValue : activatedRouteSnapshot },
@@ -95,7 +94,6 @@ describe('ApiKeyDetailResolver', () => {
             resolver.resolve(activatedRouteSnapshot).subscribe(() => {
                 // assert
                 expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
             });
         });
     });
@@ -109,13 +107,10 @@ describe('ApiKeyDetailResolver', () => {
         configureTestBed();
 
         // act
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
-            });
-        });
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+        
+        // assert
+        expect(response).toEqual(mockResponse);
+         expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

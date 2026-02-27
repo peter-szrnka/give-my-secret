@@ -53,13 +53,16 @@ describe('LoginComponent', () => {
         router = {
             navigate : vi.fn().mockReturnValue(of(true)),
             events: new Subject(),
-            createUrlTree: vi.fn().mockReturnValue({}), // <-- this fixes the error
-            serializeUrl: vi.fn().mockReturnValue('')   // <-- optional but recommended
+            createUrlTree: vi.fn().mockReturnValue({}),
+            serializeUrl: vi.fn().mockReturnValue('')
         };
 
         sharedDataService = {
             refreshCurrentUserInfo : vi.fn(),
-            systemReady: true
+            systemReady: true,
+            navigationChangeEvent: {
+                emit: vi.fn()
+            }
         };
 
         dialogService = {

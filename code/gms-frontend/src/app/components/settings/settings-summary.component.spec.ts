@@ -4,16 +4,16 @@ import { FormBuilder, FormsModule } from "@angular/forms";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { Observable, ReplaySubject, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { FORM_GROUP_MOCK } from "../../common/form-helper.spec";
+import { FORM_GROUP_MOCK } from "../../common/form-helper";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { UserService } from "../user/service/user-service";
 import { SettingsSummaryComponent } from "./settings-summary.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { Router } from "@angular/router";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -34,7 +34,7 @@ describe('SettingsSummaryComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ SettingsSummaryComponent, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
+            imports : [ SettingsSummaryComponent, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorPipe ],
             providers: [
                 { provide : Router, useValue : router },
                 { provide : UserService, useValue : userService },

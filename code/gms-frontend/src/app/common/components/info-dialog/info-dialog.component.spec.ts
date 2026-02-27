@@ -1,10 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
-import { TranslatorModule } from "../pipes/translator/translator.module";
 import { InfoDialog } from "./info-dialog.component";
 import { DialogData } from "./dialog-data.model";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -21,7 +21,7 @@ describe('InfoDialog', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports : [InfoDialog,MatDialogModule, TranslatorModule ],
+            imports : [InfoDialog,MatDialogModule, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : MatDialogRef, useValue : {

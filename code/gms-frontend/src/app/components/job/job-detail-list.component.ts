@@ -9,11 +9,11 @@ import { BaseComponent } from "../../common/components/abstractions/component/ba
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { TranslatorService } from "../../common/service/translator-service";
 import { JobDetail } from "./model/job-detail.model";
 import { JobDetailService } from "./service/job-detail.service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 const MANUAL_JOB_EXECUTION_CONFIG = [
     { label: 'job.button.event.maintenance', url : 'event_maintenance' },
@@ -29,7 +29,7 @@ const MANUAL_JOB_EXECUTION_CONFIG = [
  * @author Peter Szrnka
  */
 @Component({
-    imports: [AngularMaterialModule, CommonModule, NavBackComponent, MomentPipe, TranslatorModule, InformationMessageComponent],
+    imports: [AngularMaterialModule, CommonModule, NavBackComponent, MomentPipe, InformationMessageComponent, TranslatorPipe],
     selector: 'job-detail-list',
     templateUrl: './job-detail-list.component.html'
 })

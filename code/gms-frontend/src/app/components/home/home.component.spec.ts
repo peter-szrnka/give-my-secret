@@ -4,13 +4,13 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ReplaySubject, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { HomeComponent } from "./home.component";
 import { HomeData } from "./model/home-data.model";
 import { HomeService } from "./service/home.service";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -27,7 +27,7 @@ describe('HomeComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [HomeComponent, RouterTestingModule, AngularMaterialModule, MomentPipe, TranslatorModule],
+            imports: [HomeComponent, RouterTestingModule, AngularMaterialModule, MomentPipe, TranslatorPipe],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 { provide: SharedDataService, useValue: sharedData },

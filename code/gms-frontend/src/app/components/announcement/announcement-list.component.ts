@@ -6,12 +6,12 @@ import { BaseListComponent } from "../../common/components/abstractions/componen
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { Announcement, PAGE_CONFIG_ANNOUNCEMENT } from "./model/announcement.model";
 import { AnnouncementService } from "./service/announcement-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -24,9 +24,9 @@ import { AnnouncementService } from "./service/announcement-service";
         FormsModule,
         RouterModule,
         MomentPipe,
+        TranslatorPipe,
         NavBackComponent,
-        InformationMessageComponent,
-        TranslatorModule
+        InformationMessageComponent
     ]
 })
 export class AnnouncementListComponent extends BaseListComponent<Announcement, AnnouncementService> {

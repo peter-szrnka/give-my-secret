@@ -20,9 +20,3 @@ export const FORM_GROUP_MOCK = {
         })
     })
 };
-
-describe('FORM_GROUP_MOCK', () => {
-    it('should be loaded', () => {
-        expect(FORM_GROUP_MOCK).toBeDefined();
-    });
-});

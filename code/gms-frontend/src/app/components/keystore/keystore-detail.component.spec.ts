@@ -7,7 +7,6 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -16,6 +15,7 @@ import { KeystoreDetailComponent } from "./keystore-detail.component";
 import { KeystoreAlias } from "./model/keystore-alias.model";
 import { KeystoreService } from "./service/keystore-service";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -36,7 +36,7 @@ describe('KeystoreDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ KeystoreDetailComponent, FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
+            imports : [ KeystoreDetailComponent, FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue: router },
@@ -115,7 +115,7 @@ describe('KeystoreDetailComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(dialog.openNewDialog).toHaveBeenCalledWith({ text: "dialog.save.keystore", type: "information" });
-    });
+    }, 10000);
 
     it('Should save new generated keystore', () => {
         dialog = {

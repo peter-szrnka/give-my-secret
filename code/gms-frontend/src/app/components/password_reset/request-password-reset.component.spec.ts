@@ -4,12 +4,12 @@ import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { DialogService } from "../../common/service/dialog-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { RequestPasswordResetComponent } from "./request-password-reset.component";
 import { ResetPasswordRequestService } from "./service/request-password-reset.service";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -33,7 +33,7 @@ describe('RequestPasswordResetComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ RequestPasswordResetComponent, FormsModule, AngularMaterialModule, TranslatorModule ],
+            imports : [ RequestPasswordResetComponent, FormsModule, AngularMaterialModule, TranslatorPipe ],
             providers: [
                 { provide: ActivatedRoute, useValue: activatedRouteMock },
                 { provide : Router, useValue: router },

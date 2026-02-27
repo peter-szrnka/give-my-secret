@@ -1,15 +1,18 @@
 import { Location } from "@angular/common";
 import { EventEmitter } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
+import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, provideRouter, Router } from "@angular/router";
 import { Observable, of, ReplaySubject, Subject } from "rxjs";
 import { AppComponent } from "./app.component";
 import { SystemReadyData } from "./common/model/system-ready.model";
 import { SharedDataService } from "./common/service/shared-data-service";
 import { SplashScreenStateService } from "./common/service/splash-screen-service";
 import { User } from "./components/user/model/user.model";
-import { RouterTestingModule } from "@angular/router/testing";
 import { vi } from "vitest";
+import { AngularMaterialModule } from "./angular-material-module";
+import { HeaderModule } from "./components/header/header-module";
+import { NavMenuModule } from "./components/menu/nav-menu.module";
+import { routes } from './app.config';
 
 /**
  * @author Peter Szrnka
@@ -29,8 +32,14 @@ describe('AppComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [AppComponent, RouterTestingModule],
+            imports: [
+                AppComponent,
+                AngularMaterialModule,
+                NavMenuModule,
+                HeaderModule
+            ],
             providers: [
+                provideRouter(routes),
                 { provide: ActivatedRoute, useValue: { snapshot: { url: [ { path: 'test' } ] } } },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : SplashScreenStateService, useValue : splashScreenStateService },
@@ -102,9 +111,10 @@ describe('AppComponent', () => {
             id : 1
         };
         router.url = '/user/list';
+        configureTestBed();
+
         mockSubject.next(currentUser);
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
-        configureTestBed();
         
         // act & assert
         expect(component.isAdmin).toEqual(true);
@@ -172,7 +182,6 @@ describe('AppComponent', () => {
         configureTestBed();
         mockSubject.next(undefined); 
         mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
-        fixture.detectChanges();
 
         // act & assert
         expect(router.navigate).toHaveBeenCalled();
@@ -184,12 +193,11 @@ describe('AppComponent', () => {
         sharedDataService.getUserInfo = vi.fn().mockReturnValue(undefined);
         router.url = '/api_key/list';
         mockLocation.path = vi.fn().mockReturnValue("");
-        configureTestBed();
-        mockSubject.next(undefined); 
-        mockSystemReadySubject.next({ ready: true, status: 200, authMode : 'db', systemStatus: 'OK' });
-        fixture.detectChanges();
 
-        // act & assert
+        configureTestBed();
+
+        mockSystemReadySubject.next({ ready: true, status: 200, authMode: 'db', systemStatus: 'OK' });
+        mockSubject.next(undefined);
         expect(router.navigate).toHaveBeenCalled();
         expect(splashScreenStateService.start).toHaveBeenCalled();
         expect(splashScreenStateService.stop).toHaveBeenCalled();

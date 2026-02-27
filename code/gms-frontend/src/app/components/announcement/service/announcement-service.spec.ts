@@ -1,4 +1,4 @@
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
@@ -22,8 +22,8 @@ describe("AnnouncementService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [provideHttpClientTesting()],
-        providers : [AnnouncementService]
+        imports: [HttpClientTestingModule],
+        providers: [AnnouncementService],
       });
       service = TestBed.inject(AnnouncementService);
       httpMock = TestBed.inject(HttpTestingController);
@@ -43,14 +43,14 @@ describe("AnnouncementService", () => {
 
         //act
         service.save(TEST_ANNOUNCEMENT).subscribe((res) => {
-          expect(res).toBe(mockResponse);
+          expect(res).toEqual(mockResponse);
           expect(res.entityId).toEqual(1);
           expect(res.success).toBeTruthy();
         });
 
         // assert
         const req = httpMock.expectOne(expectedUrl);
-        expect(req.request.method).toBe('POST');
+        expect(req.request.method).toEqual('POST');
         expect(req.request.body).toEqual(TEST_ANNOUNCEMENT);
         req.flush(mockResponse);
         httpMock.verify();
@@ -65,7 +65,7 @@ describe("AnnouncementService", () => {
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('DELETE');
+      expect(req.request.method).toEqual('DELETE');
       httpMock.verify();
     });
 
@@ -81,12 +81,12 @@ describe("AnnouncementService", () => {
         property: "id",
         size: 10
       };
-      service.list(request).subscribe((res) => expect(res).toBe(mockResponse));
+      service.list(request).subscribe((res) => expect(res).toEqual(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('GET');
-      req.flush(request);
+      expect(req.request.method).toEqual('GET');
+      req.flush(mockResponse);
       httpMock.verify();
     });
 
@@ -95,11 +95,11 @@ describe("AnnouncementService", () => {
       const expectedUrl = environment.baseUrl + "secure/announcement/1";
 
       // act
-      service.getById(1).subscribe((res) => expect(res).toBe(TEST_ANNOUNCEMENT));
+      service.getById(1).subscribe((res) => expect(res).toEqual(TEST_ANNOUNCEMENT));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('GET');
+      expect(req.request.method).toEqual('GET');
       req.flush(TEST_ANNOUNCEMENT);
       httpMock.verify();
     });

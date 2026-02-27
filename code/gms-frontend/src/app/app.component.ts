@@ -10,6 +10,7 @@ import { roleCheck } from './common/utils/permission-utils';
 import { HeaderModule } from './components/header/header-module';
 import { NavMenuModule } from './components/menu/nav-menu.module';
 import { User } from './components/user/model/user.model';
+import { TranslatorPipe } from './common/components/pipes/translator/translator.pipe';
 
 const LOGIN_CALLBACK_URL = '/login';
 

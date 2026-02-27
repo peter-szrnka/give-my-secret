@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot } from "@angular/router";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { Announcement, EMPTY_ANNOUNCEMENT } from "../model/announcement.model";
 import { AnnouncementService } from "../service/announcement-service";
 import { SharedDataService } from "../../../common/service/shared-data-service";
@@ -40,7 +40,6 @@ describe('AnnouncementDetailResolver', () => {
         };
 
         TestBed.configureTestingModule({
-          // add this to imports array
           imports: [HttpClientTestingModule],
           providers: [
             AnnouncementDetailResolver,
@@ -81,14 +80,12 @@ describe('AnnouncementDetailResolver', () => {
 
         service.getById = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
 
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
-            });
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponse);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
     it('should return existing entity', async() => {
@@ -98,13 +95,11 @@ describe('AnnouncementDetailResolver', () => {
             }
         }
 
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
-            });
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponse);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

@@ -3,8 +3,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": [ "node" ],/*,
-    "lib" : [ "ES2018", "ES2015", "DOM" ]*/
+    "types": [ "node" ],
+    "strict": false,
+    "strictPropertyInitialization": false
   },
   "files": [
     "src/main.ts",
@@ -13,5 +14,6 @@
   "include": [
     "src/**/*.d.ts",
     "src/polyfills.ts"
-  ]
+  ],
+  "exclude": ["src/vitest-env.d.ts"]
 }

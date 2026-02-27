@@ -1,12 +1,13 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { EMPTY, of, throwError } from "rxjs";
+import { EMPTY, firstValueFrom, of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { Announcement } from "../model/announcement.model";
 import { AnnouncementService } from "../service/announcement-service";
 import { AnnouncementListResolver } from "./announcement-list.resolver";
 import { vi } from "vitest";
+import { AnnouncementList } from "../model/annoucement-list.model";
 
 /**
  * @author Peter Szrnka
@@ -23,10 +24,13 @@ describe('AnnouncementListResolver', () => {
         title: "title",
         description: "description"
     }];
+    const mockResponseList: AnnouncementList = {
+        resultList: mockResponse,
+        totalElements: mockResponse.length
+    };
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
             imports: [HttpClientTestingModule],
             providers: [
                 AnnouncementListResolver,
@@ -47,7 +51,7 @@ describe('AnnouncementListResolver', () => {
         };
 
         service = {
-            list: vi.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of(mockResponseList))
         };
 
         sharedData = {
@@ -72,13 +76,12 @@ describe('AnnouncementListResolver', () => {
         service.list = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
         configureTestBed();
 
-        // act & assert
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponse);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
         localStorage.clear();
     });
 
@@ -93,11 +96,11 @@ describe('AnnouncementListResolver', () => {
         };
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponseList);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

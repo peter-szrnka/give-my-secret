@@ -7,7 +7,7 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, ReplaySubject, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { TranslatorService } from "../../common/service/translator-service";
 import { JobDetailListComponent } from "./job-detail-list.component";
@@ -31,7 +31,7 @@ describe('JobDetailListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ AngularMaterialModule, NoopAnimationsModule, MomentPipe, JobDetailListComponent, TranslatorModule ],
+            imports : [ AngularMaterialModule, NoopAnimationsModule, MomentPipe, JobDetailListComponent, TranslatorPipe ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
             providers: [
                 { provide : Router, useValue : router },

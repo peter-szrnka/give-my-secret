@@ -7,13 +7,13 @@ import { InformationMessageComponent } from "../../common/components/information
 import { ButtonConfig } from "../../common/components/nav-back/button-config";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { IpRestriction, PAGE_CONFIG_IP_RESTRICTION } from "./model/ip-restriction.model";
 import { IpRestrictionService } from "./service/ip-restriction.service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -26,8 +26,8 @@ import { IpRestrictionService } from "./service/ip-restriction.service";
         FormsModule,
         MomentPipe,
         NavBackComponent,
-        TranslatorModule,
-        InformationMessageComponent
+        InformationMessageComponent,
+        TranslatorPipe
     ]
 })
 export class IprestrictionDetailComponent extends BaseSaveableDetailComponent<IpRestriction, IpRestrictionService> {

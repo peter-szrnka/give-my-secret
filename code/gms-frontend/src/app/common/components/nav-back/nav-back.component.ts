@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AngularMaterialModule } from '../../../angular-material-module';
 import { NavButtonVisibilityPipe } from '../pipes/nav-button-visibility.pipe';
-import { TranslatorModule } from '../pipes/translator/translator.module';
 import { ButtonConfig } from './button-config';
+import { TranslatorPipe } from '../pipes/translator/translator.pipe';
 
 /**
  * @author Peter Szrnka
@@ -14,7 +14,7 @@ import { ButtonConfig } from './button-config';
         AngularMaterialModule,
         NavButtonVisibilityPipe,
         RouterModule,
-        TranslatorModule
+        TranslatorPipe
     ],
     selector: 'nav-back',
     templateUrl: './nav-back.component.html',

@@ -10,8 +10,8 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { User } from "./model/user.model";
 import { UserService } from "./service/user-service";
 import { UserListComponent } from "./user-list.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -34,7 +34,7 @@ describe('UserListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ UserListComponent, MatTableModule, MomentPipe, TranslatorModule ],
+            imports : [ UserListComponent, MatTableModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue: router },
@@ -96,7 +96,7 @@ describe('UserListComponent', () => {
 
         router = {
             navigate : vi.fn(),
-            navigateByUrl : vi.fn().mockReturnValue(of({ then : vi.fn().mockReturnValue(of(true)) }))
+            navigateByUrl : vi.fn().mockReturnValue(Promise.resolve({ then : vi.fn().mockReturnValue(of(true)) }))
         };
     });
 

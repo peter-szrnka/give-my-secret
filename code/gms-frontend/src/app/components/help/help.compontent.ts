@@ -5,14 +5,14 @@ import { takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { ErrorCode } from "./model/error-code.model";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
-    imports: [AngularMaterialModule, TranslatorModule, InformationMessageComponent],
+    imports: [AngularMaterialModule, InformationMessageComponent, TranslatorPipe],
     selector: 'help',
     templateUrl: './help.component.html',
     styleUrls: ['./help.component.scss']

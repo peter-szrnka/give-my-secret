@@ -6,8 +6,8 @@ import { SystemStatus } from "../../common/model/system-status.model";
 import { SetupService } from "../setup/service/setup-service";
 import { AboutComponent } from "./about.component";
 import { CommonModule } from "@angular/common";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -26,7 +26,7 @@ describe('AboutComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports: [AngularMaterialModule, CommonModule, AboutComponent, TranslatorModule],
+            imports: [AngularMaterialModule, CommonModule, AboutComponent, TranslatorPipe],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide: SetupService, useValue: setupService }

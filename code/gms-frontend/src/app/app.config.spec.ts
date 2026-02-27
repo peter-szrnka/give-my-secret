@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, RouterModule } from '@angular/router';
 import { routes } from './app.config';
 import { ROLE_GUARD } from './common/interceptor/role-guard';
@@ -21,14 +21,14 @@ describe('Routing Config', () => {
   let location: Location;
   let activatedRouteData: any;
 
-  beforeEach(async() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         DummyComponent,
-        RouterModule.forRoot(routes),
-        HttpClientTestingModule,
+        RouterModule.forRoot(routes)
       ],
       providers: [
+        HttpClientTestingModule,
         {
           provide: ROLE_GUARD,
           useValue: {
@@ -48,20 +48,18 @@ describe('Routing Config', () => {
           }
         }
       ]
-    }).compileComponents();
+    });
 
     router = TestBed.inject(Router);
     location = TestBed.inject(Location);
     fixture = TestBed.createComponent(DummyComponent);
   });
 
-  it('should navigate to home component when path is empty', fakeAsync(() => {
-    router.navigate(['']);
-    tick();
-    fixture.detectChanges();
+  it('should navigate to home component when path is empty', async() => {
+    await router.navigate(['']);
 
-    expect(location.path()).toBe('');
-  }));
+    expect(location.path()).toEqual('');
+  });
 
   it.each([
     '/error',
@@ -75,11 +73,10 @@ describe('Routing Config', () => {
     '/api-testing',
     '/messages',
     '/secret/list'
-  ])('should navigate to component', fakeAsync((navInput: string) => {
-    fixture.detectChanges();
-    router.navigate([navInput]);
-    tick();
+  ])('should navigate to component', async(navInput: string) => {
+    await router.navigate([navInput]);
+    //await fixture.whenStable();
 
-    expect(location.path()).toBe(navInput);
-  }));
+    expect(location.path()).toEqual(navInput);
+  });
 });

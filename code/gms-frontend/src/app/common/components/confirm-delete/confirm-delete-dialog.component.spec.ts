@@ -2,8 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { ConfirmDeleteDialog } from "./confirm-delete-dialog.component";
-import { TranslatorModule } from "../pipes/translator/translator.module";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -17,7 +17,7 @@ describe('ConfirmDeleteDialog', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ConfirmDeleteDialog, MatDialogModule, TranslatorModule ],
+            imports : [ConfirmDeleteDialog, MatDialogModule, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : MatDialogRef, useValue : {

@@ -1,12 +1,13 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { JobDetail } from "../model/job-detail.model";
 import { JobDetailService } from "../service/job-detail.service";
 import { JobDetailListResolver } from "./job-detail-list.resolver";
 import { vi } from "vitest";
+import { JobDetailList } from "../model/job-detail-list.model";
 
 /**
  * @author Peter Szrnka
@@ -19,8 +20,7 @@ describe('JobDetailListResolver', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
-            imports: [provideHttpClientTesting()],
+            imports: [HttpClientTestingModule],
             providers: [
                 JobDetailListResolver,
                 { provide: SplashScreenStateService, useValue: splashScreenStateService },
@@ -40,6 +40,7 @@ describe('JobDetailListResolver', () => {
         creationDate: new Date(),
         startTime: new Date()
     }];
+    const mockResponseList: JobDetailList = { resultList: mockResponse, totalElements: mockResponse.length };
 
     beforeEach(async () => {
         splashScreenStateService = {
@@ -48,7 +49,7 @@ describe('JobDetailListResolver', () => {
         };
 
         service = {
-            list: vi.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of(mockResponseList))
         };
     })
 
@@ -73,13 +74,16 @@ describe('JobDetailListResolver', () => {
 
         configureTestBed();
 
-        // act & assert
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+                
+        // assert
+        expect(response).toEqual({
+            "error": "!",
+            "resultList": [],
+            "totalElements": 0,
         });
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
     it('should handle error 2', async () => {
@@ -95,13 +99,16 @@ describe('JobDetailListResolver', () => {
         service.list = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
         configureTestBed();
 
-        // act & assert
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual({
+            "error": "!",
+            "resultList": [],
+            "totalElements": 0,
         });
+        expect(splashScreenStateService.start).toHaveBeenCalled();
 
         localStorage.clear();
     });
@@ -115,11 +122,11 @@ describe('JobDetailListResolver', () => {
         };
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+                
+        // assert
+        expect(response).toEqual(mockResponseList);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

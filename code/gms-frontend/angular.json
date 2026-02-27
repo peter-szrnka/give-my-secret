@@ -25,9 +25,7 @@
               "base": "dist/gms-frontend"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -168,6 +166,7 @@
           "options": {
             "runner": "vitest",
             "runnerConfig": "vitest.config.ts",
+            "setupFiles": ["src/test-setup.ts"],
             "include": [
               "**/*.spec.ts"
             ],

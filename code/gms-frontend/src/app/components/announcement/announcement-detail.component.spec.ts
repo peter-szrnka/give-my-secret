@@ -6,7 +6,6 @@ import { Observable, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -15,6 +14,7 @@ import { User } from "../user/model/user.model";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 import { AnnouncementService } from "./service/announcement-service";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -36,7 +36,7 @@ describe('AnnouncementDetailComponent', () => {
 
     beforeEach(() => {
         router = {
-
+            navigate: vi.fn()
         };
         dialogService = {
             openNewDialog : vi.fn().mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any)
@@ -72,7 +72,7 @@ describe('AnnouncementDetailComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports : [ AnnouncementDetailComponent, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe, TranslatorModule ],
+            imports : [ AnnouncementDetailComponent, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe, TranslatorPipe ],
             declarations : [],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

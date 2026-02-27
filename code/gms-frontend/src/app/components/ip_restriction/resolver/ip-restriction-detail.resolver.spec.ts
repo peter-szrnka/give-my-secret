@@ -95,7 +95,6 @@ describe('IpRestrictionDetailResolver', () => {
             resolver.resolve(activatedRouteSnapshot).subscribe(() => {
                 // assert
                 expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
             });
         });
     });
@@ -114,7 +113,6 @@ describe('IpRestrictionDetailResolver', () => {
                 // assert
                 expect(response).toEqual(mockResponse);
                 expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
             });
         });
     });

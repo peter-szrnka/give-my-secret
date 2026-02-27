@@ -8,8 +8,8 @@ import { User } from "../user/model/user.model";
 import { MessageService } from "../messages/service/message-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { HeaderComponent } from "./header.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -67,7 +67,7 @@ describe('HeaderComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            imports: [BrowserAnimationsModule, AngularMaterialModule, TranslatorModule ],
+            imports: [BrowserAnimationsModule, AngularMaterialModule, TranslatorPipe ],
             declarations: [HeaderComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [

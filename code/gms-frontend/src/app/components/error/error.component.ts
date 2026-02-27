@@ -2,15 +2,15 @@ import { Component } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { Router } from "@angular/router";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { InformationService } from "../../common/service/info-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
-    imports: [MatIconModule, MatProgressBarModule, TranslatorModule],
+    imports: [MatIconModule, MatProgressBarModule, TranslatorPipe],
     selector: 'error',
     templateUrl: './error.component.html',
     styleUrls: ['./error.component.scss']

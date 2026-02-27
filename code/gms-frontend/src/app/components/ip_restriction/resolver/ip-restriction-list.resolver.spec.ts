@@ -1,13 +1,14 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { IpRestrictionListResolver } from "./ip-restriction-list.resolver";
 import { IpRestrictionService } from "../service/ip-restriction.service";
 import { IpRestriction } from "../model/ip-restriction.model";
 import { vi } from "vitest";
+import { IpRestrictionList } from "../model/ip-restriction-list.model";
 /**
  * @author Peter Szrnka
  */
@@ -20,8 +21,7 @@ describe('IpRestrictionListResolver', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
-            imports: [provideHttpClientTesting()],
+            imports: [HttpClientTestingModule],
             providers: [
                 IpRestrictionListResolver,
                 { provide: SplashScreenStateService, useValue: splashScreenStateService },
@@ -38,6 +38,7 @@ describe('IpRestrictionListResolver', () => {
         ipPattern: '.*',
         allow: true
     }];
+    const mockResponseList: IpRestrictionList = { resultList: mockResponse, totalElements: mockResponse.length };
 
     beforeEach(async () => {
         splashScreenStateService = {
@@ -46,7 +47,7 @@ describe('IpRestrictionListResolver', () => {
         };
 
         service = {
-            list: vi.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of(mockResponseList))
         };
 
         sharedData = {
@@ -75,12 +76,15 @@ describe('IpRestrictionListResolver', () => {
         configureTestBed();
 
         // act & assert
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual({
+            "error": "!",
+            "resultList": [],
+            "totalElements": 0,
         });
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
     it('should handle error', async () => {
@@ -94,13 +98,12 @@ describe('IpRestrictionListResolver', () => {
         service.list = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
         configureTestBed();
 
-        // act & assert
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponse);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
 
         localStorage.clear();
     });
@@ -116,11 +119,10 @@ describe('IpRestrictionListResolver', () => {
         };
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponseList);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

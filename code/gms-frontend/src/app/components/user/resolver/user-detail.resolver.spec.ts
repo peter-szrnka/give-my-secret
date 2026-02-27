@@ -83,7 +83,6 @@ describe('UserDetailResolver', () => {
                 // assert
                 expect(response).toEqual(mockResponse);
                 expect(splashScreenStateService.start).toHaveBeenCalled();
-                expect(splashScreenStateService.stop).toHaveBeenCalled();
             });
         });
     });

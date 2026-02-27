@@ -5,7 +5,6 @@ import { takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { VmOptionsComponent } from "../../common/components/vm-options/vm-options.component";
 import { VmOption } from "../../common/model/common.model";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
@@ -14,6 +13,7 @@ import { WINDOW_TOKEN } from "../../window.provider";
 import { SystemProperty } from "../system_property/model/system-property.model";
 import { UserData } from "../user/model/user-data.model";
 import { SetupService } from "./service/setup-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 const SYSTEM_STATUS_INDEX: {[key:string] :number} = {
     "NEED_SETUP": 0,
@@ -39,9 +39,9 @@ export const EMPTY_ADMIN_DATA : UserData = {
     imports: [
         AngularMaterialModule,
         FormsModule,
-        TranslatorModule,
         InformationMessageComponent,
-        VmOptionsComponent
+        VmOptionsComponent,
+        TranslatorPipe
     ]
 })
 export class SetupComponent extends BaseComponent implements OnInit {

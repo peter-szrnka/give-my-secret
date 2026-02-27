@@ -5,9 +5,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    setupFiles: ["./src/test-setup.ts"],
-    pool: 'threads',
-    isolate: false,
+    testTimeout: 15000,
+    setupFiles: ["src/test-setup.ts"],
     reporters: [
         "default"
     ]

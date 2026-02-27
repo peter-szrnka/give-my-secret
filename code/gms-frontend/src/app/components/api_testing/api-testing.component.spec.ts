@@ -13,8 +13,8 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { User } from "../user/model/user.model";
 import { ApiTestingComponent } from "./api-testing.component";
 import { ApiTestingService } from "./service/api-testing-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -33,7 +33,7 @@ describe('ApiTestingComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ ApiTestingComponent, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
+            imports : [ ApiTestingComponent, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorPipe ],
             providers : [
                 { provide : SharedDataService, useValue: sharedData },
                 { provide : ApiTestingService, useValue : service },
@@ -77,12 +77,12 @@ describe('ApiTestingComponent', () => {
         // arrange
         sharedData.getUserInfo = vi.fn().mockResolvedValue(undefined);
         configTestBed();
+        fixture.autoDetectChanges();
 
         component.apiKey = "test";
         component.secretId = "secret1";
 
         // act
-        fixture.autoDetectChanges();
         component.callApi();
 
         // assert
@@ -121,12 +121,12 @@ describe('ApiTestingComponent', () => {
             getSecretValue : vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
         };
         configTestBed();
+        fixture.detectChanges();
 
         component.apiKey = "api-key2";
         component.secretId = "secret-id2";
 
         // act
-        fixture.detectChanges();
         component.callApi();
 
         // assert

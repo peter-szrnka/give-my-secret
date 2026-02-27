@@ -1,9 +1,10 @@
-import { provideHttpClientTesting, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { Paging } from "../../../common/model/paging.model";
 import { Event } from "../model/event.model";
 import { EventService } from "./event-service";
+import { EventList } from "../model/event-list.model";
 
 const TEST_EVENT : Event = {
   id : 1,
@@ -24,7 +25,7 @@ describe("EventService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [provideHttpClientTesting()],
+        imports: [HttpClientTestingModule],
         providers : [EventService]
       });
       service = TestBed.inject(EventService);
@@ -52,6 +53,7 @@ describe("EventService", () => {
       // arrange
       const expectedUrl = environment.baseUrl + "secure/event/list?direction=asc&property=id&page=0&size=10";
       const mockResponse : Event[] = [TEST_EVENT];
+      const mockResponseList: EventList = { totalElements: mockResponse.length, resultList: mockResponse };
 
       // act
       const request : Paging = {
@@ -60,12 +62,12 @@ describe("EventService", () => {
         property: "id",
         size: 10
       };
-      service.list(request).subscribe((res) => expect(res).toBe(mockResponse));
+      service.list(request).subscribe((res) => expect(res).toEqual(mockResponseList));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(request);
+      req.flush(mockResponseList);
       httpMock.verify();
     });
 
@@ -73,6 +75,7 @@ describe("EventService", () => {
       // arrange
       const expectedUrl = environment.baseUrl + "secure/event/list/2?direction=asc&property=id&page=0&size=10";
       const mockResponse : Event[] = [TEST_EVENT];
+      const mockResponseList: EventList = { totalElements: mockResponse.length, resultList: mockResponse };
 
       // act
       const request : Paging = {
@@ -81,12 +84,12 @@ describe("EventService", () => {
         property: "id",
         size: 10
       };
-      service.listByUserId(request, 2).subscribe((res) => expect(res).toBe(mockResponse));
+      service.listByUserId(request, 2).subscribe((res) => expect(res).toEqual(mockResponseList));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(request);
+      req.flush(mockResponseList);
       httpMock.verify();
     });
 
@@ -95,7 +98,7 @@ describe("EventService", () => {
       const expectedUrl = environment.baseUrl + "secure/event/1";
 
       // act
-      service.getById(1).subscribe((res) => expect(res).toBe(TEST_EVENT));
+      service.getById(1).subscribe((res) => expect(res).toEqual(TEST_EVENT));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -114,7 +117,7 @@ describe("EventService", () => {
       const expectedUrl = environment.baseUrl + "secure/event/unprocessed";
 
       // act
-      service.getUnprocessedEventsCount().subscribe((res) => expect(res).toBe({ value: 1}));
+      service.getUnprocessedEventsCount().subscribe((res) => expect(res).toEqual({ value: 1}));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);

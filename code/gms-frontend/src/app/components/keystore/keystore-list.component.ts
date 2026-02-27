@@ -6,13 +6,13 @@ import { BaseListComponent } from "../../common/components/abstractions/componen
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { Keystore, PAGE_CONFIG_KEYSTORE } from "./model/keystore.model";
 import { KeystoreService } from "./service/keystore-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -27,8 +27,8 @@ import { KeystoreService } from "./service/keystore-service";
         NavBackComponent,
         MomentPipe,
         StatusToggleComponent,
-        TranslatorModule,
-        InformationMessageComponent
+        InformationMessageComponent,
+        TranslatorPipe
     ]
 })
 export class KeystoreListComponent extends BaseListComponent<Keystore, KeystoreService> {

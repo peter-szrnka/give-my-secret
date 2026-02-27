@@ -3,11 +3,9 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Data, provideRouter, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -17,6 +15,7 @@ import { ApiKey } from "./model/apikey.model";
 import { ApiKeyService } from "./service/apikey-service";
 import { routes } from "../../app.config";
 import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -34,9 +33,10 @@ describe('ApiKeyDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ApiKeyDetailComponent, provideRouter(routes), FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
+            imports : [ApiKeyDetailComponent, FormsModule, AngularMaterialModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                provideRouter(routes), 
                 { provide : Router, useValue : router},
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : DialogService, useValue : dialogService },
@@ -53,7 +53,7 @@ describe('ApiKeyDetailComponent', () => {
 
     beforeEach(() => {
         router = {
-
+            navigate: vi.fn()
         };
         sharedDataService = {
             refreshCurrentUserInfo: vi.fn()

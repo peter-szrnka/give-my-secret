@@ -1,4 +1,4 @@
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
@@ -25,7 +25,7 @@ describe("ApiKeyService", () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [provideHttpClientTesting()],
+        imports: [HttpClientTestingModule],
         providers : [ApiKeyService]
       });
       service = TestBed.inject(ApiKeyService);
@@ -82,7 +82,7 @@ describe("ApiKeyService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(request);
+      req.flush(mockResponse);
       httpMock.verify();
     });
 
@@ -109,7 +109,7 @@ describe("ApiKeyService", () => {
       };
 
       // act
-      service.getAllApiKeyNames().subscribe(res => expect(res).toBe(mockList));
+      service.getAllApiKeyNames().subscribe(res => expect(res).toEqual(mockList));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);

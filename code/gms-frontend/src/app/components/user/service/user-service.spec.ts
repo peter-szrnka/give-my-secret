@@ -1,4 +1,4 @@
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
@@ -14,13 +14,13 @@ const TEST_USER : User = {
 /**
  * @author Peter Szrnka
  */
-describe("SecretService", () => {
+describe("UserService", () => {
     let service : UserService;
     let httpMock : HttpTestingController;
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [provideHttpClientTesting()],
+        imports: [HttpClientTestingModule],
         providers : [UserService]
       });
       service = TestBed.inject(UserService);
@@ -77,7 +77,7 @@ describe("SecretService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(request);
+      req.flush(mockResponse);
       httpMock.verify();
     });
 

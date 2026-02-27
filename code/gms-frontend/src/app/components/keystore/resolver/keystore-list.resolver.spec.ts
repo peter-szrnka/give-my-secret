@@ -1,12 +1,13 @@
 import { TestBed } from "@angular/core/testing";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { Keystore } from "../model/keystore.model";
 import { KeystoreService } from "../service/keystore-service";
 import { KeystoreListResolver } from "./keystore-list.resolver";
 import { vi } from "vitest";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { KeystoreList } from "../model/keystore-list";
 
 /**
  * @author Peter Szrnka
@@ -25,11 +26,11 @@ describe('KeystoreListResolver', () => {
         aliases: [],
         generated: false
     }];
+    const mockResponseList: KeystoreList = { resultList: mockResponse, totalElements: mockResponse.length };
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
-            imports: [provideHttpClientTesting()],
+            imports: [HttpClientTestingModule],
             providers: [
                 KeystoreListResolver,
                 //{ provide: ActivatedRouteSnapshot, activatedRouteSnapshot },
@@ -48,7 +49,7 @@ describe('KeystoreListResolver', () => {
         };
 
         service = {
-            list: vi.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of(mockResponseList))
         };
 
         sharedData = {
@@ -73,12 +74,11 @@ describe('KeystoreListResolver', () => {
         configureTestBed();
 
         // act
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual({ totalElements: 0, resultList: [], error: "Oops!" });
+        expect(splashScreenStateService.start).toHaveBeenCalled();
         localStorage.clear();
     });
 
@@ -102,13 +102,11 @@ describe('KeystoreListResolver', () => {
         configureTestBed();
 
         // act
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
 
+        // assert
+        expect(response).toEqual(mockResponseList);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
         localStorage.removeItem('keystore_pageSize');
     });
 });

@@ -8,13 +8,13 @@ import { InformationMessageComponent } from "../../common/components/information
 import { ButtonConfig } from "../../common/components/nav-back/button-config";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { ApiKey, PAGE_CONFIG_API_KEY } from "./model/apikey.model";
 import { ApiKeyService } from "./service/apikey-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -27,7 +27,7 @@ import { ApiKeyService } from "./service/apikey-service";
         FormsModule,
         NavBackComponent,
         MomentPipe,
-        TranslatorModule,
+        TranslatorPipe,
         InformationMessageComponent
     ]
 })
