@@ -11,7 +11,7 @@ export default defineConfig({
         "default"
     ],
     isolate: false,
-    //pool: 'forks',
+    cache: false,
     css: false
   }
 });

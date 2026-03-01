@@ -120,7 +120,7 @@ export class MessageListComponent extends BaseComponent implements OnInit {
     }
 
     private getSelectedMessageIds(): number[] {
-        return this.results.filter(message => message.selected === true).map(message => message.id!!);
+        return this.results.filter(message => message.selected === true).map(message => message.id) as number[];
     }
 
     private promptDeleteAll(ids: number[], key: string, arg?: any): void {
