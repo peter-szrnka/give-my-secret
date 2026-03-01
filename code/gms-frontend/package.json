@@ -53,6 +53,7 @@
     "@typescript-eslint/parser": "^5.62.0",
     "@vitest/coverage-v8": "^4.0.18",
     "cross-env": "7.0.3",
+    "cross-fetch": "^4.1.0",
     "eslint": "^8.57.0",
     "eslint-config-standard-with-typescript": "^34.0.1",
     "eslint-plugin-jest": "^23.20.0",
