@@ -119,8 +119,8 @@ export class MessageListComponent extends BaseComponent implements OnInit {
         this.promptDeleteAll(ids, "dialog.deleteSelectedMessages", ids.length);
     }
 
-    private getSelectedMessageIds() {
-        return this.results.filter(message => message.selected === true).map(message => message.id) as number[];
+    private getSelectedMessageIds(): number[] {
+        return this.results.filter(message => message.selected === true).map(message => message.id!!);
     }
 
     private promptDeleteAll(ids: number[], key: string, arg?: any): void {
