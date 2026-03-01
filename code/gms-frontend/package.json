@@ -16,7 +16,7 @@
     "uiTest": "npx playwright test",
     "showUiReport": "npx playwright show-report",
     "clearTestCache": "jest --clearCache",
-    "coverage": "npm run test --coverage --detectOpenHandles",
+    "coverage": "ng test --no-watch --coverage",
     "lint": "eslint --ext .ts",
     "lint:fix": "eslint --ext .ts . --fix"
   },

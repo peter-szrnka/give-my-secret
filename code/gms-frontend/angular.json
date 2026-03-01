@@ -171,6 +171,14 @@
               "**/*.spec.ts"
             ],
             "exclude": ["**/ui-test/**"]
+          },
+          "configurations": {
+            "coverage": {
+              "coverage": true,
+              "coverageReporters": ["text", "text-summary", "lcov"],
+              "include": ["**/*.spec.ts"],
+              "exclude": ["**/ui-test/**"]
+            }
           }
         },
         "extract-i18n": {
