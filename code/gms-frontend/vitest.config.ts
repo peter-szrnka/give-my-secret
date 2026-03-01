@@ -9,6 +9,8 @@ export default defineConfig({
     setupFiles: ["src/test-setup.ts"],
     reporters: [
         "default"
-    ]
+    ],
+    isolate: false,
+    cache: false
   }
 });
