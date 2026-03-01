@@ -11,15 +11,7 @@ export default defineConfig({
         "default"
     ],
     isolate: false,
-    cache: false,
-    pool: 'vmThreads',
-    css: false,
-    deps: {
-      optimizer:{
-        web: {
-          enabled: true,
-        }
-      }
-    }
+    //pool: 'forks',
+    css: false
   }
 });
