@@ -102,7 +102,7 @@ export class MessageListComponent extends BaseComponent implements OnInit {
             return;
         }
 
-        const ids: number[] = this.results.filter(message => message.selected === true).map(message => message.id) as number[];
+        const ids: number[] = this.getSelectedMessageIds();
         this.service.markAsRead(ids, true).pipe(takeUntil(this.destroy$)).subscribe(() => this.fetchData());
     }
 
@@ -115,8 +115,12 @@ export class MessageListComponent extends BaseComponent implements OnInit {
             return;
         }
 
-        const ids: number[] = this.results.filter(message => message.selected === true).map(message => message.id) as number[];
+        const ids: number[] = this.getSelectedMessageIds();
         this.promptDeleteAll(ids, "dialog.deleteSelectedMessages", ids.length);
+    }
+
+    private getSelectedMessageIds() {
+        return this.results.filter(message => message.selected === true).map(message => message.id) as number[];
     }
 
     private promptDeleteAll(ids: number[], key: string, arg?: any): void {
