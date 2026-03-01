@@ -16,7 +16,7 @@
     "uiTest": "npx playwright test",
     "showUiReport": "npx playwright show-report",
     "clearTestCache": "jest --clearCache",
-    "coverage": "ng test --no-watch --coverage",
+    "coverage": "ng run gms-frontend:coverage",
     "lint": "eslint --ext .ts",
     "lint:fix": "eslint --ext .ts . --fix"
   },

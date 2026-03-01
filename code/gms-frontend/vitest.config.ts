@@ -9,12 +9,6 @@ export default defineConfig({
     setupFiles: ["src/test-setup.ts"],
     reporters: [
         "default"
-    ],
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "text-summary", "lcov"],
-      include: ["src/**/*.ts"],
-      exclude: ["**/*.spec.ts", "src/test-setup.ts", "node_modules/**"]
-    }
+    ]
   }
 });

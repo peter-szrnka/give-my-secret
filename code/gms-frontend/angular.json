@@ -171,14 +171,28 @@
               "**/*.spec.ts"
             ],
             "exclude": ["**/ui-test/**"]
-          },
-          "configurations": {
-            "coverage": {
-              "coverage": true,
-              "coverageReporters": ["text", "text-summary", "lcov"],
-              "include": ["**/*.spec.ts"],
-              "exclude": ["**/ui-test/**"]
-            }
+          }
+        },
+        "coverage": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "runner": "vitest",
+            "runnerConfig": "vitest.config.ts",
+            "setupFiles": ["src/test-setup.ts"],
+            "include": [
+              "**/*.spec.ts"
+            ],
+            "exclude": ["**/ui-test/**"],
+            "coverage": true,
+            "coverageReporters": [
+              "text", "text-summary", "lcov"
+            ],
+            "coverageExclude": [
+              "node_modules/**",
+              "src/**/*.spec.ts",
+              "src/test-setup.ts",
+              "src/vitest-env.d.ts"
+            ]
           }
         },
         "extract-i18n": {
