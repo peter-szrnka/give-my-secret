@@ -4,6 +4,7 @@ import { environment } from "../../../../environments/environment";
 import { Paging } from "../../../common/model/paging.model";
 import { Message } from "../model/message.model";
 import { MessageService } from "./message-service";
+import { MessageList } from "../model/message-list.model";
 
 const TEST_MESSAGE : Message = {
   id: 1,
@@ -49,6 +50,7 @@ describe("MessageService", () => {
       // arrange
       const expectedUrl = environment.baseUrl + "secure/message/list?direction=asc&property=id&page=0&size=10";
       const mockResponse : Message[] = [TEST_MESSAGE];
+      const mockResponseList: MessageList = { resultList: mockResponse, totalElements: mockResponse.length };
 
       // act
       const request : Paging = {
@@ -57,12 +59,12 @@ describe("MessageService", () => {
         property: "id",
         size: 10
       };
-      service.list(request).subscribe((res) => expect(res).toEqual(mockResponse));
+      service.list(request).subscribe((res) => expect(res).toEqual(mockResponseList));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toEqual('GET');
-      req.flush(mockResponse);
+      req.flush(mockResponseList);
       httpMock.verify();
     });
 
@@ -91,7 +93,7 @@ describe("MessageService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toEqual('GET');
-      req.flush(mockResponse);
+      req.flush({ value: mockResponse });
       httpMock.verify();
     });
 

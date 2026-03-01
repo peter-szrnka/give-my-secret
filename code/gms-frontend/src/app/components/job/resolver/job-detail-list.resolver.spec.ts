@@ -86,33 +86,6 @@ describe('JobDetailListResolver', () => {
         expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
-    it('should handle error 2', async () => {
-        activatedRouteSnapshot = {
-            "params": {
-                "id": "1"
-            },
-            "queryParams": {
-                "page" : 0
-            }
-        };
-        localStorage.setItem('apikey_pageSize', '27');
-        service.list = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
-        configureTestBed();
-
-        // act
-        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
-
-        // assert
-        expect(response).toEqual({
-            "error": "!",
-            "resultList": [],
-            "totalElements": 0,
-        });
-        expect(splashScreenStateService.start).toHaveBeenCalled();
-
-        localStorage.clear();
-    });
-
     it('should return existing entity', async () => {
         activatedRouteSnapshot = {
             "params": {

@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { catchError, takeUntil } from "rxjs";
+import { catchError, of, takeUntil } from "rxjs";
 import { ConfirmDeleteDialog } from "../../common/components/confirm-delete/confirm-delete-dialog.component";
 import { InfoDialog } from "../../common/components/info-dialog/info-dialog.component";
 import { DialogService } from "../../common/service/dialog-service";
@@ -163,11 +163,19 @@ export class SystemPropertyListComponent extends BaseComponent implements OnInit
     }
 
     this.activatedRoute.data
-      .pipe(catchError(async () => this.initDefaultDataTable()), takeUntil(this.destroy$))
-      .subscribe((response: any) => {
-        this.count = response.data.totalElements;
-        this.datasource = new MatTableDataSource<SystemPropertyElement>(this.convertToElements(response.data.resultList));
-      });
+    .pipe(
+      catchError(() => {
+        this.initDefaultDataTable();
+        return of({ data: { resultList: [], totalElements: 0 } });
+      }),
+      takeUntil(this.destroy$)
+    )
+    .subscribe((response: any) => {
+      this.count = response.data.totalElements;
+      this.datasource = new MatTableDataSource<SystemPropertyElement>(
+        this.convertToElements(response.data.resultList)
+      );
+    });
   }
 
   applyFilter(event: any) {

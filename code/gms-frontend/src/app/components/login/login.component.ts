@@ -17,7 +17,6 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
 @Component({
     selector: 'login',
     templateUrl: './login.component.html',
-    standalone: true,
     imports: [RouterModule, AngularMaterialModule, FormsModule, TranslatorPipe]
 })
 export class LoginComponent extends BaseLoginComponent {

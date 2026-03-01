@@ -32,6 +32,10 @@ describe("EventService", () => {
       httpMock = TestBed.inject(HttpTestingController);
     });
 
+    afterEach(() => {
+      httpMock.verify();
+    });
+
     it('should be created', () => {
       expect(service).toBeTruthy();
     });
@@ -46,7 +50,6 @@ describe("EventService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('DELETE');
-      httpMock.verify();
     });
 
     it('Should list results', () => {
@@ -68,7 +71,6 @@ describe("EventService", () => {
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
       req.flush(mockResponseList);
-      httpMock.verify();
     });
 
     it('Should list results by user id', () => {
@@ -84,13 +86,12 @@ describe("EventService", () => {
         property: "id",
         size: 10
       };
-      service.listByUserId(request, 2).subscribe((res) => expect(res).toEqual(mockResponseList));
+      service.listByUserId(request, 2).subscribe((res) => expect(res).toEqual(mockResponseList.resultList));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
       req.flush(mockResponseList);
-      httpMock.verify();
     });
 
     it('Should return by id', () => {
@@ -104,7 +105,6 @@ describe("EventService", () => {
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
       req.flush(TEST_EVENT);
-      httpMock.verify();
     });
 
     it('should enable entity', () => {
@@ -123,6 +123,5 @@ describe("EventService", () => {
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
       req.flush({ value: 1 });
-      httpMock.verify();
     });
 });

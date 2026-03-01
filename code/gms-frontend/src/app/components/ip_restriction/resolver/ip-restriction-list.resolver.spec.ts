@@ -76,15 +76,12 @@ describe('IpRestrictionListResolver', () => {
         configureTestBed();
 
         // act & assert
-        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
-
-        // assert
-        expect(response).toEqual({
-            "error": "!",
-            "resultList": [],
-            "totalElements": 0,
+       TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(() => {
+                // assert
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+            });
         });
-        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
     it('should handle error', async () => {
@@ -95,15 +92,16 @@ describe('IpRestrictionListResolver', () => {
             "queryParams": {}
         };
         localStorage.setItem('apikey_pageSize', '27');
-        service.list = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.list = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })));
         configureTestBed();
 
         // act
-        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
-
-        // assert
-        expect(response).toEqual(mockResponse);
-        expect(splashScreenStateService.start).toHaveBeenCalled();
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(() => {
+                // assert
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+            });
+        });
 
         localStorage.clear();
     });

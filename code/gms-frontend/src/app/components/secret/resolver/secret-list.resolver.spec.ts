@@ -74,7 +74,6 @@ describe('SecretListResolver', () => {
         const response = firstValueFrom(resolver.resolve(activatedRouteSnapshot));
 
         // assert
-        // TODO expect(response).toEqual(mockResponse);
         expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

@@ -22,7 +22,6 @@ describe('IpRestrictionDetailResolver', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
             imports: [HttpClientTestingModule],
             providers: [
                 IpRestrictionDetailResolver,

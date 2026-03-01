@@ -161,7 +161,6 @@ describe('SystemPropertyListComponent', () => {
         // act &assert
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
-        //expect(informationService.getVmOptions).toHaveBeenCalled();
     });
 
     it('Should save fail', () => {

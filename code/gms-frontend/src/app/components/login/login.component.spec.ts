@@ -118,7 +118,7 @@ describe('LoginComponent', () => {
         // arrange
         activatedRoute = {
             snapshot : {
-                queryParams: inputQueryParam
+                queryParams: inputQueryParam ?? {}
             }
         };
         authService = {

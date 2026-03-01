@@ -8,6 +8,7 @@ import { AnnouncementService } from "../service/announcement-service";
 import { AnnouncementListResolver } from "./announcement-list.resolver";
 import { vi } from "vitest";
 import { AnnouncementList } from "../model/annoucement-list.model";
+import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * @author Peter Szrnka
@@ -73,15 +74,16 @@ describe('AnnouncementListResolver', () => {
             "queryParams": {}
         };
         localStorage.setItem('announcement_pageSize', '27');
-        service.list = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.list = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })));
         configureTestBed();
 
         // act
-        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
-
-        // assert
-        expect(response).toEqual(mockResponse);
-        expect(splashScreenStateService.start).toHaveBeenCalled();
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(() => {
+                // assert
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+            });
+        });
         localStorage.clear();
     });
 

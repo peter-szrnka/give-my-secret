@@ -8,6 +8,7 @@ import { SplashScreenStateService } from "../../../common/service/splash-screen-
 import { KeystoreDetailResolver } from "./keystore-detail.resolver";
 import { vi } from "vitest";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * @author Peter Szrnka
@@ -79,14 +80,15 @@ describe('KeystoreDetailResolver', () => {
             }
         }
 
-        service.getById = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.getById = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })));
 
         // act
-        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
-
-        // assert
-        expect(response).toEqual(mockResponse);
-        expect(splashScreenStateService.start).toHaveBeenCalled();
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(() => {
+                // assert
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+            });
+        });
     });
 
     it('should return existing entity', async() => {

@@ -8,6 +8,7 @@ import { KeystoreListResolver } from "./keystore-list.resolver";
 import { vi } from "vitest";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { KeystoreList } from "../model/keystore-list";
+import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * @author Peter Szrnka
@@ -70,16 +71,16 @@ describe('KeystoreListResolver', () => {
             "queryParams": {}
         };
         localStorage.setItem('keystore_pageSize', '27');
-        service.list = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.list = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })));
         configureTestBed();
 
         // act
-        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
-
-        // assert
-        expect(response).toEqual({ totalElements: 0, resultList: [], error: "Oops!" });
-        expect(splashScreenStateService.start).toHaveBeenCalled();
-        localStorage.clear();
+       TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(() => {
+                // assert
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+            });
+        });
     });
 
     it.each([

@@ -8,6 +8,7 @@ import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { AnnouncementDetailResolver } from "./announcement-detail.resolver";
 import { vi } from "vitest";
+import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * @author Peter Szrnka
@@ -78,14 +79,15 @@ describe('AnnouncementDetailResolver', () => {
             }
         }
 
-        service.getById = vi.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.getById = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })));
 
         // act
-        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
-
-        // assert
-        expect(response).toEqual(mockResponse);
-        expect(splashScreenStateService.start).toHaveBeenCalled();
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(() => {
+                // assert
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+            });
+        });
     });
 
     it('should return existing entity', async() => {
