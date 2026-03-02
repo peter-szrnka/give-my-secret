@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, RouterModule } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { routes } from './app.config';
 import { ROLE_GUARD } from './common/interceptor/role-guard';
 import { ErrorCodeResolver } from './components/help/resolver/error-code.resolver';
@@ -15,7 +15,7 @@ class DummyComponent {}
 /**
  * @author Peter Szrnka
  */
-describe.skip('Routing Config', () => {
+describe('Routing Config', () => {
   let router: Router;
   let fixture: ComponentFixture<DummyComponent>;
   let location: Location;
@@ -24,10 +24,10 @@ describe.skip('Routing Config', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        DummyComponent,
-        RouterModule.forRoot(routes)
+        DummyComponent
       ],
       providers: [
+        provideRouter(routes), 
         HttpClientTestingModule,
         {
           provide: ROLE_GUARD,
@@ -76,7 +76,6 @@ describe.skip('Routing Config', () => {
   ])('should navigate to component', async(navInput: string) => {
     await router.navigate([navInput]);
     await fixture.whenStable();
-    await new Promise(r => setTimeout(r, 10));
 
     expect(location.path()).toEqual(navInput);
   });
