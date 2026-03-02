@@ -18,4 +18,5 @@ export default defineConfig({
     css: false,
     maxConcurrency: isCI ? 1 : undefined,
     fileParallelism: false
+  }
 });
