@@ -1,8 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslatorModule } from '../../common/components/pipes/translator/translator.module';
 import { SharedDataService } from '../../common/service/shared-data-service';
 import { NavMenuComponent } from './nav-menu.component';
+import { vi } from 'vitest';
+import { TranslatorPipe } from '../../common/components/pipes/translator/translator.pipe';
 
 /**
  * @author Peter Szrnka
@@ -15,7 +16,7 @@ describe('NavMenuComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [TranslatorModule],
+            imports: [TranslatorPipe],
             declarations : [NavMenuComponent],
             providers: [
                 { provide : SharedDataService, useValue : sharedDataService }
@@ -30,7 +31,7 @@ describe('NavMenuComponent', () => {
 
     beforeEach(() => {
         mockShowLargeMenuEvent = {
-            emit : jest.fn()
+            emit : vi.fn()
         };
 
         sharedDataService = {

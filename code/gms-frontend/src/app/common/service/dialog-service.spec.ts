@@ -4,6 +4,7 @@ import { of } from "rxjs";
 import { ConfirmDeleteDialog } from "../components/confirm-delete/confirm-delete-dialog.component";
 import { DialogService } from "./dialog-service";
 import { InfoDialog } from "../components/info-dialog/info-dialog.component";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -14,7 +15,7 @@ describe('DialogService', () => {
 
     beforeEach(() => {
         dialog = {
-            open: jest.fn().mockReturnValue({ afterClosed: () => of(true) })
+            open: vi.fn().mockReturnValue({ afterClosed: () => of(true) })
         };
 
         TestBed.configureTestingModule({

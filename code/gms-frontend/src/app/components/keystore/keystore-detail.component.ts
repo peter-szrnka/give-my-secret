@@ -10,7 +10,6 @@ import { BaseDetailComponent } from "../../common/components/abstractions/compon
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -19,6 +18,7 @@ import { getErrorMessage } from "../../common/utils/error-utils";
 import { KeystoreAlias } from "./model/keystore-alias.model";
 import { Keystore, PAGE_CONFIG_KEYSTORE } from "./model/keystore.model";
 import { KeystoreService } from "./service/keystore-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 const ENABLED_ALGORITHMS : string[] = [
   "MD2WITHRSA",
@@ -53,8 +53,8 @@ const ENABLED_ALGORITHMS : string[] = [
       FormsModule,
       NavBackComponent,
       MomentPipe,
-      TranslatorModule,
-      InformationMessageComponent
+      InformationMessageComponent,
+      TranslatorPipe
   ]
 })
 export class KeystoreDetailComponent extends BaseDetailComponent<Keystore, KeystoreService> {

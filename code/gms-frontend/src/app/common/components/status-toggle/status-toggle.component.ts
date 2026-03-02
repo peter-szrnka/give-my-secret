@@ -1,7 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AngularMaterialModule } from '../../../angular-material-module';
-import { TranslatorModule } from '../pipes/translator/translator.module';
 import { TranslatorService } from '../../service/translator-service';
 
 /**
@@ -10,8 +9,7 @@ import { TranslatorService } from '../../service/translator-service';
 @Component({
     standalone: true,
     imports: [
-        AngularMaterialModule,
-        TranslatorModule
+        AngularMaterialModule
     ],
     providers: [
         MatSnackBar

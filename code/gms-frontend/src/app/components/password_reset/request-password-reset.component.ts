@@ -4,15 +4,15 @@ import { Router, RouterModule } from "@angular/router";
 import { takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { DialogService } from "../../common/service/dialog-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { ResetPasswordRequestService } from "./service/request-password-reset.service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 @Component({
     selector: 'request-password-reset',
     templateUrl: './request-password-reset.component.html',
-    imports: [AngularMaterialModule, RouterModule, FormsModule, TranslatorModule]
+    imports: [AngularMaterialModule, RouterModule, FormsModule, TranslatorPipe]
 })
 export class RequestPasswordResetComponent extends BaseComponent {
 

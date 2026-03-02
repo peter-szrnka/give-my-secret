@@ -15,8 +15,9 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { WINDOW_TOKEN } from "../../window.provider";
 import { User } from "../user/model/user.model";
 import { VerifyComponent } from "./verify.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { LoggerService } from "../../common/service/logger-service";
+import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -38,7 +39,7 @@ describe('VerifyComponent', () => {
 
     const configTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ VerifyComponent, RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorModule ],
+            imports : [ VerifyComponent, RouterTestingModule, FormsModule, AngularMaterialModule, NoopAnimationsModule, TranslatorPipe ],
             providers: [
                 { provide : WINDOW_TOKEN, useValue : mockWindow },
                 { provide : Router, useValue: router },
@@ -66,27 +67,27 @@ describe('VerifyComponent', () => {
         };
 
         router = {
-            navigate : jest.fn().mockResolvedValue(true),
-            navigateByUrl : jest.fn().mockResolvedValue(true),
-            getCurrentNavigation: jest.fn().mockReturnValue({
+            navigate : vi.fn().mockResolvedValue(true),
+            navigateByUrl : vi.fn().mockResolvedValue(true),
+            getCurrentNavigation: vi.fn().mockReturnValue({
                 extras: { state: { username: 'user-1' } }
             })
         };
 
         mockSubject = new ReplaySubject<any>();
         sharedDataService = {
-            refreshCurrentUserInfo : jest.fn(),
+            refreshCurrentUserInfo : vi.fn(),
             userSubject$ : mockSubject,
-            navigationChangeEvent: jest.fn().mockReturnValue(new EventEmitter<string>())
+            navigationChangeEvent: vi.fn().mockReturnValue(new EventEmitter<string>())
         };
 
         dialog = {
-            open : jest.fn()
+            open : vi.fn()
         };
 
         splashScreenStateService = {
-            start : jest.fn(),
-            stop : jest.fn()
+            start : vi.fn(),
+            stop : vi.fn()
         };
 
         const mockCurrentUser: User = {
@@ -98,11 +99,11 @@ describe('VerifyComponent', () => {
             phase: AuthenticationPhase.COMPLETED
         };
         authService = {
-            verifyLogin : jest.fn().mockReturnValue(of(mockResponse))
+            verifyLogin : vi.fn().mockReturnValue(of(mockResponse))
         };
 
         mockLocation = {
-            path: jest.fn().mockReturnValue("/")
+            path: vi.fn().mockReturnValue("/")
         };
 
         activatedRoute = {
@@ -113,12 +114,12 @@ describe('VerifyComponent', () => {
         };
 
         loggerService = {
-            error: jest.fn()
+            error: vi.fn()
         };
     });
 
     afterEach(() => {
-        jest.resetAllMocks();
+        vi.resetAllMocks();
     });
 
     it('Should forced call redirected', () => {
@@ -132,7 +133,7 @@ describe('VerifyComponent', () => {
 
     it('Should fail by unknown error', async () => {
         authService = {
-            verifyLogin : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+            verifyLogin : vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
         };
 
         configTestBed();
@@ -158,7 +159,7 @@ describe('VerifyComponent', () => {
             phase: AuthenticationPhase.COMPLETED
         };
         authService = {
-            verifyLogin : jest.fn().mockReturnValue(of(mockResponse))
+            verifyLogin : vi.fn().mockReturnValue(of(mockResponse))
         };
         configTestBed();
         component.formModel.verificationCode = "123456";
@@ -182,7 +183,7 @@ describe('VerifyComponent', () => {
             phase: AuthenticationPhase.COMPLETED
         };
         authService = {
-            verifyLogin : jest.fn().mockReturnValue(of(mockResponse))
+            verifyLogin : vi.fn().mockReturnValue(of(mockResponse))
         };
         activatedRoute.snapshot.queryParams['previousUrl'] = '/secret/list';
         configTestBed();
@@ -206,7 +207,7 @@ describe('VerifyComponent', () => {
             phase: AuthenticationPhase.FAILED
         };
         authService = {
-            verifyLogin : jest.fn().mockReturnValue(of(mockResponse))
+            verifyLogin : vi.fn().mockReturnValue(of(mockResponse))
         };
         configTestBed();
         component.formModel.verificationCode = "123456";

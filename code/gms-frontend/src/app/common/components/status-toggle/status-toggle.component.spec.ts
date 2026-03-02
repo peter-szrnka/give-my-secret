@@ -5,6 +5,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { NgIf } from "@angular/common";
 import { AngularMaterialModule } from "../../../angular-material-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -18,7 +19,7 @@ describe('StatusToggleComponent', () => {
 
     beforeEach(() => {
         snackbar = {
-            open : jest.fn()
+            open : vi.fn()
         };
         TestBed.configureTestingModule({
             imports : [ StatusToggleComponent, AngularMaterialModule, NgIf, NoopAnimationsModule ],

@@ -39,8 +39,7 @@ public class KeystoreController extends AbstractClientController<KeystoreService
 	}
 
 	@PostMapping(consumes = {
-			MediaType.MULTIPART_FORM_DATA_VALUE,
-			MediaType.MULTIPART_MIXED_VALUE
+			MediaType.MULTIPART_FORM_DATA_VALUE
 	}, produces = {
 			MediaType.APPLICATION_JSON_VALUE
 	})

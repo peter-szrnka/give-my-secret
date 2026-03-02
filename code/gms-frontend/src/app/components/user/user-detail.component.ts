@@ -8,7 +8,6 @@ import { BaseSaveableDetailComponent } from "../../common/components/abstraction
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -17,6 +16,7 @@ import { Event } from "../event/model/event.model";
 import { EventService } from "../event/service/event-service";
 import { PAGE_CONFIG_USER, UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 const EVENT_LIST_FILTER = {
   direction: "DESC",
@@ -37,8 +37,8 @@ const ALL_STATUS: string[] = [ 'ACTIVE', 'BLOCKED', 'DISABLED', 'DELETE_REQUESTE
       FormsModule,
       MomentPipe,
       NavBackComponent,
-      TranslatorModule,
-      InformationMessageComponent
+      InformationMessageComponent,
+      TranslatorPipe
   ]
 })
 export class UserDetailComponent extends BaseSaveableDetailComponent<UserData, UserService> {

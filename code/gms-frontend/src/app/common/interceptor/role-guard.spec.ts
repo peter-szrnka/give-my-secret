@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { SharedDataService } from "../service/shared-data-service";
 import { ROLE_GUARD } from "./role-guard";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -35,7 +36,7 @@ describe('RoleGuard', () => {
     ])('should return false when no data provided', async (routeData: any) => {
         // arrange
         sharedData = {
-            getUserInfo : jest.fn().mockReturnValue(userData)
+            getUserInfo : vi.fn().mockReturnValue(userData)
         };
 
         configureTestBed();
@@ -50,7 +51,7 @@ describe('RoleGuard', () => {
     it('should return true', async () => {
         // arrange
         sharedData = {
-            getUserInfo : jest.fn().mockReturnValue(userData)
+            getUserInfo : vi.fn().mockReturnValue(userData)
         };
 
         configureTestBed();
@@ -65,7 +66,7 @@ describe('RoleGuard', () => {
     it('should return false', async() => {
         // arrange
         sharedData = {
-            getUserInfo : jest.fn().mockReturnValue(userData)
+            getUserInfo : vi.fn().mockReturnValue(userData)
         };
         configureTestBed();
 
@@ -79,7 +80,7 @@ describe('RoleGuard', () => {
     it('should deny empty user', async () => {
         // arrange
         sharedData = {
-            getUserInfo : jest.fn().mockReturnValue(undefined)
+            getUserInfo : vi.fn().mockReturnValue(undefined)
         };
         configureTestBed();
  

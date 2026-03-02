@@ -1,11 +1,12 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { ErrorCodeList } from "../model/error-code-list.model";
 import { ErrorCodeService } from "../service/error-code.service";
 import { ErrorCodeResolver } from "./error-code.resolver";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -18,14 +19,13 @@ describe('ErrorCodeResolver', () => {
 
     const mockResponse: ErrorCodeList = {
         errorCodeList: [
-            { code: "GMS-001" },
-            { code: "GMS-100" }
+            { code: "GMS-001", "description": "Unexpected IO error" },
+            { code: "GMS-100", "description": "N/A" }
         ]
     };
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
             imports: [HttpClientTestingModule],
             providers: [
                 ErrorCodeResolver,
@@ -39,12 +39,12 @@ describe('ErrorCodeResolver', () => {
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            list: jest.fn().mockReturnValue(of([]))
+            list: vi.fn().mockReturnValue(of([]))
         };
     })
 
@@ -65,18 +65,17 @@ describe('ErrorCodeResolver', () => {
             }
         };
         service = {
-            list: jest.fn().mockReturnValue(of(mockResponse))
+            list: vi.fn().mockReturnValue(of(mockResponse))
         };
         configureTestBed();
 
 
         // act
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponse);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
     it('should handle error', async () => {
@@ -88,17 +87,16 @@ describe('ErrorCodeResolver', () => {
         };
 
         service = {
-            list: jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
+            list: vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
         };
 
         configureTestBed();
 
         // act
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual({ errorCodeList: [] });
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

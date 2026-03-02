@@ -7,13 +7,13 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { Event } from "../event/model/event.model";
 import { User } from "../user/model/user.model";
 import { EMPTY_HOME_DATA, HomeData } from "./model/home-data.model";
 import { SystemAnnouncement } from "./model/system-announcement.model";
 import { HomeService } from "./service/home.service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 export enum PageStatus {
     LOADING = 0,
@@ -33,7 +33,7 @@ export enum PageStatus {
         RouterModule,
         MomentPipe,
         InformationMessageComponent,
-        TranslatorModule
+        TranslatorPipe
     ]
 })
 export class HomeComponent extends BaseComponent implements OnInit {

@@ -6,7 +6,7 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
@@ -16,6 +16,7 @@ import { SystemPropertyService } from "./service/system-property.service";
 import { SystemPropertyListComponent } from "./system-property-list.component";
 import { InformationService } from "../../common/service/info-service";
 import { VmOption } from "../../common/model/common.model";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -38,7 +39,7 @@ describe('SystemPropertyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports: [SystemPropertyListComponent, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule],
+            imports: [SystemPropertyListComponent, FormsModule, AngularMaterialModule, MomentPipe, TranslatorPipe],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide: Router, useValue: router },
@@ -58,17 +59,18 @@ describe('SystemPropertyListComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate: jest.fn().mockReturnValue(of(true))
+            navigate: vi.fn().mockReturnValue(of(true))
         };
 
         sharedDataService = {
-            getUserInfo: jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo: vi.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: vi.fn(),
+            checkSystemReady: vi.fn()
         };
 
         dialogService = {
-            openNewDialog: jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of({ result: true })) }),
-            openConfirmDeleteDialog: jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of({ result: true })) }),
+            openNewDialog: vi.fn().mockReturnValue({ afterClosed: vi.fn().mockReturnValue(of({ result: true })) }),
+            openConfirmDeleteDialog: vi.fn().mockReturnValue({ afterClosed: vi.fn().mockReturnValue(of({ result: true })) }),
         }
 
         activatedRoute = class {
@@ -126,16 +128,16 @@ describe('SystemPropertyListComponent', () => {
         };
 
         service = {
-            save: jest.fn().mockReturnValue(of("")),
-            delete: jest.fn().mockReturnValue(of("OK"))
+            save: vi.fn().mockReturnValue(of("")),
+            delete: vi.fn().mockReturnValue(of("OK"))
         };
 
         splashScreenService = {
-            start: jest.fn()
+            start: vi.fn()
         };
 
         infoService = {
-            getVmOptions: jest.fn().mockReturnValue(of([{ key: 'testKey', value: 'value1' } as VmOption]))
+            getVmOptions: vi.fn().mockReturnValue(of([{ key: 'testKey', value: 'value1' } as VmOption]))
         };
     });
 
@@ -152,19 +154,18 @@ describe('SystemPropertyListComponent', () => {
     it('Should return empty table | Invalid user', () => {
         // arrange
         sharedDataService = {
-            getUserInfo: jest.fn().mockReturnValue(undefined)
+            getUserInfo: vi.fn().mockReturnValue(undefined)
         };
         configureTestBed();
 
         // act &assert
         expect(component).toBeTruthy();
         expect(component.sharedData.getUserInfo).toHaveBeenCalled();
-        //expect(informationService.getVmOptions).toHaveBeenCalled();
     });
 
     it('Should save fail', () => {
         // arrange
-        service.save = jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("OOPS!"), status: 500, statusText: "OOPS!" })));
+        service.save = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("OOPS!"), status: 500, statusText: "OOPS!" })));
         configureTestBed();
 
         expect(component).toBeTruthy();
@@ -227,7 +228,7 @@ describe('SystemPropertyListComponent', () => {
         // arrange
         configureTestBed();
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of({ result: true })) });
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed: vi.fn().mockReturnValue(of({ result: true })) });
 
         // act
         component.promptDelete({ key: 'X', value: 'value', type: 'string' } as SystemProperty);
@@ -240,11 +241,11 @@ describe('SystemPropertyListComponent', () => {
 
     it('Should cancel dialog after delete', () => {
         // arrange
-        dialogService.openConfirmDeleteDialog = jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of({ result: false })) });
+        dialogService.openConfirmDeleteDialog = vi.fn().mockReturnValue({ afterClosed: vi.fn().mockReturnValue(of({ result: false })) });
         configureTestBed();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of({ result: false })) });
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed: vi.fn().mockReturnValue(of({ result: false })) });
 
         // act
         component.promptDelete({ key: 'REFRESH_JWT_ALGORITHM', value: 'value', type: 'string', callbackMethod: 'checkSystemReady' } as SystemProperty);

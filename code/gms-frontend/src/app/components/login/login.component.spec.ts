@@ -12,6 +12,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { EMPTY_USER } from "../user/model/user.model";
 import { LoginComponent } from "./login.component";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -50,28 +51,31 @@ describe('LoginComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn().mockReturnValue(of(true)),
+            navigate : vi.fn().mockReturnValue(of(true)),
             events: new Subject(),
-            createUrlTree: jest.fn().mockReturnValue({}), // <-- this fixes the error
-            serializeUrl: jest.fn().mockReturnValue('')   // <-- optional but recommended
+            createUrlTree: vi.fn().mockReturnValue({}),
+            serializeUrl: vi.fn().mockReturnValue('')
         };
 
         sharedDataService = {
-            refreshCurrentUserInfo : jest.fn(),
-            systemReady: true
+            refreshCurrentUserInfo : vi.fn(),
+            systemReady: true,
+            navigationChangeEvent: {
+                emit: vi.fn()
+            }
         };
 
         dialogService = {
-            openNewDialog : jest.fn()
+            openNewDialog : vi.fn()
         };
 
         splashScreenStateService = {
-            start : jest.fn(),
-            stop : jest.fn()
+            start : vi.fn(),
+            stop : vi.fn()
         };
 
         authService = {
-            login : jest.fn().mockImplementation(() => {
+            login : vi.fn().mockImplementation(() => {
                 return of({
                     currentUser:  {
                         role: "ROLE_USER"
@@ -82,7 +86,7 @@ describe('LoginComponent', () => {
         };
 
         mockLocation = {
-            path: jest.fn().mockReturnValue("/")
+            path: vi.fn().mockReturnValue("/")
         };
 
         activatedRoute = {
@@ -114,11 +118,11 @@ describe('LoginComponent', () => {
         // arrange
         activatedRoute = {
             snapshot : {
-                queryParams: inputQueryParam
+                queryParams: inputQueryParam ?? {}
             }
         };
         authService = {
-            login : jest.fn().mockImplementation(() => {
+            login : vi.fn().mockImplementation(() => {
                 return of({
                     currentUser:  {
                         role: inputRole
@@ -196,7 +200,7 @@ describe('LoginComponent', () => {
             phase: AuthenticationPhase.MFA_REQUIRED
         };
         authService = {
-            login : jest.fn().mockImplementation(() => {
+            login : vi.fn().mockImplementation(() => {
                 return of(mockResponse);
             })
         };
@@ -229,7 +233,7 @@ describe('LoginComponent', () => {
             phase: AuthenticationPhase.BLOCKED
         };
         authService = {
-            login : jest.fn().mockImplementation(() => {
+            login : vi.fn().mockImplementation(() => {
                 return of(mockResponse);
             })
         };
@@ -253,7 +257,7 @@ describe('LoginComponent', () => {
             phase: AuthenticationPhase.MFA_REQUIRED
         };
         authService = {
-            login : jest.fn().mockImplementation(() => {
+            login : vi.fn().mockImplementation(() => {
                 return of(mockResponse);
             })
         };
@@ -274,7 +278,7 @@ describe('LoginComponent', () => {
 
     it('Should fail after login', () => {
         authService = {
-            login : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+            login : vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
         };
 
         configTestBed();

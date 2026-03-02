@@ -2,12 +2,10 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, Data, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { ActivatedRoute, Data, provideRouter, Router } from "@angular/router";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -15,6 +13,9 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { ApiKeyDetailComponent } from "./apikey-detail.component";
 import { ApiKey } from "./model/apikey.model";
 import { ApiKeyService } from "./service/apikey-service";
+import { routes } from "../../app.config";
+import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -32,9 +33,10 @@ describe('ApiKeyDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ApiKeyDetailComponent,RouterTestingModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
+            imports : [ApiKeyDetailComponent, FormsModule, AngularMaterialModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                provideRouter(routes), 
                 { provide : Router, useValue : router},
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : DialogService, useValue : dialogService },
@@ -51,14 +53,14 @@ describe('ApiKeyDetailComponent', () => {
 
     beforeEach(() => {
         router = {
-
+            navigate: vi.fn()
         };
         sharedDataService = {
-            refreshCurrentUserInfo: jest.fn()
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialogService = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () => of(true) })
         }
         
         activatedRoute = class {
@@ -75,21 +77,21 @@ describe('ApiKeyDetailComponent', () => {
         };
 
         service = {
-            save : jest.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>)
+            save : vi.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>)
         };
 
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
     });
 
     it('Should fail at form validation', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : { message: "OOPS!", errorCode: "GMS-018" }, status : 500, statusText: "OOPS!"})))
+            save : vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : { message: "OOPS!", errorCode: "GMS-018" }, status : 500, statusText: "OOPS!"})))
         };
         dialogService = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(false) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () => of(false) })
         };
         configureTestBed();
 
@@ -103,10 +105,10 @@ describe('ApiKeyDetailComponent', () => {
 
     it('Should fail at form validation 2', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => { return { message: "OOPS!", errorCode: "GMS-018" }; }))
+            save : vi.fn().mockReturnValue(throwError(() => { return { message: "OOPS!", errorCode: "GMS-018" }; }))
         };
         dialogService = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () => of(true) })
         };
         configureTestBed();
 

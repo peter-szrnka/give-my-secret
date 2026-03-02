@@ -6,7 +6,6 @@ import { Observable, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { NavButtonVisibilityPipe } from "../../common/components/pipes/nav-button-visibility.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -14,6 +13,8 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { User } from "../user/model/user.model";
 import { AnnouncementDetailComponent } from "./announcement-detail.component";
 import { AnnouncementService } from "./service/announcement-service";
+import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -35,14 +36,14 @@ describe('AnnouncementDetailComponent', () => {
 
     beforeEach(() => {
         router = {
-
+            navigate: vi.fn()
         };
         dialogService = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any)
         };
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(currentUser),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo : vi.fn().mockReturnValue(currentUser),
+            refreshCurrentUserInfo: vi.fn()
         };
 
         service = {
@@ -66,12 +67,12 @@ describe('AnnouncementDetailComponent', () => {
         };
 
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         TestBed.configureTestingModule({
-            imports : [ AnnouncementDetailComponent, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe, TranslatorModule ],
+            imports : [ AnnouncementDetailComponent, FormsModule, AngularMaterialModule, MomentPipe, NavButtonVisibilityPipe, TranslatorPipe ],
             declarations : [],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
@@ -100,7 +101,7 @@ describe('AnnouncementDetailComponent', () => {
 
         expect(component).toBeTruthy();
 
-        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        vi.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any);
 
         component.save();
         expect(dialogService.openNewDialog).toHaveBeenCalled();

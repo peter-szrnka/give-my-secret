@@ -1,4 +1,4 @@
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { IEntitySaveResponseDto } from "../../../common/model/entity-save-response.model";
@@ -57,7 +57,7 @@ describe("ApiKeyService", () => {
       const expectedUrl = environment.baseUrl + "secure/apikey/1";
 
       // act
-      service.delete(1).subscribe((res) => expect(res).toBeCalled());
+      service.delete(1).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -82,7 +82,7 @@ describe("ApiKeyService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(request);
+      req.flush(mockResponse);
       httpMock.verify();
     });
 
@@ -109,7 +109,7 @@ describe("ApiKeyService", () => {
       };
 
       // act
-      service.getAllApiKeyNames().subscribe(res => expect(res).toBe(mockList));
+      service.getAllApiKeyNames().subscribe(res => expect(res).toEqual(mockList));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -123,7 +123,7 @@ describe("ApiKeyService", () => {
     const expectedUrl = environment.baseUrl + "secure/apikey/1?enabled=true";
 
     // act
-    service.toggle(1, true).subscribe((res) => expect(res).toBeCalled());
+    service.toggle(1, true).subscribe((res) => expect(res).toHaveBeenCalled());
 
     // assert
     const req = httpMock.expectOne(expectedUrl);

@@ -3,6 +3,7 @@ import { firstValueFrom, of } from "rxjs";
 import { MockInterceptor } from "./mock-interceptor";
 
 import * as infoMe from "../../../assets/mock/info.me.json";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -23,11 +24,11 @@ describe('MockInterceptor', () => {
         };
 
          env = {
-            enableMock: jest.fn()
+            enableMock: vi.fn()
          };
 
          logger = {
-            info: jest.fn()
+            info: vi.fn()
          };
 
         interceptor = new MockInterceptor(env, logger);
@@ -49,7 +50,7 @@ describe('MockInterceptor', () => {
 
     it('should mock response when mocking enabled', async () => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'info/me', {});
-        env.enableMock = jest.fn().mockReturnValue(true);
+        env.enableMock = vi.fn().mockReturnValue(true);
 
         // act
         const response: HttpResponse<any> = await firstValueFrom(interceptor.intercept(req, handler)) as HttpResponse<any>;
@@ -64,7 +65,7 @@ describe('MockInterceptor', () => {
 
     it('should return empty response when an unhandled url called', async () => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'unknown', {});
-        env.enableMock = jest.fn().mockReturnValue(true);
+        env.enableMock = vi.fn().mockReturnValue(true);
 
         // act
         const response: HttpResponse<any> = await firstValueFrom(interceptor.intercept(req, handler)) as HttpResponse<any>;

@@ -8,7 +8,6 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -16,6 +15,8 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { IprestrictionDetailComponent } from "./ip-restriction-detail.component";
 import { IpRestriction } from "./model/ip-restriction.model";
 import { IpRestrictionService } from "./service/ip-restriction.service";
+import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -33,7 +34,7 @@ describe('IprestrictionDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [IprestrictionDetailComponent, RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
+            imports : [IprestrictionDetailComponent, RouterTestingModule, BrowserAnimationsModule, FormsModule, AngularMaterialModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue : router},
@@ -52,14 +53,14 @@ describe('IprestrictionDetailComponent', () => {
 
     beforeEach(() => {
         router = {
-
+            navigate: vi.fn()
         };
         sharedDataService = {
-            refreshCurrentUserInfo: jest.fn()
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () => of(true) })
         }
         
         activatedRoute = class {
@@ -71,21 +72,21 @@ describe('IprestrictionDetailComponent', () => {
         };
 
         service = {
-            save : jest.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>)
+            save : vi.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>)
         };
 
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
     });
 
     it('Should fail at form validation', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : { message: "OOPS!", errorCode: "GMS-018" }, status : 500, statusText: "OOPS!"})))
+            save : vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : { message: "OOPS!", errorCode: "GMS-018" }, status : 500, statusText: "OOPS!"})))
         };
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(false) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () => of(false) })
         };
         configureTestBed();
 
@@ -99,10 +100,10 @@ describe('IprestrictionDetailComponent', () => {
 
     it('Should fail at form validation 2', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => { return { message: "OOPS!", errorCode: "GMS-018" } }))
+            save : vi.fn().mockReturnValue(throwError(() => { return { message: "OOPS!", errorCode: "GMS-018" } }))
         };
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () => of(true) })
         };
         configureTestBed();
 

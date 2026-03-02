@@ -32,6 +32,10 @@ public class GmsEntityListener {
     @PrePersist
     @PreUpdate
     public void beforeAnyUpdate(AuditableGmsEntity entity) {
+        if (!enableDetailedAudit) {
+            return;
+        }
+
         log.info("[Entity listener] entity will be updated, entityId={}", entity.getId());
     }
 

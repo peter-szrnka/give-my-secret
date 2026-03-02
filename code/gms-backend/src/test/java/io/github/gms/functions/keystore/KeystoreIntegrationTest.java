@@ -75,12 +75,13 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 
 			String saveRequestJson = objectMapper.writeValueAsString(TestUtils.createSaveKeystoreRequestDto());
 
-			MockMultipartHttpServletRequestBuilder multipartRequest = MockMvcRequestBuilders.multipart("/secure/keystore")
-					.file(sampleFile);
+            MockMultipartHttpServletRequestBuilder multipartRequest = MockMvcRequestBuilders
+                    .multipart("/secure/keystore")
+                    .file(sampleFile);
 
-			multipartRequest.flashAttr("model", saveRequestJson);
+			multipartRequest.param("model", saveRequestJson);
 
-			multipartRequest.headers(TestUtils.getHttpHeaders(null));
+			multipartRequest.headers(new HttpHeaders());
 			multipartRequest.cookie(TestUtils.getCookie(jwt));
 
 			MockMvc mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -145,7 +146,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@TestedMethod(DELETE)
 	void delete_whenInputIsValid_thenReturnOk() {
 		// arrange
-		KeystoreEntity newEntity = keystoreRepository.save(TestUtils.createNewKeystoreEntity(3L));
+		KeystoreEntity newEntity = keystoreRepository.save(TestUtils.createNewKeystoreEntity());
 
 		// act
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));

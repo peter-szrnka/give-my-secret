@@ -1,6 +1,7 @@
 import { HttpErrorResponse, HttpRequest, HttpResponse } from "@angular/common/http";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { AuthInterceptor } from "./auth-interceptor";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -13,8 +14,8 @@ describe('AuthInterceptor', () => {
 
     beforeEach(() => {
         sharedData = {
-            clearData : jest.fn(),
-            logout : jest.fn()
+            clearData : vi.fn(),
+            logout : vi.fn()
         };
 
         handler = {
@@ -29,55 +30,60 @@ describe('AuthInterceptor', () => {
 
   afterEach(() => { localStorage.clear(); });
 
-    it('should proceed', () => {
+    it('should proceed', async() => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'authenticate', {});
 
         // act
-        interceptor.intercept(req, handler).subscribe();
+        const response = await firstValueFrom(interceptor.intercept(req, handler));
 
         // assert
+        expect(response).toBeDefined();
         expect(sharedData.clearData).toHaveBeenCalledTimes(0);
     });
 
-    it('should not proceed because of 0', () => {
+    it('should not proceed because of 0', async() => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
         handler = createHandler("Connection refused", 0);
 
         // act
-        interceptor.intercept(req, handler).subscribe();
+        const response = await firstValueFrom(interceptor.intercept(req, handler));
 
         // assert
         expect(sharedData.clearData).toHaveBeenCalled();
     });
 
-    it('should not proceed because of 401', () => {
+    it('should not proceed because of 401', async() => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
         handler = createHandler("Authentication failed", 401);
 
         // act
-        interceptor.intercept(req, handler).subscribe();
+        const response = await firstValueFrom(interceptor.intercept(req, handler));
 
         // assert
         expect(sharedData.clearData).toHaveBeenCalled();
     });
 
-    it('should not proceed because of 403', () => {
+    it('should not proceed because of 403', async() => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
         handler = createHandler("Authentication failed", 403);
 
         // act
-        interceptor.intercept(req, handler).subscribe();
+        const response = await firstValueFrom(interceptor.intercept(req, handler));
 
         // assert
         expect(sharedData.clearData).toHaveBeenCalled();
     });
 
-    it('should not proceed because of 500', () => {
+    it('should not proceed because of 500', async() => {
         const req : HttpRequest<any> = new HttpRequest('GET', sampleUrl + 'get_data', {});
         handler = createHandler("Internal server error", 500);
 
         // act
-        interceptor.intercept(req, handler).subscribe();
+        try {
+            const response = await firstValueFrom(interceptor.intercept(req, handler));
+        } catch(e: any) {
+            expect(e.message).toEqual("Http failure response for (unknown url): 500 undefined");
+        }
 
         // assert
         expect(sharedData.clearData).toHaveBeenCalledTimes(0);

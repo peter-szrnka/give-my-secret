@@ -14,14 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_DB;
 import static org.mockito.Mockito.when;
@@ -56,12 +58,19 @@ public abstract class AbstractIntegrationTest {
 	@Autowired
 	protected SecretRepository secretRepository;
 
-	@MockBean
+	@MockitoBean
 	protected SystemService systemService;
 
 	protected String jwt;
 	protected GmsUserDetails gmsUser;
 	protected String basePath = "http://localhost:";
+
+    @Autowired
+    protected Map<String, Long> entityMap;
+
+    protected Long getEntityId(String domain, Long code) {
+        return entityMap.get(domain + "-" + code);
+    }
 
 	@BeforeEach
 	public void setup() {
@@ -98,7 +107,7 @@ public abstract class AbstractIntegrationTest {
 			return;
 		}
 
-		HttpHeaders headers = HttpHeaders.writableHttpHeaders(requestEntity.getHeaders());
+		HttpHeaders headers = new HttpHeaders(requestEntity.getHeaders());
 		headers.add("X-XSRF-TOKEN","1");
 		headers.add("Cookie", "XSRF-TOKEN=1");
 	}

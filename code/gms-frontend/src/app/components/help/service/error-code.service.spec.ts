@@ -1,4 +1,4 @@
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { environment } from "../../../../environments/environment";
 import { ErrorCodeList } from "../model/error-code-list.model";
@@ -36,12 +36,12 @@ describe("ErrorCodeService", () => {
       const mockResponse : ErrorCodeList = { errorCodeList: [TEST_CODE] };
 
       // act
-      service.list().subscribe((res) => expect(res).toBe(mockResponse));
+      service.list().subscribe((res) => expect(res).toEqual(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush({});
+      req.flush(mockResponse);
       httpMock.verify();
     });
 });

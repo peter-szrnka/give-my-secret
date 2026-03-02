@@ -11,6 +11,7 @@ import { SystemStatus } from "../model/system-status.model";
 import { AuthService } from "./auth-service";
 import { InformationService } from "./info-service";
 import { SharedDataService } from "./shared-data-service";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -41,7 +42,7 @@ describe('SharedDataService', () => {
 
   beforeEach(() => {
     router = {
-      navigate: jest.fn(),
+      navigate: vi.fn(),
       url : "/test"
     };
 
@@ -50,7 +51,7 @@ describe('SharedDataService', () => {
     };
 
     authService = {
-      logout: jest.fn().mockReturnValue(of(EMPTY))
+      logout: vi.fn().mockReturnValue(of(EMPTY))
     };
 
     mockSubject = new Subject<User | undefined>();
@@ -65,7 +66,7 @@ describe('SharedDataService', () => {
 
     
     infoService = {
-      getUserInfo: jest.fn().mockResolvedValue(currentUser)
+      getUserInfo: vi.fn().mockResolvedValue(currentUser)
     };
   });
 
@@ -111,7 +112,7 @@ describe('SharedDataService', () => {
     [undefined]
   ])('should refresh current user info', (currentUser: User | undefined) => {
     // arrange
-    infoService.getUserInfo = jest.fn().mockResolvedValue(currentUser);
+    infoService.getUserInfo = vi.fn().mockResolvedValue(currentUser);
     configureTestBed();
     mockSubject.next(currentUser);
 

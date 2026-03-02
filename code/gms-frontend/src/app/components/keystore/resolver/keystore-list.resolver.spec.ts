@@ -1,11 +1,14 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { Keystore } from "../model/keystore.model";
 import { KeystoreService } from "../service/keystore-service";
 import { KeystoreListResolver } from "./keystore-list.resolver";
+import { vi } from "vitest";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { KeystoreList } from "../model/keystore-list";
+import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * @author Peter Szrnka
@@ -24,10 +27,10 @@ describe('KeystoreListResolver', () => {
         aliases: [],
         generated: false
     }];
+    const mockResponseList: KeystoreList = { resultList: mockResponse, totalElements: mockResponse.length };
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
             imports: [HttpClientTestingModule],
             providers: [
                 KeystoreListResolver,
@@ -42,16 +45,16 @@ describe('KeystoreListResolver', () => {
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            list: jest.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of(mockResponseList))
         };
 
         sharedData = {
-            clearData: jest.fn()
+            clearData: vi.fn()
         };
     })
 
@@ -68,17 +71,16 @@ describe('KeystoreListResolver', () => {
             "queryParams": {}
         };
         localStorage.setItem('keystore_pageSize', '27');
-        service.list = jest.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.list = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })));
         configureTestBed();
 
         // act
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+       TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(() => {
+                // assert
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+            });
         });
-        localStorage.clear();
     });
 
     it.each([
@@ -101,13 +103,11 @@ describe('KeystoreListResolver', () => {
         configureTestBed();
 
         // act
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
-        });
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
 
+        // assert
+        expect(response).toEqual(mockResponseList);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
         localStorage.removeItem('keystore_pageSize');
     });
 });

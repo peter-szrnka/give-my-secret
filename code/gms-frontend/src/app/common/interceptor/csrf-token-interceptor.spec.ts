@@ -1,5 +1,6 @@
 import { HttpRequest } from "@angular/common/http";
 import { CsrfTokenInterceptor } from "./csrf-token-interceptor";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -19,8 +20,8 @@ describe('CsrfTokenInterceptor', () => {
     it('should return the unchanged request if no XSRF-TOKEN cookie is present', () => {
         documentMock.cookie = 'other-cookie=value'; // No XSRF-TOKEN cookie
 
-        const req = { headers: { set: jest.fn() } } as any;
-        const next = { handle: jest.fn().mockReturnValue({}) };
+        const req = { headers: { set: vi.fn() } } as any;
+        const next = { handle: vi.fn().mockReturnValue({}) };
 
         interceptor.intercept(req, next);
 
@@ -30,8 +31,8 @@ describe('CsrfTokenInterceptor', () => {
 
     it('should add the X-XSRF-TOKEN header if cookie is present', ()=> {
         const req: HttpRequest<any> = new HttpRequest<any>('GET', '/test');
-        req.clone = jest.fn().mockReturnValue(req);
-        const next = { handle: jest.fn().mockReturnValue({}) };
+        req.clone = vi.fn().mockReturnValue(req);
+        const next = { handle: vi.fn().mockReturnValue({}) };
 
         interceptor.intercept(req, next);
 

@@ -5,6 +5,7 @@ import { of } from "rxjs";
 import { VmOption } from "../../model/common.model";
 import { InformationService } from "../../service/info-service";
 import { VmOptionsComponent } from "./vm-options.component";
+import { vi } from "vitest";
 
 /**
  * @author Peter Szrnka
@@ -32,7 +33,7 @@ describe('VmOptionsComponent', () => {
 
     beforeEach(() => {
         informationService = {
-            getVmOptions: jest.fn().mockReturnValue(of([
+            getVmOptions: vi.fn().mockReturnValue(of([
                 { key: 'k1', value: 'value1' } as VmOption,
                 { key: 'k2', value: 'value2' } as VmOption,
             ])),

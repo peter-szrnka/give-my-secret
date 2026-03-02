@@ -1,17 +1,19 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Data, Router } from "@angular/router";
+import { ActivatedRoute, Data, provideRouter, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 import { ClipboardService } from "../../common/service/clipboard-service";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { ApiKeyListComponent } from "./apikey-list.component";
 import { ApiKeyService } from "./service/apikey-service";
+import { vi } from "vitest";
+import { routes } from "../../app.config";
 
 /**
  * @author Peter Szrnka
@@ -33,9 +35,10 @@ describe('ApiKeyListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ ApiKeyListComponent, AngularMaterialModule, MomentPipe, TranslatorModule ],
+            imports : [ ApiKeyListComponent, AngularMaterialModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                provideRouter(routes),
                 { provide : Router, useValue : router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : ApiKeyService, useValue : service },
@@ -52,17 +55,17 @@ describe('ApiKeyListComponent', () => {
 
     beforeEach(() => {
         router = {
-            navigate : jest.fn(),
-            navigateByUrl : jest.fn().mockResolvedValue(true)
+            navigate : vi.fn(),
+            navigateByUrl : vi.fn().mockResolvedValue(true)
         };
 
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo : vi.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialogService = {
-            openConfirmDeleteDialog : jest.fn()
+            openConfirmDeleteDialog : vi.fn()
         }
         
         activatedRoute = class {
@@ -90,12 +93,12 @@ describe('ApiKeyListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK")),
-            toggle : jest.fn().mockReturnValue(of("OK"))
+            delete : vi.fn().mockReturnValue(of("OK")),
+            toggle : vi.fn().mockReturnValue(of("OK"))
         };
 
         clipboardService = {
-            copyValue : jest.fn()
+            copyValue : vi.fn()
         };
     });
 
@@ -119,7 +122,7 @@ describe('ApiKeyListComponent', () => {
     });
 
     it('Should return empty table | Invalid user', () => {
-        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
+        vi.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         configureTestBed();
 
         expect(component).toBeTruthy();
@@ -131,8 +134,8 @@ describe('ApiKeyListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(true)) };
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
+        const mockDialogRef : any = { afterClosed : vi.fn().mockReturnValue(of(true)) };
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
 
         component.promptDelete(1);
 
@@ -145,8 +148,8 @@ describe('ApiKeyListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        const mockDialogRef : any = { afterClosed : jest.fn().mockReturnValue(of(false)) };
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
+        const mockDialogRef : any = { afterClosed : vi.fn().mockReturnValue(of(false)) };
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue(mockDialogRef);
 
         component.promptDelete(1);
 

@@ -3,17 +3,17 @@ import { Component, OnInit } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
-import { catchError, Observable, takeUntil } from "rxjs";
+import { catchError, Observable, of, takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { TranslatorService } from "../../common/service/translator-service";
 import { JobDetail } from "./model/job-detail.model";
 import { JobDetailService } from "./service/job-detail.service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 const MANUAL_JOB_EXECUTION_CONFIG = [
     { label: 'job.button.event.maintenance', url : 'event_maintenance' },
@@ -29,7 +29,7 @@ const MANUAL_JOB_EXECUTION_CONFIG = [
  * @author Peter Szrnka
  */
 @Component({
-    imports: [AngularMaterialModule, CommonModule, NavBackComponent, MomentPipe, TranslatorModule, InformationMessageComponent],
+    imports: [AngularMaterialModule, CommonModule, NavBackComponent, MomentPipe, InformationMessageComponent, TranslatorPipe],
     selector: 'job-detail-list',
     templateUrl: './job-detail-list.component.html'
 })
@@ -62,7 +62,13 @@ export class JobDetailListComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         this.tableConfig.pageIndex = this.activatedRoute.snapshot.queryParams['page'] ?? 0;
         this.activatedRoute.data
-            .pipe(catchError(async () => this.initDefaultDataTable()), takeUntil(this.destroy$))
+            .pipe(
+                catchError(() => {
+                    this.initDefaultDataTable();
+                    return of({ data: { resultList: [], totalElements: 0 } });
+                }),
+                takeUntil(this.destroy$)
+            )
             .subscribe((response: any) => {
                 this.tableConfig.count = response.data.totalElements;
                 this.datasource = new MatTableDataSource<JobDetail>(response.data.resultList);

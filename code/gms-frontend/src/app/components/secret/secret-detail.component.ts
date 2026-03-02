@@ -13,7 +13,6 @@ import { InformationMessageComponent } from "../../common/components/information
 import { ButtonConfig } from "../../common/components/nav-back/button-config";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { PageConfig } from "../../common/model/common.model";
 import { IdNamePair } from "../../common/model/id-name-pair.model";
 import { DialogService } from "../../common/service/dialog-service";
@@ -25,6 +24,7 @@ import { IpRestriction } from "../ip_restriction/model/ip-restriction.model";
 import { KeystoreService } from "../keystore/service/keystore-service";
 import { PAGE_CONFIG_SECRET, Secret } from "./model/secret.model";
 import { SecretService } from "./service/secret-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 interface KeyValuePair {
     key: string,
@@ -50,10 +50,10 @@ export enum ValidationState {
         AngularMaterialModule,
         FormsModule,
         AsyncPipe,
+        TranslatorPipe,
         NavBackComponent,
         MomentPipe,
-        InformationMessageComponent,
-        TranslatorModule
+        InformationMessageComponent
     ]
 })
 export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretService> {
@@ -68,12 +68,12 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     displayedColumns: string[] = ['key', 'value', 'operations'];
     displayedIpRestrictionColumns: string[] = ['ipPattern', 'allow', 'operations'];
 
-    public ipRestrictionsDatasource: ArrayDataSource<IpRestriction>;
-    public datasource: ArrayDataSource<KeyValuePair>;
+    public ipRestrictionsDatasource!: ArrayDataSource<IpRestriction>;
+    public datasource!: ArrayDataSource<KeyValuePair>;
     multipleCredential: KeyValuePair[] = [];
-    filteredKeystoreOptions$: Observable<IdNamePair[]>;
-    filteredKeystoreAliasOptions$: Observable<IdNamePair[]>;
-    filteredApiKeyOptions$: Observable<IdNamePair[]>;
+    filteredKeystoreOptions$!: Observable<IdNamePair[]>;
+    filteredKeystoreAliasOptions$!: Observable<IdNamePair[]>;
+    filteredApiKeyOptions$!: Observable<IdNamePair[]>;
     selectableApiKeys: IdNamePair[] = [];
     selectedApiKeys: IdNamePair[] = [];
     allApiKeys: IdNamePair[] = [];
@@ -89,7 +89,7 @@ export class SecretDetailComponent extends BaseDetailComponent<Secret, SecretSer
     validationState: ValidationState = ValidationState.UNDEFINED;
 
     readonly separatorKeysCodes = [ENTER, COMMA] as const;
-    @ViewChild('roleInput') roleInput: ElementRef<HTMLInputElement>;
+    @ViewChild('roleInput') roleInput!: ElementRef<HTMLInputElement>;
 
     constructor(
         protected override router: Router,

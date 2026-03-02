@@ -4,7 +4,6 @@ import { takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseComponent } from "../../common/components/abstractions/component/base.component";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { DialogService } from "../../common/service/dialog-service";
 import { SecureStorageService } from "../../common/service/secure-storage.service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -13,6 +12,7 @@ import { getErrorCode } from "../../common/utils/error-utils";
 import { CredentialApiResponse } from "../secret/model/credential-api-response.model";
 import { User } from "../user/model/user.model";
 import { ApiTestingService } from "./service/api-testing-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -23,8 +23,8 @@ import { ApiTestingService } from "./service/api-testing-service";
     imports: [
         AngularMaterialModule,
         FormsModule,
-        TranslatorModule,
-        InformationMessageComponent
+        InformationMessageComponent,
+        TranslatorPipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

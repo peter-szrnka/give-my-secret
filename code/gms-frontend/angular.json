@@ -25,9 +25,7 @@
               "base": "dist/gms-frontend"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -36,13 +34,14 @@
               "src/manifest.webmanifest"
             ],
             "styles": [
+              "src/globals.scss",
               "src/styles.scss"
             ],
             "scripts": [],
             "stylePreprocessorOptions" : {
-              "includePaths": ["node_modules/"],
+              "includePaths": ["node_modules/", "src/"],
               "sass": {
-                "silenceDeprecations": ["mixed-decls", "color-functions", "global-builtin", "import"]
+                "silenceDeprecations": ["color-functions", "global-builtin", "import"]
               }
             },
             "browser": "src/main.ts"
@@ -163,6 +162,40 @@
           },
           "defaultConfiguration": "development"
         },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "runner": "vitest",
+            "runnerConfig": "vitest.config.ts",
+            "setupFiles": ["src/test-setup.ts"],
+            "include": [
+              "**/*.spec.ts"
+            ],
+            "exclude": ["**/ui-test/**"]
+          }
+        },
+        "coverage": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "runner": "vitest",
+            "runnerConfig": "vitest.config.ts",
+            "setupFiles": ["src/test-setup.ts"],
+            "include": [
+              "**/*.spec.ts"
+            ],
+            "exclude": ["**/ui-test/**"],
+            "coverage": true,
+            "coverageReporters": [
+              "text", "text-summary", "lcov"
+            ],
+            "coverageExclude": [
+              "node_modules/**",
+              "src/**/*.spec.ts",
+              "src/test-setup.ts",
+              "src/vitest-env.d.ts"
+            ]
+          }
+        },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
           "options": {
@@ -174,5 +207,31 @@
   },
   "cli": {
     "analytics": false
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
+    }
   }
 }

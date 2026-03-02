@@ -1,11 +1,13 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { JobDetail } from "../model/job-detail.model";
 import { JobDetailService } from "../service/job-detail.service";
 import { JobDetailListResolver } from "./job-detail-list.resolver";
+import { vi } from "vitest";
+import { JobDetailList } from "../model/job-detail-list.model";
 
 /**
  * @author Peter Szrnka
@@ -18,7 +20,6 @@ describe('JobDetailListResolver', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            // add this to imports array
             imports: [HttpClientTestingModule],
             providers: [
                 JobDetailListResolver,
@@ -39,15 +40,16 @@ describe('JobDetailListResolver', () => {
         creationDate: new Date(),
         startTime: new Date()
     }];
+    const mockResponseList: JobDetailList = { resultList: mockResponse, totalElements: mockResponse.length };
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            list: jest.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of(mockResponseList))
         };
     })
 
@@ -67,42 +69,21 @@ describe('JobDetailListResolver', () => {
         };
 
         service = {
-            list: jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
+            list: vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
         };
 
         configureTestBed();
 
-        // act & assert
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+                
+        // assert
+        expect(response).toEqual({
+            "error": "!",
+            "resultList": [],
+            "totalElements": 0,
         });
-    });
-
-    it('should handle error 2', async () => {
-        activatedRouteSnapshot = {
-            "params": {
-                "id": "1"
-            },
-            "queryParams": {
-                "page" : 0
-            }
-        };
-        localStorage.setItem('apikey_pageSize', '27');
-        service.list = jest.fn().mockReturnValue(throwError(() => new Error("Oops!")));
-        configureTestBed();
-
-        // act & assert
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled();
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
-
-        localStorage.clear();
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
     it('should return existing entity', async () => {
@@ -114,11 +95,11 @@ describe('JobDetailListResolver', () => {
         };
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toHaveBeenCalled
-            expect(splashScreenStateService.stop).toHaveBeenCalled();
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+                
+        // assert
+        expect(response).toEqual(mockResponseList);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

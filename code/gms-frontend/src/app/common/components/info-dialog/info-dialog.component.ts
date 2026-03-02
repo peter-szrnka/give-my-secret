@@ -2,7 +2,7 @@ import { Component, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { DialogData } from "./dialog-data.model";
 import { AngularMaterialModule } from "../../../angular-material-module";
-import { TranslatorModule } from "../pipes/translator/translator.module";
+import { TranslatorPipe } from "../pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -10,7 +10,7 @@ import { TranslatorModule } from "../pipes/translator/translator.module";
 @Component({
     selector: 'info-dialog',
     templateUrl: './info-dialog.component.html',
-    imports: [AngularMaterialModule, TranslatorModule]
+    imports: [AngularMaterialModule, TranslatorPipe]
 })
 export class InfoDialog {
 

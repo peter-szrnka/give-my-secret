@@ -4,12 +4,12 @@ import { ActivatedRoute, NavigationExtras, Router, RouterModule } from "@angular
 import { catchError, takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { AuthenticationPhase, Login, LoginResponse } from "../../common/model/login.model";
 import { AuthService } from "../../common/service/auth-service";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -17,8 +17,7 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 @Component({
     selector: 'login',
     templateUrl: './login.component.html',
-    standalone: true,
-    imports: [TranslatorModule, RouterModule, AngularMaterialModule, FormsModule]
+    imports: [RouterModule, AngularMaterialModule, FormsModule, TranslatorPipe]
 })
 export class LoginComponent extends BaseLoginComponent {
 

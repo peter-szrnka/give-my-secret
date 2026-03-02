@@ -5,13 +5,13 @@ import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { SystemStatus } from "../../common/model/system-status.model";
 import { SetupService } from "../setup/service/setup-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
  */
 @Component({
-    imports: [AngularMaterialModule, CommonModule, MomentPipe, TranslatorModule],
+    imports: [AngularMaterialModule, CommonModule, MomentPipe, TranslatorPipe],
     selector: 'about',
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.scss']

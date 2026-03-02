@@ -27,7 +27,7 @@ public class GmsSessionAuthenticationStrategy implements SessionAuthenticationSt
 
         if (token != null) {
             DeferredCsrfToken deferredCsrfToken = this.tokenRepository.loadDeferredToken(request, response);
-            requestHandler.handle(request, response, deferredCsrfToken::get);
+            requestHandler.handle(request, response, deferredCsrfToken);
         }
     }
 }

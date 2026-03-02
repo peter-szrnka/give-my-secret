@@ -6,12 +6,12 @@ import { BaseListComponent } from "../../common/components/abstractions/componen
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { IpRestriction, PAGE_CONFIG_IP_RESTRICTION } from "./model/ip-restriction.model";
 import { IpRestrictionService } from "./service/ip-restriction.service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -26,8 +26,8 @@ import { IpRestrictionService } from "./service/ip-restriction.service";
         RouterModule,
         MomentPipe,
         NavBackComponent,
-        TranslatorModule,
-        InformationMessageComponent
+        InformationMessageComponent,
+        TranslatorPipe
     ]
 })
 export class IpRestrictionListComponent extends BaseListComponent<IpRestriction, IpRestrictionService> {

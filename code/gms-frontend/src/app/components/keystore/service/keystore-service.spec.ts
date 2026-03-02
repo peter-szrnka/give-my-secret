@@ -56,7 +56,7 @@ describe("KeystoreService", () => {
       const expectedUrl = environment.baseUrl + "secure/keystore/1";
 
       // act
-      service.delete(1).subscribe((res) => expect(res).toBeCalled());
+      service.delete(1).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -81,7 +81,7 @@ describe("KeystoreService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(request);
+      req.flush(mockResponse);
       httpMock.verify();
     });
 
@@ -104,11 +104,11 @@ describe("KeystoreService", () => {
         const expectedUrl = environment.baseUrl + "secure/keystore/list_names";
         const mockList : IdNamePair[] = [ {id:1 , name : "id1"}, {id:2 , name : "id2"} ];
         const mockHttpResponse : IdNamePairList = {
-            resultList : [ {id:1 , name : "id1"}, {id:2 , name : "id2"} ]
+            resultList : mockList
         };
 
         // act
-        service.getAllKeystoreNames().subscribe(res => expect(res).toBe(mockList));
+        service.getAllKeystoreNames().subscribe(res => expect(res).toEqual(mockList));
 
         // assert
         const req = httpMock.expectOne(expectedUrl);
@@ -122,11 +122,11 @@ describe("KeystoreService", () => {
       const expectedUrl = environment.baseUrl + "secure/keystore/list_aliases/1";
       const mockList : IdNamePair[] = [ {id:1 , name : "alias1"}, {id:2 , name : "alias2"} ];
       const mockHttpResponse : IdNamePairList = {
-          resultList : [ {id:1 , name : "alias1"}, {id:2 , name : "alias2"} ]
+          resultList : mockList
       };
 
       // act
-      service.getAllKeystoreAliases(1).subscribe(res => expect(res).toBe(mockList));
+      service.getAllKeystoreAliases(1).subscribe(res => expect(res).toEqual(mockList));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -140,7 +140,7 @@ describe("KeystoreService", () => {
     const expectedUrl = environment.baseUrl + "secure/keystore/1?enabled=true";
 
     // act
-    service.toggle(1, true).subscribe((res) => expect(res).toBeCalled());
+    service.toggle(1, true).subscribe((res) => expect(res).toHaveBeenCalled());
 
     // assert
     const req = httpMock.expectOne(expectedUrl);

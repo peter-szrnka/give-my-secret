@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatTableModule } from "@angular/material/table";
-import { ActivatedRoute, Data, Router } from "@angular/router";
+import { ActivatedRoute, Data, provideRouter, Router } from "@angular/router";
 import { ReplaySubject, of, throwError } from "rxjs";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { DialogService } from "../../common/service/dialog-service";
@@ -10,7 +10,9 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { User } from "./model/user.model";
 import { UserService } from "./service/user-service";
 import { UserListComponent } from "./user-list.component";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
+import { routes } from "../../app.config";
 
 /**
  * @author Peter Szrnka
@@ -33,9 +35,10 @@ describe('UserListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ UserListComponent, MatTableModule, MomentPipe, TranslatorModule ],
+            imports : [ UserListComponent, MatTableModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                provideRouter(routes),
                 { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : UserService, useValue : service },
@@ -49,19 +52,19 @@ describe('UserListComponent', () => {
     beforeEach(async () => {
         authModeSubject = new ReplaySubject<string>();
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn(),
+            getUserInfo : vi.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: vi.fn(),
             authModeSubject$: authModeSubject
         };
 
         splashScreenService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         dialogService = {
-            openConfirmDeleteDialog : jest.fn(),
-            openNewDialog : jest.fn()
+            openConfirmDeleteDialog : vi.fn(),
+            openNewDialog : vi.fn()
         }
         
         activatedRoute = class {
@@ -89,13 +92,13 @@ describe('UserListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK")),
-            manualLdapUserSync: jest.fn().mockReturnValue(of("OK"))
+            delete : vi.fn().mockReturnValue(of("OK")),
+            manualLdapUserSync: vi.fn().mockReturnValue(of("OK"))
         };
 
         router = {
-            navigate : jest.fn(),
-            navigateByUrl : jest.fn().mockReturnValue(of({ then : jest.fn().mockReturnValue(of(true)) }))
+            navigate : vi.fn(),
+            navigateByUrl : vi.fn().mockReturnValue(Promise.resolve({ then : vi.fn().mockReturnValue(of(true)) }))
         };
     });
 
@@ -126,7 +129,7 @@ describe('UserListComponent', () => {
         configureTestBed();
         fixture = TestBed.createComponent(UserListComponent);
         component = fixture.componentInstance;
-        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
+        vi.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         fixture.detectChanges();
         authModeSubject.next("db");
 
@@ -143,7 +146,7 @@ describe('UserListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any);
 
         component.promptDelete(1);
 
@@ -160,8 +163,8 @@ describe('UserListComponent', () => {
 
         expect(component).toBeTruthy();
 
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
-        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(false)) } as any);
+        vi.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
         component.manualLdapUserSync();
@@ -179,7 +182,7 @@ describe('UserListComponent', () => {
         authModeSubject.next("ldap");
         expect(component).toBeTruthy();
 
-        jest.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        vi.spyOn(dialogService, 'openNewDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(false)) } as any);
 
         component.manualLdapUserSync();
 

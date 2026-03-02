@@ -65,7 +65,7 @@ describe("SecretService", () => {
       const expectedUrl = environment.baseUrl + "secure/secret/1";
 
       // act
-      service.delete(1).subscribe((res) => expect(res).toBeCalled());
+      service.delete(1).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -90,7 +90,7 @@ describe("SecretService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(request);
+      req.flush(mockResponse);
       httpMock.verify();
     });
 
@@ -143,7 +143,7 @@ describe("SecretService", () => {
       const expectedUrl = environment.baseUrl + "secure/secret/1?enabled=true";
 
       // act
-      service.toggle(1, true).subscribe((res) => expect(res).toBeCalled());
+      service.toggle(1, true).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);

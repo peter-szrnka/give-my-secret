@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ActivatedRoute, Data, Router } from "@angular/router";
+import { ActivatedRoute, Data, provideRouter, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
@@ -10,7 +10,9 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { KeystoreListComponent } from "./keystore-list.component";
 import { KeystoreService } from "./service/keystore-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
+import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
+import { routes } from "../../app.config";
 
 /**
  * @author Peter Szrnka
@@ -31,9 +33,10 @@ describe('KeystoreListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ KeystoreListComponent, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorModule ],
+            imports : [ KeystoreListComponent, AngularMaterialModule, BrowserAnimationsModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                provideRouter(routes),
                 { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : KeystoreService, useValue : service },
@@ -45,12 +48,12 @@ describe('KeystoreListComponent', () => {
 
     beforeEach(() => {
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo : vi.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialogService = {
-            openConfirmDeleteDialog : jest.fn()
+            openConfirmDeleteDialog : vi.fn()
         }
         
         activatedRoute = class {
@@ -78,11 +81,11 @@ describe('KeystoreListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK"))
+            delete : vi.fn().mockReturnValue(of("OK"))
         };
 
         router = {
-            navigate : jest.fn()
+            navigate : vi.fn()
         };
     });
 
@@ -111,7 +114,7 @@ describe('KeystoreListComponent', () => {
         configureTestBed();
         fixture = TestBed.createComponent(KeystoreListComponent);
         component = fixture.componentInstance;
-        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
+        vi.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
@@ -125,7 +128,7 @@ describe('KeystoreListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any);
 
         component.promptDelete(1);
 
@@ -140,7 +143,7 @@ describe('KeystoreListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
 

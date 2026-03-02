@@ -1,7 +1,7 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { catchError, takeUntil } from "rxjs";
+import { catchError, of, takeUntil } from "rxjs";
 import { User } from "../../../../components/user/model/user.model";
 import { BaseList } from "../../../model/base-list";
 import { PageConfig } from "../../../model/common.model";
@@ -63,7 +63,12 @@ export abstract class BaseListComponent<T, S extends ServiceBase<T, BaseList<T>>
     }
 
     this.activatedRoute.data
-      .pipe(catchError(async () => this.initDefaultDataTable()))
+      .pipe(
+        catchError(err => {
+          this.initDefaultDataTable();
+          return of({ data: { resultList: [], totalElements: 0, error: undefined } });
+        })
+      )
       .pipe(takeUntil(this.destroy$))
       .subscribe((response: any) => {
         this.tableConfig.count = response.data.totalElements;

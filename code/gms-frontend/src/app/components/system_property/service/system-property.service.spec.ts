@@ -40,11 +40,11 @@ describe("SytemPropertyService", () => {
         const mockResponse : IEntitySaveResponseDto = {};
 
         //act
-        service.save(TEST_SYSTEM_PROPERTY).subscribe((res) => expect(res).toBe(mockResponse));
+        service.save(TEST_SYSTEM_PROPERTY).subscribe((res) => expect(res).toEqual(mockResponse));
 
         // assert
         const req = httpMock.expectOne(expectedUrl);
-        expect(req.request.method).toBe('POST');
+        expect(req.request.method).toEqual('POST');
         expect(req.request.body).toEqual(TEST_SYSTEM_PROPERTY);
         req.flush(mockResponse);
         httpMock.verify();
@@ -55,11 +55,11 @@ describe("SytemPropertyService", () => {
       const expectedUrl = environment.baseUrl + "secure/system_property/REFRESH_JWT_ALGORITHM";
 
       // act
-      service.delete('REFRESH_JWT_ALGORITHM').subscribe((res) => expect(res).toBeCalled());
+      service.delete('REFRESH_JWT_ALGORITHM').subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('DELETE');
+      expect(req.request.method).toEqual('DELETE');
       httpMock.verify();
     });
 
@@ -75,12 +75,12 @@ describe("SytemPropertyService", () => {
         property: "id",
         size: 10
       };
-      service.list(request).subscribe((res) => expect(res).toBe(mockResponse));
+      service.list(request).subscribe((res) => expect(res).toEqual(mockResponse));
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('GET');
-      req.flush(request);
+      expect(req.request.method).toEqual('GET');
+      req.flush(mockResponse);
       httpMock.verify();
     });
 });

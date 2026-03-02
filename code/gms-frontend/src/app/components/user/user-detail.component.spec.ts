@@ -6,7 +6,6 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, ReplaySubject, of } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -16,6 +15,8 @@ import { EventService } from "../event/service/event-service";
 import { UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
 import { UserDetailComponent } from "./user-detail.component";
+import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -35,7 +36,7 @@ describe('UserDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [UserDetailComponent, RouterTestingModule, AngularMaterialModule, NoopAnimationsModule, FormsModule, TranslatorModule ],
+            imports : [UserDetailComponent, RouterTestingModule, AngularMaterialModule, NoopAnimationsModule, FormsModule, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue : router},
@@ -59,12 +60,12 @@ describe('UserDetailComponent', () => {
 
         };
         sharedDataService = {
-            refreshCurrentUserInfo: jest.fn(),
+            refreshCurrentUserInfo: vi.fn(),
             authModeSubject$: authModeSubject
         };
 
         dialogService = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed: jest.fn().mockReturnValue(of()) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed: vi.fn().mockReturnValue(of()) })
         }
         
         activatedRoute = class {
@@ -81,23 +82,23 @@ describe('UserDetailComponent', () => {
         };
 
         eventServiceMock = {
-            listByUserId : jest.fn().mockReturnValue(of([ { id: 1, username: 'user1', eventDate: new Date(), operation: 'SAVE', target: 'KEYSTORE' } as Event ]))
+            listByUserId : vi.fn().mockReturnValue(of([ { id: 1, username: 'user1', eventDate: new Date(), operation: 'SAVE', target: 'KEYSTORE' } as Event ]))
         };
 
         serviceMock = {
-            save : jest.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>)
+            save : vi.fn().mockReturnValue(of({ entityId : 1, success : true }) as Observable<IEntitySaveResponseDto>)
         };
 
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
     });
 
     it('should save new entity', () => {
         // arrange
         eventServiceMock = {
-            listByUserId : jest.fn().mockReturnValue(of(undefined))
+            listByUserId : vi.fn().mockReturnValue(of(undefined))
         };
 
         activatedRoute = class {

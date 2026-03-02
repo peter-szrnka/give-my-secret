@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { LoggerService } from "./logger-service";
 
 /**
@@ -7,7 +8,7 @@ describe('LoggerService', () => {
     let service: LoggerService = new LoggerService();
 
     it('should print error message', () => {
-        console.error = jest.fn();
+        console.error = vi.fn();
 
         // act
         service.error('message', 'param');
@@ -17,7 +18,7 @@ describe('LoggerService', () => {
     });
 
     it('should print info message', () => {
-        console.info = jest.fn();
+        console.info = vi.fn();
 
         // act
         service.info('message', 'param');
@@ -27,7 +28,7 @@ describe('LoggerService', () => {
     });
 
     it('should print log message', () => {
-        console.log = jest.fn();
+        console.log = vi.fn();
 
         // act
         service.log('message', 'param');
@@ -37,7 +38,7 @@ describe('LoggerService', () => {
     });
 
     it('should print warn message', () => {
-        console.warn = jest.fn();
+        console.warn = vi.fn();
 
         // act
         service.warn('message', 'param');

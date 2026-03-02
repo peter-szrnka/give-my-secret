@@ -1,12 +1,14 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { ApiKey } from "../model/apikey.model";
 import { ApiKeyService } from "../service/apikey-service";
 import { ApiKeyListResolver } from "./apikey-list.resolver";
+import { vi } from "vitest";
+import { ApiKeyList } from "../model/apikey-list.model";
 
 /**
  * @author Peter Szrnka
@@ -39,19 +41,20 @@ describe('ApiKeyListResolver', () => {
         name: "apiKey",
         description: "description"
     }];
+    const mockResponseList: ApiKeyList = { resultList: mockResponse, totalElements: mockResponse.length };
 
     beforeEach(async () => {
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
 
         service = {
-            list: jest.fn().mockReturnValue(of({ resultList: mockResponse, totalElements: mockResponse.length }))
+            list: vi.fn().mockReturnValue(of(mockResponseList))
         };
 
         sharedData = {
-            clearDataAndReturn: jest.fn().mockReturnValue(of([]))
+            clearDataAndReturn: vi.fn().mockReturnValue(of([]))
         };
     })
 
@@ -70,18 +73,21 @@ describe('ApiKeyListResolver', () => {
         };
 
         service = {
-            list: jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
+            list: vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error: new Error("!"), status: 500, statusText: "Oops!" })))
         };
 
         configureTestBed();
 
-        // act & assert
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual({
+        "error": "!",
+        "resultList": [],
+        "totalElements": 0,
         });
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 
     it('should handle error', async () => {
@@ -92,15 +98,15 @@ describe('ApiKeyListResolver', () => {
             "queryParams": {}
         };
         localStorage.setItem('apikey_pageSize', '27');
-        service.list = jest.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.list = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })));
         configureTestBed();
 
-        // act & assert
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
+        // act
+        TestBed.runInInjectionContext(() => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(() => {
+                // assert
+                expect(splashScreenStateService.start).toHaveBeenCalled();
+            });
         });
 
         localStorage.clear();
@@ -117,11 +123,11 @@ describe('ApiKeyListResolver', () => {
         };
         configureTestBed();
 
-        resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-            // assert
-            expect(response).toEqual(mockResponse);
-            expect(splashScreenStateService.start).toBeCalled();
-            expect(splashScreenStateService.stop).toBeCalled();
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponseList);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

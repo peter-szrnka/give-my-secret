@@ -54,7 +54,7 @@ describe("IpRestrictionService", () => {
       const expectedUrl = environment.baseUrl + "secure/ip_restriction/1";
 
       // act
-      service.delete(1).subscribe((res) => expect(res).toBeCalled());
+      service.delete(1).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -79,7 +79,7 @@ describe("IpRestrictionService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(request);
+      req.flush(mockResponse);
       httpMock.verify();
     });
 

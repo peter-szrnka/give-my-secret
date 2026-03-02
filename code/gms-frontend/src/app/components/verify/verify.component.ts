@@ -9,10 +9,10 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { WINDOW_TOKEN } from "../../window.provider";
 import { LoggerService } from "../../common/service/logger-service";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { FormsModule } from "@angular/forms";
 import { AngularMaterialModule } from "../../angular-material-module";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -21,7 +21,7 @@ import { AngularMaterialModule } from "../../angular-material-module";
     selector: 'verify',
     templateUrl: './verify.component.html',
     styleUrls: ['./verify.component.scss'],
-    imports: [AngularMaterialModule, FormsModule, InformationMessageComponent, TranslatorModule]
+    imports: [AngularMaterialModule, FormsModule, InformationMessageComponent, TranslatorPipe]
 })
 export class VerifyComponent extends BaseLoginComponent {
 

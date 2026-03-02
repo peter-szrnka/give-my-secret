@@ -7,7 +7,6 @@ import { BaseListComponent } from "../../common/components/abstractions/componen
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { StatusToggleComponent } from "../../common/components/status-toggle/status-toggle.component";
 import { PageConfig } from "../../common/model/common.model";
 import { DialogService } from "../../common/service/dialog-service";
@@ -15,6 +14,7 @@ import { SharedDataService } from "../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../common/service/splash-screen-service";
 import { PAGE_CONFIG_USER, UserData } from "./model/user-data.model";
 import { UserService } from "./service/user-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -30,14 +30,14 @@ import { UserService } from "./service/user-service";
         MomentPipe,
         NavBackComponent,
         StatusToggleComponent,
-        TranslatorModule,
-        InformationMessageComponent
+        InformationMessageComponent,
+        TranslatorPipe
     ]
 })
 export class UserListComponent extends BaseListComponent<UserData, UserService> {
 
     userColumns: string[] = ['id', 'username', 'email', 'status', 'roles', 'creationDate', 'operations'];
-    authMode: string;
+    authMode?: string;
 
     constructor(
         override router: Router,

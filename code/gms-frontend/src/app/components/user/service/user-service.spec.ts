@@ -14,7 +14,7 @@ const TEST_USER : User = {
 /**
  * @author Peter Szrnka
  */
-describe("SecretService", () => {
+describe("UserService", () => {
     let service : UserService;
     let httpMock : HttpTestingController;
 
@@ -52,7 +52,7 @@ describe("SecretService", () => {
       const expectedUrl = environment.baseUrl + "secure/user/1";
 
       // act
-      service.delete(1).subscribe((res) => expect(res).toBeCalled());
+      service.delete(1).subscribe((res) => expect(res).toHaveBeenCalled());
 
       // assert
       const req = httpMock.expectOne(expectedUrl);
@@ -77,7 +77,7 @@ describe("SecretService", () => {
       // assert
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('GET');
-      req.flush(request);
+      req.flush(mockResponse);
       httpMock.verify();
     });
 

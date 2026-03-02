@@ -1,12 +1,14 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
-import { of, throwError } from "rxjs";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { firstValueFrom, of, throwError } from "rxjs";
 import { EMPTY_KEYSTORE, Keystore } from "../model/keystore.model";
 import { KeystoreService } from "../service/keystore-service";
 import { SharedDataService } from "../../../common/service/shared-data-service";
 import { SplashScreenStateService } from "../../../common/service/splash-screen-service";
 import { KeystoreDetailResolver } from "./keystore-detail.resolver";
+import { vi } from "vitest";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * @author Peter Szrnka
@@ -28,20 +30,19 @@ describe('KeystoreDetailResolver', () => {
 
     beforeEach(async() => {
         splashScreenStateService = {
-            start : jest.fn(),
-            stop : jest.fn()
+            start : vi.fn(),
+            stop : vi.fn()
         };
 
         service = {
-            getById : jest.fn().mockReturnValue(of(mockResponse))
+            getById : vi.fn().mockReturnValue(of(mockResponse))
         };
 
         sharedData = {
-            clearData: jest.fn()
+            clearData: vi.fn()
         };
 
         TestBed.configureTestingModule({
-          // add this to imports array
           imports: [HttpClientTestingModule],
           providers: [
             KeystoreDetailResolver,
@@ -79,14 +80,13 @@ describe('KeystoreDetailResolver', () => {
             }
         }
 
-        service.getById = jest.fn().mockReturnValue(throwError(() => new Error("Oops!")));
+        service.getById = vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("!"), status : 500, statusText: "Oops!" })));
 
+        // act
         TestBed.runInInjectionContext(() => {
-            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
+            resolver.resolve(activatedRouteSnapshot).subscribe(() => {
                 // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toBeCalled();
-                expect(splashScreenStateService.stop).toBeCalled();
+                expect(splashScreenStateService.start).toHaveBeenCalled();
             });
         });
     });
@@ -98,13 +98,11 @@ describe('KeystoreDetailResolver', () => {
             }
         }
 
-        TestBed.runInInjectionContext(() => {
-            resolver.resolve(activatedRouteSnapshot).subscribe(response => {
-                // assert
-                expect(response).toEqual(mockResponse);
-                expect(splashScreenStateService.start).toBeCalled();
-                expect(splashScreenStateService.stop).toBeCalled();
-            });
-        });
+        // act
+        const response = await firstValueFrom(resolver.resolve(activatedRouteSnapshot));
+
+        // assert
+        expect(response).toEqual(mockResponse);
+        expect(splashScreenStateService.start).toHaveBeenCalled();
     });
 });

@@ -8,13 +8,13 @@ import { BaseComponent } from "../../common/components/abstractions/component/ba
 import { InformationMessageComponent } from "../../common/components/information-message/information-message.component";
 import { NavBackComponent } from "../../common/components/nav-back/nav-back.component";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { Paging } from "../../common/model/paging.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { MessageList } from "./model/message-list.model";
 import { Message } from "./model/message.model";
 import { MessageService } from "./service/message-service";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 export enum SelectionStatus {
     NONE = 0,
@@ -36,7 +36,7 @@ export enum SelectionStatus {
         NavBackComponent,
         RouterModule,
         MomentPipe,
-        TranslatorModule
+        TranslatorPipe
     ]
 })
 export class MessageListComponent extends BaseComponent implements OnInit {
@@ -102,7 +102,7 @@ export class MessageListComponent extends BaseComponent implements OnInit {
             return;
         }
 
-        const ids: number[] = this.results.filter(message => message.selected === true).map(message => message.id) as number[];
+        const ids: number[] = this.getSelectedMessageIds();
         this.service.markAsRead(ids, true).pipe(takeUntil(this.destroy$)).subscribe(() => this.fetchData());
     }
 
@@ -115,8 +115,12 @@ export class MessageListComponent extends BaseComponent implements OnInit {
             return;
         }
 
-        const ids: number[] = this.results.filter(message => message.selected === true).map(message => message.id) as number[];
+        const ids: number[] = this.getSelectedMessageIds();
         this.promptDeleteAll(ids, "dialog.deleteSelectedMessages", ids.length);
+    }
+
+    private getSelectedMessageIds(): number[] {
+        return this.results.filter(message => message.selected === true).map(message => message.id) as number[];
     }
 
     private promptDeleteAll(ids: number[], key: string, arg?: any): void {

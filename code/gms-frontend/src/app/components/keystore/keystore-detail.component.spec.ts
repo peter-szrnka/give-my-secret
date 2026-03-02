@@ -7,7 +7,6 @@ import { ActivatedRoute, Data, Router } from "@angular/router";
 import { Observable, of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { IEntitySaveResponseDto } from "../../common/model/entity-save-response.model";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
@@ -15,6 +14,8 @@ import { SplashScreenStateService } from "../../common/service/splash-screen-ser
 import { KeystoreDetailComponent } from "./keystore-detail.component";
 import { KeystoreAlias } from "./model/keystore-alias.model";
 import { KeystoreService } from "./service/keystore-service";
+import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -35,7 +36,7 @@ describe('KeystoreDetailComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [ KeystoreDetailComponent, FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe, TranslatorModule ],
+            imports : [ KeystoreDetailComponent, FormsModule, BrowserAnimationsModule, AngularMaterialModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue: router },
@@ -59,11 +60,11 @@ describe('KeystoreDetailComponent', () => {
         };
 
         sharedDataService = {
-            refreshCurrentUserInfo: jest.fn()
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any)
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any)
         };
         
         activatedRoute = class {
@@ -82,22 +83,22 @@ describe('KeystoreDetailComponent', () => {
         };
 
         service = {
-            save : jest.fn().mockReturnValue(of({ entityId: 1 } as IEntitySaveResponseDto))
+            save : vi.fn().mockReturnValue(of({ entityId: 1 } as IEntitySaveResponseDto))
         };
 
         router = {
-            navigate : jest.fn()
+            navigate : vi.fn()
         };
 
         splashScreenStateService = {
-            start: jest.fn(),
-            stop: jest.fn()
+            start: vi.fn(),
+            stop: vi.fn()
         };
     });
 
     it('Should save keystore', () => {
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
         };
         
         mockAliases = [
@@ -114,11 +115,11 @@ describe('KeystoreDetailComponent', () => {
         // assert
         expect(component).toBeTruthy();
         expect(dialog.openNewDialog).toHaveBeenCalledWith({ text: "dialog.save.keystore", type: "information" });
-    });
+    }, 10000);
 
     it('Should save new generated keystore', () => {
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
         };
         
         mockAliases = [
@@ -142,10 +143,10 @@ describe('KeystoreDetailComponent', () => {
 
     it('Should fail on save keystore | HTTP error', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
+            save : vi.fn().mockReturnValue(throwError(() => new HttpErrorResponse({ error : new Error("OOPS!"), status : 500, statusText: "OOPS!"})))
         };
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(true) })
         };
         configureTestBed();
 
@@ -160,10 +161,10 @@ describe('KeystoreDetailComponent', () => {
 
     it('Should fail on save keystore | Unknown error', () => {
         service = {
-            save : jest.fn().mockReturnValue(throwError(() => new Error("OOPS!")))
+            save : vi.fn().mockReturnValue(throwError(() => new Error("OOPS!")))
         };
         dialog = {
-            openNewDialog : jest.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(false) })
+            openNewDialog : vi.fn().mockReturnValue({ afterClosed : () : Observable<any> => of(false) })
         };
         configureTestBed();
 

@@ -4,12 +4,13 @@ import { MatTableModule } from "@angular/material/table";
 import { ActivatedRoute, Data, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
-import { TranslatorModule } from "../../common/components/pipes/translator/translator.module";
 import { DialogService } from "../../common/service/dialog-service";
 import { SharedDataService } from "../../common/service/shared-data-service";
 import { User } from "../user/model/user.model";
 import { AnnouncementListComponent } from "./announcement-list.component";
 import { AnnouncementService } from "./service/announcement-service";
+import { vi } from "vitest";
+import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
 
 /**
  * @author Peter Szrnka
@@ -30,7 +31,7 @@ describe('AnnouncementListComponent', () => {
 
     const configureTestBed = () => {
         TestBed.configureTestingModule({
-            imports : [AnnouncementListComponent, MatTableModule, MomentPipe, TranslatorModule ],
+            imports : [AnnouncementListComponent, MatTableModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
                 { provide : Router, useValue: router },
@@ -44,12 +45,12 @@ describe('AnnouncementListComponent', () => {
 
     beforeEach(() => {
         sharedDataService = {
-            getUserInfo : jest.fn().mockReturnValue(Promise.resolve(currentUser)),
-            refreshCurrentUserInfo: jest.fn()
+            getUserInfo : vi.fn().mockReturnValue(Promise.resolve(currentUser)),
+            refreshCurrentUserInfo: vi.fn()
         };
 
         dialogService = {
-            openConfirmDeleteDialog : jest.fn()
+            openConfirmDeleteDialog : vi.fn()
         }
         
         activatedRoute = class {
@@ -77,12 +78,12 @@ describe('AnnouncementListComponent', () => {
         };
 
         service = {
-            delete : jest.fn().mockReturnValue(of("OK")),
-            toggle : jest.fn().mockReturnValue(of())
+            delete : vi.fn().mockReturnValue(of("OK")),
+            toggle : vi.fn().mockReturnValue(of())
         };
 
         router = {
-            navigate : jest.fn()
+            navigate : vi.fn()
         };
     });
 
@@ -112,7 +113,7 @@ describe('AnnouncementListComponent', () => {
         fixture = TestBed.createComponent(AnnouncementListComponent);
         component = fixture.componentInstance;
 
-        jest.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
+        vi.spyOn(component.sharedData, 'getUserInfo').mockResolvedValue(undefined);
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
@@ -126,7 +127,7 @@ describe('AnnouncementListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(true)) } as any);
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(true)) } as any);
 
         component.promptDelete(1);
 
@@ -141,7 +142,7 @@ describe('AnnouncementListComponent', () => {
         fixture.detectChanges();
 
         expect(component).toBeTruthy();
-        jest.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : jest.fn().mockReturnValue(of(false)) } as any);
+        vi.spyOn(dialogService, 'openConfirmDeleteDialog').mockReturnValue({ afterClosed : vi.fn().mockReturnValue(of(false)) } as any);
 
         component.promptDelete(1);
 

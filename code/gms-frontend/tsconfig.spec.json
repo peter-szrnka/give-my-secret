@@ -1,19 +1,15 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "CommonJS",
+    "target": "ES2022",
     "outDir": "./out-tsc/spec",
     "sourceMap": true,
     "allowJs": true,
-    "types": [ "jest" ],
+    "types": [ "vitest/globals", "node" ],
     "emitDecoratorMetadata" : true,
-    "typeRoots": ["node_modules/@types"]
+    "strictPropertyInitialization": false,
+    "typeRoots": ["./types", "node_modules/@types", "node_modules"]
   },
-  "files": [
-    "src/polyfills.ts",
-    "src/main.ts",
-    "src/json-typings.d.ts"
-  ],
   "include": [
     "src/**/*.d.ts",
     "src/**/*.spec.ts"

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 module.exports = {
   preset: 'jest-preset-angular',
-  setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
+  setupFilesAfterEnv: ['<rootDir>/setup-vi.ts'],
   globals : {
     tsconfig: 'tsconfig.spec.json'
   },
