@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Data, Router } from "@angular/router";
+import { ActivatedRoute, Data, provideRouter, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
@@ -13,6 +13,7 @@ import { User } from "../user/model/user.model";
 import { ApiKeyListComponent } from "./apikey-list.component";
 import { ApiKeyService } from "./service/apikey-service";
 import { vi } from "vitest";
+import { routes } from "../../app.config";
 
 /**
  * @author Peter Szrnka
@@ -37,6 +38,7 @@ describe('ApiKeyListComponent', () => {
             imports : [ ApiKeyListComponent, AngularMaterialModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                provideRouter(routes),
                 { provide : Router, useValue : router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : ApiKeyService, useValue : service },

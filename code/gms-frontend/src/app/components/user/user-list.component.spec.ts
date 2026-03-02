@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatTableModule } from "@angular/material/table";
-import { ActivatedRoute, Data, Router } from "@angular/router";
+import { ActivatedRoute, Data, provideRouter, Router } from "@angular/router";
 import { ReplaySubject, of, throwError } from "rxjs";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
 import { DialogService } from "../../common/service/dialog-service";
@@ -12,6 +12,7 @@ import { UserService } from "./service/user-service";
 import { UserListComponent } from "./user-list.component";
 import { vi } from "vitest";
 import { TranslatorPipe } from "../../common/components/pipes/translator/translator.pipe";
+import { routes } from "../../app.config";
 
 /**
  * @author Peter Szrnka
@@ -37,6 +38,7 @@ describe('UserListComponent', () => {
             imports : [ UserListComponent, MatTableModule, MomentPipe, TranslatorPipe ],
             schemas : [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
             providers: [
+                provideRouter(routes),
                 { provide : Router, useValue: router },
                 { provide : SharedDataService, useValue : sharedDataService },
                 { provide : UserService, useValue : service },
