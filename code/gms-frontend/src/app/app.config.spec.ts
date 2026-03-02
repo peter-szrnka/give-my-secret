@@ -75,7 +75,8 @@ describe('Routing Config', () => {
     '/secret/list'
   ])('should navigate to component', async(navInput: string) => {
     await router.navigate([navInput]);
-    //await fixture.whenStable();
+    await fixture.whenStable();
+    await new Promise(r => setTimeout(r, 10));
 
     expect(location.path()).toEqual(navInput);
   });
