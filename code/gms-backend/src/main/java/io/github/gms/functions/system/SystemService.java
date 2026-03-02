@@ -4,7 +4,9 @@ import io.github.gms.common.dto.SystemStatusDto;
 import io.github.gms.common.dto.VmOptionDto;
 import io.github.gms.common.enums.ContainerHostType;
 import io.github.gms.common.enums.SystemProperty;
+import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.util.Constants;
+import io.github.gms.functions.setup.SystemAttributeEntity;
 import io.github.gms.functions.setup.SystemAttributeRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +60,12 @@ public class SystemService {
 		builder.withBuilt(getBuildTime().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
 		builder.withContainerHostType(getContainerHostType());
 		builder.withContainerId(getContainerId());
-		builder.withStatus(systemAttributeRepository.getSystemStatus().orElseThrow().getValue()).build();
+        SystemAttributeEntity systemAttribute = systemAttributeRepository.getSystemStatus().orElse(null);
+        if (systemAttribute == null) {
+            builder.withStatus(SystemStatus.NEED_SETUP.name());
+        } else {
+            builder.withStatus(systemAttribute.getValue()).build();
+        }
 
 		setAutomaticLogoutTimeInMinutes(builder);
 

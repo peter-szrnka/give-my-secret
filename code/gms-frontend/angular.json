@@ -34,7 +34,8 @@
               "src/manifest.webmanifest"
             ],
             "styles": [
-              "src/globals.scss"
+              "src/globals.scss",
+              "src/styles.scss"
             ],
             "scripts": [],
             "stylePreprocessorOptions" : {

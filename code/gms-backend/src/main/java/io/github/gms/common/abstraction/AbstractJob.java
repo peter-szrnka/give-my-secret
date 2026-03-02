@@ -116,8 +116,8 @@ public abstract class AbstractJob {
     }
 
     private boolean systemIsNotReady() {
-        SystemAttributeEntity systemAttribute = systemAttributeRepository.getSystemStatus().orElseThrow();
-        return !SystemStatus.OK.name().equals(systemAttribute.getValue());
+        SystemAttributeEntity systemAttribute = systemAttributeRepository.getSystemStatus().orElse(null);
+        return systemAttribute == null || !SystemStatus.OK.name().equals(systemAttribute.getValue());
     }
 
     private boolean jobDisabled() {
