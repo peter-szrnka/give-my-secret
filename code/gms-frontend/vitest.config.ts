@@ -10,7 +10,8 @@ export default defineConfig({
     reporters: [
         "default"
     ],
-    isolate: false,
+    isolate: true,
+    pool: 'forks',
     cache: false,
     css: false,
     maxConcurrency: 1

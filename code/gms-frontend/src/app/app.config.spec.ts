@@ -15,7 +15,7 @@ class DummyComponent {}
 /**
  * @author Peter Szrnka
  */
-describe.skip('Routing Config', () => {
+describe('Routing Config', () => {
   let router: Router;
   let fixture: ComponentFixture<DummyComponent>;
   let location: Location;
