@@ -17,6 +17,16 @@ export default defineConfig({
     cache: false,
     css: false,
     maxConcurrency: isCI ? 1 : 2,
-    fileParallelism: false
+    fileParallelism: false,
+
+    coverage: {
+      provider: 'istanbul',
+      reporter: ['text', 'text-summary', 'html', 'lcov'],
+      exclude: [
+        'src/**/*.spec.ts',
+        'src/test-setup.ts',
+        'src/vitest-env.d.ts'
+      ]
+    }
   }
 });
