@@ -13,10 +13,10 @@ export default defineConfig({
         "default"
     ],
     isolate: isCI,
-    pool: isCI ? 'forks' : undefined,
+    pool: 'forks',
     cache: false,
     css: false,
-    maxConcurrency: isCI ? 1 : undefined,
+    maxConcurrency: isCI ? 1 : 2,
     fileParallelism: false
   }
 });
