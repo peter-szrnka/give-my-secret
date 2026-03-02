@@ -12,7 +12,7 @@ import { vi } from "vitest";
 /**
  * @author Peter Szrnka
  */
-describe.skip('AutomaticLogoutComponent', () => {
+describe('AutomaticLogoutComponent', () => {
   let component: AutomaticLogoutComponent;
   let fixture: ComponentFixture<AutomaticLogoutComponent>;
   let sharedData: any;
@@ -42,24 +42,22 @@ describe.skip('AutomaticLogoutComponent', () => {
 
     fixture = TestBed.createComponent(AutomaticLogoutComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    fixture.autoDetectChanges();
   });
 
   it('should set logoutComing to true on warning before logout', () => {
     vi.useFakeTimers();
 
     component.automaticLogoutTimeInMinutes = 2;
-    fixture.detectChanges();
+    fixture.whenStable();
+    fixture.autoDetectChanges();
 
     mockSubject.next(undefined);
-    fixture.detectChanges();
 
     expect(component.logoutComing).toBeFalsy();
 
     vi.advanceTimersByTime(WARNING_THRESHOLD);
     vi.advanceTimersByTime(WARNING_THRESHOLD);
-
-    fixture.detectChanges();
 
     expect(component.logoutComing).toBeTruthy();
     expect(dialogService.openNewDialog).toHaveBeenCalledWith({
@@ -78,11 +76,13 @@ describe.skip('AutomaticLogoutComponent', () => {
     component.automaticLogoutTimeInMinutes = 2;
     expect(component).toBeTruthy();
 
-    fixture.detectChanges();
+    fixture.whenStable();
+    fixture.autoDetectChanges();
     mockSubject.next(undefined);
     expect(component.logoutComing).toBeFalsy();
 
-    fixture.detectChanges();
+    fixture.whenStable();
+    fixture.autoDetectChanges();
     vi.advanceTimersByTime(WARNING_THRESHOLD);
 
     mockSubject.next(120001);

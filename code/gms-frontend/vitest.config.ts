@@ -14,9 +14,8 @@ export default defineConfig({
     ],
     isolate: isCI,
     pool: isCI ? 'forks' : undefined,
-    cache: isCI ? false : undefined,
+    cache: false,
     css: false,
     maxConcurrency: isCI ? 1 : undefined,
-    fileParallelism: !isCI
-  }
+    fileParallelism: false
 });

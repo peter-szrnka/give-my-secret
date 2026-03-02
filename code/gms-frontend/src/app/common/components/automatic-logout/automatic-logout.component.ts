@@ -1,5 +1,5 @@
 import { DatePipe, NgClass } from "@angular/common";
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA, OnDestroy, OnInit } from "@angular/core";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { map, Observable, Subscription, takeWhile, timer } from "rxjs";
 import { DialogService } from "../../service/dialog-service";
@@ -23,19 +23,24 @@ export const WARNING_THRESHOLD = 60000;
 })
 export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
-    @Input() automaticLogoutTimeInMinutes: number;
-    timeLeftValue: number;
+    @Input() automaticLogoutTimeInMinutes: number = -1;
+    timeLeftValue: number = -1;
     resetTimerSubscription?: Subscription;
     timeLeftSubscription?: Subscription;
     logoutComing: boolean = false;
 
-    constructor(private readonly sharedData: SharedDataService, private readonly dialogService: DialogService) {}
+    constructor(
+        private readonly sharedData: SharedDataService, 
+        private readonly dialogService: DialogService,
+        private readonly changeDetector: ChangeDetectorRef
+    ) {}
 
     ngOnInit(): void {
         this.resetTimerSubscription = this.sharedData.resetTimerSubject$.subscribe((oldStartTime) => {
             this.timeLeftSubscription?.unsubscribe();
             this.timeLeftValue = (this.automaticLogoutTimeInMinutes*1000*60) - ((Date.now() - (oldStartTime ?? (Date.now()))));
             this.initiateTimer();
+            this.changeDetector.detectChanges();
         });
     }
 
