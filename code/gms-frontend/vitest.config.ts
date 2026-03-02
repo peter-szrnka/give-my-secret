@@ -12,6 +12,8 @@ export default defineConfig({
     ],
     isolate: false,
     cache: false,
-    css: false
+    css: false,
+    maxConcurrency: 1,
+    maxWorkers: 1
   }
 });
