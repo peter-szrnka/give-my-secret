@@ -14,6 +14,7 @@ export default defineConfig({
     pool: 'forks',
     cache: false,
     css: false,
-    maxConcurrency: 1
+    maxConcurrency: 1,
+    fileParallelism: false
   }
 });
