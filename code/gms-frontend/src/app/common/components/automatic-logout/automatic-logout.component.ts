@@ -25,8 +25,8 @@ export class AutomaticLogoutComponent implements OnInit, OnDestroy {
 
     @Input() automaticLogoutTimeInMinutes: number;
     timeLeftValue: number;
-    resetTimerSubscription: Subscription;
-    timeLeftSubscription: Subscription;
+    resetTimerSubscription?: Subscription;
+    timeLeftSubscription?: Subscription;
     logoutComing: boolean = false;
 
     constructor(private readonly sharedData: SharedDataService, private readonly dialogService: DialogService) {}

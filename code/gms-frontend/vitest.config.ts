@@ -1,5 +1,7 @@
 import { defineConfig } from "vitest/config";
 
+const isCI = !!process.env.CI;
+
 
 export default defineConfig({
   test: {
@@ -10,11 +12,11 @@ export default defineConfig({
     reporters: [
         "default"
     ],
-    isolate: true,
-    pool: 'forks',
-    cache: false,
+    isolate: isCI,
+    pool: isCI ? 'forks' : undefined,
+    cache: isCI ? false : undefined,
     css: false,
-    maxConcurrency: 1,
-    fileParallelism: false
+    maxConcurrency: isCI ? 1 : undefined,
+    fileParallelism: !isCI
   }
 });

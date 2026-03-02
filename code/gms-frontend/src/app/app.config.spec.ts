@@ -80,3 +80,4 @@ describe('Routing Config', () => {
     expect(location.path()).toEqual(navInput);
   });
 });
+
