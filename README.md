@@ -67,10 +67,10 @@ You can find client code examples for Java, Go, Python and Node.js **[here](clie
 
 # Tech stack
 
-- Java 21 (Microsoft OpenJDK)
+- Java 25 (Microsoft OpenJDK)
 - Maven
 - Spring Boot 3.3.5
-- Angular 19
+- Angular 21
 - Docker
 - Flyway (DB migration)
 
