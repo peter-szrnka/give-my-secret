@@ -12,7 +12,7 @@
     "runScript": "tsc && node  --security-revert=CVE-2023-46809 dist/main.js"
   },
   "dependencies": {
-    "jks-js": "^1.1.0",
+    "jks-js": "1.1.6",
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
