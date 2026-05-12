@@ -5,6 +5,9 @@ import '@angular/compiler';
 import "cross-fetch/polyfill";
 import { vi } from "vitest";
 
+/**
+ * @author Peter Szrnka
+ */
 globalThis.fetch = globalThis.fetch ?? vi.fn(() =>
   Promise.resolve({ json: () => Promise.resolve({}) })
 );
