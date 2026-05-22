@@ -6,12 +6,10 @@ import io.github.gms.common.UserIdExtension;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
-import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.keystore.KeystoreAliasEntity;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
@@ -24,7 +22,6 @@ import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import lombok.SneakyThrows;
 import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -32,7 +29,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.MockedStatic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -84,8 +80,6 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         service = new SecretServiceImpl(cryptoService, keystoreRepository, keystoreAliasRepository, repository,
                 converter, apiKeyRestrictionRepository, ipRestrictionService);
         addAppender(SecretServiceImpl.class);
-
-        MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
     }
 
     @Test
@@ -345,8 +339,6 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         verify(converter, never()).toEntity(any(SecretEntity.class), any(SaveSecretRequestDto.class));
         verify(cryptoService, never()).encrypt(mockEntity);
         verify(keystoreAliasRepository).findById(anyLong());
-
-        MDC.clear();
     }
 
     @Test
@@ -555,8 +547,6 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         // assert
         assertEquals("Wrong entity!", exception.getMessage());
         verify(repository, never()).save(any());
-
-        MDC.clear();
     }
 
     @Test
@@ -598,8 +588,6 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         // assert
         assertNotNull(response);
         assertEquals(4L, response.getValue());
-
-        MDC.clear();
     }
 
     @Test

@@ -7,7 +7,6 @@ import io.github.gms.common.dto.*;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
-import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.model.EnabledAlgorithm;
 import io.github.gms.common.model.EntityChangeEvent;
 import io.github.gms.common.model.EntityChangeEvent.EntityChangeType;
@@ -20,7 +19,6 @@ import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import io.github.gms.util.TestUtils.ValueHolder;
 import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -98,8 +96,6 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         TestUtils.createDirectory("unit-test-output/");
         TestUtils.createDirectory("temp-output/");
-
-        MDC.put(MdcParameter.USER_ID.getDisplayName(), DemoData.USER_1_ID);
     }
 
     @Override
@@ -254,7 +250,6 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     @Test
     void save_whenKeystoreCannotBeCopied_thenThrowException() throws IOException {
         // arrange
-        MDC.put(MdcParameter.USER_ID.getDisplayName(), 6L);
         doThrow(new FileNotFoundException("Invalid")).when(fileService).createDirectories(any(Path.class));
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
