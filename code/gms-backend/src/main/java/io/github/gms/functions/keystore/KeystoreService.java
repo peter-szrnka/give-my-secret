@@ -10,11 +10,13 @@ import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.AliasOperation;
 import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.KeyStoreValueType;
+import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.model.EntityChangeEvent;
 import io.github.gms.common.service.CountService;
 import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.secret.dto.GetSecureValueDto;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -40,7 +42,6 @@ import java.util.*;
 import static io.github.gms.common.types.ErrorCode.*;
 import static io.github.gms.common.util.Constants.*;
 import static io.github.gms.common.util.FileUtils.validatePath;
-import static io.github.gms.common.util.MdcUtils.getUserId;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -73,7 +74,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(String model, MultipartFile file) {
 		SaveKeystoreRequestDto dto = parseInput(model);
-		dto.setUserId(getUserId());
+		dto.setUserId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
 
 		// Validation
 		validateInput(dto, file);
@@ -122,7 +123,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 	@Override
 	public KeystoreListDto list(Pageable pageable) {
 		try {
-			Page<KeystoreEntity> resultList = repository.findAllByUserId(getUserId(), pageable);
+			Page<KeystoreEntity> resultList = repository.findAllByUserId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID), pageable);
 			return converter.toDtoList(resultList);
 		} catch (Exception e) {
 			return KeystoreListDto.builder().resultList(Collections.emptyList()).totalElements(0).build();
@@ -166,11 +167,11 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 
 	@Override
 	public LongValueDto count() {
-		return new LongValueDto(repository.countByUserId(getUserId()));
+		return new LongValueDto(repository.countByUserId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID)));
 	}
 
 	public IdNamePairListDto getAllKeystoreNames() {
-		return new IdNamePairListDto(repository.getAllKeystoreNames(getUserId()));
+		return new IdNamePairListDto(repository.getAllKeystoreNames(ThreadLocalContext.getAsLong(MdcParameter.USER_ID)));
 	}
 
 	public IdNamePairListDto getAllKeystoreAliasNames(Long keystoreId) {
@@ -246,7 +247,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 	}
 
 	private String getUserFolder() {
-		return keystorePath + getUserId() + SLASH;
+		return keystorePath + ThreadLocalContext.getAsLong(MdcParameter.USER_ID) + SLASH;
 	}
 
 	private KeystoreEntity convertKeystore(SaveKeystoreRequestDto dto, MultipartFile file) {
@@ -254,7 +255,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 			return converter.toNewEntity(dto, file);
 		}
 
-		KeystoreEntity foundEntity = repository.findByIdAndUserId(dto.getId(), getUserId())
+		KeystoreEntity foundEntity = repository.findByIdAndUserId(dto.getId(), ThreadLocalContext.getAsLong(MdcParameter.USER_ID))
 				.orElseThrow(() -> new GmsException("Entity not found!", GMS_002));
 
 		return converter.toEntity(foundEntity, dto);
@@ -315,7 +316,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 			throw new GmsException("Keystore file must be provided!", GMS_012);
 		}
 
-		long keystoreCount = repository.countAllKeystoresByName(getUserId(), dto.getName());
+		long keystoreCount = repository.countAllKeystoresByName(ThreadLocalContext.getAsLong(MdcParameter.USER_ID), dto.getName());
 
 		if (keystoreCount > expectedCount) {
 			throw new GmsException("Keystore name must be unique!", GMS_013);
@@ -371,7 +372,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 
 	private static Map<String, Object> initMetaData(Long keystoreId) {
 		Map<String, Object> metadata = new HashMap<>();
-		metadata.put(USER_ID, getUserId());
+		metadata.put(USER_ID, ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
 		metadata.put(KEYSTORE_ID, keystoreId);
 		return metadata;
 	}

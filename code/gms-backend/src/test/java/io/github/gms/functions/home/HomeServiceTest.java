@@ -3,6 +3,7 @@ package io.github.gms.functions.home;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.announcement.AnnouncementDto;
 import io.github.gms.functions.announcement.AnnouncementListDto;
 import io.github.gms.functions.announcement.AnnouncementService;
@@ -16,7 +17,6 @@ import io.github.gms.functions.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.slf4j.MDC;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -55,7 +55,7 @@ class HomeServiceTest extends AbstractUnitTest {
     @Test
     void getHomeData_whenUserIsAnAdmin_thenReturnAdminData() {
         // arrange
-        MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), "true");
+        ThreadLocalContext.set(MdcParameter.IS_ADMIN, "true");
         when(announcementService.count()).thenReturn(new LongValueDto(2L));
         when(userService.count()).thenReturn(new LongValueDto(5L));
         when(eventService.list(any(Pageable.class))).thenReturn(EventListDto.builder().totalElements(1)
@@ -81,7 +81,7 @@ class HomeServiceTest extends AbstractUnitTest {
     @Test
     void getHomeData_whenUserIsAUser_thenReturnUserData() {
         // arrange
-        MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), "false");
+        ThreadLocalContext.set(MdcParameter.IS_ADMIN, "false");
         when(apiKeyService.count()).thenReturn(new LongValueDto(4L));
         when(keystoreService.count()).thenReturn(new LongValueDto(2L));
         when(secretService.count()).thenReturn(new LongValueDto(3L));

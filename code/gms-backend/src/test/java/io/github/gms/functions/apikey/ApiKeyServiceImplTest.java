@@ -9,6 +9,7 @@ import io.github.gms.common.enums.EntityStatus;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +53,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	void save_WhenApiKeyIsNew_thenReturnOk() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), "2");
+        ThreadLocalContext.set(MdcParameter.USER_ID, "2");
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
 		when(converter.toNewEntity(any(SaveApiKeyRequestDto.class))).thenReturn(mockEntity);
@@ -74,14 +74,12 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		verify(repository).countAllApiKeysByName(anyLong(), anyString());
 		verify(repository).countAllApiKeysByValue(anyLong(), anyString());
 		verify(repository).save(any(ApiKeyEntity.class));
-
-		MDC.remove(MdcParameter.USER_ID.getDisplayName());
 	}
 
 	@Test
 	void save_WhenApiKeyAlreadyExists_thenReturnOk() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), "2");
+        ThreadLocalContext.set(MdcParameter.USER_ID, "2");
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createApiKey()));

@@ -5,8 +5,8 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.service.GmsThreadLocalValues;
-import io.github.gms.common.util.MdcUtils;
 import io.github.gms.common.types.EventSource;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.maintenance.job.JobEntity;
 import io.github.gms.functions.maintenance.job.JobRepository;
 import io.github.gms.functions.setup.SystemAttributeEntity;
@@ -63,7 +63,7 @@ public abstract class AbstractJob {
 
         GmsThreadLocalValues.setEventSource(EventSource.JOB);
         GmsThreadLocalValues.setUserId(JOB_USER);
-        MdcUtils.put(MdcParameter.CORRELATION_ID, UUID.randomUUID().toString());
+        ThreadLocalContext.set(MdcParameter.CORRELATION_ID, UUID.randomUUID().toString());
         createJobExecution();
 
         try {
@@ -74,8 +74,8 @@ public abstract class AbstractJob {
             completeJobExecution(FAILED, e.getMessage());
         }
 
-        MdcUtils.remove(MdcParameter.JOB_ID);
-        MdcUtils.remove(MdcParameter.CORRELATION_ID);
+        ThreadLocalContext.remove(MdcParameter.JOB_ID);
+        ThreadLocalContext.remove(MdcParameter.CORRELATION_ID);
         GmsThreadLocalValues.removeEventSource();
         GmsThreadLocalValues.removeUserId();
     }
@@ -87,17 +87,17 @@ public abstract class AbstractJob {
     private void createJobExecution() {
         JobEntity newEntity = jobRepository.save(JobEntity.builder()
                 .name(getClass().getSimpleName())
-                .correlationId(MdcUtils.get(MdcParameter.CORRELATION_ID))
+                .correlationId(ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID))
                 .status(JobStatus.RUNNING)
                 .creationDate(ZonedDateTime.now(clock))
                 .startTime(ZonedDateTime.now(clock))
                 .build());
 
-        MdcUtils.putLong(MdcParameter.JOB_ID, newEntity.getId());
+        ThreadLocalContext.set(MdcParameter.JOB_ID, newEntity.getId());
     }
 
     private void completeJobExecution(JobStatus status, String... message) {
-        Long executionId = MdcUtils.getLong(MdcParameter.JOB_ID);
+        Long executionId = ThreadLocalContext.getAsLong(MdcParameter.JOB_ID);
         JobEntity entity = jobRepository.findById(executionId).orElseThrow();
 
         entity.setEndTime(ZonedDateTime.now(clock));
@@ -112,7 +112,7 @@ public abstract class AbstractJob {
     }
 
     private boolean manualJobExecution() {
-        return TRUE.equals(MdcUtils.get(MdcParameter.MANUAL_JOB_EXECUTION));
+        return TRUE.equals(ThreadLocalContext.getAsString(MdcParameter.MANUAL_JOB_EXECUTION));
     }
 
     private boolean systemIsNotReady() {

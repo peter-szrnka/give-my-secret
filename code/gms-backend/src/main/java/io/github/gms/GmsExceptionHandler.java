@@ -5,9 +5,9 @@ import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.ErrorCode;
 import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ThreadLocalContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,7 +34,7 @@ public class GmsExceptionHandler {
 		log.error("GmsException handled", ex);
 		return new ResponseEntity<>(new ErrorResponseDto(
 				Throwables.getRootCause(ex).getMessage(),
-				MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()),
+                ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID),
 				ZonedDateTime.now(clock),
 				ex.getErrorCode().getCode()
 		), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -53,7 +53,7 @@ public class GmsExceptionHandler {
 	private ResponseEntity<ErrorResponseDto> getResponse(Exception ex, HttpStatus httpStatus) {
 		return new ResponseEntity<>(new ErrorResponseDto(
 				Throwables.getRootCause(ex).getMessage(),
-				MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()),
+                ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID),
 				ZonedDateTime.now(clock),
 				ErrorCode.GMS_000.getCode()
 		), httpStatus);

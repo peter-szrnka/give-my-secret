@@ -1,13 +1,13 @@
 package io.github.gms.common.filter;
 
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.util.ThreadLocalContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -41,13 +41,13 @@ public class RequestInitializationFilter extends OncePerRequestFilter {
 
         long startTime = clock.millis();
 
-        MDC.put(MdcParameter.CORRELATION_ID.getDisplayName(), UUID.randomUUID().toString());
-        response.addHeader("X-CORRELATION-ID", MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
+        ThreadLocalContext.set(MdcParameter.CORRELATION_ID, UUID.randomUUID().toString());
+        response.addHeader("X-CORRELATION-ID", ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID));
 
         filterChain.doFilter(request, response);
         logResponseTime(request, startTime);
 
-        MDC.remove(MdcParameter.CORRELATION_ID.getDisplayName());
+        ThreadLocalContext.remove(MdcParameter.CORRELATION_ID);
     }
 
     private void logResponseTime(HttpServletRequest request, long startTime) {

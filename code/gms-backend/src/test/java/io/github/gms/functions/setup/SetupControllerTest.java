@@ -5,6 +5,7 @@ import io.github.gms.common.dto.SimpleResponseDto;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.enums.UserRole;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.user.SaveUserRequestDto;
 import io.github.gms.functions.user.UserDto;
 import io.github.gms.util.TestUtils;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.MDC;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -128,8 +128,8 @@ class SetupControllerTest {
 
         // arrange
         assertNotNull(response);
-        assertEquals("setup", MDC.get(MdcParameter.USER_NAME.getDisplayName()));
-        assertEquals("0", MDC.get(MdcParameter.USER_ID.getDisplayName()));
+        assertEquals("setup", ThreadLocalContext.getAsString(MdcParameter.USER_NAME));
+        assertEquals("0", ThreadLocalContext.getAsString(MdcParameter.USER_ID));
 
         ArgumentCaptor<SaveUserRequestDto> argumentCaptorDto = ArgumentCaptor.forClass(SaveUserRequestDto.class);
         verify(setupService).saveAdminUser(argumentCaptorDto.capture());
@@ -150,8 +150,8 @@ class SetupControllerTest {
 
         // arrange
         assertNotNull(response);
-        assertEquals("setup", MDC.get(MdcParameter.USER_NAME.getDisplayName()));
-        assertEquals("0", MDC.get(MdcParameter.USER_ID.getDisplayName()));
+        assertEquals("setup", ThreadLocalContext.getAsString(MdcParameter.USER_NAME));
+        assertEquals("0", ThreadLocalContext.getAsString(MdcParameter.USER_ID));
 
         ArgumentCaptor<SaveUserRequestDto> argumentCaptorDto = ArgumentCaptor.forClass(SaveUserRequestDto.class);
         verify(setupService).saveAdminUser(argumentCaptorDto.capture());

@@ -1,9 +1,11 @@
 package io.github.gms.functions.keystore;
 
+import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.model.EnabledAlgorithm;
 import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.functions.user.UserEntity;
 import io.github.gms.functions.user.UserRepository;
@@ -42,7 +44,6 @@ import static io.github.gms.common.types.ErrorCode.GMS_001;
 import static io.github.gms.common.types.ErrorCode.GMS_002;
 import static io.github.gms.common.util.Constants.ENTITY_NOT_FOUND;
 import static io.github.gms.common.util.FileUtils.validatePath;
-import static io.github.gms.common.util.MdcUtils.getUserId;
 
 /**
  * @author Peter Szrnka
@@ -140,7 +141,7 @@ public class KeystoreFileService {
 		final Date notBefore = Date.from(now);
 		final Date until = GregorianCalendar.from(ZonedDateTime.now().plusYears(1L)).getTime();
 
-		UserEntity user = userRepository.findById(getUserId()).orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND, GMS_002));
+		UserEntity user = userRepository.findById(ThreadLocalContext.getAsLong(MdcParameter.USER_ID)).orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND, GMS_002));
 		EnabledAlgorithm algorithm = EnabledAlgorithm.getByName(alg);
 
 		String organizationName = systemPropertyService.get(SystemProperty.ORGANIZATION_NAME);

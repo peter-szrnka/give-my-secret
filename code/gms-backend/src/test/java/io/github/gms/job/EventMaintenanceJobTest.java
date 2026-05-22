@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
-import org.slf4j.MDC;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
@@ -61,8 +60,6 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		ReflectionTestUtils.setField(job, "jobRepository", jobRepository);
 		ReflectionTestUtils.setField(job, "systemAttributeRepository", systemAttributeRepository);
 		addAppender(EventMaintenanceJob.class);
-
-		MDC.clear();
 	}
 
 	@Test

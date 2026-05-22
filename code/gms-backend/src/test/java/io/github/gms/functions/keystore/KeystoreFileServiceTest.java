@@ -2,7 +2,7 @@ package io.github.gms.functions.keystore;
 
 import com.google.common.base.Throwables;
 import io.github.gms.abstraction.AbstractUnitTest;
-import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.UserIdExtension;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
@@ -13,9 +13,9 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.slf4j.MDC;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +35,9 @@ import static org.mockito.Mockito.*;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class KeystoreFileServiceTest extends AbstractUnitTest {
 
+    @RegisterExtension
+    private final UserIdExtension userIdExtension = new UserIdExtension();
+
 	private KeystoreRepository repository;
 	private UserRepository userRepository;
 	private KeystoreFileService service;
@@ -43,8 +46,6 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 
 	@BeforeEach
 	void beforeEach() {
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
-
 		// Init
 		repository = mock(KeystoreRepository.class);
 		userRepository = mock(UserRepository.class);
@@ -57,7 +58,6 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 	@SneakyThrows
 	void tearDownAll() {
 		TestUtils.deleteDirectoryWithContent("./temp-output");
-		MDC.clear();
 	}
 
 	@Test
