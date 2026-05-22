@@ -126,7 +126,7 @@ public class KeystoreFileService {
 	private boolean deleteTempKeystoreFile(Path path) {
 		try {
 			return fileService.delete(path);
-		} catch (IOException e) {
+		} catch (IOException _) {
 			return false;
 		}
 	}

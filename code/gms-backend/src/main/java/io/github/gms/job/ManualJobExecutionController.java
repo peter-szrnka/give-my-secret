@@ -54,7 +54,7 @@ public class ManualJobExecutionController implements GmsController {
 
             ThreadLocalContext.remove(MdcParameter.MANUAL_JOB_EXECUTION);
             return ResponseEntity.ok().build();
-        } catch (NoSuchBeanDefinitionException e) {
+        } catch (NoSuchBeanDefinitionException _) {
             ThreadLocalContext.remove(MdcParameter.MANUAL_JOB_EXECUTION);
             return ResponseEntity.notFound().build();
         }

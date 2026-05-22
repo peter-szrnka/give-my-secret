@@ -125,7 +125,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 		try {
 			Page<KeystoreEntity> resultList = repository.findAllByUserId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID), pageable);
 			return converter.toDtoList(resultList);
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return KeystoreListDto.builder().resultList(Collections.emptyList()).totalElements(0).build();
 		}
 	}

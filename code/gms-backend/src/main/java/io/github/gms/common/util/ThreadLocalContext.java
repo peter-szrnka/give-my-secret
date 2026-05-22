@@ -24,7 +24,7 @@ public class ThreadLocalContext {
         return VARIABLES.get().get(parameter.getDisplayName());
     }
 
-    public static Boolean getAsBoolean(MdcParameter parameter) {
+    public static boolean getAsBoolean(MdcParameter parameter) {
         return Boolean.parseBoolean(VARIABLES.get().get(parameter.getDisplayName()).toString());
     }
 

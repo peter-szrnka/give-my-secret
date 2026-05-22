@@ -1,7 +1,5 @@
 package io.github.gms.common.db.listener;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;

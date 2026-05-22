@@ -66,7 +66,7 @@ public class UserController extends AbstractAdminController<UserService> {
 	public ResponseEntity<byte[]> getMfaQrCode() {
 		try {
 			return new ResponseEntity<>(service.getMfaQrCode(), HttpStatus.OK);
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}

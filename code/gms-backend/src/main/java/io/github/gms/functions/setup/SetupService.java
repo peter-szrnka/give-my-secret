@@ -52,7 +52,7 @@ public class SetupService {
     public UserDto getCurrentSuperAdmin() {
         try {
             return userService.getById(1L);
-        } catch (GmsException e) {
+        } catch (GmsException _) {
             return null;
         }
     }

@@ -43,7 +43,7 @@ public class SecretRotationService {
 			entity.setValue(decrypted);
 			cryptoService.encrypt(entity);
 			entity.setLastRotated(ZonedDateTime.now(clock));
-		} catch (Exception e) {
+		} catch (Exception _) {
 			entity.setStatus(EntityStatus.DISABLED);
 		}
 
