@@ -11,10 +11,10 @@ import io.github.gms.common.enums.UserRole;
 import io.github.gms.common.types.AuditTarget;
 import io.github.gms.common.types.Audited;
 import io.github.gms.common.types.SkipSecurityTestCheck;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.user.SaveUserRequestDto;
 import io.github.gms.functions.user.UserDto;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.MDC;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,7 +89,7 @@ public class SetupController implements GmsController {
     }
 
 	private static void initMdc() {
-		MDC.put(MdcParameter.USER_NAME.getDisplayName(), "setup");
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), "0");
+		ThreadLocalContext.set(MdcParameter.USER_NAME, "setup");
+        ThreadLocalContext.set(MdcParameter.USER_ID, "0");
 	}
 }

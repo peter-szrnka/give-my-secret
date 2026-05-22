@@ -62,7 +62,7 @@ public class VerificationService {
                     .token(authenticationDetails.get(JwtConfigType.ACCESS_JWT))
                     .refreshToken(authenticationDetails.get(JwtConfigType.REFRESH_JWT))
                     .build();
-        } catch (Exception e) {
+        } catch (Exception _) {
             return AuthenticationResponse.builder()
                     .phase(AuthResponsePhase.FAILED)
                     .build();

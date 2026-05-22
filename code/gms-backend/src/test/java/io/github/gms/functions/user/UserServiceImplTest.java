@@ -2,6 +2,7 @@ package io.github.gms.functions.user;
 
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
+import io.github.gms.common.UserIdExtension;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.dto.UserInfoDto;
@@ -10,13 +11,13 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.service.JwtClaimService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.util.TestUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,6 +43,9 @@ import static org.mockito.Mockito.*;
  * @since 1.0
  */
 class UserServiceImplTest extends AbstractLoggingUnitTest {
+
+    //@RegisterExtension
+    private final UserIdExtension userIdExtension = new UserIdExtension();
 
 	private UserRepository repository;
 	private UserConverter converter;
@@ -86,18 +90,22 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void save_whenUserNotFound_thenThrowException() {
+        ThreadLocalContext.set(MdcParameter.IS_ADMIN, true);
+        ThreadLocalContext.remove(MdcParameter.USER_ID);
 		// arrange
 		when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
 		// act & assert
 		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveUserRequestDto(1L)), "User entity not found!");
+
+        ThreadLocalContext.remove(MdcParameter.IS_ADMIN);
 	}
 
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
 	void save_whenUserAlreadyExists_thenSaveUser(boolean admin) {
 		// arrange
-		MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), String.valueOf(admin));
+		ThreadLocalContext.set(MdcParameter.IS_ADMIN, admin);
 		when(converter.toEntity(any(UserEntity.class), any(SaveUserRequestDto.class), eq(admin)))
 				.thenReturn(TestUtils.createUser());
 		when(repository.save(any(UserEntity.class))).thenReturn(TestUtils.createAdminUser());
@@ -111,23 +119,26 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		assertEquals(1L, response.getEntityId());
 		verify(converter).toEntity(any(UserEntity.class), any(SaveUserRequestDto.class), eq(admin));
 		verify(repository).save(any(UserEntity.class));
-		MDC.remove(MdcParameter.IS_ADMIN.getDisplayName());
+        ThreadLocalContext.remove(MdcParameter.IS_ADMIN);
 	}
 
 	@Test
 	void save_whenUserAlreadyExists_thenThrowException() {
+        ThreadLocalContext.set(MdcParameter.IS_ADMIN, true);
+
 		// arrange
 		when(repository.findByUsernameOrEmail(anyString(), anyString())).thenReturn(Optional.of(TestUtils.createAdminUser()));
 
 		// act & assert
 		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveUserRequestDto(null)), "User already exists!");
 		verify(repository).findByUsernameOrEmail(anyString(), anyString());
+
+        ThreadLocalContext.remove(MdcParameter.IS_ADMIN);
 	}
 
 	@Test
 	void getById_whenEditorUserNotFound_thenThrowException() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(repository.findById(1L)).thenReturn(Optional.empty());
 
 		// act
@@ -201,7 +212,6 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
 	void toggleStatus_whenUserFound_thenToggleStatus(boolean enabled) {
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		// arrange
 		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
 
@@ -259,33 +269,28 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	void changePassword_whenPasswordDoesNotMatch_thenThrowException() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(passwordEncoder.matches(isNull(), anyString())).thenReturn(false);
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 
 		// act & assert
 		TestUtils.assertGmsException(() -> service.changePassword(new ChangePasswordRequestDto()), "Old credential is not valid!");
 		verify(passwordEncoder).matches(isNull(), anyString());
-		MDC.clear();
 	}
 
 	@Test
 	void changePassword_whenPasswordIsInvalid_thenThrowException() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 
 		// act & assert
 		TestUtils.assertGmsException(() -> service.changePassword(new ChangePasswordRequestDto("MyOldPassword", "MyNewPassword")), "New credential is not valid! It must contain at least 1 lowercase, 1 uppercase and 1 numeric character.");
 		verify(passwordEncoder).matches(anyString(), anyString());
-		MDC.clear();
 	}
 
 	@Test
 	void changePassword_whenCorrectInputProvided_thenChangePassword() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 		when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 		when(passwordEncoder.encode(anyString())).thenReturn("MyEncodedPassword1!");
@@ -301,15 +306,12 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		verify(passwordEncoder).encode(credentialCaptor.capture());
 		verify(passwordEncoder).matches(anyString(), anyString());
 		assertEquals("MyNewEncodedPassword2!", credentialCaptor.getValue());
-
-		MDC.clear();
 	}
 
 	@Test
 	@SneakyThrows
 	void getMfaQrCode_whenMfaIsEnabled_thenReturnImage() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		UserEntity entity = TestUtils.createUser();
 		entity.setEmail("john.doe@fictivehost.com");
 		entity.setMfaSecret("test");
@@ -322,7 +324,6 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		// assert
 		assertNotNull(response);
 		verify(repository).findById(1L);
-		MDC.clear();
 	}
 
 	@ParameterizedTest

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.ErrorCode;
+import io.github.gms.common.util.ThreadLocalContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -39,14 +39,14 @@ public class GmsAuthenticationEntryPoint implements AuthenticationEntryPoint {
         ErrorResponseDto dto =
                 new ErrorResponseDto(
                         "GmsAuthenticationEntryPoint: " + e.getMessage(),
-                        MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()),
+                        ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID),
                         ZonedDateTime.now(clock),
                         ErrorCode.GMS_000.getCode());
     	
         httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
     	httpServletResponse.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
         httpServletResponse.getWriter().write(objectMapper.writeValueAsString(dto));
-        
-        MDC.remove(MdcParameter.CORRELATION_ID.getDisplayName());
+
+        ThreadLocalContext.remove(MdcParameter.CORRELATION_ID);
     }
 }

@@ -1,8 +1,9 @@
 package io.github.gms.functions.iprestriction;
 
+import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.common.model.IpRestrictionPatterns;
-import io.github.gms.common.util.MdcUtils;
+import io.github.gms.common.util.ThreadLocalContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -45,7 +46,7 @@ public class IpRestrictionConverter {
         entity.setAllow(dto.isAllow());
         entity.setIpPattern(dto.getIpPattern());
         entity.setSecretId(dto.getSecretId());
-        entity.setUserId(MdcUtils.getUserId());
+        entity.setUserId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
         entity.setStatus(dto.getStatus());
         entity.setLastModified(ZonedDateTime.now(clock));
 

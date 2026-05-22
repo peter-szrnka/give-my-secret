@@ -4,9 +4,9 @@ import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
 	@Override
 	public SaveEntityResponseDto save(SaveAnnouncementDto dto) {
-		Long userId = Long.parseLong(MDC.get(MdcParameter.USER_ID.getDisplayName()));
+		Long userId = ThreadLocalContext.getAsLong(MdcParameter.USER_ID);
 		AnnouncementEntity entity = new AnnouncementEntity();
 
 		if (dto.getId() != null) {

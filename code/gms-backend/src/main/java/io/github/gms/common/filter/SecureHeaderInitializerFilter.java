@@ -10,13 +10,13 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.common.util.Constants;
 import io.github.gms.common.util.CookieUtils;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
@@ -74,7 +74,7 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 		}
 
 		GmsUserDetails userDetails = (GmsUserDetails) authenticationResponse.getAuthentication().getPrincipal();
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), String.valueOf(userDetails.getUserId()));
+        ThreadLocalContext.set(MdcParameter.USER_ID, userDetails.getUserId());
 		String accessCookie = CookieUtils.createCookie(Constants.ACCESS_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.ACCESS_JWT),
 				systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS), secure).toString();
 		String refreshCookie = CookieUtils.createCookie(Constants.REFRESH_JWT_TOKEN, authenticationResponse.getJwtPair().get(JwtConfigType.REFRESH_JWT),
@@ -85,12 +85,11 @@ public class SecureHeaderInitializerFilter extends OncePerRequestFilter {
 
 		Authentication authentication = authenticationResponse.getAuthentication();
 		boolean admin = authentication.getAuthorities().stream().anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
-		MDC.put(MdcParameter.IS_ADMIN.getDisplayName(), String.valueOf(admin));
+        ThreadLocalContext.set(MdcParameter.IS_ADMIN, admin);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		filterChain.doFilter(request, response);
-		
-		MDC.remove(MdcParameter.USER_ID.getDisplayName());
-		MDC.remove(MdcParameter.IS_ADMIN.getDisplayName());
+        ThreadLocalContext.remove(MdcParameter.USER_ID);
+        ThreadLocalContext.remove(MdcParameter.IS_ADMIN);
 	}
 
 	private boolean shouldSkipUrlDuringSetup() {

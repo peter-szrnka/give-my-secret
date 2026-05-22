@@ -2,14 +2,14 @@ package io.github.gms.auth.ldap;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
-import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.UserIdExtension;
 import io.github.gms.functions.user.UserConverter;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.DemoData;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.MDC;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.query.LdapQuery;
@@ -20,19 +20,18 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.github.gms.util.TestConstants.TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
  * @since 1.0
  */
 class LdapUserAuthServiceImplTest extends AbstractUnitTest {
+
+    @RegisterExtension
+    private final UserIdExtension userIdExtension = new UserIdExtension();
 
 	private LdapTemplate ldapTemplate;
 	private UserRepository userRepository;
@@ -41,7 +40,6 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 
 	@BeforeEach
 	void setup() {
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 		ldapTemplate = mock(LdapTemplate.class);
 		userRepository = mock(UserRepository.class);
 		userConverter = mock(UserConverter.class);

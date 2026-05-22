@@ -3,13 +3,11 @@ package io.github.gms.functions.event;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
-import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.model.UserEvent;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.user.UserRepository;
 import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -51,7 +49,6 @@ class EventServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 
 		// act
 		service.saveUserEvent(UserEvent.builder()
@@ -83,8 +80,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 	@Test
 	void list_whenInputProvided_thenReturnOk() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
-		
+
 		EventEntity secondEventEntity = TestUtils.createEventEntity();
 		secondEventEntity.setUserId(0L);
 
@@ -126,7 +122,6 @@ class EventServiceImplTest extends AbstractUnitTest {
 	@Test
 	void listByUser_whenInputProvided_thenReturnOk() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), "1");
 		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
 		when(converter.toDtoList(any(), eq("user1"))).thenReturn(EventListDto.builder()

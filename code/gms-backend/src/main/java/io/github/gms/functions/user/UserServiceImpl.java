@@ -14,13 +14,12 @@ import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.service.JwtClaimService;
 import io.github.gms.common.types.ErrorCode;
 import io.github.gms.common.types.GmsException;
-import io.github.gms.common.util.MdcUtils;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,12 +33,8 @@ import org.springframework.web.util.WebUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.github.gms.common.types.ErrorCode.GMS_003;
-import static io.github.gms.common.types.ErrorCode.GMS_004;
-import static io.github.gms.common.types.ErrorCode.GMS_005;
-import static io.github.gms.common.util.Constants.ACCESS_JWT_TOKEN;
-import static io.github.gms.common.util.Constants.CACHE_API;
-import static io.github.gms.common.util.Constants.CACHE_USER;
+import static io.github.gms.common.types.ErrorCode.*;
+import static io.github.gms.common.util.Constants.*;
 
 /**
  * @author Peter Szrnka
@@ -69,7 +64,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@CacheEvict(cacheNames = { CACHE_USER, CACHE_API }, allEntries = true)
 	public SaveEntityResponseDto save(SaveUserRequestDto dto) {
-		boolean isAdmin = Boolean.parseBoolean(MDC.get(MdcParameter.IS_ADMIN.getDisplayName()));
+		boolean isAdmin = ThreadLocalContext.getAsBoolean(MdcParameter.IS_ADMIN);
 		return saveUser(dto, isAdmin, true);
 	}
 
@@ -112,7 +107,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void changePassword(ChangePasswordRequestDto dto) {
-		UserEntity user = validateAndReturnUser(MdcUtils.getUserId());
+		UserEntity user = validateAndReturnUser(ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
 		validateCredentials(user, dto);
 		user.setCredential(passwordEncoder.encode(dto.getNewCredential()));
 		repository.save(user);
@@ -120,7 +115,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public byte[] getMfaQrCode() throws QrGenerationException {
-		UserEntity entity = validateAndReturnUser(MdcUtils.getUserId());
+		UserEntity entity = validateAndReturnUser(ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
 		QrData data = new QrData.Builder()
 			.label(entity.getEmail())
 			.secret(entity.getMfaSecret())
@@ -136,14 +131,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void toggleMfa(boolean enabled) {
-		UserEntity entity = validateAndReturnUser(MdcUtils.getUserId());
+		UserEntity entity = validateAndReturnUser(ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
 		entity.setMfaEnabled(enabled);
 		repository.save(entity);
 	}
 
 	@Override
 	public boolean isMfaActive() {
-		UserEntity entity = validateAndReturnUser(MdcUtils.getUserId());
+		UserEntity entity = validateAndReturnUser(ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
 		return entity.isMfaEnabled();
 	}
 

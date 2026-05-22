@@ -1,8 +1,9 @@
 package io.github.gms.functions.home;
 
 import io.github.gms.common.dto.LongValueDto;
+import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.util.ConverterUtils;
-import io.github.gms.common.util.MdcUtils;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.announcement.AnnouncementService;
 import io.github.gms.functions.apikey.ApiKeyService;
 import io.github.gms.functions.event.EventService;
@@ -31,7 +32,7 @@ public class HomeService {
     public HomeDataResponseDto getHomeData() {
         HomeDataResponseDto dto = new HomeDataResponseDto();
 
-        if (MdcUtils.isAdmin()) {
+        if (ThreadLocalContext.getAsBoolean(MdcParameter.IS_ADMIN)) {
             dto.setAnnouncementCount(getValue(announcementService.count()));
             dto.setEvents(eventService.list(buildPaging("eventDate")));
             dto.setUserCount(getValue(userService.count()));

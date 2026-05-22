@@ -48,7 +48,7 @@ public class SystemPropertyService {
 		try {
 			Page<SystemPropertyEntity> resultList = repository.findAll(pageable);
 			return converter.toDtoList(resultList.getContent());
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return SystemPropertyListDto.builder().resultList(Collections.emptyList()).totalElements(0).build();
 		}
 	}

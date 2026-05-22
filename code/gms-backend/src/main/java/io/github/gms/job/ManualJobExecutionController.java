@@ -5,7 +5,7 @@ import io.github.gms.common.abstraction.GmsController;
 import io.github.gms.common.enums.EventTarget;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.AuditTarget;
-import io.github.gms.common.util.MdcUtils;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.job.model.UrlConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -46,16 +46,16 @@ public class ManualJobExecutionController implements GmsController {
     }
 
     private <T extends AbstractJob> ResponseEntity<Void> runJob(@NonNull Class<T> clazz) {
-        MdcUtils.put(MdcParameter.MANUAL_JOB_EXECUTION, TRUE);
+        ThreadLocalContext.set(MdcParameter.MANUAL_JOB_EXECUTION, TRUE);
 
         try {
             T job = applicationContext.getBean(clazz);
             job.run();
 
-            MdcUtils.remove(MdcParameter.MANUAL_JOB_EXECUTION);
+            ThreadLocalContext.remove(MdcParameter.MANUAL_JOB_EXECUTION);
             return ResponseEntity.ok().build();
-        } catch (NoSuchBeanDefinitionException e) {
-            MdcUtils.remove(MdcParameter.MANUAL_JOB_EXECUTION);
+        } catch (NoSuchBeanDefinitionException _) {
+            ThreadLocalContext.remove(MdcParameter.MANUAL_JOB_EXECUTION);
             return ResponseEntity.notFound().build();
         }
     }

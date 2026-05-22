@@ -7,6 +7,7 @@ import io.github.gms.ZonedDateTimeTypeAdapter;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.dto.ErrorResponseDto;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.util.TestUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +15,6 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
@@ -68,7 +68,7 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		entryPoint.commence(httpServletRequest, httpServletResponse, exception);
 		
 		// assert
-		assertNull(MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
+		assertNull(ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID));
 		verify(mockWriter).write(anyString());
 		ArgumentCaptor<ErrorResponseDto> errorResponseDtoCaptor = ArgumentCaptor.forClass(ErrorResponseDto.class);
 		verify(objectMapper).writeValueAsString(errorResponseDtoCaptor.capture());

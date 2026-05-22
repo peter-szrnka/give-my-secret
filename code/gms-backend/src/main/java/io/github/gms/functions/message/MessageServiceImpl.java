@@ -2,6 +2,8 @@ package io.github.gms.functions.message;
 
 import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
+import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.util.ThreadLocalContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,7 +15,6 @@ import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-import static io.github.gms.common.util.MdcUtils.getUserId;
 
 /**
  * @author Peter Szrnka
@@ -43,18 +44,18 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public MessageListDto list(Pageable pageable) {
-		Page<MessageEntity> resultList = repository.findAllByUserId(getUserId(), pageable);
+		Page<MessageEntity> resultList = repository.findAllByUserId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID), pageable);
 		return converter.toDtoList(resultList);
 	}
 
 	@Override
 	public long getUnreadMessagesCount() {
-		return repository.countAllUnreadByUserId(getUserId());
+		return repository.countAllUnreadByUserId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
 	}
 
 	@Override
 	public void toggleMarkAsRead(MarkAsReadRequestDto dto) {
-		repository.markAsRead(getUserId(), dto.getIds(), dto.isOpened());
+		repository.markAsRead(ThreadLocalContext.getAsLong(MdcParameter.USER_ID), dto.getIds(), dto.isOpened());
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public void deleteAllByIds(IdListDto dto) {
-		repository.deleteAllByUserIdAndIds(getUserId(), dto.getIds());
+		repository.deleteAllByUserIdAndIds(ThreadLocalContext.getAsLong(MdcParameter.USER_ID), dto.getIds());
 	}
 
 	@Async

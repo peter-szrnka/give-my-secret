@@ -3,9 +3,10 @@ package io.github.gms.functions.iprestriction;
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.model.IpRestrictionPattern;
 import io.github.gms.common.model.IpRestrictionPatterns;
-import io.github.gms.common.util.MdcUtils;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -103,11 +104,11 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
     @ParameterizedTest
     @MethodSource("testData")
     void toEntity_whenInputProvided_thenConvertToEntity(Long id, int expectedTimes, String expectedResponse) {
-        try (MockedStatic<MdcUtils> utilsMockedStatic = mockStatic(MdcUtils.class)) {
+        try (MockedStatic<ThreadLocalContext> utilsMockedStatic = mockStatic(ThreadLocalContext.class)) {
             // arrange
             when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
             when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-            utilsMockedStatic.when(MdcUtils::getUserId).thenReturn(1L);
+            utilsMockedStatic.when(() -> ThreadLocalContext.getAsLong(MdcParameter.USER_ID)).thenReturn(1L);
             IpRestrictionDto dto = TestUtils.createIpRestrictionDto();
             dto.setId(id);
             dto.setGlobal(true);
@@ -125,7 +126,7 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
             assertThat(response).hasToString(expectedResponse);
             verify(clock, times(expectedTimes)).instant();
             verify(clock, times(expectedTimes)).getZone();
-            utilsMockedStatic.verify(MdcUtils::getUserId);
+            utilsMockedStatic.verify(() -> ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
         }
     }
 

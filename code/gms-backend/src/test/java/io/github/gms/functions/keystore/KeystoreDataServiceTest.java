@@ -1,13 +1,11 @@
 package io.github.gms.functions.keystore;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.model.KeystorePair;
 import io.github.gms.common.service.FileService;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.util.TestUtils;
-import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -39,8 +37,6 @@ class KeystoreDataServiceTest extends AbstractLoggingUnitTest {
 	@BeforeEach
 	public void setup() {
 		super.setup();
-
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		keystoreRepository = mock(KeystoreRepository.class);
 		keystoreAliasRepository = mock(KeystoreAliasRepository.class);
 		fileService = mock(FileService.class);

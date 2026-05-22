@@ -6,13 +6,13 @@ import io.github.gms.auth.service.TokenGeneratorService;
 import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.service.JwtService;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -83,7 +83,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 			// Configuration of MDC parameters
 			Stream.of(MdcParameter.values())
 				.filter(MdcParameter::isInput)
-				.forEach(mdcParameter -> MDC.put(mdcParameter.getDisplayName(), String.valueOf(jwsResult.get(mdcParameter.getDisplayName()))));
+				.forEach(mdcParameter -> ThreadLocalContext.set(mdcParameter, String.valueOf(jwsResult.get(mdcParameter.getDisplayName()))));
 
 			return AuthorizationResponse.builder()
 					.authentication(authentication)

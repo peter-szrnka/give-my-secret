@@ -2,6 +2,7 @@ package io.github.gms.common.filter;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.MdcParameter;
+import io.github.gms.common.util.ThreadLocalContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
-import org.slf4j.MDC;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
@@ -44,7 +44,7 @@ class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
     void doFilterInternal_whenContextIsOk_thenInitializeRequest(boolean logResponseTimeDisabled) throws ServletException, IOException {
         ReflectionTestUtils.setField(filter, "logResponseTimeDisabled", logResponseTimeDisabled);
 
-        try (MockedStatic<MDC> mdcMockedStatic = mockStatic(MDC.class)) {
+        try (MockedStatic<ThreadLocalContext> mdcMockedStatic = mockStatic(ThreadLocalContext.class)) {
             // arrange
             AtomicBoolean atomicInteger = new AtomicBoolean(false);
             when(clock.millis()).thenAnswer(invocation -> {
@@ -61,7 +61,7 @@ class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
             }
             HttpServletResponse response = mock(HttpServletResponse.class);
             FilterChain filterChain = mock(FilterChain.class);
-            mdcMockedStatic.when(() -> MDC.get(MdcParameter.CORRELATION_ID.getDisplayName())).thenReturn("MOCK_CORRELATION_ID");
+            mdcMockedStatic.when(() -> ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID)).thenReturn("MOCK_CORRELATION_ID");
 
             // act
             filter.doFilterInternal(request, response, filterChain);
@@ -69,9 +69,9 @@ class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
             // assert
             verify(response).addHeader("X-CORRELATION-ID", "MOCK_CORRELATION_ID");
             verify(filterChain).doFilter(request, response);
-            mdcMockedStatic.verify(() -> MDC.get(MdcParameter.CORRELATION_ID.getDisplayName()));
-            mdcMockedStatic.verify(() -> MDC.put(eq(MdcParameter.CORRELATION_ID.getDisplayName()), anyString()));
-            mdcMockedStatic.verify(() -> MDC.remove(MdcParameter.CORRELATION_ID.getDisplayName()));
+            mdcMockedStatic.verify(() -> ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID));
+            mdcMockedStatic.verify(() -> ThreadLocalContext.set(eq(MdcParameter.CORRELATION_ID), anyString()));
+            mdcMockedStatic.verify(() -> ThreadLocalContext.remove(MdcParameter.CORRELATION_ID));
             verify(clock, times(logResponseTimeDisabled ? 1 : 2)).millis();
 
             if (!logResponseTimeDisabled) {

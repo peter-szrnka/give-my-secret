@@ -57,7 +57,7 @@ public class SecretLengthValidatorService {
 
             log.info("Encrypted secret value size: {}", encryptedValue.length());
             return new BooleanValueDto(true);
-        } catch (Exception e) {
+        } catch (Exception _) {
             return new BooleanValueDto(false);
         }
     }

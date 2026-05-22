@@ -1,17 +1,17 @@
 package io.github.gms.functions.announcement;
 
 import io.github.gms.abstraction.AbstractUnitTest;
+import io.github.gms.common.UserIdExtension;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
-import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.types.GmsException;
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.functions.user.UserService;
 import io.github.gms.util.TestUtils;
 import org.assertj.core.util.Lists;
-import org.jboss.logging.MDC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +34,9 @@ import static org.mockito.Mockito.*;
  */
 class AnnouncementServiceImplTest extends AbstractUnitTest {
 
+    @RegisterExtension
+    private final UserIdExtension userIdExtension = new UserIdExtension();
+
 	private Clock clock;
 	private AnnouncementServiceImpl service;
 	private AnnouncementRepository repository;
@@ -53,7 +56,6 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		// arrange
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		SaveAnnouncementDto dto = SaveAnnouncementDto.builder()
 				.author("author")
 				.description("description")
@@ -77,14 +79,11 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		assertEquals("description", capturedValue.getDescription());
 		assertEquals(1L, capturedValue.getAuthorId());
 		assertEquals("2023-06-29T00:00Z", capturedValue.getAnnouncementDate().toString());
-
-		MDC.clear();
 	}
 
 	@Test
 	void save_whenAlreadyExists_thenReturnOk() {
 		// arrange
-		MDC.put(MdcParameter.USER_ID.getDisplayName(), 1L);
 		SaveAnnouncementDto dto = SaveAnnouncementDto.builder()
 				.id(2L)
 				.author("author")
@@ -111,8 +110,6 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		assertEquals("description", capturedValue.getDescription());
 		assertEquals(1L, capturedValue.getAuthorId());
 		assertNotNull(capturedValue.getAnnouncementDate());
-
-		MDC.clear();
 	}
 
 	@Test

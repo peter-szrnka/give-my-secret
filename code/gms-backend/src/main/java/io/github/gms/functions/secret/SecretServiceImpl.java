@@ -3,9 +3,11 @@ package io.github.gms.functions.secret;
 import io.github.gms.common.dto.LongValueDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.enums.EntityStatus;
+import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.enums.SecretType;
 import io.github.gms.common.service.CryptoService;
 import io.github.gms.common.types.GmsException;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.iprestriction.IpRestrictionDto;
 import io.github.gms.functions.iprestriction.IpRestrictionService;
 import io.github.gms.functions.keystore.KeystoreAliasEntity;
@@ -39,7 +41,6 @@ import static io.github.gms.common.types.ErrorCode.GMS_020;
 import static io.github.gms.common.types.ErrorCode.GMS_021;
 import static io.github.gms.common.util.Constants.CACHE_API;
 import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
-import static io.github.gms.common.util.MdcUtils.getUserId;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -69,7 +70,7 @@ public class SecretServiceImpl implements SecretService {
 	@CacheEvict(cacheNames = { CACHE_API, CACHE_IP_RESTRICTION }, allEntries = true)
 	public SaveEntityResponseDto save(SaveSecretRequestDto dto) {
 		SecretEntity entity;
-		dto.setUserId(getUserId());
+		dto.setUserId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
 
 		validateKeystore(dto);
 		validateSecret(dto, dto.getId() == null ? 0 : 1);
@@ -97,7 +98,7 @@ public class SecretServiceImpl implements SecretService {
 	public SecretDto getById(Long id) {
 		SecretEntity entity = repository.findById(id).orElseThrow(() -> new GmsException(WRONG_ENTITY, GMS_002));
 		
-		List<ApiKeyRestrictionEntity> apiKeyRestrictions = apiKeyRestrictionRepository.findAllByUserIdAndSecretId(getUserId(), entity.getId());
+		List<ApiKeyRestrictionEntity> apiKeyRestrictions = apiKeyRestrictionRepository.findAllByUserIdAndSecretId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID), entity.getId());
 		List<IpRestrictionDto> ipRestrictions = ipRestrictionService.getAllBySecretId(entity.getId());
 		
 		SecretDto response = converter.toDto(entity);
@@ -113,7 +114,7 @@ public class SecretServiceImpl implements SecretService {
 
 	@Override
 	public SecretListDto list(Pageable pageable) {
-		Page<SecretEntity> resultList = repository.findAllByUserId(getUserId(), pageable);
+		Page<SecretEntity> resultList = repository.findAllByUserId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID), pageable);
 		return converter.toDtoList(resultList);
 	}
 
@@ -125,7 +126,7 @@ public class SecretServiceImpl implements SecretService {
 	@Override
 	@CacheEvict(cacheNames = { CACHE_API }, allEntries = true)
 	public void toggleStatus(Long id, boolean enabled) {
-		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, getUserId());
+		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
 
 		SecretEntity entity = entityOptionalResult.orElseThrow(() -> new GmsException(WRONG_ENTITY, GMS_002));
 		entity.setStatus(enabled ? EntityStatus.ACTIVE : EntityStatus.DISABLED);
@@ -134,7 +135,7 @@ public class SecretServiceImpl implements SecretService {
 
 	@Override
 	public String getSecretValue(Long id) {
-		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, getUserId());
+		Optional<SecretEntity> entityOptionalResult = repository.findByIdAndUserId(id, ThreadLocalContext.getAsLong(MdcParameter.USER_ID));
 
 		SecretEntity entity = entityOptionalResult.orElseThrow(() -> new GmsException(WRONG_ENTITY, GMS_002));
 		return cryptoService.decrypt(entity);
@@ -142,7 +143,7 @@ public class SecretServiceImpl implements SecretService {
 
 	@Override
 	public LongValueDto count() {
-		return new LongValueDto(repository.countByUserId(getUserId()));
+		return new LongValueDto(repository.countByUserId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID)));
 	}
 
 	@Async
@@ -200,7 +201,7 @@ public class SecretServiceImpl implements SecretService {
 	}
 	
 	private void validateSecret(SaveSecretRequestDto dto, int expectedCount) {
-		long secretIdCount = repository.countAllSecretsByUserIdAndSecretId(getUserId(), dto.getSecretId());
+		long secretIdCount = repository.countAllSecretsByUserIdAndSecretId(ThreadLocalContext.getAsLong(MdcParameter.USER_ID), dto.getSecretId());
 
 		if (secretIdCount > expectedCount) {
 			throw new GmsException("Secret ID name must be unique!", GMS_020);
