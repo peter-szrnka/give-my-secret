@@ -8,11 +8,11 @@ import io.github.gms.common.TestedClass;
 import io.github.gms.common.TestedMethod;
 import io.github.gms.common.dto.LoginVerificationRequestDto;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static io.github.gms.util.TestUtils.USERNAME_MFA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 @TestedClass(VerificationController.class)
 class VerificationIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
-    @MockBean
+    @MockitoBean
     private CodeVerifier verifier;
 
     @Test

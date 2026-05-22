@@ -14,10 +14,10 @@ import io.github.gms.functions.user.UserService;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 @TestedClass(SetupController.class)
 class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControllerIntegrationTest {
 
-	@MockBean
+	@MockitoBean
 	private UserService userService;
 
 	@Test
