@@ -8,21 +8,23 @@ Download a Docker image version by running the following or a similar command:
 
 Next, you have to create a file called "env.txt" that will store some environment properties that is required by DB2 instance:
 
-> LICENSE=accept
-> DB2INSTANCE=db2inst1
-> DB2INST1_PASSWORD=password
-> DBNAME=testdb
-> BLU=false
-> ENABLE_ORACLE_COMPATIBILITY=false
-> UPDATEAVAIL=NO
-> TO_CREATE_SAMPLEDB=true
-> REPODB=true
-> IS_OSXFS=false
-> PERSISTENT_HOME=false
-> HADR_ENABLED=false
-> ETCD_ENDPOINT=
-> ETCD_USERNAME=
-> ETCD_PASSWORD=
+```
+LICENSE=accept
+DB2INSTANCE=db2inst1
+DB2INST1_PASSWORD=password
+DBNAME=testdb
+BLU=false
+ENABLE_ORACLE_COMPATIBILITY=false
+UPDATEAVAIL=NO
+TO_CREATE_SAMPLEDB=true
+REPODB=true
+IS_OSXFS=false
+PERSISTENT_HOME=false
+HADR_ENABLED=false
+ETCD_ENDPOINT=
+ETCD_USERNAME=
+ETCD_PASSWORD=
+```
 
 Save this file, then run the following command:
 
