@@ -65,4 +65,4 @@ Give My Secret (GMS) provides more than 40 external properties that you can use 
 | 49   | CONFIG_RESOURCE_HANDLER_DISABLED  | Boolean      | true, false                                   | *This parameter is not necessary for production Docker images.* |
 | 50   | COMPOSE_CONVERT_WINDOWS_PATHS     | Number       | 0, 1                                          | Required only by Windows!                                    |
 | 51   | HTTP2_ENABLED				       | Boolean      | true, false                                   | HTTP/2 enabled or disabled									 |
-
+| 52   | GRPC_ENABLED				       | Boolean      | true, false                                   | gRPC enabled or disabled									 |

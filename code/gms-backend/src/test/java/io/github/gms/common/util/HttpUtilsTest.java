@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 /**
@@ -16,6 +17,19 @@ class HttpUtilsTest extends AbstractUnitTest {
     @Test
     void test_whenConstructorCalled_thenSuccessfullyInstantiated() {
         assertPrivateConstructor(HttpUtils.class);
+    }
+
+    @Test
+    void getClientIpAddress_whenRequestThrowsError_thenReturnNUll() {
+        // given
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader(anyString())).thenThrow(new IllegalArgumentException("Oops!"));
+
+        // when
+        String response = HttpUtils.getClientIpAddress(request);
+
+        // then
+        assertNull(response);
     }
 
     @Test

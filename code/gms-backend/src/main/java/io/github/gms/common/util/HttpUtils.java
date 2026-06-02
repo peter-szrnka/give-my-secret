@@ -32,9 +32,13 @@ public class HttpUtils {
     private HttpUtils() {}
 
     public static String getClientIpAddress(HttpServletRequest request) {
-        return IP_HEADERS.stream()
-                .filter(header -> request.getHeader(header) != null && !request.getHeader(header).isEmpty())
-                .map(request::getHeader)
-                .findFirst().orElse(request.getRemoteAddr());
+        try {
+            return IP_HEADERS.stream()
+                    .filter(header -> request.getHeader(header) != null && !request.getHeader(header).isEmpty())
+                    .map(request::getHeader)
+                    .findFirst().orElse(request.getRemoteAddr());
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
