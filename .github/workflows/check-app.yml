@@ -29,6 +29,14 @@ jobs:
       - name: build artifact
         working-directory: ./code/api-proto
         run: mvn clean install
+      - name: Install proto
+        run: mvn clean install -DskipTests
+        working-directory: ./code/api-proto
+      - name: Upload m2 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: m2-repo
+          path: ~/.m2/repository/io/github/gms/api-proto
   analize_backend:
     name: Backend
     permissions:
@@ -53,6 +61,15 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+      - name: Download m2 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: m2-repo
+
+      - name: Restore to local m2
+        run: |
+          mkdir -p ~/.m2/repository/io/github/gms
+          cp -r m2-repo ~/.m2/repository/io/github/gms/
      # - name: Cache Maven packages
      #   uses: actions/cache@v3
      #   with:
