@@ -34,7 +34,8 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    needs: compile_proto
+    needs: 
+      - compile_proto
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci-skip')"
     steps:
