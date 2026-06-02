@@ -64,10 +64,10 @@ jobs:
           name: m2-repo
           path: m2-repo
 
-      - name: Restore to local m2
+      - name: Restore m2 repo
         run: |
-          mkdir -p ~/.m2/repository/io/github/gms
-          cp -r m2-repo ~/.m2/repository/io/github/gms/
+          mkdir -p ~/.m2/repository
+          cp -r m2-repo/* ~/.m2/repository/
      # - name: Cache Maven packages
      #   uses: actions/cache@v3
      #   with:
