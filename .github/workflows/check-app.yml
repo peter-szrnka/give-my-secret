@@ -38,7 +38,7 @@ jobs:
       - name: Build proto
         working-directory: ./code/api-proto
         run: mvn clean install
-       - name: Build parent
+      - name: Build parent
         working-directory: ./code
         run: mvn -N install
      # - name: Cache Maven packages
