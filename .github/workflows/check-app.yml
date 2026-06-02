@@ -65,6 +65,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: m2-repo
+          path: m2-repo
 
       - name: Restore to local m2
         run: |
