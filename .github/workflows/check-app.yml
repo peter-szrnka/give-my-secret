@@ -26,17 +26,14 @@ jobs:
         with:
           java-version: '25'
           distribution: 'temurin'
-      - name: build artifact
-        working-directory: ./code/api-proto
-        run: mvn clean install
       - name: Install proto
         run: mvn clean install -DskipTests
         working-directory: ./code/api-proto
-      - name: Upload m2 artifact
+      - name: Upload m2 cache
         uses: actions/upload-artifact@v4
         with:
           name: m2-repo
-          path: ~/.m2/repository/io/github/gms/api-proto
+          path: ~/.m2/repository
   analize_backend:
     name: Backend
     permissions:
