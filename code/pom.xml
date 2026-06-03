@@ -22,8 +22,9 @@
 	</properties>
 	<modules>
 		<module>gms-frontend</module>
+        <module>api-proto</module>
 		<module>gms-backend</module>
-	</modules>
+    </modules>
 	
 	<profiles>
 		<profile>
