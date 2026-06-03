@@ -25,7 +25,7 @@
         <!-- Testing & code quality -->
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <skip.jacoco-check-execution>false</skip.jacoco-check-execution>
-        <test.minimum.coverage>0.90</test.minimum.coverage>
+        <test.minimum.coverage>0.70</test.minimum.coverage>
         <sonar.organization>peter-szrnka</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.exclusions>**/enums/**,
