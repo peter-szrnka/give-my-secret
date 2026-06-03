@@ -73,11 +73,6 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>io.github.gms</groupId>
-            <artifactId>api-proto</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.grpc</groupId>
             <artifactId>spring-grpc-spring-boot-starter</artifactId>
             <version>0.12.0</version>
@@ -468,7 +463,7 @@
                         <executions>
                             <execution>
                                 <id>unpack</id>
-                                <phase>generate-sources</phase>
+                                <phase>initialize</phase>
                                 <goals>
                                     <goal>unpack</goal>
                                 </goals>
@@ -481,6 +476,7 @@
                                             <type>jar</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/dependency/proto</outputDirectory>
+                                            <includes>**/*.proto</includes>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
@@ -502,6 +498,7 @@
 
                         <executions>
                             <execution>
+                                <phase>generate-sources</phase>
                                 <goals>
                                     <goal>compile</goal>
                                     <goal>compile-custom</goal>
