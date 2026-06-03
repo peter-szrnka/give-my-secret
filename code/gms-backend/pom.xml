@@ -463,7 +463,7 @@
                         <executions>
                             <execution>
                                 <id>unpack</id>
-                                <phase>initialize</phase>
+                                <phase>generate-resources</phase>
                                 <goals>
                                     <goal>unpack</goal>
                                 </goals>
@@ -493,7 +493,7 @@
                             <pluginId>grpc-java</pluginId>
                             <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
                             <checkStaleness>true</checkStaleness>
-                            <protoSourceRoot>${project.parent.basedir}/api-proto/src/main/proto</protoSourceRoot>
+                            <protoSourceRoot>${project.build.directory}/dependency/proto</protoSourceRoot>
                         </configuration>
 
                         <executions>
