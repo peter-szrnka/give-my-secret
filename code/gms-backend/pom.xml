@@ -493,7 +493,7 @@
                             <pluginId>grpc-java</pluginId>
                             <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
                             <checkStaleness>true</checkStaleness>
-                            <protoSourceRoot>${project.build.directory}/dependency/proto</protoSourceRoot>
+                            <protoSourceRoot>${project.parent.basedir}/api-proto/src/main/proto</protoSourceRoot>
                         </configuration>
 
                         <executions>
