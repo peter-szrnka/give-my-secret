@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
  * @author Peter Szrnka
  * @since 1.0
  */
-public class ApiGrpcServiceTest extends AbstractUnitTest {
+class ApiGrpcServiceTest extends AbstractUnitTest {
 
     @Mock
     private ApiService apiService;
