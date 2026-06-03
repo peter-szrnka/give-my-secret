@@ -41,18 +41,12 @@ jobs:
       - name: Build parent
         working-directory: ./code
         run: mvn -N install
-     # - name: Cache Maven packages
-     #   uses: actions/cache@v3
-     #   with:
-     #     path: ~/.m2
-     #     key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-     #     restore-keys: ${{ runner.os }}-m2
       - name: Sonarcloud scan
         working-directory: ./code/gms-backend
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn clean verify -Pcodecov org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=peter-szrnka_give-my-secret-backend
+        run: mvn clean verify -Pdefault,codecov org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=peter-szrnka_give-my-secret-backend
   analize_frontend:
     name: Frontend
     permissions:
