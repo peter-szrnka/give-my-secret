@@ -68,6 +68,22 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
         assertFalse(vmOptions.isEmpty());
     }
 
+    @Test
+    void getSystemStatus_whenSystemAttributeIsNull_thenReturnNeedSetup() {
+        // given
+        service.setAuthType("db");
+        service.setBuildProperties(buildProperties);
+        when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
+        when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+        when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.empty());
+
+        // when
+        SystemStatusDto response = service.getSystemStatus();
+
+        // then
+        assertEquals(SystemStatus.NEED_SETUP.name(), response.getStatus());
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"NEED_SETUP", OK})
     void getSystemStatus_whenInputProvided_thenReturnDto(String mockResponse) {
@@ -83,7 +99,7 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
         SystemStatusDto response = service.getSystemStatus();
 
         // assert
-        Assertions.assertEquals(mockResponse, response.getStatus());
+        assertEquals(mockResponse, response.getStatus());
         assertEquals("db", response.getAuthMode());
         assertEquals("2023-06-29T02:00:00.000+0200", response.getBuilt());
     }
