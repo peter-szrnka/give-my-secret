@@ -10,7 +10,6 @@ import io.github.gms.common.enums.SystemStatus;
 import io.github.gms.functions.setup.SystemAttributeRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import io.github.gms.util.TestUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
