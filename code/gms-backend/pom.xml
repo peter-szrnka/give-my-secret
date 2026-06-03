@@ -468,7 +468,7 @@
                         <executions>
                             <execution>
                                 <id>unpack-proto</id>
-                                <phase>generate-sources</phase>
+                                <phase>initialize</phase>
                                 <goals>
                                     <goal>unpack</goal>
                                 </goals>
