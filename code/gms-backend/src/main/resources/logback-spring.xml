@@ -14,40 +14,69 @@
             <pattern>TIMESTAMP=%d{yyyy-MM-dd HH:mm:ss.SSS} CORRELATION_ID=%X{correlationId} %-5level %logger{36}.%M - %msg%n</pattern>
         </encoder>
     </appender>
-    <if condition='property("logType").equals("logstash")'>
+
+    <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+        <key>logType</key>
+        <value>file</value>
+    </condition>
+    <if>
         <then>
-            <appender name="appender" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-                <destination>${logstashUrl}</destination>
-                <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-            </appender>
-        </then>
-    </if>
-    <if condition='property("logType").equals("file")'>
-        <then>
-            <appender name="appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <appender name="appender"
+                      class="ch.qos.logback.core.rolling.RollingFileAppender">
+
                 <file>${logFolder}/app.log</file>
+
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <fileNamePattern>${logFolder}/gms.%d{yyyy-MM-dd}.log</fileNamePattern>
                 </rollingPolicy>
+
                 <encoder>
-                    <pattern>TIMESTAMP=%d{yyyy-MM-dd HH:mm:ss.SSS} CORRELATION_ID=%X{correlationId} %-5level %logger{36}.%M - %msg%n</pattern>
+                    <pattern>
+                        TIMESTAMP=%d{yyyy-MM-dd HH:mm:ss.SSS}
+                        CORRELATION_ID=%X{correlationId}
+                        %-5level %logger{36}.%M - %msg%n
+                    </pattern>
                 </encoder>
             </appender>
+
+            <root level="INFO">
+                <appender-ref ref="console"/>
+                <appender-ref ref="appender"/>
+            </root>
         </then>
     </if>
 
-    <if condition='property("logType").equals("logstash") || property("logType").equals("file")'>
+    <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+        <key>logType</key>
+        <value>logstash</value>
+    </condition>
+    <if>
         <then>
+            <appender name="appender"
+                      class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+
+                <destination>${logstashUrl}</destination>
+
+                <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+            </appender>
+
             <root level="INFO">
                 <appender-ref ref="console" />
                 <appender-ref ref="appender" />
             </root>
         </then>
-        <else>
+    </if>
+
+    <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+        <key>logType</key>
+        <value>console</value>
+    </condition>
+    <if>
+        <then>
             <root level="INFO">
                 <appender-ref ref="console" />
             </root>
-        </else>
+        </then>
     </if>
 
 </configuration>
