@@ -9,19 +9,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
-import static io.github.gms.common.util.Constants.CLIENT_ID;
-import static io.github.gms.common.util.Constants.CLIENT_SECRET;
-import static io.github.gms.common.util.Constants.REFRESH_TOKEN;
-import static io.github.gms.common.util.Constants.TOKEN;
+import static io.github.gms.common.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Peter Szrnka
@@ -30,13 +24,13 @@ import static org.mockito.Mockito.when;
 public class KeycloakOAuthServiceTest extends AbstractUnitTest {
 
     public static final String URL = "http://localhost";
-    private RestTemplate restTemplate;
+    private RestClient restClient;
     private KeycloakOAuthService service;
 
     @BeforeEach
     void setup() {
-        restTemplate = mock(RestTemplate.class);
-        service = new KeycloakOAuthService(restTemplate);
+        restClient = mock(RestClient.class);
+        service = new KeycloakOAuthService(restClient);
     }
 
     @Test
@@ -48,7 +42,12 @@ public class KeycloakOAuthServiceTest extends AbstractUnitTest {
         requestBody.add(TOKEN, "accessToken");
         requestBody.add(REFRESH_TOKEN, "refreshToken");
         ResponseEntity<String> mockResponseEntity = ResponseEntity.ok("ok");
-        when(restTemplate.postForEntity(eq(URL), any(HttpEntity.class), eq(String.class)))
+        when(restClient.post()
+                .uri(anyString())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(requestBody)
+                .retrieve()
+                .toEntity(String.class))
                 .thenReturn(mockResponseEntity);
 
         // act
@@ -59,7 +58,11 @@ public class KeycloakOAuthServiceTest extends AbstractUnitTest {
         assertNotNull(response.getBody());
         assertEquals("ok", response.getBody());
         ArgumentCaptor<HttpEntity<?>> argument = ArgumentCaptor.forClass(HttpEntity.class);
-        verify(restTemplate).postForEntity(eq(URL), argument.capture(), eq(String.class));
-        assertEquals(MediaType.APPLICATION_FORM_URLENCODED, argument.getValue().getHeaders().getContentType());
+        verify(restClient.post()
+                .uri(anyString())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(requestBody)
+                .retrieve()
+                .toEntity(String.class));
     }
 }

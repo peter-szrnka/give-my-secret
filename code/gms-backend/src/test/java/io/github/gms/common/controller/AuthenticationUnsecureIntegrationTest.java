@@ -54,6 +54,6 @@ class AuthenticationUnsecureIntegrationTest extends AbstractIntegrationTest {
 
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(response.getHeaders().keySet().stream().anyMatch(header -> header.equalsIgnoreCase(SET_COOKIE)));
+		assertTrue(response.getHeaders().toSingleValueMap().keySet().stream().anyMatch(header -> header.equalsIgnoreCase(SET_COOKIE)));
 	}
 }

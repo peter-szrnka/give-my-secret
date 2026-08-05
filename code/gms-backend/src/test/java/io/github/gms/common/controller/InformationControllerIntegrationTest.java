@@ -48,7 +48,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
         when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(SystemStatus.NEED_SETUP.name()).build());
 
         // act
-        HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<List> response = executeHttpGet("/info/vm_options", requestEntity, List.class);
 
         // assert
@@ -61,7 +61,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
     @TestedMethod("getUserInfo")
 	void infoMe_whenJwtIsMissing_thenEmptyResponse() {
 		// act
-		ResponseEntity<UserInfoDto> response = executeHttpGet("/info/me", new HttpEntity<>(null), UserInfoDto.class);
+		ResponseEntity<UserInfoDto> response = executeHttpGet("/info/me", new HttpEntity<>(headers), UserInfoDto.class);
 		
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -99,7 +99,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
                         .withVersion("1.0")
                         .withAuthMode("db")
                 .withStatus(SystemStatus.NEED_SETUP.name()).build());
-        HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<SystemStatusDto> response = executeHttpGet(URL_INFO_STATUS, requestEntity, SystemStatusDto.class);
 
         // assert
@@ -115,7 +115,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
     @TestedMethod("getErrorCodes")
     void errorCodes_whenCalled_thenReturnAllErrorCodes() {
         // act
-        HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<String> response = executeHttpGet("/info/error_codes", requestEntity, String.class);
 
         // assert

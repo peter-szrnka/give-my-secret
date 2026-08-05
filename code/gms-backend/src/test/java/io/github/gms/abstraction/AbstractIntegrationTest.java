@@ -36,6 +36,8 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class AbstractIntegrationTest {
 
+	public final HttpHeaders headers = new HttpHeaders();
+
 	@LocalServerPort
 	protected int port;
 
