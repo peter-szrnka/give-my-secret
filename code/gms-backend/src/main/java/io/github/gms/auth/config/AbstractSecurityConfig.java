@@ -3,7 +3,7 @@ package io.github.gms.auth.config;
 import io.github.gms.common.filter.RequestInitializationFilter;
 import io.github.gms.common.filter.SecureHeaderInitializerFilter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;

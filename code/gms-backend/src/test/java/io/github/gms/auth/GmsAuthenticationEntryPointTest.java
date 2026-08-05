@@ -1,6 +1,5 @@
 package io.github.gms.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.gms.ZonedDateTimeTypeAdapter;
@@ -19,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.util.MimeTypeUtils;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.PrintWriter;
 import java.time.Clock;
@@ -40,14 +40,14 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 			.registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeTypeAdapter())
 			.create();
 
-	private ObjectMapper objectMapper;
+	private JsonMapper jsonMapper;
 	private GmsAuthenticationEntryPoint entryPoint;
 	
 	@BeforeEach
 	void setup() {
 		Clock clock = mock(Clock.class);
-		objectMapper = mock(ObjectMapper.class);
-		entryPoint = new GmsAuthenticationEntryPoint(objectMapper, clock);
+		jsonMapper = mock(JsonMapper.class);
+		entryPoint = new GmsAuthenticationEntryPoint(jsonMapper, clock);
 		setupClock(clock);
 	}
 	
@@ -62,7 +62,7 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		when(httpServletResponse.getWriter()).thenReturn(mockWriter);
 
 		String json = gson.toJson(TestUtils.createErrorResponseDto(exception));
-		when(objectMapper.writeValueAsString(any(ErrorResponseDto.class))).thenReturn(json);
+		when(jsonMapper.writeValueAsString(any(ErrorResponseDto.class))).thenReturn(json);
 
 		// act
 		entryPoint.commence(httpServletRequest, httpServletResponse, exception);
@@ -71,7 +71,7 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		assertNull(ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID));
 		verify(mockWriter).write(anyString());
 		ArgumentCaptor<ErrorResponseDto> errorResponseDtoCaptor = ArgumentCaptor.forClass(ErrorResponseDto.class);
-		verify(objectMapper).writeValueAsString(errorResponseDtoCaptor.capture());
+		verify(jsonMapper).writeValueAsString(errorResponseDtoCaptor.capture());
 
 		assertEquals("GmsAuthenticationEntryPoint: Invalid cookie", errorResponseDtoCaptor.getValue().getMessage());
 		assertNull(errorResponseDtoCaptor.getValue().getCorrelationId());

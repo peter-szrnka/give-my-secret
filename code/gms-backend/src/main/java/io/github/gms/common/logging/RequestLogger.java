@@ -1,6 +1,5 @@
 package io.github.gms.common.logging;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
@@ -9,10 +8,11 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.reflect.Type;
 
-import static io.github.gms.common.util.Constants.LOGGING_OBJECT_MAPPER;
+import static io.github.gms.common.util.Constants.LOGGING_JSON_MAPPER;
 
 /**
  * @author Peter Szrnka
@@ -22,11 +22,11 @@ import static io.github.gms.common.util.Constants.LOGGING_OBJECT_MAPPER;
 public class RequestLogger extends BasePayloadLogger implements RequestBodyAdvice {
 
     public RequestLogger(
-            ObjectMapper objectMapper,
-            @Qualifier(LOGGING_OBJECT_MAPPER) ObjectMapper sensitiveLoggingObjectMapper,
+            JsonMapper jsonMapper,
+            @Qualifier(LOGGING_JSON_MAPPER) JsonMapper sensitiveLoggingJsonMapper,
             @Value("${config.logging.enable.sensitive-data-masking}") boolean sensitiveDataMaskingEnabled,
             @Value("${config.request.logging.enabled}") boolean requestLoggingEnabled) {
-        super(objectMapper, sensitiveLoggingObjectMapper, sensitiveDataMaskingEnabled, requestLoggingEnabled);
+        super(jsonMapper, sensitiveLoggingJsonMapper, sensitiveDataMaskingEnabled, requestLoggingEnabled);
     }
 
     @Override

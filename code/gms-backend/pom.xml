@@ -14,9 +14,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <backend.buildname>gms-app</backend.buildname>
         <spring-security-core.version>6.5.6</spring-security-core.version>
-        <spring-boot.version>3.5.11</spring-boot.version>
+        <spring-boot.version>4.1.0</spring-boot.version>
         <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
-        <flyway.version>10.17.0</flyway.version>
+        <flyway.version>12.4.0</flyway.version>
         <flyway-database.version>10.14.0</flyway-database.version>
         <bouncycastle.version>1.84</bouncycastle.version>
         <jsonwebtoken.version>0.11.1</jsonwebtoken.version>
@@ -78,9 +78,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.grpc</groupId>
-            <artifactId>spring-grpc-spring-boot-starter</artifactId>
-            <version>0.12.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-grpc-server</artifactId>
         </dependency>
         <!-- Spring -->
         <dependency>
@@ -203,7 +202,6 @@
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-community-dialects</artifactId>
-            <version>6.2.7.Final</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -251,24 +249,28 @@
         </dependency>
         <!-- Other 3rd party library -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.21.1</version>
+            <version>3.2.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.21.5</version>
+            <version>3.2.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.21</version>
+            <groupId>tools.jackson.module</groupId>
+            <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+            <version>3.2.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <groupId>tools.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.21.1</version>
+            <version>3.0.0-rc2</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
