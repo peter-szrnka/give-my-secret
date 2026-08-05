@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -25,6 +27,23 @@ class ApiGrpcServiceTest extends AbstractUnitTest {
     private ApiService apiService;
     @InjectMocks
     private ApiGrpcService service;
+
+    @Test
+    void getSecret_whenExceptionOccurred_thenThrowError() {
+        // given
+        GetSecretRequestDto requestDto = new GetSecretRequestDto("apiKey", "secret");
+        IllegalArgumentException e = new IllegalArgumentException("Oops!");
+        when(apiService.getSecret(requestDto)).thenThrow(e);
+        GetSecretRequest request = GetSecretRequest.newBuilder().setApiKey("apiKey").setSecretId("secret").build();
+
+        StreamObserver<GetSecretResponse> responseObserver = mock(StreamObserver.class);
+
+        // when
+        service.getSecret(request, responseObserver);
+
+        // then
+        verify(responseObserver).onError(e);
+    }
 
     @Test
     void getSecret_whenResultsProvided_thenCallCompleted() {

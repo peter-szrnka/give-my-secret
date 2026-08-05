@@ -26,12 +26,16 @@ public class ApiGrpcService extends ApiServiceGrpc.ApiServiceImplBase {
 
     @Override
     public void getSecret(GetSecretRequest request, StreamObserver<GetSecretResponse> responseObserver) {
-        GetSecretRequestDto serviceRequest = buildRequest(request);
+        try {
+            GetSecretRequestDto serviceRequest = buildRequest(request);
 
-        Map<String, String> response = apiService.getSecret(serviceRequest);
+            Map<String, String> response = apiService.getSecret(serviceRequest);
 
-        responseObserver.onNext(GetSecretResponse.newBuilder().putAllSecret(response).build());
-        responseObserver.onCompleted();
+            responseObserver.onNext(GetSecretResponse.newBuilder().putAllSecret(response).build());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(e);
+        }
     }
 
     private static GetSecretRequestDto buildRequest(GetSecretRequest request) {
