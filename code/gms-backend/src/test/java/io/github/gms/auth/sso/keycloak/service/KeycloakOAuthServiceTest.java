@@ -50,19 +50,14 @@ public class KeycloakOAuthServiceTest extends AbstractUnitTest {
         ResponseEntity<String> mockResponseEntity = ResponseEntity.ok("ok");
 
         when(restClient.post()).thenReturn(requestBodyUriSpec);
-
         when(requestBodyUriSpec.uri(anyString()))
                 .thenReturn(requestBodySpec);
-
         when(requestBodySpec.contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .thenReturn(requestBodySpec);
-
         when(requestBodySpec.body(eq(requestBody)))
                 .thenReturn(requestBodySpec);
-
         when(requestBodySpec.retrieve())
                 .thenReturn(responseSpec);
-
         when(responseSpec.toEntity(eq(String.class)))
                 .thenReturn(mockResponseEntity);
 
