@@ -1,6 +1,5 @@
 package io.github.gms.functions.keystore;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.*;
 import io.github.gms.common.enums.AliasOperation;
@@ -140,7 +139,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void save_whenCalledWithVulnerableKeystoreFile_thenThrowException() throws JsonProcessingException {
+    void save_whenCalledWithVulnerableKeystoreFile_thenThrowException() {
         // arrange
         MultipartFile multiPart = mock(MultipartFile.class);
         when(multiPart.getOriginalFilename()).thenReturn("hack/../../root/etc/password");
@@ -163,7 +162,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void save_whenKeysoreFileIsMissing_thenThrowException() throws JsonProcessingException {
+    void save_whenKeysoreFileIsMissing_thenThrowException() {
         when(fileService.exists(any(Path.class))).thenReturn(false);
 
         // arrange
@@ -189,7 +188,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void save_whenJsonMapperReadValueThrowsException_thenThrowException() throws JsonProcessingException {
+    void save_whenJsonMapperReadValueThrowsException_thenThrowException() {
         // arrange
         String model = "{invalidJson}";
         MultipartFile multiPart = mock(MultipartFile.class);
@@ -207,7 +206,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void save_whenFileIsMissing_thenThrowException() throws JsonProcessingException {
+    void save_whenFileIsMissing_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
@@ -225,7 +224,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void save_whenKeystoreNameIsNotUnique_thenThrowException() throws JsonProcessingException {
+    void save_whenKeystoreNameIsNotUnique_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
@@ -376,7 +375,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
 
     @Test
-    void save_whenAliasIsMissing_thenThrowException() throws JsonProcessingException {
+    void save_whenAliasIsMissing_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setAliases(List.of());
@@ -395,7 +394,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void save_whenOnlyDeletedAliasProvided_thenThrowException() throws JsonProcessingException {
+    void save_whenOnlyDeletedAliasProvided_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setAliases(List.of(new KeystoreAliasDto(1L, "alias", TEST, AliasOperation.DELETE,
@@ -415,7 +414,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void save_whenBothFileInputProvided_thenThrowException() throws JsonProcessingException {
+    void save_whenBothFileInputProvided_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(1L);
@@ -569,7 +568,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void save_whenKeystoreNotFoundByIdAndUserId_thenThrowException() throws JsonProcessingException {
+    void save_whenKeystoreNotFoundByIdAndUserId_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(1L);

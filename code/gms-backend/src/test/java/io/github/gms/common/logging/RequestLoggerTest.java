@@ -111,14 +111,14 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void afterBodyRead_whenExceptionOccurs_thenLogException() throws JsonProcessingException {
+    void afterBodyRead_whenExceptionOccurs_thenLogException() {
         // arrange
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
         Type targetType = mock(Type.class);
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
         SystemStatusDto body = SystemStatusDto.builder().build();
-        when(sensitiveLoggingJsonMapper.writeValueAsString(body)).thenThrow(JsonProcessingException.class);
+        when(sensitiveLoggingJsonMapper.writeValueAsString(body)).thenThrow(RuntimeException.class);
 
         // act
         assertEquals(body, requestLogger.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType));

@@ -1,6 +1,5 @@
 package io.github.gms.common.logging;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +45,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void beforeBodyWrite_whenCalled_thenReturnBody() throws JsonProcessingException {
+    void beforeBodyWrite_whenCalled_thenReturnBody() {
         // arrange
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
@@ -66,7 +65,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void beforeBodyWrite_whenMaskingDisabled_thenReturnUnmaskedData() throws JsonProcessingException {
+    void beforeBodyWrite_whenMaskingDisabled_thenReturnUnmaskedData() {
         // arrange
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
@@ -87,7 +86,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void beforeBodyWrite_whenLoggingTurnedOff_thenLoggingSkipped() throws JsonProcessingException {
+    void beforeBodyWrite_whenLoggingTurnedOff_thenLoggingSkipped() {
         // arrange
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
@@ -106,7 +105,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void beforeBodyWrite_whenExceptionOccurs_thenLogException() throws JsonProcessingException {
+    void beforeBodyWrite_whenExceptionOccurs_thenLogException() {
         // arrange
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
@@ -114,7 +113,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
         SystemStatusDto body = SystemStatusDto.builder().build();
         ServerHttpRequest request = mock(ServerHttpRequest.class);
         ServerHttpResponse response = mock(ServerHttpResponse.class);
-        when(sensitiveLoggingJsonMapper.writeValueAsString(body)).thenThrow(JsonProcessingException.class);
+        when(sensitiveLoggingJsonMapper.writeValueAsString(body)).thenThrow(RuntimeException.class);
 
         // act
         assertEquals(body, responseLogger.beforeBodyWrite(body, methodParameter, targetType, converterType, request, response));
