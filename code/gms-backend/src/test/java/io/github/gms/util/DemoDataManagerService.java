@@ -19,7 +19,7 @@ import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
@@ -34,7 +34,7 @@ import static io.github.gms.util.TestUtils.createMfaUser;
  * @since 1.0
  */
 @Slf4j
-@Component
+@Service
 public class DemoDataManagerService {
 
 	private static final String DESCRIPTION = "description";

@@ -6,14 +6,12 @@ import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link EventController}
@@ -24,7 +22,7 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
     
     @BeforeEach
     void setup() {
-        service = Mockito.mock(EventService.class);
+        service = mock(EventService.class);
         controller = new EventController(service);
     }
 

@@ -45,7 +45,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(SystemStatus.NEED_ADMIN_USER.name()).build());
 
 		// act
-		HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = executeHttpGet("/setup/step_back", requestEntity, String.class);
 
 		// assert
@@ -61,7 +61,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		when(userService.getById(1L)).thenReturn(TestUtils.createUserDto());
 
 		// act
-		HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 		ResponseEntity<UserDto> response = executeHttpGet("/setup/current_super_admin", requestEntity, UserDto.class);
 
 		// assert
@@ -77,7 +77,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(SystemStatus.NEED_SETUP.name()).build());
 
 		// act
-		HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 		ResponseEntity<SaveEntityResponseDto> response = executeHttpPost("/setup/initial", requestEntity, SaveEntityResponseDto.class);
 
 		// assert
@@ -157,7 +157,7 @@ class SetupIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(SystemStatus.COMPLETE.name()).build());
 
 		// act
-		HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 		ResponseEntity<SimpleResponseDto> response = executeHttpPost("/setup/complete", requestEntity, SimpleResponseDto.class);
 
 		// assert

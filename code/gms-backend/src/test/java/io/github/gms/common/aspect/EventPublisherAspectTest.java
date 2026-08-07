@@ -8,7 +8,10 @@ import io.github.gms.common.model.UserEvent;
 import io.github.gms.functions.event.EventService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -88,7 +91,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			// assert
 			Assertions.assertThat(response).isEqualTo("OK");
 			ArgumentCaptor<UserEvent> userEventCaptor = ArgumentCaptor.forClass(UserEvent.class);
-			Mockito.verify(service).saveUserEvent(userEventCaptor.capture());
+			verify(service).saveUserEvent(userEventCaptor.capture());
 
 			UserEvent capturedUserEvent = userEventCaptor.getValue();
 			Assertions.assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.SETUP);
@@ -117,7 +120,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			// assert
 			Assertions.assertThat(response).isEqualTo("OK");
 			ArgumentCaptor<UserEvent> userEventCaptor = ArgumentCaptor.forClass(UserEvent.class);
-			Mockito.verify(service).saveUserEvent(userEventCaptor.capture());
+			verify(service).saveUserEvent(userEventCaptor.capture());
 
 			UserEvent capturedUserEvent = userEventCaptor.getValue();
 			Assertions.assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.SETUP);
@@ -145,7 +148,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 		
 		// assert
 		Assertions.assertThat(response).isEqualTo("OK");
-		Mockito.verify(service, never()).saveUserEvent(any(UserEvent.class));
+		verify(service, never()).saveUserEvent(any(UserEvent.class));
 	}
 	
 	@Test

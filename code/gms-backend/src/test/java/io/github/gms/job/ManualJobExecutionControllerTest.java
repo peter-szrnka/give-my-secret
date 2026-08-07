@@ -40,7 +40,8 @@ class ManualJobExecutionControllerTest extends AbstractUnitTest {
     @Test
     void runJobByName_whenJobFound_thenReturnOk() {
         // arrange
-        when(applicationContext.getBean(EventMaintenanceJob.class)).thenReturn(mock(EventMaintenanceJob.class));
+        EventMaintenanceJob mockJob = mock(EventMaintenanceJob.class);
+        when(applicationContext.getBean(EventMaintenanceJob.class)).thenReturn(mockJob);
 
         // act
         ResponseEntity<Void> response = manualJobExecutionController.runJobByName(UrlConstants.EVENT_MAINTENANCE);

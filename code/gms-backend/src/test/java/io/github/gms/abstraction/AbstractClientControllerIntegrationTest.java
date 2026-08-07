@@ -1,7 +1,6 @@
 package io.github.gms.abstraction;
 
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -19,25 +18,45 @@ public abstract class AbstractClientControllerIntegrationTest extends AbstractIn
 	@Override
 	protected <I,O> ResponseEntity<O> executeHttpGet(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
 		addCsrf(requestEntity);
-		return rest.exchange(basePath + port + path + url, HttpMethod.GET, requestEntity, responseType);
+		return rest.get()
+				.uri(basePath + port + path + url)
+				.headers(httpHeaders -> httpHeaders.addAll(requestEntity.getHeaders()))
+				.retrieve()
+				.toEntity(responseType);
 	}
 	
 	@Override
 	protected <I,O> ResponseEntity<O> executeHttpPost(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
 		addCsrf(requestEntity);
-		return rest.exchange(basePath + port + path + url, HttpMethod.POST, requestEntity, responseType);
+		assert requestEntity.getBody() != null;
+		return rest.post()
+				.uri(basePath + port + path + url)
+				.headers(httpHeaders -> httpHeaders.addAll(requestEntity.getHeaders()))
+				.body(requestEntity.getBody())
+				.retrieve()
+				.toEntity(responseType);
 	}
 	
 	@Override
 	protected <I, O> ResponseEntity<O> executeHttpDelete(String url, HttpEntity<I> requestEntity,
 			Class<O> responseType) {
 		addCsrf(requestEntity);
-		return rest.exchange(basePath + port + path + url, HttpMethod.DELETE, requestEntity, responseType);
+		return rest.delete()
+				.uri(basePath + port + path + url)
+				.headers(httpHeaders -> httpHeaders.addAll(requestEntity.getHeaders()))
+				.retrieve()
+				.toEntity(responseType);
 	}
 	
 	@Override
 	protected <I> ResponseEntity<String> executeHttpPut(HttpEntity<I> requestEntity) {
 		addCsrf(requestEntity);
-		return rest.exchange(basePath + port + path + "/mark_as_read", HttpMethod.PUT, requestEntity, String.class);
+		assert requestEntity.getBody() != null;
+		return rest.put()
+				.uri(basePath + port + path + "/mark_as_read")
+				.headers(httpHeaders -> httpHeaders.addAll(requestEntity.getHeaders()))
+				.body(requestEntity.getBody())
+				.retrieve()
+				.toEntity(String.class);
 	}
 }

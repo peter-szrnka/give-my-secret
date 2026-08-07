@@ -1,7 +1,5 @@
 package io.github.gms.functions.keystore;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.*;
 import io.github.gms.common.enums.AliasOperation;
@@ -32,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -67,7 +66,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     private KeystoreRepository repository;
     private KeystoreAliasRepository aliasRepository;
     private KeystoreConverter converter;
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
     private ApplicationEventPublisher applicationEventPublisher;
     private KeystoreFileService keystoreFileService;
     private FileService fileService;
@@ -82,11 +81,11 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         repository = mock(KeystoreRepository.class);
         aliasRepository = mock(KeystoreAliasRepository.class);
         converter = mock(KeystoreConverter.class);
-        objectMapper = mock(ObjectMapper.class);
+        jsonMapper = mock(JsonMapper.class);
         applicationEventPublisher = mock(ApplicationEventPublisher.class);
         keystoreFileService = mock(KeystoreFileService.class);
         fileService = mock(FileService.class);
-        service = new KeystoreService(cryptoService, repository, aliasRepository, converter, objectMapper,
+        service = new KeystoreService(cryptoService, repository, aliasRepository, converter, jsonMapper,
                 applicationEventPublisher, keystoreFileService, fileService);
 
         addAppender(KeystoreService.class);
@@ -121,9 +120,9 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
         dtoInput.setId(null);
         dtoInput.setGenerated(true);
-        String model = TestUtils.objectMapper().writeValueAsString(dtoInput);
+        String model = TestUtils.jsonMapper().writeValueAsString(dtoInput);
 
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
         when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
         when(keystoreFileService.generate(any(SaveKeystoreRequestDto.class))).thenReturn("filename.jks");
         when(fileService.exists(any(Path.class))).thenReturn(true);
@@ -135,12 +134,12 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         assertEquals("java.lang.RuntimeException: Test failure", exception.getMessage());
         verify(repository, never()).save(any());
         verify(converter).toNewEntity(any(), any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
         assertLogContains(logAppender, "Keystore content cannot be parsed");
     }
 
     @Test
-    void save_whenCalledWithVulnerableKeystoreFile_thenThrowException() throws JsonProcessingException {
+    void save_whenCalledWithVulnerableKeystoreFile_thenThrowException() {
         // arrange
         MultipartFile multiPart = mock(MultipartFile.class);
         when(multiPart.getOriginalFilename()).thenReturn("hack/../../root/etc/password");
@@ -148,8 +147,8 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
         dtoInput.setId(null);
         dtoInput.setGenerated(false);
-        String model = TestUtils.objectMapper().writeValueAsString(dtoInput);
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
+        String model = TestUtils.jsonMapper().writeValueAsString(dtoInput);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
         when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
 
         // act
@@ -159,20 +158,20 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         assertEquals("Could not upload file!", exception.getMessage());
         verify(repository, never()).save(any());
         verify(converter).toNewEntity(any(), any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
     @Test
-    void save_whenKeysoreFileIsMissing_thenThrowException() throws JsonProcessingException {
+    void save_whenKeysoreFileIsMissing_thenThrowException() {
         when(fileService.exists(any(Path.class))).thenReturn(false);
 
         // arrange
         SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
         dtoInput.setId(null);
         dtoInput.setGenerated(true);
-        String model = TestUtils.objectMapper().writeValueAsString(dtoInput);
+        String model = TestUtils.jsonMapper().writeValueAsString(dtoInput);
 
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
         when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
         when(keystoreFileService.generate(any(SaveKeystoreRequestDto.class))).thenReturn("filename.jks");
 
@@ -183,18 +182,18 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         assertEquals("Keystore file does not exist!", exception.getMessage());
         verify(repository, never()).save(any());
         verify(converter).toNewEntity(any(), any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
         verify(fileService).exists(any(Path.class));
 
     }
 
     @Test
-    void save_whenObjectMapperReadValueThrowsException_thenThrowException() throws JsonProcessingException {
+    void save_whenJsonMapperReadValueThrowsException_thenThrowException() {
         // arrange
         String model = "{invalidJson}";
         MultipartFile multiPart = mock(MultipartFile.class);
 
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenThrow(new RuntimeException("Error!"));
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenThrow(new RuntimeException("Error!"));
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
@@ -203,16 +202,16 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         assertEquals("java.lang.RuntimeException: Error!", exception.getMessage());
         verify(converter, never()).toNewEntity(any(), eq(multiPart));
         verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
     @Test
-    void save_whenFileIsMissing_thenThrowException() throws JsonProcessingException {
+    void save_whenFileIsMissing_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, null));
@@ -221,18 +220,18 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         assertEquals("Keystore file must be provided!", exception.getMessage());
         verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository, never()).save(any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
     @Test
-    void save_whenKeystoreNameIsNotUnique_thenThrowException() throws JsonProcessingException {
+    void save_whenKeystoreNameIsNotUnique_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(repository.countAllKeystoresByName(anyLong(), anyString())).thenReturn(1L);
 
         // act
@@ -244,7 +243,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).countAllKeystoresByName(anyLong(), anyString());
         verify(repository, never()).save(any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
     @Test
@@ -254,7 +253,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
         dto.setUserId(6L);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
         when(multiPart.getOriginalFilename()).thenReturn("test.jks");
@@ -262,7 +261,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
         when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
@@ -272,7 +271,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         verify(converter).toNewEntity(any(), eq(multiPart));
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
     @Test
@@ -285,7 +284,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
         when(multiPart.getOriginalFilename()).thenReturn(fileName);
@@ -296,7 +295,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(repository.save(any())).thenReturn(keystoreEntity);
 
         when(converter.toNewEntity(any(), eq(multiPart))).thenReturn(TestUtils.createKeystoreEntity());
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(fileService.exists(any(Path.class))).thenReturn(true);
 
         // act
@@ -307,7 +306,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         verify(converter).toNewEntity(any(), eq(multiPart));
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
     @Test
@@ -316,7 +315,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         Files.createDirectory(Paths.get("unit-test-output/" + DemoData.USER_1_ID + "/"));
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
 
@@ -327,7 +326,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         KeystoreEntity keystoreEntity = TestUtils.createKeystoreEntity();
         keystoreEntity.setFileName("my-key.jks");
         when(repository.save(any())).thenReturn(keystoreEntity);
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
         // act
         service.save(model, multiPart);
@@ -336,7 +335,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         verify(converter).toNewEntity(any(), eq(multiPart));
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
 
@@ -344,13 +343,13 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     void save_whenInputIsValidBotFileIsMissing_thenSaveEntityWithoutFile() throws IOException {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         when(fileService.exists(any(Path.class))).thenReturn(true);
         when(fileService.readAllBytes(any(Path.class))).thenReturn(TEST.getBytes());
         when(converter.toEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
         when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(repository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
@@ -368,7 +367,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         verify(converter).toEntity(any(), any());
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
         verify(repository).findByIdAndUserId(anyLong(), anyLong());
 
         Files.deleteIfExists(Paths.get(JKS_TEST_FILE_LOCATION));
@@ -376,61 +375,61 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
 
     @Test
-    void save_whenAliasIsMissing_thenThrowException() throws JsonProcessingException {
+    void save_whenAliasIsMissing_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setAliases(List.of());
         dto.setId(1L);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
         // assert
         assertEquals("You must define at least one keystore alias!", exception.getMessage());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
     @Test
-    void save_whenOnlyDeletedAliasProvided_thenThrowException() throws JsonProcessingException {
+    void save_whenOnlyDeletedAliasProvided_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setAliases(List.of(new KeystoreAliasDto(1L, "alias", TEST, AliasOperation.DELETE,
                 EnabledAlgorithm.SHA256WITHRSA.getDisplayName())));
         dto.setId(1L);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
         // assert
         assertEquals("You must define at least one keystore alias!", exception.getMessage());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
     @Test
-    void save_whenBothFileInputProvided_thenThrowException() throws JsonProcessingException {
+    void save_whenBothFileInputProvided_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(1L);
         dto.setGenerated(true);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
         // act
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
         // assert
         assertEquals("Only one keystore source is allowed!", exception.getMessage());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
 
@@ -444,7 +443,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
                 EnabledAlgorithm.SHA256WITHRSA.getDisplayName()));
         dto.setStatus(EntityStatus.DISABLED);
         dto.setId(1L);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
         when(multiPart.getOriginalFilename()).thenReturn("test.jks");
@@ -452,7 +451,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
         when(converter.toEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
         when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(repository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
@@ -469,7 +468,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         verify(converter).toEntity(any(), any());
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
 
         ArgumentCaptor<EntityChangeEvent> entityDisabledEventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
         verify(applicationEventPublisher, times(2)).publishEvent(entityDisabledEventCaptor.capture());
@@ -500,14 +499,14 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setGenerated(true);
         dto.setId(null);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
 
         KeystoreEntity savedEntity = TestUtils.createKeystoreEntity();
         savedEntity.setFileName(fileName);
         when(repository.save(any())).thenReturn(savedEntity);
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(keystoreFileService.generate(any(SaveKeystoreRequestDto.class))).thenReturn(fileName);
         when(fileService.exists(any(Path.class))).thenAnswer((Answer<Boolean>) invocationOnMock -> counter.getAndIncrement() == 0);
         when(fileService.readAllBytes(any(Path.class))).thenReturn(TEST.getBytes());
@@ -519,7 +518,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         verify(converter).toNewEntity(any(), any());
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
         verify(fileService, times(2)).exists(any(Path.class));
     }
 
@@ -535,11 +534,11 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         dto.setStatus(EntityStatus.DISABLED);
         dto.setId(1L);
         dto.setGenerated(false);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         when(converter.toEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
         when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(repository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
@@ -554,7 +553,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         verify(converter).toEntity(any(), any());
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
-        verify(objectMapper).readValue(eq(model), any(Class.class));
+        verify(jsonMapper).readValue(eq(model), any(Class.class));
 
         ArgumentCaptor<EntityChangeEvent> entityDisabledEventCaptor = ArgumentCaptor.forClass(EntityChangeEvent.class);
         verify(applicationEventPublisher, times(2)).publishEvent(entityDisabledEventCaptor.capture());
@@ -569,15 +568,15 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void save_whenKeystoreNotFoundByIdAndUserId_thenThrowException() throws JsonProcessingException {
+    void save_whenKeystoreNotFoundByIdAndUserId_thenThrowException() {
         // arrange
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(1L);
-        String model = TestUtils.objectMapper().writeValueAsString(dto);
+        String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
         MultipartFile multiPart = mock(MultipartFile.class);
 
-        when(objectMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
+        when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         // act

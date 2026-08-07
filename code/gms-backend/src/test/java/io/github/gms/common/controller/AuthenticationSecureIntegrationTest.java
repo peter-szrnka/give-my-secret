@@ -49,6 +49,7 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		List<String> cookies = response.getHeaders().get("Set-Cookie");
+		assertNotNull(cookies);
 		assertFalse(cookies.isEmpty());
 		assertEquals(2, cookies.size());
 		assertTrue(cookies.stream().anyMatch(cookie -> cookie.startsWith(ACCESS_JWT_TOKEN)));
@@ -64,6 +65,6 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 
 		// assert
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(response.getHeaders().keySet().stream().anyMatch(header -> header.equalsIgnoreCase(SET_COOKIE)));
+		assertTrue(response.getHeaders().toSingleValueMap().keySet().stream().anyMatch(header -> header.equalsIgnoreCase(SET_COOKIE)));
 	}
 }

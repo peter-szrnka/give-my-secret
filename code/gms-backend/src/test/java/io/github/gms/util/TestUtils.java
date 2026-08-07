@@ -1,7 +1,5 @@
 package io.github.gms.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Sets;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.dto.ErrorResponseDto;
@@ -32,7 +30,8 @@ import io.github.gms.functions.maintenance.job.JobListDto;
 import io.github.gms.functions.message.MessageDto;
 import io.github.gms.functions.message.MessageEntity;
 import io.github.gms.functions.message.MessageListDto;
-import io.github.gms.functions.secret.*;
+import io.github.gms.functions.secret.ApiKeyRestrictionEntity;
+import io.github.gms.functions.secret.SecretEntity;
 import io.github.gms.functions.secret.dto.SaveSecretRequestDto;
 import io.github.gms.functions.secret.dto.SecretDto;
 import io.github.gms.functions.secret.dto.SecretListDto;
@@ -50,12 +49,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.function.Executable;
 import org.reflections.Reflections;
+import org.springframework.boot.jackson.JacksonComponentModule;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.StringUtils;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
@@ -88,11 +90,12 @@ public class TestUtils {
 	public static final String MOCK_REFRESH_TOKEN = "refreshToken";
 	public static final String LOCALHOST_8080 = "http://localhost:8080";
 
-	public static ObjectMapper objectMapper() {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-
-		return mapper;
+	public static JsonMapper jsonMapper() {
+		return JsonMapper.builder()
+				.addModule(new tools.jackson.datatype.jsr310.JavaTimeModule())
+				.addModule(new JacksonComponentModule())
+				.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+				.build();
 	}
 
 	public static HttpHeaders getApiHttpHeaders(String apiKey) {
