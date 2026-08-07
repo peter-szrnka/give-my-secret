@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,12 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @EnableTransactionManagement
 public class TestApplicationConfig {
 
-	// Default RestTemplate instance for integration tests
-	@Bean("testRestTemplate")
-	public RestTemplate testRestTemplate() {
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(new GmsResponseErrorHandler());
-		return restTemplate;
+	@Bean("testRestClient")
+	public RestClient testRestClient() {
+		return RestClient.builder().build();
 	}
 
     @Bean

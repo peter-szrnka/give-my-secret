@@ -17,11 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import java.util.Map;
 
@@ -36,12 +35,14 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class AbstractIntegrationTest {
 
+	public final HttpHeaders headers = new HttpHeaders();
+
 	@LocalServerPort
 	protected int port;
 
 	@Autowired
-	@Qualifier("testRestTemplate")
-	protected RestTemplate rest;
+	@Qualifier("testRestClient")
+	protected RestClient rest;
 
 	@Autowired
 	protected JwtService jwtService;
@@ -83,23 +84,43 @@ public abstract class AbstractIntegrationTest {
 
 	protected <I, O> ResponseEntity<O> executeHttpGet(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
 		addCsrf(requestEntity);
-		return rest.exchange(basePath + port + url, HttpMethod.GET, requestEntity, responseType);
+		return rest.get()
+				.uri(basePath + port + url)
+				.headers(httpHeaders -> httpHeaders.addAll(requestEntity.getHeaders()))
+				.retrieve()
+				.toEntity(responseType);
 	}
 
 	protected <I, O> ResponseEntity<O> executeHttpPost(String url, HttpEntity<I> requestEntity, Class<O> responseType) {
 		addCsrf(requestEntity);
-		return rest.exchange(basePath + port + url, HttpMethod.POST, requestEntity, responseType);
+        assert requestEntity.getBody() != null;
+        return rest.post()
+				.uri(basePath + port + url)
+				.headers(httpHeaders -> httpHeaders.addAll(requestEntity.getHeaders()))
+				.body(requestEntity.getBody())
+				.retrieve()
+				.toEntity(responseType);
 	}
 
 	protected <I, O> ResponseEntity<O> executeHttpDelete(String url, HttpEntity<I> requestEntity,
 			Class<O> responseType) {
 		addCsrf(requestEntity);
-		return rest.exchange(basePath + port + url, HttpMethod.DELETE, requestEntity, responseType);
+		return rest.delete()
+				.uri(basePath + port + url)
+				.headers(httpHeaders -> httpHeaders.addAll(requestEntity.getHeaders()))
+				.retrieve()
+				.toEntity(responseType);
 	}
 
 	protected <I> ResponseEntity<String> executeHttpPut(HttpEntity<I> requestEntity) {
 		addCsrf(requestEntity);
-		return rest.exchange(basePath + port + "/mark_as_read", HttpMethod.PUT, requestEntity, String.class);
+		assert requestEntity.getBody() != null;
+		return rest.put()
+				.uri(basePath + port + "/mark_as_read")
+				.headers(httpHeaders -> httpHeaders.addAll(requestEntity.getHeaders()))
+				.body(requestEntity.getBody())
+				.retrieve()
+				.toEntity(String.class);
 	}
 
 	protected static <I> void addCsrf(HttpEntity<I> requestEntity) {

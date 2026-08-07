@@ -11,7 +11,6 @@ import io.github.gms.functions.secret.dto.SecretValueDto;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
@@ -31,7 +30,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
 
     @BeforeEach
     void setup() {
-        service = Mockito.mock(SecretService.class);
+        service = mock(SecretService.class);
         secretRotationService = mock(SecretRotationService.class);
         secretLengthValidatorService = mock(SecretLengthValidatorService.class);
         controller = new SecretController(service, secretRotationService, secretLengthValidatorService);

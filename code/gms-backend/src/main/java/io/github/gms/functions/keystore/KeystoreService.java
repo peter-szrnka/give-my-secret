@@ -1,6 +1,5 @@
 package io.github.gms.functions.keystore;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gms.common.abstraction.AbstractCrudService;
 import io.github.gms.common.abstraction.BatchDeletionService;
 import io.github.gms.common.dto.IdNamePairListDto;
@@ -31,6 +30,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,7 +59,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 	private final KeystoreRepository repository;
 	private final KeystoreAliasRepository aliasRepository;
 	private final KeystoreConverter converter;
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final KeystoreFileService keystoreFileService;
 	private final FileService fileService;
@@ -288,7 +288,7 @@ public class KeystoreService implements AbstractCrudService<SaveKeystoreRequestD
 
 	private SaveKeystoreRequestDto parseInput(String model) {
 		try {
-			return objectMapper.readValue(model, SaveKeystoreRequestDto.class);
+			return jsonMapper.readValue(model, SaveKeystoreRequestDto.class);
 		} catch (Exception e) {
 			throw new GmsException(e, GMS_001);
 		}

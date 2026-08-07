@@ -20,6 +20,9 @@ import org.mockito.quality.Strictness;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -43,6 +46,7 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 	private KeystoreFileService service;
 	private SystemPropertyService systemPropertyService;
     private FileService fileService;
+	private Clock clock;
 
 	@BeforeEach
 	void beforeEach() {
@@ -51,7 +55,8 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 		userRepository = mock(UserRepository.class);
 		systemPropertyService = mock(SystemPropertyService.class);
         fileService = mock(FileService.class);
-		service = new KeystoreFileService(repository, userRepository, "./temp-output/", systemPropertyService, fileService);
+		clock = mock(Clock.class);
+		service = new KeystoreFileService(repository, userRepository, "./temp-output/", systemPropertyService, fileService, clock);
 	}
 
 	@AfterEach
@@ -68,6 +73,8 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 		when(systemPropertyService.get(SystemProperty.ORGANIZATION_NAME)).thenReturn("orgName");
 		when(systemPropertyService.get(SystemProperty.ORGANIZATION_CITY)).thenReturn("orgLocation");
 		TestUtils.createDirectory("./temp-output/");
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
 		// act & assert
 		assertNotNull(service.generate(TestUtils.createSaveKeystoreRequestDto()));
@@ -79,6 +86,8 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 	void generate_whenInputIsInvalid_thenThrowException() {
 		// arrange
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
+		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
 		// act
 		GmsException exception = assertThrows(GmsException.class, () -> service.generate(dto));

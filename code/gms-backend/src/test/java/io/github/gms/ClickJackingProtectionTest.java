@@ -20,7 +20,7 @@ class ClickJackingProtectionTest extends AbstractIntegrationTest {
     @Test
     void testClickJackingProtection() {
         // arrange
-        HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
         // act
         ResponseEntity<Void> response = executeHttpGet("/healthcheck", requestEntity, Void.class);

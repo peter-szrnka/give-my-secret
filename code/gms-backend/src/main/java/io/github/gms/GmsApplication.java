@@ -1,14 +1,13 @@
 package io.github.gms;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.data.redis.RedisHealthContributorAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.ldap.LdapHealthContributorAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
-import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.data.ldap.autoconfigure.DataLdapRepositoriesAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.health.DataRedisHealthContributorAutoConfiguration;
+import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
+import org.springframework.boot.ldap.autoconfigure.health.LdapHealthContributorAutoConfiguration;
 
 /**
  * Main Spring Boot Application
@@ -17,12 +16,12 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
  * @since 1.0
  */
 @SpringBootApplication(exclude = {
-    LdapRepositoriesAutoConfiguration.class,
+    DataLdapRepositoriesAutoConfiguration.class,
 	JacksonAutoConfiguration.class,
-	RedisAutoConfiguration.class,
+	DataRedisAutoConfiguration.class,
 	// Actuator auto configurations
 	LdapHealthContributorAutoConfiguration.class,
-    RedisHealthContributorAutoConfiguration.class
+    DataRedisHealthContributorAutoConfiguration.class
 })
 @ImportAutoConfiguration(FlywayAutoConfiguration.class)
 public class GmsApplication {

@@ -1,8 +1,5 @@
 package io.github.gms.common.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.CodeVerifier;
 import dev.samstevens.totp.code.DefaultCodeGenerator;
@@ -14,9 +11,9 @@ import dev.samstevens.totp.time.TimeProvider;
 import io.github.gms.common.interceptor.HttpClientResponseLoggingInterceptor;
 import io.github.gms.common.logging.GmsJacksonAnnotationIntrospector;
 import io.github.gms.common.service.GmsThreadLocalValues;
+import io.github.gms.common.types.EventSource;
 import io.github.gms.functions.announcement.AnnouncementRepository;
 import io.github.gms.functions.apikey.ApiKeyRepository;
-import io.github.gms.common.types.EventSource;
 import io.github.gms.functions.event.EventRepository;
 import io.github.gms.functions.iprestriction.IpRestrictionRepository;
 import io.github.gms.functions.keystore.KeystoreAliasRepository;
@@ -29,9 +26,9 @@ import io.github.gms.functions.setup.SystemAttributeRepository;
 import io.github.gms.functions.systemproperty.SystemPropertyRepository;
 import io.github.gms.functions.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jackson.JsonComponentModule;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.jackson.JacksonComponentModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -42,19 +39,21 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 import java.time.Clock;
 
-import static io.github.gms.common.util.Constants.LOGGING_OBJECT_MAPPER;
+import static io.github.gms.common.util.Constants.LOGGING_JSON_MAPPER;
 
 /**
  * @author Peter Szrnka
@@ -111,25 +110,28 @@ public class ApplicationConfig implements WebMvcConfigurer {
 	
 	@Bean
 	@Primary
-	public ObjectMapper objectMapper() {
-		return baseObjectMapper();
+	public JsonMapper jsonMapper() {
+		return baseJsonMapper();
 	}
 
-	@Bean(LOGGING_OBJECT_MAPPER)
-	public ObjectMapper loggingObjectMapper() {
-		return baseObjectMapper()
+	@Bean(LOGGING_JSON_MAPPER)
+	public JsonMapper loggingJsonMapper() {
+		return baseJsonMapper()
+				.rebuild()
 				.enable(SerializationFeature.INDENT_OUTPUT)
-				.setAnnotationIntrospector(new GmsJacksonAnnotationIntrospector());
+				.annotationIntrospector(new GmsJacksonAnnotationIntrospector())
+				.build();
 	}
 
 	@Bean
-	public RestTemplate restTemplate(@Value("${config.logging.httpClient.enabled}") boolean httpClientLoggingEnabled) {
-		return new RestTemplateBuilder()
-				.requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
-				.additionalInterceptors(new HttpClientResponseLoggingInterceptor(httpClientLoggingEnabled))
+	public RestClient restClient(@Value("${config.logging.httpClient.enabled}") boolean httpClientLoggingEnabled) {
+		return RestClient
+				.builder()
+				.requestFactory(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
+				.requestInterceptor(new HttpClientResponseLoggingInterceptor(httpClientLoggingEnabled))
 				.build();
 	}
-	
+
 	@Bean
 	public Clock clock() {
 		return Clock.systemDefaultZone();
@@ -170,13 +172,11 @@ public class ApplicationConfig implements WebMvcConfigurer {
 		return requestedResource.exists() && requestedResource.isReadable();
 	}
 
-	private static ObjectMapper baseObjectMapper() {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-		mapper.registerModule(new JsonComponentModule());
-		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-
-		return mapper;
+	private static JsonMapper baseJsonMapper() {
+		return JsonMapper.builder()
+				.addModule(new JavaTimeModule())
+				.addModule(new JacksonComponentModule())
+				.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+				.build();
 	}
 }

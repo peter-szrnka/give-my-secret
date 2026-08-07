@@ -1,9 +1,8 @@
 package io.github.gms.common.logging;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * @author Peter Szrnka
@@ -13,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public abstract class BasePayloadLogger {
 
-    private final ObjectMapper objectMapper;
-    private final ObjectMapper sensitiveLoggingObjectMapper;
+    private final JsonMapper jsonMapper;
+    private final JsonMapper sensitiveLoggingJsonMapper;
     private final boolean sensitiveDataMaskingEnabled;
     private final boolean loggingEnabled;
 
@@ -24,14 +23,14 @@ public abstract class BasePayloadLogger {
         }
 
         try {
-            log.info("{} logged: {}", scope(), getObjectMapper().writeValueAsString(body));
-        } catch (JsonProcessingException e) {
+            log.info("{} logged: {}", scope(), getJsonMapper().writeValueAsString(body));
+        } catch (Exception e) {
             log.error("Error while logging {}", scope().toLowerCase(), e);
         }
     }
 
-    private ObjectMapper getObjectMapper() {
-        return sensitiveDataMaskingEnabled ? sensitiveLoggingObjectMapper : objectMapper;
+    private JsonMapper getJsonMapper() {
+        return sensitiveDataMaskingEnabled ? sensitiveLoggingJsonMapper : jsonMapper;
     }
 
     protected abstract String scope();

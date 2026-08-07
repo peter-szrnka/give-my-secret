@@ -3,8 +3,8 @@ package io.github.gms.common.config;
 import io.github.gms.common.config.cache.ApiCacheKeyGenerator;
 import io.github.gms.common.config.cache.KeycloakSsoKeyGenerator;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.cache.autoconfigure.RedisCacheManagerBuilderCustomizer;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
@@ -21,15 +21,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-import static io.github.gms.common.util.Constants.CACHE_API;
-import static io.github.gms.common.util.Constants.CACHE_API_GENERATOR;
-import static io.github.gms.common.util.Constants.CACHE_GLOBAL_IP_RESTRICTION;
-import static io.github.gms.common.util.Constants.CACHE_IP_RESTRICTION;
-import static io.github.gms.common.util.Constants.CACHE_KEYCLOAK_SSO_GENERATOR;
-import static io.github.gms.common.util.Constants.CACHE_SSO_USER;
-import static io.github.gms.common.util.Constants.CACHE_SYSTEM_PROPERTY;
-import static io.github.gms.common.util.Constants.CACHE_USER;
-import static io.github.gms.common.util.Constants.TRUE;
+import static io.github.gms.common.util.Constants.*;
 
 
 /**

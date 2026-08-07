@@ -2,7 +2,7 @@ package io.github.gms.auth.config;
 
 import io.github.gms.auth.GmsCsrfTokenRequestHandler;
 import io.github.gms.auth.GmsSessionAuthenticationStrategy;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -17,9 +17,10 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import static io.github.gms.common.util.Constants.CONFIG_AUTH_TYPE_NOT_KEYCLOAK_SSO;
+import static org.springframework.http.HttpMethod.POST;
 
 /**
  * @author Peter Szrnka
@@ -53,8 +54,8 @@ public class SecurityConfig extends AbstractSecurityConfig {
         return csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
                 .sessionAuthenticationStrategy(new GmsSessionAuthenticationStrategy(csrfTokenRepository(), csrfTokenRequestHandler()))
                 .ignoringRequestMatchers(
-                        new AntPathRequestMatcher("/authenticate", "POST"),
-                        new AntPathRequestMatcher("/logoutUser", "POST")
+                        PathPatternRequestMatcher.withDefaults().matcher(POST, "/authenticate"),
+                        PathPatternRequestMatcher.withDefaults().matcher(POST, "/logoutUser")
                 )
                 .ignoringRequestMatchers(FILTER_URL)
                 .ignoringRequestMatchers(PathRequest.toStaticResources().atCommonLocations())

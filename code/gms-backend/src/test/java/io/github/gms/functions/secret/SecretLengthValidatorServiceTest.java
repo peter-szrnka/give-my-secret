@@ -131,7 +131,8 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
         SecretValueDto dto = createSecretValueDto(1L, 1L);
         when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(keystoreAliasRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
-        when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenReturn(mock(KeyStore.class));
+        KeyStore mockKeystore = mock(KeyStore.class);
+        when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenReturn(mockKeystore);
         when(cryptoService.encrypt(any(), any())).thenThrow(new GmsException("Encryption failed", GMS_001));
 
         // act
@@ -154,7 +155,8 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
         SecretValueDto dto = createSecretValueDto(1L, 1L);
         when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(keystoreAliasRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
-        when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenReturn(mock(KeyStore.class));
+        KeyStore mockKeystore = mock(KeyStore.class);
+        when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenReturn(mockKeystore);
         when(cryptoService.encrypt(any(), any())).thenReturn("encryptedValue");
 
         // act

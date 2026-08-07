@@ -2,12 +2,10 @@ package io.github.gms.functions.home;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link HomeController}
@@ -21,7 +19,7 @@ class HomeControllerTest {
 
     @BeforeEach
     void setupTest() {
-        service = Mockito.mock(HomeService.class);
+        service = mock(HomeService.class);
         controller = new HomeController(service);
     }
 

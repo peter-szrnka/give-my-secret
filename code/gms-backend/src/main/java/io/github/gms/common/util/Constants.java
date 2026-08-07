@@ -104,5 +104,5 @@ public final class Constants {
 	public static final String SIZE = "size";
 	public static final String KEY = "key";
 
-	public static final String LOGGING_OBJECT_MAPPER = "loggingObjectMapper";
+	public static final String LOGGING_JSON_MAPPER = "loggingJsonMapper";
 }
