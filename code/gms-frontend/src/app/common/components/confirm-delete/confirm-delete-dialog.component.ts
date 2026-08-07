@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core";
+import { Component, Inject, ChangeDetectionStrategy } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { AngularMaterialModule } from "../../../angular-material-module";
 import { TranslatorPipe } from "../pipes/translator/translator.pipe";
@@ -17,6 +17,7 @@ export interface ConfirmDeleteDialogData {
 @Component({
     selector: 'confirm-delete-dialog',
     templateUrl: './confirm-delete-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [AngularMaterialModule, TranslatorPipe]
 })
 export class ConfirmDeleteDialog {

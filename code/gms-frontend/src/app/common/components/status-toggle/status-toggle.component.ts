@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AngularMaterialModule } from '../../../angular-material-module';
 import { TranslatorService } from '../../service/translator-service';
@@ -17,6 +17,7 @@ import { TranslatorService } from '../../service/translator-service';
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     selector: 'status-toggle',
     templateUrl: './status-toggle.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./status-toggle.component.scss']
 })
 export class StatusToggleComponent {

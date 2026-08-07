@@ -15,5 +15,15 @@
     "src/**/*.d.ts",
     "src/polyfills.ts"
   ],
-  "exclude": ["src/vitest-env.d.ts"]
+  "exclude": [
+    "src/vitest-env.d.ts"
+  ],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
+  }
 }

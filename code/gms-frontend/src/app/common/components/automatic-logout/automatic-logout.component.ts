@@ -1,5 +1,5 @@
 import { DatePipe, NgClass } from "@angular/common";
-import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, Input, NO_ERRORS_SCHEMA, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { map, Observable, Subscription, takeWhile, timer } from "rxjs";
 import { DialogService } from "../../service/dialog-service";
@@ -19,6 +19,7 @@ export const WARNING_THRESHOLD = 60000;
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     selector: 'automatic-logout',
     templateUrl: './automatic-logout.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./automatic-logout.component.scss']
 })
 export class AutomaticLogoutComponent implements OnInit, OnDestroy {

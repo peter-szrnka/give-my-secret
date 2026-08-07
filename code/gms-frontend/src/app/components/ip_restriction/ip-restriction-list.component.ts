@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -20,6 +20,7 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
     selector: 'ip-restriction-list',
     templateUrl: './ip-restriction-list.component.html',
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         AngularMaterialModule,
         FormsModule,

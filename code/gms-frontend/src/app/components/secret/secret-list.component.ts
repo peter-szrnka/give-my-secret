@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -23,6 +23,7 @@ export const COPY_SECRET_ID_MESSAGE = "Secret ID copied to clipboard!";
 @Component({
     selector: 'secret-list',
     templateUrl: './secret-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
       AngularMaterialModule,
       FormsModule,

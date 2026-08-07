@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AngularMaterialModule } from '../../../angular-material-module';
 import { NavButtonVisibilityPipe } from '../pipes/nav-button-visibility.pipe';
@@ -18,6 +18,7 @@ import { TranslatorPipe } from '../pipes/translator/translator.pipe';
     ],
     selector: 'nav-back',
     templateUrl: './nav-back.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./nav-back.component.scss']
 })
 export class NavBackComponent {

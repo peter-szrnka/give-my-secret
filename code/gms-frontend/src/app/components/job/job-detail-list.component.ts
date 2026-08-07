@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -31,6 +31,7 @@ const MANUAL_JOB_EXECUTION_CONFIG = [
 @Component({
     imports: [AngularMaterialModule, CommonModule, NavBackComponent, MomentPipe, InformationMessageComponent, TranslatorPipe],
     selector: 'job-detail-list',
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './job-detail-list.component.html'
 })
 export class JobDetailListComponent extends BaseComponent implements OnInit {

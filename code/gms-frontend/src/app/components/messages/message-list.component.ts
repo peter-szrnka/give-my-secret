@@ -1,6 +1,6 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { catchError, of, takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -29,6 +29,7 @@ export enum SelectionStatus {
     selector: 'message-list',
     templateUrl: './message-list.component.html',
     styleUrls: ['./message-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         AngularMaterialModule,
         CommonModule,

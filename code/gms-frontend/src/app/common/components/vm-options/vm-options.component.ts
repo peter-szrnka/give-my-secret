@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
 import { AngularMaterialModule } from "../../../angular-material-module";
@@ -14,6 +14,7 @@ import { TranslatorPipe } from "../pipes/translator/translator.pipe";
 @Component({
     selector: 'vm-options',
     templateUrl: './vm-options.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         AngularMaterialModule,
         ReactiveFormsModule,

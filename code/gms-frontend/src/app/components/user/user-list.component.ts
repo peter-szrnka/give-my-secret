@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { takeUntil } from "rxjs";
@@ -23,6 +23,7 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
     selector: 'user-list-component',
     templateUrl: './user-list.component.html',
     styleUrls: ['./user-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         AngularMaterialModule,
         FormsModule,

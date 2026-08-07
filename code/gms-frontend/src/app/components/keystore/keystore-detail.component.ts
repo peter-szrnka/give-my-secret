@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArrayDataSource } from "@angular/cdk/collections";
-import { Component, ElementRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { takeUntil } from "rxjs";
@@ -48,6 +48,7 @@ const ENABLED_ALGORITHMS : string[] = [
     selector: 'keystore-detail',
     templateUrl: './keystore-detail.component.html',
     styleUrls: ['./keystore-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
       AngularMaterialModule,
       FormsModule,

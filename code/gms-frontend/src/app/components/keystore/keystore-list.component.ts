@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -20,6 +20,7 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
 @Component({
     selector: 'keystore-list',
     templateUrl: './keystore-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         AngularMaterialModule,
         FormsModule,

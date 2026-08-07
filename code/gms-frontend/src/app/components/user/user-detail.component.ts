@@ -1,5 +1,5 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { takeUntil } from "rxjs";
@@ -32,6 +32,7 @@ const ALL_STATUS: string[] = [ 'ACTIVE', 'BLOCKED', 'DISABLED', 'DELETE_REQUESTE
     selector: 'user-detail-component',
     templateUrl: './user-detail.component.html',
     styleUrls: ['./user-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
       AngularMaterialModule,
       FormsModule,

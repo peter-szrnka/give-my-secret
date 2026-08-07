@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from "@angular/core";
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Router } from "@angular/router";
 import { takeUntil } from "rxjs";
 import { environment } from "../../../environments/environment";
@@ -28,6 +28,7 @@ export interface PasswordSettings {
     templateUrl: './settings-summary.component.html',
     standalone: true,
     imports: [AngularMaterialModule, FormsModule, InformationMessageComponent, TranslatorPipe],
+    changeDetection: ChangeDetectionStrategy.Eager,
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SettingsSummaryComponent extends BaseComponent implements OnInit {

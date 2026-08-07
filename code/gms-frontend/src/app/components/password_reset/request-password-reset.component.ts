@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
 import { takeUntil } from "rxjs";
@@ -12,6 +12,7 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
 @Component({
     selector: 'request-password-reset',
     templateUrl: './request-password-reset.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [AngularMaterialModule, RouterModule, FormsModule, TranslatorPipe]
 })
 export class RequestPasswordResetComponent extends BaseComponent {

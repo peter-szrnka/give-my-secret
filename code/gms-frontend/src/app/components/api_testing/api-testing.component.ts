@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from "@angular/core";
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -26,6 +26,7 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
         InformationMessageComponent,
         TranslatorPipe
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ApiTestingComponent extends BaseComponent implements OnInit {

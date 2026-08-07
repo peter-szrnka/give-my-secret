@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { Router } from "@angular/router";
@@ -13,6 +13,7 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
     imports: [MatIconModule, MatProgressBarModule, TranslatorPipe],
     selector: 'error',
     templateUrl: './error.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./error.component.scss']
 })
 export class ErrorComponent {

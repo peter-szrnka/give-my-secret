@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { SharedDataService } from "../../common/service/shared-data-service";
 
 export interface NavMenuItem {
@@ -28,6 +28,7 @@ export const NAV_MENU_ITEMS: NavMenuItem[] = [
     selector: 'nav-menu',
     templateUrl: './nav-menu.html',
     styleUrls: ['./nav-menu.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class NavMenuComponent {

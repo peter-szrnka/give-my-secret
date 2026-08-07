@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { takeUntil } from "rxjs";
@@ -36,6 +36,7 @@ export const EMPTY_ADMIN_DATA : UserData = {
     selector: 'setup-component',
     templateUrl: './setup.component.html',
     styleUrls: ['./setup.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         AngularMaterialModule,
         FormsModule,

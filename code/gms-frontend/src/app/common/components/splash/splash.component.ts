@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { AngularMaterialModule } from "../../../angular-material-module";
 import { SplashScreenStateService } from "../../service/splash-screen-service";
 import { NgStyle } from "@angular/common";
@@ -16,6 +16,7 @@ import { BaseComponent } from "../abstractions/component/base.component";
     ],
     selector: 'splash-screen',
     templateUrl: './splash.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./splash.component.scss']
 })
 export class SplashComponent extends BaseComponent implements OnInit {

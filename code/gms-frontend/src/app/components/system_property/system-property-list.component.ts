@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Params, Router } from "@angular/router";
@@ -115,6 +115,7 @@ interface SystemPropertyElement extends SystemProperty {
 @Component({
   selector: 'system-property',
   templateUrl: './system-property-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     AngularMaterialModule,
     FormsModule,

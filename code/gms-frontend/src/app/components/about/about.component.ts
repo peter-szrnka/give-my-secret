@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Observable } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
 import { MomentPipe } from "../../common/components/pipes/date-formatter.pipe";
@@ -14,6 +14,7 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
     imports: [AngularMaterialModule, CommonModule, MomentPipe, TranslatorPipe],
     selector: 'about',
     templateUrl: './about.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {

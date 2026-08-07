@@ -1,7 +1,7 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { AsyncPipe } from "@angular/common";
-import { Component, ElementRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { MatChipInputEvent } from "@angular/material/chips";
@@ -46,6 +46,7 @@ export enum ValidationState {
     selector: 'secret-detail',
     templateUrl: './secret-detail.component.html',
     styleUrls: ['./secret-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         AngularMaterialModule,
         FormsModule,

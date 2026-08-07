@@ -1,5 +1,5 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { takeUntil } from "rxjs";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -15,6 +15,7 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
     imports: [AngularMaterialModule, InformationMessageComponent, TranslatorPipe],
     selector: 'help',
     templateUrl: './help.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./help.component.scss']
 })
 export class HelpComponent extends BaseComponent implements OnInit {

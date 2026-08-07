@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, NavigationExtras, Router, RouterModule } from "@angular/router";
 import { catchError, takeUntil } from "rxjs";
@@ -17,6 +17,7 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
 @Component({
     selector: 'login',
     templateUrl: './login.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RouterModule, AngularMaterialModule, FormsModule, TranslatorPipe]
 })
 export class LoginComponent extends BaseLoginComponent {

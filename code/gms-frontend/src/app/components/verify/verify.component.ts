@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core";
+import { Component, Inject, ChangeDetectionStrategy } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { BaseLoginComponent } from "../../common/components/abstractions/component/base-login.component";
@@ -21,6 +21,7 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
     selector: 'verify',
     templateUrl: './verify.component.html',
     styleUrls: ['./verify.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [AngularMaterialModule, FormsModule, InformationMessageComponent, TranslatorPipe]
 })
 export class VerifyComponent extends BaseLoginComponent {

@@ -1,4 +1,4 @@
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { AngularMaterialModule } from "../../angular-material-module";
@@ -23,5 +23,5 @@ import { TranslatorPipe } from "../../common/components/pipes/translator/transla
         SplashComponent,
         TranslatorPipe
     ], 
-    providers: [provideHttpClient(withInterceptorsFromDi())] })
+    providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())] })
   export class HeaderModule { }

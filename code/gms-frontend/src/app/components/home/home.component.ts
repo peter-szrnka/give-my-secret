@@ -1,5 +1,5 @@
 import { ArrayDataSource } from "@angular/cdk/collections";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
 import { firstValueFrom, takeUntil } from "rxjs";
 import systemAnnouncements from "../../../assets/caas/system-announcements.json";
@@ -28,6 +28,7 @@ export enum PageStatus {
     selector: 'home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         AngularMaterialModule,
         RouterModule,

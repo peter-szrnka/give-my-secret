@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent, RouterModule } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { AngularMaterialModule } from './angular-material-module';
@@ -21,6 +21,7 @@ const LOGIN_CALLBACK_URL = '/login';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     schemas: [CUSTOM_ELEMENTS_SCHEMA], 
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         AngularMaterialModule,
         NavMenuModule,

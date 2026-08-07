@@ -1,5 +1,5 @@
 import { NgClass } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 
 const SETTINGS_MAP: any = {
@@ -15,6 +15,7 @@ const SETTINGS_MAP: any = {
   imports: [MatIconModule, NgClass],
   selector: 'information-message',
   templateUrl: './information-message.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./information-message.component.scss'],
 })
 export class InformationMessageComponent implements OnInit {

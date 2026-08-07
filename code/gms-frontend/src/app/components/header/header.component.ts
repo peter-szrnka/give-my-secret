@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -15,6 +15,7 @@ import { User } from '../user/model/user.model';
     selector: 'header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class HeaderComponent extends BaseComponent implements OnInit {
