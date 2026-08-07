@@ -6,7 +6,6 @@ import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
@@ -28,7 +27,7 @@ class MessageControllerTest {
     
     @BeforeEach
     void setupTest() {
-        service = Mockito.mock(MessageService.class);
+        service = mock(MessageService.class);
         controller = new MessageController(service);
     }
 

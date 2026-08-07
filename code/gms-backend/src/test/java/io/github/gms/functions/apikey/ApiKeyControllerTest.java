@@ -8,7 +8,6 @@ import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
@@ -17,8 +16,7 @@ import java.util.List;
 import static io.github.gms.util.TestConstants.TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test of {@link ApiKeyController}
@@ -30,7 +28,7 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
 
     @BeforeEach
     void setup() {
-        service = Mockito.mock(ApiKeyService.class);
+        service = mock(ApiKeyService.class);
         controller = new ApiKeyController(service);
     }
 

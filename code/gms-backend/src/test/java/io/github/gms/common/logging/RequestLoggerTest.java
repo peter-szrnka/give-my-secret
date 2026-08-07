@@ -1,6 +1,5 @@
 package io.github.gms.common.logging;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +52,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void afterBodyRead_whenMaskingDisabled_thenSkipLogRequestBody() throws JsonProcessingException {
+    void afterBodyRead_whenMaskingDisabled_thenSkipLogRequestBody() {
         // arrange
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
@@ -73,7 +72,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void afterBodyRead_whenMaskingEnabled_thenLogRequestBody() throws JsonProcessingException {
+    void afterBodyRead_whenMaskingEnabled_thenLogRequestBody() {
         // arrange
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
@@ -92,7 +91,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void afterBodyRead_whenLoggingTurnedOff_thenLogSkipped() throws JsonProcessingException {
+    void afterBodyRead_whenLoggingTurnedOff_thenLogSkipped() {
         // arrange
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);

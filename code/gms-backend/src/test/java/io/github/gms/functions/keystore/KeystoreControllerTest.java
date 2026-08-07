@@ -10,7 +10,6 @@ import io.github.gms.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +36,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
 
     @BeforeEach
     void setupTest() {
-        service = Mockito.mock(KeystoreService.class);
+        service = mock(KeystoreService.class);
         controller = new KeystoreController(service);
     }
 

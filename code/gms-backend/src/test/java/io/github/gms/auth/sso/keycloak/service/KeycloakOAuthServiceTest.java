@@ -54,11 +54,11 @@ public class KeycloakOAuthServiceTest extends AbstractUnitTest {
                 .thenReturn(requestBodySpec);
         when(requestBodySpec.contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .thenReturn(requestBodySpec);
-        when(requestBodySpec.body(eq(requestBody)))
+        when(requestBodySpec.body(requestBody))
                 .thenReturn(requestBodySpec);
         when(requestBodySpec.retrieve())
                 .thenReturn(responseSpec);
-        when(responseSpec.toEntity(eq(String.class)))
+        when(responseSpec.toEntity(String.class))
                 .thenReturn(mockResponseEntity);
 
         // act

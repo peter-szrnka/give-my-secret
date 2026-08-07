@@ -32,6 +32,7 @@ import java.security.KeyStore;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -53,106 +54,110 @@ import static io.github.gms.common.util.FileUtils.validatePath;
 @Service
 public class KeystoreFileService {
 
-	private static final String CERT_FORMAT = "CN=%s,O=%s,L=%s,ST=NA";
-	private static final int KEY_SIZE = 2048;
+    private static final String CERT_FORMAT = "CN=%s,O=%s,L=%s,ST=NA";
+    private static final int KEY_SIZE = 2048;
 
-	static {
-		Security.setProperty("crypto.policy", "unlimited");
-		Security.addProvider(new BouncyCastleProvider());
-	}
+    static {
+        Security.setProperty("crypto.policy", "unlimited");
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
-	private final KeystoreRepository repository;
-	private final UserRepository userRepository;
-	private final String keystoreTempPath;
-	private final SystemPropertyService systemPropertyService;
-	private final FileService fileService;
+    private final KeystoreRepository repository;
+    private final UserRepository userRepository;
+    private final String keystoreTempPath;
+    private final SystemPropertyService systemPropertyService;
+    private final FileService fileService;
+    private final Clock clock;
 
-	public KeystoreFileService(KeystoreRepository repository, UserRepository userRepository,
-								   @Value("${config.location.keystoreTemp.path}") String keystoreTempPath,
-								   SystemPropertyService systemPropertyService,
-								   FileService fileService) {
-		this.repository = repository;
-		this.userRepository = userRepository;
-		this.keystoreTempPath = keystoreTempPath;
-		this.systemPropertyService = systemPropertyService;
-		this.fileService = fileService;
-	}
+    public KeystoreFileService(KeystoreRepository repository, UserRepository userRepository,
+                               @Value("${config.location.keystoreTemp.path}") String keystoreTempPath,
+                               SystemPropertyService systemPropertyService,
+                               FileService fileService,
+                               Clock clock
+    ) {
+        this.repository = repository;
+        this.userRepository = userRepository;
+        this.keystoreTempPath = keystoreTempPath;
+        this.systemPropertyService = systemPropertyService;
+        this.fileService = fileService;
+        this.clock = clock;
+    }
 
-	public long deleteTempKeystoreFiles()  {
-		try (Stream<Path> fileList = fileService.list(Paths.get(keystoreTempPath)).parallel()) {
-			return fileList.filter(path -> !path.toFile().isDirectory())
-					.map(this::getFileNameIfNotExists)
-					.filter(Objects::nonNull)
-					.map(this::deleteTempKeystoreFile)
-					.filter(Boolean.TRUE::equals)
-					.count();
-		} catch (Exception e) {
-			throw new GmsException(e, GMS_001);
-		}
-	}
+    public long deleteTempKeystoreFiles() {
+        try (Stream<Path> fileList = fileService.list(Paths.get(keystoreTempPath)).parallel()) {
+            return fileList.filter(path -> !path.toFile().isDirectory())
+                    .map(this::getFileNameIfNotExists)
+                    .filter(Objects::nonNull)
+                    .map(this::deleteTempKeystoreFile)
+                    .filter(Boolean.TRUE::equals)
+                    .count();
+        } catch (Exception e) {
+            throw new GmsException(e, GMS_001);
+        }
+    }
 
-	public String generate(SaveKeystoreRequestDto dto) {
-		try {
-			KeyStore ks = KeyStore.getInstance(dto.getType().name());
+    public String generate(SaveKeystoreRequestDto dto) {
+        try {
+            KeyStore ks = KeyStore.getInstance(dto.getType().name());
 
-			char[] password = dto.getCredential().toCharArray();
-			ks.load(null, password);
+            char[] password = dto.getCredential().toCharArray();
+            ks.load(null, password);
 
-			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
-			keyPairGen.initialize(KEY_SIZE);
-			KeyPair keyPair = keyPairGen.generateKeyPair();
+            KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
+            keyPairGen.initialize(KEY_SIZE);
+            KeyPair keyPair = keyPairGen.generateKeyPair();
 
-			for (KeystoreAliasDto alias : dto.getAliases()) {
-				X509Certificate certificate = generateCertificate(keyPair, alias.getAlgorithm());
+            for (KeystoreAliasDto alias : dto.getAliases()) {
+                X509Certificate certificate = generateCertificate(keyPair, alias.getAlgorithm());
 
-				ks.setKeyEntry(alias.getAlias(),
-						keyPair.getPrivate(),
-						alias.getAliasCredential().toCharArray(),
-						new X509Certificate[] { certificate });
-			}
+                ks.setKeyEntry(alias.getAlias(),
+                        keyPair.getPrivate(),
+                        alias.getAliasCredential().toCharArray(),
+                        new X509Certificate[]{certificate});
+            }
 
-			String newKeystoreName = UUID.randomUUID() + "." + dto.getType().getFileExtension();
-			validatePath(newKeystoreName);
-			FileOutputStream fos = new FileOutputStream(keystoreTempPath + newKeystoreName, false);
-			ks.store(fos, password);
-			fos.close();
+            String newKeystoreName = UUID.randomUUID() + "." + dto.getType().getFileExtension();
+            validatePath(newKeystoreName);
+            FileOutputStream fos = new FileOutputStream(keystoreTempPath + newKeystoreName, false);
+            ks.store(fos, password);
+            fos.close();
 
-			return newKeystoreName;
-		} catch (Exception e) {
-			throw new GmsException(e, GMS_001);
-		}
-	}
+            return newKeystoreName;
+        } catch (Exception e) {
+            throw new GmsException(e, GMS_001);
+        }
+    }
 
-	private boolean deleteTempKeystoreFile(Path path) {
-		try {
-			return fileService.delete(path);
-		} catch (IOException _) {
-			return false;
-		}
-	}
+    private boolean deleteTempKeystoreFile(Path path) {
+        try {
+            return fileService.delete(path);
+        } catch (IOException _) {
+            return false;
+        }
+    }
 
-	private Path getFileNameIfNotExists(Path path) {
-		return repository.findByFileName(path.toFile().getName()) != null ? null : path;
-	}
+    private Path getFileNameIfNotExists(Path path) {
+        return repository.findByFileName(path.toFile().getName()) != null ? null : path;
+    }
 
-	private X509Certificate generateCertificate(KeyPair keyPair, String alg)
-			throws OperatorCreationException, CertificateException {
-		final Instant now = Instant.now();
-		final Date notBefore = Date.from(now);
-		final Date until = GregorianCalendar.from(ZonedDateTime.now().plusYears(1L)).getTime();
+    private X509Certificate generateCertificate(KeyPair keyPair, String alg)
+            throws OperatorCreationException, CertificateException {
+        final Instant now = Instant.now(clock);
+        final Date notBefore = Date.from(now);
+        final Date until = GregorianCalendar.from(ZonedDateTime.now(clock).plusYears(1L)).getTime();
 
-		UserEntity user = userRepository.findById(ThreadLocalContext.getAsLong(MdcParameter.USER_ID)).orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND, GMS_002));
-		EnabledAlgorithm algorithm = EnabledAlgorithm.getByName(alg);
+        UserEntity user = userRepository.findById(ThreadLocalContext.getAsLong(MdcParameter.USER_ID)).orElseThrow(() -> new GmsException(ENTITY_NOT_FOUND, GMS_002));
+        EnabledAlgorithm algorithm = EnabledAlgorithm.getByName(alg);
 
-		String organizationName = systemPropertyService.get(SystemProperty.ORGANIZATION_NAME);
-		String organizationLocation = systemPropertyService.get(SystemProperty.ORGANIZATION_CITY);
+        String organizationName = systemPropertyService.get(SystemProperty.ORGANIZATION_NAME);
+        String organizationLocation = systemPropertyService.get(SystemProperty.ORGANIZATION_CITY);
 
-		final ContentSigner contentSigner = new JcaContentSignerBuilder(algorithm.getDisplayName()).build(keyPair.getPrivate());
-		final X500Name x500Name = new X500Name(String.format(CERT_FORMAT,
-				user.getName(), organizationName, organizationLocation));
-		final X509v3CertificateBuilder certificateBuilder = new JcaX509v3CertificateBuilder(x500Name,
-				BigInteger.valueOf(now.toEpochMilli()), notBefore, until, x500Name, keyPair.getPublic());
-		return new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider())
-				.getCertificate(certificateBuilder.build(contentSigner));
-	}
+        final ContentSigner contentSigner = new JcaContentSignerBuilder(algorithm.getDisplayName()).build(keyPair.getPrivate());
+        final X500Name x500Name = new X500Name(String.format(CERT_FORMAT,
+                user.getName(), organizationName, organizationLocation));
+        final X509v3CertificateBuilder certificateBuilder = new JcaX509v3CertificateBuilder(x500Name,
+                BigInteger.valueOf(now.toEpochMilli()), notBefore, until, x500Name, keyPair.getPublic());
+        return new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider())
+                .getCertificate(certificateBuilder.build(contentSigner));
+    }
 }
