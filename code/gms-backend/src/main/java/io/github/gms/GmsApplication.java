@@ -3,9 +3,11 @@ package io.github.gms;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.data.redis.RedisHealthContributorAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.ldap.LdapHealthContributorAutoConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 
 /**
@@ -22,6 +24,7 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 	LdapHealthContributorAutoConfiguration.class,
     RedisHealthContributorAutoConfiguration.class
 })
+@ImportAutoConfiguration(FlywayAutoConfiguration.class)
 public class GmsApplication {
 
 	public static void main(String[] args) {
