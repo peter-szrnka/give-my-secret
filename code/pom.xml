@@ -12,7 +12,6 @@
 		<maven.compiler.source>25</maven.compiler.source>
 		<maven.compiler.target>25</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
 		<maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
 
 		<sonar.organization>peter-szrnka</sonar.organization>
