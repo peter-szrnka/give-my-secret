@@ -22,6 +22,7 @@
         <jsonwebtoken.version>0.11.1</jsonwebtoken.version>
         <protobuf.version>4.31.1</protobuf.version>
         <grpc.version>1.75.0</grpc.version>
+
         <!-- Testing & code quality -->
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <skip.jacoco-check-execution>false</skip.jacoco-check-execution>
