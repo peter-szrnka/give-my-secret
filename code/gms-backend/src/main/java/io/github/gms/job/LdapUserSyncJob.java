@@ -5,6 +5,7 @@ import io.github.gms.common.abstraction.AbstractJob;
 import io.github.gms.common.enums.SystemProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,14 +22,17 @@ public class LdapUserSyncJob extends AbstractJob {
     private final LdapSyncService service;
 
     @Override
+    @SchedulerLock(name = "ldapUserSyncJob",
+            lockAtLeastFor = "${config.job.ldapUserSyncJob.lockAtLeastFor}",
+            lockAtMostFor = "${config.job.ldapUserSyncJob.lockAtMostFor}")
     @Scheduled(cron = "0 */10 * * * ?")
     public void run() {
         execute(this::businessLogic);
     }
 
     @Override
-    protected Pair<SystemProperty, SystemProperty> systemPropertyConfigs() {
-        return Pair.of(SystemProperty.LDAP_SYNC_JOB_ENABLED, SystemProperty.LDAP_SYNC_RUNNER_CONTAINER_ID);
+    protected SystemProperty enableConfig() {
+        return SystemProperty.LDAP_SYNC_JOB_ENABLED;
     }
 
     private void businessLogic() {

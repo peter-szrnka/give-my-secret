@@ -8,7 +8,7 @@ import io.github.gms.functions.secret.SecretRepository;
 import io.github.gms.functions.secret.SecretRotationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.util.Pair;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -30,14 +30,17 @@ public class SecretRotationJob extends AbstractJob {
 	private final SecretRotationService service;
 
 	@Override
+	@SchedulerLock(name = "secretRotationJob",
+		lockAtLeastFor = "${config.job.secretRotationJob.lockAtLeastFor}",
+		lockAtMostFor = "${config.job.secretRotationJob.lockAtMostFor}")
 	@Scheduled(cron = "0 * * * * ?")
 	public void run() {
 		execute(this::businessLogic);
 	}
 
 	@Override
-	protected Pair<SystemProperty, SystemProperty> systemPropertyConfigs() {
-		return Pair.of(SystemProperty.SECRET_ROTATION_JOB_ENABLED, SystemProperty.SECRET_ROTATION_RUNNER_CONTAINER_ID);
+	protected SystemProperty enableConfig() {
+		return SystemProperty.SECRET_ROTATION_JOB_ENABLED;
 	}
 
 	private void businessLogic() {

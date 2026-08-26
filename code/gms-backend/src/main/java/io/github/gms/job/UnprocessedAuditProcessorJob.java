@@ -3,12 +3,12 @@ package io.github.gms.job;
 import io.github.gms.common.abstraction.AbstractJob;
 import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.common.model.UserEvent;
-import io.github.gms.functions.event.UnprocessedEventStorage;
 import io.github.gms.functions.event.EventService;
+import io.github.gms.functions.event.UnprocessedEventStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +24,9 @@ public class UnprocessedAuditProcessorJob extends AbstractJob {
     private final EventService eventService;
 
     @Override
+    @SchedulerLock(name = "unprocessedAuditProcessorJob",
+            lockAtLeastFor = "${config.job.unprocessedAuditProcessorJob.lockAtLeastFor}",
+            lockAtMostFor = "${config.job.unprocessedAuditProcessorJob.lockAtMostFor}")
     @Scheduled(cron = "30 * * * * ?")
     public void run() {
         execute(this::businessLogic);
@@ -41,7 +44,7 @@ public class UnprocessedAuditProcessorJob extends AbstractJob {
     }
 
     @Override
-    protected Pair<SystemProperty, SystemProperty> systemPropertyConfigs() {
-        return Pair.of(SystemProperty.UNPROCESSED_AUDIT_LOGS_ENABLED, SystemProperty.UNPROCESSED_AUDIT_LOGS_RUNNER_CONTAINER_ID);
+    protected SystemProperty enableConfig() {
+        return SystemProperty.UNPROCESSED_AUDIT_LOGS_ENABLED;
     }
 }
