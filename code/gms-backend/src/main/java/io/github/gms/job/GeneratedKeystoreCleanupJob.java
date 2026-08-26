@@ -5,7 +5,7 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.keystore.KeystoreFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.util.Pair;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +21,17 @@ public class GeneratedKeystoreCleanupJob extends AbstractJob {
     private final KeystoreFileService service;
 
     @Override
+    @SchedulerLock(name = "generatedKeystoreCleanupJob",
+            lockAtLeastFor = "${config.job.generatedKeystoreCleanupJob.lockAtLeastFor}",
+            lockAtMostFor = "${config.job.generatedKeystoreCleanupJob.lockAtMostFor}")
     @Scheduled(cron = "0 45 * * * ?")
     public void run() {
         execute(this::businessLogic);
     }
 
     @Override
-    protected Pair<SystemProperty, SystemProperty> systemPropertyConfigs() {
-        return Pair.of(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED, SystemProperty.KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID);
+    protected SystemProperty enableConfig() {
+        return SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED;
     }
 
     private void businessLogic() {

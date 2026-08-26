@@ -90,26 +90,6 @@ class GeneratedKeystoreCleanupJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void run_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
-        // arrange
-        when(systemService.getContainerId()).thenReturn("ab123457");
-        when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(true);
-        when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
-        when(systemPropertyService.get(SystemProperty.KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
-        when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
-
-        // act
-        job.run();
-
-        // assert
-        assertTrue(logAppender.list.isEmpty());
-        verify(systemService).getContainerId();
-        verify(systemPropertyService).getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED);
-        verify(systemPropertyService).get(SystemProperty.KEYSTORE_CLEANUP_RUNNER_CONTAINER_ID);
-        verify(service, never()).deleteTempKeystoreFiles();
-    }
-
-    @Test
     void run_whenNoKeystoreFileDeleted_thenSKipLogging() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.KEYSTORE_CLEANUP_JOB_ENABLED)).thenReturn(true);

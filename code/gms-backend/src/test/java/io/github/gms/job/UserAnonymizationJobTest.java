@@ -87,25 +87,6 @@ class UserAnonymizationJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void run_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
-        // arrange
-        when(systemService.getContainerId()).thenReturn("ab123457");
-        when(systemPropertyService.getBoolean(SystemProperty.USER_ANONYMIZATION_JOB_ENABLED)).thenReturn(true);
-        when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
-        when(systemPropertyService.get(SystemProperty.USER_ANONYMIZATION_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
-        when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
-
-        // act
-        job.run();
-
-        // assert
-        assertTrue(logAppender.list.isEmpty());
-        verify(systemPropertyService).get(SystemProperty.USER_ANONYMIZATION_RUNNER_CONTAINER_ID);
-        verify(userDeletionService, never()).getRequestedUserIds();
-        verify(systemPropertyService).getBoolean(SystemProperty.USER_ANONYMIZATION_JOB_ENABLED);
-    }
-
-    @Test
     void run_whenNoUsersRequested_thenSkipExecution() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.USER_ANONYMIZATION_JOB_ENABLED)).thenReturn(true);

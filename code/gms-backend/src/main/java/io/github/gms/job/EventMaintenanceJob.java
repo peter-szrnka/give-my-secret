@@ -5,12 +5,11 @@ import io.github.gms.common.enums.SystemProperty;
 import io.github.gms.functions.event.EventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.util.Pair;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static io.github.gms.common.enums.SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED;
-import static io.github.gms.common.enums.SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID;
 
 /**
  * @author Peter Szrnka
@@ -24,14 +23,17 @@ public class EventMaintenanceJob extends AbstractLimitBasedJob {
     private final EventRepository eventRepository;
 
     @Override
+    @SchedulerLock(name = "eventMaintenanceJob",
+            lockAtLeastFor = "${config.job.eventMaintenanceJob.lockAtLeastFor}",
+            lockAtMostFor = "${config.job.eventMaintenanceJob.lockAtMostFor}")
     @Scheduled(cron = "0 15 * * * ?")
     public void run() {
         execute(this::businessLogic);
     }
 
     @Override
-    protected Pair<SystemProperty, SystemProperty> systemPropertyConfigs() {
-        return Pair.of(EVENT_MAINTENANCE_JOB_ENABLED, EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
+    protected SystemProperty enableConfig() {
+        return EVENT_MAINTENANCE_JOB_ENABLED;
     }
 
     private void businessLogic() {

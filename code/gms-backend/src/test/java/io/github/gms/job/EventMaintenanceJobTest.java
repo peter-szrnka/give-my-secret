@@ -90,29 +90,9 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	}
 
 	@Test
-	void run_whenAppIsNotRunningInMainContainer_thenSkipExecution() {
-		// arrange
-		when(systemService.getContainerId()).thenReturn("ab123457");
-		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
-		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
-		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
-		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
-
-		// act
-		job.run();
-
-		// assert
-		assertTrue(logAppender.list.isEmpty());
-		verify(systemService).getContainerId();
-		verify(systemPropertyService).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
-	}
-
-	@Test
 	void run_whenNoEventsDeleted_thenSkipLogging() {
 		// arrange
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
-		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
-		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn(null);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
@@ -130,35 +110,6 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		ArgumentCaptor<ZonedDateTime> dateCArgumentCaptor = ArgumentCaptor.forClass(ZonedDateTime.class);
 		verify(eventRepository).deleteAllEventDateOlderThan(dateCArgumentCaptor.capture());
 		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
-		verify(systemPropertyService).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
-		verify(systemPropertyService).get(SystemProperty.JOB_OLD_EVENT_LIMIT);
-		verify(jobRepository, times(2)).save(any(JobEntity.class));
-		verify(jobRepository).findById(anyLong());
-	}
-
-	@Test
-	void run_whenMultiNodeDisabled_thenNotProcess() {
-		// arrange
-		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
-		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(false);
-		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
-		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
-		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
-		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-		when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
-		when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
-		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
-
-		// act
-		job.run();
-
-		// assert
-		assertTrue(logAppender.list.isEmpty());
-
-		ArgumentCaptor<ZonedDateTime> dateCArgumentCaptor = ArgumentCaptor.forClass(ZonedDateTime.class);
-		verify(eventRepository).deleteAllEventDateOlderThan(dateCArgumentCaptor.capture());
-		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
-		verify(systemPropertyService, never()).get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID);
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_EVENT_LIMIT);
 		verify(jobRepository, times(2)).save(any(JobEntity.class));
 		verify(jobRepository).findById(anyLong());
@@ -167,10 +118,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 	@Test
 	void run_whenAllConditionsMet_thenProcess() {
 		// arrange
-		when(systemService.getContainerId()).thenReturn("ab123456");
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
-		when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
-		when(systemPropertyService.get(SystemProperty.EVENT_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);

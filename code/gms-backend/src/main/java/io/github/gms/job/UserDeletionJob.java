@@ -6,7 +6,7 @@ import io.github.gms.functions.maintenance.user.UserAssetDeletionService;
 import io.github.gms.functions.maintenance.user.UserDeletionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.util.Pair;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -25,14 +25,17 @@ public class UserDeletionJob extends AbstractJob {
     private final UserAssetDeletionService userAssetDeletionService;
 
     @Override
+    @SchedulerLock(name = "userDeletionJob",
+            lockAtLeastFor = "${config.job.userDeletionJob.lockAtLeastFor}",
+            lockAtMostFor = "${config.job.userDeletionJob.lockAtMostFor}")
     @Scheduled(cron = "0 */5 * * * ?")
     public void run() {
         execute(this::businessLogic);
     }
 
     @Override
-    protected Pair<SystemProperty, SystemProperty> systemPropertyConfigs() {
-        return Pair.of(SystemProperty.USER_DELETION_JOB_ENABLED, SystemProperty.USER_DELETION_RUNNER_CONTAINER_ID);
+    protected SystemProperty enableConfig() {
+        return SystemProperty.USER_DELETION_JOB_ENABLED;
     }
 
     private void businessLogic() {

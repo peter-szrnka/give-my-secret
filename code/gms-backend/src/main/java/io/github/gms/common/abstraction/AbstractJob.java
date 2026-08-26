@@ -15,9 +15,7 @@ import io.github.gms.functions.system.SystemService;
 import io.github.gms.functions.systemproperty.SystemPropertyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
@@ -49,7 +47,7 @@ public abstract class AbstractJob {
 
     public abstract void run();
 
-    protected abstract Pair<SystemProperty, SystemProperty> systemPropertyConfigs();
+    protected abstract SystemProperty enableConfig();
 
     @FunctionalInterface
     protected interface BusinessLogicExecutor {
@@ -81,7 +79,7 @@ public abstract class AbstractJob {
     }
 
     protected boolean skipJobExecution() {
-        return !manualJobExecution() && (systemIsNotReady() || jobDisabled() || multiNodeEnabled());
+        return !manualJobExecution() && (systemIsNotReady() || jobDisabled());
     }
 
     private void createJobExecution() {
@@ -121,12 +119,7 @@ public abstract class AbstractJob {
     }
 
     private boolean jobDisabled() {
-        return !systemPropertyService.getBoolean(systemPropertyConfigs().getFirst());
-    }
-
-    private boolean multiNodeEnabled() {
-        return systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE) &&
-                !StringUtils.equals(systemPropertyService.get(systemPropertyConfigs().getSecond()), systemService.getContainerId());
+        return !systemPropertyService.getBoolean(enableConfig());
     }
 
     private static long getMillis(ZonedDateTime zonedDateTime) {

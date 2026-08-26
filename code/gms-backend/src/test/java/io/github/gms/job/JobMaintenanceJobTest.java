@@ -83,29 +83,9 @@ class JobMaintenanceJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void run_whenAppIsNotRunningInMainContainer_thenSkipExecution() {
-        // arrange
-        when(systemService.getContainerId()).thenReturn("ab123457");
-        when(systemPropertyService.getBoolean(SystemProperty.JOB_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
-        when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
-        when(systemPropertyService.get(SystemProperty.JOB_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
-        when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
-
-        // act
-        job.run();
-
-        // assert
-        assertTrue(logAppender.list.isEmpty());
-        verify(systemService).getContainerId();
-        verify(systemPropertyService).get(SystemProperty.JOB_MAINTENANCE_RUNNER_CONTAINER_ID);
-    }
-
-    @Test
     void run_whenNoEntryAvailable_thenSkipJobExecution() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.JOB_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
-        when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
-        when(systemPropertyService.get(SystemProperty.JOB_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn(null);
         when(systemPropertyService.get(SystemProperty.OLD_JOB_ENTRY_LIMIT)).thenReturn("1;d");
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
         when(jobRepository.findAllOld(any(ZonedDateTime.class))).thenReturn(List.of());
@@ -118,7 +98,6 @@ class JobMaintenanceJobTest extends AbstractLoggingUnitTest {
         // assert
         assertTrue(logAppender.list.isEmpty());
         verify(jobRepository).findAllOld(any(ZonedDateTime.class));
-        verify(systemPropertyService).get(SystemProperty.JOB_MAINTENANCE_RUNNER_CONTAINER_ID);
         verify(systemPropertyService).get(SystemProperty.OLD_JOB_ENTRY_LIMIT);
     }
 
@@ -126,8 +105,6 @@ class JobMaintenanceJobTest extends AbstractLoggingUnitTest {
     void run_whenOneEntryAvailable_thenRunJobExecution() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.JOB_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
-        when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
-        when(systemPropertyService.get(SystemProperty.JOB_MAINTENANCE_RUNNER_CONTAINER_ID)).thenReturn(null);
         when(systemPropertyService.get(SystemProperty.OLD_JOB_ENTRY_LIMIT)).thenReturn("1;d");
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
         when(jobRepository.findAllOld(any(ZonedDateTime.class))).thenReturn(List.of(TestUtils.createJobEntity()));
@@ -140,7 +117,6 @@ class JobMaintenanceJobTest extends AbstractLoggingUnitTest {
         // assert
         assertLogContains(logAppender, "1 old job log(s) deleted");
         verify(jobRepository).findAllOld(any(ZonedDateTime.class));
-        verify(systemPropertyService).get(SystemProperty.JOB_MAINTENANCE_RUNNER_CONTAINER_ID);
         verify(systemPropertyService).get(SystemProperty.OLD_JOB_ENTRY_LIMIT);
     }
 }

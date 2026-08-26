@@ -96,26 +96,6 @@ class UnprocessedAuditProcessorJobTest extends AbstractLoggingUnitTest {
     }
 
     @Test
-    void run_whenSkipJobExecutionReturnsTrue_thenSkipExecution() {
-        // arrange
-        when(systemService.getContainerId()).thenReturn("ab123457");
-        when(systemPropertyService.getBoolean(SystemProperty.UNPROCESSED_AUDIT_LOGS_ENABLED)).thenReturn(true);
-        when(systemPropertyService.getBoolean(SystemProperty.ENABLE_MULTI_NODE)).thenReturn(true);
-        when(systemPropertyService.get(SystemProperty.UNPROCESSED_AUDIT_LOGS_RUNNER_CONTAINER_ID)).thenReturn("ab123456");
-        when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
-
-        // act
-        job.run();
-
-        // assert
-        assertTrue(logAppender.list.isEmpty());
-        verify(systemService).getContainerId();
-        verify(systemPropertyService).getBoolean(SystemProperty.UNPROCESSED_AUDIT_LOGS_ENABLED);
-        verify(systemPropertyService).get(SystemProperty.UNPROCESSED_AUDIT_LOGS_RUNNER_CONTAINER_ID);
-        verify(eventService, never()).getUnprocessedEventsCount();
-    }
-
-    @Test
     void run_whenNoUnprocessedEventsAvailable_thenSkipProcessing() {
         // arrange
         when(systemPropertyService.getBoolean(SystemProperty.UNPROCESSED_AUDIT_LOGS_ENABLED)).thenReturn(true);
