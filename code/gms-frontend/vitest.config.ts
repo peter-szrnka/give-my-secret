@@ -25,6 +25,7 @@ export default defineConfig({
       exclude: [
         'src/**/*.spec.ts',
         'src/test-setup.ts',
+        'src/ui-test/**',
         'src/vitest-env.d.ts'
       ]
     }
