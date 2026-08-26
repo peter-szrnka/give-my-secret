@@ -1,10 +1,10 @@
 # Give My Secret Readme documentation
 
 # Forewords
-The goal of this documentation is to provide useful informations regarding configuration of GMS backend.
+The goal of this documentation is to provide useful information regarding configuration of GMS backend.
 
 # Authentication
-Currently database and LDAP authentication methods are provided to you to configure authentication for your GMS instance.
+Currently, database and LDAP authentication methods are provided to you to configure authentication for your GMS instance.
 
 ## Supported methods
 - Database
