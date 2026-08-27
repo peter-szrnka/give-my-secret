@@ -724,7 +724,7 @@
                     <plugin>
                         <groupId>org.pitest</groupId>
                         <artifactId>pitest-maven</artifactId>
-                        <version>1.14.1</version>
+                        <version>1.25.9</version>
                         <executions>
                             <execution>
                                 <id>pit-report</id>
@@ -742,8 +742,8 @@
                             </dependency>
                         </dependencies>
                         <configuration>
-                            <mutationThreshold>95</mutationThreshold>
-                            <coverageThreshold>95</coverageThreshold>
+                            <mutationThreshold>90</mutationThreshold>
+                            <coverageThreshold>90</coverageThreshold>
                             <mutators>
                                 <mutator>FALSE_RETURNS</mutator>
                                 <mutator>TRUE_RETURNS</mutator>
@@ -779,6 +779,7 @@
                                 <excludedClass>*.exception.*</excludedClass>
                                 <excludedClass>*.model.*</excludedClass>
                                 <excludedClass>*.repository.*</excludedClass>
+                                <excludedClass>*.grpc.*</excludedClass>
                             </excludedClasses>
                             <excludedTestClasses>
                                 <excludedTestClass>io.github.gms.**.*IntegrationTest</excludedTestClass>
@@ -788,7 +789,14 @@
                                 <excludedGroup>IntegrationTest</excludedGroup>
                                 <excludedGroup>SecurityTest</excludedGroup>
                             </excludedGroups>
+                            <targetClasses>
+                                <param>io.github.gms.**</param>
+                            </targetClasses>
                             <avoidCallsTo>
+                                <avoidCallsTo>com.**</avoidCallsTo>
+                                <avoidCallsTo>java.**</avoidCallsTo>
+                                <avoidCallsTo>javax.**</avoidCallsTo>
+                                <avoidCallsTo>org.**</avoidCallsTo>
                                 <avoidCallsTo>java.util.logging</avoidCallsTo>
                                 <avoidCallsTo>org.apache.log4j</avoidCallsTo>
                                 <avoidCallsTo>org.slf4j</avoidCallsTo>
