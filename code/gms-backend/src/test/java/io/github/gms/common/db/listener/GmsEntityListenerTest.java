@@ -19,9 +19,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
 
-import static io.github.gms.util.LogAssertionUtils.assertLogContains;
-import static io.github.gms.util.LogAssertionUtils.assertLogMissing;
+import static io.github.gms.util.LogAssertionUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -39,6 +39,7 @@ class GmsEntityListenerTest extends AbstractLoggingUnitTest {
     public void setup() {
         super.setup();
         addAppender(GmsEntityListener.class);
+        GmsThreadLocalValues.setUserId(1L);
     }
 
     @Test
@@ -95,8 +96,6 @@ class GmsEntityListenerTest extends AbstractLoggingUnitTest {
         } else {
             verifyNoInteractions(unprocessedEventStorage);
         }
-
-        GmsThreadLocalValues.removeEventSource();
     }
 
     @Test
@@ -104,10 +103,31 @@ class GmsEntityListenerTest extends AbstractLoggingUnitTest {
         // given
         ReflectionTestUtils.setField(listener, "enableDetailedAudit", false);
 
+        // when
         listener.afterAnyUpdate(new ApiKeyEntity());
 
         // then
         verifyNoInteractions(unprocessedEventStorage);
+    }
+
+    @Test
+    void afterAnyUpdate_whenDetailedAuditEnabled_thenProcessUpdate() {
+        // given
+        ReflectionTestUtils.setField(listener, "enableDetailedAudit", true);
+        GmsThreadLocalValues.setEventSource(EventSource.JOB);
+        setupClock(clock);
+
+        // when
+        listener.afterAnyUpdate(new ApiKeyEntity());
+
+        // then
+        ArgumentCaptor<UserEvent> userEventArgumentCaptor = ArgumentCaptor.forClass(UserEvent.class);
+        verify(unprocessedEventStorage).addToQueue(userEventArgumentCaptor.capture());
+
+        UserEvent captured = userEventArgumentCaptor.getValue();
+        assertEquals(EventOperation.UPDATE, captured.getOperation());
+        assertEquals(EventTarget.API_KEY, captured.getTarget());
+        assertEquals(EventSource.JOB, captured.getEventSource());
     }
 
     @Test
@@ -119,5 +139,27 @@ class GmsEntityListenerTest extends AbstractLoggingUnitTest {
 
         // then
         verifyNoInteractions(unprocessedEventStorage);
+    }
+
+    @Test
+    void afterRemove_whenDetailedAuditEnabled_thenProcessDelete() {
+        // given
+        ReflectionTestUtils.setField(listener, "enableDetailedAudit", true);
+        GmsThreadLocalValues.setEventSource(EventSource.JOB);
+        setupClock(clock);
+
+        // when
+        listener.afterRemove(new ApiKeyEntity());
+
+        // then
+        ArgumentCaptor<UserEvent> userEventArgumentCaptor = ArgumentCaptor.forClass(UserEvent.class);
+        verify(unprocessedEventStorage).addToQueue(userEventArgumentCaptor.capture());
+
+        UserEvent captured = userEventArgumentCaptor.getValue();
+        assertEquals(EventOperation.DELETE, captured.getOperation());
+        assertEquals(EventTarget.API_KEY, captured.getTarget());
+        assertEquals(EventSource.JOB, captured.getEventSource());
+        assertNull(GmsThreadLocalValues.getEventSource(), "Event source should be cleared after processing");
+        assertLogEquals(logAppender, "[Entity listener] userId=1, entityId=null, operation=DELETE, source=JOB, target=API_KEY");
     }
 }

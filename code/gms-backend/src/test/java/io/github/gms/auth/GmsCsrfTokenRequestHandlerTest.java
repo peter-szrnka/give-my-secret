@@ -35,6 +35,7 @@ class GmsCsrfTokenRequestHandlerTest extends AbstractUnitTest {
         // Assert
         verify(request).setAttribute(HttpServletResponse.class.getName(), response);
         verify(request).setAttribute(CsrfToken.class.getName(), mockCsrfToken);
+        verify(request).setAttribute("csrf_token", mockCsrfToken);
     }
 
     @Test
@@ -50,6 +51,7 @@ class GmsCsrfTokenRequestHandlerTest extends AbstractUnitTest {
 
         // Assert
         assertNull(result);
+        verify(request).getHeader(csrfToken.getHeaderName());
     }
 
     @Test

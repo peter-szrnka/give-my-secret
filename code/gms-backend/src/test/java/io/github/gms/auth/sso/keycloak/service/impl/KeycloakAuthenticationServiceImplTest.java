@@ -77,6 +77,8 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         // assert
         assertNotNull(response);
         assertEquals(AuthResponsePhase.ALREADY_LOGGED_IN, response.getPhase());
+        assertNotNull(response.getRefreshToken());
+        assertNotNull(response.getToken());
         verify(keycloakLoginService, never()).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
         verify(converter, never()).toUserInfoDto(any(IntrospectResponse.class));
         verify(keycloakIntrospectService).getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN);

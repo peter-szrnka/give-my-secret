@@ -1,9 +1,11 @@
 package io.github.gms.job;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
-import io.github.gms.common.enums.SystemProperty;
-import io.github.gms.common.enums.SystemStatus;
-import io.github.gms.common.enums.TimeUnit;
+import io.github.gms.common.enums.*;
+import io.github.gms.common.service.GmsThreadLocalValues;
+import io.github.gms.common.types.EventSource;
+import io.github.gms.common.util.Constants;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.event.EventRepository;
 import io.github.gms.functions.maintenance.job.JobEntity;
 import io.github.gms.functions.maintenance.job.JobRepository;
@@ -15,6 +17,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
@@ -124,7 +128,16 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		MockedStatic<TimeUnit> mockedTimeUnit = mockStatic(TimeUnit.class);
 		mockedTimeUnit.when(() -> TimeUnit.getByCode("d")).thenReturn(TimeUnit.DAY);
-		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
+		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenAnswer(new Answer<>() {
+			@Override
+			public Integer answer(InvocationOnMock invocation) {
+				assertEquals(EventSource.JOB, GmsThreadLocalValues.getEventSource());
+				assertEquals(Constants.JOB_USER, GmsThreadLocalValues.getUserId());
+				assertNotNull(ThreadLocalContext.get(MdcParameter.JOB_ID));
+				assertNotNull(ThreadLocalContext.get(MdcParameter.CORRELATION_ID));
+				return 1;
+			}
+		});
 		when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
 		when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
@@ -146,7 +159,16 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		assertEquals("2023-06-28T00:00Z", dateCArgumentCaptor.getValue().toString());
 		mockedTimeUnit.close();
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_EVENT_LIMIT);
-		verify(jobRepository, times(2)).save(any(JobEntity.class));
+		ArgumentCaptor<JobEntity> jobEntityArgumentCaptor = ArgumentCaptor.forClass(JobEntity.class);
+		verify(jobRepository, times(2)).save(jobEntityArgumentCaptor.capture());
+		JobEntity savedJobEntity = jobEntityArgumentCaptor.getAllValues().get(1);
+		assertEquals(JobStatus.COMPLETED, savedJobEntity.getStatus());
+		assertNotNull(savedJobEntity.getEndTime());
+		assertEquals("test", savedJobEntity.getMessage());
 		verify(jobRepository).findById(anyLong());
+		assertNull(GmsThreadLocalValues.getEventSource());
+		assertNull(GmsThreadLocalValues.getUserId());
+		assertNull(ThreadLocalContext.get(MdcParameter.JOB_ID));
+		assertNull(ThreadLocalContext.get(MdcParameter.CORRELATION_ID));
 	}
 }

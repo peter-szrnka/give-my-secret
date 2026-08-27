@@ -21,6 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -60,7 +61,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			String response = proxy.test();
 
 			// assert
-			Assertions.assertThat(response).isEqualTo("OK");
+			assertThat(response).isEqualTo("OK");
 
 			verifyNoInteractions(service);
 		}
@@ -89,13 +90,14 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			String response = proxy.test2();
 
 			// assert
-			Assertions.assertThat(response).isEqualTo("OK");
+			assertThat(response).isEqualTo("OK");
 			ArgumentCaptor<UserEvent> userEventCaptor = ArgumentCaptor.forClass(UserEvent.class);
 			verify(service).saveUserEvent(userEventCaptor.capture());
 
 			UserEvent capturedUserEvent = userEventCaptor.getValue();
-			Assertions.assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.SETUP);
-			Assertions.assertThat(capturedUserEvent.getTarget()).isEqualTo(EventTarget.API_KEY);
+			assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.SETUP);
+			assertThat(capturedUserEvent.getTarget()).isEqualTo(EventTarget.API_KEY);
+			assertThat(capturedUserEvent.getUserId()).isEqualTo(1L);
 		}
 	}
 
@@ -118,13 +120,13 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			String response = proxy.test2();
 
 			// assert
-			Assertions.assertThat(response).isEqualTo("OK");
+			assertThat(response).isEqualTo("OK");
 			ArgumentCaptor<UserEvent> userEventCaptor = ArgumentCaptor.forClass(UserEvent.class);
 			verify(service).saveUserEvent(userEventCaptor.capture());
 
 			UserEvent capturedUserEvent = userEventCaptor.getValue();
-			Assertions.assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.SETUP);
-			Assertions.assertThat(capturedUserEvent.getTarget()).isEqualTo(EventTarget.API_KEY);
+			assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.SETUP);
+			assertThat(capturedUserEvent.getTarget()).isEqualTo(EventTarget.API_KEY);
 		}
 	}
 	
@@ -142,12 +144,12 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 		String response = proxy.test();
 		
 		// assert
-		Assertions.assertThat(response).isEqualTo("OK");
+		assertThat(response).isEqualTo("OK");
 		
 		response = proxy.test2(1L);
 		
 		// assert
-		Assertions.assertThat(response).isEqualTo("OK");
+		assertThat(response).isEqualTo("OK");
 		verify(service, never()).saveUserEvent(any(UserEvent.class));
 	}
 	
