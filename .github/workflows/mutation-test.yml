@@ -42,3 +42,10 @@ jobs:
         with:
           name: pit-mutation-report
           path: ./code/gms-backend/target/pit-reports/
+      - name: Add mutation test summary
+        if: always()
+        working-directory: ./code/gms-backend
+        run: |
+          echo "## 🧬 PIT Mutation Testing" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Full PIT HTML report is available in the **Artifacts** section." >> "$GITHUB_STEP_SUMMARY"
