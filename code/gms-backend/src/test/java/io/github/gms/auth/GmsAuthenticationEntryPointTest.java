@@ -55,11 +55,15 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 	@SneakyThrows
 	void commence_whenInvalidCookieExceptionOccurred_thenReturnCustomResponse() {
 		// arrange
+		ThreadLocalContext.set(MdcParameter.CORRELATION_ID, "CORRELATION_ID");
 		HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 		HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
 		AuthenticationException exception = new InvalidCookieException("Invalid cookie");
 		PrintWriter mockWriter = mock(PrintWriter.class);
-		when(httpServletResponse.getWriter()).thenReturn(mockWriter);
+		when(httpServletResponse.getWriter()).thenAnswer(invocation -> {
+			assertEquals("CORRELATION_ID", ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID));
+			return mockWriter;
+		});
 
 		String json = gson.toJson(TestUtils.createErrorResponseDto(exception));
 		when(jsonMapper.writeValueAsString(any(ErrorResponseDto.class))).thenReturn(json);
@@ -74,10 +78,13 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		verify(jsonMapper).writeValueAsString(errorResponseDtoCaptor.capture());
 
 		assertEquals("GmsAuthenticationEntryPoint: Invalid cookie", errorResponseDtoCaptor.getValue().getMessage());
-		assertNull(errorResponseDtoCaptor.getValue().getCorrelationId());
+		assertEquals("CORRELATION_ID", errorResponseDtoCaptor.getValue().getCorrelationId());
 		assertEquals("GMS-000", errorResponseDtoCaptor.getValue().getErrorCode());
 
 		verify(httpServletResponse).setStatus(HttpStatus.FORBIDDEN.value());
 		verify(httpServletResponse).setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
+		assertNull(ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID));
+
+		ThreadLocalContext.remove(MdcParameter.CORRELATION_ID);
 	}
 }

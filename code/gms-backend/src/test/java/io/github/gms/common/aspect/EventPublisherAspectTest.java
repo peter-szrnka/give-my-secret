@@ -4,9 +4,12 @@ import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
 import io.github.gms.common.enums.EventOperation;
 import io.github.gms.common.enums.EventTarget;
+import io.github.gms.common.enums.MdcParameter;
 import io.github.gms.common.model.UserEvent;
+import io.github.gms.common.service.GmsThreadLocalValues;
+import io.github.gms.common.types.EventSource;
+import io.github.gms.common.util.ThreadLocalContext;
 import io.github.gms.functions.event.EventService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -22,7 +25,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -66,7 +69,49 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			verifyNoInteractions(service);
 		}
 	}
-	
+
+
+	@Test
+	void test_whenAnnotationIsOnTargetClassAndCompatible_thenReturnOk() {
+		try (MockedStatic<SecurityContextHolder> contextHolderMockedStatic = mockStatic(SecurityContextHolder.class)) {
+			// given
+			ReflectionTestUtils.setField(aspect, "service", service);
+			ReflectionTestUtils.setField(aspect, "enableDetailedAudit", true);
+			setupClock(clock);
+
+			SecurityContext mockContext = mock(SecurityContext.class);
+			Authentication mockAuthentication = mock(Authentication.class);
+			UserDetails mockUserDetails = mock(UserDetails.class);
+			when(mockAuthentication.getPrincipal()).thenReturn(mockUserDetails);
+			when(mockContext.getAuthentication()).thenAnswer(invocation -> {
+				assertEquals(EventSource.UI, GmsThreadLocalValues.getEventSource());
+				return mockAuthentication;
+			});
+			contextHolderMockedStatic.when(SecurityContextHolder::getContext).thenReturn(mockContext);
+
+			// when
+			TestController target = new TestController();
+			AspectJProxyFactory factory = new AspectJProxyFactory(target);
+			factory.addAspect(aspect);
+			TestController proxy = factory.getProxy();
+
+			String response = proxy.test2();
+
+			// then
+			assertThat(response).isEqualTo("OK");
+
+			ArgumentCaptor<UserEvent> userEventCaptor = ArgumentCaptor.forClass(UserEvent.class);
+			verify(service).saveUserEvent(userEventCaptor.capture());
+
+			UserEvent capturedUserEvent = userEventCaptor.getValue();
+			assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.SETUP);
+			assertThat(capturedUserEvent.getTarget()).isEqualTo(EventTarget.API_KEY);
+			assertThat(capturedUserEvent.getUserId()).isEqualTo(0L);
+			assertNull(GmsThreadLocalValues.getUserId());
+			assertNull(GmsThreadLocalValues.getEventSource());
+		}
+	}
+
 	@Test
 	void test_whenAnnotationIsOnTargetMethod_thenReturnOk() {
 		try (MockedStatic<SecurityContextHolder> contextHolderMockedStatic = mockStatic(SecurityContextHolder.class)) {
@@ -98,6 +143,8 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			assertThat(capturedUserEvent.getOperation()).isEqualTo(EventOperation.SETUP);
 			assertThat(capturedUserEvent.getTarget()).isEqualTo(EventTarget.API_KEY);
 			assertThat(capturedUserEvent.getUserId()).isEqualTo(1L);
+			assertNull(GmsThreadLocalValues.getUserId());
+			assertNull(GmsThreadLocalValues.getEventSource());
 		}
 	}
 
