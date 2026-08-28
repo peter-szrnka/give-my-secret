@@ -36,3 +36,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mvn clean test -Pmutation-test
+      - name: Publish PIT results to GitHub Summary
+        if: always()
+        working-directory: ./code/gms-backend
+        run: |
+          echo "## 🧬 PIT Mutation Test Results" >> "$GITHUB_STEP_SUMMARY"
+          REPORT=$(find target/pit-reports -name "mutations.xml" | head -1)
+       
+          if [ -z "$REPORT" ]; then
+            echo "❌ PIT report not found." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+       
+          TOTAL=$(grep -o 'detected="[^"]*"' "$REPORT" | wc -l)
+          KILLED=$(grep -o 'status="KILLED"' "$REPORT" | wc -l)
+          SURVIVED=$(grep -o 'status="SURVIVED"' "$REPORT" | wc -l)
+      
+          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---:|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Total mutations | $TOTAL |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Killed | $KILLED |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Survived | $SURVIVED |" >> "$GITHUB_STEP_SUMMARY"
