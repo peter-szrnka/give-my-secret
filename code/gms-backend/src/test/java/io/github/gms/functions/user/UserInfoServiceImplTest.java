@@ -1,4 +1,4 @@
-package io.github.gms.functions.user;
+﻿package io.github.gms.functions.user;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.UserInfoDto;
@@ -40,37 +40,37 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void getUserInfo_whenJwtCookieIsMissing_thenReturnNull() {
-        // arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        // act
+        // when
         UserInfoDto response = service.getUserInfo(request);
 
-        // assert
+        // then
         assertNull(response);
         verify(repository, never()).findById(anyLong());
     }
 
     @Test
     void getUserInfo_whenUserNotFound_thenReturnNull() {
-        // arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("jwt", "value") });
         Claims mockClaims = mock(Claims.class);
         when(mockClaims.get(Constants.USER_ID, Long.class)).thenReturn(1L);
         when(jwtClaimService.getClaims("value")).thenReturn(mockClaims);
 
-        // act
+        // when
         UserInfoDto response = service.getUserInfo(request);
 
-        // assert
+        // then
         assertNull(response);
         verify(repository).findById(anyLong());
     }
 
     @Test
     void getUserInfo_whenInputIsValid_thenReturnOk() {
-        // arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("jwt", "value") });
         Claims mockClaims = mock(Claims.class);
@@ -78,11 +78,12 @@ class UserInfoServiceImplTest extends AbstractLoggingUnitTest {
         when(jwtClaimService.getClaims("value")).thenReturn(mockClaims);
         when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
 
-        // act
+        // when
         UserInfoDto response = service.getUserInfo(request);
 
-        // assert
+        // then
         assertThat(response).hasToString("UserInfoDto(id=1, name=name, username=username, email=a@b.com, role=ROLE_USER, status=null, failedAttempts=null)");
         verify(repository).findById(anyLong());
     }
 }
+

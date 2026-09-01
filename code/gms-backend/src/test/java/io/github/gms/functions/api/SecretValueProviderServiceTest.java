@@ -1,4 +1,4 @@
-package io.github.gms.functions.api;
+﻿package io.github.gms.functions.api;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SecretType;
@@ -42,15 +42,15 @@ class SecretValueProviderServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getSecretValue_whenDataIsValid_thenReturnEncrypted() {
-        // arrange
+        // given
         SecretEntity mockSecret = TestUtils.createSecretEntity();
         mockSecret.setValue("encrypted");
         mockSecret.setType(SecretType.SIMPLE_CREDENTIAL);
 
-        // act
+        // when
         Map<String, String> response = service.getSecretValue(mockSecret);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals("encrypted", response.get(VALUE));
         assertEquals(SecretType.SIMPLE_CREDENTIAL.name(), response.get("type"));
@@ -62,7 +62,7 @@ class SecretValueProviderServiceTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @MethodSource("inputData")
     void getSecretValue_whenDataIsValid_thenReturnEncrypted(boolean returnDecrypted, SecretType type, String expectedValue) {
-        // arrange
+        // given
         SecretEntity mockSecret = TestUtils.createSecretEntity();
         mockSecret.setValue("encrypted");
         mockSecret.setType(type);
@@ -73,10 +73,10 @@ class SecretValueProviderServiceTest extends AbstractLoggingUnitTest {
 
         }
 
-        // act
+        // when
         Map<String, String> response = service.getSecretValue(mockSecret);
 
-        // assert
+        // then
         assertNotNull(response);
 
         if (type == SecretType.SIMPLE_CREDENTIAL) {
@@ -101,3 +101,4 @@ class SecretValueProviderServiceTest extends AbstractLoggingUnitTest {
                 { false, SecretType.MULTIPLE_CREDENTIAL, "encrypted" } };
     }
 }
+

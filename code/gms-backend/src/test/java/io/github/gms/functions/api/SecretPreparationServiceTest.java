@@ -1,4 +1,4 @@
-package io.github.gms.functions.api;
+﻿package io.github.gms.functions.api;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.EntityStatus;
@@ -67,10 +67,10 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getSecretEntity_whenApiKeyMissing_thenReturnGmsException() {
-        // arrange
+        // given
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(null);
 
-        // assert
+        // then
         GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
         assertEquals("Wrong API key!", exception.getMessage());
 
@@ -82,10 +82,10 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getSecretEntity_whenUserMissing_thenReturnGmsException() {
-        // arrange
+        // given
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
 
-        // assert
+        // then
         GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
         assertEquals("User not found!", exception.getMessage());
 
@@ -97,12 +97,12 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getSecretEntity_whenSecretMissing_thenReturnGmsException() {
-        // arrange
+        // given
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
         when(userRepository.findById(anyLong())).thenReturn(createMockUser());
         when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.empty());
 
-        // assert
+        // then
         GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
         assertEquals("Secret is not available!", exception.getMessage());
 
@@ -115,7 +115,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getSecretEntity_whenIpRestrictionConfigured_thenReturnGmsException() {
-        // arrange
+        // given
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
         when(userRepository.findById(anyLong())).thenReturn(createMockUser());
         when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL))));
@@ -123,7 +123,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
                 new IpRestrictionPatterns(List.of(IpRestrictionPattern.builder().allow(false).ipPattern(".*").build())));
         when(ipRestrictionValidator.isIpAddressBlocked(anyList())).thenReturn(true);
 
-        // assert
+        // then
         GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
         assertEquals("You are not allowed to get this secret from your IP address!", exception.getMessage());
 
@@ -136,7 +136,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void sgetSecretEntity_whenApiKeyRestrictionConfigured_thenReturnGmsException() {
-        // arrange
+        // given
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
         when(userRepository.findById(anyLong())).thenReturn(createMockUser());
         when(secretRepository.findByUserIdAndSecretIdAndStatus(anyLong(), anyString(), eq(EntityStatus.ACTIVE))).thenReturn((Optional.of(createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL))));
@@ -149,7 +149,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
         when(ipRestrictionValidator.isIpAddressBlocked(anyList())).thenReturn(false);
 
 
-        // assert
+        // then
         GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.getSecretEntity(dto));
         assertEquals("You are not allowed to use this API key for this secret!", exception.getMessage());
 
@@ -164,7 +164,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getSecretEntity_whenApiKeyRestrictionsConfigured_thenSucceed() {
-        // arrange
+        // given
         SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
         when(userRepository.findById(anyLong())).thenReturn(createMockUser());
@@ -178,10 +178,10 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
                 new IpRestrictionPatterns(List.of(IpRestrictionPattern.builder().allow(false).ipPattern(".*").build())));
         when(ipRestrictionValidator.isIpAddressBlocked(anyList())).thenReturn(false);
 
-        // act
+        // when
         SecretEntity response = service.getSecretEntity(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(mockSecretEntity, response);
         verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
@@ -194,7 +194,7 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getSecretEntity_whenApiKeyRestrictionsMissing_thenSucceed() {
-        // arrange
+        // given
         SecretEntity mockSecretEntity = createMockSecret("encrypted", false, SecretType.SIMPLE_CREDENTIAL);
         when(apiKeyRepository.findByValueAndStatus(anyString(), any(EntityStatus.class))).thenReturn(createApiKeyEntity());
         when(userRepository.findById(anyLong())).thenReturn(createMockUser());
@@ -204,10 +204,10 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
                 new IpRestrictionPatterns(List.of(IpRestrictionPattern.builder().allow(false).ipPattern(".*").build())));
         when(ipRestrictionValidator.isIpAddressBlocked(anyList())).thenReturn(false);
 
-        // act
+        // when
         SecretEntity response = service.getSecretEntity(dto);
 
-        //assert
+        //then
         assertNotNull(response);
         assertEquals(mockSecretEntity, response);
         verify(apiKeyRepository).findByValueAndStatus(anyString(), any(EntityStatus.class));
@@ -231,3 +231,4 @@ class SecretPreparationServiceTest extends AbstractLoggingUnitTest {
         return mockApiKey;
     }
 }
+

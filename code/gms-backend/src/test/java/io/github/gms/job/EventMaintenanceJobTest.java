@@ -1,4 +1,4 @@
-package io.github.gms.job;
+﻿package io.github.gms.job;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.*;
@@ -68,34 +68,34 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void run_whenSystemIsNotReady_thenSkipExecution() {
-		// arrange
+		// given
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
 
-		// act
+		// when
 		job.run();
 
-		// assert
+		// then
 		assertTrue(logAppender.list.isEmpty());
 		verify(systemAttributeRepository).getSystemStatus();
 	}
 
 	@Test
 	void run_whenJobIsDisabled_thenSkipExecution() {
-		// arrange
+		// given
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(false);
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-		// act
+		// when
 		job.run();
 
-		// assert
+		// then
 		assertTrue(logAppender.list.isEmpty());
 		verify(systemPropertyService).getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED);
 	}
 
 	@Test
 	void run_whenNoEventsDeleted_thenSkipLogging() {
-		// arrange
+		// given
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
 		when(eventRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
@@ -105,10 +105,10 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-		// act
+		// when
 		job.run();
 		
-		// assert
+		// then
 		assertTrue(logAppender.list.isEmpty());
 
 		ArgumentCaptor<ZonedDateTime> dateCArgumentCaptor = ArgumentCaptor.forClass(ZonedDateTime.class);
@@ -121,7 +121,7 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void run_whenAllConditionsMet_thenProcess() {
-		// arrange
+		// given
 		when(systemPropertyService.getBoolean(SystemProperty.EVENT_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
 		when(systemPropertyService.get(SystemProperty.JOB_OLD_EVENT_LIMIT)).thenReturn("1;d");
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
@@ -142,10 +142,10 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-		// act
+		// when
 		job.run();
 		
-		// assert
+		// then
 		assertFalse(logAppender.list.isEmpty());
 		assertEquals("1 event(s) deleted", logAppender.list.getFirst().getFormattedMessage());
 		verify(eventRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
@@ -172,3 +172,4 @@ class EventMaintenanceJobTest extends AbstractLoggingUnitTest {
 		assertNull(ThreadLocalContext.get(MdcParameter.CORRELATION_ID));
 	}
 }
+

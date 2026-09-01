@@ -1,4 +1,4 @@
-package io.github.gms.functions.systemproperty;
+﻿package io.github.gms.functions.systemproperty;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.SystemProperty;
@@ -26,7 +26,7 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 
 	@Test
 	void list_whenInputIsNotNull_thenConvertToDtoList() {
-		// arrange
+		// given
 		SystemPropertyEntity entity = new SystemPropertyEntity();
 		entity.setKey(SystemProperty.ORGANIZATION_CITY);
 		entity.setValue("Budapest");
@@ -37,10 +37,10 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 		entity2.setValue("Test value");
 		entity2.setLastModified(ZonedDateTime.now());
 
-		// act
+		// when
 		SystemPropertyListDto response = converter.toDtoList(List.of(entity, entity2));
 		
-		// assert
+		// then
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
 		assertEquals(SystemProperty.values().length, response.getTotalElements());
@@ -54,12 +54,12 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 	
 	@Test
 	void toEntity_whenEntityIsNew_thenConvertToEntity() {
-		// act
+		// when
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		SystemPropertyEntity response = converter.toEntity(null, SystemPropertyDto.builder().key(SystemProperty.JOB_OLD_EVENT_LIMIT.name()).value("1;d").build());
 		
-		// assert
+		// then
 		assertNotNull(response);
 		assertNull(response.getId());
 		assertEquals(SystemProperty.JOB_OLD_EVENT_LIMIT, response.getKey());
@@ -68,7 +68,7 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toEntity_whenEntityExists_thenConvertToEntity() {
-		// act
+		// when
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
@@ -77,21 +77,21 @@ class SystemPropertyConverterTest extends AbstractUnitTest {
 		entity.setLastModified(ZonedDateTime.now(clock));
 		SystemPropertyEntity response = converter.toEntity(entity, SystemPropertyDto.builder().key(SystemProperty.JOB_OLD_EVENT_LIMIT.name()).value("1;d").build());
 		
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals("SystemPropertyEntity(id=2, key=JOB_OLD_EVENT_LIMIT, value=1;d, lastModified=2023-06-29T00:00Z)", response.toString());
 	}
 	
 	@Test
 	void toEntity_whenEntityAlreadyExistsAndKeyIsInvalid_thenThrowException() {
-		// arrange
+		// given
 		SystemPropertyEntity entity = new SystemPropertyEntity();
 		SystemPropertyDto dto = SystemPropertyDto.builder().key("invalid").value("1").build();
 		
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> converter.toEntity(entity, dto));
 		
-		// assert
+		// then
 		assertEquals("Unknown system property!", exception.getMessage());
 	}
 }

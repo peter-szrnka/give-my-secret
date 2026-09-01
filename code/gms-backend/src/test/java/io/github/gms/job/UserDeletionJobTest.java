@@ -1,4 +1,4 @@
-package io.github.gms.job;
+﻿package io.github.gms.job;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SystemProperty;
@@ -65,34 +65,34 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
 
     @Test
     void run_whenSystemIsNotReady_thenSkipExecution() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertTrue(logAppender.list.isEmpty());
         verify(systemAttributeRepository).getSystemStatus();
     }
 
     @Test
     void run_whenJobIsDisabled_thenSkipExecution() {
-        // arrange
+        // given
         when(systemPropertyService.getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED)).thenReturn(false);
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertTrue(logAppender.list.isEmpty());
         verify(systemPropertyService).getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED);
     }
 
     @Test
     void run_whenNoUsersRequested_thenSkipExecution() {
-        // arrange
+        // given
         when(systemPropertyService.getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED)).thenReturn(true);
         when(userDeletionService.getRequestedUserIds()).thenReturn(Collections.emptySet());
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
@@ -101,10 +101,10 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         verify(userDeletionService).getRequestedUserIds();
         verify(systemPropertyService).getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED);
         assertLogMissing(logAppender, "Deleting requested user assets(API keys, secrets, keystore resources,etc.");
@@ -114,7 +114,7 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
 
     @Test
     void run_whenAllConditionsMet_thenProcess() {
-        // arrange
+        // given
         Set<Long> userIds = Set.of(1L, 2L);
         when(systemPropertyService.getBoolean(SystemProperty.USER_DELETION_JOB_ENABLED)).thenReturn(true);
         when(userDeletionService.getRequestedUserIds()).thenReturn(userIds);
@@ -124,10 +124,10 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         verify(userDeletionService).getRequestedUserIds();
         verify(userAssetDeletionService).executeRequestedUserAssetDeletion(userIds);
         verify(userDeletionService).process(userIds);
@@ -139,3 +139,4 @@ class UserDeletionJobTest extends AbstractLoggingUnitTest {
         verify(jobRepository).findById(anyLong());
     }
 }
+

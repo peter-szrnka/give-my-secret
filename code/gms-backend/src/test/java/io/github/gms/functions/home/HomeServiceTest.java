@@ -1,4 +1,4 @@
-package io.github.gms.functions.home;
+﻿package io.github.gms.functions.home;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.dto.LongValueDto;
@@ -54,17 +54,17 @@ class HomeServiceTest extends AbstractUnitTest {
 
     @Test
     void getHomeData_whenUserIsAnAdmin_thenReturnAdminData() {
-        // arrange
+        // given
         ThreadLocalContext.set(MdcParameter.IS_ADMIN, "true");
         when(announcementService.count()).thenReturn(new LongValueDto(2L));
         when(userService.count()).thenReturn(new LongValueDto(5L));
         when(eventService.list(any(Pageable.class))).thenReturn(EventListDto.builder().totalElements(1)
                 .resultList(List.of(new EventDto())).build());
 
-        // act
+        // when
         HomeDataResponseDto response = service.getHomeData();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(2L, response.getAnnouncementCount());
         assertEquals(5L, response.getUserCount());
@@ -80,7 +80,7 @@ class HomeServiceTest extends AbstractUnitTest {
 
     @Test
     void getHomeData_whenUserIsAUser_thenReturnUserData() {
-        // arrange
+        // given
         ThreadLocalContext.set(MdcParameter.IS_ADMIN, "false");
         when(apiKeyService.count()).thenReturn(new LongValueDto(4L));
         when(keystoreService.count()).thenReturn(new LongValueDto(2L));
@@ -88,10 +88,10 @@ class HomeServiceTest extends AbstractUnitTest {
         when(announcementService.list(any(Pageable.class))).thenReturn(AnnouncementListDto.builder().totalElements(1)
                 .resultList(List.of(new AnnouncementDto())).build());
 
-        // act
+        // when
         HomeDataResponseDto response = service.getHomeData();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1L, response.getAnnouncements().getTotalElements());
         assertEquals(4L, response.getApiKeyCount());
@@ -108,3 +108,4 @@ class HomeServiceTest extends AbstractUnitTest {
         assertEquals("Page request [number: 0, size 10, sort: announcementDate: DESC]", captured.toString());
     }
 }
+

@@ -1,4 +1,4 @@
-package io.github.gms.auth.ldap;
+﻿package io.github.gms.auth.ldap;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -51,13 +51,13 @@ class LdapSyncServiceTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void synchronizeUsers_whenAuthTypeIsDb_thenSkipSync() {
-		// arrange
+		// given
 		service.setAuthType("db");
 
-		// act
+		// when
 		Pair<Integer, Integer> response = service.synchronizeUsers();
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(0, response.getFirst());
 		assertEquals(0, response.getSecond());
@@ -67,7 +67,7 @@ class LdapSyncServiceTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@MethodSource("testData")
 	void synchronizeUsers_whenAllConditionsMet_thenSyncAllUsers(String username, boolean findUser) {
-		// arrange
+		// given
 		service.setAuthType("ldap");
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		UserEntity mockEntity = TestUtils.createUser();
@@ -85,10 +85,10 @@ class LdapSyncServiceTest extends AbstractLoggingUnitTest {
 		when(repository.save(mockEntity)).thenReturn(mockEntity);
 		when(repository.getAllUserNames()).thenReturn(List.of(mockUser.getUsername(), nonExistingUser.getUsername()));
 
-		// act
+		// when
 		Pair<Integer, Integer> response = service.synchronizeUsers();
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1, response.getFirst());
 		assertEquals(1, response.getSecond());
@@ -104,7 +104,7 @@ class LdapSyncServiceTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void synchronizeUsers_whenUserNotFound_thenSkipSync() {
-		// arrange
+		// given
 		service.setAuthType("ldap");
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		UserEntity mockEntity = TestUtils.createUser();
@@ -117,10 +117,10 @@ class LdapSyncServiceTest extends AbstractLoggingUnitTest {
 		when(repository.save(mockEntity)).thenReturn(mockEntity);
 		when(repository.getAllUserNames()).thenReturn(List.of());
 
-		// act
+		// when
 		Pair<Integer, Integer> response = service.synchronizeUsers();
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1, response.getFirst());
 		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));

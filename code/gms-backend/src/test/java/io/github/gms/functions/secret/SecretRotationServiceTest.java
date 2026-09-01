@@ -1,4 +1,4 @@
-package io.github.gms.functions.secret;
+﻿package io.github.gms.functions.secret;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;
@@ -43,16 +43,16 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 	
 	@Test
 	void rotateSecret_whenDecryptThrowsException_thenRotateSkipped() {
-		// arrange
+		// given
 		SecretEntity mockSecret = new SecretEntity();
 		mockSecret.setValue("abcdefgh");
 		
 		when(cryptoService.decrypt(any(SecretEntity.class))).thenThrow(IllegalArgumentException.class);
 
-		// act
+		// when
 		service.rotateSecret(mockSecret);
 		
-		// assert
+		// then
 		ArgumentCaptor<SecretEntity> secretEntityCaptor = ArgumentCaptor.forClass(SecretEntity.class);
 		
 		verify(cryptoService).decrypt(secretEntityCaptor.capture());
@@ -70,17 +70,17 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 	
 	@Test
 	void rotateSecret_whenInputProvided_thenRotateSecret() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		SecretEntity mockSecret = TestUtils.createSecretEntity();
 		
 		when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn(SECRET_VALUE);
 
-		// act
+		// when
 		service.rotateSecret(mockSecret);
 
-		// assert
+		// then
 		ArgumentCaptor<SecretEntity> secretEntityCaptor = ArgumentCaptor.forClass(SecretEntity.class);
 		
 		verify(cryptoService).decrypt(secretEntityCaptor.capture());
@@ -100,16 +100,16 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 	
 	@Test
 	void rotateSecretById_whenSecretNotFound_thenThrowException() {
-		// arrange
+		// given
 		SecretEntity mockSecret = new SecretEntity();
 		mockSecret.setValue("abcdefgh");
 
 		when(secretRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> service.rotateSecretById(1L));
 
-		// assert
+		// then
 		assertEquals("Secret not found!", exception.getMessage());
 		verify(secretRepository).findById(anyLong());
 		verify(clock, never()).instant();
@@ -118,7 +118,7 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 	
 	@Test
 	void rotateSecretById_whenInputProvided_thenRotateSecret() {
-		// arrange
+		// given
 		setupClock(clock);
 		SecretEntity mockSecret = new SecretEntity();
 		mockSecret.setValue("abcdefgh");
@@ -126,10 +126,10 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 		when(cryptoService.decrypt(any(SecretEntity.class))).thenReturn(SECRET_VALUE);
 		when(secretRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createSecretEntity()));
 
-		// act
+		// when
 		service.rotateSecretById(1L);
 
-		// assert
+		// then
 		verify(secretRepository).findById(anyLong());
 		
 		ArgumentCaptor<SecretEntity> secretEntityCaptor = ArgumentCaptor.forClass(SecretEntity.class);
@@ -144,3 +144,4 @@ class SecretRotationServiceTest extends AbstractUnitTest {
 		assertEquals(SECRET_VALUE, capturedSecret.getValue());
 	}
 }
+

@@ -1,4 +1,4 @@
-package io.github.gms.auth.sso.keycloak.service.impl;
+﻿package io.github.gms.auth.sso.keycloak.service.impl;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthenticationResponse;
@@ -63,7 +63,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void authenticate_whenIntrospectFailed_thenProceed() {
-        // arrange
+        // given
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {
                 new Cookie(ACCESS_JWT_TOKEN, MOCK_ACCESS_TOKEN),
                 new Cookie(REFRESH_JWT_TOKEN, MOCK_REFRESH_TOKEN)
@@ -71,10 +71,10 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
                 .thenReturn(ResponseEntity.status(400).body(IntrospectResponse.builder().errorDescription("Account disabled").build()));
 
-        // act
+        // when
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(AuthResponsePhase.ALREADY_LOGGED_IN, response.getPhase());
         assertNotNull(response.getRefreshToken());
@@ -87,7 +87,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void authenticate_whenAlreadyLoggedIn_thenProceed() {
-        // arrange
+        // given
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {
                 new Cookie(ACCESS_JWT_TOKEN, MOCK_ACCESS_TOKEN),
                 new Cookie(REFRESH_JWT_TOKEN, MOCK_REFRESH_TOKEN)
@@ -103,10 +103,10 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
                 .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
 
-        // act
+        // when
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNull(response.getCurrentUser().getStatus());
         assertNull(response.getCurrentUser().getFailedAttempts());
@@ -119,14 +119,14 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void authenticate_whenKeycloakThrowsException_thenFail() {
-        // arrange
+        // given
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenThrow(new RuntimeException("Oops!"));
 
-        // act
+        // when
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(AuthResponsePhase.FAILED, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
@@ -136,15 +136,15 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @MethodSource("not2xxInputData")
     void authenticate_whenResponseIsNot2xx_thenFail(String errorDescription, AuthResponsePhase authResponsePhaseExpected) {
-        // arrange
+        // given
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.status(400).body(LoginResponse.builder()
                         .error("error").errorDescription(errorDescription).build()));
 
-        // act
+        // when
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(authResponsePhaseExpected, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
@@ -155,7 +155,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void authenticate_whenIntrospectFailed_thenFail() {
-        // arrange
+        // given
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder()
                         .accessToken(MOCK_ACCESS_TOKEN)
@@ -164,10 +164,10 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
                 .thenReturn(ResponseEntity.badRequest().build());
 
-        // act
+        // when
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(AuthResponsePhase.FAILED, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
@@ -176,14 +176,14 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void authenticate_whenResponseBodyMissing_thenFail() {
-        // arrange
+        // given
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok().build());
 
-        // act
+        // when
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNull(response.getCurrentUser());
         assertNull(response.getToken());
@@ -194,7 +194,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void authenticate_whenIntrospectReturnsInactive_thenFail() {
-        // arrange
+        // given
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder()
                         .accessToken(MOCK_ACCESS_TOKEN)
@@ -205,10 +205,10 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
                 .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
 
-        // act
+        // when
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(AuthResponsePhase.FAILED, response.getPhase());
         verify(keycloakLoginService).login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
@@ -218,7 +218,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void authenticate_whenIntrospectReturnsEmptyBody_thenFail() {
-        // arrange
+        // given
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder()
                         .accessToken(MOCK_ACCESS_TOKEN)
@@ -227,10 +227,10 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         when(keycloakIntrospectService.getUserDetails(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN))
                 .thenReturn(ResponseEntity.ok().build());
 
-        // act
+        // when
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNull(response.getCurrentUser());
         assertNull(response.getToken());
@@ -243,7 +243,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void authenticate_whenUserNotFound_thenSucceedLogin() {
-        // arrange
+        // given
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder()
                         .accessToken(MOCK_ACCESS_TOKEN)
@@ -263,10 +263,10 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         when(userRepository.save(userEntity)).thenReturn(userEntity);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        // act
+        // when
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(AuthResponsePhase.COMPLETED, response.getPhase());
         assertEquals(MOCK_ACCESS_TOKEN, response.getToken());
@@ -290,7 +290,7 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         if (refreshToken != null) {
             cookies.add(new Cookie(REFRESH_JWT_TOKEN, refreshToken));
         }
-        // arrange
+        // given
         when(httpServletRequest.getCookies()).thenReturn(cookies.toArray(new Cookie[]{}));
         when(keycloakLoginService.login(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder()
@@ -311,10 +311,10 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         when(converter.toEntity(any(UserEntity.class), eq(mockUserInfo))).thenReturn(userEntity);
         when(userRepository.save(userEntity)).thenReturn(userEntity);
 
-        // act
+        // when
         AuthenticationResponse response = service.authenticate(DemoData.USERNAME1, DemoData.CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(AuthResponsePhase.COMPLETED, response.getPhase());
         assertEquals(MOCK_ACCESS_TOKEN, response.getToken());
@@ -330,10 +330,10 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void logout_whenCalled_thenLogOutUser() {
-        // act
+        // when
         service.logout();
 
-        // assert
+        // then
         verify(keycloakLoginService).logout();
     }
 
@@ -352,3 +352,4 @@ class KeycloakAuthenticationServiceImplTest extends AbstractLoggingUnitTest {
         };
     }
 }
+

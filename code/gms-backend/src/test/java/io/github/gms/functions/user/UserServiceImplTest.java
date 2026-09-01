@@ -1,4 +1,4 @@
-package io.github.gms.functions.user;
+﻿package io.github.gms.functions.user;
 
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
@@ -70,15 +70,15 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void save_whenInputUserIsAdmin_thenReturnSave() {
-		// arrange
+		// given
 		when(converter.toNewEntity(any(SaveUserRequestDto.class), anyBoolean())).thenReturn(TestUtils.createUser());
 		when(secretGenerator.generate()).thenReturn("secret!");
 		when(repository.save(any(UserEntity.class))).thenReturn(TestUtils.createUser());
 
-		// act
+		// when
 		SaveEntityResponseDto response = service.saveAdminUser(TestUtils.createSaveUserRequestDto());
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertLogContains(logAppender, "service saveUser called");
 		verify(converter).toNewEntity(any(SaveUserRequestDto.class), eq(true));
@@ -92,10 +92,10 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	void save_whenUserNotFound_thenThrowException() {
         ThreadLocalContext.set(MdcParameter.IS_ADMIN, true);
         ThreadLocalContext.remove(MdcParameter.USER_ID);
-		// arrange
+		// given
 		when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
-		// act & assert
+		// when & assert
 		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveUserRequestDto(1L)), "User entity not found!");
 
         ThreadLocalContext.remove(MdcParameter.IS_ADMIN);
@@ -104,17 +104,17 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
 	void save_whenUserAlreadyExists_thenSaveUser(boolean admin) {
-		// arrange
+		// given
 		ThreadLocalContext.set(MdcParameter.IS_ADMIN, admin);
 		when(converter.toEntity(any(UserEntity.class), any(SaveUserRequestDto.class), eq(admin)))
 				.thenReturn(TestUtils.createUser());
 		when(repository.save(any(UserEntity.class))).thenReturn(TestUtils.createAdminUser());
 		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createAdminUser()));
 
-		// act
+		// when
 		SaveEntityResponseDto response = service.save(TestUtils.createSaveUserRequestDto(1L));
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1L, response.getEntityId());
 		verify(converter).toEntity(any(UserEntity.class), any(SaveUserRequestDto.class), eq(admin));
@@ -126,10 +126,10 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	void save_whenUserAlreadyExists_thenThrowException() {
         ThreadLocalContext.set(MdcParameter.IS_ADMIN, true);
 
-		// arrange
+		// given
 		when(repository.findByUsernameOrEmail(anyString(), anyString())).thenReturn(Optional.of(TestUtils.createAdminUser()));
 
-		// act & assert
+		// when & assert
 		TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveUserRequestDto(null)), "User already exists!");
 		verify(repository).findByUsernameOrEmail(anyString(), anyString());
 
@@ -138,13 +138,13 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void getById_whenEditorUserNotFound_thenThrowException() {
-		// arrange
+		// given
 		when(repository.findById(1L)).thenReturn(Optional.empty());
 
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
-		// assert
+		// then
 		assertEquals("User not found!", exception.getMessage());
 		assertLogContains(logAppender, "User not found");
 		verify(repository).findById(1L);
@@ -152,26 +152,26 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void getById_whenUserNotFound_thenThrowException() {
-		// arrange
+		// given
 		when(repository.findById(2L)).thenReturn(Optional.empty());
 
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> service.getById(2L));
 
-		// assert
+		// then
 		assertEquals("User not found!", exception.getMessage());
 		verify(repository).findById(2L);
 	}
 
 	@Test
 	void getById_whenUserFound_thenReturnUserDto() {
-		// arrange
+		// given
 		when(repository.findById(2L)).thenReturn(Optional.of(TestUtils.createUser()));
 		when(converter.toDto(any(UserEntity.class))).thenReturn(TestUtils.createUserDto());
-		// act
+		// when
 		UserDto response = service.getById(2L);
 
-		// assert
+		// then
 		assertNotNull(response);
 		verify(repository).findById(2L);
 		verify(converter).toDto(any(UserEntity.class));
@@ -179,7 +179,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void list_whenUsersFound_thenReturnUserList() {
-		// arrange
+		// given
 		Page<UserEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createUser()));
 		when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
 		when(converter.toDtoList(any())).thenReturn(UserListDto.builder()
@@ -187,10 +187,10 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 				.totalElements(1).build());
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-		// act
+		// when
 		UserListDto response = service.list(pageable);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1, response.getResultList().size());
 		verify(converter).toDtoList(any());
@@ -198,13 +198,13 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void delete_whenUserFound_thenDeleteUser() {
-		// arrange
+		// given
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 
-		// act
+		// when
 		service.delete(1L);
 
-		// assert
+		// then
 		verify(repository).findById(1L);
 		verify(repository).deleteById(1L);
 	}
@@ -212,13 +212,13 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
 	void toggleStatus_whenUserFound_thenToggleStatus(boolean enabled) {
-		// arrange
+		// given
 		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
 
-		// act
+		// when
 		service.toggleStatus(1L, enabled);
 
-		// assert
+		// then
 		ArgumentCaptor<UserEntity> argumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
 		verify(repository).save(argumentCaptor.capture());
 
@@ -227,39 +227,39 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void toggleStatus_whenUserNotFound_thenThrowException() {
-		// arrange
+		// given
 		when(repository.findById(3L)).thenReturn(Optional.empty());
 
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> service.toggleStatus(3L, true));
 
-		// assert
+		// then
 		assertEquals("User not found!", exception.getMessage());
 		verify(repository, never()).save(any());
 	}
 
 	@Test
 	void count_whenQueried_thenReturnUserCount() {
-		// arrange
+		// given
 		when(repository.countNormalUsers()).thenReturn(3L);
 
-		// act
+		// when
 		LongValueDto response = service.count();
 
-		// assert
+		// then
 		assertEquals(3L, response.getValue());
 		verify(repository).countNormalUsers();
 	}
 
 	@Test
 	void getUsernameById_whenUserFound_thenReturnUsername() {
-		// arrange
+		// given
 		when(repository.findById(2L)).thenReturn(Optional.of(TestUtils.createUser()));
 		when(converter.toDto(any(UserEntity.class))).thenReturn(TestUtils.createUserDto());
-		// act
+		// when
 		String response = service.getUsernameById(2L);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals("username", response);
 		verify(repository).findById(2L);
@@ -268,34 +268,34 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void changePassword_whenPasswordDoesNotMatch_thenThrowException() {
-		// arrange
+		// given
 		when(passwordEncoder.matches(isNull(), anyString())).thenReturn(false);
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 
-		// act & assert
+		// when & assert
 		TestUtils.assertGmsException(() -> service.changePassword(new ChangePasswordRequestDto()), "Old credential is not valid!");
 		verify(passwordEncoder).matches(isNull(), anyString());
 	}
 
 	@Test
 	void changePassword_whenPasswordIsInvalid_thenThrowException() {
-		// arrange
+		// given
 		when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 
-		// act & assert
+		// when & assert
 		TestUtils.assertGmsException(() -> service.changePassword(new ChangePasswordRequestDto("MyOldPassword", "MyNewPassword")), "New credential is not valid! It must contain at least 1 lowercase, 1 uppercase and 1 numeric character.");
 		verify(passwordEncoder).matches(anyString(), anyString());
 	}
 
 	@Test
 	void changePassword_whenCorrectInputProvided_thenChangePassword() {
-		// arrange
+		// given
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 		when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 		when(passwordEncoder.encode(anyString())).thenReturn("MyEncodedPassword1!");
 
-		// act & assert
+		// when & assert
 		assertDoesNotThrow(() -> service.changePassword(new ChangePasswordRequestDto("MyOldPassword", "MyNewEncodedPassword2!")));
 
 		ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
@@ -311,17 +311,17 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	@Test
 	@SneakyThrows
 	void getMfaQrCode_whenMfaIsEnabled_thenReturnImage() {
-		// arrange
+		// given
 		UserEntity entity = TestUtils.createUser();
 		entity.setEmail("john.doe@fictivehost.com");
 		entity.setMfaSecret("test");
 		entity.setMfaEnabled(true);
 		when(repository.findById(1L)).thenReturn(Optional.of(entity));
 
-		// act
+		// when
 		byte[] response = service.getMfaQrCode();
 
-		// assert
+		// then
 		assertNotNull(response);
 		verify(repository).findById(1L);
 	}
@@ -329,13 +329,13 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
 	void toggleMfa_whenValueProvided_thenUpdateMfaToggle(boolean value) {
-		// arrange
+		// given
 		when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createUser()));
 
-		// act
+		// when
 		service.toggleMfa(value);
 
-		// assert
+		// then
 		ArgumentCaptor<UserEntity> captor = ArgumentCaptor.forClass(UserEntity.class);
 		verify(repository).save(captor.capture());
 		verify(repository).findById(1L);
@@ -345,29 +345,29 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
 	void isMfaActive_whenMfaStatusIsDifferent_thenReturnResponse(boolean value) {
-		// arrange
+		// given
 		UserEntity entity = TestUtils.createUser();
 		entity.setMfaEnabled(value);
 		when(repository.findById(1L)).thenReturn(Optional.of(entity));
 
-		// act
+		// when
 		boolean response = service.isMfaActive();
 
-		// assert
+		// then
 		assertEquals(value, response);
 		verify(repository).findById(1L);
 	}
 
 	@Test
 	void getUserInfo_whenRequestDoesNotContainCookies_thenReturnUserInfo() {
-		// arrange
+		// given
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		when(request.getCookies()).thenReturn(null);
 
-		// act
+		// when
 		UserInfoDto response = service.getUserInfo(request);
 
-		// assert
+		// then
 		assertNull(response);
 		verify(jwtClaimService, never()).getClaims(anyString());
 		verify(repository, never()).findById(1L);
@@ -375,7 +375,7 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void getUserInfo_whenRequestContainsCookies_thenReturnUserInfo() {
-		// arrange
+		// given
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		when(request.getCookies()).thenReturn(List.of(new Cookie(ACCESS_JWT_TOKEN, "jwt")).toArray(new Cookie[1]));
 		Claims claims = mock(Claims.class);
@@ -383,12 +383,13 @@ class UserServiceImplTest extends AbstractLoggingUnitTest {
 		when(jwtClaimService.getClaims(anyString())).thenReturn(claims);
 		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
 
-		// act
+		// when
 		UserInfoDto response = service.getUserInfo(request);
 
-		// assert
+		// then
 		assertThat(response).hasToString("UserInfoDto(id=1, name=name, username=username, email=a@b.com, role=ROLE_USER, status=null, failedAttempts=null)");
 		verify(jwtClaimService).getClaims(anyString());
 		verify(repository).findById(1L);
 	}
 }
+

@@ -1,4 +1,4 @@
-package io.github.gms.common.controller;
+﻿package io.github.gms.common.controller;
 
 import io.github.gms.auth.VerificationService;
 import io.github.gms.auth.dto.AuthenticateResponseDto;
@@ -41,7 +41,7 @@ class VerificationControllerTest {
 
     @Test
     void verify_whenVerificationSucceeded_thenReturnHttp200() {
-        // arrange
+        // given
         LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
         UserInfoDto userInfoDto = TestUtils.createUserInfoDto();
         AuthenticationResponse mockResponse = new AuthenticationResponse();
@@ -51,10 +51,10 @@ class VerificationControllerTest {
         when(service.verify(dto)).thenReturn(mockResponse);
         when(systemPropertyService.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(2L);
 
-        // act
+        // when
         ResponseEntity<AuthenticateResponseDto> response = controller.verify(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(userInfoDto, Objects.requireNonNull(response.getBody()).getCurrentUser());
@@ -65,7 +65,7 @@ class VerificationControllerTest {
 
     @Test
     void verify_whenVerificationFails_thenReturnHttp401() {
-        // arrange
+        // given
         LoginVerificationRequestDto dto = new LoginVerificationRequestDto();
         UserInfoDto userInfoDto = TestUtils.createUserInfoDto();
         AuthenticationResponse mockResponse = new AuthenticationResponse();
@@ -73,13 +73,14 @@ class VerificationControllerTest {
         mockResponse.setPhase(AuthResponsePhase.FAILED);
         when(service.verify(dto)).thenReturn(mockResponse);
 
-        // act
+        // when
         ResponseEntity<AuthenticateResponseDto> response = controller.verify(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(401, response.getStatusCode().value());
         assertNull(response.getBody());
         verify(service).verify(dto);
     }
 }
+

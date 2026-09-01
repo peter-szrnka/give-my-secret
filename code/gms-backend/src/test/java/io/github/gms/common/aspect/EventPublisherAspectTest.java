@@ -1,4 +1,4 @@
-package io.github.gms.common.aspect;
+﻿package io.github.gms.common.aspect;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -44,7 +44,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 	@Test
 	void test_whenAnnotationIsOnTargetClass_thenReturnOk() {
 		try (MockedStatic<SecurityContextHolder> contextHolderMockedStatic = mockStatic(SecurityContextHolder.class)) {
-			// arrange
+			// given
 			ReflectionTestUtils.setField(aspect, "service", service);
 			ReflectionTestUtils.setField(aspect, "enableDetailedAudit", true);
 
@@ -55,7 +55,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			when(mockContext.getAuthentication()).thenReturn(mockAuthentication);
 			contextHolderMockedStatic.when(SecurityContextHolder::getContext).thenReturn(mockContext);
 
-			// act
+			// when
 			TestController target = new TestController();
 			AspectJProxyFactory factory = new AspectJProxyFactory(target);
 			factory.addAspect(aspect);
@@ -63,7 +63,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 
 			String response = proxy.test();
 
-			// assert
+			// then
 			assertThat(response).isEqualTo("OK");
 
 			verifyNoInteractions(service);
@@ -115,7 +115,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 	@Test
 	void test_whenAnnotationIsOnTargetMethod_thenReturnOk() {
 		try (MockedStatic<SecurityContextHolder> contextHolderMockedStatic = mockStatic(SecurityContextHolder.class)) {
-			// arrange
+			// given
 			ReflectionTestUtils.setField(aspect, "service", service);
 			setupClock(clock);
 			SecurityContext mockContext = mock(SecurityContext.class);
@@ -126,7 +126,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 			when(mockContext.getAuthentication()).thenReturn(mockAuthentication);
 			contextHolderMockedStatic.when(SecurityContextHolder::getContext).thenReturn(mockContext);
 
-			// act
+			// when
 			TestController target = new TestController();
 			AspectJProxyFactory factory = new AspectJProxyFactory(target);
 			factory.addAspect(aspect);
@@ -134,7 +134,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 
 			String response = proxy.test2();
 
-			// assert
+			// then
 			assertThat(response).isEqualTo("OK");
 			ArgumentCaptor<UserEvent> userEventCaptor = ArgumentCaptor.forClass(UserEvent.class);
 			verify(service).saveUserEvent(userEventCaptor.capture());
@@ -151,14 +151,14 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 	@Test
 	void test_whenAuthenticationIsMissing_thenProceedAsNormal() {
 		try (MockedStatic<SecurityContextHolder> contextHolderMockedStatic = mockStatic(SecurityContextHolder.class)) {
-			// arrange
+			// given
 			ReflectionTestUtils.setField(aspect, "service", service);
 			setupClock(clock);
 			SecurityContext mockContext = mock(SecurityContext.class);
 			when(mockContext.getAuthentication()).thenReturn(null);
 			contextHolderMockedStatic.when(SecurityContextHolder::getContext).thenReturn(mockContext);
 
-			// act
+			// when
 			TestController target = new TestController();
 			AspectJProxyFactory factory = new AspectJProxyFactory(target);
 			factory.addAspect(aspect);
@@ -166,7 +166,7 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 
 			String response = proxy.test2();
 
-			// assert
+			// then
 			assertThat(response).isEqualTo("OK");
 			ArgumentCaptor<UserEvent> userEventCaptor = ArgumentCaptor.forClass(UserEvent.class);
 			verify(service).saveUserEvent(userEventCaptor.capture());
@@ -179,10 +179,10 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 	
 	@Test
 	void test_whenAnnotationIsMissing_thenReturnOk() {
-		// arrange
+		// given
 		ReflectionTestUtils.setField(aspect, "service", service);
 		
-		// act
+		// when
 		Test2Controller target = new Test2Controller();
 		AspectJProxyFactory factory = new AspectJProxyFactory(target);
 		factory.addAspect(aspect);
@@ -190,12 +190,12 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 		
 		String response = proxy.test();
 		
-		// assert
+		// then
 		assertThat(response).isEqualTo("OK");
 		
 		response = proxy.test2(1L);
 		
-		// assert
+		// then
 		assertThat(response).isEqualTo("OK");
 		verify(service, never()).saveUserEvent(any(UserEvent.class));
 	}
@@ -207,3 +207,4 @@ class EventPublisherAspectTest extends AbstractUnitTest {
 		assertDoesNotThrow(() -> aspect.restController());
 	}
 }
+

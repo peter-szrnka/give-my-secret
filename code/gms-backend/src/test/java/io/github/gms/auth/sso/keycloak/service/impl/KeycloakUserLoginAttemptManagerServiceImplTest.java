@@ -1,4 +1,4 @@
-package io.github.gms.auth.sso.keycloak.service.impl;
+﻿package io.github.gms.auth.sso.keycloak.service.impl;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.util.DemoData;
@@ -28,7 +28,7 @@ class KeycloakUserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnit
     void updateLoginAttempt_whenCalled_thenPrintLogMessage() {
         service.updateLoginAttempt(DemoData.USERNAME1);
 
-        // assert
+        // then
         assertLogContains(logAppender, "updateLoginAttempt method will be ignored when Keycloak SSO based security is active");
     }
 
@@ -36,7 +36,7 @@ class KeycloakUserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnit
     void resetLoginAttempt_whenCalled_thenPrintLogMessage() {
         service.resetLoginAttempt(DemoData.USERNAME1);
 
-        // assert
+        // then
         assertLogContains(logAppender, "resetLoginAttempt method will be ignored when Keycloak SSO based security is active");
     }
 
@@ -45,3 +45,4 @@ class KeycloakUserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnit
         assertFalse(service.isBlocked(DemoData.USERNAME1));
     }
 }
+

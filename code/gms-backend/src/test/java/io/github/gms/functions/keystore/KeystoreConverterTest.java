@@ -1,4 +1,4 @@
-package io.github.gms.functions.keystore;
+﻿package io.github.gms.functions.keystore;
 
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;
@@ -45,11 +45,11 @@ class KeystoreConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toEntity_whenNoFileProvided_thenConvertToEntity() {
-		// act
+		// when
 		KeystoreEntity entity = converter.toEntity(TestUtils.createKeystoreEntity(),
 				TestUtils.createSaveKeystoreRequestDto());
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertEquals("keystore", entity.getName());
 		assertEquals(1L, entity.getUserId());
@@ -63,7 +63,7 @@ class KeystoreConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toEntity_whenInputProvided_thenConvertToEntity() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		KeystoreEntity existingEntity = TestUtils.createKeystoreEntity();
@@ -77,26 +77,26 @@ class KeystoreConverterTest extends AbstractUnitTest {
 		existingEntity.setId(123213L);
 		existingEntity.setUserId(4L);
 
-		// act
+		// when
 		KeystoreEntity entity = converter.toEntity(existingEntity, TestUtils.createSaveKeystoreRequestDto());
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertEquals("KeystoreEntity(id=1, userId=1, status=ACTIVE, name=keystore, fileName=my-sample-test.jks, type=JKS, description=description, credential=test, creationDate=2023-06-29T00:00Z)", entity.toString());
 	}
 
 	@Test
 	void toNewEntity_whenNoFileProvided_thenConvertToEntity() {
-		// arrange
+		// given
 		setupClock(clock);
 
-		// arrange
+		// given
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 
-		// act
+		// when
 		KeystoreEntity entity = converter.toNewEntity(dto, null);
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertEquals("keystore", entity.getName());
 		assertEquals(1L, entity.getUserId());
@@ -109,19 +109,19 @@ class KeystoreConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toNewEntity_whenFileProvided_thenConvertToEntity() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
-		// arrange
+		// given
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		MultipartFile multipartFile = mock(MultipartFile.class);
 		when(multipartFile.getOriginalFilename()).thenReturn(FILE_NAME);
 
-		// act
+		// when
 		KeystoreEntity entity = converter.toNewEntity(dto, multipartFile);
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertEquals("keystore", entity.getName());
 		assertEquals(1L, entity.getUserId());
@@ -136,13 +136,13 @@ class KeystoreConverterTest extends AbstractUnitTest {
 
 	@Test
 	void list_whenInputProvided_thenConvert() {
-		// arrange
+		// given
 		Page<KeystoreEntity> entityList = new PageImpl<>(Lists.newArrayList(TestUtils.createKeystoreEntity()));
 
-		// act
+		// when
 		KeystoreListDto resultList = converter.toDtoList(entityList);
 
-		// assert
+		// then
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
@@ -152,30 +152,30 @@ class KeystoreConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toDto_whenInputProvided_thenConvert() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		KeystoreEntity entity = TestUtils.createKeystoreEntity();
 		entity.setCreationDate(ZonedDateTime.now(clock));
 
-		// act
+		// when
 		KeystoreDto response = converter.toDto(entity, List.of(TestUtils.createKeystoreAliasEntity()));
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals("KeystoreDto(id=1, userId=1, status=ACTIVE, name=keystore, fileName=test.jks, type=JKS, description=description, credential=test, creationDate=2023-06-29T00:00Z, aliases=[KeystoreAliasDto(id=1, alias=test, aliasCredential=test, operation=null, algorithm=algorithm)])", response.toString());
 	}
 
 	@Test
 	void toAliasEntity_whenInputProvided_thenConvert() {
-		// arrange
+		// given
 		KeystoreAliasDto aliasDto = new KeystoreAliasDto(1L, "alias", "test1234", AliasOperation.SAVE,
 				EnabledAlgorithm.SHA256WITHRSA.getDisplayName());
 
-		// act
+		// when
 		KeystoreAliasEntity response = converter.toAliasEntity(1L, aliasDto);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1L, response.getId());
 		assertEquals(1, response.getKeystoreId());
@@ -184,3 +184,4 @@ class KeystoreConverterTest extends AbstractUnitTest {
 		assertEquals(EnabledAlgorithm.SHA256WITHRSA.getDisplayName(), response.getAlgorithm());
 	}
 }
+

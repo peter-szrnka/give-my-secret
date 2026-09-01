@@ -1,4 +1,4 @@
-package io.github.gms.functions.maintenance.job;
+﻿package io.github.gms.functions.maintenance.job;
 
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;
@@ -21,14 +21,14 @@ class JobConverterTest extends AbstractUnitTest {
 
     @Test
     void toDtoList_whenValidInputProvided_thenReturnResultList() {
-        // arrange
+        // given
         JobEntity apiKeyEntity = TestUtils.createJobEntity();
         Page<JobEntity> entityList = new PageImpl<>(Lists.newArrayList(apiKeyEntity));
 
-        // act
+        // when
         JobListDto resultList = converter.toDtoList(entityList);
 
-        // assert
+        // then
         assertNotNull(resultList);
         assertEquals(1, resultList.getResultList().size());
         assertEquals(1L, resultList.getTotalElements());
@@ -41,3 +41,4 @@ class JobConverterTest extends AbstractUnitTest {
         assertEquals("test", entity.getMessage());
     }
 }
+

@@ -1,4 +1,4 @@
-package io.github.gms.functions.secret;
+﻿package io.github.gms.functions.secret;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.BooleanValueDto;
@@ -62,41 +62,41 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void validateValueLength_whenValueIsEmpty_thenReturnFalse() {
-        // arrange
+        // given
         SecretValueDto dto = createSecretValueDto(1L, 1L);
         dto.setValue(null);
 
-        // act
+        // when
         BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertFalse(response.getValue());
     }
 
     @Test
     void validateValueLength_whenKeystoreEntityNotFound_thenReturnFalse() {
-        // arrange
+        // given
         SecretValueDto dto = createSecretValueDto(1L, 1L);
 
-        // act
+        // when
         BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertFalse(response.getValue());
     }
 
     @Test
     void validateValueLength_whenKeystoreAliasEntityNotFound_thenReturnFalse() {
-        // arrange
+        // given
         SecretValueDto dto = createSecretValueDto(1L, 1L);
         when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
-        // act
+        // when
         BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertFalse(response.getValue());
         verify(keystoreRepository).findById(1L);
@@ -106,16 +106,16 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
     @Test
     void validateValueLength_whenKeystoreFileNotFound_thenReturnFalse()
             throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException {
-        // arrange
+        // given
         SecretValueDto dto = createSecretValueDto(1L, 1L);
         when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(keystoreAliasRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenThrow(new FileNotFoundException());
 
-        // act
+        // when
         BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertFalse(response.getValue());
         verify(keystoreRepository).findById(1L);
@@ -127,7 +127,7 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
     void validateValueLength_whenEncryptionFailed_thenReturnFalse()
             throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException,
             NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        // arrange
+        // given
         SecretValueDto dto = createSecretValueDto(1L, 1L);
         when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(keystoreAliasRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
@@ -135,10 +135,10 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
         when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenReturn(mockKeystore);
         when(cryptoService.encrypt(any(), any())).thenThrow(new GmsException("Encryption failed", GMS_001));
 
-        // act
+        // when
         BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertFalse(response.getValue());
         verify(keystoreRepository).findById(1L);
@@ -151,7 +151,7 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
     void validateValueLength_whenEncryptionSucceeded_thenReturnTrue()
             throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException,
             NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        // arrange
+        // given
         SecretValueDto dto = createSecretValueDto(1L, 1L);
         when(keystoreRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(keystoreAliasRepository.findById(1L)).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
@@ -159,10 +159,10 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
         when(keystoreDataService.getKeyStore(any(GetKeystore.class))).thenReturn(mockKeystore);
         when(cryptoService.encrypt(any(), any())).thenReturn("encryptedValue");
 
-        // act
+        // when
         BooleanValueDto response = secretLengthValidatorService.validateValueLength(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertTrue(response.getValue());
         assertLogContains(logAppender, "Encrypted secret value size: 14");
@@ -173,3 +173,4 @@ class SecretLengthValidatorServiceTest extends AbstractLoggingUnitTest {
         verify(cryptoService).encrypt(any(), any());
     }
 }
+

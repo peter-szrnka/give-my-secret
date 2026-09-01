@@ -1,4 +1,4 @@
-package io.github.gms.functions.iprestriction;
+﻿package io.github.gms.functions.iprestriction;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SaveEntityResponseDto;
@@ -51,14 +51,14 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenEntityIsNotGlobal_thenThrowGmsException() {
-        // arrange
+        // given
         IpRestrictionDto dto = IpRestrictionDto.builder().id(1L).global(false).build();
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class,
                 () -> service.save(dto));
 
-        // assert
+        // then
         assertNotNull(exception);
         assertEquals("Only global IP restrictions allowed to save with this service!", exception.getMessage());
     }
@@ -66,19 +66,19 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @MethodSource("saveInputData")
     void save_whenEntityIsCorrect_thenReturnOk(Long id, boolean global) {
-        // arrange
+        // given
         IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
         when(converter.toEntity(any(IpRestrictionDto.class))).thenReturn(mockEntity);
         when(repository.save(mockEntity)).thenReturn(mockEntity);
 
-        // act
+        // when
         SaveEntityResponseDto response = service.save(IpRestrictionDto.builder()
                 .id(id)
                 .global(global)
                 .allow(true)
                 .build());
 
-        // assert
+        // then
         assertNotNull(response);
         assertThat(response.getEntityId()).isEqualTo(mockEntity.getId());
         ArgumentCaptor<IpRestrictionDto> dtoArgumentCaptor = ArgumentCaptor.forClass(IpRestrictionDto.class);
@@ -97,16 +97,16 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void getById_whenEntityExists_thenReturnEntity() {
-        // arrange
+        // given
         IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
         mockEntity.setGlobal(true);
         when(repository.findById(anyLong())).thenReturn(Optional.of(mockEntity));
         when(converter.toDto(any())).thenReturn(new IpRestrictionDto());
 
-        // act
+        // when
         IpRestrictionDto response = service.getById(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         verify(repository).findById(anyLong());
         verify(converter).toDto(any());
@@ -114,17 +114,17 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void list_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         Page<IpRestrictionEntity> mockList = new PageImpl<>(Lists.newArrayList(new IpRestrictionEntity()));
         when(repository.findAllGlobal(any(Pageable.class))).thenReturn(mockList);
         when(converter.toDtoList(any(Page.class)))
                 .thenReturn(IpRestrictionListDto.builder().resultList(Lists.newArrayList(new IpRestrictionDto())).build());
         Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-        // act
+        // when
         IpRestrictionListDto response = service.list(pageable);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1, response.getResultList().size());
         verify(repository).findAllGlobal(any(Pageable.class));
@@ -133,13 +133,13 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void delete_whenUserDoesNotExist_thenThrowGmsException() {
-        // arrange
+        // given
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.delete(1L));
 
-        // assert
+        // then
         assertNotNull(exception);
         assertEquals("Entity not found!", exception.getMessage());
         verify(repository).findById(anyLong());
@@ -147,15 +147,15 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void delete_whenInputIsNotGlobalIpRestriction_thenThrowGmsException() {
-        // arrange
+        // given
         IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
         mockEntity.setGlobal(false);
         when(repository.findById(anyLong())).thenReturn(Optional.of(mockEntity));
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.delete(1L));
 
-        // assert
+        // then
         assertNotNull(exception);
         assertEquals("Invalid request, the given resource is not a global IP restriction!", exception.getMessage());
         verify(repository).findById(anyLong());
@@ -163,22 +163,22 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void delete_whenInputIsCorrect_thenRemove() {
-        // arrange
+        // given
         IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
         mockEntity.setGlobal(true);
         when(repository.findById(anyLong())).thenReturn(Optional.of(mockEntity));
 
-        // act
+        // when
         service.delete(1L);
 
-        // assert
+        // then
         verify(repository).findById(anyLong());
         verify(repository).delete(mockEntity);
     }
 
     @Test
     void updateIpRestrictionsForSecret_whenProperInputProvided_thenUpdateData() {
-        // arrange
+        // given
         List<IpRestrictionDto> restrictions = List.of(
                 IpRestrictionDto.builder().allow(true).ipPattern(".*").build(), // existing
                 IpRestrictionDto.builder().id(1L).allow(true).ipPattern("(127.0.0.)[0-9]{1,3}").build()
@@ -190,10 +190,10 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         when(repository.findAllBySecretId(1L)).thenReturn(mockEntities);
         when(converter.toEntity(any(IpRestrictionDto.class))).thenReturn(TestUtils.createIpRestriction());
 
-        // act
+        // when
         service.updateIpRestrictionsForSecret(1L, restrictions);
 
-        // assert
+        // then
         verify(repository).findAllBySecretId(1L);
         ArgumentCaptor<IpRestrictionDto> argumentCaptor = ArgumentCaptor.forClass(IpRestrictionDto.class);
         verify(converter, times(2)).toEntity(argumentCaptor.capture());
@@ -209,7 +209,7 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void getAllBySecretId_whenInputProvided_thenReturnData() {
-        // arrange
+        // given
         List<IpRestrictionEntity> mockEntities = List.of(
                 IpRestrictionEntity.builder().id(1L).allow(true).ipPattern("(127.0.0.)[0-9]{1,3}").build()
         );
@@ -218,10 +218,10 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
                 IpRestrictionDto.builder().id(1L).allow(true).ipPattern("(127.0.0.)[0-9]{1,3}").build()
         ));
 
-        // act
+        // when
         List<IpRestrictionDto> response = service.getAllBySecretId(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1, response.size());
         verify(repository).findAllBySecretId(1L);
@@ -230,15 +230,15 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void checkIpRestrictionsBySecret_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         List<IpRestrictionEntity> mockEntities = List.of();
         when(repository.findAllBySecretId(1L)).thenReturn(mockEntities);
         when(converter.toModel(anyList())).thenReturn(new IpRestrictionPatterns(List.of()));
 
-        // act
+        // when
         IpRestrictionPatterns response = service.checkIpRestrictionsBySecret(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getItems());
         assertTrue(response.getItems().isEmpty());
@@ -248,15 +248,15 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void checkGlobalIpRestrictions_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         List<IpRestrictionEntity> mockEntities = List.of();
         when(repository.findAllGlobal()).thenReturn(mockEntities);
         when(converter.toModel(anyList())).thenReturn(new IpRestrictionPatterns(List.of()));
 
-        // act
+        // when
         IpRestrictionPatterns response = service.checkGlobalIpRestrictions();
 
-        // assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getItems());
         assertTrue(response.getItems().isEmpty());
@@ -267,15 +267,15 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void toggleStatus_whenInputProvided_thenReturnOk(boolean enabled) {
-        // arrange
+        // given
         IpRestrictionEntity mockEntity = TestUtils.createIpRestriction();
         mockEntity.setGlobal(true);
         when(repository.findById(anyLong())).thenReturn(Optional.of(mockEntity));
 
-        // act
+        // when
         service.toggleStatus(1L, enabled);
 
-        // assert
+        // then
         verify(repository).save(any());
         verify(repository).findById(anyLong());
 
@@ -287,13 +287,13 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void batchDeleteByUserIds_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         Set<Long> userIds = Set.of(1L, 2L);
 
-        // act
+        // when
         service.batchDeleteByUserIds(userIds);
 
-        // assert
+        // then
         verify(repository).deleteAllByUserId(userIds);
         assertLogContains(logAppender, "All IP restrictions have been removed for the requested users");
     }
@@ -306,3 +306,4 @@ class IpRestrictionServiceImplTest extends AbstractLoggingUnitTest {
         };
     }
 }
+

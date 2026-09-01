@@ -1,4 +1,4 @@
-package io.github.gms.functions.iprestriction;
+﻿package io.github.gms.functions.iprestriction;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.model.IpRestrictionPattern;
@@ -41,15 +41,15 @@ class IpRestrictionValidatorTest extends AbstractLoggingUnitTest {
     @ValueSource(strings = {"127.0.0.1", "0:0:0:0:0:0:0:1"})
     void isIpAddressBlocked_wheIpRestrictionsBySecretWithoutRulesProvided_thenProceed(String ipAddress) {
         try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
-            // arrange
+            // given
             List<IpRestrictionPattern> input = List.of();
             httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
                     .thenReturn(ipAddress);
 
-            // act
+            // when
             boolean response = validator.isIpAddressBlocked(input);
 
-            // assert
+            // then
             assertFalse(response);
             assertLogContains(logAppender, "Client IP address: " + ipAddress);
             httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
@@ -60,15 +60,15 @@ class IpRestrictionValidatorTest extends AbstractLoggingUnitTest {
     @MethodSource("restrictionInputData")
     void isIpAddressBlocked_whenIpIsRestricted_thenFail(boolean allow, String ipPattern, String ipAddress) {
         try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
-            // arrange
+            // given
             List<IpRestrictionPattern> input = List.of(IpRestrictionPattern.builder().ipPattern(ipPattern).allow(allow).build());
             httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
                     .thenReturn(ipAddress);
 
-            // act
+            // when
             boolean response = validator.isIpAddressBlocked(input);
 
-            // assert
+            // then
             assertTrue(response);
             assertLogContains(logAppender, "Client IP address: " + ipAddress);
             httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
@@ -79,15 +79,15 @@ class IpRestrictionValidatorTest extends AbstractLoggingUnitTest {
     @MethodSource("positiveRestrictionInputData")
     void isIpAddressBlocked_whenIpIsNotRestricted_thenProceed(boolean allow, String ipPattern, String ipAddress) {
         try (MockedStatic<HttpUtils> httpUtilsMockedStatic = mockStatic(HttpUtils.class)) {
-            // arrange
+            // given
             List<IpRestrictionPattern> input = List.of(IpRestrictionPattern.builder().ipPattern(ipPattern).allow(allow).build());
             httpUtilsMockedStatic.when(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)))
                     .thenReturn(ipAddress);
 
-            // act
+            // when
             boolean response = validator.isIpAddressBlocked(input);
 
-            // assert
+            // then
             assertFalse(response);
             assertLogContains(logAppender, "Client IP address: " + ipAddress);
             httpUtilsMockedStatic.verify(() -> HttpUtils.getClientIpAddress(eq(httpServletRequest)));
@@ -109,3 +109,4 @@ class IpRestrictionValidatorTest extends AbstractLoggingUnitTest {
         };
     }
 }
+

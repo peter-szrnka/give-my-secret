@@ -1,4 +1,4 @@
-package io.github.gms.common.controller;
+﻿package io.github.gms.common.controller;
 
 import dev.samstevens.totp.code.CodeVerifier;
 import io.github.gms.abstraction.AbstractIntegrationTest;
@@ -34,7 +34,7 @@ class VerificationIntegrationTest extends AbstractIntegrationTest implements Gms
     @Test
     @TestedMethod("verify")
     void verify_whenVerificationCodeIsValid_thenReturnOk() {
-        // arrange
+        // given
         HttpHeaders headers = new HttpHeaders();
         LoginVerificationRequestDto request = new LoginVerificationRequestDto();
         request.setUsername(USERNAME_MFA);
@@ -42,12 +42,13 @@ class VerificationIntegrationTest extends AbstractIntegrationTest implements Gms
         HttpEntity<LoginVerificationRequestDto> requestEntity = new HttpEntity<>(request, headers);
         when(verifier.isValidCode(anyString(), eq(request.getVerificationCode()))).thenReturn(true);
 
-        // act
+        // when
         ResponseEntity<AuthenticateResponseDto> response = executeHttpPost("/verify", requestEntity, AuthenticateResponseDto.class);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
 }
+

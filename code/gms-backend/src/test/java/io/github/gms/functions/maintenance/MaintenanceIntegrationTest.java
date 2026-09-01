@@ -1,4 +1,4 @@
-package io.github.gms.functions.maintenance;
+﻿package io.github.gms.functions.maintenance;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.functions.maintenance.model.BatchUserOperationDto;
@@ -30,23 +30,24 @@ class MaintenanceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void requestUserAnonymization_whenCalled_thenReturnOk() {
-        // act
+        // when
         BatchUserOperationDto input = BatchUserOperationDto.builder().build();
         HttpEntity<BatchUserOperationDto> requestEntity = new HttpEntity<>(input, TestUtils.getHttpHeaders(jwt));
         ResponseEntity<Void> response = executeHttpPost("/secure/maintenance/request_user_anonymization", requestEntity, Void.class);
 
-        // Assert
+        // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
     void requestUserDeletion_whenCalled_thenReturnOk() {
-        // act
+        // when
         BatchUserOperationDto input = BatchUserOperationDto.builder().build();
         HttpEntity<BatchUserOperationDto> requestEntity = new HttpEntity<>(input, TestUtils.getHttpHeaders(jwt));
         ResponseEntity<Void> response = executeHttpPost("/secure/maintenance/request_user_deletion", requestEntity, Void.class);
 
-        // Assert
+        // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }
+

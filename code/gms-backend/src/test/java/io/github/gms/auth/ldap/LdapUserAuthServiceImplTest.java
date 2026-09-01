@@ -1,4 +1,4 @@
-package io.github.gms.auth.ldap;
+﻿package io.github.gms.auth.ldap;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -48,45 +48,46 @@ class LdapUserAuthServiceImplTest extends AbstractUnitTest {
 
 	@Test
 	void loadUserByUsername_whenUserNotFound_thenThrowUsernameNotFoundException() {
-		// arrange
+		// given
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of());
 		
-		// act
+		// when
 		UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername(TEST));
 		
-		// assert
+		// then
 		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));
 		assertEquals("User not found!", exception.getMessage());
 	}
 	
 	@Test
 	void loadUserByUsername_whenMultipleUsersFound_thenThrowUsernameNotFoundException() {
-		// arrange
+		// given
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(TestUtils.createGmsUser(), TestUtils.createGmsUser()));
 		
-		// act
+		// when
 		UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername(TEST));
 		
-		// assert
+		// then
 		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));
 		assertEquals("User not found!", exception.getMessage());
 	}
 
 	@Test
 	void loadUserByUsername_whenOneUserFound_thenLoadUserDetails() {
-		// arrange
+		// given
 		GmsUserDetails mockUser = TestUtils.createGmsUser();
 		when(ldapTemplate.search(any(LdapQuery.class), any(AttributesMapper.class))).thenReturn(List.of(mockUser));
 		when(userConverter.addIdToUserDetails(mockUser, DemoData.USER_1_ID)).thenReturn(mockUser);
 		when(userRepository.getIdByUsername(TEST)).thenReturn(Optional.of(DemoData.USER_1_ID));
 
-		// act
+		// when
 		UserDetails response = service.loadUserByUsername(TEST);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(DemoData.USERNAME1, response.getUsername());
 		verify(ldapTemplate).search(any(LdapQuery.class), any(AttributesMapper.class));
 		verify(userConverter).addIdToUserDetails(mockUser, DemoData.USER_1_ID);
 	}
 }
+

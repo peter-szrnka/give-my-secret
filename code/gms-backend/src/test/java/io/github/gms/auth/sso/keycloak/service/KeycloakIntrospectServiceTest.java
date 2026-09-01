@@ -1,4 +1,4 @@
-package io.github.gms.auth.sso.keycloak.service;
+﻿package io.github.gms.auth.sso.keycloak.service;
 
 import io.github.gms.auth.sso.keycloak.config.KeycloakSettings;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
@@ -40,7 +40,7 @@ class KeycloakIntrospectServiceTest {
 
     @Test
     void getUserDetails_whenInputProvided_thenReturnOK() {
-        // arrange
+        // given
         when(keycloakSettings.getClientId()).thenReturn("clientId");
         when(keycloakSettings.getClientSecret()).thenReturn("clientSecret");
         when(keycloakSettings.getIntrospectUrl()).thenReturn(TestUtils.LOCALHOST_8080);
@@ -53,10 +53,10 @@ class KeycloakIntrospectServiceTest {
         when(oAuthService.callPostEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(IntrospectResponse.class)))
                 .thenReturn(ResponseEntity.ok(mockIntrospectResponse));
 
-        // act
+        // when
         ResponseEntity<IntrospectResponse> response = service.getUserDetails("accessToken", "refreshToken");
 
-        // assert
+        // then
         assertNotNull(response);
         verify(keycloakSettings).getClientId();
         verify(keycloakSettings).getClientSecret();
@@ -71,3 +71,4 @@ class KeycloakIntrospectServiceTest {
         assertEquals("refreshToken", captured.get(REFRESH_TOKEN).getFirst());
     }
 }
+

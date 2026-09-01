@@ -1,4 +1,4 @@
-package io.github.gms.common.filter;
+﻿package io.github.gms.common.filter;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.model.IpRestrictionPatterns;
@@ -39,17 +39,17 @@ class IpRestrictionFilterTest extends AbstractUnitTest {
     @Test
     @SneakyThrows
     void doFilterInternal_whenAddressIsNotBlocked_thenReturnOk() {
-        // arrange
+        // given
         when(ipRestrictionService.checkGlobalIpRestrictions()).thenReturn(new IpRestrictionPatterns(List.of()));
 
-        // act
+        // when
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
 
         filter.doFilterInternal(request, response, filterChain);
 
-        // assert
+        // then
         verify(ipRestrictionService).checkGlobalIpRestrictions();
         verify(response, never()).sendError(HttpStatus.FORBIDDEN.value());
         verify(filterChain).doFilter(any(), any());
@@ -58,11 +58,11 @@ class IpRestrictionFilterTest extends AbstractUnitTest {
     @Test
     @SneakyThrows
     void doFilterInternal_whenAddressIsBlocked_thenReturnForbidden() {
-        // arrange
+        // given
         when(ipRestrictionService.checkGlobalIpRestrictions()).thenReturn(new IpRestrictionPatterns(List.of()));
         when(validator.isIpAddressBlocked(anyList())).thenReturn(true);
 
-        // act
+        // when
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
@@ -70,9 +70,10 @@ class IpRestrictionFilterTest extends AbstractUnitTest {
 
         filter.doFilterInternal(request, response, filterChain);
 
-        // assert
+        // then
         verify(validator).isIpAddressBlocked(anyList());
         verify(response).sendError(HttpStatus.FORBIDDEN.value(), "You are not allowed to get this secret from your IP address!");
         verify(filterChain, never()).doFilter(any(), any());
     }
 }
+

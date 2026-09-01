@@ -1,4 +1,4 @@
-package io.github.gms.functions.iprestriction;
+﻿package io.github.gms.functions.iprestriction;
 
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;
@@ -44,17 +44,17 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
 
     @Test
     void toDtoList_whenInputProvided_thenConvertToDtoList() {
-        // arrange
+        // given
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         IpRestrictionEntity ipRestrictionEntity = TestUtils.createIpRestriction();
         ipRestrictionEntity.setCreationDate(ZonedDateTime.now(clock));
         List<IpRestrictionEntity> entityList = Lists.newArrayList(ipRestrictionEntity);
 
-        // act
+        // when
         List<IpRestrictionDto> resultList = converter.toDtoList(entityList);
 
-        // assert
+        // then
         assertNotNull(resultList);
         IpRestrictionDto entity = resultList.getFirst();
         assertEquals(1L, entity.getId());
@@ -65,33 +65,33 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
 
     @Test
     void toDto_whenInputProvided_thenConvertToDto() {
-        // arrange
+        // given
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         IpRestrictionEntity ipRestrictionEntity = TestUtils.createIpRestriction();
         ipRestrictionEntity.setCreationDate(ZonedDateTime.now(clock));
 
-        // act
+        // when
         IpRestrictionDto response = converter.toDto(ipRestrictionEntity);
 
-        // assert
+        // then
         assertEquals(EntityStatus.ACTIVE, response.getStatus());
         assertEquals("IpRestrictionDto(id=1, secretId=1, ipPattern=.*, allow=true, global=false, status=ACTIVE, creationDate=2023-06-29T00:00Z, lastModified=null)", response.toString());
     }
 
     @Test
     void toModel_whenInputProvided_thenConvertToModelList() {
-        // arrange
+        // given
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         IpRestrictionEntity ipRestrictionEntity = TestUtils.createIpRestriction();
         ipRestrictionEntity.setCreationDate(ZonedDateTime.now(clock));
         List<IpRestrictionEntity> entityList = Lists.newArrayList(ipRestrictionEntity);
 
-        // act
+        // when
         IpRestrictionPatterns resultList = converter.toModel(entityList);
 
-        // assert
+        // then
         assertNotNull(resultList);
         assertNotNull(resultList.getItems());
         assertFalse(resultList.getItems().isEmpty());
@@ -105,7 +105,7 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
     @MethodSource("testData")
     void toEntity_whenInputProvided_thenConvertToEntity(Long id, int expectedTimes, String expectedResponse) {
         try (MockedStatic<ThreadLocalContext> utilsMockedStatic = mockStatic(ThreadLocalContext.class)) {
-            // arrange
+            // given
             when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
             when(clock.getZone()).thenReturn(ZoneOffset.UTC);
             utilsMockedStatic.when(() -> ThreadLocalContext.getAsLong(MdcParameter.USER_ID)).thenReturn(1L);
@@ -115,10 +115,10 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
             dto.setStatus(EntityStatus.ACTIVE);
             dto.setCreationDate(ZonedDateTime.now(clock));
 
-            // act
+            // when
             IpRestrictionEntity response = converter.toEntity(dto);
 
-            // assert
+            // then
             assertNotNull(response);
             assertNotNull(response.getCreationDate());
             assertThat(response.isGlobal()).isTrue();
@@ -132,17 +132,17 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
 
     @Test
     void toDtoList_whenInputListProvided_thenConvertToDtoList() {
-        // arrange
+        // given
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         IpRestrictionEntity ipRestrictionEntity = TestUtils.createIpRestriction();
         ipRestrictionEntity.setCreationDate(ZonedDateTime.now(clock));
         Page<IpRestrictionEntity> entityList = new PageImpl<>(List.of(ipRestrictionEntity));
 
-        // act
+        // when
         IpRestrictionListDto resultList = converter.toDtoList(entityList);
 
-        // assert
+        // then
         assertNotNull(resultList);
         assertEquals(1, resultList.getTotalElements());
         IpRestrictionDto entity = resultList.getResultList().getFirst();
@@ -159,3 +159,4 @@ class IpRestrictionConverterTest extends AbstractUnitTest {
         };
     }
 }
+

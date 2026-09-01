@@ -1,4 +1,4 @@
-package io.github.gms.functions.message;
+﻿package io.github.gms.functions.message;
 
 import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.LongValueDto;
@@ -33,12 +33,12 @@ class MessageControllerTest {
 
     @Test
     void list_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         MessageListDto dtoList = TestUtils.createMessageListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         when(service.list(pageable)).thenReturn(dtoList);
 
-        // act
+        // when
         MessageListDto response = controller.list(
                 "DESC",
                 "id",
@@ -46,7 +46,7 @@ class MessageControllerTest {
                 10
         );
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).list(pageable);
@@ -54,13 +54,13 @@ class MessageControllerTest {
 
     @Test
     void unreadMessagesCount_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         when(service.getUnreadMessagesCount()).thenReturn(3L);
 
-        // act
+        // when
         LongValueDto response = controller.unreadMessagesCount();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(3L, response.getValue());
         verify(service).getUnreadMessagesCount();
@@ -68,14 +68,14 @@ class MessageControllerTest {
 
     @Test
     void markAsRead_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().build();
         doNothing().when(service).toggleMarkAsRead(dto);
 
-        // act
+        // when
         ResponseEntity<String> response = controller.markAsRead(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals("", response.getBody());
@@ -84,14 +84,14 @@ class MessageControllerTest {
 
     @Test
     void deleteAllByIds_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         IdListDto dto = new IdListDto(Set.of(1L, 2L, 3L));
         doNothing().when(service).deleteAllByIds(dto);
 
-        // act
+        // when
         ResponseEntity<Void> response = controller.deleteAllByIds(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).deleteAllByIds(dto);
@@ -99,16 +99,17 @@ class MessageControllerTest {
     
     @Test
     void deleteById_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         Long id = 1L;
         doNothing().when(service).deleteById(id);
 
-        // act
+        // when
         ResponseEntity<Void> response = controller.deleteById(id);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).deleteById(id);
     }
 }
+

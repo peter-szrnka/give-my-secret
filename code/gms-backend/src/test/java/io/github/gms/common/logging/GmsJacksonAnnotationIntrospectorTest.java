@@ -1,4 +1,4 @@
-package io.github.gms.common.logging;
+﻿package io.github.gms.common.logging;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.types.Sensitive;
@@ -22,16 +22,17 @@ class GmsJacksonAnnotationIntrospectorTest extends AbstractUnitTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void findSerializer_whenAnnotationIsAvailableOrNot_thenReturnResult(boolean sensitive) {
-        // arrange
+        // given
         Annotated am = mock(Annotated.class);
         Sensitive mockSensitive = mock(Sensitive.class);
         MapperConfig<?> config = mock(MapperConfig.class);
         when(am.getAnnotation(Sensitive.class)).thenReturn(sensitive ? mockSensitive : null);
 
-        // act
+        // when
         Object result = gmsJacksonAnnotationIntrospector.findSerializer(config, am);
 
-        // assert
+        // then
         assertEquals(sensitive ? MaskSensitiveDataSerializer.class : null, result);
     }
 }
+

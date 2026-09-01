@@ -1,4 +1,4 @@
-package io.github.gms.functions.maintenance.job;
+﻿package io.github.gms.functions.maintenance.job;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.util.ConverterUtils;
@@ -29,12 +29,12 @@ class JobMaintenanceControllerTest extends AbstractUnitTest {
 
     @Test
     void list_whenValidInputProvided_thenReturnResultList() {
-        // arrange
+        // given
         JobListDto dtoList = TestUtils.createJobListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         when(service.list(pageable)).thenReturn(dtoList);
 
-        // act
+        // when
         JobListDto response = controller.list(
                 "DESC",
                 "id",
@@ -42,9 +42,10 @@ class JobMaintenanceControllerTest extends AbstractUnitTest {
                 10
         );
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).list(pageable);
     }
 }
+

@@ -1,4 +1,4 @@
-package io.github.gms.auth;
+﻿package io.github.gms.auth;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -54,7 +54,7 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 	@Test
 	@SneakyThrows
 	void commence_whenInvalidCookieExceptionOccurred_thenReturnCustomResponse() {
-		// arrange
+		// given
 		ThreadLocalContext.set(MdcParameter.CORRELATION_ID, "CORRELATION_ID");
 		HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 		HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
@@ -68,10 +68,10 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		String json = gson.toJson(TestUtils.createErrorResponseDto(exception));
 		when(jsonMapper.writeValueAsString(any(ErrorResponseDto.class))).thenReturn(json);
 
-		// act
+		// when
 		entryPoint.commence(httpServletRequest, httpServletResponse, exception);
 		
-		// assert
+		// then
 		assertNull(ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID));
 		verify(mockWriter).write(anyString());
 		ArgumentCaptor<ErrorResponseDto> errorResponseDtoCaptor = ArgumentCaptor.forClass(ErrorResponseDto.class);
@@ -88,3 +88,4 @@ class GmsAuthenticationEntryPointTest extends AbstractUnitTest {
 		ThreadLocalContext.remove(MdcParameter.CORRELATION_ID);
 	}
 }
+

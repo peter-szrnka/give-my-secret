@@ -1,4 +1,4 @@
-package io.github.gms.functions.announcement;
+﻿package io.github.gms.functions.announcement;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.UserIdExtension;
@@ -53,7 +53,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 
 	@Test
 	void save_whenEntityIsNew_thenReturnOk() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		SaveAnnouncementDto dto = SaveAnnouncementDto.builder()
@@ -63,10 +63,10 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 				.build();
 		when(repository.save(any(AnnouncementEntity.class))).thenReturn(TestUtils.createAnnouncementEntity(1L));
 
-		// act
+		// when
 		SaveEntityResponseDto response = service.save(dto);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1L, response.getEntityId());
 
@@ -83,7 +83,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 
 	@Test
 	void save_whenAlreadyExists_thenReturnOk() {
-		// arrange
+		// given
 		SaveAnnouncementDto dto = SaveAnnouncementDto.builder()
 				.id(2L)
 				.author("author")
@@ -93,10 +93,10 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createAnnouncementEntity(1L)));
 		when(repository.save(any(AnnouncementEntity.class))).thenReturn(TestUtils.createAnnouncementEntity(2L));
 
-		// act
+		// when
 		SaveEntityResponseDto response = service.save(dto);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(2L, response.getEntityId());
 
@@ -114,7 +114,7 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 
 	@Test
 	void list_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
@@ -124,10 +124,10 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 		when(userService.getUsernameById(anyLong())).thenReturn("myuser");
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-		// act
+		// when
 		AnnouncementListDto response = service.list(pageable);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertFalse(response.getResultList().isEmpty());
 		assertEquals(1L, response.getResultList().getFirst().getId());
@@ -143,49 +143,50 @@ class AnnouncementServiceImplTest extends AbstractUnitTest {
 
 	@Test
 	void getById_whenEntityDoesNotExist_thenThrowGmsException() {
-		// arrange
+		// given
 		when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
-		// assert
+		// then
 		assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
 		verify(repository).findById(anyLong());
 	}
 
 	@Test
 	void getById_whenEntityExists_thenReturnEntity() {
-		// arrange
+		// given
 		when(repository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createAnnouncementEntity(1L)));
 
-		// act
+		// when
 		AnnouncementDto response = service.getById(1L);
 
-		// assert
+		// then
 		assertNotNull(response);
 		verify(repository).findById(anyLong());
 	}
 
 	@Test
 	void delete_whenInputProvided_thenReturnOk() {
-		// act
+		// when
 		service.delete(1L);
 
-		// assert
+		// then
 		verify(repository).deleteById(1L);
 	}
 
 	@Test
 	void count_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		when(repository.count()).thenReturn(3L);
 
-		// act
+		// when
 		LongValueDto response = service.count();
 
-		// assert
+		// then
 		assertEquals(3L, response.getValue());
 		verify(repository).count();
 	}
 }
+

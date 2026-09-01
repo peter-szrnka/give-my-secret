@@ -1,4 +1,4 @@
-package io.github.gms.common.controller;
+﻿package io.github.gms.common.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,14 +17,15 @@ class HealthcheckControllerTest {
 
     @Test
     void healthcheck_whenCalled_thenReturnOk() {
-        // arrange
+        // given
         HealthcheckController controller = new HealthcheckController();
 
-        // act
+        // when
         ResponseEntity<Void> response = controller.healthcheck();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
     }
 }
+

@@ -1,4 +1,4 @@
-package io.github.gms.auth.ldap.converter;
+﻿package io.github.gms.auth.ldap.converter;
 
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.abstraction.AbstractUnitTest;
@@ -40,17 +40,17 @@ class LdapUserConverterTest extends AbstractUnitTest {
     @ParameterizedTest
     @MethodSource("newUserTestData")
     void toEntity_whenUserDoesNotExists_thenConvertToEntity(boolean storeLdapCredential, String expectedResponse) {
-        // arrange
+        // given
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         converter.setStoreLdapCredential(storeLdapCredential);
         GmsUserDetails testUser = TestUtils.createGmsUser();
         when(secretGenerator.generate()).thenReturn("secret!");
 
-        // act
+        // when
         UserEntity response = converter.toEntity(testUser, null);
 
-        // assert
+        // then
         assertEquals(expectedResponse, response.toString());
         assertEquals("secret!", response.getMfaSecret());
         assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
@@ -60,7 +60,7 @@ class LdapUserConverterTest extends AbstractUnitTest {
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
     void toEntity_whenUserAlreadyExists_thenConvertToEntity(boolean storeLdapCredential) {
-        // arrange
+        // given
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         converter.setStoreLdapCredential(storeLdapCredential);
@@ -68,10 +68,10 @@ class LdapUserConverterTest extends AbstractUnitTest {
         UserEntity existingEntity = TestUtils.createUser();
         when(secretGenerator.generate()).thenReturn("secret!");
 
-        // act
+        // when
         UserEntity response = converter.toEntity(testUser, existingEntity);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals("secret!", response.getMfaSecret());
         assertEquals(storeLdapCredential ? DemoData.CREDENTIAL_TEST : "*PROVIDED_BY_LDAP*", response.getCredential());
@@ -85,3 +85,4 @@ class LdapUserConverterTest extends AbstractUnitTest {
         };
     }
 }
+

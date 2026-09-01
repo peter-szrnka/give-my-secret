@@ -1,4 +1,4 @@
-package io.github.gms.functions.keystore;
+﻿package io.github.gms.functions.keystore;
 
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
 import io.github.gms.common.TestedClass;
@@ -47,10 +47,10 @@ class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
         dto.setEntityId(DemoData.KEYSTORE_ID);
         HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<String> response = executeHttpPost("/secure/keystore/value", requestEntity, String.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -81,11 +81,12 @@ class KeystoreAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     @Test
     @TestedMethod("download")
     void download_whenAuthenticationFails_thenReturnHttp403() {
-        // act
+        // when
         ResponseEntity<Resource> response =
                 executeHttpGet("/secure/keystore/download/" + DemoData.KEYSTORE_ID, null, Resource.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 }
+

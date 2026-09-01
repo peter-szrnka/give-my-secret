@@ -1,4 +1,4 @@
-package io.github.gms.functions.api;
+﻿package io.github.gms.functions.api;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.EntityStatus;
@@ -45,11 +45,11 @@ class KeystoreValidatorServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void validateSecretKeystore_whenKeystoreAliasMissing_thenThrowGmsException() {
-        // arrange
+        // given
         when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
         SecretEntity secretEntity = TestUtils.createSecretEntity();
 
-        // assert
+        // then
         GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.validateSecretKeystore(secretEntity));
         assertEquals("Keystore alias is not available!", exception.getMessage());
 
@@ -59,12 +59,12 @@ class KeystoreValidatorServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void validateSecretKeystore_whenKeystoreIsMissing_thenThrowGmsException() {
-        // arrange
+        // given
         when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.empty());
         SecretEntity secretEntity = TestUtils.createSecretEntity();
 
-        // assert
+        // then
         GmsException exception = Assertions.assertThrows(GmsException.class, () -> service.validateSecretKeystore(secretEntity));
         assertEquals("Invalid keystore!", exception.getMessage());
 
@@ -75,16 +75,17 @@ class KeystoreValidatorServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void validateSecretKeystore_whenDataIsValid_thenReturn() {
-        // arrange
+        // given
         when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(keystoreRepository.findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE))).thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         SecretEntity secretEntity = TestUtils.createSecretEntity();
 
-        // act
+        // when
         assertDoesNotThrow(() -> service.validateSecretKeystore(secretEntity));
 
-        // assert
+        // then
         verify(keystoreAliasRepository).findById(anyLong());
         verify(keystoreRepository).findByIdAndUserIdAndStatus(anyLong(), anyLong(), eq(EntityStatus.ACTIVE));
     }
 }
+

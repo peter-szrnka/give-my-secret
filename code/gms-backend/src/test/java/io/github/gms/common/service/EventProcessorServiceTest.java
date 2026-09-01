@@ -1,4 +1,4 @@
-package io.github.gms.common.service;
+﻿package io.github.gms.common.service;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.model.EntityChangeEvent;
@@ -46,20 +46,20 @@ class EventProcessorServiceTest extends AbstractUnitTest {
 	@ParameterizedTest
 	@MethodSource("input")
 	void disableEntity_whenInputIsValid_thenDisableEntity(InputData input) {
-		// arrange
+		// given
 		if (input.eventType == EntityChangeType.KEYSTORE_DISABLED) {
 			when(keystoreAliasRepository.findAllByKeystoreId(anyLong())).thenReturn(List.of(TestUtils.createKeystoreAliasEntity()));
 		}
 		when(secretRepository.disableAllActiveByKeystoreAliasId(anyLong())).thenReturn(input.resultCount);
 		
-		// act
+		// when
 		Map<String, Object> metadata = new HashMap<>();
 		metadata.put("userId", 5L);
 		metadata.put("keystoreId", 6L);
 		metadata.put("aliasId", 2L);
 		service.disableEntity(new EntityChangeEvent(new Object(), metadata, input.eventType));
 		
-		// assert
+		// then
 		ArgumentCaptor<Long> keystoreIdCaptor = ArgumentCaptor.forClass(Long.class);
 		ArgumentCaptor<MessageDto> messageDtoCaptor = ArgumentCaptor.forClass(MessageDto.class);
 		verify(secretRepository).disableAllActiveByKeystoreAliasId(keystoreIdCaptor.capture());
@@ -98,3 +98,4 @@ class EventProcessorServiceTest extends AbstractUnitTest {
 		private int resultCount;
 	}
 }
+

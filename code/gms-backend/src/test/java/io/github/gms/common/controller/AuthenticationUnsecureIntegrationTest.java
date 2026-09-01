@@ -1,4 +1,4 @@
-package io.github.gms.common.controller;
+﻿package io.github.gms.common.controller;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.auth.dto.AuthenticateRequestDto;
@@ -27,32 +27,32 @@ class AuthenticationUnsecureIntegrationTest extends AbstractIntegrationTest {
 		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, "testFail");
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
 
-		// act
+		// when
 		ResponseEntity<String> response = executeHttpPost(SLASH + LoginController.LOGIN_PATH, requestEntity, String.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 	}
 	
 	@Test
 	void test_whenLoginCalled_thenReturnOk() {
-		// act
+		// when
 		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, "test");
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
 		ResponseEntity<String> response = executeHttpPost(SLASH + LoginController.LOGIN_PATH, requestEntity, String.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 	}
 
 	@Test
 	void test_whenLogoutCalled_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost(SLASH + LoginController.LOGOUT_PATH, requestEntity, String.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertTrue(response.getHeaders().toSingleValueMap().keySet().stream().anyMatch(header -> header.equalsIgnoreCase(SET_COOKIE)));
 	}

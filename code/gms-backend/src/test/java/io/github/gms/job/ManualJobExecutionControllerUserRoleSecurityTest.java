@@ -1,4 +1,4 @@
-package io.github.gms.job;
+﻿package io.github.gms.job;
 
 import io.github.gms.abstraction.AbstractUserRoleSecurityTest;
 import io.github.gms.common.TestedClass;
@@ -42,10 +42,11 @@ class ManualJobExecutionControllerUserRoleSecurityTest extends AbstractUserRoleS
     void runJobByName_whenUserIsNull_thenReturnHttp403(String urlPath) {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<Void> response = executeHttpGet(urlPrefix + "/" + urlPath, requestEntity, Void.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 }
+

@@ -1,4 +1,4 @@
-package io.github.gms.functions.api;
+﻿package io.github.gms.functions.api;
 
 import io.github.gms.functions.secret.dto.GetSecretRequestDto;
 import org.junit.jupiter.api.Test;
@@ -21,16 +21,17 @@ class ApiControllerTest {
 
     @Test
     void getSecret_whenInputIsValid_thenReturnData() {
-        // arrange
+        // given
         Map<String, String> mockResponse = Map.of("value", "x");
         when(service.getSecret(any(GetSecretRequestDto.class))).thenReturn(mockResponse);
         ApiController controller = new ApiController(service);
 
-        // act
+        // when
         Map<String, String> response = controller.getSecret("api-key", "secret-id-1");
 
-        // arrange
+        // given
         assertNotNull(response);
         assertEquals("x", response.get("value"));
     }
 }
+

@@ -1,4 +1,4 @@
-package io.github.gms.functions.home;
+﻿package io.github.gms.functions.home;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.util.TestUtils;
@@ -21,31 +21,32 @@ class HomeIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void getHomeData_whenUserIsAdmin_thenReturnData() {
-        // arrange
+        // given
         gmsUser = TestUtils.createGmsAdminUser();
         jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<HomeDataResponseDto> response = executeHttpGet("/secure/home/", requestEntity, HomeDataResponseDto.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
 
     @Test
     void getHomeData_whenUserIsUser_thenReturnData() {
-        // arrange
+        // given
         gmsUser = TestUtils.createGmsUser();
         jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest());
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<HomeDataResponseDto> response = executeHttpGet("/secure/home/", requestEntity, HomeDataResponseDto.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
 }
+

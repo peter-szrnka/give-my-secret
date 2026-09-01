@@ -1,4 +1,4 @@
-package io.github.gms.functions.iprestriction;
+﻿package io.github.gms.functions.iprestriction;
 
 import io.github.gms.common.dto.SaveEntityResponseDto;
 import io.github.gms.common.util.ConverterUtils;
@@ -33,14 +33,14 @@ class IpRestrictionControllerTest {
 
     @Test
     void save_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         IpRestrictionDto dto = TestUtils.createIpRestrictionDto();
         when(service.save(dto)).thenReturn(new SaveEntityResponseDto(1L));
 
-        // act
+        // when
         SaveEntityResponseDto response = controller.save(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1L, response.getEntityId());
         verify(service).save(dto);
@@ -48,14 +48,14 @@ class IpRestrictionControllerTest {
 
     @Test
     void getById_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         IpRestrictionDto dto = TestUtils.createIpRestrictionDto();
         when(service.getById(1L)).thenReturn(dto);
 
-        // act
+        // when
         IpRestrictionDto response = controller.getById(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dto, response);
         verify(service).getById(1L);
@@ -63,13 +63,13 @@ class IpRestrictionControllerTest {
 
     @Test
     void list_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         IpRestrictionListDto dtoList = TestUtils.createIpRestrictionListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         when(service.list(pageable)).thenReturn(dtoList);
 
 
-        // act
+        // when
         IpRestrictionListDto response = controller.list(
                 "DESC",
                 "id",
@@ -77,7 +77,7 @@ class IpRestrictionControllerTest {
                 10
         );
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).list(pageable);
@@ -85,13 +85,13 @@ class IpRestrictionControllerTest {
 
     @Test
     void delete_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         doNothing().when(service).delete(1L);
 
-        // act
+        // when
         ResponseEntity<String> response = controller.delete(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).delete(1L);
@@ -100,15 +100,16 @@ class IpRestrictionControllerTest {
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
     void toggle_whenInputProvided_thenReturnOk(boolean status) {
-        // arrange
+        // given
         doNothing().when(service).toggleStatus(1L, status);
 
-        // act
+        // when
         ResponseEntity<String> response = controller.toggle(1L, status);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).toggleStatus(1L, status);
     }
 }
+

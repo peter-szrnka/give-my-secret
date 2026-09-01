@@ -1,4 +1,4 @@
-package io.github.gms.functions.api;
+﻿package io.github.gms.functions.api;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.functions.secret.dto.GetSecretRequestDto;
@@ -41,16 +41,16 @@ class ApiServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getSecret_whenInputIsValid_thenReturnOk() {
-        // arrange
+        // given
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         Map<String, String> mockResponse = Map.of(VALUE, "my-value");
         when(secretPreparationService.getSecretEntity(dto)).thenReturn(mockEntity);
         when(secretValueProviderService.getSecretValue(mockEntity)).thenReturn(mockResponse);
 
-        // act
+        // when
         Map<String, String> response = service.getSecret(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals("my-value", response.get(VALUE));
 		assertLogContains(logAppender, "Searching for secret=");
@@ -58,3 +58,4 @@ class ApiServiceTest extends AbstractLoggingUnitTest {
 		verify(secretValueProviderService).getSecretValue(mockEntity);
     }
 }
+

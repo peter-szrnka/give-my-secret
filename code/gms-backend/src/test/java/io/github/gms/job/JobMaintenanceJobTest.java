@@ -1,4 +1,4 @@
-package io.github.gms.job;
+﻿package io.github.gms.job;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.enums.SystemProperty;
@@ -57,34 +57,34 @@ class JobMaintenanceJobTest extends AbstractLoggingUnitTest {
 
     @Test
     void run_whenSystemIsNotReady_thenSkipExecution() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertTrue(logAppender.list.isEmpty());
         verify(systemAttributeRepository).getSystemStatus();
     }
 
     @Test
     void run_whenJobIsDisabled_thenSkipExecution() {
-        // arrange
+        // given
         when(systemPropertyService.getBoolean(SystemProperty.JOB_MAINTENANCE_JOB_ENABLED)).thenReturn(false);
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertTrue(logAppender.list.isEmpty());
         verify(systemPropertyService).getBoolean(SystemProperty.JOB_MAINTENANCE_JOB_ENABLED);
     }
 
     @Test
     void run_whenNoEntryAvailable_thenSkipJobExecution() {
-        // arrange
+        // given
         when(systemPropertyService.getBoolean(SystemProperty.JOB_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
         when(systemPropertyService.get(SystemProperty.OLD_JOB_ENTRY_LIMIT)).thenReturn("1;d");
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
@@ -92,10 +92,10 @@ class JobMaintenanceJobTest extends AbstractLoggingUnitTest {
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertTrue(logAppender.list.isEmpty());
         verify(jobRepository).findAllOld(any(ZonedDateTime.class));
         verify(systemPropertyService).get(SystemProperty.OLD_JOB_ENTRY_LIMIT);
@@ -103,7 +103,7 @@ class JobMaintenanceJobTest extends AbstractLoggingUnitTest {
 
     @Test
     void run_whenOneEntryAvailable_thenRunJobExecution() {
-        // arrange
+        // given
         when(systemPropertyService.getBoolean(SystemProperty.JOB_MAINTENANCE_JOB_ENABLED)).thenReturn(true);
         when(systemPropertyService.get(SystemProperty.OLD_JOB_ENTRY_LIMIT)).thenReturn("1;d");
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
@@ -111,12 +111,13 @@ class JobMaintenanceJobTest extends AbstractLoggingUnitTest {
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertLogContains(logAppender, "1 old job log(s) deleted");
         verify(jobRepository).findAllOld(any(ZonedDateTime.class));
         verify(systemPropertyService).get(SystemProperty.OLD_JOB_ENTRY_LIMIT);
     }
 }
+

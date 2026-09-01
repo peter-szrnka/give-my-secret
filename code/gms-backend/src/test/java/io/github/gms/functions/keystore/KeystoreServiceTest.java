@@ -1,4 +1,4 @@
-package io.github.gms.functions.keystore;
+﻿package io.github.gms.functions.keystore;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.*;
@@ -107,7 +107,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenCalled_thenThrowException() {
-        // act & assert
+        // when & assert
         TestUtils.assertException(() -> service.save(new SaveKeystoreRequestDto()), "Not supported!");
     }
 
@@ -116,7 +116,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(fileService.readAllBytes(any(Path.class)))
                 .thenThrow(new RuntimeException("Test failure"));
 
-        // arrange
+        // given
         SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
         dtoInput.setId(null);
         dtoInput.setGenerated(true);
@@ -127,10 +127,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(keystoreFileService.generate(any(SaveKeystoreRequestDto.class))).thenReturn("filename.jks");
         when(fileService.exists(any(Path.class))).thenReturn(true);
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, null));
 
-        // assert
+        // then
         assertEquals("java.lang.RuntimeException: Test failure", exception.getMessage());
         verify(repository, never()).save(any());
         verify(converter).toNewEntity(any(), any());
@@ -140,7 +140,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenCalledWithVulnerableKeystoreFile_thenThrowException() {
-        // arrange
+        // given
         MultipartFile multiPart = mock(MultipartFile.class);
         when(multiPart.getOriginalFilename()).thenReturn("hack/../../root/etc/password");
 
@@ -151,10 +151,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dtoInput);
         when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
-        // assert
+        // then
         assertEquals("Could not upload file!", exception.getMessage());
         verify(repository, never()).save(any());
         verify(converter).toNewEntity(any(), any());
@@ -165,7 +165,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     void save_whenKeysoreFileIsMissing_thenThrowException() {
         when(fileService.exists(any(Path.class))).thenReturn(false);
 
-        // arrange
+        // given
         SaveKeystoreRequestDto dtoInput = TestUtils.createSaveKeystoreRequestDto();
         dtoInput.setId(null);
         dtoInput.setGenerated(true);
@@ -175,10 +175,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(converter.toNewEntity(any(), any())).thenReturn(TestUtils.createKeystoreEntity());
         when(keystoreFileService.generate(any(SaveKeystoreRequestDto.class))).thenReturn("filename.jks");
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, null));
 
-        // assert
+        // then
         assertEquals("Keystore file does not exist!", exception.getMessage());
         verify(repository, never()).save(any());
         verify(converter).toNewEntity(any(), any());
@@ -189,16 +189,16 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenJsonMapperReadValueThrowsException_thenThrowException() {
-        // arrange
+        // given
         String model = "{invalidJson}";
         MultipartFile multiPart = mock(MultipartFile.class);
 
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenThrow(new RuntimeException("Error!"));
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
-        // assert
+        // then
         assertEquals("java.lang.RuntimeException: Error!", exception.getMessage());
         verify(converter, never()).toNewEntity(any(), eq(multiPart));
         verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
@@ -207,16 +207,16 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenFileIsMissing_thenThrowException() {
-        // arrange
+        // given
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
         String model = TestUtils.jsonMapper().writeValueAsString(dto);
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, null));
 
-        // assert
+        // then
         assertEquals("Keystore file must be provided!", exception.getMessage());
         verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository, never()).save(any());
@@ -225,7 +225,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenKeystoreNameIsNotUnique_thenThrowException() {
-        // arrange
+        // given
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
         String model = TestUtils.jsonMapper().writeValueAsString(dto);
@@ -234,10 +234,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(repository.countAllKeystoresByName(anyLong(), anyString())).thenReturn(1L);
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
-        // assert
+        // then
         assertEquals("Keystore name must be unique!", exception.getMessage());
         verify(converter, never()).toNewEntity(any(), eq(multiPart));
         verify(cryptoService, never()).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
@@ -248,7 +248,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenKeystoreCannotBeCopied_thenThrowException() throws IOException {
-        // arrange
+        // given
         doThrow(new FileNotFoundException("Invalid")).when(fileService).createDirectories(any(Path.class));
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
@@ -263,10 +263,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(repository.save(any())).thenReturn(TestUtils.createKeystoreEntity());
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
-        // assert
+        // then
         assertTrue(exception.getMessage().startsWith("java.io.FileNotFoundException"));
         verify(converter).toNewEntity(any(), eq(multiPart));
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
@@ -281,7 +281,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         Path newFilePath = Files.createFile(Paths.get("unit-test-output/1/" + fileName));
         Files.writeString(newFilePath, TEST);
 
-        // arrange
+        // given
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
         String model = TestUtils.jsonMapper().writeValueAsString(dto);
@@ -298,10 +298,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(fileService.exists(any(Path.class))).thenReturn(true);
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
-        // assert
+        // then
         assertEquals("File name must be unique!", exception.getMessage());
         verify(converter).toNewEntity(any(), eq(multiPart));
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
@@ -311,7 +311,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenNewAndValidKeystoreProvided_thenSaveEntity() throws IOException {
-        // arrange
+        // given
         Files.createDirectory(Paths.get("unit-test-output/" + DemoData.USER_1_ID + "/"));
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(null);
@@ -328,10 +328,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(repository.save(any())).thenReturn(keystoreEntity);
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
-        // act
+        // when
         service.save(model, multiPart);
 
-        // assert
+        // then
         verify(converter).toNewEntity(any(), eq(multiPart));
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
@@ -341,7 +341,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenInputIsValidBotFileIsMissing_thenSaveEntityWithoutFile() throws IOException {
-        // arrange
+        // given
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         String model = TestUtils.jsonMapper().writeValueAsString(dto);
 
@@ -360,10 +360,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         printWriter.print("value");
         printWriter.close();
 
-        // act
+        // when
         service.save(model, null);
 
-        // assert
+        // then
         verify(converter).toEntity(any(), any());
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
@@ -376,7 +376,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenAliasIsMissing_thenThrowException() {
-        // arrange
+        // given
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setAliases(List.of());
         dto.setId(1L);
@@ -385,17 +385,17 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         MultipartFile multiPart = mock(MultipartFile.class);
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
-        // assert
+        // then
         assertEquals("You must define at least one keystore alias!", exception.getMessage());
         verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
     @Test
     void save_whenOnlyDeletedAliasProvided_thenThrowException() {
-        // arrange
+        // given
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setAliases(List.of(new KeystoreAliasDto(1L, "alias", TEST, AliasOperation.DELETE,
                 EnabledAlgorithm.SHA256WITHRSA.getDisplayName())));
@@ -405,17 +405,17 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         MultipartFile multiPart = mock(MultipartFile.class);
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
-        // assert
+        // then
         assertEquals("You must define at least one keystore alias!", exception.getMessage());
         verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
 
     @Test
     void save_whenBothFileInputProvided_thenThrowException() {
-        // arrange
+        // given
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(1L);
         dto.setGenerated(true);
@@ -424,10 +424,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         MultipartFile multiPart = mock(MultipartFile.class);
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
 
-        // assert
+        // then
         assertEquals("Only one keystore source is allowed!", exception.getMessage());
         verify(jsonMapper).readValue(eq(model), any(Class.class));
     }
@@ -435,7 +435,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenCorrectInputProvided_thenSaveEntity() throws IOException {
-        // arrange
+        // given
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.getAliases().add(new KeystoreAliasDto(3L, "alias2", TEST, AliasOperation.DELETE,
                 EnabledAlgorithm.SHA256WITHRSA.getDisplayName()));
@@ -459,10 +459,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         savedEntity.setStatus(EntityStatus.DISABLED);
         when(repository.save(any(KeystoreEntity.class))).thenReturn(savedEntity);
 
-        // act
+        // when
         SaveEntityResponseDto response = service.save(model, multiPart);
 
-        // assert
+        // then
         assertThat(response).isNotNull();
         assertThat(response.getEntityId()).isEqualTo(1L);
         verify(converter).toEntity(any(), any());
@@ -495,7 +495,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         Path newFilePath = Files.createFile(Paths.get("temp-output/" + fileName));
         Files.writeString(newFilePath, TEST);
 
-        // arrange
+        // given
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setGenerated(true);
         dto.setId(null);
@@ -511,10 +511,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(fileService.exists(any(Path.class))).thenAnswer((Answer<Boolean>) invocationOnMock -> counter.getAndIncrement() == 0);
         when(fileService.readAllBytes(any(Path.class))).thenReturn(TEST.getBytes());
 
-        // act
+        // when
         service.save(model, null);
 
-        // assert
+        // then
         verify(converter).toNewEntity(any(), any());
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
@@ -524,7 +524,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenFileInputsMissing_thenSaveEntity() throws IOException {
-        // arrange
+        // given
         when(fileService.readAllBytes(any(Path.class))).thenReturn(TEST.getBytes());
         when(fileService.exists(any(Path.class))).thenReturn(true);
 
@@ -546,10 +546,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         savedEntity.setStatus(EntityStatus.DISABLED);
         when(repository.save(any(KeystoreEntity.class))).thenReturn(savedEntity);
 
-        // act
+        // when
         service.save(model, null);
 
-        // assert
+        // then
         verify(converter).toEntity(any(), any());
         verify(cryptoService).validateKeyStoreFile(any(SaveKeystoreRequestDto.class), any(byte[].class));
         verify(repository).save(any());
@@ -569,7 +569,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenKeystoreNotFoundByIdAndUserId_thenThrowException() {
-        // arrange
+        // given
         SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
         dto.setId(1L);
         String model = TestUtils.jsonMapper().writeValueAsString(dto);
@@ -579,7 +579,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         when(jsonMapper.readValue(eq(model), any(Class.class))).thenReturn(dto);
         when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(model, multiPart));
         assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
         verify(repository).findByIdAndUserId(anyLong(), anyLong());
@@ -587,28 +587,28 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getById_whenKeystoreNotFound_thenThrowException() {
-        // arrange
+        // given
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
-        // assert
+        // then
         assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
         verify(repository).findById(anyLong());
     }
 
     @Test
     void getById_whenKeystoreFound_thenReturnDto() {
-        // arrange
+        // given
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(converter.toDto(any(), anyList())).thenReturn(new KeystoreDto());
 
-        // act
+        // when
         KeystoreDto response = service.getById(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         verify(repository).findById(anyLong());
         verify(converter).toDto(any(), anyList());
@@ -616,15 +616,15 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void list_whenExceptionOccurred_thenReturnEmptyList() {
-        // arrange
+        // given
         when(repository.findAllByUserId(anyLong(), any(Pageable.class)))
                 .thenThrow(new RuntimeException("Unexpected error!"));
         Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-        // act
+        // when
         KeystoreListDto response = service.list(pageable);
 
-        // assert
+        // then
         assertNotNull(response);
         assertThat(response.getTotalElements()).isZero();
         assertEquals(0, response.getResultList().size());
@@ -634,7 +634,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void list_whenCorrectInputProvided_thenReturnResults() {
-        // arrange
+        // given
         Page<KeystoreEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createKeystoreEntity()));
         when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
         when(converter.toDtoList(any())).thenReturn(KeystoreListDto.builder()
@@ -642,10 +642,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
                 .totalElements(1).build());
         Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-        // act
+        // when
         KeystoreListDto response = service.list(pageable);
 
-        // assert
+        // then
         assertNotNull(response);
         assertThat(response.getTotalElements()).isEqualTo(1L);
         assertEquals(1, response.getResultList().size());
@@ -655,15 +655,15 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void delete_whenFileIsMissing_thenThrowException() throws IOException {
-        // arrange
+        // given
         doThrow(FileNotFoundException.class).when(fileService).delete(any(Path.class));
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
-        // act
+        // when
         service.delete(11L);
 
-        // assert
+        // then
         assertLogContains(logAppender, "Keystore file cannot be deleted");
         verify(repository).findById(anyLong());
         verify(aliasRepository).deleteByKeystoreId(anyLong());
@@ -680,14 +680,14 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
         printWriter.print("value");
         printWriter.close();
 
-        // arrange
+        // given
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
-        // act
+        // when
         service.delete(1L);
 
-        // assert
+        // then
         verify(repository).findById(anyLong());
         verify(repository).deleteById(1L);
         verify(aliasRepository).deleteByKeystoreId(anyLong());
@@ -704,14 +704,14 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void toggleStatus_whenDifferentInputsProvided_thenToggleStatus(boolean enabled) {
-        // arrange
+        // given
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
-        // act
+        // when
         service.toggleStatus(1L, enabled);
 
-        // assert
+        // then
         ArgumentCaptor<KeystoreEntity> argumentCaptor = ArgumentCaptor.forClass(KeystoreEntity.class);
         verify(repository).save(argumentCaptor.capture());
         KeystoreEntity capturedEntity = argumentCaptor.getValue();
@@ -731,7 +731,7 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @MethodSource("valueData")
     void getValue_whenCorrectInputProvided_thenReturnValue(ValueHolder input) {
-        // arrange
+        // given
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
@@ -740,10 +740,10 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
                     .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         }
 
-        // act
+        // when
         String response = service.getValue(new GetSecureValueDto(1L, 1L, input.getValueType()));
 
-        // assert
+        // then
         assertEquals(input.getExpectedValue(), response);
         verify(repository).findById(anyLong());
 
@@ -754,15 +754,15 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getValue_whenKeystoreAliasNotFound_thenThrowException() {
-        // arrange
+        // given
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(aliasRepository.findByIdAndKeystoreId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, this::getValue);
 
-        // assert
+        // then
         assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
         verify(repository).findById(anyLong());
         verify(aliasRepository).findByIdAndKeystoreId(anyLong(), anyLong());
@@ -774,27 +774,27 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void count_whenCorrectInputProvided_thenReturnData() {
-        // arrange
+        // given
         when(repository.countByUserId(anyLong())).thenReturn(3L);
 
-        // act
+        // when
         LongValueDto response = service.count();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(3L, response.getValue());
     }
 
     @Test
     void getAllKeystoreNames_whenCorrectInputProvided_thenReturnData() {
-        // arrange
+        // given
         when(repository.getAllKeystoreNames(anyLong()))
                 .thenReturn(Lists.newArrayList(new IdNamePairDto(1L, "keystore1"), new IdNamePairDto(1L, "keystore2")));
 
-        // act
+        // when
         IdNamePairListDto response = service.getAllKeystoreNames();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(2, response.getResultList().size());
         assertEquals("keystore1", response.getResultList().getFirst().getName());
@@ -803,16 +803,16 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getAllKeystoreAliasNames_whenCorrectInputProvided_thenReturnData() {
-        // arrange
+        // given
         when(aliasRepository.getAllAliasNames(anyLong()))
                 .thenReturn(Lists.newArrayList(new IdNamePairDto(1L, "alias1"), new IdNamePairDto(1L, "alias2")));
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
 
-        // act
+        // when
         IdNamePairListDto response = service.getAllKeystoreAliasNames(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(2, response.getResultList().size());
         assertEquals("alias1", response.getResultList().getFirst().getName());
@@ -822,30 +822,30 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void downloadKeystore_whenKeystoreIsUnreadable_thenThrowException() throws IOException {
-        // arrange
+        // given
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(fileService.readAllBytes(any(Path.class))).thenThrow(new IOException("File cannot be downloaded"));
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.downloadKeystore(1L));
 
-        // assert
+        // then
         assertEquals("java.io.IOException: File cannot be downloaded", exception.getMessage());
         verify(fileService).readAllBytes(any(Path.class));
     }
 
     @Test
     void downloadKeystore_whenKeystoreIsValid_thenDownloadFile() throws IOException {
-        // arrange
+        // given
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(fileService.readAllBytes(any(Path.class))).thenReturn(TEST.getBytes());
 
-        // act
+        // when
         DownloadFileResponseDto response = service.downloadKeystore(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals("test.jks", response.getFileName());
         assertEquals(TEST, new String(response.getFileContent()));
@@ -854,16 +854,16 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void batchDeleteByUserIds_whenCorrectInputProvided_thenDeleteEntities() {
-        // arrange
+        // given
         Set<Long> userIds = Set.of(1L, 2L);
         KeystoreBasicInfoDto dto1 = new KeystoreBasicInfoDto(1L, 1L, "file1.jks");
         KeystoreBasicInfoDto dto2 = new KeystoreBasicInfoDto(2L, 2L, "file2.jks");
         when(repository.findAllByUserId(userIds)).thenReturn(Set.of(dto1, dto2));
 
-        // act
+        // when
         service.batchDeleteByUserIds(userIds);
 
-        // assert
+        // then
         verify(repository).findAllByUserId(userIds);
         verify(repository, times(2)).deleteById(anyLong());
         verify(aliasRepository, times(2)).deleteByKeystoreId(anyLong());
@@ -876,3 +876,4 @@ class KeystoreServiceTest extends AbstractLoggingUnitTest {
                 new ValueHolder(KeyStoreValueType.KEYSTORE_CREDENTIAL, null, TEST));
     }
 }
+

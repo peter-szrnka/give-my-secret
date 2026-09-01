@@ -1,4 +1,4 @@
-package io.github.gms.auth.sso.keycloak.service.impl;
+﻿package io.github.gms.auth.sso.keycloak.service.impl;
 
 import io.github.gms.auth.sso.keycloak.Input;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;
@@ -43,14 +43,14 @@ class KeycloakUserInfoServiceImplTest {
     @ParameterizedTest
     @MethodSource("emptyInputData")
     void getUserInfo_whenCookiesMissing_thenReturnNull(Input input) {
-        // arrange
+        // given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(input.getCookies());
 
-        // act
+        // when
         UserInfoDto response = service.getUserInfo(httpServletRequest);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNull(response.getEmail());
         assertNull(response.getName());
@@ -62,7 +62,7 @@ class KeycloakUserInfoServiceImplTest {
 
     @Test
     void getUserInfo_whenResponseBodyMissing_thenReturnNull() {
-        // arrange
+        // given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
@@ -71,10 +71,10 @@ class KeycloakUserInfoServiceImplTest {
         when(keycloakIntrospectService.getUserDetails("access", "refresh"))
                 .thenReturn(ResponseEntity.ok().build());
 
-        // act
+        // when
         UserInfoDto response = service.getUserInfo(httpServletRequest);
 
-        // assert
+        // then
         assertNull(response);
         verify(httpServletRequest, times(2)).getCookies();
         verify(keycloakIntrospectService).getUserDetails("access", "refresh");
@@ -83,7 +83,7 @@ class KeycloakUserInfoServiceImplTest {
 
     @Test
     void getUserInfo_whenIntrospectFailed_thenReturnNull() {
-        // arrange
+        // given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
@@ -92,10 +92,10 @@ class KeycloakUserInfoServiceImplTest {
         when(keycloakIntrospectService.getUserDetails("access", "refresh"))
                 .thenReturn(ResponseEntity.badRequest().build());
 
-        // act
+        // when
         UserInfoDto response = service.getUserInfo(httpServletRequest);
 
-        // assert
+        // then
         assertNull(response);
         verify(httpServletRequest, times(2)).getCookies();
         verify(keycloakIntrospectService).getUserDetails("access", "refresh");
@@ -104,7 +104,7 @@ class KeycloakUserInfoServiceImplTest {
 
     @Test
     void getUserInfo_whenUserNotFoundInDb_thenReturnNull() {
-        // arrange
+        // given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
@@ -120,10 +120,10 @@ class KeycloakUserInfoServiceImplTest {
                         .build()));
         when(userRepository.getIdByUsername("user1")).thenReturn(Optional.empty());
 
-        // act
+        // when
         UserInfoDto response = service.getUserInfo(httpServletRequest);
 
-        // assert
+        // then
         assertNull(response);
         verify(httpServletRequest, times(2)).getCookies();
         verify(keycloakIntrospectService).getUserDetails("access", "refresh");
@@ -132,7 +132,7 @@ class KeycloakUserInfoServiceImplTest {
 
     @Test
     void getUserInfo_whenUserFoundInDb_thenReturnsUserInfo() {
-        // arrange
+        // given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
@@ -148,10 +148,10 @@ class KeycloakUserInfoServiceImplTest {
                         .build()));
         when(userRepository.getIdByUsername("user1")).thenReturn(Optional.of(1L));
 
-        // act
+        // when
         UserInfoDto response = service.getUserInfo(httpServletRequest);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals("email@email", response.getEmail());
         assertEquals("My Name", response.getName());
@@ -170,3 +170,4 @@ class KeycloakUserInfoServiceImplTest {
         };
     }
 }
+

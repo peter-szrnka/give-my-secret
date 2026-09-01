@@ -1,4 +1,4 @@
-package io.github.gms.functions.secret;
+﻿package io.github.gms.functions.secret;
 
 import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
@@ -84,24 +84,24 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenKeystoreNotSent_thenThrowException() {
-        // arrange
+        // given
         SaveSecretRequestDto dto = TestUtils.createSaveSecretRequestDto(2L);
         dto.setKeystoreAliasId(null);
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.save(dto));
 
-        // assert
+        // then
         assertEquals(SecretServiceImpl.WRONG_KEYSTORE_ALIAS, exception.getMessage());
         verify(keystoreRepository, never()).findByIdAndUserId(anyLong(), anyLong());
     }
 
     @Test
     void save_whenKeystoreAliasDoesNotExists_thenThrowException() {
-        // arrange
+        // given
         when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // act & assert
+        // when & assert
         SaveSecretRequestDto input = TestUtils.createSaveSecretRequestDto(2L);
         TestUtils.assertGmsException(() -> service.save(input), SecretServiceImpl.WRONG_KEYSTORE_ALIAS);
         verify(keystoreAliasRepository).findById(anyLong());
@@ -109,12 +109,12 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenKeystoreDoesNotExists_thenThrowException() {
-        // arrange
+        // given
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
         when(keystoreAliasRepository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
-        // act & assert
+        // when & assert
         SaveSecretRequestDto input = TestUtils.createSaveSecretRequestDto(2L);
         TestUtils.assertGmsException(() -> service.save(input), SecretServiceImpl.WRONG_ENTITY);
         verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
@@ -123,14 +123,14 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenKeystoreIsDisabled_thenThrowException() {
-        // arrange
+        // given
         KeystoreEntity mockKeystoreEntity = TestUtils.createKeystoreEntity();
         mockKeystoreEntity.setStatus(EntityStatus.DISABLED);
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(mockKeystoreEntity));
         when(keystoreAliasRepository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
-        // act & assert
+        // when & assert
         SaveSecretRequestDto input = TestUtils.createSaveSecretRequestDto(2L);
         TestUtils.assertGmsException(() -> service.save(input), SecretServiceImpl.PLEASE_PROVIDE_ACTIVE_KEYSTORE);
         verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
@@ -139,13 +139,13 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenKeystoreIsNotRelatedToAlias_thenThrowException() {
-        // arrange
+        // given
         KeystoreEntity mockKeystoreEntity = TestUtils.createKeystoreEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(mockKeystoreEntity));
         when(keystoreAliasRepository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
-        // act & assert
+        // when & assert
         SaveSecretRequestDto input = TestUtils.createSaveSecretRequestDto(2L);
         input.setKeystoreId(9L);
         TestUtils.assertGmsException(() -> service.save(input), "Invalid keystore defined in the request!");
@@ -155,7 +155,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenSecretIdIsNotUnique_thenThrowException() {
-        // arrange
+        // given
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
@@ -163,7 +163,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(repository.countAllSecretsByUserIdAndSecretId(anyLong(), anyString())).thenReturn(1L);
 
-        // act & assert
+        // when & assert
         SaveSecretRequestDto input = TestUtils.createNewSaveSecretRequestDto();
         TestUtils.assertGmsException(() -> service.save(input), "Secret ID name must be unique!");
 
@@ -177,7 +177,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @ValueSource(strings = {"a", "a;", "a;b", "a:x;b:"})
     void save_whenUsernamePasswordPairIsInvalid_thenThrowException(String inputValue) {
-        // arrange
+        // given
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
@@ -185,7 +185,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
         when(repository.countAllSecretsByUserIdAndSecretId(anyLong(), anyString())).thenReturn(0L);
 
-        // act & assert
+        // when & assert
         SaveSecretRequestDto input = TestUtils.createNewSaveSecretRequestDto();
         input.setType(SecretType.MULTIPLE_CREDENTIAL);
         input.setValue(inputValue);
@@ -201,7 +201,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
     @Test
     @SneakyThrows
     void save_whenValueIsNotProvided_thenSaveEntity() {
-        // arrange
+        // given
         Clock clock = mock(Clock.class);
         when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -216,7 +216,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         when(repository.save(any(SecretEntity.class))).thenReturn(mockEntity);
         when(converter.toNewEntity(any(SaveSecretRequestDto.class))).thenReturn(mockEntity);
 
-        // act & assert
+        // when & assert
         SaveSecretRequestDto input = TestUtils.createNewSaveSecretRequestDto();
         input.setType(SecretType.MULTIPLE_CREDENTIAL);
         input.setValue(null);
@@ -237,7 +237,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
     @Test
     @SneakyThrows
     void save_whenUsernamePasswordPairIsValid_thenSaveEntity() {
-        // arrange
+        // given
         userIdExtension.setDefaultUserId(5L);
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
@@ -249,14 +249,14 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(anyLong(), anyLong())).thenReturn(List.of());
         when(repository.save(any(SecretEntity.class))).thenReturn(mockEntity);
 
-        // act
+        // when
         SaveSecretRequestDto input = TestUtils.createNewSaveSecretRequestDto();
         input.setType(SecretType.MULTIPLE_CREDENTIAL);
         input.setValue("username:test;password:y");
 
         SaveEntityResponseDto response = service.save(input);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1L, response.getEntityId());
         verify(keystoreRepository).findByIdAndUserId(anyLong(), eq(5L));
@@ -268,7 +268,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenNewEntityProvided_thenSaveEntity() {
-        // arrange
+        // given
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
@@ -277,10 +277,10 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         when(keystoreAliasRepository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
-        // act
+        // when
         SaveEntityResponseDto response = service.save(TestUtils.createNewSaveSecretRequestDto());
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1L, response.getEntityId());
         verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
@@ -291,7 +291,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenNewEntityProvidedWithApiKeyRestrictions_thenSaveEntityAndRestrictions() {
-        // arrange
+        // given
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
@@ -304,11 +304,11 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         );
         when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(1L, 1L)).thenReturn(mockApiRestrictionList);
 
-        // act
+        // when
         Set<Long> apiKeys = Sets.newHashSet(3L);
         SaveEntityResponseDto response = service.save(TestUtils.createSaveSecretRequestDto(null, apiKeys));
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1L, response.getEntityId());
         verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
@@ -325,14 +325,14 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenEntityAlreadyExists_thenThrowException() {
-        // arrange
+        // given
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
         when(keystoreAliasRepository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
-        // act & assert
+        // when & assert
         TestUtils.assertGmsException(() -> service.save(TestUtils.createSaveSecretRequestDto(2L)), "Secret not found!");
 
         verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
@@ -343,7 +343,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenEntityAlreadyExists_thenSaveEntity() {
-        // arrange
+        // given
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
@@ -353,10 +353,10 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         when(keystoreAliasRepository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
-        // act
+        // when
         SaveEntityResponseDto response = service.save(TestUtils.createSaveSecretRequestDto(1L));
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1L, response.getEntityId());
         verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
@@ -368,7 +368,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenEntityAlreadyExistsAndApiKeysAreRemoved_thenSaveEntityAndRemoveApiKeys() {
-        // arrange
+        // given
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
@@ -380,10 +380,10 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         when(keystoreAliasRepository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
-        // act
+        // when
         SaveEntityResponseDto response = service.save(TestUtils.createSaveSecretRequestDto(1L, Set.of(1L)));
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1L, response.getEntityId());
         verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
@@ -395,7 +395,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenEntityAndApiKeysProvided_thenSaveEntityAndApiKeys() {
-        // arrange
+        // given
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
@@ -407,11 +407,11 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         when(keystoreAliasRepository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
-        // act
+        // when
         SaveEntityResponseDto response = service
                 .save(TestUtils.createSaveSecretRequestDto(1L, Sets.newHashSet(2L, 3L)));
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1L, response.getEntityId());
         verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
@@ -424,7 +424,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void save_whenEntityAlreadyExistsAndValueIsNull_thenSaveEntityWithoutNewValue() {
-        // arrange
+        // given
         SecretEntity mockEntity = TestUtils.createSecretEntity();
         when(keystoreRepository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreEntity()));
@@ -434,12 +434,12 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         when(keystoreAliasRepository.findById(anyLong()))
                 .thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 
-        // act
+        // when
         SaveSecretRequestDto dto = TestUtils.createSaveSecretRequestDto(1L);
         dto.setValue(null);
         SaveEntityResponseDto response = service.save(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1L, response.getEntityId());
         verify(keystoreRepository).findByIdAndUserId(anyLong(), anyLong());
@@ -451,13 +451,13 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void getById_whenEntityNotFound_thenThrowException() {
-        // arrange
+        // given
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
-        // assert
+        // then
         assertEquals(SecretServiceImpl.WRONG_ENTITY, exception.getMessage());
         verify(repository).findById(1L);
         verify(converter, never()).toDto(any());
@@ -466,7 +466,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @MethodSource("findByIdData")
     void getById_whenCorrectInputProvided_thenGetById(KeystoreAliasEntity aliasEntity) {
-        // arrange
+        // given
         userIdExtension.setDefaultUserId(4L);
         when(repository.findById(1L)).thenReturn(Optional.of(TestUtils.createSecretEntity()));
         when(converter.toDto(any())).thenReturn(new SecretDto());
@@ -477,10 +477,10 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         when(apiKeyRestrictionRepository.findAllByUserIdAndSecretId(4L, 1L)).thenReturn(mockRestrictionEntities);
         when(ipRestrictionService.getAllBySecretId(1L)).thenReturn(emptyList());
 
-        // act
+        // when
         SecretDto response = service.getById(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertThat(response.getApiKeyRestrictions()).isNotEmpty();
         assertThat(response.getIpRestrictions()).isEmpty();
@@ -495,7 +495,7 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void list_whenCorrectInputProvided_thenListAllByUserId() {
-        // arrange
+        // given
         Page<SecretEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createSecretEntity()));
         when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
         when(converter.toDtoList(any())).thenReturn(SecretListDto.builder()
@@ -503,10 +503,10 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
                 .totalElements(1).build());
         Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-        // act
+        // when
         SecretListDto response = service.list(pageable);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1, response.getResultList().size());
         verify(converter).toDtoList(any());
@@ -514,24 +514,24 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void delete_whenCorrectInputProvided_thenDeleteById() {
-        // act
+        // when
         service.delete(1L);
 
-        // assert
+        // then
         verify(repository).deleteById(1L);
     }
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void toggleStatus_whenCorrectInputProvided_thenToggleStatus(boolean enabled) {
-        // arrange
+        // given
         when(repository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createSecretEntity()));
 
-        // act
+        // when
         service.toggleStatus(1L, enabled);
 
-        // assert
+        // then
         ArgumentCaptor<SecretEntity> entityCaptor = ArgumentCaptor.forClass(SecretEntity.class);
         verify(repository).save(entityCaptor.capture());
         SecretEntity capturedEntity = entityCaptor.getValue();
@@ -541,64 +541,64 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void toggleStatus_whenSecretNotFound_thenThrowException() {
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.toggleStatus(3L, true));
 
-        // assert
+        // then
         assertEquals("Wrong entity!", exception.getMessage());
         verify(repository, never()).save(any());
     }
 
     @Test
     void getSecretValue_whenSecretNotFound_thenThrowException() {
-        // arrange
+        // given
         when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.getSecretValue(1L));
 
-        // assert
+        // then
         assertEquals("Wrong entity!", exception.getMessage());
         verify(cryptoService, never()).decrypt(any());
     }
 
     @Test
     void getSecretValue_whenCorrectInputProvided_thenGetSecretValue() {
-        // arrange
+        // given
         when(repository.findByIdAndUserId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(TestUtils.createSecretEntity()));
         when(cryptoService.decrypt(any())).thenReturn("result");
 
-        // act
+        // when
         String response = service.getSecretValue(1L);
 
-        // assert
+        // then
         assertEquals("result", response);
         verify(cryptoService).decrypt(any());
     }
 
     @Test
     void count_whenCorrectInputProvided_thenCountByUserId() {
-        // arrange
+        // given
         when(repository.countByUserId(anyLong())).thenReturn(4L);
 
-        // act
+        // when
         LongValueDto response = service.count();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(4L, response.getValue());
     }
 
     @Test
     void batchDeleteByUserIds_whenCorrectInputProvided_thenDeleteAllByUserId() {
-        // arrange
+        // given
         Set<Long> userIds = Set.of(1L, 2L);
 
-        // act
+        // when
         service.batchDeleteByUserIds(userIds);
 
-        // assert
+        // then
         verify(repository).deleteAllByUserId(userIds);
         assertLogContains(logAppender, "All secrets have been removed for the requested users");
     }
@@ -610,3 +610,4 @@ class SecretServiceImplTest extends AbstractLoggingUnitTest {
         };
     }
 }
+

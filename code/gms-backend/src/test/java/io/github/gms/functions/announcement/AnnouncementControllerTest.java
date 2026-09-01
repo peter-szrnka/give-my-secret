@@ -1,4 +1,4 @@
-package io.github.gms.functions.announcement;
+﻿package io.github.gms.functions.announcement;
 
 import io.github.gms.abstraction.AbstractClientControllerTest;
 import io.github.gms.common.dto.SaveEntityResponseDto;
@@ -28,10 +28,10 @@ class AnnouncementControllerTest extends AbstractClientControllerTest<Announceme
 
     @Test
     void delete_whenInputProvided_thenReturnOk() {
-        // act
+        // when
         ResponseEntity<String> response = controller.delete(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).delete(1L);
@@ -39,14 +39,14 @@ class AnnouncementControllerTest extends AbstractClientControllerTest<Announceme
 
     @Test
     void save_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         SaveAnnouncementDto dto = TestUtils.createSaveAnnouncementDto();
         when(service.save(dto)).thenReturn(new SaveEntityResponseDto(2L));
 
-        // act
+        // when
         SaveEntityResponseDto response = controller.save(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(2L, response.getEntityId());
         verify(service).save(dto);
@@ -54,14 +54,14 @@ class AnnouncementControllerTest extends AbstractClientControllerTest<Announceme
 
     @Test
     void getById_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         AnnouncementDto dto = TestUtils.createAnnouncementDto();
         when(service.getById(1L)).thenReturn(dto);
 
-        // act
+        // when
         AnnouncementDto response = controller.getById(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dto, response);
         verify(service).getById(1L);
@@ -69,12 +69,12 @@ class AnnouncementControllerTest extends AbstractClientControllerTest<Announceme
 
     @Test
     void list_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         AnnouncementListDto dtoList = TestUtils.createAnnouncementListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         when(service.list(pageable)).thenReturn(dtoList);
 
-        // act
+        // when
         AnnouncementListDto response = controller.list(
                 "DESC",
                 "id",
@@ -82,7 +82,7 @@ class AnnouncementControllerTest extends AbstractClientControllerTest<Announceme
                 10
         );
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).list(pageable);

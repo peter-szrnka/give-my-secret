@@ -1,4 +1,4 @@
-package io.github.gms.auth.sso.keycloak.service;
+﻿package io.github.gms.auth.sso.keycloak.service;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ public class KeycloakOAuthServiceTest extends AbstractUnitTest {
 
     @Test
     void callPostEndpoint_whenInputProvided_thenReturnOK() {
-        // arrange
+        // given
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add(CLIENT_ID, "client-id");
         requestBody.add(CLIENT_SECRET, "client-secret");
@@ -61,13 +61,14 @@ public class KeycloakOAuthServiceTest extends AbstractUnitTest {
         when(responseSpec.toEntity(String.class))
                 .thenReturn(mockResponseEntity);
 
-        // act
+        // when
         ResponseEntity<String> response = service.callPostEndpoint(URL, requestBody, String.class);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals("ok", response.getBody());
         verify(restClient).post();
     }
 }
+

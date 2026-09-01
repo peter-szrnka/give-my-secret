@@ -1,4 +1,4 @@
-package io.github.gms.auth.ldap;
+﻿package io.github.gms.auth.ldap;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -35,7 +35,7 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
 	void mapFromAttributes_whenAllDataProvided_thenMapToUserDetails(boolean returnRoles) {
-		// arrange
+		// given
 		Attributes input = mock(Attributes.class);
 
 		mockAttribute(input, LDAP_PROPERTY_CN, "user1", true);
@@ -46,10 +46,10 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 		mockAttribute(input, LDAP_PROPERTY_STATUS, "ACTIVE", true);
 		mockAttributeCollection(input, returnRoles);
 
-		// act
+		// when
 		GmsUserDetails response = mapper.mapFromAttributes(input);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(returnRoles, !response.getAuthorities().isEmpty());
 		assertEquals("user1", response.getName());
@@ -87,3 +87,4 @@ class LDAPAttributesMapperTest extends AbstractUnitTest {
 		when(attributes.get(attributeName)).thenReturn(attribute);
 	}
 }
+

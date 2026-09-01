@@ -1,4 +1,4 @@
-package io.github.gms.functions.user;
+﻿package io.github.gms.functions.user;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.TestedClass;
@@ -48,13 +48,13 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Transactional
 	@TestedMethod(SAVE)
 	void save_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<SaveUserRequestDto> saveRequestEntity = new HttpEntity<>(
 				TestUtils.createSaveUserRequestDto(null, "user3", "user3@user3.com"), 
 				TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SaveEntityResponseDto> saveResponse = executeHttpPost("", saveRequestEntity, SaveEntityResponseDto.class);
 		
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, saveResponse.getStatusCode());
 		assertNotNull(saveResponse.getBody());
 		Long newUserId = saveResponse.getBody().getEntityId();
@@ -68,11 +68,11 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod(GET_BY_ID)
 	void getById_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<ApiKeyDto> response = executeHttpGet("/" + DemoData.USER_1_ID, requestEntity, ApiKeyDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -85,11 +85,11 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod(LIST)
 	void list_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<UserListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, UserListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -100,7 +100,7 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod(DELETE)
 	void delete_whenInputIsValid_thenReturnOk() {
-		// arrange
+		// given
 		HttpEntity<SaveUserRequestDto> saveRequestEntity = new HttpEntity<>(
 				TestUtils.createSaveUserRequestDto(null, "user3", "user3@user3.com"), 
 				TestUtils.getHttpHeaders(jwt));
@@ -109,12 +109,12 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 		assertNotNull(saveResponse.getBody());
 		Long newUserId = saveResponse.getBody().getEntityId();
 
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/" + newUserId, requestEntity,
 				String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
@@ -124,12 +124,12 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@TestedMethod(TOGGLE)
 	@ValueSource(booleans = { true, false })
 	void toggle_whenInputIsValid_thenReturnOk(boolean enabled) {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost("/" + DemoData.USER_1_ID + "?enabled="+ enabled, requestEntity,
 				String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 		
@@ -144,13 +144,13 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Transactional
 	@TestedMethod("changePassword")
 	void changePassword_whenInputIsValid_thenReturnOk() {
-		// arrange
+		// given
 		HttpEntity<ChangePasswordRequestDto> requestEntity = new HttpEntity<>(TestUtils.createChangePasswordRequestDto(), TestUtils.getHttpHeaders(jwt));
 
-		// act
+		// when
 		ResponseEntity<Void> response = executeHttpPost("/change_credential", requestEntity, Void.class);
 		
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 		
@@ -161,17 +161,17 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
     @Test
     @TestedMethod("getMfaQrCode")
     void getMfaQrCode_whenInputIsValid_thenReturnOk() {
-        // arrange
+        // given
 		gmsUser = TestUtils.createGmsMfaUser();
 		jwt = jwtService.generateJwt(TestUtils.createJwtUserRequest(gmsUser));
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cookie", ACCESS_JWT_TOKEN + "=" + jwt + ";Max-Age=3600;HttpOnly");
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
-        // act
+        // when
         ResponseEntity<byte[]> response = executeHttpGet("/mfa_qr_code", requestEntity, byte[].class);
 
-        // Assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -180,11 +180,11 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
     @Test
     @TestedMethod("toggleMfa")
     void toggleMfa_whenInputIsValid_thenReturnOk() {
-        // act
+        // when
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
         ResponseEntity<Void> response = executeHttpPost("/toggle_mfa?enabled=true", requestEntity, Void.class);
 
-        // Assert
+        // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
 
@@ -196,16 +196,17 @@ class UserIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Transactional
 	@TestedMethod("isMfaActive")
 	void isMfaActive_whenInputIsValid_thenReturnOk() {
-		// arrange
+		// given
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-		// act
+		// when
 		ResponseEntity<Boolean> response = executeHttpGet("/mfa_active", requestEntity, Boolean.class);
 
-		// Assert
+		// then
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertThat(response.getBody()).isTrue();
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 }
+

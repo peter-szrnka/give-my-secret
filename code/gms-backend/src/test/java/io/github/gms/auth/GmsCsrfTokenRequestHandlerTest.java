@@ -1,4 +1,4 @@
-package io.github.gms.auth;
+﻿package io.github.gms.auth;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,17 +22,17 @@ class GmsCsrfTokenRequestHandlerTest extends AbstractUnitTest {
 
     @Test
     void handle_thenSetRequestAttributes() {
-        // Arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         CsrfToken mockCsrfToken = mock(CsrfToken.class);
         when(mockCsrfToken.getParameterName()).thenReturn("csrf_token");
         Supplier<CsrfToken> deferredCsrfToken = () -> mockCsrfToken;
 
-        // Act
+        // when
         gmsCsrfTokenRequestHandler.handle(request, response, deferredCsrfToken);
 
-        // Assert
+        // then
         verify(request).setAttribute(HttpServletResponse.class.getName(), response);
         verify(request).setAttribute(CsrfToken.class.getName(), mockCsrfToken);
         verify(request).setAttribute("csrf_token", mockCsrfToken);
@@ -40,49 +40,50 @@ class GmsCsrfTokenRequestHandlerTest extends AbstractUnitTest {
 
     @Test
     void resolveCsrfTokenValue_whenTokenIsNull_thenReturnNull() {
-        // Arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         CsrfToken csrfToken = mock(CsrfToken.class);
 
         when(request.getHeader(csrfToken.getHeaderName())).thenReturn(null);
 
-        // Act
+        // when
         String result = gmsCsrfTokenRequestHandler.resolveCsrfTokenValue(request, csrfToken);
 
-        // Assert
+        // then
         assertNull(result);
         verify(request).getHeader(csrfToken.getHeaderName());
     }
 
     @Test
     void resolveCsrfTokenValue_whenGetTokenIsNull_thenReturnNull() {
-        // Arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         CsrfToken csrfToken = mock(CsrfToken.class);
 
         when(request.getHeader(csrfToken.getHeaderName())).thenReturn("token");
         when(csrfToken.getToken()).thenReturn(null);
 
-        // Act
+        // when
         String result = gmsCsrfTokenRequestHandler.resolveCsrfTokenValue(request, csrfToken);
 
-        // Assert
+        // then
         assertNull(result);
     }
 
     @Test
     void resolveCsrfTokenValue_whenEverythingIsAvailable_thenReturnToken() {
-        // Arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         CsrfToken csrfToken = mock(CsrfToken.class);
 
         when(request.getHeader(csrfToken.getHeaderName())).thenReturn("token");
         when(csrfToken.getToken()).thenReturn("token");
 
-        // Act
+        // when
         String result = gmsCsrfTokenRequestHandler.resolveCsrfTokenValue(request, csrfToken);
 
-        // Assert
+        // then
         assertEquals("token", result);
     }
 }
+

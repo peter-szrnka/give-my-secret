@@ -1,4 +1,4 @@
-package io.github.gms.auth.service;
+﻿package io.github.gms.auth.service;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -39,16 +39,16 @@ class TokenGeneratorServiceTest extends AbstractUnitTest {
 
     @Test
     void getAuthenticationDetails_whenAllConditionsMet_thenProvideMap() {
-        // arrange
+        // given
         GmsUserDetails user = TestUtils.createGmsUser();
         when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.REFRESH_JWT), eq(user.getUsername()), any())).thenReturn(TestUtils.createJwtUserRequest(user));
         when(generateJwtRequestConverter.toRequest(eq(JwtConfigType.ACCESS_JWT), eq(user.getUsername()), any())).thenReturn(TestUtils.createJwtUserRequest(user));
         when(jwtService.generateJwts(any())).thenReturn(Map.of(JwtConfigType.ACCESS_JWT, "access_token", JwtConfigType.REFRESH_JWT, "refresh_token"));
 
-        // act
+        // when
         Map<JwtConfigType, String> response = service.getAuthenticationDetails(user);
 
-        // assert
+        // then
         assertNotNull(response);
         assertThat(response)
                 .containsEntry(JwtConfigType.ACCESS_JWT, "access_token")
@@ -74,3 +74,4 @@ class TokenGeneratorServiceTest extends AbstractUnitTest {
         assertThat(jwtServiceCaptor.getValue().get(JwtConfigType.REFRESH_JWT).getClaims()).containsEntry(MdcParameter.USER_NAME.getDisplayName(), user.getUsername());
     }
 }
+

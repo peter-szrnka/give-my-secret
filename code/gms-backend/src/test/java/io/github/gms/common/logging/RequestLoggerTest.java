@@ -1,4 +1,4 @@
-package io.github.gms.common.logging;
+﻿package io.github.gms.common.logging;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
@@ -53,7 +53,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
 
     @Test
     void afterBodyRead_whenMaskingDisabled_thenSkipLogRequestBody() {
-        // arrange
+        // given
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
         Type targetType = mock(Type.class);
@@ -62,10 +62,10 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         when(jsonMapper.writeValueAsString(body)).thenReturn("body");
         requestLogger = new RequestLogger(jsonMapper, sensitiveLoggingJsonMapper, false, true);
 
-        // act
+        // when
         assertEquals(body, requestLogger.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType));
 
-        // assert
+        // then
         verify(sensitiveLoggingJsonMapper, never()).writeValueAsString(body);
         verify(jsonMapper).writeValueAsString(body);
         assertLogEquals(logAppender, "Request logged: body");
@@ -73,7 +73,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
 
     @Test
     void afterBodyRead_whenMaskingEnabled_thenLogRequestBody() {
-        // arrange
+        // given
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
         Type targetType = mock(Type.class);
@@ -81,10 +81,10 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         SystemStatusDto body = SystemStatusDto.builder().build();
         when(sensitiveLoggingJsonMapper.writeValueAsString(body)).thenReturn("body");
 
-        // act
+        // when
         assertEquals(body, requestLogger.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType));
 
-        // assert
+        // then
         verify(sensitiveLoggingJsonMapper).writeValueAsString(body);
         verify(jsonMapper, never()).writeValueAsString(body);
         assertLogEquals(logAppender, "Request logged: body");
@@ -92,7 +92,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
 
     @Test
     void afterBodyRead_whenLoggingTurnedOff_thenLogSkipped() {
-        // arrange
+        // given
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
         Type targetType = mock(Type.class);
@@ -100,10 +100,10 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         SystemStatusDto body = SystemStatusDto.builder().build();
         requestLogger = new RequestLogger(jsonMapper, sensitiveLoggingJsonMapper, true,false);
 
-        // act
+        // when
         assertEquals(body, requestLogger.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType));
 
-        // assert
+        // then
         verify(sensitiveLoggingJsonMapper, never()).writeValueAsString(body);
         verify(jsonMapper, never()).writeValueAsString(body);
         assertTrue(logAppender.list.isEmpty());
@@ -111,7 +111,7 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
 
     @Test
     void afterBodyRead_whenExceptionOccurs_thenLogException() {
-        // arrange
+        // given
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
         Type targetType = mock(Type.class);
@@ -119,26 +119,27 @@ class RequestLoggerTest extends AbstractLoggingUnitTest {
         SystemStatusDto body = SystemStatusDto.builder().build();
         when(sensitiveLoggingJsonMapper.writeValueAsString(body)).thenThrow(RuntimeException.class);
 
-        // act
+        // when
         assertEquals(body, requestLogger.afterBodyRead(body, inputMessage, methodParameter, targetType, converterType));
 
-        // assert
+        // then
         assertLogStartsWith(logAppender, "Error while logging request");
     }
 
     @Test
     void handleEmptyBody_whenCalled_thenReturnBody() {
-        // arrange
+        // given
         HttpInputMessage inputMessage = mock(HttpInputMessage.class);
         MethodParameter methodParameter = mock(MethodParameter.class);
         Type targetType = mock(Type.class);
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
         SystemStatusDto body = SystemStatusDto.builder().build();
 
-        // act
+        // when
         assertEquals(body, requestLogger.handleEmptyBody(body, inputMessage, methodParameter, targetType, converterType));
 
-        // assert
+        // then
         assertLogEmpty(logAppender);
     }
 }
+

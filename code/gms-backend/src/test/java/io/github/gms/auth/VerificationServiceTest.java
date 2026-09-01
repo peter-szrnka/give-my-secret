@@ -1,4 +1,4 @@
-package io.github.gms.auth;
+﻿package io.github.gms.auth;
 
 import dev.samstevens.totp.code.CodeVerifier;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
@@ -51,14 +51,14 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
 
     @Test
 	void verify_whenUserNotFound_thenReturnFailed() {
-		// arrange
+		// given
 		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 
-		// act
+		// when
 		AuthenticationResponse response = service.verify(dto);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
 		verify(userLoginAttemptManagerService).isBlocked("user1");
@@ -66,13 +66,13 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void verify_whenUserIsBlocked_thenReturnBlocked() {
-		// arrange
+		// given
 		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(true);
 
-		// act
+		// when
 		AuthenticationResponse response = service.verify(TestUtils.createLoginVerificationRequestDto());
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
 		verify(userLoginAttemptManagerService).isBlocked("user1");
@@ -80,16 +80,16 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void verify_whenUserIsLockedInLdap_thenReturnBlocked() {
-		// arrange
+		// given
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setAccountNonLocked(false);
 		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 
-		// act
+		// when
 		AuthenticationResponse response = service.verify(TestUtils.createLoginVerificationRequestDto());
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
 		verify(userLoginAttemptManagerService).isBlocked("user1");
@@ -97,17 +97,17 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void verify_whenCodeIsNotValid_thenReturnBlocked() {
-		// arrange
+		// given
 		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		when(userAuthService.loadUserByUsername(anyString())).thenReturn(userDetails);
 		when(verifier.isValidCode(anyString(), anyString())).thenReturn(false);
 
-		// act
+		// when
 		AuthenticationResponse response = service.verify(dto);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertNull(response.getCurrentUser());
 		assertNull(response.getToken());
@@ -120,7 +120,7 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void verify_whenCodeIsValid_thenSucceed() {
-		// arrange
+		// given
 		when(userLoginAttemptManagerService.isBlocked("user1")).thenReturn(false);
 		LoginVerificationRequestDto dto = TestUtils.createLoginVerificationRequestDto();
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
@@ -133,10 +133,10 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
                 ));
 		when(userConverter.toUserInfoDto(any(GmsUserDetails.class), eq(false))).thenReturn(TestUtils.createUserInfoDto());
 
-		// act
+		// when
 		AuthenticationResponse response = service.verify(dto);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.COMPLETED, response.getPhase());
 		assertEquals("ACCESS_JWT", response.getToken());
@@ -148,3 +148,4 @@ class VerificationServiceTest extends AbstractLoggingUnitTest {
         verify(tokenGeneratorService).getAuthenticationDetails(any(GmsUserDetails.class));
 	}
 }
+

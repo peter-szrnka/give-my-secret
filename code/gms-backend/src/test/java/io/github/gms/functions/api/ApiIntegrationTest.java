@@ -1,4 +1,4 @@
-package io.github.gms.functions.api;
+﻿package io.github.gms.functions.api;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;
@@ -37,13 +37,13 @@ class ApiIntegrationTest extends AbstractIntegrationTest implements GmsControlle
     @Test
 	@TestedMethod("getSecret")
 	void getSecret_whenInputIsValid_thenReturnData() {
-		// arrange
+		// given
         ApiKeyEntity apiKeyEntity = apiKeyRepository.save(TestUtils.createApiKey(null, DemoData.API_KEY_CREDENTIAL3));
         KeystoreAliasEntity keystoreAliasEntity =  keystoreAliasRepository.save(TestUtils.createKeystoreAliasEntity(null, DemoData.KEYSTORE_ID));
 		SecretEntity secretEntity = secretRepository.save(
 				TestUtils.createSecretEntity(null, keystoreAliasEntity.getId(), DemoData.SECRET_ID3));
 		
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoData.API_KEY_CREDENTIAL3));
 		ResponseEntity<Map> response = executeHttpGet("/api/secret/" + secretEntity.getSecretId(), requestEntity, Map.class);
 
@@ -51,7 +51,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest implements GmsControlle
 		apiKeyRepository.deleteById(apiKeyEntity.getId());
 		keystoreAliasRepository.deleteById(keystoreAliasEntity.getId());
 
-		// Assert
+		// then
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -60,25 +60,25 @@ class ApiIntegrationTest extends AbstractIntegrationTest implements GmsControlle
 
 	@Test
 	void getSecret_whenHeaderIsMissing_thenReturnBadRequest() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(null));
 		ResponseEntity<String> response = executeHttpGet("/api/secret/" + DemoData.SECRET_ID3, requestEntity, String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 	}
 
 	@Test
 	void getSecret_whenApiKeyIsInvalid_thenReturnInternalServerError() {
-		// arrange
+		// given
         ApiKeyEntity newEntity = apiKeyRepository.save(TestUtils.createApiKey(null, DemoData.API_KEY_CREDENTIAL3));
 
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getApiHttpHeaders(DemoData.API_KEY_CREDENTIAL3));
 		ResponseEntity<String> response = executeHttpGet("/api/secret/fake-key", requestEntity, String.class);
 
 		apiKeyRepository.deleteById(newEntity.getId());
-		// Assert
+		// then
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 	}
 }

@@ -1,4 +1,4 @@
-package io.github.gms.common.controller;
+﻿package io.github.gms.common.controller;
 
 import io.github.gms.auth.AuthenticationService;
 import io.github.gms.auth.dto.AuthenticateRequestDto;
@@ -51,7 +51,7 @@ class LoginControllerTest {
     @Test
     void loginAuthentication_whenAuthenticationFailed_thenReturnHttp401() {
         try (MockedStatic<CookieUtils> cookieUtilsMockedStatic = mockStatic(CookieUtils.class)) {
-            // arrange
+            // given
             AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
             AuthenticationResponse mockResponse = new AuthenticationResponse();
             mockResponse.setPhase(AuthResponsePhase.FAILED);
@@ -61,10 +61,10 @@ class LoginControllerTest {
             cookieUtilsMockedStatic.when(() -> CookieUtils.createCookie(eq(REFRESH_JWT_TOKEN), isNull(), eq(0L), eq(false)))
                     .thenReturn(TestUtils.createResponseCookie(REFRESH_JWT_TOKEN));
 
-            // act
+            // when
             ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto);
 
-            // assert
+            // then
             assertNotNull(response);
             assertEquals(1, response.getHeaders().size());
             assertThat(response.getHeaders().get(SET_COOKIE)).hasSize(2);
@@ -112,10 +112,10 @@ class LoginControllerTest {
             mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.CSRF_TOKEN), eq(csrfTokenValue), eq(3L), eq(false), eq(false))).thenReturn(csrfCookie);
         }
 
-        // act
+        // when
         ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(1, response.getHeaders().size());
@@ -138,7 +138,7 @@ class LoginControllerTest {
 
     @Test
     void loginAuthentication_whenUserIsMfaEnabled_thenReturnMfaRequired() {
-        // arrange
+        // given
         controller = new LoginController(service, systemPropertyService, false, false);
         AuthenticateRequestDto dto = new AuthenticateRequestDto("user", "pass");
 
@@ -146,10 +146,10 @@ class LoginControllerTest {
         mockResponse.setPhase(AuthResponsePhase.MFA_REQUIRED);
         when(service.authenticate("user", "pass")).thenReturn(mockResponse);
 
-        // act
+        // when
         ResponseEntity<AuthenticateResponseDto> response = controller.loginAuthentication(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(0, response.getHeaders().size());
@@ -167,7 +167,7 @@ class LoginControllerTest {
         controller = new LoginController(service, systemPropertyService, false, csrfEnabled);
         ResponseEntity<Void> response = controller.logout();
     
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(1, response.getHeaders().size());

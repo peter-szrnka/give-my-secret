@@ -1,4 +1,4 @@
-package io.github.gms.auth.sso.keycloak.service.impl;
+﻿package io.github.gms.auth.sso.keycloak.service.impl;
 
 import io.github.gms.auth.model.AuthorizationResponse;
 import io.github.gms.auth.model.GmsUserDetails;
@@ -48,14 +48,14 @@ class KeycloakAuthorizationServiceImplTest {
     @ParameterizedTest
     @MethodSource("emptyInputData")
     void authorize_whenCookieIsMissing_thenReturnForbidden(Input input) {
-        // arrange
+        // given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(input.getCookies());
 
-        // act
+        // when
         AuthorizationResponse response = service.authorize(httpServletRequest);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
         assertEquals("Access denied!", response.getErrorMessage());
@@ -63,7 +63,7 @@ class KeycloakAuthorizationServiceImplTest {
 
     @Test
     void authorize_whenIntrospectFailed_thenReturnForbidden() {
-        // arrange
+        // given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
@@ -72,10 +72,10 @@ class KeycloakAuthorizationServiceImplTest {
         when(keycloakIntrospectService.getUserDetails("access", "refresh"))
                 .thenReturn(ResponseEntity.badRequest().build());
 
-        // act
+        // when
         AuthorizationResponse response = service.authorize(httpServletRequest);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
         assertEquals("Access denied!", response.getErrorMessage());
@@ -84,7 +84,7 @@ class KeycloakAuthorizationServiceImplTest {
 
     @Test
     void authorize_whenResponseBodyIsEmpty_thenReturnForbidden() {
-        // arrange
+        // given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
@@ -93,10 +93,10 @@ class KeycloakAuthorizationServiceImplTest {
         when(keycloakIntrospectService.getUserDetails("access", "refresh"))
                 .thenReturn(ResponseEntity.ok().build());
 
-        // act
+        // when
         AuthorizationResponse response = service.authorize(httpServletRequest);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
         assertEquals("Access denied!", response.getErrorMessage());
@@ -105,7 +105,7 @@ class KeycloakAuthorizationServiceImplTest {
 
     @Test
     void authorize_whenUserIsMissing_thenReturnForbidden() {
-        // arrange
+        // given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
@@ -118,10 +118,10 @@ class KeycloakAuthorizationServiceImplTest {
         when(converter.toUserDetails(mockIntrospectResponse)).thenReturn(mockUser);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        // act
+        // when
         AuthorizationResponse response = service.authorize(httpServletRequest);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
         assertEquals("Access denied!", response.getErrorMessage());
@@ -130,7 +130,7 @@ class KeycloakAuthorizationServiceImplTest {
 
     @Test
     void authorize_whenProcessSucceeded_thenReturnOk() {
-        // arrange
+        // given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{
                 new Cookie(ACCESS_JWT_TOKEN, "access"),
@@ -143,10 +143,10 @@ class KeycloakAuthorizationServiceImplTest {
         when(converter.toUserDetails(mockIntrospectResponse)).thenReturn(mockUser);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(TestUtils.createAdminUser()));
 
-        // act
+        // when
         AuthorizationResponse response = service.authorize(httpServletRequest);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getAuthentication());
         assertEquals(HttpStatus.OK, response.getResponseStatus());
@@ -161,3 +161,4 @@ class KeycloakAuthorizationServiceImplTest {
         };
     }
 }
+

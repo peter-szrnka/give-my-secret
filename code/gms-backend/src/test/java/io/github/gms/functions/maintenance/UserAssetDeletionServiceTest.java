@@ -1,4 +1,4 @@
-package io.github.gms.functions.maintenance;
+﻿package io.github.gms.functions.maintenance;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.functions.apikey.ApiKeyService;
@@ -53,13 +53,13 @@ class UserAssetDeletionServiceTest extends AbstractUnitTest {
 
     @Test
     void executeRequestedUserAssetDeletion_whenCalled_thenExcute() {
-        // arrange
+        // given
         Set<Long> mockUserIds = Set.of(1L, 2L);
 
-        // act
+        // when
         service.executeRequestedUserAssetDeletion(mockUserIds);
 
-        // assert
+        // then
         verify(apiKeyService).batchDeleteByUserIds(mockUserIds);
         verify(apiKeyRestrictionRepository).deleteAllByUserId(mockUserIds);
         verify(keystoreService).batchDeleteByUserIds(mockUserIds);
@@ -69,3 +69,4 @@ class UserAssetDeletionServiceTest extends AbstractUnitTest {
         verify(eventService).batchDeleteByUserIds(mockUserIds);
     }
 }
+

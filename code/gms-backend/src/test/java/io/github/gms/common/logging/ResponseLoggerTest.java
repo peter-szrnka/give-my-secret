@@ -1,4 +1,4 @@
-package io.github.gms.common.logging;
+﻿package io.github.gms.common.logging;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;
@@ -36,17 +36,17 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
 
     @Test
     void supports_whenCalled_thenReturnTrue() {
-        // arrange
+        // given
         MethodParameter methodParameter = mock(MethodParameter.class);
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
 
-        // act
+        // when
         assertTrue(responseLogger.supports(methodParameter, converterType));
     }
 
     @Test
     void beforeBodyWrite_whenCalled_thenReturnBody() {
-        // arrange
+        // given
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
@@ -55,10 +55,10 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
         ServerHttpResponse response = mock(ServerHttpResponse.class);
         when(sensitiveLoggingJsonMapper.writeValueAsString(body)).thenReturn("body");
 
-        // act
+        // when
         assertEquals(body, responseLogger.beforeBodyWrite(body, methodParameter, targetType, converterType, request, response));
 
-        // assert
+        // then
         verify(sensitiveLoggingJsonMapper).writeValueAsString(body);
         verify(jsonMapper, never()).writeValueAsString(body);
         assertLogStartsWith(logAppender, "Response logged: body");
@@ -66,7 +66,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
 
     @Test
     void beforeBodyWrite_whenMaskingDisabled_thenReturnUnmaskedData() {
-        // arrange
+        // given
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
@@ -76,10 +76,10 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
         when(jsonMapper.writeValueAsString(body)).thenReturn("body");
         responseLogger = new ResponseLogger(jsonMapper, sensitiveLoggingJsonMapper, false, true);
 
-        // act
+        // when
         assertEquals(body, responseLogger.beforeBodyWrite(body, methodParameter, targetType, converterType, request, response));
 
-        // assert
+        // then
         verify(sensitiveLoggingJsonMapper, never()).writeValueAsString(body);
         assertLogStartsWith(logAppender, "Response logged: body");
         verify(jsonMapper).writeValueAsString(body);
@@ -87,7 +87,7 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
 
     @Test
     void beforeBodyWrite_whenLoggingTurnedOff_thenLoggingSkipped() {
-        // arrange
+        // given
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
@@ -96,17 +96,17 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
         ServerHttpResponse response = mock(ServerHttpResponse.class);
         responseLogger = new ResponseLogger(jsonMapper, sensitiveLoggingJsonMapper, true, false);
 
-        // act
+        // when
         assertEquals(body, responseLogger.beforeBodyWrite(body, methodParameter, targetType, converterType, request, response));
 
-        // assert
+        // then
         verify(jsonMapper, never()).writeValueAsString(body);
         assertLogEmpty(logAppender);
     }
 
     @Test
     void beforeBodyWrite_whenExceptionOccurs_thenLogException() {
-        // arrange
+        // given
         MethodParameter methodParameter = mock(MethodParameter.class);
         MediaType targetType = MediaType.APPLICATION_JSON;
         Class<StringHttpMessageConverter> converterType = StringHttpMessageConverter.class;
@@ -115,10 +115,10 @@ class ResponseLoggerTest extends AbstractLoggingUnitTest {
         ServerHttpResponse response = mock(ServerHttpResponse.class);
         when(sensitiveLoggingJsonMapper.writeValueAsString(body)).thenThrow(RuntimeException.class);
 
-        // act
+        // when
         assertEquals(body, responseLogger.beforeBodyWrite(body, methodParameter, targetType, converterType, request, response));
 
-        // assert
+        // then
         verify(sensitiveLoggingJsonMapper).writeValueAsString(body);
         assertLogContains(logAppender, "Error while logging response");
     }

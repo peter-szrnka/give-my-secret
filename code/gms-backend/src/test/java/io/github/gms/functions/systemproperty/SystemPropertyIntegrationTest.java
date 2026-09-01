@@ -1,4 +1,4 @@
-package io.github.gms.functions.systemproperty;
+﻿package io.github.gms.functions.systemproperty;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;
@@ -35,11 +35,11 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements G
 	@Test
 	@TestedMethod(SAVE)
 	void save_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<SystemPropertyDto> requestEntity = new HttpEntity<>(SystemPropertyDto.builder().key(SystemProperty.JOB_OLD_EVENT_LIMIT.name()).value("2;d").build(), TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<Void> response = executeHttpPost("/secure/system_property", requestEntity, Void.class);
 		
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
@@ -47,11 +47,11 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements G
 	@Test
 	@TestedMethod(DELETE)
 	void delete_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/secure/system_property/" + SystemProperty.REFRESH_JWT_ALGORITHM.name(), requestEntity, String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
@@ -59,11 +59,11 @@ class SystemPropertyIntegrationTest extends AbstractIntegrationTest implements G
 	@Test
 	@TestedMethod(LIST)
 	void list_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SystemPropertyListDto> response = executeHttpGet("/secure/system_property/list?page=0&size=10&direction=ASC&property=id", requestEntity, SystemPropertyListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		

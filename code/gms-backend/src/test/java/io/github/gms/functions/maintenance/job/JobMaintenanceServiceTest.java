@@ -1,4 +1,4 @@
-package io.github.gms.functions.maintenance.job;
+﻿package io.github.gms.functions.maintenance.job;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.util.ConverterUtils;
@@ -34,19 +34,20 @@ class JobMaintenanceServiceTest extends AbstractUnitTest {
 
     @Test
     void list_whenValidInputProvided_thenReturnResultList() {
-        // arrange
+        // given
         Page<JobEntity> mockList = new PageImpl<>(List.of(new JobEntity()));
         when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
         when(converter.toDtoList(any())).thenReturn(JobListDto.builder().resultList(List.of(new JobDto())).build());
         Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-        // act
+        // when
         JobListDto response = service.list(pageable);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1, response.getResultList().size());
         verify(repository).findAll(any(Pageable.class));
         verify(converter).toDtoList(any());
     }
 }
+

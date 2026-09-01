@@ -1,4 +1,4 @@
-package io.github.gms.functions.setup;
+﻿package io.github.gms.functions.setup;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SaveEntityResponseDto;
@@ -49,13 +49,13 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void stepBack_whenStatusIsNeedSetup_thenSkipStepBack() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
 
-        // act
+        // when
         String result = service.stepBack();
 
-        // assert
+        // then
         assertNotNull(result);
         assertEquals(SystemStatus.NEED_SETUP.name(), result);
         verify(systemAttributeRepository).getSystemStatus();
@@ -63,13 +63,13 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void stepBack_whenStatusIsOk_thenStepBack() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-        // act
+        // when
         String result = service.stepBack();
 
-        // assert
+        // then
         assertNotNull(result);
         assertEquals(SystemStatus.COMPLETE.name(), result);
         verify(systemAttributeRepository).getSystemStatus();
@@ -78,26 +78,26 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getCurrentSuperAdmin_whenUserNotFound_thenFailAndReturnNull() {
-        // arrange
+        // given
         when(userService.getById(1L)).thenThrow(new GmsException(ENTITY_NOT_FOUND, GMS_003));
 
-        // act
+        // when
         UserDto result = service.getCurrentSuperAdmin();
 
-        // assert
+        // then
         assertNull(result);
         verify(userService).getById(1L);
     }
 
     @Test
     void getCurrentSuperAdmin_whenUserFound_thenReturnAdminUser() {
-        // arrange
+        // given
         when(userService.getById(1L)).thenReturn(TestUtils.createUserDto());
 
-        // act
+        // when
         UserDto result = service.getCurrentSuperAdmin();
 
-        // assert
+        // then
         assertNotNull(result);
         assertEquals(1L, result.getId());
         verify(userService).getById(1L);
@@ -105,14 +105,14 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void saveInitialStep_whenAllConditionsMet_thenProceed() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
         when(systemAttributeRepository.save(any())).thenReturn(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP));
 
-        // act
+        // when
         SimpleResponseDto result = service.saveInitialStep();
 
-        // assert
+        // then
         assertNotNull(result);
         assertTrue(result.isSuccess());
         ArgumentCaptor<SystemAttributeEntity> captor = ArgumentCaptor.forClass(SystemAttributeEntity.class);
@@ -126,15 +126,15 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void saveAdminUser_whenAllConditionsMet_thenProceed() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_ADMIN_USER)));
         when(systemAttributeRepository.save(any())).thenReturn(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_ADMIN_USER));
         when(userService.saveAdminUser(any())).thenReturn(new SaveEntityResponseDto(1L));
 
-        // act
+        // when
         SimpleResponseDto result = service.saveAdminUser(TestUtils.createSaveUserRequestDto());
 
-        // assert
+        // then
         assertNotNull(result);
         assertTrue(result.isSuccess());
         ArgumentCaptor<SystemAttributeEntity> captor = ArgumentCaptor.forClass(SystemAttributeEntity.class);
@@ -148,15 +148,15 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void saveSystemProperties_whenNoSystemPropertiesSent_thenSkipUpdateStatus() {
-        // arrange
+        // given
         SetupSystemPropertiesDto dto = new SetupSystemPropertiesDto();
         List< SystemPropertyDto> properties = new ArrayList<>();
         dto.setProperties(properties);
 
-        // act
+        // when
         SimpleResponseDto result = service.saveSystemProperties(dto);
 
-        // assert
+        // then
         assertNotNull(result);
         assertTrue(result.isSuccess());
 
@@ -166,7 +166,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void saveSystemProperties_whenAllConditionsMet_thenProceed() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_AUTH_CONFIG)));
         when(systemAttributeRepository.save(any())).thenReturn(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_AUTH_CONFIG));
 
@@ -176,10 +176,10 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
         properties.add(SystemPropertyDto.builder().key("key").value("value").build());
         dto.setProperties(properties);
 
-        // act
+        // when
         SimpleResponseDto result = service.saveSystemProperties(dto);
 
-        // assert
+        // then
         assertNotNull(result);
         assertTrue(result.isSuccess());
         ArgumentCaptor<SystemAttributeEntity> captor = ArgumentCaptor.forClass(SystemAttributeEntity.class);
@@ -194,7 +194,7 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void saveOrganizationData_whenAllConditionsMet_thenProceed() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_AUTH_CONFIG)));
         when(systemAttributeRepository.save(any())).thenReturn(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_AUTH_CONFIG));
 
@@ -204,10 +204,10 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
         properties.add(SystemPropertyDto.builder().key("key").value("value").build());
         dto.setProperties(properties);
 
-        // act
+        // when
         SimpleResponseDto result = service.saveOrganizationData(dto);
 
-        // assert
+        // then
         assertNotNull(result);
         assertTrue(result.isSuccess());
         ArgumentCaptor<SystemAttributeEntity> captor = ArgumentCaptor.forClass(SystemAttributeEntity.class);
@@ -222,14 +222,14 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void completeSetup_whenAllConditionsMet_thenProceed() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_ORG_DATA)));
         when(systemAttributeRepository.save(any())).thenReturn(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_ORG_DATA));
 
-        // act
+        // when
         SimpleResponseDto result = service.completeSetup();
 
-        // assert
+        // then
         assertNotNull(result);
         assertTrue(result.isSuccess());
         ArgumentCaptor<SystemAttributeEntity> captor = ArgumentCaptor.forClass(SystemAttributeEntity.class);
@@ -241,3 +241,4 @@ class SetupServiceTest extends AbstractLoggingUnitTest {
         verify(systemAttributeRepository).getSystemStatus();
     }
 }
+

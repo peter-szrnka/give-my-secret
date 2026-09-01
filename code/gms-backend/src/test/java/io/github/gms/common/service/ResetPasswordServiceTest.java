@@ -1,4 +1,4 @@
-package io.github.gms.common.service;
+﻿package io.github.gms.common.service;
 
 import io.github.gms.common.types.GmsException;
 import io.github.gms.functions.message.MessageDto;
@@ -39,14 +39,14 @@ class ResetPasswordServiceTest {
 
     @Test
     void resetPassword_whenInputIsInvalid_thenThrowGmsException() {
-        // arrange
+        // given
         ResetPasswordRequestDto dto = new ResetPasswordRequestDto("user");
         when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
 
-        // act
+        // when
         GmsException exception = assertThrows(GmsException.class, () -> service.resetPassword(dto));
 
-        // assert
+        // then
         assertNotNull(exception);
         assertEquals("User not found!", exception.getMessage());
         verify(userRepository).findByUsername("user");
@@ -54,15 +54,15 @@ class ResetPasswordServiceTest {
 
     @Test
     void resetPassword_whenInputIsValid_thenResetPassword() {
-        // arrange
+        // given
         ResetPasswordRequestDto dto = new ResetPasswordRequestDto("user");
         when(userRepository.findByUsername("user")).thenReturn(Optional.of(TestUtils.createUser()));
         when(userRepository.getAllAdmins()).thenReturn(List.of(TestUtils.createUser()));
 
-        // act
+        // when
         assertDoesNotThrow(() -> service.resetPassword(dto));
 
-        // assert
+        // then
         verify(userRepository).findByUsername("user");
         verify(userRepository).getAllAdmins();
 
@@ -75,3 +75,4 @@ class ResetPasswordServiceTest {
         assertEquals(1L, captured.getUserId());
     }
 }
+

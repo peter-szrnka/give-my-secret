@@ -1,4 +1,4 @@
-package io.github.gms.functions.maintenance;
+﻿package io.github.gms.functions.maintenance;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.functions.maintenance.model.BatchUserOperationDto;
@@ -34,13 +34,13 @@ class MaintenanceControllerTest extends AbstractUnitTest {
 
     @Test
     void requestUserAnonymization_whenCorrectInputProvided_thenComplete() {
-        // arrange
+        // given
         BatchUserOperationDto input = BatchUserOperationDto.builder().build();
 
-        // act
+        // when
         ResponseEntity<Void> response = controller.requestUserAnonymization(input);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(userAnonymizationService).requestProcess(input);
@@ -48,15 +48,16 @@ class MaintenanceControllerTest extends AbstractUnitTest {
 
     @Test
     void requestUserDeletion_whenCorrectInputProvided_thenComplete() {
-        // arrange
+        // given
         BatchUserOperationDto input = BatchUserOperationDto.builder().build();
 
-        // act
+        // when
         ResponseEntity<Void> response = controller.requestUserDeletion(input);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(userDeletionService).requestProcess(input);
     }
 }
+
