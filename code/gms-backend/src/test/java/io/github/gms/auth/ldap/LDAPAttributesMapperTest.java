@@ -1,4 +1,4 @@
-﻿package io.github.gms.auth.ldap;
+package io.github.gms.auth.ldap;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;

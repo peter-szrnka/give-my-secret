@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.event;
+package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;

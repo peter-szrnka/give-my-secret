@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.keystore;
+package io.github.gms.functions.keystore;
 
 import com.google.common.base.Throwables;
 import io.github.gms.abstraction.AbstractUnitTest;

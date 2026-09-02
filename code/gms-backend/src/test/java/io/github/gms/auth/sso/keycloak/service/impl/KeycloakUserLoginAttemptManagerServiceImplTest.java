@@ -1,4 +1,4 @@
-﻿package io.github.gms.auth.sso.keycloak.service.impl;
+package io.github.gms.auth.sso.keycloak.service.impl;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.util.DemoData;

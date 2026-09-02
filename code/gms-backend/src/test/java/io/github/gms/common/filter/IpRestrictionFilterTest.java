@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.filter;
+package io.github.gms.common.filter;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.model.IpRestrictionPatterns;

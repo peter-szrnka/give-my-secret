@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.maintenance.job;
+package io.github.gms.functions.maintenance.job;
 
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;

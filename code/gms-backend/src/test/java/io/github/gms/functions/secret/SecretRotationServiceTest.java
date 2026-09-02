@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.secret;
+package io.github.gms.functions.secret;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EntityStatus;

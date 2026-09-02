@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.api;
+package io.github.gms.functions.api;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.functions.secret.dto.GetSecretRequestDto;

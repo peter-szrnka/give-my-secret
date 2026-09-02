@@ -1,4 +1,4 @@
-﻿package io.github.gms.job;
+package io.github.gms.job;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;

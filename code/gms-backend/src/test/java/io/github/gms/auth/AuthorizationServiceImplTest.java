@@ -1,4 +1,4 @@
-﻿package io.github.gms.auth;
+package io.github.gms.auth;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.auth.model.AuthorizationResponse;

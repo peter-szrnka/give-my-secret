@@ -1,4 +1,4 @@
-﻿package io.github.gms;
+package io.github.gms;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;

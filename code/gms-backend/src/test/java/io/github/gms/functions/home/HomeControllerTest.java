@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.home;
+package io.github.gms.functions.home;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

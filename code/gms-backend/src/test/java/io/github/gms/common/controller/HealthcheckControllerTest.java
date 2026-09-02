@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.controller;
+package io.github.gms.common.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

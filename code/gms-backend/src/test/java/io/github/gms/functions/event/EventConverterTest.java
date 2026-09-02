@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.event;
+package io.github.gms.functions.event;
 
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;

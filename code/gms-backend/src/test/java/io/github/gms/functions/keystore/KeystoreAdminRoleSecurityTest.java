@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.keystore;
+package io.github.gms.functions.keystore;
 
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
 import io.github.gms.common.TestedClass;

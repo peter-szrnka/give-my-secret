@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.user;
+package io.github.gms.functions.user;
 
 import io.github.gms.auth.ldap.LdapSyncService;
 import org.junit.jupiter.api.BeforeEach;

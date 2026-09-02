@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.util;
+package io.github.gms.common.util;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import org.junit.jupiter.api.Test;

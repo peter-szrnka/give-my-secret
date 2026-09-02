@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.systemproperty;
+package io.github.gms.functions.systemproperty;
 
 import io.github.gms.common.util.ConverterUtils;
 import io.github.gms.util.TestUtils;

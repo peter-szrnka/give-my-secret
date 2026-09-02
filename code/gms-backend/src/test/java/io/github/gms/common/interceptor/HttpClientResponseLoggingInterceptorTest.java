@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.interceptor;
+package io.github.gms.common.interceptor;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import org.junit.jupiter.api.BeforeEach;

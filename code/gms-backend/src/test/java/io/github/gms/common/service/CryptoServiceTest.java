@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.service;
+package io.github.gms.common.service;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.model.KeystorePair;

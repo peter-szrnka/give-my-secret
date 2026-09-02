@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.apikey;
+package io.github.gms.functions.apikey;
 
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;

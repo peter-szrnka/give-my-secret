@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.secret;
+package io.github.gms.functions.secret;
 
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractUnitTest;

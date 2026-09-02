@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.db.converter;
+package io.github.gms.common.db.converter;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import lombok.SneakyThrows;

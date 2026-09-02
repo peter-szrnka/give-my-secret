@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.systemproperty;
+package io.github.gms.functions.systemproperty;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.SystemProperty;

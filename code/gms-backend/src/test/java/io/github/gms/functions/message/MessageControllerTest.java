@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.message;
+package io.github.gms.functions.message;
 
 import io.github.gms.common.dto.IdListDto;
 import io.github.gms.common.dto.LongValueDto;

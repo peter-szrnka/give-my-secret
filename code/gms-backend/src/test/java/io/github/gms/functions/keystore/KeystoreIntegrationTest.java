@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.keystore;
+package io.github.gms.functions.keystore;
 
 import com.google.common.io.Files;
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;

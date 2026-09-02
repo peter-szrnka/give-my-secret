@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.filter;
+package io.github.gms.common.filter;
 
 import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractUnitTest;

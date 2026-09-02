@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.controller;
+package io.github.gms.common.controller;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.abstraction.GmsControllerIntegrationTest;

@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.logging;
+package io.github.gms.common.logging;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SystemStatusDto;

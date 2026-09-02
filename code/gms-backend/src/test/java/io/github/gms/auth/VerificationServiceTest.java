@@ -1,4 +1,4 @@
-﻿package io.github.gms.auth;
+package io.github.gms.auth;
 
 import dev.samstevens.totp.code.CodeVerifier;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;

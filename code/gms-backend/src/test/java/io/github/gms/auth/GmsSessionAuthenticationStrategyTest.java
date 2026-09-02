@@ -1,4 +1,4 @@
-﻿package io.github.gms.auth;
+package io.github.gms.auth;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import jakarta.servlet.http.HttpServletRequest;

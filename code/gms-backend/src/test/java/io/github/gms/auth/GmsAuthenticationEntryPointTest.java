@@ -1,4 +1,4 @@
-﻿package io.github.gms.auth;
+package io.github.gms.auth;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

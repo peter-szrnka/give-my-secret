@@ -1,4 +1,4 @@
-﻿package io.github.gms.abstraction;
+package io.github.gms.abstraction;
 
 import io.github.gms.common.dto.IdNamePairListDto;
 import io.github.gms.common.dto.SaveEntityResponseDto;

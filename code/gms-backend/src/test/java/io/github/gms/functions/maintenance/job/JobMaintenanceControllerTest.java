@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.maintenance.job;
+package io.github.gms.functions.maintenance.job;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.util.ConverterUtils;

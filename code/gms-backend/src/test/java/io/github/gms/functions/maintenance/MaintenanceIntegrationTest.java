@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.maintenance;
+package io.github.gms.functions.maintenance;
 
 import io.github.gms.abstraction.AbstractIntegrationTest;
 import io.github.gms.functions.maintenance.model.BatchUserOperationDto;

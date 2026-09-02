@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.secret;
+package io.github.gms.functions.secret;
 
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
 import io.github.gms.common.TestedClass;

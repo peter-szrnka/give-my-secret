@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.logging;
+package io.github.gms.common.logging;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

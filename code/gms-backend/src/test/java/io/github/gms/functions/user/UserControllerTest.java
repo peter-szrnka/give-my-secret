@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.user;
+package io.github.gms.functions.user;
 
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import io.github.gms.abstraction.AbstractClientControllerTest;

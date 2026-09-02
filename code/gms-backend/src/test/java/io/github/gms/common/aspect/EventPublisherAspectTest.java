@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.aspect;
+package io.github.gms.common.aspect;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;

@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.user;
+package io.github.gms.functions.user;
 
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;

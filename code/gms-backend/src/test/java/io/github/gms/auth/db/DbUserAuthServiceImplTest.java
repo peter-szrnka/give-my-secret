@@ -1,4 +1,4 @@
-﻿package io.github.gms.auth.db;
+package io.github.gms.auth.db;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.auth.model.GmsUserDetails;

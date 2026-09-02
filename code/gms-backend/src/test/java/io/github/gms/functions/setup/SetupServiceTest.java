@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.setup;
+package io.github.gms.functions.setup;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.dto.SaveEntityResponseDto;

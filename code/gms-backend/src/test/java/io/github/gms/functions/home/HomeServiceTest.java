@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.home;
+package io.github.gms.functions.home;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.dto.LongValueDto;

@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.iprestriction;
+package io.github.gms.functions.iprestriction;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.TestedClass;

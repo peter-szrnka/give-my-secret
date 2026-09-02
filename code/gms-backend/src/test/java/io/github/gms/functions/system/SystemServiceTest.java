@@ -1,4 +1,4 @@
-﻿
+
 package io.github.gms.functions.system;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;

@@ -1,4 +1,4 @@
-﻿package io.github.gms.job;
+package io.github.gms.job;
 
 import com.google.common.collect.Lists;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;

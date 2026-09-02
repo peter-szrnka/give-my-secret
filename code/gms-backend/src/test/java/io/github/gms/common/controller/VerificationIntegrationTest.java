@@ -1,4 +1,4 @@
-﻿package io.github.gms.common.controller;
+package io.github.gms.common.controller;
 
 import dev.samstevens.totp.code.CodeVerifier;
 import io.github.gms.abstraction.AbstractIntegrationTest;

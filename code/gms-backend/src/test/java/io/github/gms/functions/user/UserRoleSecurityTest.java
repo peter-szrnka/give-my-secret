@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.user;
+package io.github.gms.functions.user;
 
 import io.github.gms.abstraction.AbstractUserRoleSecurityTest;
 import io.github.gms.common.TestedClass;

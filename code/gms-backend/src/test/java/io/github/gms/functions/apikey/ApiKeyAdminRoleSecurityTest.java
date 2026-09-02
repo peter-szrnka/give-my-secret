@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.apikey;
+package io.github.gms.functions.apikey;
 
 import io.github.gms.abstraction.AbstractAdminRoleSecurityTest;
 import io.github.gms.common.TestedClass;

@@ -1,4 +1,4 @@
-﻿package io.github.gms.job;
+package io.github.gms.job;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.job.model.UrlConstants;

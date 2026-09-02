@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.message;
+package io.github.gms.functions.message;
 
 import io.github.gms.abstraction.AbstractSecurityTest;
 import io.github.gms.common.TestedClass;

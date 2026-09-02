@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.announcement;
+package io.github.gms.functions.announcement;
 
 import io.github.gms.abstraction.AbstractClientControllerIntegrationTest;
 import io.github.gms.common.TestedClass;

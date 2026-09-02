@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.maintenance;
+package io.github.gms.functions.maintenance;
 
 import io.github.gms.abstraction.AbstractLoggingUnitTest;
 import io.github.gms.common.abstraction.UserMaintenanceService;

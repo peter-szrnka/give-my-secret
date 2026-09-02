@@ -1,4 +1,4 @@
-﻿package io.github.gms.auth.sso.keycloak.service.impl;
+package io.github.gms.auth.sso.keycloak.service.impl;
 
 import io.github.gms.auth.sso.keycloak.Input;
 import io.github.gms.auth.sso.keycloak.model.IntrospectResponse;

@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.message;
+package io.github.gms.functions.message;
 
 import com.google.common.collect.Sets;
 import io.github.gms.abstraction.AbstractLoggingUnitTest;

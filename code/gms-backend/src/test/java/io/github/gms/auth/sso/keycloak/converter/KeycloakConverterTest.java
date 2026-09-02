@@ -1,4 +1,4 @@
-﻿package io.github.gms.auth.sso.keycloak.converter;
+package io.github.gms.auth.sso.keycloak.converter;
 
 import dev.samstevens.totp.secret.SecretGenerator;
 import io.github.gms.auth.model.GmsUserDetails;

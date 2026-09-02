@@ -1,4 +1,4 @@
-﻿package io.github.gms.functions.event;
+package io.github.gms.functions.event;
 
 import io.github.gms.abstraction.AbstractUnitTest;
 import io.github.gms.common.enums.EventOperation;
