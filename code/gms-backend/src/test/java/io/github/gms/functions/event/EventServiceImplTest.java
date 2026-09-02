@@ -46,18 +46,18 @@ class EventServiceImplTest extends AbstractUnitTest {
 	
 	@Test
 	void saveUserEvent_whenUserEventOccurred_thenReturnOk() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
-		// act
+		// when
 		service.saveUserEvent(UserEvent.builder()
 						.userId(1L)
 						.operation(EventOperation.GET_BY_ID)
 						.target(EventTarget.API_KEY)
 				.build());
 		
-		// assert
+		// then
 		ArgumentCaptor<EventEntity> eventCaptor = ArgumentCaptor.forClass(EventEntity.class);
 		verify(repository).save(eventCaptor.capture());
 		
@@ -70,16 +70,16 @@ class EventServiceImplTest extends AbstractUnitTest {
 
 	@Test
 	void delete_whenInputProvided_thenReturnOk() {
-		// act
+		// when
 		service.delete(1L);
 
-		// assert
+		// then
 		verify(repository).deleteById(1L);
 	}
 
 	@Test
 	void list_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 
 		EventEntity secondEventEntity = TestUtils.createEventEntity();
 		secondEventEntity.setUserId(0L);
@@ -104,10 +104,10 @@ class EventServiceImplTest extends AbstractUnitTest {
 		when(userRepository.getUsernameById(anyLong())).thenReturn("user1");
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-		// act
+		// when
 		EventListDto response = service.list(pageable);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(3, response.getResultList().size());
 		assertEquals(3L, response.getTotalElements());
@@ -121,7 +121,7 @@ class EventServiceImplTest extends AbstractUnitTest {
 	
 	@Test
 	void listByUser_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		Page<EventEntity> mockList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
 		when(converter.toDtoList(any(), eq("user1"))).thenReturn(EventListDto.builder()
@@ -131,10 +131,10 @@ class EventServiceImplTest extends AbstractUnitTest {
 
 		when(userRepository.getUsernameById(anyLong())).thenReturn("user1");
 
-		// act
+		// when
 		EventListDto response = service.listByUser(1L, pageable);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1, response.getResultList().size());
 		verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
@@ -142,3 +142,4 @@ class EventServiceImplTest extends AbstractUnitTest {
 		verify(userRepository).getUsernameById(anyLong());
 	}
 }
+

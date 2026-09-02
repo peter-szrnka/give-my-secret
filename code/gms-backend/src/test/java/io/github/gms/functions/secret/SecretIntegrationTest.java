@@ -67,14 +67,14 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod(SAVE)
 	void save_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<SaveSecretRequestDto> requestEntity = new HttpEntity<>(
 				TestUtils.createSaveSecretRequestDto(DemoData.SECRET_ENTITY_ID),
 				TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SaveEntityResponseDto> response = executeHttpPost("", requestEntity,
 				SaveEntityResponseDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
@@ -87,12 +87,12 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void getById_whenInputIsValid_thenReturnOk() {
 		SecretEntity newEntity = secretRepository.save(TestUtils.createSecretEntityWithUniqueId("getById_whenInputIsValid_thenReturnOk"));
 
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SecretDto> response = executeHttpGet("/" + newEntity.getId(),
 				requestEntity, SecretDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
@@ -106,11 +106,11 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod(LIST)
 	void list_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SecretListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, SecretListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
@@ -121,12 +121,12 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod(GET_VALUE)
 	void getValue_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpGet("/value/" + DemoData.SECRET_ENTITY_ID,
 				requestEntity, String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
@@ -137,12 +137,12 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod(DELETE)
 	void delete_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/" + DemoData.SECRET_ENTITY2_ID,
 				requestEntity, String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
@@ -152,12 +152,12 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@TestedMethod(TOGGLE)
 	@ValueSource(booleans = { false, true })
 	void toggleStatus_whenInputIsValid_thenReturnOk(boolean enabled) {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost(
 				"/" + DemoData.SECRET_ENTITY_ID + "?enabled=" + enabled, requestEntity, String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 
@@ -174,11 +174,11 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void rotateSecret_whenInputIsValid_thenReturnOk() {
 		String oldValue = secretRepository.findById(DemoData.SECRET_ENTITY_ID).get().getValue();
 		
-		// act
+		// when
 		HttpEntity<SaveSecretRequestDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost("/rotate/" + DemoData.SECRET_ENTITY_ID, requestEntity, String.class);
 
-		// Assert
+		// then
 		String newValue = secretRepository.findById(DemoData.SECRET_ENTITY_ID).get().getValue();
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -188,7 +188,7 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("validateValueLength")
 	void validateValueLength_whenInputProvided_thenReturnOk() {
-		// act
+		// when
 		SecretValueDto secretValueDto = SecretValueDto.builder()
 				.keystoreId(DemoData.KEYSTORE_ID)
 				.keystoreAliasId(DemoData.KEYSTORE_ALIAS_ID)
@@ -198,9 +198,10 @@ class SecretIntegrationTest extends AbstractClientControllerIntegrationTest {
 		ResponseEntity<BooleanValueDto> response = executeHttpPost("/validate_value_length",
 				requestEntity, BooleanValueDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertTrue(response.getBody().getValue());
 	}
 }
+

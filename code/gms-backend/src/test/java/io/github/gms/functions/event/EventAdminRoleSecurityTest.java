@@ -37,10 +37,10 @@ class EventAdminRoleSecurityTest extends AbstractSecurityTest {
 	void listByUserId_whenAuthenticationFails_thenReturnHttp403() {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));
 
-		// act
+		// when
 		ResponseEntity<EventListDto> response = executeHttpGet(urlPrefix + "/list/1", requestEntity, EventListDto.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 

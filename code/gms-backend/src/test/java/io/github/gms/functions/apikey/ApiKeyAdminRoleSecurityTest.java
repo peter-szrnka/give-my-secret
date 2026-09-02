@@ -50,10 +50,10 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		addCsrf(requestEntity);
 
-		// act
+		// when
 		ResponseEntity<String> response = executeHttpGet(urlPrefix + "/value/" + DemoData.API_KEY_1_ID, requestEntity, String.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 	
@@ -75,3 +75,4 @@ class ApiKeyAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
 		assertListingFailWith403("/secure/apikey/list_names");
 	}
 }
+

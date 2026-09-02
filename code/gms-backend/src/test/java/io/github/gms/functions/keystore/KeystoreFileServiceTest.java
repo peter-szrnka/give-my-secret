@@ -68,7 +68,7 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 	@Test
 	@SneakyThrows
 	void generate_whenUserExistsAndSystemPropertiesAreSet_thenGenerateKeystore() {
-		// arrange
+		// given
 		when(userRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createUser()));
 		when(systemPropertyService.get(SystemProperty.ORGANIZATION_NAME)).thenReturn("orgName");
 		when(systemPropertyService.get(SystemProperty.ORGANIZATION_CITY)).thenReturn("orgLocation");
@@ -76,7 +76,7 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
-		// act & assert
+		// when & assert
 		assertNotNull(service.generate(TestUtils.createSaveKeystoreRequestDto()));
 		verify(systemPropertyService).get(SystemProperty.ORGANIZATION_NAME);
 		verify(systemPropertyService).get(SystemProperty.ORGANIZATION_CITY);
@@ -84,15 +84,15 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 
 	@Test
 	void generate_whenInputIsInvalid_thenThrowException() {
-		// arrange
+		// given
 		SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> service.generate(dto));
 
-		// assert
+		// then
 		assertEquals(ENTITY_NOT_FOUND, Throwables.getRootCause(exception).getMessage());
 	}
 
@@ -112,10 +112,10 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 		when(repository.findByFileName("file2.txt")).thenReturn(null);
 		when(repository.findByFileName("file3.txt")).thenReturn(null);
 
-		// act
+		// when
         long response = service.deleteTempKeystoreFiles();
 
-		// assert
+		// then
         assertEquals(1L, response);
 
 		verify(fileService).list(any(Path.class));
@@ -137,10 +137,10 @@ class KeystoreFileServiceTest extends AbstractUnitTest {
 
         when(repository.findByFileName("file1.txt")).thenReturn(null);
 
-        // act
+        // when
         GmsException response = assertThrows(GmsException.class, () -> service.deleteTempKeystoreFiles());
 
-        // assert
+        // then
         assertEquals("ERROR!", Throwables.getRootCause(response).getMessage());
 		verify(fileService).list(any(Path.class));
 	}

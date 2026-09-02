@@ -50,7 +50,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void save_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		MessageDto dto = MessageDto.builder()
@@ -60,10 +60,10 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 				.build();
 		when(repository.save(any(MessageEntity.class))).thenReturn(TestUtils.createMessageEntity());
 		
-		// act
+		// when
 		SaveEntityResponseDto response = service.save(dto);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1L, response.getEntityId());
 		ArgumentCaptor<MessageEntity> messageEntityCaptor = ArgumentCaptor.forClass(MessageEntity.class);
@@ -81,7 +81,7 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void list_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 
 		Page<MessageEntity> mockList = new PageImpl<>(Lists.newArrayList(new MessageEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
@@ -90,10 +90,10 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 				.totalElements(1).build());
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-		// act
+		// when
 		MessageListDto response = service.list(pageable);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1, response.getResultList().size());
 		verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
@@ -102,62 +102,63 @@ class MessageServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void getUnreadMessagesCount_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		when(repository.countAllUnreadByUserId(1L)).thenReturn(2L);
 
-		// act
+		// when
 		long count = service.getUnreadMessagesCount();
 		
-		// assert
+		// then
 		assertEquals(2L, count);
 		verify(repository).countAllUnreadByUserId(1L);
 	}
 	
 	@Test
 	void toggleMarkAsRead_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().ids(Sets.newHashSet(2L)).opened(true).build();
 
-		// act
+		// when
 		service.toggleMarkAsRead(dto);
 
-		// assert
+		// then
 		verify(repository).markAsRead(1L, dto.getIds(), true);
 	}
 
 	@Test
 	void batchDeleteByUserIds_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		Set<Long> userIds = Set.of(1L, 2L);
 
-		// act
+		// when
 		service.batchDeleteByUserIds(userIds);
 
-		// assert
+		// then
 		verify(repository).deleteAllByUserId(userIds);
 		assertLogContains(logAppender, "All messages have been removed for the requested users");
 	}
 
 	@Test
 	void deleteAllByIds_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		IdListDto input = new IdListDto(Set.of(1L, 2L, 3L));
-		// act
+		// when
 		service.deleteAllByIds(input);
 
-		// assert
+		// then
 		verify(repository).deleteAllByUserIdAndIds(anyLong(), eq(input.getIds()));
 	}
 
 	@Test
 	void deleteById_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		Long id = 1L;
 
-		// act
+		// when
 		service.deleteById(id);
 
-		// assert
+		// then
 		verify(repository).deleteById(id);
 	}
 }
+

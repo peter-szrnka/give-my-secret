@@ -23,13 +23,13 @@ class EventConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toDtoList_whenValidInputProvided_thenReturnData() {
-		// arrange
+		// given
 		Page<EventEntity> entityList = new PageImpl<>(Lists.newArrayList(TestUtils.createEventEntity()));
 
-		// act
+		// when
 		EventListDto resultList = converter.toDtoList(entityList, "username");
 
-		// assert
+		// then
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
@@ -43,3 +43,4 @@ class EventConverterTest extends AbstractUnitTest {
 		assertEquals("username", dto.getUsername());
 	}
 }
+

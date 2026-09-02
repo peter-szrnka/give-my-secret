@@ -41,10 +41,10 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
     void testUnreadMessagesCountFailWithHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<LongValueDto> response = executeHttpGet(urlPrefix + "/unread", requestEntity, LongValueDto.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -54,10 +54,10 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
         MarkAsReadRequestDto request =  MarkAsReadRequestDto.builder().ids(Set.of(1L, 2L, 3L)).build();
         HttpEntity<MarkAsReadRequestDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<String> response = executeHttpPost(urlPrefix + "/mark_as_read", requestEntity, String.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -67,10 +67,10 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
         IdListDto request = new IdListDto(Set.of(1L, 2L, 3L));
         HttpEntity<IdListDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<Void> response = executeHttpPost(urlPrefix + "/delete_all_by_ids", requestEntity, Void.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -79,10 +79,11 @@ class MessageControllerSecurityTest extends AbstractSecurityTest {
     void testDeleteById() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<Void> response = executeHttpDelete(urlPrefix + "/1", requestEntity, Void.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 }
+

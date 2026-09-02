@@ -62,34 +62,34 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void run_whenSystemIsNotReady_thenSkipExecution() {
-		// arrange
+		// given
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
 
-		// act
+		// when
 		job.run();
 
-		// assert
+		// then
 		assertTrue(logAppender.list.isEmpty());
 		verify(systemAttributeRepository).getSystemStatus();
 	}
 
 	@Test
 	void run_whenJobIsDisabled_thenSkipExecution() {
-		// arrange
+		// given
 		when(systemPropertyService.getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED)).thenReturn(false);
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-		// act
+		// when
 		job.run();
 
-		// assert
+		// then
 		assertTrue(logAppender.list.isEmpty());
 		verify(systemPropertyService).getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED);
 	}
 
 	@Test
 	void run_whenNoMessagesDeleted_thenSkipLogging() {
-		// arrange
+		// given
 		setupClock(clock);
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(0);
 		when(systemPropertyService.getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED)).thenReturn(true);
@@ -100,10 +100,10 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-		// act
+		// when
 		job.run();
 		
-		// assert
+		// then
 		assertTrue(logAppender.list.isEmpty());
 		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
 		verify(systemPropertyService).get(SystemProperty.JOB_OLD_MESSAGE_LIMIT);
@@ -114,7 +114,7 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void run_whenAllConditionsMet_thenProcess() {
-		// arrange
+		// given
 		setupClock(clock);
 		when(messageRepository.deleteAllEventDateOlderThan(any(ZonedDateTime.class))).thenReturn(1);
 		when(systemPropertyService.getBoolean(SystemProperty.MESSAGE_CLEANUP_JOB_ENABLED)).thenReturn(true);
@@ -125,10 +125,10 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-		// act
+		// when
 		job.run();
 		
-		// assert
+		// then
 		assertFalse(logAppender.list.isEmpty());
 		assertEquals("1 message(s) deleted", logAppender.list.getFirst().getFormattedMessage());
 		verify(messageRepository).deleteAllEventDateOlderThan(any(ZonedDateTime.class));
@@ -138,3 +138,4 @@ class MessageCleanupJobTest extends AbstractLoggingUnitTest {
 		verify(jobRepository).findById(anyLong());
 	}
 }
+

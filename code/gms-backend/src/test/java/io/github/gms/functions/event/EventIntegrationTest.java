@@ -49,7 +49,7 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 	void list_whenInputIsValid_thenReturnOk() {
 		eventRepository.deleteAll();
 		
-		// arrange
+		// given
 		EventEntity eventEntity = new EventEntity();
 		eventEntity.setUserId(getEntityId("user", USER_2_ID));
 		eventEntity.setOperation(EventOperation.GET_BY_ID);
@@ -57,11 +57,11 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1L));
 		eventRepository.save(eventEntity);
 
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<EventListDto> response = executeHttpGet(path + "/list?page=0&size=10&direction=ASC&property=id", requestEntity, EventListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -76,7 +76,7 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 	void listByUserId_whenInputIsValid_thenReturnOk() {
 		eventRepository.deleteAll();
 		
-		// arrange
+		// given
 		EventEntity eventEntity = new EventEntity();
 		eventEntity.setUserId(getEntityId("user", USER_2_ID));
 		eventEntity.setOperation(EventOperation.GET_BY_ID);
@@ -84,11 +84,11 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		eventEntity.setEventDate(ZonedDateTime.now().minusDays(1L));
 		eventRepository.save(eventEntity);
 
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<EventListDto> response = executeHttpGet(path + "/list/2?page=0&size=10&direction=ASC&property=id", requestEntity, EventListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -108,3 +108,4 @@ class EventIntegrationTest extends AbstractIntegrationTest implements GmsControl
 		assertNotNull(response.getBody());
 	}
 }
+

@@ -87,7 +87,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 			MockMvc mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 					.addFilter(secureHeaderInitializerFilter, "/secure/keystore").build();
 
-			// act
+			// when
 			mvc.perform(multipartRequest).andExpect(MockMvcResultMatchers.status().isOk());
 		}
 	}
@@ -95,12 +95,12 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod(GET_BY_ID)
 	void getById_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<KeystoreDto> response = executeHttpGet("/" + DemoData.KEYSTORE_ID, requestEntity,
 				KeystoreDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
@@ -112,11 +112,11 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod(LIST)
 	void list_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<KeystoreListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, KeystoreListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
@@ -128,12 +128,12 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@MethodSource("valueData")
 	@TestedMethod(GET_VALUE)
 	void getValue_whenInputIsValid_thenReturnOk(ValueHolder input) {
-		// act
+		// when
 		GetSecureValueDto dto = new GetSecureValueDto(DemoData.KEYSTORE_ID, input.getAliasId(), input.getValueType());
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost("/value", requestEntity, String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
@@ -145,14 +145,14 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@SneakyThrows
 	@TestedMethod(DELETE)
 	void delete_whenInputIsValid_thenReturnOk() {
-		// arrange
+		// given
 		KeystoreEntity newEntity = keystoreRepository.save(TestUtils.createNewKeystoreEntity());
 
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/" + newEntity.getId(), requestEntity, String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 
@@ -164,12 +164,12 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@TestedMethod(TOGGLE)
 	@ValueSource(booleans = { false, true })
 	void toggle_whenInputIsValid_thenReturnOk(boolean enabled) {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost("/" + DemoData.KEYSTORE_ID + "?enabled=" + enabled,
 				requestEntity, String.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 
@@ -183,14 +183,14 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("getAllKeystoreNames")
 	void getAllKeystoreNames_whenInputIsValid_thenReturnOk() {
-		// arrange
+		// given
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-		// act
+		// when
 		ResponseEntity<IdNamePairListDto> response = executeHttpGet("/list_names", requestEntity,
 				IdNamePairListDto.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertFalse(response.getBody().getResultList().isEmpty());
@@ -200,14 +200,14 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("getAllKeystoreAliases")
 	void getAllKeystoreAliasNames_whenInputIsValid_thenReturnOk() {
-		// arrange
+		// given
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-		// act
+		// when
 		ResponseEntity<IdNamePairListDto> response = executeHttpGet("/list_aliases/" + DemoData.KEYSTORE_ID,
 				requestEntity, IdNamePairListDto.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertFalse(response.getBody().getResultList().isEmpty());
@@ -218,7 +218,7 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@SneakyThrows
 	@TestedMethod("download")
 	void downloadKeystoreFile_whenInputIsValid_thenReturnOk() {
-		// arrange
+		// given
 		File keystoreFile = new File("./keystores/1/test.jks");
 		boolean keystoreFileCreated = !keystoreFile.exists();
 		
@@ -233,11 +233,11 @@ class KeystoreIntegrationTest extends AbstractClientControllerIntegrationTest {
 		
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
-		// act
+		// when
 		ResponseEntity<Resource> response = executeHttpGet("/download/" + DemoData.KEYSTORE_ID, requestEntity,
 				Resource.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		

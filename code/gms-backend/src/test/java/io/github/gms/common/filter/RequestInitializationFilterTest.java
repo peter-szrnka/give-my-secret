@@ -45,7 +45,7 @@ class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
         ReflectionTestUtils.setField(filter, "logResponseTimeDisabled", logResponseTimeDisabled);
 
         try (MockedStatic<ThreadLocalContext> mdcMockedStatic = mockStatic(ThreadLocalContext.class)) {
-            // arrange
+            // given
             AtomicBoolean atomicInteger = new AtomicBoolean(false);
             when(clock.millis()).thenAnswer(invocation -> {
                 if (atomicInteger.get()) {
@@ -63,10 +63,10 @@ class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
             FilterChain filterChain = mock(FilterChain.class);
             mdcMockedStatic.when(() -> ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID)).thenReturn("MOCK_CORRELATION_ID");
 
-            // act
+            // when
             filter.doFilterInternal(request, response, filterChain);
 
-            // assert
+            // then
             verify(response).addHeader("X-CORRELATION-ID", "MOCK_CORRELATION_ID");
             verify(filterChain).doFilter(request, response);
             mdcMockedStatic.verify(() -> ThreadLocalContext.getAsString(MdcParameter.CORRELATION_ID));
@@ -80,3 +80,4 @@ class RequestInitializationFilterTest extends AbstractLoggingUnitTest {
         }
     }
 }
+

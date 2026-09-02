@@ -39,15 +39,15 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toEntity_whenNotParametersProvided_thenConvert() {
-		// arrange
+		// given
 		SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
 		dto.setValue(null);
 		dto.setStatus(null);
 		
-		// act
+		// when
 		ApiKeyEntity entity = converter.toEntity(TestUtils.createApiKey(), dto);
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertNull(entity.getId());
 		assertEquals(1L, entity.getUserId());
@@ -59,7 +59,7 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toEntity_whenParametersProvided_thenConvert() {
-		// arrange
+		// given
 		SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
 		dto.setId(3L);
 		dto.setUserId(6L);
@@ -69,25 +69,25 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 		existingEntity.setUserId(2L);
 		existingEntity.setStatus(EntityStatus.DISABLED);
 
-		// act
+		// when
 		ApiKeyEntity entity = converter.toEntity(existingEntity, dto);
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertEquals("ApiKeyEntity(id=3, userId=6, name=api-key-name, value=12345678, description=description2, status=ACTIVE, creationDate=null)", entity.toString());
 	}
 
 	@Test
 	void toNewEntity_whenDtoProvided_thenConvertToNewEntity() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
 
-		// act
+		// when
 		ApiKeyEntity entity = converter.toNewEntity(dto);
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertNull(entity.getId());
 		assertEquals("api-key-name", entity.getName());
@@ -100,17 +100,17 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toDtoList_whenEntityListProvided_thenConvertToDto() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		ApiKeyEntity apiKeyEntity = TestUtils.createApiKey();
 		apiKeyEntity.setCreationDate(ZonedDateTime.now(clock));
 		Page<ApiKeyEntity> entityList = new PageImpl<>(Lists.newArrayList(apiKeyEntity));
 
-		// act
+		// when
 		ApiKeyListDto resultList = converter.toDtoList(entityList);
 
-		// assert
+		// then
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
@@ -125,3 +125,4 @@ class ApiKeyConverterTest extends AbstractUnitTest {
 		assertEquals("2023-06-29T00:00Z", entity.getCreationDate().toString());
 	}
 }
+

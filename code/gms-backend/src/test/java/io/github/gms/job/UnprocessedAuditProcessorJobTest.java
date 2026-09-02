@@ -70,34 +70,34 @@ class UnprocessedAuditProcessorJobTest extends AbstractLoggingUnitTest {
 
     @Test
     void run_whenSystemIsNotReady_thenSkipExecution() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertTrue(logAppender.list.isEmpty());
         verify(systemAttributeRepository).getSystemStatus();
     }
 
     @Test
     void run_whenJobIsDisabled_thenSkipExecution() {
-        // arrange
+        // given
         when(systemPropertyService.getBoolean(SystemProperty.UNPROCESSED_AUDIT_LOGS_ENABLED)).thenReturn(false);
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertTrue(logAppender.list.isEmpty());
         verify(systemPropertyService).getBoolean(SystemProperty.UNPROCESSED_AUDIT_LOGS_ENABLED);
     }
 
     @Test
     void run_whenNoUnprocessedEventsAvailable_thenSkipProcessing() {
-        // arrange
+        // given
         when(systemPropertyService.getBoolean(SystemProperty.UNPROCESSED_AUDIT_LOGS_ENABLED)).thenReturn(true);
         when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
         when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
@@ -106,10 +106,10 @@ class UnprocessedAuditProcessorJobTest extends AbstractLoggingUnitTest {
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
         when(unprocessedEventStorage.getAll(true)).thenReturn(emptyList());
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertFalse(logAppender.list.isEmpty());
         assertLogContains(logAppender, "Number of unprocessed events: 0");
         verify(jobRepository, times(2)).save(any(JobEntity.class));
@@ -118,7 +118,7 @@ class UnprocessedAuditProcessorJobTest extends AbstractLoggingUnitTest {
 
     @Test
     void run_whenAllConditionsMet_thenProcess() {
-        // arrange
+        // given
         when(systemPropertyService.getBoolean(SystemProperty.UNPROCESSED_AUDIT_LOGS_ENABLED)).thenReturn(true);
         when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
         when(jobRepository.findById(anyLong())).thenReturn(java.util.Optional.of(createJobEntity()));
@@ -129,13 +129,14 @@ class UnprocessedAuditProcessorJobTest extends AbstractLoggingUnitTest {
                 UserEvent.builder().userId(1L).build()
         ));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertFalse(logAppender.list.isEmpty());
         assertLogContains(logAppender, "Number of unprocessed events: 1");
         verify(jobRepository, times(2)).save(any(JobEntity.class));
         verify(jobRepository).findById(anyLong());
     }
 }
+

@@ -25,7 +25,7 @@ class HomeControllerTest {
 
     @Test
     void getHomeData_whenCorrectInputProvided_thenReturnHomeData() {
-        // arrange
+        // given
         HomeDataResponseDto dto = new HomeDataResponseDto();
         dto.setAnnouncementCount(0L);
         dto.setApiKeyCount(0L);
@@ -33,10 +33,10 @@ class HomeControllerTest {
         dto.setSecretCount(0L);
         when(service.getHomeData()).thenReturn(dto);
 
-        // act
+        // when
         HomeDataResponseDto response = controller.getHomeData();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dto, response);
         verify(service).getHomeData();

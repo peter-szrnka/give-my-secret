@@ -37,26 +37,26 @@ class SetupControllerTest {
 
     @Test
     void stepBack_whenDataSaved_thenProceed() {
-        // arrange
+        // given
         when(setupService.stepBack()).thenReturn(SystemStatus.NEED_SETUP.name());
 
-        // act
+        // when
         String response = controller.stepBack();
 
-        // assert
+        // then
         assertEquals(SystemStatus.NEED_SETUP.name(), response);
         verify(setupService).stepBack();
     }
 
     @Test
     void getCurrentSuperAdmin_whenDataSaved_thenProceed() {
-        // arrange
+        // given
         when(setupService.getCurrentSuperAdmin()).thenReturn(TestUtils.createUserDto());
 
-        // act
+        // when
         UserDto response = controller.getCurrentSuperAdmin();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1L, response.getId());
         verify(setupService).getCurrentSuperAdmin();
@@ -64,69 +64,69 @@ class SetupControllerTest {
 
     @Test
     void saveInitialStep_whenDataSaved_thenProceed() {
-        // arrange
+        // given
         when(setupService.saveInitialStep()).thenReturn(new SimpleResponseDto(true));
 
-        // act
+        // when
         SimpleResponseDto response = controller.saveInitialStep();
 
-        // assert
+        // then
         assertNotNull(response);
         assertTrue(response.isSuccess());
     }
 
     @Test
     void saveSystemProperties_whenDataSaved_thenProceed() {
-        // arrange
+        // given
         when(setupService.saveSystemProperties(any())).thenReturn(new SimpleResponseDto(true));
 
-        // act
+        // when
         SimpleResponseDto response = controller.saveSystemProperties(null);
 
-        // assert
+        // then
         assertNotNull(response);
         assertTrue(response.isSuccess());
     }
 
     @Test
     void saveOrganizationData_whenOrgDataSaved_thenProceed() {
-        // arrange
+        // given
         when(setupService.saveOrganizationData(any())).thenReturn(new SimpleResponseDto(true));
 
-        // act
+        // when
         SimpleResponseDto response = controller.saveOrganizationData(null);
 
-        // assert
+        // then
         assertNotNull(response);
         assertTrue(response.isSuccess());
     }
 
     @Test
     void completeSetup_whenCompletionFinished_thenSucceed() {
-        // arrange
+        // given
         when(setupService.completeSetup()).thenReturn(new SimpleResponseDto(true));
 
-        // act
+        // when
         SimpleResponseDto response = controller.completeSetup();
 
-        // assert
+        // then
         assertNotNull(response);
         assertTrue(response.isSuccess());
     }
 
     @Test
     void saveAdminUser_whenUserRoleMissing_thenSaveUser() {
-        // arrange
+        // given
         SaveUserRequestDto dto = new SaveUserRequestDto();
         dto.setRole(null);
 
         SaveEntityResponseDto mockResponse = new SaveEntityResponseDto(1L);
         when(setupService.saveAdminUser(dto)).thenReturn(mockResponse);
 
-        // act
+        // when
         SaveEntityResponseDto response = controller.saveAdminUser(dto);
 
-        // arrange
+        // given
         assertNotNull(response);
         assertEquals("setup", ThreadLocalContext.getAsString(MdcParameter.USER_NAME));
         assertEquals("0", ThreadLocalContext.getAsString(MdcParameter.USER_ID));
@@ -138,17 +138,17 @@ class SetupControllerTest {
 
     @Test
     void saveAdminUser_whenUserRoleDefined_thenSaveUser() {
-        // arrange
+        // given
         SaveUserRequestDto dto = new SaveUserRequestDto();
         dto.setRole(UserRole.ROLE_ADMIN);
 
         SaveEntityResponseDto mockResponse = new SaveEntityResponseDto(1L);
         when(setupService.saveAdminUser(dto)).thenReturn(mockResponse);
 
-        // act
+        // when
         SaveEntityResponseDto response = controller.saveAdminUser(dto);
 
-        // arrange
+        // given
         assertNotNull(response);
         assertEquals("setup", ThreadLocalContext.getAsString(MdcParameter.USER_NAME));
         assertEquals("0", ThreadLocalContext.getAsString(MdcParameter.USER_ID));

@@ -66,34 +66,34 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void run_whenSystemIsNotReady_thenSkipExecution() {
-		// arrange
+		// given
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
 
-		// act
+		// when
 		job.run();
 
-		// assert
+		// then
 		assertTrue(logAppender.list.isEmpty());
 		verify(systemAttributeRepository).getSystemStatus();
 	}
 
 	@Test
 	void run_whenJobIsDisabled_thenSkipExecution() {
-		// arrange
+		// given
 		when(systemPropertyService.getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED)).thenReturn(false);
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-		// act
+		// when
 		job.run();
 
-		// assert
+		// then
 		assertTrue(logAppender.list.isEmpty());
 		verify(systemPropertyService).getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED);
 	}
 
 	@Test
 	void run_whenSkipJobExecutionReturnsFalse_thenProcess() {
-		// arrange
+		// given
 		when(systemPropertyService.getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED)).thenReturn(true);
 		Clock mockClock = Clock.fixed(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());
 		when(secretRepository.findAllOldRotated(any(ZonedDateTime.class)))
@@ -104,10 +104,10 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-		// act
+		// when
 		job.run();
 
-		// assert
+		// then
 		verify(service, never()).rotateSecret(any(SecretEntity.class));
 		verify(secretRepository).findAllOldRotated(any(ZonedDateTime.class));
 		verify(systemPropertyService).getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED);
@@ -118,7 +118,7 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void run_whenAllConditionsMet_thenProcess() {
-		// arrange
+		// given
 		when(systemPropertyService.getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED)).thenReturn(true);
 		Clock mockClock = Clock.fixed(Instant.parse("2023-06-29T00:00:00Z"), ZoneId.systemDefault());
 		when(secretRepository.findAllOldRotated(any(ZonedDateTime.class)))
@@ -132,10 +132,10 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-		// act
+		// when
 		job.run();
 
-		// assert
+		// then
 		verify(service, times(1)).rotateSecret(any(SecretEntity.class));
 		verify(systemPropertyService).getBoolean(SystemProperty.SECRET_ROTATION_JOB_ENABLED);
 		verify(secretRepository).findAllOldRotated(any(ZonedDateTime.class));
@@ -149,3 +149,4 @@ class SecretRotationJobTest extends AbstractLoggingUnitTest {
 		verify(jobRepository).findById(anyLong());
 	}
 }
+

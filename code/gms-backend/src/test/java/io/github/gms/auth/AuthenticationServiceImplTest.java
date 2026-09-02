@@ -60,13 +60,13 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void authenticate_whenUserIsBlocked_thenReturnBlocked() {
-		// arrange
+		// given
 		when(userLoginAttemptManagerService.isBlocked("user")).thenReturn(true);
 
-		// act
+		// when
 		AuthenticationResponse response = service.authenticate("user", "credential");
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
 		verify(userLoginAttemptManagerService).isBlocked("user");
@@ -74,17 +74,17 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void authenticate_whenUserIsBlockedInLdap_thenReturnBlocked() {
-		// arrange
+		// given
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setAccountNonLocked(false);
 		when(userLoginAttemptManagerService.isBlocked("user")).thenReturn(false);
 		when(authenticationManager.authenticate(any()))
 				.thenReturn(new TestingAuthenticationToken(userDetails, "cred", List.of(new SimpleGrantedAuthority("ROLE_USER"))));
 
-		// act
+		// when
 		AuthenticationResponse response = service.authenticate("user", "credential");
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.BLOCKED, response.getPhase());
 		verify(userLoginAttemptManagerService).isBlocked("user");
@@ -92,14 +92,14 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void authenticate_whenAuthenticationFail_thenReturnFailed() {
-		// arrange
+		// given
 		when(userLoginAttemptManagerService.isBlocked("user")).thenReturn(false);
 		when(authenticationManager.authenticate(any())).thenThrow(IllegalArgumentException.class);
 
-		// act
+		// when
 		AuthenticationResponse response = service.authenticate("user", "credential");
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(AuthResponsePhase.FAILED, response.getPhase());
 		assertLogEqualsIgnoreCase(logAppender, "Login failed");
@@ -110,7 +110,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@MethodSource("nonMfaTestData")
 	void authenticate_whenCustomMfaDataProvided_thenAuthenticate(boolean systemLevelMfaEnabled, boolean userMfaEnabled) {
-		// arrange
+		// given
 		when(userLoginAttemptManagerService.isBlocked("user")).thenReturn(false);
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setMfaEnabled(userMfaEnabled);
@@ -125,10 +125,10 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		));
 		when(csrfTokenService.generateCsrfToken()).thenReturn("csrf");
 		
-		//act
+		//when
 		AuthenticationResponse response = service.authenticate("user", "credential");
 		
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals("ACCESS_JWT", response.getToken());
 		assertEquals("REFRESH_JWT", response.getRefreshToken());
@@ -147,7 +147,7 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@MethodSource("mfaTestData")
 	void authenticate_whenMfaEnabled_thenReturnMfaRequired(boolean enableGlobalMfa, boolean enableMfa) {
-		// arrange
+		// given
 		when(userLoginAttemptManagerService.isBlocked("user")).thenReturn(false);
 		GmsUserDetails userDetails = TestUtils.createGmsUser();
 		userDetails.setMfaEnabled(true);
@@ -159,10 +159,10 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		}
 		when(userConverter.toUserInfoDto(any(GmsUserDetails.class), eq(true))).thenReturn(TestUtils.createUserInfoDto());
 		
-		//act
+		//when
 		AuthenticationResponse response = service.authenticate("user", "credential");
 		
-		// assert
+		// then
 		assertNotNull(response);
 		assertNull(response.getToken());
 		assertNull(response.getRefreshToken());
@@ -177,10 +177,10 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void logout_whenUserLoggedIn_thenLogout() {
-		// act
+		// when
 		service.logout();
 
-		// assert
+		// then
 		assertLogEqualsIgnoreCase(logAppender, "User logged out");
 	}
 
@@ -200,3 +200,4 @@ class AuthenticationServiceImplTest extends AbstractLoggingUnitTest {
 		};
 	}
 }
+

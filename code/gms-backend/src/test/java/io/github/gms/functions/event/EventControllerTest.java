@@ -28,13 +28,13 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
 
     @Test
     void list_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         EventListDto dtoList = TestUtils.createEventListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         when(service.list(pageable)).thenReturn(dtoList);
         
 
-        // act
+        // when
         EventListDto response = controller.list(
                 "DESC",
                 "id",
@@ -42,7 +42,7 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
                 10
         );
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).list(pageable);
@@ -50,20 +50,20 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
 
     @Test
     void listByUserId_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         EventListDto dtoList = TestUtils.createEventListDto();
         when(service.listByUser(1L, pageable)).thenReturn(dtoList);
         
 
-        // act
+        // when
         EventListDto response = controller.listByUserId(1L,
                 "DESC",
                 "id",
                 0,
                 10);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).listByUser(1L, pageable);
@@ -81,3 +81,4 @@ class EventControllerTest extends AbstractClientControllerTest<EventService, Eve
         verify(service).getUnprocessedEventsCount();
     }
 }
+

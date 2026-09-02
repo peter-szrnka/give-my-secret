@@ -45,11 +45,11 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	@Test
 	@SneakyThrows
 	void validateKeyStoreFile_whenKeyIsInvalid_thenThrowGmsException() {
-		// arrange
+		// given
 	    MockMultipartFile sampleFile = getMockMultipartFile("wrong key".getBytes());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		
-		// act & assert
+		// when & assert
 	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "java.io.EOFException");
 		assertLogContains(logAppender, "Keystore cannot be loaded!");
 	}
@@ -57,24 +57,24 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	@Test
 	@SneakyThrows
 	void validateKeyStoreFile_whenAliasIsInvalid_thenThrowGmsException() {
-		// arrange
+		// given
 		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 	    dto.getAliases().getFirst().setAlias("aliasfail");
 		
-		// act & assert
+		// when & assert
 	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "The given alias(aliasfail) is not valid!");
 	}
 	
 	@Test
 	@SneakyThrows
 	void validateKeyStoreFile_whenAliasCredentialIsInvalid_thenThrowGmsException() {
-		// arrange
+		// given
 		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 	    dto.getAliases().getFirst().setAliasCredential("testfail");
 		
-		// act & assert
+		// when & assert
 	    TestUtils.assertGmsException(() -> service.validateKeyStoreFile(dto, sampleFile.getBytes()), "java.security.UnrecoverableKeyException: Cannot recover key");
 	    assertLogContains(logAppender, "Keystore cannot be loaded!");
 	}
@@ -82,69 +82,69 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 	@Test
 	@SneakyThrows
 	void validateKeyStoreFile_whenDataIsValid_thenLogMessage() {
-		// arrange
+		// given
 		MockMultipartFile sampleFile = getMockMultipartFile(getTestFileContent());
 	    SaveKeystoreRequestDto dto = TestUtils.createSaveKeystoreRequestDto();
 		
-		// act
+		// when
 		service.validateKeyStoreFile(dto, sampleFile.getBytes());
 		
-		// assert
+		// then
 		assertFalse(logAppender.list.stream().anyMatch(log -> log.getFormattedMessage().contains("Keystore cannot be loaded!")));
 	}
 	
 	@Test
 	@SneakyThrows
 	void service_whenDataIsInvalid_thenThrowGmsException() {
-		// arrange
+		// given
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenThrow(new IllegalArgumentException("Wrong!"));
 		
-		// act & assert
+		// when & assert
 		TestUtils.assertGmsException(() -> service.decrypt(TestUtils.createSecretEntity()), "java.lang.IllegalArgumentException: Wrong!");
 	}
 	
 	@Test
 	@SneakyThrows
 	void service_whenDataIsDecryptable_thenDecrypt() {
-		// arrange
+		// given
 		KeystorePair mockPair = new KeystorePair(TestUtils.createKeystoreAliasEntity(), createKeyStore());
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenReturn(mockPair);
 		
-		// act
+		// when
 		SecretEntity entity = TestUtils.createSecretEntity();
 		entity.setValue("I+sC4r7asrdGPuPi+mR3O/hJRZ47gVMTigE40tPfkAbo2hfl7V+KxgvoNg7dUv1Bv/JVLVE1GefmHCIk4KteQpilPdNo6lQnE2YldU0+eldGMUNSZnnjW5Qm946dGyHjb3dd9ZY4xXUfKKdgisJUde5CZySDDbarQAg7FbkQkXJc5rtJ8iJOh8R5QX3OnA8J6YuepmZ6kShYDHZi13O3exCEr+PL9r6ctKKDvH/LG1IldAtMTc7dBAGqxD/WCPdZjGXySEBR5M2eOQlcT6VKvhJM1598hbsx5iZ6IIzfdk9IlvhSFabBLkYF3n/7PKlm0buR/9avvcJxvRprCOV1MA");
 	    String response = service.decrypt(entity);
 	    
-	    // assert
+	    // then
 	    assertEquals(TEST, response);
 	}
 	
 	@Test
 	@SneakyThrows
 	void encrypt_whenKeystoreEntityIsInvalid_thenThrowIllegalArgumentException() {
-		// arrange
+		// given
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenThrow(new IllegalArgumentException("Wrong!"));
 		
-		// act
+		// when
 		SecretEntity entity = TestUtils.createSecretEntity();
 	    GmsException exception = assertThrows(GmsException.class, () -> service.encrypt(entity));
 	    
-	    // assert
+	    // then
 	    assertEquals("java.lang.IllegalArgumentException: Wrong!", exception.getMessage());
 	}
 	
 	@Test
 	@SneakyThrows
 	void encrypt_whenEntityIsValid_thenEncryptData() {
-		// arrange
+		// given
 		KeystorePair mockPair = new KeystorePair(TestUtils.createKeystoreAliasEntity(), createKeyStore());
 		when(keystoreDataService.getKeystoreData(any(SecretEntity.class))).thenReturn(mockPair);
 		
-		// act
+		// when
 		SecretEntity entity = TestUtils.createSecretEntity();
 	    service.encrypt(entity);
 	    
-	    // assert
+	    // then
 	    String decrypted = service.decrypt(entity);
 	    assertEquals(TEST, decrypted);
 	}
@@ -179,3 +179,4 @@ class CryptoServiceTest extends AbstractLoggingUnitTest {
 		return keystore;
 	}
 }
+

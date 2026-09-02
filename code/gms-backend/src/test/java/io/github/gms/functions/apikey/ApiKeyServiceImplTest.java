@@ -52,7 +52,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void save_WhenApiKeyIsNew_thenReturnOk() {
-		// arrange
+		// given
         ThreadLocalContext.set(MdcParameter.USER_ID, "2");
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
@@ -61,7 +61,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		when(repository.countAllApiKeysByName(anyLong(), anyString())).thenReturn(0L);
 		when(repository.countAllApiKeysByValue(anyLong(), anyString())).thenReturn(0L);
 
-		// act
+		// when
 		SaveEntityResponseDto response = service.save(TestUtils.createNewSaveApiKeyRequestDto());
 
 		assertNotNull(response);
@@ -78,7 +78,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void save_WhenApiKeyAlreadyExists_thenReturnOk() {
-		// arrange
+		// given
         ThreadLocalContext.set(MdcParameter.USER_ID, "2");
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
@@ -88,7 +88,7 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 		when(repository.countAllApiKeysByName(anyLong(), anyString())).thenReturn(0L);
 		when(repository.countAllApiKeysByValue(anyLong(), anyString())).thenReturn(0L);
 
-		// act
+		// when
 		SaveEntityResponseDto response = service.save(TestUtils.createSaveApiKeyRequestDto());
 
 		assertNotNull(response);
@@ -100,16 +100,16 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void save_WhenApiKeyNameIsNotUnique_thenThrowGmsException() {
-		// arrange
+		// given
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
 		when(repository.countAllApiKeysByName(anyLong(), anyString())).thenReturn(1L);
 
-		// act
+		// when
 		SaveApiKeyRequestDto input = TestUtils.createNewSaveApiKeyRequestDto();
 		GmsException exception = assertThrows(GmsException.class, () -> service.save(input));
 
-		// assert
+		// then
 		assertEquals("API key name must be unique!", exception.getMessage());
 		verify(converter, never()).toNewEntity(any(SaveApiKeyRequestDto.class));
 		verify(repository, never()).save(any(ApiKeyEntity.class));
@@ -118,16 +118,16 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void save_WhenNewEntityValueIsNotUnique_thenThrowGmsException() {
-		// arrange
+		// given
 		ApiKeyEntity mockEntity = new ApiKeyEntity();
 		mockEntity.setId(1L);
 		when(repository.countAllApiKeysByValue(anyLong(), anyString())).thenReturn(1L);
 
-		// act
+		// when
 		SaveApiKeyRequestDto input = TestUtils.createNewSaveApiKeyRequestDto();
 		GmsException exception = assertThrows(GmsException.class, () -> service.save(input));
 
-		// assert
+		// then
 		assertEquals("API key value must be unique!", exception.getMessage());
 		verify(converter, never()).toNewEntity(any(SaveApiKeyRequestDto.class));
 		verify(repository, never()).save(any(ApiKeyEntity.class));
@@ -136,13 +136,13 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void getById_whenEntityDoesNotExist_thenThrowGmsException() {
-		// arrange
+		// given
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> service.getById(1L));
 
-		// assert
+		// then
 		assertEquals(ENTITY_NOT_FOUND, exception.getMessage());
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 		verify(converter, never()).toDto(any());
@@ -150,14 +150,14 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void getById_whenEntityExists_thenReturnEntity() {
-		// arrange
+		// given
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createApiKey()));
 		when(converter.toDto(any())).thenReturn(new ApiKeyDto());
 
-		// act
+		// when
 		ApiKeyDto response = service.getById(1L);
 
-		// assert
+		// then
 		assertNotNull(response);
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 		verify(converter).toDto(any());
@@ -165,14 +165,14 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void list_whenDaoReturnsError_thenReturnEmptyList() {
-		// arrange
+		// given
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenThrow(new RuntimeException("Unexpected error!"));
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-		// act
+		// when
 		ApiKeyListDto response = service.list(pageable);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(0, response.getResultList().size());
 		assertEquals(0L, response.getTotalElements());
@@ -182,16 +182,16 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void list_whenEntitiesFound_thenReturnResultList() {
-		// arrange
+		// given
 		Page<ApiKeyEntity> mockList = new PageImpl<>(Lists.newArrayList(new ApiKeyEntity()));
 		when(repository.findAllByUserId(anyLong(), any(Pageable.class))).thenReturn(mockList);
 		when(converter.toDtoList(any())).thenReturn(ApiKeyListDto.builder().resultList(Lists.newArrayList(new ApiKeyDto())).build());
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-		// act
+		// when
 		ApiKeyListDto response = service.list(pageable);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1, response.getResultList().size());
 		verify(repository).findAllByUserId(anyLong(), any(Pageable.class));
@@ -200,22 +200,22 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void delete_whenEntityExists_thenRemoveData() {
-		// act
+		// when
 		service.delete(1L);
 
-		// assert
+		// then
 		verify(repository).deleteById(1L);
 	}
 	
 	@Test
 	void count_whenMultipleApiKeysFoundForAUser_thenReturnCount() {
-		// arrange
+		// given
 		when(repository.countByUserId(anyLong())).thenReturn(3L);
 
-		// act
+		// when
 		LongValueDto response = service.count();
 		
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(3L, response.getValue());
 	}
@@ -223,13 +223,13 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
 	void toggle_whenItHasAStatus_thenToggleValue(boolean enabled) {
-		// arrange
+		// given
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createApiKey()));
 
-		// act
+		// when
 		service.toggleStatus(1L, enabled);
 
-		// assert
+		// then
 		verify(repository).save(any());
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 
@@ -241,13 +241,13 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test	
 	void getDecryptedValue_whenEntityFound_thenReturnDecryptedValue() {
-		// arrange
+		// given
 		when(repository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(TestUtils.createApiKey()));
 
-		// act
+		// when
 		String response = service.getDecryptedValue(1L);
 
-		// assert
+		// then
 		assertEquals("apikey", response);
 		verify(repository).findByIdAndUserId(anyLong(), anyLong());
 	}
@@ -259,10 +259,10 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 				new IdNamePairDto(1L, "apikey2")
 		));
 
-		// act
+		// when
 		IdNamePairListDto response = service.getAllApiKeyNames();
 		
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(2, response.getResultList().size());
 		assertEquals("apikey1", response.getResultList().getFirst().getName());
@@ -271,14 +271,15 @@ class ApiKeyServiceImplTest extends AbstractLoggingUnitTest {
 
 	@Test
 	void batchDeleteByUserIds_whenInputProvided_thenProceed() {
-		// arrange
+		// given
 		Set<Long> userIds = Set.of(1L, 2L);
 
-		// act
+		// when
 		service.batchDeleteByUserIds(userIds);
 
-		// assert
+		// then
 		verify(repository).deleteAllByUserId(userIds);
 		assertLogContains(logAppender, "All API keys have been removed for the requested users");
 	}
 }
+

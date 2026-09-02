@@ -42,13 +42,13 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
 
     @Test
     void delete_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         doNothing().when(service).delete(1L);
 
-        // act
+        // when
         ResponseEntity<String> response = controller.delete(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).delete(1L);
@@ -56,10 +56,10 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
 
     @Test
     void toggle_whenInputProvided_thenReturnOk() {
-        // act
+        // when
         ResponseEntity<String> response = controller.toggle(1L, true);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).toggleStatus(1L,true);
@@ -67,14 +67,14 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
 
     @Test
     void save_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         MultipartFile multiPartFile = new MockMultipartFile(TEST, "data".getBytes());
         when(service.save("{'test':'value'}", multiPartFile)).thenReturn(new SaveEntityResponseDto(2L));
 
-        // act
+        // when
         SaveEntityResponseDto response = controller.save("{'test':'value'}", multiPartFile);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(2L, response.getEntityId());
 
@@ -85,14 +85,14 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
 
     @Test
     void getById_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         KeystoreDto dto = TestUtils.createKeystoreDto();
         when(service.getById(1L)).thenReturn(dto);
 
-        // act
+        // when
         KeystoreDto response = controller.getById(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dto, response);
         verify(service).getById(1L);
@@ -100,12 +100,12 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
 
     @Test
     void list_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         KeystoreListDto dtoList = TestUtils.createKeystoreListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         when(service.list(pageable)).thenReturn(dtoList);
 
-        // act
+        // when
         KeystoreListDto response = controller.list(
                 "DESC",
                 "id",
@@ -113,7 +113,7 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
                 10
         );
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).list(pageable);
@@ -121,14 +121,14 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
 
     @Test
     void getValue_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         GetSecureValueDto dto = new GetSecureValueDto();
         when(service.getValue(dto)).thenReturn(TEST);
 
-        // act
+        // when
         String response = controller.getValue(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(TEST, response);
         verify(service).getValue(dto);
@@ -136,15 +136,15 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
 
     @Test
     void getAllKeystoreNames_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         IdNamePairListDto mock = new IdNamePairListDto();
         mock.setResultList(List.of(new IdNamePairDto()));
         when(service.getAllKeystoreNames()).thenReturn(mock);
 
-        // act
+        // when
         IdNamePairListDto response = controller.getAllKeystoreNames();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1, response.getResultList().size());
         verify(service).getAllKeystoreNames();
@@ -152,15 +152,15 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
 
     @Test
     void getAllKeystoreAliases_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         IdNamePairListDto mock = new IdNamePairListDto();
         mock.setResultList(List.of(new IdNamePairDto()));
         when(service.getAllKeystoreAliasNames(1L)).thenReturn(mock);
 
-        // act
+        // when
         IdNamePairListDto response = controller.getAllKeystoreAliases(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1, response.getResultList().size());
         verify(service).getAllKeystoreAliasNames(1L);
@@ -168,14 +168,14 @@ class KeystoreControllerTest extends AbstractClientControllerTest<KeystoreServic
 
     @Test
     void download_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         DownloadFileResponseDto responseDto = new DownloadFileResponseDto("test.jks", "data".getBytes());
         when(service.downloadKeystore(1L)).thenReturn(responseDto);
 
-        // act
+        // when
         ResponseEntity<Resource> response = controller.download(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals("attachment; filename=\"test.jks\"", requireNonNull(response.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION)).getFirst());

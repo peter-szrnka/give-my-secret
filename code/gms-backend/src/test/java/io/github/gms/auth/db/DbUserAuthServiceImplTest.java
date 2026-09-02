@@ -38,26 +38,26 @@ class DbUserAuthServiceImplTest extends AbstractUnitTest {
 	void loadUserByUsername_whenUserNotFound_thenThrowException() {
 		when(repository.findByUsername(anyString())).thenReturn(Optional.empty());
 		
-		// act
+		// when
 		UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername(TEST));
 		
-		// assert
+		// then
 		assertEquals("User not found!", exception.getMessage());
 	}
 	
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
 	void loadUserByUsername_whenUserIsAvailable_thenLoadUser(boolean isActive) {
-		// arrange
+		// given
 		UserEntity user = TestUtils.createUserWithStatus(isActive? EntityStatus.ACTIVE : EntityStatus.DISABLED);
 		user.setMfaEnabled(true);
 		user.setMfaSecret("12345678");
 		when(repository.findByUsername(anyString())).thenReturn(Optional.of(user));
 		
-		// act
+		// when
 		GmsUserDetails response = (GmsUserDetails) service.loadUserByUsername(TEST);
 		
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1L, response.getUserId());
 		assertEquals(TestUtils.USERNAME, response.getUsername());
@@ -72,3 +72,4 @@ class DbUserAuthServiceImplTest extends AbstractUnitTest {
 		verify(repository).findByUsername(anyString());
 	}
 }
+

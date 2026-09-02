@@ -67,27 +67,27 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
 
     @Test
     void run_whenSystemIsNotReady_thenSkipExecution() {
-        // arrange
+        // given
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.NEED_SETUP)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertTrue(logAppender.list.isEmpty());
         verify(systemAttributeRepository).getSystemStatus();
     }
 
     @Test
     void run_whenJobIsDisabled_thenSkipExecution() {
-        // arrange
+        // given
         when(systemPropertyService.getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED)).thenReturn(false);
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertTrue(logAppender.list.isEmpty());
         verify(systemPropertyService).getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED);
     }
@@ -95,7 +95,7 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 2})
     void run_whenAllConditionsMet_thenProcess(int deletedUserCount) {
-        // arrange
+        // given
         when(systemPropertyService.getBoolean(SystemProperty.LDAP_SYNC_JOB_ENABLED)).thenReturn(true);
         when(service.synchronizeUsers()).thenReturn(Pair.of(2, deletedUserCount));
         when(jobRepository.save(any(JobEntity.class))).thenReturn(createJobEntity());
@@ -104,10 +104,10 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(systemAttributeRepository.getSystemStatus()).thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-        // act
+        // when
         job.run();
 
-        // assert
+        // then
         assertFalse(logAppender.list.isEmpty());
         assertLogContains(logAppender, "2 user(s) synchronized and " + deletedUserCount + " of them ha" + (deletedUserCount == 1 ? "s" : "ve")
                 + " been marked as deletable.");
@@ -116,3 +116,4 @@ class LdapUserSyncJobTest extends AbstractLoggingUnitTest {
         verify(jobRepository).findById(anyLong());
     }
 }
+

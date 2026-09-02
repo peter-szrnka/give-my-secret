@@ -27,7 +27,7 @@ class MessageConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toDto_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		Clock clock = mock(Clock.class);
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -36,17 +36,17 @@ class MessageConverterTest extends AbstractUnitTest {
 		entity.setOpened(true);
 		entity.setActionPath("/test");
 
-		// act
+		// when
 		MessageDto dto = converter.toDto(entity);
 
-		// assert
+		// then
 		assertNotNull(dto);
 		assertEquals("MessageDto(id=1, userId=1, opened=true, message=test message, actionPath=/test, creationDate=2023-06-29T00:00Z)", dto.toString());
 	}
 
 	@Test
 	void toDtoList_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		Clock clock = mock(Clock.class);
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
@@ -55,10 +55,10 @@ class MessageConverterTest extends AbstractUnitTest {
 		entity.setOpened(true);
 		Page<MessageEntity> entityList = new PageImpl<>(Lists.newArrayList(entity));
 
-		// act
+		// when
 		MessageListDto resultList = converter.toDtoList(entityList);
 
-		// assert
+		// then
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
@@ -67,3 +67,4 @@ class MessageConverterTest extends AbstractUnitTest {
 		assertEquals("MessageDto(id=1, userId=1, opened=true, message=test message, actionPath=null, creationDate=2023-06-29T00:00Z)", dto.toString());
 	}
 }
+

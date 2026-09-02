@@ -34,29 +34,30 @@ class HttpUtilsTest extends AbstractUnitTest {
 
     @Test
     void getClientIpAddress_whenIpAddressIsInHeader_thenReturnIpAddressFromHeader() {
-        // arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader(anyString())).thenReturn(null);
         when(request.getHeader("REMOTE_ADDR")).thenReturn("169.154.0.1");
         when(request.getHeader("HTTP_CLIENT_IP")).thenReturn("");
 
-        // act
+        // when
         String response = HttpUtils.getClientIpAddress(request);
 
-        // assert
+        // then
         assertEquals("169.154.0.1", response);
     }
 
     @Test
     void getClientIpAddress_whenIpAddressIsInServletRequest_thenReturnIpAddress() {
-        // arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRemoteAddr()).thenReturn("127.0.0.1");
 
-        // act
+        // when
         String response = HttpUtils.getClientIpAddress(request);
 
-        // assert
+        // then
         assertEquals("127.0.0.1", response);
     }
 }
+

@@ -19,10 +19,10 @@ class ConverterUtilsTest extends AbstractUnitTest {
     
     @Test
     void createPageable_whenValidParametersProvided_thenReturnPageable() {
-        // act
+        // when
         Pageable response = ConverterUtils.createPageable("DESC", "id", 1, 10);
 
-        // assert
+        // then
         assertNotNull(response);
         assertTrue(response.getSort().isSorted());
         assertEquals(1, response.getPageNumber());
@@ -30,3 +30,4 @@ class ConverterUtilsTest extends AbstractUnitTest {
         assertEquals(10, response.getPageSize());
     }
 }
+

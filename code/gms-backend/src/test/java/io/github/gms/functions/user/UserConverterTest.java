@@ -44,14 +44,14 @@ class UserConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toEntity_whenRoleChangePresentedInDto_thenReturnEntity() {
-		// arrange
+		// given
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
 		when(passwordEncoder.encode(anyString())).thenReturn("encoded");
 
-		// act
+		// when
 		UserEntity entity = converter.toEntity(TestUtils.createUser(), dto, false);
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=null, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
@@ -59,7 +59,7 @@ class UserConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toEntity_whenCredentialsMissing_thenReturnEntity() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
@@ -69,23 +69,23 @@ class UserConverterTest extends AbstractUnitTest {
 		UserEntity existingEntity = TestUtils.createUser();
 		existingEntity.setCreationDate(ZonedDateTime.now(clock));
 
-		// act
+		// when
 		UserEntity entity = converter.toEntity(existingEntity, dto, false);
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertEquals("UserEntity(id=1, name=name, username=username, email=email@email.com, status=ACTIVE, credential=OldCredential, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 	}
 
 	@Test
 	void toEntity_whenNewParametersProvided_thenReturnEntity() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
 		when(passwordEncoder.encode(anyString())).thenReturn("encoded");
 
-		// act
+		// when
 		UserEntity mockEntity = TestUtils.createUser();
 		mockEntity.setName("Test Test");
 		mockEntity.setUsername("my-user-1");
@@ -94,7 +94,7 @@ class UserConverterTest extends AbstractUnitTest {
 		mockEntity.setRole(ROLE_VIEWER);
 		UserEntity entity = converter.toEntity(mockEntity, dto, true);
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
@@ -102,18 +102,18 @@ class UserConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toNewEntity_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		when(passwordEncoder.encode(anyString())).thenReturn("encoded");
 
-		// arrange
+		// given
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
 
-		// act
+		// when
 		UserEntity entity = converter.toNewEntity(dto, false);
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, role=null, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
@@ -121,18 +121,18 @@ class UserConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toNewEntity_whenInputContainsRoleChange_thenReturnOk() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		when(passwordEncoder.encode(anyString())).thenReturn("encoded");
 
-		// arrange
+		// given
 		SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
 
-		// act
+		// when
 		UserEntity entity = converter.toNewEntity(dto, true);
 
-		// assert
+		// then
 		assertNotNull(entity);
 		assertEquals("UserEntity(id=null, name=name, username=username, email=email@email.com, status=ACTIVE, credential=encoded, creationDate=2023-06-29T00:00Z, role=ROLE_USER, mfaEnabled=false, mfaSecret=null, failedAttempts=0)", entity.toString());
 		verify(passwordEncoder).encode(anyString());
@@ -140,17 +140,17 @@ class UserConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toDtoList_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 		UserEntity userEntity = TestUtils.createUser();
 		userEntity.setCreationDate(ZonedDateTime.now(clock));
 		Page<UserEntity> entityList = new PageImpl<>(Lists.newArrayList(userEntity));
 
-		// act
+		// when
 		UserListDto resultList = converter.toDtoList(entityList);
 
-		// assert
+		// then
 		assertNotNull(resultList);
 		assertEquals(1, resultList.getResultList().size());
 		assertEquals(1L, resultList.getTotalElements());
@@ -168,10 +168,10 @@ class UserConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toUserInfoDto_whenInputProvidedWithoutMfa_thenReturnOk() {
-		// act
+		// when
 		UserInfoDto dto = converter.toUserInfoDto(TestUtils.createGmsUser(), false);
 
-		// assert
+		// then
 		assertNotNull(dto);
 		assertEquals(DemoData.USER_1_ID, dto.getId());
 		assertEquals(DemoData.USERNAME1, dto.getName());
@@ -182,30 +182,31 @@ class UserConverterTest extends AbstractUnitTest {
 
 	@Test
 	void toUserInfoDto_whenInputProvidedWithMfa_thenReturnOk() {
-		// arrange
+		// given
 		GmsUserDetails testUser = TestUtils.createGmsUser();
 		testUser.setMfaEnabled(true);
 		testUser.setMfaSecret("secret");
 
-		// act
+		// when
 		UserInfoDto dto = converter.toUserInfoDto(testUser, true);
 
-		// assert
+		// then
 		assertNotNull(dto);
 		assertEquals("UserInfoDto(id=null, name=null, username=username1, email=null, role=null, status=null, failedAttempts=null)", dto.toString());
 	}
 
 	@Test
 	void addIdToUserDetails_whenInputProvided_thenReturnOk() {
-		// arrange
+		// given
 		GmsUserDetails testUser = TestUtils.createGmsUser();
 		testUser.setUserId(null);
 
-		// act
+		// when
 		GmsUserDetails response = converter.addIdToUserDetails(testUser, 1L);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1L, response.getUserId());
 	}
 }
+

@@ -32,10 +32,10 @@ class FileServiceTest extends AbstractUnitTest {
             Path path = mock(Path.class);
             mockedStatic.when(() -> Files.createDirectories(any(Path.class))).thenReturn(path);
 
-            // act
+            // when
             service.createDirectories(path);
 
-            // assert
+            // then
             mockedStatic.verify(() -> Files.createDirectories(any(Path.class)));
         }
     }
@@ -47,10 +47,10 @@ class FileServiceTest extends AbstractUnitTest {
             Path path = mock(Path.class);
             mockedStatic.when(() -> Files.deleteIfExists(any(Path.class))).thenReturn(mockResult);
 
-            // act
+            // when
             boolean response = assertDoesNotThrow(() -> service.delete(path));
 
-            // assert
+            // then
             assertEquals(mockResult, response);
             mockedStatic.verify(() -> Files.deleteIfExists(any(Path.class)));
         }
@@ -63,10 +63,10 @@ class FileServiceTest extends AbstractUnitTest {
             Path path = mock(Path.class);
             mockedStatic.when(() -> Files.exists(any(Path.class))).thenReturn(mockResult);
 
-            // act
+            // when
             boolean response =  assertDoesNotThrow(() -> service.exists(path));
 
-            // assert
+            // then
             assertEquals(mockResult, response);
 
             ArgumentCaptor<Path> argumentCaptor = ArgumentCaptor.forClass(Path.class);
@@ -83,10 +83,10 @@ class FileServiceTest extends AbstractUnitTest {
             Stream<Path> mockStream = Stream.of(path);
             mockedStatic.when(() -> Files.list(any(Path.class))).thenReturn(mockStream);
 
-            // act
+            // when
             Stream<Path> response =  service.list(path);
 
-            // assert
+            // then
             assertNotNull(response);
             assertEquals(response, mockStream);
             mockedStatic.verify(() -> Files.list(any(Path.class)));
@@ -100,10 +100,10 @@ class FileServiceTest extends AbstractUnitTest {
             Path path = mock(Path.class);
             mockedStatic.when(() -> Files.readAllBytes(any(Path.class))).thenReturn("data".getBytes());
 
-            // act
+            // when
             byte[] response =  service.readAllBytes(path);
 
-            // assert
+            // then
             assertNotNull(response);
             assertEquals("data", new String(response));
             mockedStatic.verify(() -> Files.readAllBytes(any(Path.class)));
@@ -119,13 +119,14 @@ class FileServiceTest extends AbstractUnitTest {
             when(mockFile.toPath()).thenReturn(path);
             mockedStatic.when(() -> Files.readAllBytes(any(Path.class))).thenReturn("data".getBytes());
 
-            // act
+            // when
             byte[] response =  service.toByteArray(mockFile);
 
-            // assert
+            // then
             assertNotNull(response);
             assertEquals("data", new String(response));
             mockedStatic.verify(() -> Files.readAllBytes(any(Path.class)));
         }
     }
 }
+

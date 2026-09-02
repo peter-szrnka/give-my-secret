@@ -47,11 +47,11 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
     void getVmOptions_whenCalled_thenReturnVmOptions() {
         when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus(SystemStatus.NEED_SETUP.name()).build());
 
-        // act
+        // when
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<List> response = executeHttpGet("/info/vm_options", requestEntity, List.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(systemService, times(2)).getSystemStatus();
@@ -60,10 +60,10 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
     @Test
     @TestedMethod("getUserInfo")
 	void infoMe_whenJwtIsMissing_thenEmptyResponse() {
-		// act
+		// when
 		ResponseEntity<UserInfoDto> response = executeHttpGet("/info/me", new HttpEntity<>(headers), UserInfoDto.class);
 		
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
 	}
@@ -71,15 +71,15 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
     @Test
     @TestedMethod("getUserInfo")
 	void infoMe_whenJwtIsValid_thenReturnUserInfo() {
-        // arrange
+        // given
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie", ACCESS_JWT_TOKEN + "=" + jwt);
 
-        // act
+        // when
         HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
 		ResponseEntity<UserInfoDto> response = executeHttpGet("/info/me", requestEntity, UserInfoDto.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
         UserInfoDto result = response.getBody();
@@ -94,7 +94,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
     @Test
     @TestedMethod("status")
     void systemStatus_whenSystemIsNotReady_thenReturnNeedSetup() {
-        // act
+        // when
         when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder()
                         .withVersion("1.0")
                         .withAuthMode("db")
@@ -102,7 +102,7 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<SystemStatusDto> response = executeHttpGet(URL_INFO_STATUS, requestEntity, SystemStatusDto.class);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -114,13 +114,14 @@ class InformationControllerIntegrationTest extends AbstractIntegrationTest imple
     @Test
     @TestedMethod("getErrorCodes")
     void errorCodes_whenCalled_thenReturnAllErrorCodes() {
-        // act
+        // when
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<String> response = executeHttpGet("/info/error_codes", requestEntity, String.class);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }
+

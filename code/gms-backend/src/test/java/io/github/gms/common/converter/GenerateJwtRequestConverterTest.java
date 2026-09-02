@@ -33,15 +33,15 @@ class GenerateJwtRequestConverterTest extends AbstractUnitTest {
 
     @Test
     void toRequest_whenProperInputProvided_thenConvertToRequest() {
-        // arrange
+        // given
         Map<String, Object> claims = Map.of("A", 1L);
         when(systemPropertyService.get(any(SystemProperty.class))).thenReturn("RSA");
         when(systemPropertyService.getLong(any(SystemProperty.class))).thenReturn(30L);
 
-        // act
+        // when
         GenerateJwtRequest response = converter.toRequest(JwtConfigType.ACCESS_JWT, "subject", claims);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals("subject", response.getSubject());
         assertEquals(1, response.getClaims().size());
@@ -50,3 +50,4 @@ class GenerateJwtRequestConverterTest extends AbstractUnitTest {
         verify(systemPropertyService).getLong(any(SystemProperty.class));
     }
 }
+

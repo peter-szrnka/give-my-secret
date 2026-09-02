@@ -31,17 +31,18 @@ class JwtClaimServiceTest extends AbstractUnitTest {
 	
 	@Test
 	void getClaims_whenValidJwtProvided_thenReturnClaims() {
-        // arrange
+        // given
         Claims mockClaims = mock(Claims.class);
 
         when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("RSA256");
         when(jwtService.parseJwt("ACCESS_JWT", "RSA256")).thenReturn(mockClaims);
 
-        // act
+        // when
         Claims response = service.getClaims("ACCESS_JWT");
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(mockClaims, response);
     }
 }
+

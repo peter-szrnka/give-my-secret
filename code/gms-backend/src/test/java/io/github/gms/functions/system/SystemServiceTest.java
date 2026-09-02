@@ -59,10 +59,10 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getVmOptions_whenCalled_thenReturnData() {
-        // act
+        // when
         List<VmOptionDto> vmOptions = service.getVmOptions();
 
-        // assert
+        // then
         assertNotNull(vmOptions);
         assertFalse(vmOptions.isEmpty());
     }
@@ -86,7 +86,7 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @ValueSource(strings = {"NEED_SETUP", OK})
     void getSystemStatus_whenInputProvided_thenReturnDto(String mockResponse) {
-        // arrange
+        // given
         service.setAuthType("db");
         service.setBuildProperties(buildProperties);
         when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
@@ -94,10 +94,10 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
         when(systemAttributeRepository.getSystemStatus())
                 .thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.valueOf(mockResponse))));
 
-        // act
+        // when
         SystemStatusDto response = service.getSystemStatus();
 
-        // assert
+        // then
         assertEquals(mockResponse, response.getStatus());
         assertEquals("db", response.getAuthMode());
         assertEquals("2023-06-29T02:00:00.000+0200", response.getBuilt());
@@ -106,7 +106,7 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @MethodSource("inputData")
     void getSystemStatus_whenCustomInputProvided_thenReturnOkWithDifferentAuthMethod(String selectedAuth, boolean hasBuildProperties, String expectedVersion, ContainerHostType containerHostType, String expectedContainerId) {
-        // arrange
+        // given
         service.setAuthType(selectedAuth);
         service.setBuildProperties(buildProperties);
         when(systemAttributeRepository.getSystemStatus())
@@ -129,10 +129,10 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
             when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
         }
 
-        // act
+        // when
         SystemStatusDto response = service.getSystemStatus();
 
-        // assert
+        // then
         assertEquals(OK, response.getStatus());
         assertEquals(expectedVersion, response.getVersion());
         assertEquals(containerHostType, response.getContainerHostType());
@@ -153,7 +153,7 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void getSystemStatus_whenAutomaticLogoutEnabled_thenReturnAutomaticLogoutData() {
-        // arrange
+        // given
         service.setBuildProperties(buildProperties);
         when(clock.getZone()).thenReturn(ZoneId.of("Europe/Budapest"));
         when(buildProperties.getTime()).thenReturn(Instant.parse("2023-06-29T00:00:00Z"));
@@ -162,10 +162,10 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
         when(systemAttributeRepository.getSystemStatus())
                 .thenReturn(Optional.of(TestUtils.createSystemAttributeEntity(SystemStatus.OK)));
 
-        // act
+        // when
         SystemStatusDto response = service.getSystemStatus();
 
-        // assert
+        // then
         assertEquals(OK, response.getStatus());
         verify(systemPropertyService).getBoolean(SystemProperty.ENABLE_AUTOMATIC_LOGOUT);
         verify(systemPropertyService).getInteger(SystemProperty.AUTOMATIC_LOGOUT_TIME_IN_MINUTES);
@@ -181,3 +181,4 @@ class SystemServiceTest extends AbstractLoggingUnitTest {
         };
     }
 }
+

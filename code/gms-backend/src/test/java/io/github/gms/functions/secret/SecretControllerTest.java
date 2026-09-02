@@ -38,13 +38,13 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
 
     @Test
     void delete_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         doNothing().when(service).delete(1L);
 
-        // act
+        // when
         ResponseEntity<String> response = controller.delete(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).delete(1L);
@@ -52,10 +52,10 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
 
     @Test
     void toggle_whenInputProvided_thenReturnOk() {
-        // act
+        // when
         ResponseEntity<String> response = controller.toggle(1L, true);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).toggleStatus(1L,true);
@@ -63,14 +63,14 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
 
     @Test
     void save_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         SaveSecretRequestDto dto = TestUtils.createSaveSecretRequestDto(2L);
         when(service.save(dto)).thenReturn(new SaveEntityResponseDto(2L));
 
-        // act
+        // when
         SaveEntityResponseDto response = controller.save(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(2L, response.getEntityId());
         verify(service).save(dto);
@@ -78,14 +78,14 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
 
     @Test
     void getById_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         SecretDto dto = TestUtils.createSecretDto();
         when(service.getById(1L)).thenReturn(dto);
 
-        // act
+        // when
         SecretDto response = controller.getById(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dto, response);
         verify(service).getById(1L);
@@ -93,12 +93,12 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
 
     @Test
     void list_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         SecretListDto dtoList = TestUtils.createSecretListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         when(service.list(pageable)).thenReturn(dtoList);
 
-        // act
+        // when
         SecretListDto response = controller.list(
                 "DESC",
                 "id",
@@ -106,7 +106,7 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
                 10
         );
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).list(pageable);
@@ -114,13 +114,13 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
 
     @Test
     void getValue_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         when(service.getSecretValue(1L)).thenReturn(TEST);
 
-        // act
+        // when
         ResponseEntity<String> response = controller.getValue(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(TEST, response.getBody());
@@ -129,13 +129,13 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
 
     @Test
     void rotateSecret_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         doNothing().when(secretRotationService).rotateSecretById(1L);
 
-        // act
+        // when
         ResponseEntity<String> response = controller.rotateSecret(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertNull(response.getBody());
@@ -144,13 +144,13 @@ class SecretControllerTest extends AbstractClientControllerTest<SecretService, S
 
     @Test
     void validateValueLength_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         when(secretLengthValidatorService.validateValueLength(any())).thenReturn(new BooleanValueDto(true));
 
-        // act
+        // when
         ResponseEntity<BooleanValueDto> response = controller.validateValueLength(SecretValueDto.builder().build());
 
-        // assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getValue());

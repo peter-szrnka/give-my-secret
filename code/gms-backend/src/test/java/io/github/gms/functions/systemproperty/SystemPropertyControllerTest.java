@@ -29,13 +29,13 @@ class SystemPropertyControllerTest {
 
     @Test
     void delete_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         doNothing().when(service).delete("testKey");
 
-        // act
+        // when
         ResponseEntity<String> response = controller.delete("testKey");
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).delete("testKey");
@@ -43,14 +43,14 @@ class SystemPropertyControllerTest {
 
     @Test
     void save_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         SystemPropertyDto dto = TestUtils.createSystemPropertyDto();
         doNothing().when(service).save(dto);
 
-        // act
+        // when
         ResponseEntity<Void> response = controller.save(dto);
 
-        // assert
+        // then
          assertNotNull(response);
         assertNull(response.getBody());
         assertEquals(200, response.getStatusCode().value());
@@ -59,12 +59,12 @@ class SystemPropertyControllerTest {
 
     @Test
     void list_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         SystemPropertyListDto dtoList = TestUtils.createSystemPropertyListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         when(service.list(pageable)).thenReturn(dtoList);
 
-        // act
+        // when
         SystemPropertyListDto response = controller.list(
                 "DESC",
                 "id",
@@ -72,9 +72,10 @@ class SystemPropertyControllerTest {
                 10
         );
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).list(pageable);
     }
 }
+

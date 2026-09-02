@@ -41,15 +41,15 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 
 	@Test
 	void save_whenInvalidKeyProvided_thenThrowException() {
-		// arrange
+		// given
 		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
 		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("0").build();
 		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(mockEntity);
 
-		//act
+		//when
 		GmsException exception = assertThrows(GmsException.class, () -> service.save(inputDto));
 
-		// assert
+		// then
 		assertThat(exception).hasMessage("Invalid value for system property!");
 		verify(repository).findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		verify(converter, never()).toEntity(mockEntity, inputDto);
@@ -58,16 +58,16 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	
 	@Test
 	void save_whenNewSystemPropertyProvided_thenSaveSystemProperty() {
-		// arrange
+		// given
 		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
 		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("900").build();
 		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(mockEntity);
 		when(converter.toEntity(mockEntity, inputDto)).thenReturn(mockEntity);
 		
-		//act
+		//when
 		assertDoesNotThrow(() -> service.save(inputDto));
 		
-		// assert
+		// then
 		verify(repository).findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		ArgumentCaptor<SystemPropertyEntity> captor = ArgumentCaptor.forClass(SystemPropertyEntity.class);
 		verify(converter).toEntity(mockEntity, inputDto);
@@ -78,32 +78,32 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	
 	@Test
 	void delete_whenInvalidKeyProvided_thenThrowException() {
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> service.delete("Invalid key"));
 
-		// assert
+		// then
 		assertEquals("Unknown system property!", exception.getMessage());
 	}
 	
 	@Test
 	void delete_whenInputProvided_thenDeleteSystemProperty() {
-		// act
+		// when
 		service.delete(SystemProperty.ACCESS_JWT_ALGORITHM.name());
 
-		// assert
+		// then
 		verify(repository).deleteByKey(SystemProperty.ACCESS_JWT_ALGORITHM);
 	}
 	
 	@Test
 	void list_whenInputExceptionOccurred_thenReturnResultList() {
-		// arrange
+		// given
 		when(repository.findAll(any(Pageable.class))).thenThrow(new RuntimeException("Unexpected error!"));
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-		// act
+		// when
 		SystemPropertyListDto response = service.list(pageable);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(0, response.getResultList().size());
 		assertEquals(0L, response.getTotalElements());
@@ -113,7 +113,7 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	
 	@Test
 	void list_whenInputProvided_thenReturnResultList() {
-		// arrange
+		// given
 		Page<SystemPropertyEntity> mockList = new PageImpl<>(Lists.newArrayList(new SystemPropertyEntity()));
 		when(repository.findAll(any(Pageable.class))).thenReturn(mockList);
 		SystemPropertyListDto mockDto = SystemPropertyListDto.builder()
@@ -122,10 +122,10 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 		when(converter.toDtoList(any())).thenReturn(mockDto);
 		Pageable pageable = ConverterUtils.createPageable("ASC", "id", 0, 10);
 
-		// act
+		// when
 		SystemPropertyListDto response = service.list(pageable);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(1, response.getResultList().size());
 		assertEquals(mockDto.getResultList().getFirst().toString(), response.getResultList().getFirst().toString());
@@ -135,52 +135,52 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	
 	@Test
 	void getLong_whenValueIsNotProvided_thenReturnDefaultValue() {
-		// arrange
+		// given
 		when(repository.getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(Optional.empty());
 		
-		//act
+		//when
 		Long response = service.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		
-		// assert
+		// then
 		assertEquals(900L, response);
 		verify(repository).getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 	}
 	
 	@Test
 	void getLong_whenValueProvided_thenReturnValue() {
-		// arrange
+		// given
 		when(repository.getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(Optional.of("3600"));
 		
-		//act
+		//when
 		Long response = service.getLong(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		
-		// assert
+		// then
 		assertEquals(3600L, response);
 		verify(repository).getValueByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 	}
 
 	@Test
 	void getInteger_whenValueProvided_thenReturnValue() {
-		// arrange
+		// given
 		when(repository.getValueByKey(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(Optional.of("2"));
 
-		// act
+		// when
 		Integer response = service.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
 
-		// assert
+		// then
 		assertEquals(2, response);
 		verify(repository).getValueByKey(SystemProperty.FAILED_ATTEMPTS_LIMIT);
 	}
 
 	@Test
 	void getInteger_whenValueIsNotProvided_thenReturnDefaultValue() {
-		// arrange
+		// given
 		when(repository.getValueByKey(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(Optional.empty());
 
-		// act
+		// when
 		Integer response = service.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
 
-		// assert
+		// then
 		assertEquals(3, response);
 		verify(repository).getValueByKey(SystemProperty.FAILED_ATTEMPTS_LIMIT);
 	}
@@ -188,29 +188,29 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
 	void getBoolean_whenValueIsProvided_thenReturnBoolean(boolean value) {
-		// arrange
+		// given
 		when(repository.getValueByKey(SystemProperty.ENABLE_GLOBAL_MFA)).thenReturn(Optional.of(String.valueOf(value)));
 
-		//act
+		//when
 		Boolean response = service.getBoolean(SystemProperty.ENABLE_GLOBAL_MFA);
 
-		// assert
+		// then
 		assertEquals(value, response);
 		verify(repository).getValueByKey(SystemProperty.ENABLE_GLOBAL_MFA);
 	}
 
 	@Test
 	void updateSystemProperty_whenValueIsValid_thenUpdateSystemProperty() {
-		// arrange
+		// given
 		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
 		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("900").build();
 		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(mockEntity);
 		when(converter.toEntity(mockEntity, inputDto)).thenReturn(mockEntity);
 
-		//act
+		//when
 		assertDoesNotThrow(() -> service.updateSystemProperty(inputDto));
 
-		// assert
+		// then
 		verify(repository).findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		ArgumentCaptor<SystemPropertyEntity> captor = ArgumentCaptor.forClass(SystemPropertyEntity.class);
 		verify(converter).toEntity(mockEntity, inputDto);
@@ -221,18 +221,19 @@ class SystemPropertyServiceTest extends AbstractUnitTest {
 
 	@Test
 	void updateSystemProperty_whenValueIsInvalid_thenThrowException() {
-		// arrange
+		// given
 		SystemPropertyEntity mockEntity = TestUtils.createSystemPropertyEntity(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS, "900");
 		SystemPropertyDto inputDto = SystemPropertyDto.builder().key(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS.name()).value("0").build();
 		when(repository.findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS)).thenReturn(mockEntity);
 
-		//act
+		//when
 		GmsException exception = assertThrows(GmsException.class, () -> service.updateSystemProperty(inputDto));
 
-		// assert
+		// then
 		assertThat(exception).hasMessage("Invalid value for system property!");
 		verify(repository).findByKey(SystemProperty.ACCESS_JWT_EXPIRATION_TIME_SECONDS);
 		verify(converter, never()).toEntity(mockEntity, inputDto);
 		verify(repository, never()).save(mockEntity);
 	}
 }
+

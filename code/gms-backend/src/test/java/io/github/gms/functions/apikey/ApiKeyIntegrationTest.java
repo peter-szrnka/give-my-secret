@@ -36,11 +36,11 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("save")
 	void save_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<SaveApiKeyRequestDto> requestEntity = new HttpEntity<>(TestUtils.createSaveApiKeyRequestDto(), TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SaveEntityResponseDto> response = executeHttpPost("", requestEntity, SaveEntityResponseDto.class);
 		
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -51,11 +51,11 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("getById")
 	void getById_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<ApiKeyDto> response = executeHttpGet("/" + DemoData.API_KEY_1_ID, requestEntity, ApiKeyDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -68,11 +68,11 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("list")
 	void list_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<ApiKeyListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, ApiKeyListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertFalse(response.getBody().getResultList().isEmpty());
@@ -81,11 +81,11 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("getValue")
 	void getValue_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpGet("/value/" + DemoData.API_KEY_1_ID, requestEntity, String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -96,12 +96,12 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("delete")
 	void delete_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/" + DemoData.API_KEY_2_ID, requestEntity,
 				String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
@@ -111,12 +111,12 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@TestedMethod("toggle")
 	@ValueSource(booleans = { false, true })
 	void toggle_whenInputIsValid_thenReturnOk(boolean enabled) {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost("/" + DemoData.API_KEY_1_ID + "?enabled="+ enabled, requestEntity,
 				String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 		
@@ -133,13 +133,14 @@ class ApiKeyIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void getAllApiKeyNames_whenInputIsValid_thenReturnOk() {
 		HttpEntity<GetSecureValueDto> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		
-		// act
+		// when
 		ResponseEntity<IdNamePairListDto> response = executeHttpGet("/list_names", requestEntity, IdNamePairListDto.class);
 		
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertFalse(response.getBody().getResultList().isEmpty());
 		assertFalse(response.getBody().getResultList().isEmpty());
 	}
 }
+

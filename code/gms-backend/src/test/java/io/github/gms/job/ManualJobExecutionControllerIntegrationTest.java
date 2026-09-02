@@ -56,15 +56,16 @@ class ManualJobExecutionControllerIntegrationTest extends AbstractIntegrationTes
     }
 
     private void assertByUrl(String url, HttpStatus expectedStatus) {
-        // arrange
+        // given
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         String path = "/secure/job_execution";
         ResponseEntity<Void> response = executeHttpGet(path + url, requestEntity, Void.class);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(expectedStatus, response.getStatusCode());
     }
 }
+

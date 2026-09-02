@@ -26,31 +26,32 @@ class LoginIntegrationTest extends AbstractIntegrationTest implements GmsControl
     @Test
     @TestedMethod("loginAuthentication")
     void login_whenValidCredentialsSent_thenLogInUser() {
-        // arrange
+        // given
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
 
-        // act
+        // when
         HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(
                 new AuthenticateRequestDto("username1", "test"), headers);
         ResponseEntity<Void> response = executeHttpPost("/" + LOGIN_PATH, requestEntity, Void.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
     @TestedMethod("logout")
     void logout_whenCookiesProvided_thenLogOut() {
-        // arrange
+        // given
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie", ACCESS_JWT_TOKEN + "=" + jwt);
 
-        // act
+        // when
         HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<Void> response = executeHttpPost("/" + LOGOUT_PATH, requestEntity, Void.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }
+

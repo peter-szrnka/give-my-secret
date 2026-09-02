@@ -33,10 +33,10 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		HttpEntity<T> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 		addCsrf(requestEntity);
 
-		// act
+		// when
 		ResponseEntity<SaveEntityResponseDto> response = executeHttpPost(urlPrefix, requestEntity, SaveEntityResponseDto.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
@@ -44,10 +44,10 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		addCsrf(requestEntity);
 
-		// act
+		// when
 		ResponseEntity<T> response = executeHttpGet(urlPrefix + "/" + id, requestEntity, clazz);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
@@ -55,10 +55,10 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		addCsrf(requestEntity);
 
-		// act
+		// when
 		ResponseEntity<T> response = executeHttpGet(urlPrefix + "/list?page=0&size=10&direction=ASC&property=id", requestEntity, clazz);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
@@ -66,10 +66,10 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		addCsrf(requestEntity);
 
-		// act
+		// when
 		ResponseEntity<String> response = executeHttpDelete(urlPrefix + "/" + id, requestEntity, String.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
@@ -77,19 +77,20 @@ public abstract class AbstractSecurityTest extends AbstractIntegrationTest imple
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		addCsrf(requestEntity);
 
-		// act
+		// when
 		ResponseEntity<String> response = executeHttpPost(urlPrefix + "/" + id + "?enabled=true", requestEntity, String.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
 	protected void assertListingFailWith403(String url) {
-		// act
+		// when
 		ResponseEntity<IdNamePairListDto> response =
 				executeHttpGet(urlPrefix + url, null, IdNamePairListDto.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 }
+

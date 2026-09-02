@@ -39,11 +39,11 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	@Test
 	@TestedMethod(SAVE)
 	void save_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<SaveAnnouncementDto> requestEntity = new HttpEntity<>(TestUtils.createSaveAnnouncementDto(), TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SaveEntityResponseDto> response = executeHttpPost("", requestEntity, SaveEntityResponseDto.class);
 		
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -54,11 +54,11 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	@Test
 	@TestedMethod(GET_BY_ID)
 	void getById_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<AnnouncementDto> response = executeHttpGet("/" + DemoData.ANNOUNCEMENT_ID, requestEntity, AnnouncementDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -70,11 +70,11 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	@Test
 	@TestedMethod(LIST)
 	void list_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<AnnouncementListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, AnnouncementListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -85,13 +85,14 @@ class AnnouncementIntegrationTest extends AbstractClientControllerIntegrationTes
 	@Test
 	@TestedMethod(DELETE)
 	void delete_whenInputIsValid_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/" + 2, requestEntity,
 				String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
 }
+

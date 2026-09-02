@@ -59,30 +59,30 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void authorize_whenJwtTokenIsMissing_thenReturnForbidden() {
-		// arrange
+		// given
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		when(req.getCookies()).thenReturn(new Cookie[] {});
 
-		// act
+		// when
 		AuthorizationResponse response = service.authorize(req);
 		
-		// assert
+		// then
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
 		assertEquals("Access denied!", response.getErrorMessage());
 	}
 
 	@Test
 	void authorize_whenJwtIsInvalid_thenReturnForbidden() {
-		// arrange
+		// given
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		when(req.getCookies()).thenReturn(new Cookie[] { new Cookie(ACCESS_JWT_TOKEN, "invalid_token")});
 		when(jwtService.parseJwt(anyString(), anyString())).thenThrow(new RuntimeException("Wrong JWT token!"));
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
-		// act
+		// when
 		AuthorizationResponse response = service.authorize(req);
 		
-		// assert
+		// then
 		assertLogContains(logAppender, "Authorization failed: ");
 		assertEquals("Authorization failed!", response.getErrorMessage());
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
@@ -92,7 +92,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void authorize_whenJwtHasExpired_thenReturnBadRequest() {
-		// arrange
+		// given
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		Claims claims = mock(Claims.class);
 		
@@ -103,10 +103,10 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 			      .toInstant()));
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
-		// act
+		// when
 		AuthorizationResponse response = service.authorize(req);
 		
-		// assert
+		// then
 		assertLogEquals(logAppender, "Authentication failed: JWT token has expired!");
 		assertEquals("JWT token has expired!", response.getErrorMessage());
 		assertEquals(HttpStatus.BAD_REQUEST, response.getResponseStatus());
@@ -117,7 +117,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void authorize_whenUserIsBlocked_thenReturnForbidden() {
-		// arrange
+		// given
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		Claims claims = mock(Claims.class);
 		UserDetails userDetails = TestUtils.createBlockedGmsUser();
@@ -129,10 +129,10 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		when(claims.get(anyString(), any())).thenReturn(userDetails.getUsername());
 		when(systemPropertyService.get(SystemProperty.ACCESS_JWT_ALGORITHM)).thenReturn("HS512");
 
-		// act
+		// when
 		AuthorizationResponse response = service.authorize(req);
 		
-		// assert
+		// then
 		assertLogEquals(logAppender, "User is blocked");
 		assertEquals(HttpStatus.FORBIDDEN, response.getResponseStatus());
 		assertEquals("User is blocked", response.getErrorMessage());
@@ -143,7 +143,7 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void authorize_whenJwtIsValid_thenReturnOk() {
-		// arrange
+		// given
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		Claims claims = mock(Claims.class);
 		UserDetails userDetails = TestUtils.createGmsUser();
@@ -161,10 +161,10 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 				JwtConfigType.REFRESH_JWT, "REFRESH_JWT"
 				));
 
-		// act
+		// when
 		AuthorizationResponse response = service.authorize(req);
 		
-		// assert
+		// then
 		assertLogMissing(logAppender, "Authentication failed: JWT token has expired!");
 		assertEquals(HttpStatus.OK, response.getResponseStatus());
 		assertTrue(response.getJwtPair().toString().contains("REFRESH_JWT=REFRESH_JWT"));
@@ -185,3 +185,4 @@ class AuthorizationServiceImplTest extends AbstractLoggingUnitTest {
 		verify(tokenGeneratorService).getAuthenticationDetails(any(GmsUserDetails.class));
 	}
 }
+

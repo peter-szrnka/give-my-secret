@@ -38,13 +38,14 @@ class JobMaintenanceIntegrationTest extends AbstractClientControllerIntegrationT
 	@Test
 	@TestedMethod(LIST)
 	void list_whenValidInputProvided_thenReturnResultList() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<JobListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, JobListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		assertFalse(response.getBody().getResultList().isEmpty());
 	}
 }
+

@@ -27,38 +27,38 @@ class ManualJobExecutionControllerTest extends AbstractUnitTest {
 
     @Test
     void runJobByName_whenJobNotFound_thenReturnNotFound() {
-        // arrange
+        // given
         String jobName = "jobName";
 
-        // act
+        // when
         ResponseEntity<Void> response = manualJobExecutionController.runJobByName(jobName);
 
-        // assert
+        // then
         assertEquals(HttpStatusCode.valueOf(404), response.getStatusCode());
     }
 
     @Test
     void runJobByName_whenJobFound_thenReturnOk() {
-        // arrange
+        // given
         EventMaintenanceJob mockJob = mock(EventMaintenanceJob.class);
         when(applicationContext.getBean(EventMaintenanceJob.class)).thenReturn(mockJob);
 
-        // act
+        // when
         ResponseEntity<Void> response = manualJobExecutionController.runJobByName(UrlConstants.EVENT_MAINTENANCE);
 
-        // assert
+        // then
         assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
     }
 
     @Test
     void runJobByName_whenJobBeanNotFound_thenReturnNotFound() {
-        // arrange
+        // given
         when(applicationContext.getBean(EventMaintenanceJob.class)).thenThrow(NoSuchBeanDefinitionException.class);
 
-        // act
+        // when
         ResponseEntity<Void> response = manualJobExecutionController.runJobByName(UrlConstants.EVENT_MAINTENANCE);
 
-        // assert
+        // then
         assertEquals(HttpStatusCode.valueOf(404), response.getStatusCode());
     }
 }

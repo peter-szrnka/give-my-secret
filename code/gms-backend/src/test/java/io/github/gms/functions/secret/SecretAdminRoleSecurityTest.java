@@ -53,11 +53,11 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     void getValue_whenAuthenticationFails_thenReturnHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<String> response =
                 executeHttpGet(urlPrefix + "/value/" + DemoData.SECRET_ENTITY_ID, requestEntity, String.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -66,11 +66,11 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     void rotate_whenAuthenticationFails_thenReturnHttp403() {
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<String> response =
                 executeHttpPost(urlPrefix + "/rotate/" + DemoData.SECRET_ENTITY_ID, requestEntity, String.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -89,7 +89,7 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
     @Test
     @TestedMethod("validateValueLength")
     void validateValueLength_whenAuthenticationFails_thenReturnHttp403() {
-        // arrange
+        // given
         SecretValueDto secretValueDto = SecretValueDto.builder()
                 .keystoreId(DemoData.KEYSTORE_ID)
                 .keystoreAliasId(DemoData.KEYSTORE_ALIAS_ID)
@@ -97,11 +97,12 @@ class SecretAdminRoleSecurityTest extends AbstractAdminRoleSecurityTest {
                 .build();
         HttpEntity<SecretValueDto> requestEntity = new HttpEntity<>(secretValueDto, TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<BooleanValueDto> response =
                 executeHttpPost(urlPrefix + "/validate_value_length", requestEntity, BooleanValueDto.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 }
+

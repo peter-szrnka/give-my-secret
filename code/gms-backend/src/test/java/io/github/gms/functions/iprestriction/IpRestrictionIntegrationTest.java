@@ -46,13 +46,13 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	@Transactional
 	@TestedMethod(SAVE)
 	void testSave() {
-		// act
+		// when
 		HttpEntity<IpRestrictionDto> saveRequestEntity = new HttpEntity<>(
 				TestUtils.createIpRestrictionDto(true),
 				TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<SaveEntityResponseDto> saveResponse = executeHttpPost("", saveRequestEntity, SaveEntityResponseDto.class);
 		
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, saveResponse.getStatusCode());
 		assertNotNull(saveResponse.getBody());
 	}
@@ -60,11 +60,11 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	@Test
 	@TestedMethod(GET_BY_ID)
 	void testGetById() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<IpRestrictionDto> response = executeHttpGet("/1", requestEntity, IpRestrictionDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
@@ -75,11 +75,11 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	@Test
 	@TestedMethod(LIST)
 	void testList() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<IpRestrictionListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, IpRestrictionListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
@@ -90,7 +90,7 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	@Test
 	@TestedMethod(DELETE)
 	void testDelete() {
-		// arrange
+		// given
 		HttpEntity<IpRestrictionDto> saveRequestEntity = new HttpEntity<>(
 				TestUtils.createIpRestrictionDto(true),
 				TestUtils.getHttpHeaders(jwt));
@@ -99,12 +99,12 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 		assertNotNull(saveResponse.getBody());
 		Long newUserId = saveResponse.getBody().getEntityId();
 
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/" + newUserId, requestEntity,
 				String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
@@ -114,19 +114,20 @@ class IpRestrictionIntegrationTest extends AbstractClientControllerIntegrationTe
 	@TestedMethod(TOGGLE)
 	@ValueSource(booleans = { false, true })
 	void testToggleStatus(boolean enabled) {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost("/1?enabled="+ enabled, requestEntity,
 				String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 
 		executeHttpPost("/1?enabled="+ !enabled, requestEntity,String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
 }
+

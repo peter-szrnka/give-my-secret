@@ -37,14 +37,14 @@ class SetupFilterTest extends AbstractUnitTest {
 		SystemStatusDto mock = SystemStatusDto.builder().withStatus(SystemStatus.NEED_SETUP.name()).build();
 		when(service.getSystemStatus()).thenReturn(mock);
 
-		// act
+		// when
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);
 
 		filter.doFilterInternal(request, response, filterChain);
 
-		// assert
+		// then
 		verify(service).getSystemStatus();
 		verify(response, never()).sendError(HttpStatus.NOT_FOUND.value(), "System is up and running!");
 		verify(filterChain).doFilter(any(), any());
@@ -56,16 +56,17 @@ class SetupFilterTest extends AbstractUnitTest {
 		SystemStatusDto mock = SystemStatusDto.builder().withStatus("OK").build();
 		when(service.getSystemStatus()).thenReturn(mock);
 
-		// act
+		// when
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		FilterChain filterChain = mock(FilterChain.class);
 
 		filter.doFilterInternal(request, response, filterChain);
 
-		// assert
+		// then
 		verify(service).getSystemStatus();
 		verify(response).sendError(HttpStatus.NOT_FOUND.value(), "System is up and running!");
 		verify(filterChain, never()).doFilter(any(), any());
 	}
 }
+

@@ -31,21 +31,21 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, "testFail");
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
 
-		// act
+		// when
 		ResponseEntity<String> response = executeHttpPost(SLASH + LoginController.LOGIN_PATH, requestEntity, String.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 	}
 	
 	@Test
 	void test_whenLoginCalled_thenReturnOk() {
-		// act
+		// when
 		AuthenticateRequestDto dto = new AuthenticateRequestDto(DemoData.USERNAME1, TEST);
 		HttpEntity<AuthenticateRequestDto> requestEntity = new HttpEntity<>(dto);
 		ResponseEntity<String> response = executeHttpPost(SLASH + LoginController.LOGIN_PATH, requestEntity, String.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		List<String> cookies = response.getHeaders().get("Set-Cookie");
@@ -59,11 +59,11 @@ class AuthenticationSecureIntegrationTest extends AbstractIntegrationTest {
 
 	@Test
 	void test_whenLogoutCalled_thenReturnOk() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPost(SLASH + LoginController.LOGOUT_PATH, requestEntity, String.class);
 
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertTrue(response.getHeaders().toSingleValueMap().keySet().stream().anyMatch(header -> header.equalsIgnoreCase(SET_COOKIE)));
 	}

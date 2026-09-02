@@ -45,7 +45,7 @@ class JwtServiceTest extends AbstractUnitTest {
 	@Test
 	@SneakyThrows
 	void generateJwts_whenInputIsValid_thenReturnJwts() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900L));
 		GenerateJwtRequest generateRequest1 = new GenerateJwtRequest("subject1", "HS384", 1000L, Map.of("k1", "v1"));
 		GenerateJwtRequest generateRequest2 = new GenerateJwtRequest("subject2", "HS384", 1000L, Map.of("k2", "v2"));
@@ -58,10 +58,10 @@ class JwtServiceTest extends AbstractUnitTest {
 		when(mockUUID.toString()).thenReturn("123456-1234-1234-123456");
 		mockedUUID.when(UUID::randomUUID).thenReturn(mockUUID);
 		
-		// act
+		// when
 		Map<JwtConfigType, String> response = service.generateJwts(request);
 
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(2, response.size());
 
@@ -81,28 +81,29 @@ class JwtServiceTest extends AbstractUnitTest {
 	
 	@Test
 	void generateJwt_whenInputIsAdmin_thenReturnJwt() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900L));
-		// act
+		// when
 		String response = service.generateJwt(TestUtils.createJwtAdminRequest());
 
-		// assert
+		// then
 		assertNotNull(response);
 	}
 	
 	@Test
 	void parseJwt_whenJwtIsValid_thenReturnClaims() {
-		// arrange
+		// given
 		when(clock.instant()).thenReturn(Instant.now().plusSeconds(900L));
 		String generatedToken = service.generateJwt(TestUtils.createJwtAdminRequest());
 
-		// act
+		// when
 		Claims response = service.parseJwt(generatedToken, "HS512");
 	
-		// assert
+		// then
 		assertNotNull(response);
 		assertEquals(DemoData.USER_1_ID, response.get(MdcParameter.USER_ID.getDisplayName(), Long.class));
 		assertEquals(DemoData.USERNAME1, response.get(MdcParameter.USER_NAME.getDisplayName()));
 		assertTrue(response.get("roles", List.class).contains("ROLE_ADMIN"));
 	}
 }
+

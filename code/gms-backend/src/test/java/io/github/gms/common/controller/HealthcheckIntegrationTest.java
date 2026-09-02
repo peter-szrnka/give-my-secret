@@ -25,10 +25,11 @@ class HealthcheckIntegrationTest extends AbstractIntegrationTest implements GmsC
 	@TestedMethod("healthcheck")
 	void healthcheck_whenCalled_thenReturnOk() {
 
-		// act
+		// when
 		ResponseEntity<Void> response = executeHttpGet("/healthcheck", new HttpEntity<>(headers), Void.class);
 		
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 }
+

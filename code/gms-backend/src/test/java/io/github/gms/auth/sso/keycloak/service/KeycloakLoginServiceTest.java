@@ -47,7 +47,7 @@ class KeycloakLoginServiceTest {
 
     @Test
     void login_whenCorrectInputProvided_thenLogIn() {
-        // arrange
+        // given
         when(keycloakSettings.getRealm()).thenReturn("gms");
         when(keycloakSettings.getKeycloakTokenUrl()).thenReturn(TestUtils.LOCALHOST_8080);
         when(keycloakSettings.getClientId()).thenReturn("clientId");
@@ -55,10 +55,10 @@ class KeycloakLoginServiceTest {
         when(oAuthService.callPostEndpoint(eq(TestUtils.LOCALHOST_8080), any(MultiValueMap.class), eq(LoginResponse.class)))
                 .thenReturn(ResponseEntity.ok(LoginResponse.builder().accessToken(MOCK_ACCESS_TOKEN).refreshToken(MOCK_REFRESH_TOKEN).build()));
 
-        // act
+        // when
         ResponseEntity<LoginResponse> response = service.login(USERNAME1, CREDENTIAL_TEST);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getBody());
         LoginResponse payload = response.getBody();
@@ -90,10 +90,10 @@ class KeycloakLoginServiceTest {
         when(keycloakSettings.getClientSecret()).thenReturn("clientSecret");
         when(keycloakSettings.getLogoutUrl()).thenReturn(TestUtils.LOCALHOST_8080);
 
-        // act
+        // when
         service.logout();
 
-        // assert
+        // then
         verify(httpServletRequest, times(2)).getCookies();
         verify(keycloakSettings).getClientId();
         verify(keycloakSettings).getClientSecret();
@@ -110,16 +110,16 @@ class KeycloakLoginServiceTest {
     @ParameterizedTest
     @MethodSource("emptyInputData")
     void logout_whenUserAlreadyLoggedOut_thenDoNothing(Input input) {
-        // arrange
+        // given
         when(httpServletRequest.getCookies()).thenReturn(input.getCookies());
         when(keycloakSettings.getClientId()).thenReturn("clientId");
         when(keycloakSettings.getClientSecret()).thenReturn("clientSecret");
         when(keycloakSettings.getLogoutUrl()).thenReturn(TestUtils.LOCALHOST_8080);
 
-        // act
+        // when
         service.logout();
 
-        // assert
+        // then
         verify(keycloakSettings, never()).getClientId();
         verify(keycloakSettings, never()).getClientSecret();
         verify(keycloakSettings, never()).getLogoutUrl();
@@ -134,3 +134,4 @@ class KeycloakLoginServiceTest {
         };
     }
 }
+

@@ -40,13 +40,13 @@ class InformationControllerTest {
 
     @Test
     void getVmOptions_whenDataSaved_thenReturnOptions() {
-        // arrange
+        // given
         when(systemService.getVmOptions()).thenReturn(List.of(new VmOptionDto("key", "value")));
 
-        // act
+        // when
         List<VmOptionDto> response = controller.getVmOptions();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1, response.size());
         verify(systemService).getVmOptions();
@@ -54,14 +54,14 @@ class InformationControllerTest {
 
     @Test
     void getUserInfo_whenUserInfoAvailable_thenReturnDto() {
-        // arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(userInfoService.getUserInfo(request)).thenReturn(TestUtils.createUserInfoDto());
 
-        // act
+        // when
         UserInfoDto response = controller.getUserInfo(request);
 
-        // assert
+        // then
         assertNotNull(response);
         verify(userInfoService).getUserInfo(request);
     }
@@ -77,26 +77,27 @@ class InformationControllerTest {
                 .withContainerId("containerId")
                 .build();
 
-        // arrange
+        // given
         when(systemService.getSystemStatus()).thenReturn(mockResponseDto);
 
-        // act
+        // when
         SystemStatusDto response = controller.status();
 
-        // arrange
+        // given
         assertNotNull(response);
         assertEquals(mockResponseDto, response);
     }
 
     @Test
     void getErrorCodes_whenCalled_thenReturnAllErrorCodes() {
-        // act
+        // when
         ErrorCodeListDto response = controller.getErrorCodes();
         List<String> codes = response.getErrorCodeList().stream().map(ErrorCodeDto::getCode).toList();
 
-        // arrange
+        // given
         assertNotNull(response);
         response.getErrorCodeList().forEach(errorCodeDto -> assertNotNull(errorCodeDto.getCode()));
         assertEquals(ErrorCode.values().length, Stream.of(ErrorCode.values()).filter(item -> codes.contains(item.getCode())).count());
     }
 }
+

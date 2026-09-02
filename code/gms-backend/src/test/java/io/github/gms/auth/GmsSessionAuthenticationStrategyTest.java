@@ -29,24 +29,24 @@ class GmsSessionAuthenticationStrategyTest extends AbstractUnitTest {
 
     @Test
     void onAuthentication_whenTokenIsNull_thenDoNothing() {
-        // Arrange
+        // given
         var authentication = mock(Authentication.class);
         var request = mock(HttpServletRequest.class);
         var response = mock(HttpServletResponse.class);
 
         when(tokenRepository.loadToken(request)).thenReturn(null);
 
-        // Act
+        // when
         strategy.onAuthentication(authentication, request, response);
 
-        // Assert
+        // then
         verify(tokenRepository, never()).loadDeferredToken(request, response);
         verify(requestHandler, never()).handle(eq(request), eq(response), any());
     }
 
     @Test
     void onAuthentication_whenTokenIsNotNull_thenHandleRequest() {
-        // Arrange
+        // given
         var authentication = mock(Authentication.class);
         var request = mock(HttpServletRequest.class);
         var response = mock(HttpServletResponse.class);
@@ -57,11 +57,12 @@ class GmsSessionAuthenticationStrategyTest extends AbstractUnitTest {
         when(tokenRepository.loadToken(request)).thenReturn(token);
         when(tokenRepository.loadDeferredToken(request, response)).thenReturn(deferredToken);
 
-        // Act
+        // when
         strategy.onAuthentication(authentication, request, response);
 
-        // Assert
+        // then
         verify(tokenRepository).loadDeferredToken(request, response);
         verify(requestHandler).handle(eq(request), eq(response), any());
     }
 }
+

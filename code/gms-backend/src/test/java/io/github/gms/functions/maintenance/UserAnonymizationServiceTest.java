@@ -36,27 +36,27 @@ class UserAnonymizationServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void requestProcess_whenCorrectInputProvided_thenRequestUserDeletion() {
-        // arrange
+        // given
         Set<Long> userIds = Set.of(1L);
 
-        // act
+        // when
         service.requestProcess(BatchUserOperationDto.builder().requestId("requestID").userIds(userIds).build());
 
-        // assert
+        // then
         verify(userRepository).batchUpdateStatus(userIds, EntityStatus.ANONYMIZATION_REQUESTED);
         assertLogContains(logAppender, "Batch user anonymization requested. requestId=requestID");
     }
 
     @Test
     void getRequestedUserIds_whenCorrectInputProvided_thenReturnRequestedUserIds() {
-        // arrange
+        // given
         Set<Long> userIds = Set.of(1L, 2L);
         when(userRepository.findAllByStatus(EntityStatus.ANONYMIZATION_REQUESTED)).thenReturn(userIds);
 
-        // act
+        // when
         Set<Long> response = service.getRequestedUserIds();
 
-        // arrange
+        // given
         assertNotNull(response);
         assertEquals(userIds, response);
         verify(userRepository).findAllByStatus(EntityStatus.ANONYMIZATION_REQUESTED);
@@ -64,13 +64,14 @@ class UserAnonymizationServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void process_whenCorrectInputProvided_thenProcessUserDeletion() {
-        // arrange
+        // given
         Set<Long> userIds = Set.of(1L);
 
-        // act
+        // when
         service.process(userIds);
 
-        // assert
+        // then
         verify(userRepository).batchUpdateUserPersonalInfo(userIds);
     }
 }
+

@@ -34,12 +34,12 @@ class HttpClientResponseLoggingInterceptorTest extends AbstractLoggingUnitTest {
 
     @Test
     void intercept_whenLoggingDisabled_thenSkipLoggingResponse() throws IOException {
-        // arrange
+        // given
         interceptor = new HttpClientResponseLoggingInterceptor(false);
         HttpRequest request = mock(HttpRequest.class);
         ClientHttpRequestExecution execution = new MockClientHttpRequestExecution();
 
-        // act & assert
+        // when & assert
         try (ClientHttpResponse response = interceptor.intercept(request, BODY.getBytes(), execution)) {
             assertNotNull(response);
             verify(request, never()).getURI();
@@ -50,12 +50,12 @@ class HttpClientResponseLoggingInterceptorTest extends AbstractLoggingUnitTest {
 
     @Test
     void intercept_whenLoggingEnabled_thenLogResponse() throws IOException {
-        // arrange
+        // given
         HttpRequest request = mock(HttpRequest.class);
         when(request.getURI()).thenReturn(URI.create("http://localhost:5555/api/get"));
         ClientHttpRequestExecution execution = new MockClientHttpRequestExecution();
 
-        // act & assert
+        // when & assert
         try (ClientHttpResponse response = interceptor.intercept(request, BODY.getBytes(), execution)) {
             assertNotNull(response);
             verify(request).getURI();
@@ -64,3 +64,4 @@ class HttpClientResponseLoggingInterceptorTest extends AbstractLoggingUnitTest {
         }
     }
 }
+

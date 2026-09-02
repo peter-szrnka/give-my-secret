@@ -38,15 +38,15 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("markAsRead")
 	void testMarkAsRead() {
-		// arrange
+		// given
 		MessageEntity newEntity = repository.save(TestUtils.createNewMessageEntity());
 		
-		// act
+		// when
 		MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().ids(Sets.newHashSet(newEntity.getId())).build();
 		HttpEntity<MarkAsReadRequestDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpPut(requestEntity);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
@@ -56,14 +56,14 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testList() {
 		repository.deleteAll();
 
-		// arrange
+		// given
 		repository.save(TestUtils.createNewMessageEntity());
 		
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>( TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<MessageListDto> response = executeHttpGet("/list?page=0&size=10&direction=ASC&property=id", requestEntity, MessageListDto.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 		
@@ -76,15 +76,15 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	void testGetUnreadMessagesCount() {
 		repository.deleteAll();
 		
-		// arrange
+		// given
 		repository.save(TestUtils.createNewMessageEntity());
 
-		// act
+		// when
 		MarkAsReadRequestDto dto = MarkAsReadRequestDto.builder().ids(Sets.newHashSet(1L)).build();
 		HttpEntity<MarkAsReadRequestDto> requestEntity = new HttpEntity<>(dto, TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<LongValueDto> response = executeHttpGet("/unread", requestEntity, LongValueDto.class);
 		
-		// assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
@@ -95,12 +95,12 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("deleteAllByIds")
 	void testDeleteAllByIds() {
-		// act
+		// when
 		HttpEntity<IdListDto> requestEntity =
 				new HttpEntity<>(new IdListDto(Set.of(1L, 2L)), TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<Void> response = executeHttpPost("/delete_all_by_ids", requestEntity, Void.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
@@ -108,13 +108,14 @@ class MessageIntegrationTest extends AbstractClientControllerIntegrationTest {
 	@Test
 	@TestedMethod("deleteById")
 	void testDeleteById() {
-		// act
+		// when
 		HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 		ResponseEntity<String> response = executeHttpDelete("/1", requestEntity,
 				String.class);
 
-		// Assert
+		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
 	}
 }
+

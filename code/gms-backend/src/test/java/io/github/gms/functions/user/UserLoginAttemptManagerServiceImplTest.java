@@ -42,13 +42,13 @@ class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void updateLoginAttempt_whenUserNotFound_thenSkipUpdate() {
-        // arrange
+        // given
         when(repository.findByUsername("user1")).thenReturn(Optional.empty());
 
-        // act
+        // when
         service.updateLoginAttempt("user1");
 
-        // assert
+        // then
         verify(repository).findByUsername("user1");
         assertLogMissing(logAppender, "User already blocked");
         verify(repository, never()).save(any(UserEntity.class));
@@ -56,30 +56,30 @@ class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void updateLoginAttempt_whenUserIsAlreadyBlocked_thenSkipUpdate() {
-        // arrange
+        // given
         UserEntity mockEntity = TestUtils.createUser();
         mockEntity.setStatus(EntityStatus.BLOCKED);
         when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
 
-        // act
+        // when
         service.updateLoginAttempt("user1");
 
-        // assert
+        // then
         assertLogContains(logAppender, "User already blocked");
         verify(systemPropertyService, never()).getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
     }
 
     @Test
     void updateLoginAttempt_whenUserFailedAttemptsIsZero_thenIncrementFailedAttempts() {
-        // arrange
+        // given
         UserEntity mockEntity = TestUtils.createUser();
         when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
         when(systemPropertyService.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(3);
 
-        // act
+        // when
         service.updateLoginAttempt("user1");
 
-        // assert
+        // then
         verify(systemPropertyService).getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
         ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
         verify(repository).save(userEntityArgumentCaptor.capture());
@@ -88,16 +88,16 @@ class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void updateLoginAttempt_whenUserReachedFailedAttemptsLimit_thenBlockUser() {
-        // arrange
+        // given
         UserEntity mockEntity = TestUtils.createUser();
         mockEntity.setFailedAttempts(2);
         when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
         when(systemPropertyService.getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT)).thenReturn(3);
 
-        // act
+        // when
         service.updateLoginAttempt("user1");
 
-        // assert
+        // then
         verify(systemPropertyService).getInteger(SystemProperty.FAILED_ATTEMPTS_LIMIT);
         ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
         verify(repository).save(userEntityArgumentCaptor.capture());
@@ -106,16 +106,16 @@ class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void resetLoginAttempt_whenUserFound_thenReset() {
-        // arrange
+        // given
         UserEntity mockEntity = TestUtils.createUser();
         mockEntity.setFailedAttempts(3);
         mockEntity.setStatus(EntityStatus.BLOCKED);
         when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
 
-        // act
+        // when
         service.resetLoginAttempt("user1");
 
-        // assert
+        // then
         ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
         verify(repository).save(userEntityArgumentCaptor.capture());
         assertEquals(0, userEntityArgumentCaptor.getValue().getFailedAttempts());
@@ -123,13 +123,13 @@ class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
 
     @Test
     void resetLoginAttempt_whenUserNotFound_thenSkipReset() {
-        // arrange
+        // given
         when(repository.findByUsername("user1")).thenReturn(Optional.empty());
 
-        // act
+        // when
         service.resetLoginAttempt("user1");
 
-        // assert
+        // then
         verify(repository, never()).save(any(UserEntity.class));
         verify(repository).findByUsername("user1");
     }
@@ -137,28 +137,28 @@ class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
     @ParameterizedTest
     @MethodSource("isBlockedTestData")
     void isBlocked_whenInputContainsDifferentStatus_thenReturnExpectedResult(EntityStatus inputStatus, boolean expectedResult) {
-        // arrange
+        // given
         UserEntity mockEntity = TestUtils.createUser();
         mockEntity.setFailedAttempts(3);
         mockEntity.setStatus(inputStatus);
         when(repository.findByUsername("user1")).thenReturn(Optional.of(mockEntity));
 
-        // act
+        // when
         boolean response = service.isBlocked("user1");
 
-        // assert
+        // then
         assertEquals(expectedResult, response);
     }
 
     @Test
     void isBlocked_whenUserNotFound_thenReturnFalse() {
-        // arrange
+        // given
         when(repository.findByUsername("user1")).thenReturn(Optional.empty());
 
-        // act
+        // when
         boolean response = service.isBlocked("user1");
 
-        // assert
+        // then
         assertFalse(response);
     }
 
@@ -169,3 +169,4 @@ class UserLoginAttemptManagerServiceImplTest extends AbstractLoggingUnitTest {
         };
     }
 }
+

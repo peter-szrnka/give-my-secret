@@ -21,17 +21,18 @@ class ResetPasswordControllerTest {
 
     @Test
     void resetPassword_whenInputIsValid_thenResetPassword() {
-        // arrange
+        // given
         ResetPasswordService service = mock(ResetPasswordService.class);
         ResetPasswordController controller = new ResetPasswordController(service);
         ResetPasswordRequestDto dto = new ResetPasswordRequestDto("test");
 
-        // act
+        // when
         ResponseEntity<Void> response = controller.resetPassword(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).resetPassword(dto);
     }
 }
+

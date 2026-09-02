@@ -45,29 +45,29 @@ class KeystoreDataServiceTest extends AbstractLoggingUnitTest {
 	
 	@Test
 	void getKeystoreData_whenKeystoreAliasMissing_thenThrowException() {
-		// arrange
+		// given
 		SecretEntity entity = TestUtils.createSecretEntityWithUniqueKeystoreAliasId(1L);
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> service.getKeystoreData(entity));
 
-		// assert
+		// then
 		assertEquals("Invalid keystore alias!", exception.getMessage());
 		verify(keystoreAliasRepository).findById(anyLong());
 	}
 	
 	@Test
 	void getKeystoreData_whenKeystoreEntityMissing_thenThrowException() {
-		// arrange
+		// given
 		SecretEntity entity = TestUtils.createSecretEntity();
 		when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 		when(keystoreRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-		// act
+		// when
 		GmsException exception = assertThrows(GmsException.class, () -> service.getKeystoreData(entity));
 	    
-	    // assert
+	    // then
 	    assertEquals("Keystore entity not found!", exception.getMessage());
 		verify(keystoreAliasRepository).findById(anyLong());
 		verify(keystoreRepository).findById(anyLong());
@@ -76,7 +76,7 @@ class KeystoreDataServiceTest extends AbstractLoggingUnitTest {
 	@Test
 	void getKeystoreData_whenAllConditionsMet_thenReturnKeystorePair() throws IOException, CertificateException, NoSuchAlgorithmException {
 		try (MockedStatic<KeyStore> keyStoreMockedStatic = mockStatic(KeyStore.class)) {
-			// arrange
+			// given
 			SecretEntity entity = TestUtils.createSecretEntity();
 			when(keystoreAliasRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createKeystoreAliasEntity()));
 			when(keystoreRepository.findById(anyLong())).thenReturn(Optional.of(TestUtils.createJKSKeystoreEntity()));
@@ -84,10 +84,10 @@ class KeystoreDataServiceTest extends AbstractLoggingUnitTest {
 			KeyStore mockKeyStore = mock(KeyStore.class);
 			keyStoreMockedStatic.when(() -> KeyStore.getInstance(anyString())).thenReturn(mockKeyStore);
 
-			// act
+			// when
 			KeystorePair response = assertDoesNotThrow(() -> service.getKeystoreData(entity));
 
-			// assert
+			// then
 			assertNotNull(response);
 			assertNotNull(response.getEntity());
 			assertNotNull(response.getKeystore());
@@ -98,3 +98,4 @@ class KeystoreDataServiceTest extends AbstractLoggingUnitTest {
 		}
 	}
 }
+

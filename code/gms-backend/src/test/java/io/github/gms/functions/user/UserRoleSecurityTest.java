@@ -68,10 +68,10 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
         ChangePasswordRequestDto request = new ChangePasswordRequestDto();
         HttpEntity<ChangePasswordRequestDto> requestEntity = new HttpEntity<>(request, TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<Void> response = executeHttpPost(urlPrefix + "/change_credential", requestEntity, Void.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -82,10 +82,10 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
         jwt = null;
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));
 
-        // act
+        // when
         ResponseEntity<byte[]> response = executeHttpGet(urlPrefix + "/mfa_qr_code", requestEntity, byte[].class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -96,10 +96,10 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
         jwt = null;
         HttpEntity<Boolean> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(jwt));
 
-        // act
+        // when
         ResponseEntity<Void> response = executeHttpPost(urlPrefix + "/toggle_mfa?enabled=true", requestEntity, Void.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -110,10 +110,11 @@ class UserRoleSecurityTest extends AbstractUserRoleSecurityTest {
         jwt = null;
         HttpEntity<Void> requestEntity = new HttpEntity<>(TestUtils.getHttpHeaders(null));
 
-        // act
+        // when
         ResponseEntity<String> response = executeHttpGet(urlPrefix + "/mfa_active", requestEntity, String.class);
 
-        // assert
+        // then
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 }
+

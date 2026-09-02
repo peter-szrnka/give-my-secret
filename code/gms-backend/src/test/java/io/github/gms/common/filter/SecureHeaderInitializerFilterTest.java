@@ -63,17 +63,17 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
     @Test
     @SneakyThrows
     void doFilterInternal_whenUrlIsAnIgnoredOne_thenSkipAuthorization() {
-        // arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
         when(request.getRequestURI()).thenReturn("/healthcheck");
         when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("OK").build());
 
-        // act
+        // when
         filter.doFilterInternal(request, response, filterChain);
 
-        // assert
+        // then
         verify(authorizationService, never()).authorize(any(HttpServletRequest.class));
         verify(filterChain).doFilter(any(), any());
         verify(response, never()).sendError(HttpStatus.OK.value(), ERROR_MESSAGE);
@@ -82,16 +82,16 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
     @Test
     @SneakyThrows
     void doFilterInternal_whenSystemIsInSetupPhase_thenSkipAuthorization() {
-        // arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
         when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("NEED_SETUP").build());
 
-        // act
+        // when
         filter.doFilterInternal(request, response, filterChain);
 
-        // assert
+        // then
         verify(authorizationService, never()).authorize(any(HttpServletRequest.class));
         verify(filterChain).doFilter(any(), any());
         verify(response, never()).sendError(HttpStatus.OK.value(), ERROR_MESSAGE);
@@ -100,7 +100,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
     @Test
     @SneakyThrows
     void doFilterInternal_whenAuthorizationFail_thenReturnBadRequest() {
-        // arrange
+        // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
@@ -111,10 +111,10 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
                 .build());
         when(systemService.getSystemStatus()).thenReturn(SystemStatusDto.builder().withStatus("OK").build());
 
-        // act
+        // when
         filter.doFilterInternal(request, response, filterChain);
 
-        // assert
+        // then
         verify(filterChain, never()).doFilter(any(), any());
         verify(response).sendError(HttpStatus.BAD_REQUEST.value(), ERROR_MESSAGE);
     }
@@ -124,7 +124,7 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
     @MethodSource("testData")
     @SneakyThrows
     void doFilterInternal_whenAllDataProvided_thenPass(UserRole role, boolean admin) {
-        // arrange
+        // given
         MockedStatic<ThreadLocalContext> mockedThreadLocalContext = mockStatic(ThreadLocalContext.class);
         filter = new SecureHeaderInitializerFilter(authorizationService, systemPropertyService, systemService, true);
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -158,10 +158,10 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
         when(refreshJwtCookie.toString()).thenReturn("mock-cookie2");
         mockCookieUtils.when(() -> CookieUtils.createCookie(eq(Constants.REFRESH_JWT_TOKEN), eq("REFRESH_JWT"), eq(86400L), eq(true))).thenReturn(refreshJwtCookie);
 
-        // act
+        // when
         filter.doFilterInternal(request, response, filterChain);
 
-        // assert
+        // then
         assertEquals(mockAuthentication, SecurityContextHolder.getContext().getAuthentication());
         verify(response).addHeader("Set-Cookie", "mock-cookie1");
         verify(response).addHeader("Set-Cookie", "mock-cookie2");
@@ -188,3 +188,4 @@ class SecureHeaderInitializerFilterTest extends AbstractUnitTest {
         };
     }
 }
+

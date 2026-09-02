@@ -36,27 +36,27 @@ class UserDeletionServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void requestProcess_whenCorrectInputProvided_thenProceed() {
-        // arrange
+        // given
         Set<Long> userIds = Set.of(1L);
 
-        // act
+        // when
         service.requestProcess(BatchUserOperationDto.builder().requestId("requestID").userIds(userIds).build());
 
-        // assert
+        // then
         verify(userRepository).batchUpdateStatus(userIds, EntityStatus.DELETE_REQUESTED);
         assertLogContains(logAppender, "Batch user deletion requested. requestId=requestID");
     }
 
     @Test
     void getRequestedUserIds_whenCorrectInputProvided_thenReturnRequestedUserIds() {
-        // arrange
+        // given
         Set<Long> userIds = Set.of(1L, 2L);
         when(userRepository.findAllByStatus(EntityStatus.DELETE_REQUESTED)).thenReturn(userIds);
 
-        // act
+        // when
         Set<Long> response = service.getRequestedUserIds();
 
-        // arrange
+        // given
         assertNotNull(response);
         assertEquals(userIds, response);
         verify(userRepository).findAllByStatus(EntityStatus.DELETE_REQUESTED);
@@ -64,13 +64,14 @@ class UserDeletionServiceTest extends AbstractLoggingUnitTest {
 
     @Test
     void process_whenCorrectInputProvided_thenProceed() {
-        // arrange
+        // given
         Set<Long> userIds = Set.of(1L);
 
-        // act
+        // when
         service.process(userIds);
 
-        // assert
+        // then
         verify(userRepository).deleteAllByUserId(userIds);
     }
 }
+

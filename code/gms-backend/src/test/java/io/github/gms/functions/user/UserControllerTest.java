@@ -31,13 +31,13 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
     @Test
     void delete_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         doNothing().when(service).delete(1L);
 
-        // act
+        // when
         ResponseEntity<String> response = controller.delete(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).delete(1L);
@@ -45,10 +45,10 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
     @Test
     void toggle_whenInputProvided_thenReturnOk() {
-        // act
+        // when
         ResponseEntity<String> response = controller.toggle(1L, true);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).toggleStatus(1L,true);
@@ -56,14 +56,14 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
     @Test
     void save_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         SaveUserRequestDto dto = TestUtils.createSaveUserRequestDto();
         when(service.save(dto)).thenReturn(new SaveEntityResponseDto(2L));
 
-        // act
+        // when
         SaveEntityResponseDto response = controller.save(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(2L, response.getEntityId());
         verify(service).save(dto);
@@ -71,14 +71,14 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
     @Test
     void getById_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         UserDto dto = TestUtils.createUserDto();
         when(service.getById(1L)).thenReturn(dto);
 
-        // act
+        // when
         UserDto response = controller.getById(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dto, response);
         verify(service).getById(1L);
@@ -86,12 +86,12 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
     @Test
     void list_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         UserListDto dtoList = TestUtils.createUserListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         when(service.list(pageable)).thenReturn(dtoList);
 
-        // act
+        // when
         UserListDto response = controller.list(
                 "DESC",
                 "id",
@@ -99,7 +99,7 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
                 10
         );
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).list(pageable);
@@ -107,14 +107,14 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
     @Test
     void changePassword_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         ChangePasswordRequestDto dto = new ChangePasswordRequestDto("old", "new");
         doNothing().when(service).changePassword(dto);
 
-        // act
+        // when
         ResponseEntity<Void> response = controller.changePassword(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).changePassword(dto);
@@ -122,13 +122,13 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
     @Test
     void getMfaQrCode_whenExceptionOccurred_thenReturnHttp400() throws QrGenerationException {
-        // arrange
+        // given
         when(service.getMfaQrCode()).thenThrow(QrGenerationException.class);
 
-        // act
+        // when
         ResponseEntity<byte[]> response = controller.getMfaQrCode();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(400, response.getStatusCode().value());
         verify(service).getMfaQrCode();
@@ -136,13 +136,13 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
     @Test
     void getMfaQrCode_whenInputProvided_thenReturnOk() throws QrGenerationException {
-        // arrange
+        // given
         when(service.getMfaQrCode()).thenReturn("QR-url".getBytes());
 
-        // act
+        // when
         ResponseEntity<byte[]> response = controller.getMfaQrCode();
 
-        // assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(200, response.getStatusCode().value());
@@ -153,13 +153,13 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
     void toggleMfa_whenInputProvided_thenReturnOk(boolean input) {
-        // arrange
+        // given
         doNothing().when(service).toggleMfa(input);
 
-        // act
+        // when
         ResponseEntity<Void> response = controller.toggleMfa(input);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).toggleMfa(input);
@@ -167,13 +167,13 @@ class UserControllerTest extends AbstractClientControllerTest<UserService, UserC
 
     @Test
     void isMfaActive_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         when(service.isMfaActive()).thenReturn(true);
 
-        // act
+        // when
         ResponseEntity<Boolean> response = controller.isMfaActive();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(true, response.getBody());

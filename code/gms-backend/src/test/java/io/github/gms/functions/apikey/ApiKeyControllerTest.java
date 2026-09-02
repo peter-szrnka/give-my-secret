@@ -34,10 +34,10 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
 
     @Test
     void delete_whenInputProvided_thenReturnOk() {
-        // act
+        // when
         ResponseEntity<String> response = controller.delete(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).delete(1L);
@@ -45,10 +45,10 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
 
     @Test
     void toggle_whenInputProvided_thenReturnOk() {
-        // act
+        // when
         ResponseEntity<String> response = controller.toggle(1L, true);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         verify(service).toggleStatus(1L,true);
@@ -56,14 +56,14 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
 
     @Test
     void save_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         SaveApiKeyRequestDto dto = TestUtils.createNewSaveApiKeyRequestDto();
         when(service.save(dto)).thenReturn(new SaveEntityResponseDto(2L));
 
-        // act
+        // when
         SaveEntityResponseDto response = controller.save(dto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(2L, response.getEntityId());
         verify(service).save(dto);
@@ -71,14 +71,14 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
 
     @Test
     void getById_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         ApiKeyDto dto = TestUtils.createApiKeyDto();
         when(service.getById(1L)).thenReturn(dto);
 
-        // act
+        // when
         ApiKeyDto response = controller.getById(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dto, response);
         verify(service).getById(1L);
@@ -86,12 +86,12 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
 
     @Test
     void list_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         ApiKeyListDto dtoList = TestUtils.createApiKeyListDto();
         Pageable pageable = ConverterUtils.createPageable("DESC", "id", 0, 10);
         when(service.list(pageable)).thenReturn(dtoList);
 
-        // act
+        // when
         ApiKeyListDto response = controller.list(
                 "DESC",
                 "id",
@@ -99,7 +99,7 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
                 10
         );
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(dtoList, response);
         verify(service).list(pageable);
@@ -107,13 +107,13 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
 
     @Test
     void getValue_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         when(service.getDecryptedValue(1L)).thenReturn(TEST);
 
-        // act
+        // when
         String response = controller.getValue(1L);
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(TEST, response);
         verify(service).getDecryptedValue(1L);
@@ -121,15 +121,15 @@ class ApiKeyControllerTest extends AbstractClientControllerTest<ApiKeyService, A
 
     @Test
     void getAllApiKeyNames_whenInputProvided_thenReturnOk() {
-        // arrange
+        // given
         IdNamePairListDto mock = new IdNamePairListDto();
         mock.setResultList(List.of(new IdNamePairDto()));
         when(service.getAllApiKeyNames()).thenReturn(mock);
 
-        // act
+        // when
         IdNamePairListDto response = controller.getAllApiKeyNames();
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals(1, response.getResultList().size());
         verify(service).getAllApiKeyNames();

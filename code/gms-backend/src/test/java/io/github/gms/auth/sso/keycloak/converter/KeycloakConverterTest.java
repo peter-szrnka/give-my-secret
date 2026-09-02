@@ -57,7 +57,7 @@ class KeycloakConverterTest {
                 .realmAccess(RealmAccess.builder().roles(List.of("ROLE_USER")).build())
                 .build());
 
-        // assert
+        // then
         assertNotNull(userDetails);
         assertEquals("user1", userDetails.getUsername());
         assertEquals(expectedStatus, userDetails.getStatus());
@@ -68,7 +68,7 @@ class KeycloakConverterTest {
 
     @Test
     void toUserInfoDto_whenInputProvided_thenReturnUserInfoDto() {
-        // act
+        // when
         UserInfoDto response = converter.toUserInfoDto(IntrospectResponse.builder()
                 .email("email@email")
                 .name("My Name")
@@ -78,7 +78,7 @@ class KeycloakConverterTest {
                 .failedAttempts(1)
                 .build());
 
-        // assert
+        // then
         assertNotNull(response);
         assertEquals("email@email", response.getEmail());
         assertEquals("My Name", response.getName());
@@ -92,7 +92,7 @@ class KeycloakConverterTest {
     void toEntity_whenEntityDoesNotExist_thenReturnNewEntity() {
         try (MockedStatic<ZonedDateTime> mockedZonedDateTime = mockStatic(ZonedDateTime.class)) {
             mockedZonedDateTime.when(() -> ZonedDateTime.now(clock)).thenReturn(zonedDateTime);
-            // arrange
+            // given
             UserEntity mockEntity = TestUtils.createAdminUser();
             mockEntity.setId(null);
             mockEntity.setStatus(null);
@@ -101,10 +101,10 @@ class KeycloakConverterTest {
             UserInfoDto mockUserInfoDto = TestUtils.createUserInfoDto();
             when(secretGenerator.generate()).thenReturn("secret!");
 
-            // act
+            // when
             UserEntity response = converter.toEntity(mockEntity, mockUserInfoDto);
 
-            // assert
+            // then
             assertNotNull(response);
             assertNull(response.getCredential());
             assertNull(response.getId());
@@ -122,15 +122,15 @@ class KeycloakConverterTest {
 
     @Test
     void toEntity_whenEntityExists_thenReturnEntity() {
-        // arrange
+        // given
         UserEntity mockEntity = TestUtils.createAdminUser();
         mockEntity.setStatus(null);
         UserInfoDto mockUserInfoDto = TestUtils.createUserInfoDto();
 
-        // act
+        // when
         UserEntity response = converter.toEntity(mockEntity, mockUserInfoDto);
 
-        // assert
+        // then
         assertNotNull(response);
         assertNotNull(response.getId());
         assertEquals("a@b.com", response.getEmail());
@@ -147,3 +147,4 @@ class KeycloakConverterTest {
         };
     }
 }
+
